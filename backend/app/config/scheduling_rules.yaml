@@ -1,0 +1,59 @@
+schema_version: '1.0'
+effort_modifiers:
+- id: professionalism
+  enabled: true
+  formula: effort / assignee.professionalism_coefficient
+  fallback: effort
+- id: operational_overhead
+  enabled: true
+  formula: effort / (1 - assignee.operational_utilization / 100)
+  fallback: effort
+- id: round_up
+  enabled: true
+  operation: ceil
+  fallback: effort
+  min_value: 1.0
+scheduling_passes:
+- id: critical_deadline
+  description: Задачи с дедлайном — ближайший срок раньше
+  filter:
+    all:
+    - task.max_finish_date != null
+    - task.is_deferred == false
+  sort:
+  - field: max_finish_date
+    order: asc
+  - field: priority
+    order: asc
+- id: before_vacation
+  description: Задачи до отпуска
+  filter:
+    all:
+    - task.fits_before_vacation == true
+    - task.is_deferred == false
+  sort:
+  - field: is_optional
+    order: asc
+  - field: priority
+    order: asc
+  - field: adjusted_effort
+    order: asc
+- id: after_vacation
+  description: Задачи после отпуска
+  filter:
+    all:
+    - task.fits_before_vacation == false
+    - task.is_deferred == false
+  sort:
+  - field: is_optional
+    order: asc
+  - field: priority
+    order: asc
+  - field: adjusted_effort
+    order: desc
+constraints:
+  sequential_per_assignee: true
+  respect_dependencies: true
+  min_start_date: true
+  max_finish_date: true
+  prefer_uninterrupted: true

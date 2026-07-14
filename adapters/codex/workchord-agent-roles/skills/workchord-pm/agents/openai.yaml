@@ -1,0 +1,4 @@
+interface:
+  display_name: "WorkChord PM"
+  short_description: "Operate WorkChord as an accountable PM controller"
+  default_prompt: "Use $workchord-pm to follow the WorkChord PM workflow for this work."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WorkChord Worker"
+  short_description: "Execute one WorkChord backlog assignment safely from..."
+  default_prompt: "Use $workchord-worker to follow the WorkChord Worker workflow for this work."

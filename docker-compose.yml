@@ -1,0 +1,68 @@
+name: workchord
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    expose:
+      - "8001"
+    volumes:
+      - workchord_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - API_PREFIX=/api
+      - DEBUG=false
+      - CORS_ORIGINS=["http://localhost","http://frontend"]
+      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:-}
+      - AGENT_BOOTSTRAP_API_KEY=${AGENT_BOOTSTRAP_API_KEY:-}
+      - AGENT_SKILL_BUNDLES_PUBLIC=${AGENT_SKILL_BUNDLES_PUBLIC:-false}
+      - AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256=${AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256:-}
+      - WORKCHORD_ADMIN_API_KEY=${WORKCHORD_ADMIN_API_KEY:-}
+      - ALLOW_PRIVATE_EGRESS_URLS=${ALLOW_PRIVATE_EGRESS_URLS:-false}
+      - TRUSTED_PROXY_IPS=${TRUSTED_PROXY_IPS:-[]}
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
+      - SESSION_MAX_AGE_SECONDS=${SESSION_MAX_AGE_SECONDS:-2592000}
+      - NOTIFICATIONS_ENABLED=${NOTIFICATIONS_ENABLED:-false}
+      - OUTBOUND_DELIVERY_WORKER_ENABLED=${OUTBOUND_DELIVERY_WORKER_ENABLED:-true}
+      - OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
+      - OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-notifications@workchord.local}
+      - SMTP_USE_TLS=${SMTP_USE_TLS:-true}
+    command: >
+      sh -c "python -m app.cli.upgrade --no-repairs &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8001"
+    networks:
+      - workchord
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - workchord
+    restart: unless-stopped
+
+networks:
+  workchord:
+    driver: bridge
+    internal: false
+
+volumes:
+  workchord_data:

@@ -1,0 +1,27 @@
+[project]
+name = "workchord-backend"
+version = "1.6.2"
+description = "Backend API for WorkChord application"
+readme = { text = "WorkChord backend API and MCP server.", content-type = "text/plain" }
+license = "MIT"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.25.0",
+    "aiosqlite>=0.19.0",
+    "PyYAML>=6.0",
+    "python-multipart",
+    "aiosmtplib>=3.0.0",
+    "cryptography>=41.0.0",
+    "email-validator>=2.0.0",
+    "mcp[cli]>=1,<2",
+]
+
+[project.scripts]
+workchord-mcp = "app.mcp_server:main"

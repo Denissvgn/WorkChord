@@ -1,0 +1,51 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+certs/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Frontend
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/test-results/
+npm-debug.log*
+
+# Runtime data
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+backend/email_settings.json
+logs/
+
+# Generated artifacts
+dist/
+build/
+*.egg-info/
+
+# Editors and agent-local state
+.idea/
+.vscode/
+.agent/
+.agents/
+.claude/
+.codex/
+.llm-wiki/
+*.swp
+*.swo
+
+# Operating systems
+.DS_Store
+Thumbs.db

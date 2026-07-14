@@ -1,0 +1,56 @@
+# syntax=docker/dockerfile:1.7
+
+ARG PYTHON_IMAGE=python:3.12.13-slim-bookworm@sha256:8a7e7cc04fd3e2bd787f7f24e22d5d119aa590d429b50c95dfe12b3abe52f48b
+ARG WORKCHORD_VERSION=1.6.2
+
+# Build stage. Keep this on the target platform because installed wheels are
+# copied into the runtime image.
+FROM ${PYTHON_IMAGE} AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY backend/requirements.lock .
+RUN python -m pip install --user --no-cache-dir --require-hashes -r requirements.lock
+
+# Final stage
+FROM ${PYTHON_IMAGE}
+
+ARG WORKCHORD_VERSION
+LABEL org.opencontainers.image.title="WorkChord backend" \
+      org.opencontainers.image.version="${WORKCHORD_VERSION}" \
+      org.opencontainers.image.licenses="MIT"
+
+WORKDIR /app
+
+# Copy installed dependencies
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy application code
+COPY backend .
+
+# Validate and build checksum-verified, exact-version role-skill artifacts. The
+# runtime serves only this trusted generated directory, never database prose.
+COPY agent-skills /app/agent-skills
+COPY scripts/build_agent_skills.py /app/scripts/build_agent_skills.py
+RUN python /app/scripts/build_agent_skills.py \
+      --skills-dir /app/agent-skills \
+      build --output-dir /app/agent-skill-artifacts \
+    && rm -rf /app/agent-skills /app/scripts
+
+# Create directory for sqlite db
+RUN mkdir -p /app/data
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV WORKCHORD_AGENT_SKILL_ARTIFACTS_DIR=/app/agent-skill-artifacts
+
+# Run the application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]

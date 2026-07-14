@@ -1,0 +1,102 @@
+name: workchord
+
+services:
+  backend:
+    image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag for offline use or repository@sha256 digest for registry deployment}
+    restart: unless-stopped
+    expose:
+      - "8001"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite+aiosqlite:////app/data/workchord.db}
+      API_PREFIX: ${API_PREFIX:-/api}
+      DEPLOYMENT_ENVIRONMENT: production
+      DEBUG: "false"
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set the production HTTPS origin list}
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}
+      AGENT_BOOTSTRAP_API_KEY: ${AGENT_BOOTSTRAP_API_KEY:-}
+      AGENT_SKILL_BUNDLES_PUBLIC: ${AGENT_SKILL_BUNDLES_PUBLIC:-false}
+      AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256: ${AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256:-}
+      MCP_DNS_REBINDING_PROTECTION: "true"
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:?Set the exact public MCP host allowlist}
+      MCP_ALLOWED_ORIGINS: ${MCP_ALLOWED_ORIGINS:?Set the exact public MCP HTTPS origin allowlist}
+      MCP_UNSAFE_ALLOW_PUBLIC_BINDING: "false"
+      WORKCHORD_ADMIN_API_KEY: ${WORKCHORD_ADMIN_API_KEY:?Set WORKCHORD_ADMIN_API_KEY}
+      ALLOW_PRIVATE_EGRESS_URLS: ${ALLOW_PRIVATE_EGRESS_URLS:-false}
+      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?Set the proxy IP or subnet allowlist}
+      SESSION_COOKIE_SECURE: "true"
+      SESSION_MAX_AGE_SECONDS: ${SESSION_MAX_AGE_SECONDS:-2592000}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_URL: ${LLM_API_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_OUTPUT_TOKENS: ${LLM_MAX_OUTPUT_TOKENS:-3000}
+      GITHUB_API_URL: ${GITHUB_API_URL:-https://api.github.com}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_REQUEST_TIMEOUT_SECONDS: ${GITHUB_REQUEST_TIMEOUT_SECONDS:-10}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+      GITHUB_WEBHOOK_CREATE_TRIAGE_FOR_UNMATCHED: ${GITHUB_WEBHOOK_CREATE_TRIAGE_FOR_UNMATCHED:-false}
+      WEB_INTAKE_TOKEN: ${WEB_INTAKE_TOKEN:-}
+      WEB_INTAKE_RATE_LIMIT_PER_MINUTE: ${WEB_INTAKE_RATE_LIMIT_PER_MINUTE:-30}
+      NOTIFICATIONS_ENABLED: ${NOTIFICATIONS_ENABLED:-false}
+      OUTBOUND_DELIVERY_WORKER_ENABLED: ${OUTBOUND_DELIVERY_WORKER_ENABLED:-true}
+      OUTBOUND_DELIVERY_POLL_SECONDS: ${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
+      OUTBOUND_DELIVERY_BATCH_SIZE: ${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-notifications@workchord.local}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+    volumes:
+      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
+    networks:
+      - application
+      - egress
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    image: ${WORKCHORD_FRONTEND_IMAGE:?Set an exact frontend image tag for offline use or repository@sha256 digest for registry deployment}
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - application
+
+  proxy:
+    image: ${WORKCHORD_PROXY_IMAGE:-nginx:1.28.3-alpine3.23@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236}
+    restart: unless-stopped
+    ports:
+      - "${WORKCHORD_HTTP_PORT:-80}:80"
+      - "${WORKCHORD_HTTPS_PORT:-443}:443"
+    environment:
+      NGINX_ENVSUBST_FILTER: WORKCHORD_SERVER_NAME
+      WORKCHORD_SERVER_NAME: ${WORKCHORD_SERVER_NAME:?Set the canonical public hostname}
+    volumes:
+      - ./deploy/nginx.production.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${WORKCHORD_TLS_CERT_DIR:-./certs}:/etc/workchord/tls:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    networks:
+      - application
+
+networks:
+  application:
+    driver: bridge
+    internal: true
+  egress:
+    driver: bridge
+
+volumes:
+  workchord_data:
