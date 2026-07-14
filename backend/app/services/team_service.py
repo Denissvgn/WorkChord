@@ -598,7 +598,7 @@ class TeamService:
         if not capacity:
             return None
 
-        # Calculate allocated days from assigned tasks (exclude deferred/cancelled tasks)
+        # Calculate allocated days from assigned tasks (deferred tasks are excluded)
         allocated_days = sum(t.effort_days for t in member.tasks if not t.is_deferred)
         # Use effective_days for capacity display - professionalism_coefficient only affects Gantt scheduling
         free_days = capacity.effective_days - allocated_days

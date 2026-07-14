@@ -42,7 +42,7 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/components/team/AssigneeRecommendationsPanel.tsx': [1, 0],
     'src/components/team/ImportTeamModal.tsx': [0, 1],
     'src/components/team/TeamForm.tsx': [1, 2],
-    'src/components/team/TeamList.tsx': [2, 1],
+    'src/components/team/TeamList.tsx': [3, 1],
     'src/components/team/TeamProfileManager.tsx': [1, 6],
     'src/components/team/VacationManager.tsx': [0, 3],
     'src/i18n/SystemLanguageProvider.tsx': [1, 0],
@@ -51,8 +51,8 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/features/planningMasters/usePlanningReadiness.ts': [5, 0],
     'src/pages/AgentPipelinePage.tsx': [3, 0],
     'src/pages/AnalyticsPage.tsx': [1, 0],
-    'src/pages/CalendarPage.tsx': [3, 6],
-    'src/pages/GanttPage.tsx': [3, 3],
+    'src/pages/CalendarPage.tsx': [3, 8],
+    'src/pages/GanttPage.tsx': [4, 3],
     'src/pages/OverviewPage.tsx': [3, 0],
     'src/pages/ProjectDetailPage.tsx': [7, 6],
     'src/pages/ProjectReleaseDetailPage.tsx': [2, 1],
@@ -60,7 +60,7 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/pages/RoadmapPage.tsx': [3, 0],
     'src/pages/TasksPage.tsx': [1, 0],
     'src/pages/TeamPage.tsx': [2, 0],
-    'src/pages/TriagePage.tsx': [10, 4],
+    'src/pages/TriagePage.tsx': [11, 5],
 };
 
 const HOOK_KINDS = new Map([
@@ -108,7 +108,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/team/AssigneeRecommendationsPanel.tsx': '8450676dbd07de86',
     'src/components/team/ImportTeamModal.tsx': '5f485c9b78b922c5',
     'src/components/team/TeamForm.tsx': '3b33d610019f1ad8',
-    'src/components/team/TeamList.tsx': '8b988c2fe4979d4d',
+    'src/components/team/TeamList.tsx': '23628a820b3557ec',
     'src/components/team/TeamProfileManager.tsx': 'da1f6f1632cf6eda',
     'src/components/team/VacationManager.tsx': 'c59125d77b1edefe',
     'src/i18n/SystemLanguageProvider.tsx': '52087c287c3e9315',
@@ -117,8 +117,8 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/features/planningMasters/usePlanningReadiness.ts': '83544c1613ceb53d',
     'src/pages/AgentPipelinePage.tsx': '3add80d3ab22ab46',
     'src/pages/AnalyticsPage.tsx': 'd1eaeea017b47e59',
-    'src/pages/CalendarPage.tsx': '012063cd1e883c9d',
-    'src/pages/GanttPage.tsx': 'fac3ef2f293e3872',
+    'src/pages/CalendarPage.tsx': 'd2af934981655964',
+    'src/pages/GanttPage.tsx': 'bd4c0226f4763021',
     'src/pages/OverviewPage.tsx': '7d146768e2560fc2',
     'src/pages/ProjectDetailPage.tsx': '9dab38fcac41fd04',
     'src/pages/ProjectReleaseDetailPage.tsx': '9145592c7cadb869',
@@ -126,7 +126,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/RoadmapPage.tsx': '410b83b223f23f42',
     'src/pages/TasksPage.tsx': '0dc573bb0877300b',
     'src/pages/TeamPage.tsx': '1b061fa3a8dd4c25',
-    'src/pages/TriagePage.tsx': 'e12ec16a8a12d340',
+    'src/pages/TriagePage.tsx': 'c0c3648f5ab135a5',
 };
 
 const walkAst = (node, visit) => {

@@ -69,8 +69,13 @@ class MemberSchedule:
     capacity_days: float
     working_dates: list[date] = field(default_factory=list)
     vacation_dates: set[date] = field(default_factory=set)
-    holiday_dates: set[date] = field(default_factory=set)  # Calendar holidays
+    holiday_dates: set[date] = field(default_factory=set)  # Calendar holidays (full year)
+    weekend_days: set[int] = field(default_factory=lambda: {5, 6})  # Calendar weekend weekdays
     allocated_dates: dict[date, int] = field(default_factory=dict)  # date -> task_id
+    # Workload accounting in standard effort-days (raw task effort), so it is
+    # directly comparable with MemberCapacity.adjusted_days. Calendar dates
+    # consumed by a task are inflated by coefficients; counting them here would
+    # double-apply operational utilization against the already-deflated capacity.
     allocated_days: float = 0.0
 
     # Optimization: date-to-index mapping for O(1) lookups
@@ -232,7 +237,26 @@ class MemberSchedule:
         logger.warning(f"  [FIND_SLOT] No contiguous block found, returning first available: {available_from_start[0] if available_from_start else None}")
         return available_from_start[0] if available_from_start else None
 
-    def allocate(self, start_date: date, effort_days: int, task_id: int, all_dates_in_period: Optional[list[date]] = None) -> tuple[date, date]:
+    def _is_projectable_working_day(self, day: date) -> bool:
+        """Working-day check for dates that may lie outside the iteration period.
+
+        Uses the calendar's weekend configuration and full-year holidays instead
+        of a hardcoded Mon-Fri week, so overflow projections respect custom
+        calendars the same way in-iteration scheduling does.
+        """
+        return (
+            day.weekday() not in self.weekend_days
+            and day not in self.holiday_dates
+            and day not in self.vacation_dates
+        )
+
+    def allocate(
+        self,
+        start_date: date,
+        effort_days: int,
+        task_id: int,
+        accounting_days: Optional[float] = None,
+    ) -> tuple[date, date]:
         """Allocate dates for a task, returns (start, end).
 
         The end_date is calculated as the actual calendar date when the task
@@ -240,8 +264,15 @@ class MemberSchedule:
         If not enough working days are available, the task extends beyond
         the available period with the correct calendar duration.
 
+        ``accounting_days`` is the task's raw effort in standard effort-days,
+        recorded for workload reporting. It defaults to ``effort_days`` (the
+        coefficient-inflated calendar demand) when not provided.
+
         IMPORTANT: Invalidates the available dates cache after allocation.
         """
+        if accounting_days is None:
+            accounting_days = float(effort_days)
+
         available = [d for d in self.get_available_dates() if d >= start_date]
 
         if len(available) < effort_days:
@@ -250,7 +281,9 @@ class MemberSchedule:
             allocated_count = len(available)
             for d in available:
                 self.allocated_dates[d] = task_id
-            self.allocated_days += allocated_count
+            # The member owns the whole task even when it overflows the
+            # iteration, so account its full effort for workload reporting.
+            self.allocated_days += accounting_days
             self._invalidate_cache()  # Cache invalidation
 
             if available:
@@ -259,13 +292,12 @@ class MemberSchedule:
 
                 if remaining_working_days > 0:
                     # Calculate end_date by finding actual working days after last available
-                    # Skip weekends and find the remaining working days
+                    # Skip calendar-configured weekends/holidays and vacations
                     current = last_available
                     working_days_found = 0
                     while working_days_found < remaining_working_days:
                         current = current + timedelta(days=1)
-                        # Check if it's a working day (Mon-Fri, not vacation)
-                        if current.weekday() < 5 and current not in self.vacation_dates:
+                        if self._is_projectable_working_day(current):
                             working_days_found += 1
                     end_date = current
                 else:
@@ -279,7 +311,7 @@ class MemberSchedule:
             current = start_date
             working_days_found = 0
             while working_days_found < effort_days:
-                if current.weekday() < 5 and current not in self.vacation_dates:
+                if self._is_projectable_working_day(current):
                     working_days_found += 1
                     if working_days_found == effort_days:
                         break
@@ -294,7 +326,7 @@ class MemberSchedule:
             self.allocated_dates[d] = task_id
             allocated.append(d)
 
-        self.allocated_days += effort_days
+        self.allocated_days += accounting_days
         self._invalidate_cache()  # Cache invalidation
 
         if allocated:
@@ -735,14 +767,14 @@ class SchedulerService:
             iteration.calendar, iteration.start_date, iteration.end_date
         )
 
-        # Extract holiday dates from calendar for the iteration period
+        # Extract all holiday dates from the calendar (not just the iteration
+        # window) so overflow projections beyond the iteration end can skip
+        # them the same way in-iteration scheduling does.
         holiday_dates = set()
         if iteration.calendar and iteration.calendar.holidays:
             for holiday_str in iteration.calendar.holidays:
                 try:
-                    holiday_date = date.fromisoformat(holiday_str)
-                    if iteration.start_date <= holiday_date <= iteration.end_date:
-                        holiday_dates.add(holiday_date)
+                    holiday_dates.add(date.fromisoformat(holiday_str))
                 except ValueError:
                     logger.warning(
                         "Ignoring invalid calendar holiday value",
@@ -750,8 +782,14 @@ class SchedulerService:
                         extra={"holiday_value": holiday_str, "iteration_id": iteration.id},
                     )
 
+        weekend_days = (
+            set(iteration.calendar.weekend_days)
+            if iteration.calendar and iteration.calendar.weekend_days is not None
+            else {5, 6}
+        )
+
         logger.warning(f"[BUILD_SCHEDULES] Total working dates in iteration: {len(working_dates)}")
-        logger.warning(f"[BUILD_SCHEDULES] Holiday dates in iteration: {[d.isoformat() for d in sorted(holiday_dates)]}")
+        logger.warning(f"[BUILD_SCHEDULES] Calendar holiday dates: {[d.isoformat() for d in sorted(holiday_dates)]}")
 
         for member in team_members:
             # Get vacation dates
@@ -775,7 +813,8 @@ class SchedulerService:
                 capacity_days=capacity.adjusted_days if capacity else 0,
                 working_dates=working_dates.copy(),
                 vacation_dates=vacation_dates,
-                holiday_dates=holiday_dates,  # Pass holidays for gap detection
+                holiday_dates=holiday_dates,  # Used by overflow projection beyond the iteration
+                weekend_days=weekend_days,
             )
 
             # Log available dates after excluding vacations
@@ -1073,7 +1112,9 @@ class SchedulerService:
             reason = f"Delayed to {slot_start} to ensure uninterrupted execution (original: {earliest_start})"
 
         if slot_start:
-            start_date, end_date = schedule.allocate(slot_start, effort_days, task.id)
+            start_date, end_date = schedule.allocate(
+                slot_start, effort_days, task.id, accounting_days=task.effort_days
+            )
             task.start_date = start_date
             task.end_date = end_date
             task.calculated_effort_days = float(effort_days)  # Save to DB for Gantt display
@@ -1089,6 +1130,8 @@ class SchedulerService:
             calendar_days = int(effort_days * 7 / 5)
             task.end_date = earliest_start + timedelta(days=calendar_days)
             task.calculated_effort_days = float(effort_days)  # Save to DB for Gantt display
+            # The member still owns this effort; keep workload reporting truthful.
+            schedule.allocated_days += task.effort_days
             decision_type = "overdue"
             reason = "No available slot found within iteration"
 
@@ -1212,7 +1255,12 @@ class SchedulerService:
         self,
         member_schedules: dict[int, MemberSchedule]
     ) -> list[WorkloadIssue]:
-        """Check for workload imbalances."""
+        """Check for workload imbalances.
+
+        Both sides of the comparison are in standard effort-days:
+        ``allocated_days`` accumulates raw task effort and ``capacity_days``
+        is MemberCapacity.adjusted_days (coefficient-adjusted delivery capacity).
+        """
         issues = []
 
         for schedule in member_schedules.values():

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Trash2, User, Plane, Calendar } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane, Calendar } from 'lucide-react';
 import { teamService } from '../../services/teamService';
 import { Button } from '../common/Button';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { VacationManager } from './VacationManager';
-import type { MemberWorkload, TeamMember } from '../../types/team';
+import type { MemberCapacity, MemberWorkload, TeamMember } from '../../types/team';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -93,10 +93,24 @@ const TeamMemberCard = ({
     onManageVacations: () => void
 }) => {
     const { t } = useTranslation();
+    const [showCapacity, setShowCapacity] = useState(false);
     // Fetch workload data individually for now (ideal: batch or included in list response)
     const { data: workload, error: workloadError, refetch: refetchWorkload } = useQuery<MemberWorkload>({
         queryKey: ['workload', member.id],
         queryFn: () => teamService.getWorkload(member.id),
+        staleTime: 5 * 60 * 1000,
+    });
+
+    // Detailed breakdown loads lazily, only when the row is expanded
+    const {
+        data: capacity,
+        isLoading: isLoadingCapacity,
+        error: capacityError,
+        refetch: refetchCapacity,
+    } = useQuery<MemberCapacity>({
+        queryKey: ['capacity', member.id],
+        queryFn: () => teamService.getCapacity(member.id),
+        enabled: showCapacity,
         staleTime: 5 * 60 * 1000,
     });
 
@@ -110,7 +124,8 @@ const TeamMemberCard = ({
     };
 
     return (
-        <div className="card flex items-center justify-between p-4">
+        <div className="card flex flex-col p-4">
+        <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
                 <div className="p-3 bg-surface-subtle rounded-full">
                     <User className="w-6 h-6 text-content-secondary" />
@@ -171,6 +186,16 @@ const TeamMemberCard = ({
                 <Button
                     variant="ghost"
                     size="sm"
+                    onClick={() => setShowCapacity(prev => !prev)}
+                    aria-expanded={showCapacity}
+                    aria-label={t('teamCapacity.capacityBreakdown')}
+                    title={t('teamCapacity.capacityBreakdown')}
+                >
+                    {showCapacity ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={onManageVacations}
                     className="text-feedback-purple-foreground hover:bg-feedback-purple-muted"
                     title={t('teamVacations.title')}
@@ -196,6 +221,41 @@ const TeamMemberCard = ({
                     <Trash2 className="w-4 h-4" />
                 </Button>
             </div>
+        </div>
+
+        {showCapacity && (
+            <div className="mt-4 border-t border-border pt-3">
+                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-content-secondary">
+                    {t('teamCapacity.capacityBreakdown')}
+                </h4>
+                {isLoadingCapacity && (
+                    <div className="flex items-center gap-2 text-sm text-content-secondary">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t('teamCapacity.loading')}
+                    </div>
+                )}
+                {capacityError != null && (
+                    <QueryErrorState error={capacityError} onRetry={() => void refetchCapacity()} />
+                )}
+                {capacity && (
+                    <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-3 lg:grid-cols-6">
+                        {[
+                            [t('teamCapacity.workingDays'), String(capacity.working_days)],
+                            [t('teamCapacity.vacationDays'), String(capacity.vacation_days)],
+                            [t('teamCapacity.availableDays'), String(capacity.available_days)],
+                            [t('teamCapacity.effectiveDays'), String(capacity.effective_days)],
+                            [t('teamCapacity.adjustedDays'), String(capacity.adjusted_days)],
+                            [t('teamCapacity.capacityHours'), String(capacity.hours)],
+                        ].map(([label, value]) => (
+                            <div key={label} className="rounded-md border border-border bg-surface-muted p-2">
+                                <p className="text-xs text-content-secondary">{label}</p>
+                                <p className="mt-0.5 font-medium text-content-primary">{value}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        )}
         </div>
     );
 }

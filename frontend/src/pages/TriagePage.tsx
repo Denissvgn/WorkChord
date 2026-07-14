@@ -57,6 +57,7 @@ import { templateDisplay } from '../i18n/seedDisplay';
 import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
 import type {
     TriageActionRequest,
+    TriageClassificationSuggestion,
     TriageConvertToTaskRequest,
     TriageConvertToTaskResponse,
     TriageDuplicateRequest,
@@ -1251,6 +1252,7 @@ const TriageDetailPanel = ({
     onConvert,
     onRequestLinksChanged,
 }: TriageDetailPanelProps) => {
+    const queryClient = useQueryClient();
     const suggestionItemId = item?.id ?? 0;
     const {
         data: duplicateSuggestions,
@@ -1262,6 +1264,25 @@ const TriageDetailPanel = ({
         queryKey: ['triage', 'duplicate-suggestions', suggestionItemId],
         queryFn: () => triageService.getDuplicateSuggestions(suggestionItemId),
         enabled: suggestionItemId > 0,
+    });
+
+    const {
+        data: classificationSuggestions,
+        isLoading: isLoadingClassification,
+        isError: isClassificationError,
+        error: classificationError,
+        refetch: refetchClassification,
+    } = useQuery({
+        queryKey: ['triage', 'classification-suggestions', suggestionItemId],
+        queryFn: () => triageService.getClassificationSuggestions(suggestionItemId),
+        enabled: suggestionItemId > 0,
+    });
+
+    const classifyMutation = useMutation({
+        mutationFn: () => triageService.classify(suggestionItemId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['triage', 'classification-suggestions', suggestionItemId] });
+        },
     });
 
     if (!item) {
@@ -1379,6 +1400,19 @@ const TriageDetailPanel = ({
                     projectsById={projectsById}
                     iterationsById={iterationsById}
                     onMarkSuggestion={suggestion => onMarkSuggestion(item, suggestion)}
+                />
+
+                <ClassificationPanel
+                    suggestions={classificationSuggestions}
+                    isLoading={isLoadingClassification}
+                    isError={isClassificationError}
+                    error={classificationError}
+                    onRetry={() => void refetchClassification()}
+                    onClassify={() => classifyMutation.mutate()}
+                    isClassifying={classifyMutation.isPending}
+                    classifyError={classifyMutation.isError
+                        ? getApiErrorMessage(classifyMutation.error, t('surfaces.triagePage.classificationFailed'))
+                        : null}
                 />
             </div>
         </aside>
@@ -1513,6 +1547,131 @@ const DuplicateSuggestionGroup = ({
                 );
             })}
         </div>
+    );
+};
+
+interface ClassificationPanelProps {
+    suggestions?: TriageClassificationSuggestion[];
+    isLoading: boolean;
+    isError: boolean;
+    error?: unknown;
+    onRetry: () => void;
+    onClassify: () => void;
+    isClassifying: boolean;
+    classifyError: string | null;
+}
+
+const ClassificationPanel = ({
+    suggestions,
+    isLoading,
+    isError,
+    error,
+    onRetry,
+    onClassify,
+    isClassifying,
+    classifyError,
+}: ClassificationPanelProps) => {
+    const latest = suggestions?.[0] ?? null;
+    const earlierCount = Math.max(0, (suggestions?.length ?? 0) - 1);
+
+    return (
+        <section className="space-y-3">
+            <div className="flex items-center justify-between gap-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">
+                    {t('surfaces.triagePage.classification')}
+                </h3>
+                <div className="flex items-center gap-2">
+                    {isLoading && <Loader2 className="h-4 w-4 animate-spin text-content-tertiary" />}
+                    <Button size="sm" variant="secondary" onClick={onClassify} isLoading={isClassifying}>
+                        <Sparkles className="mr-1 h-4 w-4" />
+                        {t('surfaces.triagePage.classify')}
+                    </Button>
+                </div>
+            </div>
+
+            {classifyError && (
+                <div className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">
+                    {classifyError}
+                </div>
+            )}
+
+            {isError && (
+                <QueryErrorState
+                    error={error}
+                    fallback={t('surfaces.triagePage.couldNotLoadClassificationSuggestions')}
+                    onRetry={onRetry}
+                />
+            )}
+
+            {!isLoading && !isError && !latest && (
+                <div className="rounded-md border border-border bg-surface-muted p-3 text-sm text-content-secondary">
+                    {t('surfaces.triagePage.classificationEmpty')}
+                </div>
+            )}
+
+            {latest && (
+                <div className="rounded-md border border-border bg-surface-card p-3">
+                    <div className="flex items-start justify-between gap-3">
+                        <p className="text-xs text-content-secondary">
+                            {t('surfaces.triagePage.classificationConfidence', {
+                                percent: Math.round((latest.confidence ?? 0) * 100),
+                            })}
+                            {' / '}
+                            {formatDateTime(latest.created_at)}
+                        </p>
+                        {latest.is_fallback && (
+                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">
+                                {t('surfaces.triagePage.classificationFallback')}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="mt-2 flex flex-wrap gap-1">
+                        {latest.suggested_type_label_slug && (
+                            <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs text-action">
+                                {t('surfaces.triagePage.classificationType')}: {latest.suggested_type_label_slug}
+                            </span>
+                        )}
+                        {latest.suggested_area_label_slug && (
+                            <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs text-action">
+                                {t('surfaces.triagePage.classificationArea')}: {latest.suggested_area_label_slug}
+                            </span>
+                        )}
+                        {latest.suggested_priority != null && (
+                            <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
+                                P{latest.suggested_priority}
+                            </span>
+                        )}
+                        {latest.suggested_label_slugs.map(slug => (
+                            <span key={slug} className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
+                                {slug}
+                            </span>
+                        ))}
+                        {latest.unmatched_label_text.map(text => (
+                            <span key={text} className="rounded-full border border-dashed border-border px-2 py-0.5 text-xs text-content-tertiary">
+                                {text}
+                            </span>
+                        ))}
+                    </div>
+
+                    {latest.suggested_assignee_hint && (
+                        <p className="mt-2 text-xs text-content-secondary">
+                            {t('surfaces.triagePage.classificationAssigneeHint')}: {latest.suggested_assignee_hint}
+                        </p>
+                    )}
+
+                    {latest.rationale && (
+                        <p className="mt-2 whitespace-pre-wrap text-sm text-content-primary">{latest.rationale}</p>
+                    )}
+
+                    {earlierCount > 0 && (
+                        <p className="mt-2 text-xs text-content-tertiary">
+                            {t('surfaces.triagePage.classificationEarlier', { count: earlierCount })}
+                        </p>
+                    )}
+                </div>
+            )}
+        </section>
     );
 };
 

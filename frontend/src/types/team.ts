@@ -125,6 +125,17 @@ export interface MemberWorkload {
     workload_percent: number;
 }
 
+/** Detailed capacity breakdown from GET /team-members/{id}/capacity. */
+export interface MemberCapacity {
+    team_member_id: number;
+    working_days: number;
+    vacation_days: number;
+    available_days: number;
+    effective_days: number;
+    adjusted_days: number;
+    hours: number;
+}
+
 export interface AssigneeRecommendation {
     team_member_id: number;
     name: string;

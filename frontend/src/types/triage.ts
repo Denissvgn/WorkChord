@@ -88,6 +88,27 @@ export interface TriageDuplicateSuggestionsResponse {
     tasks: TriageDuplicateSuggestion[];
 }
 
+export interface TriageClassificationSuggestion {
+    id: number;
+    triage_item_id: number;
+    suggested_type_label_slug?: string | null;
+    suggested_area_label_slug?: string | null;
+    suggested_priority?: number | null;
+    suggested_label_slugs: string[];
+    unmatched_label_text: string[];
+    suggested_assignee_id?: number | null;
+    suggested_assignee_hint?: string | null;
+    suggested_project_id?: number | null;
+    duplicate_candidates: Array<Record<string, unknown>>;
+    confidence: number;
+    rationale?: string | null;
+    language?: string | null;
+    provider?: string | null;
+    model?: string | null;
+    is_fallback: boolean;
+    created_at: string;
+}
+
 export interface TriageTaskDraftRequest {
     template_id?: number | null;
     classification_suggestion_id?: number | null;

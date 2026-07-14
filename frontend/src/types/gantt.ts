@@ -15,7 +15,6 @@ export interface GanttTask {
     actual_end_date?: string | null;    // When status changed to CLOSED
     min_start_date?: string | null;
     max_end_date?: string | null;
-    duration_days: number; // Frontend calculated or mapped from effort? actually backend sends effort_days
     effort_days: number;
     effort_hours?: number;
     calculated_effort_days: number | null;  // Effort after applying coefficients
@@ -40,7 +39,7 @@ export interface GanttTask {
     assignees: Array<{ id: number; name: string }>;
     children: GanttTask[];
     dependencies: number[];
-    version?: number;
+    version?: number;  // Optimistic-concurrency version, sent by the Gantt API
     /** Complete local draft used when applying sandbox edits atomically. */
     sandbox_update?: TaskUpdate;
     isSandboxModified?: boolean;
@@ -69,6 +68,13 @@ export interface ScheduleResult {
     decisions: SchedulingDecision[];
     workload_balanced: boolean;
     workload_issues: WorkloadIssue[];
+}
+
+/** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */
+export interface SchedulePreviewResponse {
+    tasks: GanttTask[];
+    overdue_task_ids: number[];
+    schedule_result?: ScheduleResult | null;
 }
 
 export interface SchedulingDecision {

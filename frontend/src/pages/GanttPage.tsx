@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -17,9 +17,8 @@ import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { PageHeader, PageLayout } from '../components/ui';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
-import type { TaskUpdate } from '../types/task';
+import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
 import { getApiErrorMessage } from '../utils/apiError';
-import { simulateSchedule } from '../utils/schedulerSimulator';
 import clsx from 'clsx';
 import { useToast } from '../components/feedback/toast';
 import { snapshotService } from '../services/snapshotService';
@@ -49,6 +48,18 @@ const applySandboxChanges = (tasks: GanttTask[], changes: Record<number, Partial
         }
         return updated;
     });
+};
+
+// Server preview tasks already carry the applied edits; re-mark edited ids so
+// the chart keeps highlighting them.
+const markSandboxModified = (tasks: GanttTask[], changes: Record<number, Partial<GanttTask>>): GanttTask[] => {
+    return tasks.map(task => ({
+        ...task,
+        ...(changes[task.id] ? { isSandboxModified: true } : {}),
+        children: task.children && task.children.length > 0
+            ? markSandboxModified(task.children, changes)
+            : task.children,
+    }));
 };
 
 const GanttPage = () => {
@@ -115,32 +126,6 @@ const GanttPage = () => {
 
     const currentIteration = iterations?.find(i => i.id === selectedIterationId);
 
-    const { sandboxedTasks, currentSimulationError } = useMemo(() => {
-        if (!ganttTasks?.tasks) return { sandboxedTasks: [], currentSimulationError: null };
-        if (!sandboxMode) return { sandboxedTasks: ganttTasks.tasks, currentSimulationError: null };
-        if (!currentIteration) return { sandboxedTasks: ganttTasks.tasks, currentSimulationError: null };
-
-        // Apply sandbox edits locally
-        const tasksWithChanges = applySandboxChanges(ganttTasks.tasks, sandboxChanges);
-
-        // Simulate dates and sequential scheduling
-        try {
-            const simulated = simulateSchedule(
-                tasksWithChanges,
-                currentIteration.start_date,
-                currentIteration.end_date,
-                ganttTasks.weekends || [],
-                ganttTasks.holidays || [],
-                ganttTasks.member_vacations || {}
-            );
-            return { sandboxedTasks: simulated, currentSimulationError: null };
-        } catch (e: unknown) {
-            console.error('Simulation failed, falling back to changes only', e);
-            const errMsg = e instanceof Error ? e.message : String(e);
-            return { sandboxedTasks: tasksWithChanges, currentSimulationError: errMsg };
-        }
-    }, [ganttTasks, sandboxMode, sandboxChanges, currentIteration]);
-
     const originalTaskLookup = useMemo(() => {
         const lookup = new Map<number, GanttTask>();
         const visit = (task: GanttTask) => {
@@ -150,6 +135,80 @@ const GanttPage = () => {
         ganttTasks?.tasks?.forEach(visit);
         return lookup;
     }, [ganttTasks]);
+
+    const sandboxChangeCount = Object.keys(sandboxChanges).length;
+
+    // The exact payload a later "Apply changes" batch-update would send;
+    // shared with the preview so the dry-run exercises the same contract.
+    const buildBatchTasks = useCallback((): TaskBatchUpdateItem[] => {
+        return Object.entries(sandboxChanges).map(([taskIdStr, changes]) => {
+            const taskId = Number(taskIdStr);
+            const originalTask = originalTaskLookup.get(taskId);
+            const updatePayload: TaskUpdate = changes.sandbox_update ?? {
+                title: changes.title !== undefined ? changes.title : originalTask?.title,
+                description: changes.description !== undefined ? changes.description : originalTask?.description,
+                project_id: changes.project_id !== undefined ? changes.project_id : originalTask?.project_id,
+                priority: changes.priority !== undefined ? Number(changes.priority) : originalTask?.priority,
+                effort_days: changes.effort_days !== undefined ? Number(changes.effort_days) : originalTask?.effort_days,
+                effort_hours: changes.effort_hours !== undefined ? Number(changes.effort_hours) : originalTask?.effort_hours,
+                assignee_id: changes.assignee !== undefined ? (changes.assignee ? Number(changes.assignee.id) : null) : originalTask?.assignee?.id,
+                milestone_id: changes.milestone_id !== undefined ? (changes.milestone_id ? Number(changes.milestone_id) : null) : originalTask?.milestone_id,
+                is_optional: changes.is_optional !== undefined ? changes.is_optional : originalTask?.is_optional,
+                is_deferred: changes.is_deferred !== undefined ? changes.is_deferred : originalTask?.is_deferred,
+                tags: changes.tags !== undefined ? changes.tags : originalTask?.tags,
+                depends_on: changes.dependencies !== undefined ? changes.dependencies : originalTask?.dependencies,
+                min_start_date: changes.min_start_date !== undefined ? (changes.min_start_date || null) : originalTask?.min_start_date,
+                max_end_date: changes.max_end_date !== undefined ? (changes.max_end_date || null) : originalTask?.max_end_date,
+            };
+            if (changes.status) {
+                updatePayload.status = changes.status;
+            }
+            return {
+                task_id: taskId,
+                expected_version: updatePayload.expected_version ?? changes.version ?? originalTask?.version,
+                update: updatePayload,
+                status_reason: changes.status ? t('gantt.sandboxStatusReason') : undefined,
+            };
+        });
+    }, [sandboxChanges, originalTaskLookup, t]);
+
+    // Dry-run the sandbox edits through the real backend scheduler so the
+    // preview always matches what applying them would produce.
+    const schedulePreviewQuery = useQuery({
+        queryKey: ['gantt-schedule-preview', selectedIterationId, sandboxChanges],
+        queryFn: () => ganttService.previewSchedule(selectedIterationId, buildBatchTasks()),
+        enabled: sandboxMode && selectedIterationId > 0 && sandboxChangeCount > 0,
+        staleTime: Infinity,
+        retry: false,
+    });
+
+    const { sandboxedTasks, currentSimulationError } = useMemo(() => {
+        if (!ganttTasks?.tasks) return { sandboxedTasks: [] as GanttTask[], currentSimulationError: null as string | null };
+        if (!sandboxMode || sandboxChangeCount === 0) {
+            return { sandboxedTasks: ganttTasks.tasks, currentSimulationError: null };
+        }
+        if (schedulePreviewQuery.data) {
+            return {
+                sandboxedTasks: markSandboxModified(schedulePreviewQuery.data.tasks, sandboxChanges),
+                currentSimulationError: null,
+            };
+        }
+        // Preview pending or failed: show local edits without projected dates.
+        const tasksWithChanges = applySandboxChanges(ganttTasks.tasks, sandboxChanges);
+        const errMsg = schedulePreviewQuery.isError
+            ? getApiErrorMessage(schedulePreviewQuery.error, t('gantt.simulationWarning'))
+            : null;
+        return { sandboxedTasks: tasksWithChanges, currentSimulationError: errMsg };
+    }, [
+        ganttTasks,
+        sandboxMode,
+        sandboxChanges,
+        sandboxChangeCount,
+        schedulePreviewQuery.data,
+        schedulePreviewQuery.isError,
+        schedulePreviewQuery.error,
+        t,
+    ]);
 
     const taskLookup = useMemo(() => {
         const lookup = new Map<number, GanttTask>();
@@ -178,36 +237,7 @@ const GanttPage = () => {
 
     const applySandboxMutation = useMutation({
         mutationFn: async () => {
-            const batchTasks = Object.entries(sandboxChanges).map(([taskIdStr, changes]) => {
-                const taskId = Number(taskIdStr);
-                const originalTask = originalTaskLookup.get(taskId);
-                const updatePayload: TaskUpdate = changes.sandbox_update ?? {
-                    title: changes.title !== undefined ? changes.title : originalTask?.title,
-                    description: changes.description !== undefined ? changes.description : originalTask?.description,
-                    project_id: changes.project_id !== undefined ? changes.project_id : originalTask?.project_id,
-                    priority: changes.priority !== undefined ? Number(changes.priority) : originalTask?.priority,
-                    effort_days: changes.effort_days !== undefined ? Number(changes.effort_days) : originalTask?.effort_days,
-                    effort_hours: changes.effort_hours !== undefined ? Number(changes.effort_hours) : originalTask?.effort_hours,
-                    assignee_id: changes.assignee !== undefined ? (changes.assignee ? Number(changes.assignee.id) : null) : originalTask?.assignee?.id,
-                    milestone_id: changes.milestone_id !== undefined ? (changes.milestone_id ? Number(changes.milestone_id) : null) : originalTask?.milestone_id,
-                    is_optional: changes.is_optional !== undefined ? changes.is_optional : originalTask?.is_optional,
-                    is_deferred: changes.is_deferred !== undefined ? changes.is_deferred : originalTask?.is_deferred,
-                    tags: changes.tags !== undefined ? changes.tags : originalTask?.tags,
-                    depends_on: changes.dependencies !== undefined ? changes.dependencies : originalTask?.dependencies,
-                    min_start_date: changes.min_start_date !== undefined ? (changes.min_start_date || null) : originalTask?.min_start_date,
-                    max_end_date: changes.max_end_date !== undefined ? (changes.max_end_date || null) : originalTask?.max_end_date,
-                };
-                if (changes.status) {
-                    updatePayload.status = changes.status;
-                }
-                return {
-                    task_id: taskId,
-                    expected_version: updatePayload.expected_version ?? changes.version ?? originalTask?.version,
-                    update: updatePayload,
-                    status_reason: changes.status ? t('gantt.sandboxStatusReason') : undefined,
-                };
-            });
-            await taskService.batchUpdate(selectedIterationId, { tasks: batchTasks });
+            await taskService.batchUpdate(selectedIterationId, { tasks: buildBatchTasks() });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['gantt', selectedIterationId] });
@@ -277,7 +307,7 @@ const GanttPage = () => {
                     <h4>{t('gantt.noIterationsTitle')}</h4>
                     <p>{t('gantt.noIterationsBody')}</p>
                     <div className="empty-actions">
-                        <a href="/iterations" className="btn primary">{t('gantt.goToIterations', 'Create iteration')}</a>
+                        <a href="/iterations" className="btn primary">{t('gantt.goToIterations')}</a>
                     </div>
                 </div>
             </PageLayout>

@@ -3,7 +3,7 @@ export interface Calendar {
     name: string;
     year: number;
     holidays: string[]; // ISO date strings
-    weekend_days: number[]; // 0-6 (Sunday-Saturday)
+    weekend_days: number[]; // 0=Mon .. 6=Sun (matches backend Calendar.weekend_days)
     short_days: string[]; // Pre-holiday shortened days
 }
 

@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.task import Task
 from app.schemas.gantt import (
-    GanttResponse, GanttTask, GanttAssignee, GanttMilestone, ScheduleResult, WorkloadIssue, SchedulingDecision
+    GanttResponse, GanttTask, GanttAssignee, GanttMilestone, ScheduleResult,
+    SchedulePreviewRequest, SchedulePreviewResponse, WorkloadIssue, SchedulingDecision
 )
 from app.schemas.iteration import IterationResponse
 from app.services.scheduler_service import SchedulerService
@@ -44,6 +45,85 @@ async def schedule_iteration(
 
     result = await service.schedule_iteration(iteration_id)
     return result
+
+
+@router.post("/iterations/{iteration_id}/schedule/preview", response_model=SchedulePreviewResponse)
+async def preview_iteration_schedule(
+    iteration_id: int,
+    data: SchedulePreviewRequest,
+    service: Annotated[SchedulerService, Depends(get_scheduler_service)],
+    db: Annotated[AsyncSession, Depends(get_db)]
+):
+    """Dry-run sandbox edits through the real scheduler and roll everything back.
+
+    Applies the submitted task changes (same item shape as batch-update) and
+    runs the actual scheduling pass in one transaction, serializes the
+    projected Gantt state, then rolls the transaction back. The preview is
+    therefore always consistent with what a subsequent batch-update apply
+    (which auto-reschedules) will produce.
+    """
+    from app.routers.tasks import apply_batch_update_items
+    from app.services.task_service import TaskVersionConflictError
+
+    iteration_service = IterationService(db)
+    task_service = TaskService(db)
+    iteration = await iteration_service.get_by_id(iteration_id)
+    if not iteration:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Iteration with id {iteration_id} not found"
+        )
+
+    # Neutralize nested commits from status transitions the same way
+    # batch_update_tasks does; the whole preview is rolled back at the end.
+    original_commit = db.commit
+    async def noop_commit():
+        await db.flush()
+    db.commit = noop_commit
+
+    try:
+        if data.changes:
+            await apply_batch_update_items(
+                task_service, iteration_id, iteration.end_date, data.changes
+            )
+
+        schedule_result = await service.schedule_iteration(iteration_id, commit=False)
+
+        tasks = await task_service.get_by_iteration(iteration_id)
+        gantt_tasks: list[GanttTask] = []
+        overdue_ids: list[int] = []
+        for task in tasks:
+            if task.is_deferred:
+                continue
+            gantt_task = _task_to_gantt(task, iteration.end_date)
+            if gantt_task is None:
+                continue
+            gantt_tasks.append(gantt_task)
+            if gantt_task.is_overdue:
+                overdue_ids.append(gantt_task.id)
+            for child in gantt_task.children:
+                if child.is_overdue:
+                    overdue_ids.append(child.id)
+
+        return SchedulePreviewResponse(
+            tasks=gantt_tasks,
+            overdue_task_ids=overdue_ids,
+            schedule_result=schedule_result,
+        )
+    except TaskVersionConflictError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=exc.detail(),
+        ) from exc
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc)
+        ) from exc
+    finally:
+        # Discard every preview mutation regardless of outcome.
+        db.commit = original_commit
+        await db.rollback()
 
 
 @router.get("/iterations/{iteration_id}/gantt", response_model=GanttResponse)
@@ -295,6 +375,7 @@ def _task_to_gantt(
         effort_days=task.effort_days,
         calculated_effort_days=_get_calculated_effort(task),
         effort_hours=task.effort_hours,
+        version=task.version,
         is_overdue=is_overdue,
         is_delayed=is_delayed,
         tags=tags,

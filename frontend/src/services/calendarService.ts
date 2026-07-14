@@ -1,5 +1,5 @@
 import api from './api';
-import type { Calendar, CalendarImportResponse, CalendarUpdate, WorkingDaysResponse } from '../types/calendar';
+import type { Calendar, CalendarCreate, CalendarImportResponse, CalendarUpdate, WorkingDaysResponse } from '../types/calendar';
 
 export const calendarService = {
     getAll: async () => {
@@ -10,6 +10,15 @@ export const calendarService = {
     getById: async (id: number) => {
         const response = await api.get<Calendar>(`/calendars/${id}`);
         return response.data;
+    },
+
+    create: async (data: CalendarCreate) => {
+        const response = await api.post<Calendar>('/calendars', data);
+        return response.data;
+    },
+
+    delete: async (id: number) => {
+        await api.delete(`/calendars/${id}`);
     },
 
     update: async (id: number, data: CalendarUpdate) => {

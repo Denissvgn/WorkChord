@@ -1,6 +1,7 @@
 import api from './api';
 import type {
     TriageActionRequest,
+    TriageClassificationSuggestion,
     TriageConvertToTaskRequest,
     TriageConvertToTaskResponse,
     TriageDuplicateRequest,
@@ -60,6 +61,11 @@ export interface FrontendTriageService {
         triageItemId: number,
         iterationId?: number | null
     ) => Promise<AssigneeRecommendation[]>;
+    getClassificationSuggestions: (
+        triageItemId: number,
+        limit?: number
+    ) => Promise<TriageClassificationSuggestion[]>;
+    classify: (triageItemId: number) => Promise<TriageClassificationSuggestion>;
     draftTask: (triageItemId: number, data?: TriageTaskDraftRequest) => Promise<TriageTaskDraftResponse>;
     convertToTask: (triageItemId: number, data: TriageConvertToTaskRequest) => Promise<TriageConvertToTaskResponse>;
 }
@@ -127,6 +133,21 @@ export const triageService: FrontendTriageService = {
         const query = iterationId ? `?iteration_id=${iterationId}` : '';
         const response = await api.get<AssigneeRecommendation[]>(
             `/triage/${triageItemId}/assignee-recommendations${query}`
+        );
+        return response.data;
+    },
+
+    getClassificationSuggestions: async (triageItemId: number, limit?: number) => {
+        const query = limit !== undefined ? `?limit=${limit}` : '';
+        const response = await api.get<TriageClassificationSuggestion[]>(
+            `/triage/${triageItemId}/classification-suggestions${query}`
+        );
+        return response.data;
+    },
+
+    classify: async (triageItemId: number) => {
+        const response = await api.post<TriageClassificationSuggestion>(
+            `/triage/${triageItemId}/classify`
         );
         return response.data;
     },

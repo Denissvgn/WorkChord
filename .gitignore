@@ -35,6 +35,9 @@ dist/
 build/
 *.egg-info/
 
+# Local review notes and audit reports (not for the repository)
+.review/
+
 # Editors and agent-local state
 .idea/
 .vscode/

@@ -1,5 +1,6 @@
 import api from './api';
 import type {
+    MemberCapacity,
     MemberWorkload,
     TeamMember,
     TeamMemberCreate,
@@ -88,6 +89,11 @@ export const teamService = {
 
     getWorkload: async (memberId: number) => {
         const response = await api.get<MemberWorkload>(`/team-members/${memberId}/workload`);
+        return response.data;
+    },
+
+    getCapacity: async (memberId: number) => {
+        const response = await api.get<MemberCapacity>(`/team-members/${memberId}/capacity`);
         return response.data;
     },
 

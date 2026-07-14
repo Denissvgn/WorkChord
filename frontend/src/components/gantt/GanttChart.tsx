@@ -159,7 +159,7 @@ export const GanttChart = ({
             taskList.forEach(task => {
                 if (!task.children || task.children.length === 0) {
                     const taskStart = new Date(task.schedule_result?.scheduled_start || task.start_date || startDate);
-                    const taskEnd = new Date(task.schedule_result?.scheduled_end || task.end_date || addDays(taskStart, task.duration_days || task.effort_days || 1));
+                    const taskEnd = new Date(task.schedule_result?.scheduled_end || task.end_date || addDays(taskStart, task.calculated_effort_days || task.effort_days || 1));
                     leafTaskRanges.push({ start: taskStart, end: taskEnd });
                 } else {
                     collectLeafRanges(task.children);
@@ -291,7 +291,7 @@ export const GanttChart = ({
         const endDateStr = task.schedule_result?.scheduled_end || task.end_date;
         const taskEnd = endDateStr
             ? (typeof endDateStr === 'string' ? parseISO(endDateStr) : endDateStr)
-            : addDays(taskStart, task.duration_days || task.effort_days || 1);
+            : addDays(taskStart, task.calculated_effort_days || task.effort_days || 1);
 
         const startKey = format(taskStart, 'yyyy-MM-dd');
         let startIndex = visibleDaysIndexMap.get(startKey) ?? -1;

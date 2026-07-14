@@ -157,6 +157,73 @@ async def create_task(
     return service.task_to_response(task, iteration.end_date)
 
 
+async def apply_batch_update_items(
+    service: TaskService,
+    iteration_id: int,
+    iteration_end_date,
+    items,
+) -> tuple[list[TaskResponse], list[TaskBatchUpdateResponseItem]]:
+    """Apply a list of TaskBatchUpdateItem changes without committing.
+
+    Shared by the batch-update endpoint (which commits afterwards) and the
+    schedule preview endpoint (which rolls everything back). Raises ValueError
+    or TaskVersionConflictError; transaction control stays with the caller.
+    """
+    updated_tasks_list: list[TaskResponse] = []
+    results: list[TaskBatchUpdateResponseItem] = []
+    for item in items:
+        task = await service.get_by_id(item.task_id)
+        if not task:
+            raise ValueError(f"Task with id {item.task_id} not found")
+        if task.iteration_id != iteration_id:
+            raise ValueError(f"Task with id {item.task_id} does not belong to iteration {iteration_id}")
+
+        res_task = None
+        current_status_val = task.status.value if hasattr(task.status, 'value') else task.status
+        new_status_val = item.update.status.value if hasattr(item.update.status, 'value') else item.update.status
+
+        expected_version = (
+            item.expected_version
+            if item.expected_version is not None
+            else item.update.expected_version
+        )
+        if item.update.status is not None and new_status_val != current_status_val:
+            # Run status transition
+            updated_task, _, _ = await service.change_status(
+                task_id=item.task_id,
+                new_status=item.update.status,
+                reason=item.status_reason,
+                expected_version=expected_version,
+            )
+            if not updated_task:
+                raise ValueError(f"Invalid status transition for task {item.task_id}")
+
+            # Remove status from TaskUpdate fields set so update() won't reject it
+            update_values = item.update.model_dump(exclude_unset=True)
+            update_values.pop("status", None)
+            update_values["expected_version"] = updated_task.version
+            fields_to_update = TaskUpdate(**update_values)
+
+            res_task = await service.update(item.task_id, fields_to_update)
+        else:
+            # Remove status or update normally if it's the same or None
+            update_values = item.update.model_dump(exclude_unset=True)
+            update_values.pop("status", None)
+            if item.expected_version is not None:
+                update_values["expected_version"] = item.expected_version
+            fields_to_update = TaskUpdate(**update_values)
+            res_task = await service.update(item.task_id, fields_to_update)
+
+        if not res_task:
+            raise ValueError(f"Failed to update task {item.task_id}")
+
+        # Note: task_to_response fetches dependencies or metadata, we should do it after flush.
+        updated_tasks_list.append(service.task_to_response(res_task, iteration_end_date))
+        results.append(TaskBatchUpdateResponseItem(task_id=item.task_id, success=True))
+
+    return updated_tasks_list, results
+
+
 @router.post("/iterations/{iteration_id}/tasks/batch-update", response_model=TaskBatchUpdateResponse)
 async def batch_update_tasks(
     iteration_id: int,
@@ -180,57 +247,9 @@ async def batch_update_tasks(
 
     db.commit = noop_commit
     try:
-        updated_tasks_list = []
-        results = []
-        for item in data.tasks:
-            task = await service.get_by_id(item.task_id)
-            if not task:
-                raise ValueError(f"Task with id {item.task_id} not found")
-            if task.iteration_id != iteration_id:
-                raise ValueError(f"Task with id {item.task_id} does not belong to iteration {iteration_id}")
-
-            res_task = None
-            current_status_val = task.status.value if hasattr(task.status, 'value') else task.status
-            new_status_val = item.update.status.value if hasattr(item.update.status, 'value') else item.update.status
-
-            expected_version = (
-                item.expected_version
-                if item.expected_version is not None
-                else item.update.expected_version
-            )
-            if item.update.status is not None and new_status_val != current_status_val:
-                # Run status transition
-                updated_task, _, _ = await service.change_status(
-                    task_id=item.task_id,
-                    new_status=item.update.status,
-                    reason=item.status_reason,
-                    expected_version=expected_version,
-                )
-                if not updated_task:
-                    raise ValueError(f"Invalid status transition for task {item.task_id}")
-
-                # Remove status from TaskUpdate fields set so update() won't reject it
-                update_values = item.update.model_dump(exclude_unset=True)
-                update_values.pop("status", None)
-                update_values["expected_version"] = updated_task.version
-                fields_to_update = TaskUpdate(**update_values)
-
-                res_task = await service.update(item.task_id, fields_to_update)
-            else:
-                # Remove status or update normally if it's the same or None
-                update_values = item.update.model_dump(exclude_unset=True)
-                update_values.pop("status", None)
-                if item.expected_version is not None:
-                    update_values["expected_version"] = item.expected_version
-                fields_to_update = TaskUpdate(**update_values)
-                res_task = await service.update(item.task_id, fields_to_update)
-
-            if not res_task:
-                raise ValueError(f"Failed to update task {item.task_id}")
-
-            # Note: task_to_response fetches dependencies or metadata, we should do it after flush.
-            updated_tasks_list.append(service.task_to_response(res_task, iteration.end_date))
-            results.append(TaskBatchUpdateResponseItem(task_id=item.task_id, success=True))
+        updated_tasks_list, results = await apply_batch_update_items(
+            service, iteration_id, iteration.end_date, data.tasks
+        )
 
         # Restore commit and final commit
         db.commit = original_commit

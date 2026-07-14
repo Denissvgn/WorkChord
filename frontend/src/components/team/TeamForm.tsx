@@ -192,7 +192,7 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
             />
 
             {/* Collapsible: Workload Settings */}
-            <CollapsibleSection title={t('teamForm.iterationCapacity', 'Iteration capacity')} defaultOpen={initialData?.availability_percent !== 100 || initialData?.professionalism_coefficient !== 1 || initialData?.operational_utilization !== 20}>
+            <CollapsibleSection title={t('teamForm.iterationCapacity')} defaultOpen={initialData?.availability_percent !== 100 || initialData?.professionalism_coefficient !== 1 || initialData?.operational_utilization !== 20}>
                 <div className="grid grid-cols-3 gap-4">
                     <Input
                         type="number"

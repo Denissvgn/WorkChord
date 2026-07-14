@@ -4,8 +4,10 @@ import type {
     ExplainScheduleRequest,
     ExplainScheduleResponse,
     GanttResponse,
+    SchedulePreviewResponse,
     ScheduleResult,
 } from '../types/gantt';
+import type { TaskBatchUpdateItem } from '../types/task';
 
 export const ganttService = {
     getChart: async (iterationId: number) => {
@@ -15,6 +17,19 @@ export const ganttService = {
 
     schedule: async (iterationId: number) => {
         const response = await api.post<ScheduleResult>(`/iterations/${iterationId}/schedule`);
+        return response.data;
+    },
+
+    /**
+     * Dry-run sandbox edits through the real backend scheduler.
+     * Nothing is persisted; the response mirrors what applying the same
+     * changes via batch-update (which auto-reschedules) would produce.
+     */
+    previewSchedule: async (iterationId: number, changes: TaskBatchUpdateItem[]) => {
+        const response = await api.post<SchedulePreviewResponse>(
+            `/iterations/${iterationId}/schedule/preview`,
+            { changes }
+        );
         return response.data;
     },
 

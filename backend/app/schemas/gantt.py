@@ -5,6 +5,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel
 
 from app.schemas.iteration import IterationResponse
+from app.schemas.task import TaskBatchUpdateItem
 
 
 class GanttAssignee(BaseModel):
@@ -43,6 +44,7 @@ class GanttTask(BaseModel):
     effort_days: float
     calculated_effort_days: Optional[float] = None  # Effort after applying coefficients
     effort_hours: float
+    version: int = 1  # Optimistic-concurrency version for batch apply from the Gantt
     is_overdue: bool = False
     is_delayed: bool = False  # start_date passed but still in PLANNED status
     tags: list[str] = []
@@ -85,6 +87,26 @@ class GanttResponse(BaseModel):
     holidays: list[date] = []
     weekends: list[date] = []
     member_vacations: dict[int, list[date]] = {}  # member_id -> vacation dates
+    schedule_result: Optional[ScheduleResult] = None
+
+
+class SchedulePreviewRequest(BaseModel):
+    """Sandbox edits to dry-run through the real scheduler.
+
+    ``changes`` uses the same item shape as the batch-update endpoint so a
+    preview exercises exactly the payload a later apply would send.
+    """
+    changes: list[TaskBatchUpdateItem] = []
+
+
+class SchedulePreviewResponse(BaseModel):
+    """Projected Gantt state after applying changes and rescheduling.
+
+    Produced by the real scheduler inside a rolled-back transaction; nothing
+    is persisted.
+    """
+    tasks: list[GanttTask]
+    overdue_task_ids: list[int] = []
     schedule_result: Optional[ScheduleResult] = None
 
 

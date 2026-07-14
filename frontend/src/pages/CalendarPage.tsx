@@ -28,7 +28,7 @@ import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
 import { dateFnsLocale } from '../i18n/dateLocale';
 import { useIterationStore } from '../store/iterationStore';
-import type { Calendar as WorkCalendar, CalendarUpdate } from '../types/calendar';
+import type { Calendar as WorkCalendar, CalendarCreate, CalendarUpdate } from '../types/calendar';
 import type { TeamMember, Vacation } from '../types/team';
 
 interface CalendarDraft {
@@ -94,6 +94,10 @@ const CalendarPage = () => {
     const draftedCalendarId = useRef<number | null>(null);
 
     const [draft, setDraft] = useState<CalendarDraft | null>(null);
+    const [selectedCalendarId, setSelectedCalendarId] = useState<number | null>(null);
+    const [isCreatingCalendar, setIsCreatingCalendar] = useState(false);
+    const [newCalendarName, setNewCalendarName] = useState('');
+    const [newCalendarYear, setNewCalendarYear] = useState('');
     const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
     const [visibleMonth, setVisibleMonth] = useState(0);
     const [manualDate, setManualDate] = useState('');
@@ -113,7 +117,7 @@ const CalendarPage = () => {
         queryKey: ['calendars'],
         queryFn: calendarService.getAll,
     });
-    const calendar = calendars[0] ?? null;
+    const calendar = calendars.find(item => item.id === selectedCalendarId) ?? calendars[0] ?? null;
 
     // feedback-policy: query loading,error,retry,empty
     const { data: iterations = [], isLoading: isLoadingIterations, error: iterationsError, refetch: refetchIterations } = useQuery({
@@ -198,6 +202,40 @@ const CalendarPage = () => {
         onError: (error: unknown) => {
             setCalendarSummary('');
             setCalendarError(apiErrorMessage(error, t('calendar.saveFailed')));
+        },
+    });
+
+    // feedback-policy: mutation pending,inline
+    const createCalendarMutation = useMutation({
+        mutationFn: (data: CalendarCreate) => calendarService.create(data),
+        onSuccess: (created) => {
+            queryClient.invalidateQueries({ queryKey: ['calendars'] });
+            setSelectedCalendarId(created.id);
+            setIsCreatingCalendar(false);
+            setNewCalendarName('');
+            setNewCalendarYear('');
+            setCalendarError('');
+            setCalendarSummary(t('calendar.calendarCreated', { name: created.name }));
+        },
+        onError: (error: unknown) => {
+            setCalendarSummary('');
+            setCalendarError(apiErrorMessage(error, t('calendar.createFailed')));
+        },
+    });
+
+    // feedback-policy: mutation pending,inline
+    const deleteCalendarMutation = useMutation({
+        mutationFn: (calendarId: number) => calendarService.delete(calendarId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['calendars'] });
+            setSelectedCalendarId(null);
+            draftedCalendarId.current = null;
+            setCalendarError('');
+            setCalendarSummary(t('calendar.calendarDeleted'));
+        },
+        onError: (error: unknown) => {
+            setCalendarSummary('');
+            setCalendarError(apiErrorMessage(error, t('calendar.deleteFailed')));
         },
     });
 
@@ -439,6 +477,41 @@ const CalendarPage = () => {
         });
     };
 
+    const startCreateCalendar = () => {
+        const suggestedYear = (draft?.year ?? new Date().getFullYear()) + 1;
+        setNewCalendarYear(String(suggestedYear));
+        setNewCalendarName(t('calendar.defaultCalendarName', { year: suggestedYear }));
+        setIsCreatingCalendar(true);
+    };
+
+    const submitCreateCalendar = () => {
+        const year = Number(newCalendarYear);
+        if (!newCalendarName.trim() || !Number.isInteger(year) || year < 2000 || year > 2100) {
+            setCalendarSummary('');
+            setCalendarError(t('calendar.createValidation'));
+            return;
+        }
+        createCalendarMutation.mutate({
+            name: newCalendarName.trim(),
+            year,
+            holidays: [],
+            weekend_days: draft?.weekend_days ?? [5, 6],
+            short_days: [],
+        });
+    };
+
+    const confirmDeleteCalendar = () => {
+        if (!calendar) return;
+        requestConfirmation({
+            title: t('calendar.deleteCalendar'),
+            description: t('calendar.deleteCalendarConfirm', { name: calendar.name, year: calendar.year }),
+            confirmLabel: t('actions.delete'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            onConfirm: () => deleteCalendarMutation.mutateAsync(calendar.id),
+        });
+    };
+
     const addVacation = () => {
         const memberId = Number(selectedMemberId);
         if (!memberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) return;
@@ -478,6 +551,40 @@ const CalendarPage = () => {
             <PageLayout>
                 <div className="empty">
                     <h4>{t('calendar.unavailable')}</h4>
+                    <p>{t('calendar.noCalendarsBody')}</p>
+                    <div className="empty-actions">
+                        {isCreatingCalendar ? (
+                            <div className="row" style={{gap:8, flexWrap:'wrap', justifyContent:'center'}}>
+                                <Input
+                                    aria-label={t('calendar.calendarName')}
+                                    placeholder={t('calendar.calendarName')}
+                                    value={newCalendarName}
+                                    onChange={event => setNewCalendarName(event.target.value)}
+                                />
+                                <Input
+                                    aria-label={t('calendar.calendarYear')}
+                                    placeholder={t('calendar.calendarYear')}
+                                    type="number"
+                                    min="2000"
+                                    max="2100"
+                                    value={newCalendarYear}
+                                    onChange={event => setNewCalendarYear(event.target.value)}
+                                />
+                                <Button type="button" onClick={submitCreateCalendar} isLoading={createCalendarMutation.isPending}>
+                                    {t('calendar.createCalendar')}
+                                </Button>
+                                <Button type="button" variant="ghost" onClick={() => setIsCreatingCalendar(false)}>
+                                    {t('actions.cancel')}
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button type="button" onClick={startCreateCalendar}>
+                                <Plus className="w-4 h-4" />
+                                {t('calendar.newCalendar')}
+                            </Button>
+                        )}
+                    </div>
+                    {calendarError && <div className="banner warn" style={{marginTop:12}}>{calendarError}</div>}
                 </div>
             </PageLayout>
         );
@@ -497,16 +604,82 @@ const CalendarPage = () => {
                 title={t('calendar.workCalendar')}
                 subtitle={t('calendar.persistentDescription')}
                 actions={(
-                    <Button
-                        type="button"
-                        onClick={saveSettings}
-                        isLoading={updateCalendarMutation.isPending}
-                    >
-                        <Save className="w-4 h-4" />
-                        {t('calendar.saveSettings')}
-                    </Button>
+                    <div className="row" style={{gap:8, flexWrap:'wrap'}}>
+                        {calendars.length > 1 && (
+                            <select
+                                className="input"
+                                style={{minWidth:180}}
+                                value={calendar.id}
+                                onChange={event => setSelectedCalendarId(Number(event.target.value))}
+                                aria-label={t('calendar.selectCalendar')}
+                            >
+                                {calendars.map(item => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name} ({item.year})
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                        <Button type="button" variant="secondary" onClick={startCreateCalendar}>
+                            <Plus className="w-4 h-4" />
+                            {t('calendar.newCalendar')}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={confirmDeleteCalendar}
+                            isLoading={deleteCalendarMutation.isPending}
+                            disabled={calendars.length <= 1}
+                            title={calendars.length <= 1 ? t('calendar.deleteLastCalendarHint') : t('calendar.deleteCalendar')}
+                            aria-label={t('calendar.deleteCalendar')}
+                            className="text-feedback-danger-foreground hover:bg-feedback-danger-muted"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={saveSettings}
+                            isLoading={updateCalendarMutation.isPending}
+                        >
+                            <Save className="w-4 h-4" />
+                            {t('calendar.saveSettings')}
+                        </Button>
+                    </div>
                 )}
             />
+
+            {isCreatingCalendar && (
+                <div className="card card-pad">
+                    <div className="row" style={{gap:8, flexWrap:'wrap', alignItems:'flex-end'}}>
+                        <label className="field" style={{minWidth:220}}>
+                            <span className="field-lbl">{t('calendar.calendarName')}</span>
+                            <Input
+                                value={newCalendarName}
+                                onChange={event => setNewCalendarName(event.target.value)}
+                                placeholder={t('calendar.calendarName')}
+                            />
+                        </label>
+                        <label className="field" style={{minWidth:120}}>
+                            <span className="field-lbl">{t('calendar.calendarYear')}</span>
+                            <Input
+                                type="number"
+                                min="2000"
+                                max="2100"
+                                value={newCalendarYear}
+                                onChange={event => setNewCalendarYear(event.target.value)}
+                                placeholder={t('calendar.calendarYear')}
+                            />
+                        </label>
+                        <Button type="button" onClick={submitCreateCalendar} isLoading={createCalendarMutation.isPending}>
+                            {t('calendar.createCalendar')}
+                        </Button>
+                        <Button type="button" variant="ghost" onClick={() => setIsCreatingCalendar(false)}>
+                            {t('actions.cancel')}
+                        </Button>
+                    </div>
+                    <p className="muted" style={{margin:'8px 0 0', fontSize:12.5}}>{t('calendar.newCalendarHint')}</p>
+                </div>
+            )}
 
             {(calendarSummary || calendarError) && (
                 <div className={`banner ${calendarError ? 'warn' : 'done'}`}>
