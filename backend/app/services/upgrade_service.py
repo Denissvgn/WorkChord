@@ -88,16 +88,16 @@ class DatabaseStatus:
         return self.state in upgradable_states and not self.is_current
 
 
-def backend_dir() -> Path:
-    """Return the backend package root."""
-    return Path(__file__).resolve().parents[2]
+def migrations_dir() -> Path:
+    """Return the packaged Alembic migration directory."""
+    return Path(__file__).resolve().parents[1] / "migrations"
 
 
 def alembic_config() -> Config:
     """Build an Alembic config independent of the caller's cwd."""
-    root = backend_dir()
-    config = Config(str(root / "alembic.ini"))
-    config.set_main_option("script_location", str(root / "alembic"))
+    migrations = migrations_dir()
+    config = Config(str(migrations / "alembic.ini"))
+    config.set_main_option("script_location", str(migrations))
     return config
 
 

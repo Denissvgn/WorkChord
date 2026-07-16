@@ -20,11 +20,14 @@ and authenticated MCP workflows into one application.
 
 ## Local setup
 
-Create the project environment and install the application dependencies:
+Create the project environment and install the locked build and application
+dependencies:
 
 ```bash
 python3.12 -m venv .venv
-.venv/bin/pip install -e ./backend
+.venv/bin/pip install --require-hashes -r backend/build-requirements.lock
+.venv/bin/pip install --require-hashes -r backend/requirements.lock
+.venv/bin/pip install --no-build-isolation --no-deps -e ./backend
 npm ci --prefix frontend
 cp .env.example .env
 ```
