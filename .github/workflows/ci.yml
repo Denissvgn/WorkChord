@@ -37,6 +37,36 @@ jobs:
         run: |
           .venv/bin/pip install --require-hashes -r backend/requirements.lock
           .venv/bin/pip install --no-deps -e ./backend
+      - name: Validate the backend wheel boundary
+        run: |
+          wheel_dir="$(mktemp -d)"
+          .venv/bin/pip wheel --no-deps --wheel-dir "$wheel_dir" ./backend
+          .venv/bin/python - "$wheel_dir" <<'PY'
+          from pathlib import Path
+          from sys import argv
+          from zipfile import ZipFile
+
+          wheels = sorted(Path(argv[1]).glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected one backend wheel, found: {wheels}")
+
+          with ZipFile(wheels[0]) as archive:
+              members = set(archive.namelist())
+
+          required = {
+              "app/__init__.py",
+              "app/config/scheduling_rules.yaml",
+          }
+          missing = sorted(required - members)
+          if missing:
+              raise SystemExit(f"Missing backend wheel members: {missing}")
+
+          unexpected = sorted(name for name in members if name.startswith("alembic/"))
+          if unexpected:
+              raise SystemExit(
+                  f"Top-level alembic package unexpectedly included: {unexpected}"
+              )
+          PY
       - name: Validate Python source and migrations
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app backend/alembic scripts

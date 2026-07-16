@@ -1086,7 +1086,7 @@ wheels = [
 [[package]]
 name = "workchord-backend"
 version = "1.6.2"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "aiosmtplib" },
     { name = "aiosqlite" },
