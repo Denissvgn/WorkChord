@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools==83.0.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "workchord-backend"
 version = "1.6.2"
@@ -25,3 +29,17 @@ dependencies = [
 
 [project.scripts]
 workchord-mcp = "app.mcp_server:main"
+
+[dependency-groups]
+build = ["setuptools==83.0.0"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app", "app.*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+app = ["config/*.yaml", "migrations/alembic.ini", "migrations/script.py.mako"]

@@ -25,7 +25,9 @@ jobs:
         with:
           python-version: '3.12.13'
           cache: pip
-          cache-dependency-path: backend/requirements.lock
+          cache-dependency-path: |
+            backend/build-requirements.lock
+            backend/requirements.lock
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '22.23.1'
@@ -35,12 +37,81 @@ jobs:
         run: python -m venv .venv
       - name: Install the backend
         run: |
+          .venv/bin/pip install --require-hashes -r backend/build-requirements.lock
           .venv/bin/pip install --require-hashes -r backend/requirements.lock
-          .venv/bin/pip install --no-deps -e ./backend
+          .venv/bin/pip install --no-build-isolation --no-deps -e ./backend
+      - name: Validate the backend wheel boundary
+        run: |
+          wheel_dir="$(mktemp -d)"
+          .venv/bin/pip wheel --no-build-isolation --no-deps --wheel-dir "$wheel_dir" ./backend
+          .venv/bin/python - "$wheel_dir" backend/app/migrations <<'PY'
+          from pathlib import Path
+          from sys import argv
+          from zipfile import ZipFile
+
+          wheels = sorted(Path(argv[1]).glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected one backend wheel, found: {wheels}")
+
+          with ZipFile(wheels[0]) as archive:
+              members = set(archive.namelist())
+
+          required = {
+              "app/__init__.py",
+              "app/main.py",
+              "app/mcp_server.py",
+              "app/config/scheduling_rules.yaml",
+          }
+          source_migrations = Path(argv[2])
+          required_migrations = {
+              f"app/migrations/{path.relative_to(source_migrations).as_posix()}"
+              for path in source_migrations.rglob("*")
+              if path.is_file() and "__pycache__" not in path.parts
+          }
+          required.update(required_migrations)
+          missing = sorted(required - members)
+          if missing:
+              raise SystemExit(f"Missing backend wheel members: {missing}")
+
+          unexpected = sorted(
+              name
+              for name in members
+              if (
+                  name.startswith("alembic/")
+                  or name == "alembic.ini"
+                  or "__pycache__/" in name
+                  or name.endswith(".pyc")
+              )
+          )
+          if unexpected:
+              raise SystemExit(
+                  f"Top-level Alembic resources unexpectedly included: {unexpected}"
+              )
+          PY
+          wheel="$(find "$wheel_dir" -maxdepth 1 -name '*.whl' -print -quit)"
+          installed_wheel_venv="$(mktemp -d)"
+          python -m venv "$installed_wheel_venv"
+          "$installed_wheel_venv/bin/pip" install --require-hashes -r backend/requirements.lock
+          "$installed_wheel_venv/bin/pip" install --no-deps "$wheel"
+          (
+            cd "$(mktemp -d)"
+            export DATABASE_URL="sqlite+aiosqlite:///./workchord.db"
+            "$installed_wheel_venv/bin/python" - <<'PY'
+          from app.main import app
+          from app.services.upgrade_service import head_revision, run_alembic_upgrade
+
+          assert app.title == "WorkChord API"
+          before, _, after = run_alembic_upgrade(backup=False, run_repairs=False)
+          assert before.state == "empty"
+          assert after.is_current
+          assert after.current_revision == head_revision()
+          PY
+            "$installed_wheel_venv/bin/workchord-mcp" --help >/dev/null
+          )
       - name: Validate Python source and migrations
         run: |
-          PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app backend/alembic scripts
-          (cd backend && ../.venv/bin/alembic heads)
+          PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
+          (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.6.2'"
       - name: Validate agent role packages
         run: |
