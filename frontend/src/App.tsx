@@ -6,6 +6,7 @@ import { AppShell } from './components/layout/AppShell';
 import { routeModuleLoaders } from './navigation/routeModules';
 
 const OverviewPage = lazy(routeModuleLoaders.overview);
+const LandingPage = lazy(routeModuleLoaders.landing);
 const PlanPage = lazy(routeModuleLoaders.plan);
 const PlanMasterPage = lazy(routeModuleLoaders.planMaster);
 const CalendarPage = lazy(routeModuleLoaders.calendar);
@@ -38,31 +39,48 @@ export const RouteLoadingState = () => {
   );
 };
 
+const WorkspaceRoutes = () => (
+  <Routes>
+    <Route path="/" element={<OverviewPage />} />
+    <Route path="/plan" element={<PlanPage />} />
+    <Route path="/plan/master" element={<PlanMasterPage />} />
+    <Route path="/calendar" element={<CalendarPage />} />
+    <Route path="/iterations" element={<IterationsPage />} />
+    <Route path="/team" element={<TeamPage />} />
+    <Route path="/tasks" element={<TasksPage />} />
+    <Route path="/triage" element={<TriagePage />} />
+    <Route path="/projects" element={<ProjectsPage />} />
+    <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+    <Route path="/projects/:projectId/releases/:releaseId" element={<ProjectReleaseDetailPage />} />
+    <Route path="/roadmap" element={<RoadmapPage />} />
+    <Route path="/gantt" element={<GanttPage />} />
+    <Route path="/analytics" element={<AnalyticsPage />} />
+    <Route path="/settings" element={<SettingsPage />} />
+    <Route path="/agent-pipeline" element={<AgentPipelinePage />} />
+    <Route path="*" element={<NotFoundPage />} />
+  </Routes>
+);
+
+const WorkspaceApp = () => (
+  <AppShell>
+    <Suspense fallback={<RouteLoadingState />}>
+      <WorkspaceRoutes />
+    </Suspense>
+  </AppShell>
+);
+
+const LandingRoute = () => (
+  <Suspense fallback={<RouteLoadingState />}>
+    <LandingPage />
+  </Suspense>
+);
+
 function App() {
   return (
-    <AppShell>
-      <Suspense fallback={<RouteLoadingState />}>
-        <Routes>
-          <Route path="/" element={<OverviewPage />} />
-          <Route path="/plan" element={<PlanPage />} />
-          <Route path="/plan/master" element={<PlanMasterPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/iterations" element={<IterationsPage />} />
-          <Route path="/team" element={<TeamPage />} />
-          <Route path="/tasks" element={<TasksPage />} />
-          <Route path="/triage" element={<TriagePage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-          <Route path="/projects/:projectId/releases/:releaseId" element={<ProjectReleaseDetailPage />} />
-          <Route path="/roadmap" element={<RoadmapPage />} />
-          <Route path="/gantt" element={<GanttPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/agent-pipeline" element={<AgentPipelinePage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </AppShell>
+    <Routes>
+      <Route path="/welcome" element={<LandingRoute />} />
+      <Route path="*" element={<WorkspaceApp />} />
+    </Routes>
   );
 }
 

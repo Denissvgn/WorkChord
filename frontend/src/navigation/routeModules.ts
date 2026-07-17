@@ -1,6 +1,7 @@
 import { matchPath } from 'react-router-dom';
 
 export const routeModuleLoaders = {
+    landing: () => import('../pages/LandingPage'),
     overview: () => import('../pages/OverviewPage'),
     plan: () => import('../pages/PlanPage'),
     planMaster: () => import('../pages/PlanMasterPage'),
