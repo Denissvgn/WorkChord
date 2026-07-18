@@ -25,6 +25,12 @@ do not plan, assign, rank, reorder, or verify the backlog yourself.
    scope, ambiguous actor, or any concurrency policy other than
    `max_parallel_work=1`.
 
+Model-aware execution is additive to autonomous v1. Use it only when the live
+capability response advertises `model-aware-routing-v1` and the selected
+assignment, complete context, and atomic-begin metadata expose one explicit
+model binding. Otherwise follow the base assigned-work lifecycle without
+claiming that the runtime model was selected or verified by WorkChord.
+
 Keep credentials in the client secret store. Never put a key, claim identifier,
 fence value, full prompt, or other secret in task prose, events, logs, or
 artifacts.
@@ -53,6 +59,9 @@ Read [task-context-and-scope.md](references/task-context-and-scope.md), then
 re-fetch the selected task's complete context and timeline. Confirm the exact
 assignment, task and version, queue revision, dependency states, readiness,
 structured brief, reviewer, expected evidence, and current claim/run summary.
+For model-aware work, also confirm the assessment/policy version, selected
+model-binding ID/revision, configured alias, required capability envelope, and
+routing snapshot match across the assignment and context.
 
 Stop and escalate before beginning when scope, acceptance criteria,
 verification, dependencies, authority, or assignment identity is missing or
@@ -67,6 +76,11 @@ Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
   revision, lease request, safe run metadata, and one deterministic idempotency
   key. Compare the context task version with the assignment-bound version
   before calling; the server revalidates that binding inside begin.
+- For model-aware work, also send the exact assigned binding ID/revision and
+  the runtime's observed resolved model through the advertised begin fields.
+  Never substitute another binding, omit required model evidence, or switch
+  models unilaterally. A stale binding, mismatch, unavailable assigned runtime,
+  or unknown required field is `attention_required`, not permission to continue.
 - Replace cached assignment, task version, claim/fence, expiry, and run values
   with every authoritative response.
 - For normal work, accept only the server-owned `planned -> active` transition.
@@ -86,6 +100,9 @@ Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
   out-of-scope work. Do not absorb it into the current assignment.
 - Report a blocker through the supported typed action or event. Do not invent a
   `blocked` task status and do not silently choose replacement work.
+- Distinguish reasoning/context/tool insufficiency from access, dependency,
+  credential, scheduling, and external-service blockers. Report observed facts;
+  do not request or perform a model-tier change yourself.
 
 Use [events-errors-and-recovery.md](references/events-errors-and-recovery.md)
 for event contents, retry rules, failures, cancellations, and inconsistent
@@ -104,6 +121,8 @@ state.
    partial result for reconciliation.
 6. Never transition `resolved -> closed`, verify your own high-risk work,
    self-assign, reassign, reorder, or silently continue onto another task.
+7. Preserve the selected binding and reported-model evidence in the run and
+   handoff. Never describe a matching self-report as independent attestation.
 
 ## Choose The Transport
 

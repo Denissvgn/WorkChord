@@ -30,9 +30,26 @@ assignment's bound task/version. Atomic begin does not accept a caller-supplied
 task ID or `expected_task_version`; it locks the assigned task and revalidates
 that binding on the server.
 
+When `model-aware-routing-v1` applies, also compare the assignment and context
+assessment/policy versions, selected model-binding ID/revision, configured
+alias, and required capability envelope. Supply the exact selected binding
+ID/revision and the runtime's observed resolved-model identifier through the
+live begin contract. The observed identifier is execution evidence, not a model
+request and not attestation.
+
+Do not call begin when the assigned binding is missing, disabled, stale,
+unavailable to the runtime, or inconsistent with the observed model. Do not
+substitute a default, cheaper, newer, or locally preferred model. Return the
+typed mismatch/attention evidence and request PM/operator action; workers cannot
+change model bindings, task requirements, or assignments.
+
 Accept only a response that returns a consistent accepted assignment, task and
-new version, claim ID/generation or fence, expiry, and running run. Treat these
-returned values as authoritative.
+new version, claim ID/generation or fence, expiry, and running run. For
+model-aware work, also require the run to preserve the selected binding,
+configured alias, observed model, and trust state. Treat these returned values
+as authoritative. A `mismatch`, required `unreported`, or unresolved
+`unverifiable` state stops task work even if a claim was not granted; re-read
+the full tuple before reporting the outcome.
 
 For `normal`, allow the atomic action to perform `planned -> active`. For
 `rework` or `recovery`, require an already-`active`, unowned task and let begin
@@ -69,6 +86,12 @@ Use the typed terminal action with the same assignment/task/claim/run/fence
 identity, task version, deterministic idempotency key, outcome, concise error or
 reason, artifacts, and recovery signal. Do not manufacture `planned`,
 `resolved`, or `closed` status to make a failed run look tidy.
+
+Classify a model-caused failure only when evidence identifies reasoning,
+context, modality, or tool insufficiency. Report access denial, missing
+credentials, unavailable dependencies, external-service failure, scheduling,
+or invalid scope as their actual blocker class. Never request a higher model
+tier as a generic retry and never weaken an independent verifier requirement.
 
 ## Use Supervised V0 Only For An Explicit Task
 

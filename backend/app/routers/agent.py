@@ -6,6 +6,7 @@ from typing import Annotated, Any, NoReturn, Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agent_contract import agent_contract_features
 from app.config import get_settings
 from app.database import get_db
 from app.models.agent import AgentActor
@@ -264,22 +265,7 @@ async def get_agent_capabilities(
     ],
 ):
     """Return the authenticated actor and supported agent contract features."""
-    features = [
-        "agent-capabilities-v1",
-        "actor-roster-v1",
-        "actor-task-assignments",
-        "my-work-v1",
-        "snapshot-pagination-v1",
-        "work-etag-v1",
-        "complete-task-context",
-        "atomic-begin-submit",
-        "atomic-renew-v1",
-        "fenced-claims",
-        "typed-rework-recovery",
-        "agent-discovery-triage-v1",
-        "pm-control-v1",
-        "verification-v1",
-    ]
+    features = agent_contract_features(include_skill_bundles=False)
     recommended_skills: dict[str, str] = {}
     catalog_version = None
     catalog_url = None

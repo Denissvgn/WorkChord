@@ -49,13 +49,13 @@ Read identity, scopes, server features, labels, templates, the selected hierarch
 
 Select or create the accountable project, milestones or release target, calendar, and real iteration. Configure reusable profiles, iteration capacity rows, availability, utilization, and vacations. Re-read capacity and workload. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
 
-### 3. Triage and Define Work
+### 3. Triage, Define, and Assess Work
 
-Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
+Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing is available, create a current five-axis difficulty and routing assessment before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
 
 ### 4. Route, Assign, Order, and Schedule
 
-Compare capability matches, weaknesses, workload, and vacations. Set the iteration capacity owner, then dispatch to an exact actor only when durable actor assignment exists. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, and readiness. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
+Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. Dispatch only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
 
 ### 5. Supervise Delivery
 
@@ -74,6 +74,8 @@ Compare submitted evidence with every acceptance criterion. Let an independent v
 - Treat a durable actor assignment as dispatch, not a claim.
 - Treat a claim as a temporary execution lease, not task status.
 - Treat an agent run as one observable attempt, not proof of acceptance.
+- Treat a configured model binding as intended runtime metadata and a worker's
+  observed model as self-reported evidence, not independent attestation.
 - Keep exactly one current task per actor. Treat a server policy above
   `max_parallel_work=1` as incompatible with this skill version.
 
@@ -96,10 +98,22 @@ Otherwise use supervised v0:
 
 Never simulate a missing assignment, queue, fence, review, or atomic transaction in prose. Stop and request the missing server or human action.
 
+Model-aware routing is an additive mode inside assigned-work v1. Use it only
+when the capability response advertises `model-aware-routing-v1` and the live
+REST or MCP metadata exposes the matching assessment, routing-preview,
+model-bound assignment, and begin-evidence operations. If that feature or any
+required operation is absent, keep the durable assigned-work lifecycle when it
+is otherwise supported, but use supervised compatibility routing and state
+explicitly that the actor/model choice was not model-aware. Never infer missing
+model capability from a deployment name, provider-facing model name, profile
+summary, or local prose.
+
 ## Handle Failures Conservatively
 
 - Treat `401` and `403` as stop conditions; do not seek broader credentials.
 - Treat version, assignment, queue-revision, or claim `409` as a signal to refetch and re-evaluate.
+- Treat assessment, routing-preview, model-binding, or topology `409` as a
+  signal to discard the candidate decision and generate a fresh preview.
 - Correct validation failures before retrying; do not resend an unchanged invalid request.
 - Retry timeout, `429`, or `5xx` responses only when the operation supports idempotency. Reuse the same idempotency key for the same logical request.
 - Read current state before retrying an ambiguous terminal mutation.
