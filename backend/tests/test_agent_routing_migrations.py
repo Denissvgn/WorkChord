@@ -70,7 +70,7 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
         with engine.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260718_0031"
+            ).scalar_one() == "20260718_0032"
     finally:
         engine.dispose()
 
@@ -93,7 +93,7 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
         with upgraded.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260718_0031"
+            ).scalar_one() == "20260718_0032"
     finally:
         upgraded.dispose()
 
@@ -243,6 +243,6 @@ def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> Non
 
 
 @pytest.mark.contract
-def test_alembic_reports_exactly_one_wave_1_head() -> None:
+def test_alembic_reports_exactly_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260718_0031"]
+    assert script.get_heads() == ["20260718_0032"]

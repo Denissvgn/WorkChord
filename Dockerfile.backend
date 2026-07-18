@@ -45,9 +45,6 @@ RUN python /app/scripts/build_agent_skills.py \
       build --output-dir /app/agent-skill-artifacts \
     && rm -rf /app/agent-skills /app/scripts
 
-# Create directory for sqlite db
-RUN mkdir -p /app/data
-
 # Environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1

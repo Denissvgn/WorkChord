@@ -13,6 +13,7 @@ import threading
 from alembic import command
 import pytest
 from sqlalchemy import create_engine, inspect, select, text
+from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import NullPool
@@ -144,6 +145,37 @@ def test_fresh_postgresql_schema_only_bootstrap(postgres_database, configure_dat
                     "'workchord.calendars_id_seq', 'USAGE, SELECT, UPDATE')"
                 ),
                 {"role": runtime_role},
+            ).scalar_one() is True
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+def test_runtime_role_cannot_create_schema_objects_or_roles(
+    postgres_database,
+    configure_database,
+) -> None:
+    configure_database(postgres_database.url)
+    bootstrap_database_schema()
+    engine = sync_engine(postgres_database.url).execution_options(
+        isolation_level="AUTOCOMMIT"
+    )
+    try:
+        with engine.connect() as connection:
+            connection.execute(
+                text(f'SET ROLE "{postgres_database.runtime_role}"')
+            )
+            with pytest.raises(DBAPIError):
+                connection.execute(text("CREATE TABLE workchord.runtime_forbidden (id int)"))
+            with pytest.raises(DBAPIError):
+                connection.execute(text("CREATE ROLE runtime_forbidden"))
+            connection.execute(text("RESET ROLE"))
+            assert connection.execute(
+                text(
+                    "SELECT to_regclass('workchord.runtime_forbidden') IS NULL"
+                )
             ).scalar_one() is True
     finally:
         engine.dispose()

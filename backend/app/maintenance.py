@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import socket
 from time import monotonic
 from typing import Any
 from uuid import uuid4
@@ -54,11 +55,16 @@ def maintenance_configuration_fingerprint() -> str:
 
 def maintenance_state() -> dict[str, Any]:
     settings = get_settings()
+    replica_id = (
+        socket.gethostname()
+        if settings.maintenance_replica_id == "auto"
+        else settings.maintenance_replica_id
+    )
     return {
         "mode": settings.maintenance_mode,
         "accepts_writes": settings.maintenance_mode == "off",
         "revision": settings.maintenance_revision,
-        "replica_id": settings.maintenance_replica_id,
+        "replica_id": replica_id,
         "configuration_fingerprint": maintenance_configuration_fingerprint(),
         "validation_allowlist": list(settings.maintenance_validation_allowlist),
     }

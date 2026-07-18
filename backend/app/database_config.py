@@ -27,6 +27,7 @@ _POSTGRESQL_CONNECTION_QUERY_KEYS = frozenset(
 )
 _SENSITIVE_QUERY_PARTS = ("key", "password", "secret", "token")
 _APPLICATION_NAME_PATTERN = re.compile(r"[A-Za-z0-9_.:-]{1,64}")
+_POSTGRESQL_ROLE_PATTERN = re.compile(r"[a-z_][a-z0-9_]{0,62}")
 _PROCESS_CONNECTION_BUDGETS = {
     "web": 20,
     "delivery_worker": 10,
@@ -48,6 +49,7 @@ class DatabaseConfiguration:
     backend: str
     redacted_url: str
     process_role: str
+    session_role: str
     approved_connection_capacity: int
     connect_args: Mapping[str, Any]
     pool_size: int | None
@@ -84,6 +86,7 @@ class DatabaseConfiguration:
             "backend": self.backend,
             "url": self.redacted_url,
             "process_role": self.process_role,
+            "session_role": self.session_role or None,
             "approved_connection_capacity": self.approved_connection_capacity,
             "pool_size": self.pool_size,
             "max_overflow": self.max_overflow,
@@ -180,8 +183,17 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
     postgresql_required = bool(
         _settings_value(settings, "database_postgresql_required")
     )
+    session_role = str(_settings_value(settings, "database_session_role")).strip()
+    if session_role and _POSTGRESQL_ROLE_PATTERN.fullmatch(session_role) is None:
+        raise DatabaseConfigurationError(
+            "DATABASE_SESSION_ROLE must be a canonical PostgreSQL role identifier"
+        )
 
     if backend == "sqlite":
+        if session_role:
+            raise DatabaseConfigurationError(
+                "DATABASE_SESSION_ROLE is supported only for PostgreSQL"
+            )
         if async_url.drivername != SQLITE_ASYNC_DRIVER:
             raise DatabaseConfigurationError(
                 f"SQLite DATABASE_URL runtime URLs must use {SQLITE_ASYNC_DRIVER}"
@@ -217,6 +229,7 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
             backend="sqlite",
             redacted_url=redact_database_url(async_url),
             process_role=process_role,
+            session_role="",
             approved_connection_capacity=approved_connection_capacity,
             connect_args={"timeout": float(connect_timeout)},
             pool_size=None,
@@ -235,6 +248,10 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
     if environment == "production" and (not async_url.host or not async_url.username):
         raise DatabaseConfigurationError(
             "Production PostgreSQL requires an explicit host and username"
+        )
+    if session_role and process_role not in {"migration", "repair"}:
+        raise DatabaseConfigurationError(
+            "DATABASE_SESSION_ROLE is allowed only for migration and repair processes"
         )
 
     conflicting_query = _POSTGRESQL_CONNECTION_QUERY_KEYS.intersection(async_url.query)
@@ -279,13 +296,17 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
         _settings_value(settings, "database_statement_timeout_ms")
     )
     lock_timeout = int(_settings_value(settings, "database_lock_timeout_ms"))
+    options = (
+        f"-c statement_timeout={statement_timeout} "
+        f"-c lock_timeout={lock_timeout} -c timezone=UTC "
+        "-c search_path=workchord,pg_catalog"
+    )
+    if session_role:
+        options += f" -c role={session_role}"
     connect_args: dict[str, Any] = {
         "application_name": application_name,
         "connect_timeout": connect_timeout,
-        "options": (
-            f"-c statement_timeout={statement_timeout} "
-            f"-c lock_timeout={lock_timeout} -c timezone=UTC"
-        ),
+        "options": options,
         "sslmode": ssl_mode,
     }
     if ssl_root_cert:
@@ -300,6 +321,7 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
         backend="postgresql",
         redacted_url=redact_database_url(async_url),
         process_role=process_role,
+        session_role=session_role,
         approved_connection_capacity=approved_connection_capacity,
         connect_args=connect_args,
         pool_size=pool_size,

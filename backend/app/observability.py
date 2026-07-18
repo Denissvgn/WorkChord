@@ -252,6 +252,7 @@ async def readiness_snapshot() -> tuple[bool, dict[str, Any]]:
     settings = get_settings()
     expected_head = head_revision()
     schema_error_kind: str | None = None
+    migration_gate_error_kind: str | None = None
     queue_error_kind: str | None = None
     database_metrics_error_kind: str | None = None
     try:
@@ -272,6 +273,21 @@ async def readiness_snapshot() -> tuple[bool, dict[str, Any]]:
                 except SQLAlchemyError as exc:
                     schema_error_kind = type(exc).__name__
                     revisions = []
+                    await db.rollback()
+
+                try:
+                    blocking_migration = (
+                        await db.execute(
+                            text(
+                                "SELECT run_id, status FROM database_migration_gates "
+                                "WHERE status <> 'reconciled' "
+                                "ORDER BY created_at DESC, run_id LIMIT 1"
+                            )
+                        )
+                    ).mappings().first()
+                except SQLAlchemyError as exc:
+                    migration_gate_error_kind = type(exc).__name__
+                    blocking_migration = None
                     await db.rollback()
 
                 try:
@@ -316,6 +332,9 @@ async def readiness_snapshot() -> tuple[bool, dict[str, Any]]:
 
     current_revision = revisions[0] if len(revisions) == 1 else ",".join(revisions)
     schema_current = schema_error_kind is None and current_revision == expected_head
+    migration_gate_clear = (
+        migration_gate_error_kind is None and blocking_migration is None
+    )
     queue_available = queue_error_kind is None
     process = activity.snapshot()
     mode_state = maintenance_state()
@@ -331,7 +350,7 @@ async def readiness_snapshot() -> tuple[bool, dict[str, Any]]:
     rss = _resident_set_size_bytes()
     if rss is not None:
         metrics.set_gauge("workchord_process_resident_memory_bytes", rss)
-    ready = schema_current and queue_available
+    ready = schema_current and queue_available and migration_gate_clear
     return ready, {
         "status": "ready" if ready else "not_ready",
         "database": {
@@ -343,6 +362,16 @@ async def readiness_snapshot() -> tuple[bool, dict[str, Any]]:
             "expected_revision": expected_head,
             "metrics": database_metrics,
             "metrics_error_kind": database_metrics_error_kind,
+        },
+        "migration_gate": {
+            "clear": migration_gate_clear,
+            "blocking_run_id": (
+                str(blocking_migration["run_id"]) if blocking_migration else None
+            ),
+            "blocking_status": (
+                str(blocking_migration["status"]) if blocking_migration else None
+            ),
+            "error_kind": migration_gate_error_kind,
         },
         "maintenance": mode_state,
         "process": {

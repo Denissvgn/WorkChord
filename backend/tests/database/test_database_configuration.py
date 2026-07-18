@@ -107,7 +107,39 @@ def test_sqlite_and_postgresql_receive_only_dialect_specific_arguments() -> None
     assert "timeout" not in postgres.connect_args
     assert "statement_timeout=30000" in postgres.connect_args["options"]
     assert "lock_timeout=5000" in postgres.connect_args["options"]
+    assert "search_path=workchord,pg_catalog" in postgres.connect_args["options"]
     assert postgres.bounded_connection_capacity == 15
+
+
+def test_only_migration_roles_can_assume_the_no_login_owner_role() -> None:
+    url = "postgresql+psycopg://migrator:secret@localhost/workchord_test"
+    migration = parse_database_configuration(
+        settings(
+            database_url=url,
+            database_process_role="migration",
+            database_pool_size=1,
+            database_max_overflow=0,
+            database_session_role="workchord_owner",
+        )
+    )
+
+    assert migration.session_role == "workchord_owner"
+    assert "role=workchord_owner" in migration.connect_args["options"]
+
+    with pytest.raises(ValidationError, match="migration and repair"):
+        settings(
+            database_url=url,
+            database_process_role="web",
+            database_session_role="workchord_owner",
+        )
+    with pytest.raises(ValidationError, match="canonical PostgreSQL role"):
+        settings(
+            database_url=url,
+            database_process_role="migration",
+            database_pool_size=1,
+            database_max_overflow=0,
+            database_session_role="owner; RESET ROLE",
+        )
 
 
 @pytest.mark.parametrize(

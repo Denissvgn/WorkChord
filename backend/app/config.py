@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     database_statement_timeout_ms: int = 30_000
     database_lock_timeout_ms: int = 5_000
     database_application_name: str = "workchord"
+    database_session_role: str = ""
     database_ssl_mode: Literal[
         "disable", "allow", "prefer", "require", "verify-ca", "verify-full"
     ] = "prefer"

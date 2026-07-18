@@ -1,0 +1,12 @@
+{
+  "approved_method": "bounded-inserts-v1",
+  "benchmark": {
+    "bounded_insert_rows_per_second": 1,
+    "copy_rows_per_second": 1,
+    "restart_boundary": "one committed table",
+    "wal_bytes": 1
+  },
+  "kind": "workchord-loader-method-evidence",
+  "schema_version": 1,
+  "target_identifier": "postgres:5432/workchord"
+}

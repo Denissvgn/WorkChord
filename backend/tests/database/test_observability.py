@@ -72,6 +72,12 @@ async def test_current_schema_exports_queue_process_and_drain_evidence(
     assert ready is True
     assert payload["database"]["connected"] is True
     assert payload["database"]["schema_current"] is True
+    assert payload["migration_gate"] == {
+        "clear": True,
+        "blocking_run_id": None,
+        "blocking_status": None,
+        "error_kind": None,
+    }
     assert payload["queue"] == {
         "ready_depth": 0,
         "oldest_ready_age_seconds": 0.0,
@@ -83,6 +89,51 @@ async def test_current_schema_exports_queue_process_and_drain_evidence(
     assert payload["process"]["active_transactions"] == 0
     assert payload["maintenance"]["replica_id"] == "ready-replica"
     assert len(payload["maintenance"]["configuration_fingerprint"]) == 64
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_incomplete_migration_gate_keeps_current_schema_unready(
+    db_session_factory: async_sessionmaker[AsyncSession],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async with db_session_factory() as db:
+        await db.execute(text("CREATE TABLE alembic_version (version_num VARCHAR(64))"))
+        await db.execute(
+            text("INSERT INTO alembic_version (version_num) VALUES ('wave3-head')")
+        )
+        await db.execute(
+            text(
+                "INSERT INTO database_migration_gates ("
+                "run_id, source_manifest_sha256, source_snapshot_sha256, "
+                "target_identity_sha256, status, completed_tables, created_at, updated_at"
+                ") VALUES ('run-1', :source, :snapshot, :target, 'loaded', '[]', "
+                ":created, :updated)"
+            ),
+            {
+                "source": "a" * 64,
+                "snapshot": "b" * 64,
+                "target": "c" * 64,
+                "created": "2026-07-18 12:00:00",
+                "updated": "2026-07-18 12:00:00",
+            },
+        )
+        await db.commit()
+
+    monkeypatch.setattr("app.database.async_session_maker", db_session_factory)
+    monkeypatch.setattr("app.observability.head_revision", lambda: "wave3-head")
+    monkeypatch.setattr(
+        "app.database.database_runtime_summary",
+        lambda: {"backend": "sqlite", "url": "sqlite:///[redacted]"},
+    )
+
+    ready, payload = await readiness_snapshot()
+
+    assert ready is False
+    assert payload["database"]["schema_current"] is True
+    assert payload["migration_gate"]["clear"] is False
+    assert payload["migration_gate"]["blocking_run_id"] == "run-1"
+    assert payload["migration_gate"]["blocking_status"] == "loaded"
 
 
 class FailingSession:

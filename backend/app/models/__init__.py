@@ -12,6 +12,7 @@ from app.models.agent import (
     TaskRoutingAssessment,
 )
 from app.models.calendar import Calendar
+from app.models.database_migration import DatabaseMigrationGate
 from app.models.external_link import ExternalLink, ExternalLinkEntityType, ExternalLinkProvider
 from app.models.github import GitHubStatusAutomationRule
 from app.models.iteration import Iteration
@@ -57,6 +58,7 @@ __all__ = [
     "AgentTaskAssignment",
     "ImmutableRoutingAssessmentError",
     "Calendar",
+    "DatabaseMigrationGate",
     "ExternalLink",
     "ExternalLinkEntityType",
     "ExternalLinkProvider",

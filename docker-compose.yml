@@ -1,21 +1,66 @@
 name: workchord
 
 services:
+  postgres:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    environment:
+      POSTGRES_DB: workchord
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-workchord-local-only}
+      POSTGRES_INITDB_ARGS: --encoding=UTF8 --locale-provider=builtin --builtin-locale=PG_UNICODE_FAST
+      PGDATA: /var/lib/postgresql/18/docker
+    entrypoint: ["/bin/bash", "/opt/workchord/postgresql-entrypoint.sh"]
+    command:
+      - postgres
+      - -c
+      - max_connections=150
+      - -c
+      - wal_level=replica
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_timeout=300s
+      - -c
+      - archive_command=mkdir -p /var/lib/postgresql/wal-archive && test ! -f /var/lib/postgresql/wal-archive/%f && cp %p /var/lib/postgresql/wal-archive/%f
+      - -c
+      - log_min_duration_statement=500ms
+    volumes:
+      - workchord_postgresql18_data:/var/lib/postgresql
+      - workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive
+      - ./deploy/postgresql/init-replication-auth.sh:/docker-entrypoint-initdb.d/05-replication-auth.sh:ro
+      - ./deploy/postgresql/init-development.sql:/docker-entrypoint-initdb.d/10-workchord.sql:ro
+      - ./deploy/postgresql/entrypoint.sh:/opt/workchord/postgresql-entrypoint.sh:ro
+    networks:
+      - workchord
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d workchord"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+    restart: unless-stopped
+    shm_size: 256mb
+
   migration:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    volumes:
-      - workchord_data:/app/data
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
+      - DATABASE_POSTGRESQL_REQUIRED=true
       - DATABASE_PROCESS_ROLE=migration
       - DATABASE_POOL_SIZE=1
       - DATABASE_MAX_OVERFLOW=0
       - DEPLOYMENT_ENVIRONMENT=development
+      - DATABASE_SSL_MODE=disable
       - MAINTENANCE_MODE=off
       - OUTBOUND_DELIVERY_WORKER_ENABLED=false
     command: ["python", "-m", "app.cli.upgrade", "--no-repairs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - workchord
     restart: "no"
@@ -24,14 +69,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    volumes:
-      - workchord_data:/app/data
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
+      - DATABASE_POSTGRESQL_REQUIRED=true
       - DATABASE_PROCESS_ROLE=repair
       - DATABASE_POOL_SIZE=1
       - DATABASE_MAX_OVERFLOW=0
       - DEPLOYMENT_ENVIRONMENT=development
+      - DATABASE_SSL_MODE=disable
       - MAINTENANCE_MODE=off
       - OUTBOUND_DELIVERY_WORKER_ENABLED=false
     command: ["python", "-m", "app.cli.upgrade", "--repairs-only"]
@@ -48,13 +93,13 @@ services:
       dockerfile: Dockerfile.backend
     expose:
       - "8001"
-    volumes:
-      - workchord_data:/app/data
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
+      - DATABASE_POSTGRESQL_REQUIRED=true
       - DATABASE_PROCESS_ROLE=web
       - API_PREFIX=/api
       - DEBUG=false
+      - DATABASE_SSL_MODE=disable
       - CORS_ORIGINS=["http://localhost","http://frontend"]
       - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:-}
       - AGENT_BOOTSTRAP_API_KEY=${AGENT_BOOTSTRAP_API_KEY:-}
@@ -100,14 +145,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    volumes:
-      - workchord_data:/app/data
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
+      - DATABASE_POSTGRESQL_REQUIRED=true
       - DATABASE_PROCESS_ROLE=delivery_worker
       - DATABASE_POOL_SIZE=8
       - DATABASE_MAX_OVERFLOW=2
       - DEPLOYMENT_ENVIRONMENT=development
+      - DATABASE_SSL_MODE=disable
       - OUTBOUND_DELIVERY_WORKER_ENABLED=true
       - OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
       - OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
@@ -142,10 +187,69 @@ services:
       - workchord
     restart: unless-stopped
 
+  logical-backup:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["backup"]
+    environment:
+      DATABASE_BACKUP_URL: ${POSTGRES_BACKUP_URL:-postgresql://postgres:workchord-local-only@postgres:5432/workchord}
+      DEPLOYMENT_ENVIRONMENT: development
+      BACKUP_ENCRYPTION_CONFIRMED: ${BACKUP_ENCRYPTION_CONFIRMED:-true}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-35}
+    volumes:
+      - workchord_postgresql_backups:/backups
+      - ./scripts/database_backup/logical_backup.sh:/opt/workchord/logical_backup.sh:ro
+    command: ["/bin/bash", "/opt/workchord/logical_backup.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workchord
+    restart: "no"
+
+  base-backup:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["backup"]
+    environment:
+      DATABASE_BACKUP_URL: ${POSTGRES_BACKUP_URL:-postgresql://postgres:workchord-local-only@postgres:5432/workchord}
+      DEPLOYMENT_ENVIRONMENT: development
+      BACKUP_ENCRYPTION_CONFIRMED: ${BACKUP_ENCRYPTION_CONFIRMED:-true}
+    volumes:
+      - workchord_postgresql_backups:/backups
+      - ./scripts/database_backup/base_backup.sh:/opt/workchord/base_backup.sh:ro
+    command: ["/bin/bash", "/opt/workchord/base_backup.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workchord
+    restart: "no"
+
+  restore-verify:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["restore"]
+    environment:
+      DATABASE_RESTORE_URL: ${DATABASE_RESTORE_URL:-}
+      RESTORE_TARGET_IDENTIFIER: ${RESTORE_TARGET_IDENTIFIER:-}
+      RESTORE_AUTHORIZED_TARGET: ${RESTORE_AUTHORIZED_TARGET:-}
+      BACKUP_PATH: ${BACKUP_PATH:-}
+      BACKUP_SHA256: ${BACKUP_SHA256:-}
+    volumes:
+      - workchord_postgresql_backups:/backups:ro
+      - ./scripts/database_backup/restore_verify.sh:/opt/workchord/restore_verify.sh:ro
+    command: ["/bin/bash", "/opt/workchord/restore_verify.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workchord
+    restart: "no"
+
 networks:
   workchord:
     driver: bridge
     internal: false
 
 volumes:
-  workchord_data:
+  workchord_postgresql18_data:
+  workchord_postgresql_wal_archive:
+  workchord_postgresql_backups:

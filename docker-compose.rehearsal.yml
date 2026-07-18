@@ -1,0 +1,20 @@
+services:
+  backend:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    environment:
+      MAINTENANCE_REPLICA_ID: auto
+
+  delivery-worker:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    environment:
+      MAINTENANCE_REPLICA_ID: auto
+
+  frontend:
+    ports:
+      - "8080:80"

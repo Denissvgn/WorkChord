@@ -76,7 +76,7 @@ async def test_isolated_sqlite_session_round_trips_representative_graph(
 
 def test_generic_factory_covers_every_mapped_table(mapped_model_factory) -> None:
     mappers = sorted(Base.registry.mappers, key=lambda mapper: mapper.local_table.name)
-    assert len(mappers) == 38
+    assert len(mappers) == 39
     for mapper in mappers:
         instance = mapped_model_factory.build(mapper.class_)
         assert sa_inspect(instance).mapper is mapper

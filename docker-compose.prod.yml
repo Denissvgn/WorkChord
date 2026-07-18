@@ -5,9 +5,11 @@ services:
     image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
     restart: "no"
     environment:
-      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
-      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_URL: ${DATABASE_MIGRATION_URL:?Set the dedicated PostgreSQL migrator URL}
+      DATABASE_POSTGRESQL_REQUIRED: "true"
       DATABASE_PROCESS_ROLE: migration
+      DATABASE_APPLICATION_NAME: workchord-migration
+      DATABASE_SESSION_ROLE: ${DATABASE_OWNER_ROLE:-workchord_owner}
       DATABASE_POOL_SIZE: 1
       DATABASE_MAX_OVERFLOW: 0
       DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
@@ -22,9 +24,8 @@ services:
       MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
       MAINTENANCE_REPLICA_ID: migration
     volumes:
-      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
       - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
-    command: ["sh", "-c", "python -m app.cli.upgrade --no-repairs --external-backup-reference \"$DATABASE_EXTERNAL_BACKUP_REFERENCE\""]
+    command: ["sh", "-c", "python -m app.cli.upgrade --no-repairs --external-backup-reference \"$$DATABASE_EXTERNAL_BACKUP_REFERENCE\""]
     networks:
       - application
 
@@ -32,9 +33,11 @@ services:
     image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
     restart: "no"
     environment:
-      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
-      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_URL: ${DATABASE_MIGRATION_URL:?Set the dedicated PostgreSQL migrator URL}
+      DATABASE_POSTGRESQL_REQUIRED: "true"
       DATABASE_PROCESS_ROLE: repair
+      DATABASE_APPLICATION_NAME: workchord-repair
+      DATABASE_SESSION_ROLE: ${DATABASE_OWNER_ROLE:-workchord_owner}
       DATABASE_POOL_SIZE: 1
       DATABASE_MAX_OVERFLOW: 0
       DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
@@ -48,7 +51,6 @@ services:
       MAINTENANCE_REVISION: production-repair
       MAINTENANCE_REPLICA_ID: repair
     volumes:
-      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
       - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
     command: ["python", "-m", "app.cli.upgrade", "--repairs-only"]
     depends_on:
@@ -63,9 +65,11 @@ services:
     expose:
       - "8001"
     environment:
-      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
-      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}
+      DATABASE_POSTGRESQL_REQUIRED: "true"
       DATABASE_PROCESS_ROLE: web
+      DATABASE_APPLICATION_NAME: workchord-web
+      DATABASE_SESSION_ROLE: ""
       DATABASE_POOL_SIZE: ${DATABASE_WEB_POOL_SIZE:-15}
       DATABASE_MAX_OVERFLOW: ${DATABASE_WEB_MAX_OVERFLOW:-5}
       DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
@@ -116,11 +120,10 @@ services:
       SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
       MAINTENANCE_MODE: ${MAINTENANCE_MODE:-off}
       MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
-      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WEB_REPLICA_ID:-backend}
+      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WEB_REPLICA_ID:-auto}
       MAINTENANCE_RETRY_AFTER_SECONDS: ${MAINTENANCE_RETRY_AFTER_SECONDS:-60}
       MAINTENANCE_VALIDATION_ALLOWLIST: ${MAINTENANCE_VALIDATION_ALLOWLIST:-["/health","/health/live","/health/ready","/metrics"]}
     volumes:
-      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
       - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
     networks:
       - application
@@ -134,14 +137,20 @@ services:
     depends_on:
       repair:
         condition: service_completed_successfully
+    deploy:
+      replicas: ${WORKCHORD_WEB_REPLICAS:-2}
+      restart_policy:
+        condition: on-failure
 
   delivery-worker:
     image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
     restart: "on-failure:5"
     environment:
-      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
-      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}
+      DATABASE_POSTGRESQL_REQUIRED: "true"
       DATABASE_PROCESS_ROLE: delivery_worker
+      DATABASE_APPLICATION_NAME: workchord-delivery-worker
+      DATABASE_SESSION_ROLE: ""
       DATABASE_POOL_SIZE: ${DATABASE_WORKER_POOL_SIZE:-8}
       DATABASE_MAX_OVERFLOW: ${DATABASE_WORKER_MAX_OVERFLOW:-2}
       DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
@@ -162,9 +171,8 @@ services:
       SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
       MAINTENANCE_MODE: ${MAINTENANCE_MODE:-off}
       MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
-      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WORKER_REPLICA_ID:-delivery-worker}
+      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WORKER_REPLICA_ID:-auto}
     volumes:
-      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
       - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
     command: ["python", "-m", "app.cli.worker"]
     depends_on:
@@ -173,6 +181,10 @@ services:
     networks:
       - application
       - egress
+    deploy:
+      replicas: ${WORKCHORD_WORKER_REPLICAS:-2}
+      restart_policy:
+        condition: on-failure
 
   frontend:
     image: ${WORKCHORD_FRONTEND_IMAGE:?Set an exact frontend image tag for offline use or repository@sha256 digest for registry deployment}
@@ -205,12 +217,50 @@ services:
     networks:
       - application
 
+  logical-backup:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["backup"]
+    restart: "no"
+    environment:
+      DATABASE_BACKUP_URL: ${DATABASE_BACKUP_URL:-}
+      DEPLOYMENT_ENVIRONMENT: production
+      BACKUP_ENCRYPTION_CONFIRMED: ${BACKUP_ENCRYPTION_CONFIRMED:-false}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-35}
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /etc/workchord/database-tls/root.crt
+      PGSSLCERT: ${DATABASE_BACKUP_SSL_CERT:-}
+      PGSSLKEY: ${DATABASE_BACKUP_SSL_KEY:-}
+    volumes:
+      - ${DATABASE_BACKUP_DIR:-./backups}:/backups
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
+      - ./scripts/database_backup/logical_backup.sh:/opt/workchord/logical_backup.sh:ro
+    command: ["/bin/bash", "/opt/workchord/logical_backup.sh"]
+    networks:
+      - egress
+
+  restore-verify:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["restore"]
+    restart: "no"
+    environment:
+      DATABASE_RESTORE_URL: ${DATABASE_RESTORE_URL:-}
+      RESTORE_TARGET_IDENTIFIER: ${RESTORE_TARGET_IDENTIFIER:-}
+      RESTORE_AUTHORIZED_TARGET: ${RESTORE_AUTHORIZED_TARGET:-}
+      BACKUP_PATH: ${BACKUP_PATH:-}
+      BACKUP_SHA256: ${BACKUP_SHA256:-}
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /etc/workchord/database-tls/root.crt
+    volumes:
+      - ${DATABASE_BACKUP_DIR:-./backups}:/backups:ro
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
+      - ./scripts/database_backup/restore_verify.sh:/opt/workchord/restore_verify.sh:ro
+    command: ["/bin/bash", "/opt/workchord/restore_verify.sh"]
+    networks:
+      - egress
+
 networks:
   application:
     driver: bridge
     internal: true
   egress:
     driver: bridge
-
-volumes:
-  workchord_data:
