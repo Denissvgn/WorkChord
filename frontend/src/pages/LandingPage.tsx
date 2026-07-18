@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/landing.css';
 
@@ -85,14 +84,6 @@ const WorkflowMap = () => (
 );
 
 const LandingPage = () => {
-    useEffect(() => {
-        const previousTitle = document.title;
-        document.title = 'WorkChord — Planning that holds';
-        return () => {
-            document.title = previousTitle;
-        };
-    }, []);
-
     return (
         <div className="landing-page">
             <a

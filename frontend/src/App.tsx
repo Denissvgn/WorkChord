@@ -3,6 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppShell } from './components/layout/AppShell';
+import { DocumentMetadata } from './components/layout/DocumentMetadata';
 import { routeModuleLoaders } from './navigation/routeModules';
 
 const OverviewPage = lazy(routeModuleLoaders.overview);
@@ -70,9 +71,12 @@ const WorkspaceApp = () => (
 );
 
 const LandingRoute = () => (
-  <Suspense fallback={<RouteLoadingState />}>
-    <LandingPage />
-  </Suspense>
+  <>
+    <DocumentMetadata />
+    <Suspense fallback={<RouteLoadingState />}>
+      <LandingPage />
+    </Suspense>
+  </>
 );
 
 function App() {
