@@ -19,6 +19,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 from app import mcp_agent_tools
 from app.config import get_settings
 from app.database import async_session_maker, close_database, init_db
+from app.maintenance import MaintenanceModeError, enforce_mcp_access
 from app.models.agent import AgentActor
 from app.services.agent_service import (
     AgentConflictError,
@@ -235,6 +236,8 @@ def _structured_tool_error(exc: Exception) -> str:
         payload = {"code": "agent_permission_denied", "message": str(exc)}
     elif isinstance(exc, MCPAuthError):
         payload = {"code": "agent_authentication_failed", "message": str(exc)}
+    elif isinstance(exc, MaintenanceModeError):
+        payload = exc.detail()
     elif isinstance(exc, LookupError):
         payload = {"code": "agent_resource_not_found", "message": str(exc)}
     elif isinstance(exc, PydanticValidationError):
@@ -257,12 +260,14 @@ def _structured_tool_error(exc: Exception) -> str:
 async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any]) -> Any:
     """Run a service-backed MCP tool and return MCP-safe errors."""
     try:
+        enforce_mcp_access(required_scope)
         async with _agent_context(required_scope) as (db, actor):
             return await func(db, actor)
     except ToolError:
         raise
     except (
         MCPAuthError,
+        MaintenanceModeError,
         AgentConflictError,
         AgentPermissionError,
         TriageConflictError,

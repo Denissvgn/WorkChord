@@ -22,6 +22,7 @@ from app.models.agent import (
 from app.models.label import Label, LabelGroup
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.team_member import TeamMemberProfile
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
     AgentActorCreate,
     AgentRunCreate,
@@ -121,9 +122,20 @@ class AgentService:
         actor = result.scalar_one_or_none()
 
         if actor:
-            actor.last_seen_at = utc_now()
-            await self.db.commit()
-            await self.db.refresh(actor)
+            settings = get_settings()
+            now = utc_now()
+            touch_due = (
+                actor.last_seen_at is None
+                or now - as_utc(actor.last_seen_at)
+                >= timedelta(seconds=settings.agent_last_seen_interval_seconds)
+            )
+            # Authentication remains a pure read while the deployment write
+            # fence is active. In normal operation, throttle this audit field
+            # so 200 concurrent MCP clients do not turn every read into a write.
+            if settings.maintenance_mode == "off" and touch_due:
+                actor.last_seen_at = now
+                await self.db.commit()
+                await self.db.refresh(actor)
 
         return actor
 
@@ -1430,8 +1442,14 @@ class AgentService:
             )
             .where(and_(Task.status != "closed", Task.is_deferred == False))
             .order_by(Task.priority.asc(), Task.id.asc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        tasks = result.scalars().unique().all()
+        tasks = list(result.scalars().unique().all())
+        if len(tasks) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "agent pipeline",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
 
         needs_definition = []
         ready_for_agent = []
@@ -1443,14 +1461,22 @@ class AgentService:
         recovery_required = []
 
         # Query active/running agent runs
-        runs_result = await self.db.execute(select(AgentRun))
+        task_ids = [task.id for task in tasks]
+        runs_result = await self.db.execute(
+            select(AgentRun).where(
+                AgentRun.task_id.in_(task_ids),
+                AgentRun.status == "running",
+            )
+        )
         all_runs = runs_result.scalars().all()
         running_run_task_ids = {
             run.task_id for run in all_runs if run.task_id and run.status == "running"
         }
         assignments_result = await self.db.execute(
             select(AgentTaskAssignment).where(
+                AgentTaskAssignment.task_id.in_(task_ids),
                 AgentTaskAssignment.purpose == "execution",
+                AgentTaskAssignment.state.in_(("queued", "accepted")),
             )
         )
         all_assignments = assignments_result.scalars().all()

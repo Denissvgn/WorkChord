@@ -17,6 +17,7 @@ from app.schemas.request_source import (
 )
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.task_context_revision_service import reserve_task_context_revision
+from app.sql_semantics import portable_contains
 
 
 class RequestSourceValidationError(ValueError):
@@ -135,14 +136,13 @@ class RequestSourceService:
         """Search existing request sources for linking."""
         query = select(RequestSource)
         if q and q.strip():
-            pattern = f"%{q.strip()}%"
             query = query.where(
                 or_(
-                    RequestSource.title.ilike(pattern),
-                    RequestSource.description.ilike(pattern),
-                    RequestSource.source_name.ilike(pattern),
-                    RequestSource.source_url.ilike(pattern),
-                    RequestSource.external_key.ilike(pattern),
+                    portable_contains(RequestSource.title, q),
+                    portable_contains(RequestSource.description, q),
+                    portable_contains(RequestSource.source_name, q),
+                    portable_contains(RequestSource.source_url, q),
+                    portable_contains(RequestSource.external_key, q),
                 )
             )
         if source_type:

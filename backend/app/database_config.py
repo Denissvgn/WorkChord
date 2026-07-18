@@ -30,6 +30,8 @@ _APPLICATION_NAME_PATTERN = re.compile(r"[A-Za-z0-9_.:-]{1,64}")
 _PROCESS_CONNECTION_BUDGETS = {
     "web": 20,
     "delivery_worker": 10,
+    "migration": 2,
+    "repair": 2,
 }
 
 
@@ -155,7 +157,7 @@ def parse_database_configuration(settings: Any) -> DatabaseConfiguration:
         approved_connection_capacity = _PROCESS_CONNECTION_BUDGETS[process_role]
     except KeyError as exc:
         raise DatabaseConfigurationError(
-            "DATABASE_PROCESS_ROLE must be web or delivery_worker"
+            "DATABASE_PROCESS_ROLE must be web, delivery_worker, migration, or repair"
         ) from exc
     if pool_size + max_overflow > approved_connection_capacity:
         raise DatabaseConfigurationError(

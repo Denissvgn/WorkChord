@@ -25,6 +25,7 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.models.triage import TriageItem
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
     AgentActorResponse,
     AgentDiscoveryTriageCreate,
@@ -238,24 +239,60 @@ class AgentWorkService:
             select(AgentActor)
             .where(AgentActor.enabled.is_(True))
             .order_by(AgentActor.display_name, AgentActor.id)
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        actors = result.scalars().all()
+        actors = list(result.scalars().all())
+        if len(actors) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "agent actor roster",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        actor_ids = [item.id for item in actors]
+        assignment_counts: dict[tuple[int, str], int] = {}
+        running_counts: dict[int, int] = {}
+        if actor_ids:
+            assignment_rows = (
+                await self.db.execute(
+                    select(
+                        AgentTaskAssignment.actor_id,
+                        AgentTaskAssignment.state,
+                        func.count(AgentTaskAssignment.id),
+                    )
+                    .where(
+                        AgentTaskAssignment.actor_id.in_(actor_ids),
+                        AgentTaskAssignment.state.in_(LIVE_ASSIGNMENT_STATES),
+                    )
+                    .group_by(
+                        AgentTaskAssignment.actor_id,
+                        AgentTaskAssignment.state,
+                    )
+                )
+            ).all()
+            assignment_counts = {
+                (actor_id, state): int(count)
+                for actor_id, state, count in assignment_rows
+            }
+            running_rows = (
+                await self.db.execute(
+                    select(AgentRun.actor_id, func.count(AgentRun.id))
+                    .where(
+                        AgentRun.actor_id.in_(actor_ids),
+                        AgentRun.status == "running",
+                    )
+                    .group_by(AgentRun.actor_id)
+                )
+            ).all()
+            running_counts = {
+                actor_id: int(count) for actor_id, count in running_rows
+            }
         roster: list[AgentActorRosterItem] = []
         for item in actors:
-            queued = await self._assignment_count(item.id, "queued")
-            accepted = await self._assignment_count(item.id, "accepted")
-            running_result = await self.db.execute(
-                select(func.count(AgentRun.id)).where(
-                    AgentRun.actor_id == item.id,
-                    AgentRun.status == "running",
-                )
-            )
             roster.append(
                 AgentActorRosterItem(
                     **self.actor_response(item).model_dump(),
-                    queued_assignments=queued,
-                    accepted_assignments=accepted,
-                    running_runs=int(running_result.scalar_one()),
+                    queued_assignments=assignment_counts.get((item.id, "queued"), 0),
+                    accepted_assignments=assignment_counts.get((item.id, "accepted"), 0),
+                    running_runs=running_counts.get(item.id, 0),
                 )
             )
         return roster
@@ -834,9 +871,9 @@ class AgentWorkService:
                 AgentTaskAssignment.state == "queued",
             )
             .order_by(
-                AgentTaskAssignment.queue_rank,
-                AgentTaskAssignment.not_before,
-                AgentTaskAssignment.id,
+                AgentTaskAssignment.queue_rank.asc(),
+                AgentTaskAssignment.not_before.asc().nulls_first(),
+                AgentTaskAssignment.id.asc(),
             )
         )
         assignments = queued_result.scalars().all()
@@ -984,7 +1021,10 @@ class AgentWorkService:
                     AgentTaskAssignment.actor_id == actor.id,
                     AgentTaskAssignment.state.in_(LIVE_ASSIGNMENT_STATES),
                 )
-                .order_by(AgentTaskAssignment.created_at.desc())
+                .order_by(
+                    AgentTaskAssignment.created_at.desc().nulls_last(),
+                    AgentTaskAssignment.id.desc(),
+                )
             )
             assignment = result.scalars().first()
         if (

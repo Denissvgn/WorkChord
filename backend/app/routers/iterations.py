@@ -1,7 +1,8 @@
 """Iteration API router."""
+from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -14,6 +15,7 @@ from app.schemas.iteration import (
     IterationSummary,
 )
 from app.schemas.common import MessageResponse
+from app.query_limits import MAX_ITERATION_LIST_ITEMS
 from app.services.iteration_service import IterationService
 
 router = APIRouter()
@@ -26,10 +28,31 @@ async def get_iteration_service(db: Annotated[AsyncSession, Depends(get_db)]) ->
 
 @router.get("/iterations", response_model=list[IterationResponse])
 async def get_iterations(
-    service: Annotated[IterationService, Depends(get_iteration_service)]
+    service: Annotated[IterationService, Depends(get_iteration_service)],
+    limit: Annotated[
+        int | None,
+        Query(ge=1, le=MAX_ITERATION_LIST_ITEMS),
+    ] = None,
+    cursor_start_date: date | None = None,
+    cursor_id: int | None = None,
 ):
-    """Get all iterations."""
-    iterations = await service.get_all()
+    """Get the compatible small list or one explicit stable keyset page."""
+    try:
+        if limit is None:
+            if cursor_start_date is not None or cursor_id is not None:
+                raise ValueError("an iteration cursor requires an explicit limit")
+            iterations = await service.get_all()
+        else:
+            iterations = await service.get_page(
+                limit=limit,
+                cursor_start_date=cursor_start_date,
+                cursor_id=cursor_id,
+            )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
     return [service.to_response(iteration) for iteration in iterations]
 
 

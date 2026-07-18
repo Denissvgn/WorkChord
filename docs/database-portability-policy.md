@@ -46,13 +46,17 @@ fully frozen; later corrections must use a new revision.
 Application startup only asserts that the configured schema is Alembic-current.
 It does not run DDL.
 
-- `python -m app.cli.upgrade --check` performs read-only inspection.
-- `python -m app.cli.upgrade --schema-only` bootstraps an empty target and
-  verifies that no application-owned rows were created.
-- `python -m app.cli.upgrade` upgrades a recognized database and optionally
-  runs idempotent repairs.
-- `python -m app.cli.upgrade --repairs-only` serializes post-copy seed and
+- `python -m app.cli.upgrade --check` performs read-only inspection from any
+  process role.
+- The `migration` role runs `python -m app.cli.upgrade --schema-only` to
+  bootstrap an empty target, or `python -m app.cli.upgrade --no-repairs` to
+  upgrade a recognized database. It never creates application-owned rows.
+- After schema work succeeds, the separate `repair` role runs
+  `python -m app.cli.upgrade --repairs-only` to serialize post-copy seed and
   compatibility repairs on an already current schema.
+- The migration command rejects a combined migration-and-repair invocation;
+  set `DATABASE_POOL_SIZE=1` and `DATABASE_MAX_OVERFLOW=0` for both one-shot
+  roles, as shown in the Compose topology.
 
 PostgreSQL schema upgrades and repairs take a session advisory lock. A
 non-empty PostgreSQL upgrade also requires

@@ -30,6 +30,7 @@ dependencies = [
 
 [project.scripts]
 workchord-mcp = "app.mcp_server:main"
+workchord-worker = "app.cli.worker:main"
 
 [dependency-groups]
 build = ["setuptools==83.0.0"]

@@ -5,6 +5,7 @@ import argparse
 from pathlib import Path
 import sys
 
+from app.config import get_settings
 from app.services.upgrade_service import (
     UpgradeError,
     bootstrap_database_schema,
@@ -88,7 +89,12 @@ def main(argv: list[str] | None = None) -> int:
             _print_status("Database status")
             return 0
 
+        settings = get_settings()
         if args.repairs_only:
+            if settings.database_process_role != "repair":
+                raise UpgradeError(
+                    "--repairs-only requires DATABASE_PROCESS_ROLE=repair"
+                )
             before, after = run_database_repairs()
             print(
                 f"Before repairs: state={before.state}, "
@@ -99,6 +105,17 @@ def main(argv: list[str] | None = None) -> int:
                 f"revision={after.current_revision or 'none'}"
             )
             return 0
+
+        if settings.database_process_role != "migration":
+            raise UpgradeError(
+                "Schema mutation requires DATABASE_PROCESS_ROLE=migration"
+            )
+        if not args.schema_only and not args.no_repairs:
+            raise UpgradeError(
+                "Migration and repair are separate process roles; rerun the "
+                "migration with --no-repairs, then run a repair role with "
+                "--repairs-only"
+            )
 
         if args.schema_only:
             before, backup_path, after = bootstrap_database_schema()

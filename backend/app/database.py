@@ -6,6 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.config import get_settings
 from app.database_config import parse_database_configuration
+from app.observability import install_database_instrumentation
 
 settings = get_settings()
 database_configuration = parse_database_configuration(settings)
@@ -14,6 +15,7 @@ engine = create_async_engine(
     database_configuration.async_url,
     **database_configuration.async_engine_kwargs(echo=settings.debug),
 )
+install_database_instrumentation(engine)
 
 if database_configuration.backend == "sqlite":
 

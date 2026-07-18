@@ -21,7 +21,9 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./workchord.db"
     deployment_environment: Literal["development", "test", "production"] = "development"
     database_postgresql_required: bool = False
-    database_process_role: Literal["web", "delivery_worker"] = "web"
+    database_process_role: Literal[
+        "web", "delivery_worker", "migration", "repair"
+    ] = "web"
     database_pool_size: int = 15
     database_max_overflow: int = 5
     database_pool_timeout_seconds: float = 30.0
@@ -37,6 +39,8 @@ class Settings(BaseSettings):
     database_ssl_root_cert: str = ""
     database_ssl_cert: str = ""
     database_ssl_key: str = ""
+    database_readiness_timeout_seconds: float = 2.0
+    database_slow_query_threshold_ms: int = 500
 
     # API
     api_prefix: str = "/api"
@@ -78,7 +82,7 @@ class Settings(BaseSettings):
     notifications_enabled: bool = False
 
     # Durable outbound delivery worker
-    outbound_delivery_worker_enabled: bool = True
+    outbound_delivery_worker_enabled: bool = False
     outbound_delivery_poll_seconds: float = 1.0
     outbound_delivery_batch_size: int = 50
 
@@ -112,6 +116,23 @@ class Settings(BaseSettings):
     session_cookie_name: str = "workchord_session"
     session_cookie_secure: bool = True
     session_max_age_seconds: int = 30 * 24 * 60 * 60
+    session_touch_interval_seconds: int = 300
+    agent_last_seen_interval_seconds: int = 300
+
+    # Deployment-owned write fence. This is restart-bound configuration rather
+    # than mutable process memory or a row in the database being migrated.
+    maintenance_mode: Literal[
+        "off", "read-only-maintenance", "validation-only"
+    ] = "off"
+    maintenance_revision: str = "development"
+    maintenance_replica_id: str = "local"
+    maintenance_retry_after_seconds: int = 60
+    maintenance_validation_allowlist: list[str] = [
+        "/health",
+        "/health/live",
+        "/health/ready",
+        "/metrics",
+    ]
 
     @field_validator("debug", mode="before")
     @classmethod
@@ -221,6 +242,23 @@ class Settings(BaseSettings):
                 "MCP_UNSAFE_ALLOW_PUBLIC_BINDING override in development only"
             )
 
+        if (
+            self.deployment_environment == "production"
+            and self.database_process_role == "web"
+            and self.outbound_delivery_worker_enabled
+        ):
+            raise ValueError(
+                "Production web replicas must disable the embedded delivery worker"
+            )
+        if (
+            self.deployment_environment == "production"
+            and self.maintenance_mode != "off"
+            and self.maintenance_revision == "development"
+        ):
+            raise ValueError(
+                "Production maintenance mode requires an explicit MAINTENANCE_REVISION"
+            )
+
         parse_database_configuration(self)
         return self
 
@@ -288,6 +326,8 @@ class Settings(BaseSettings):
         approved_capacity = {
             "web": 20,
             "delivery_worker": 10,
+            "migration": 2,
+            "repair": 2,
         }[self.database_process_role]
         if self.database_pool_size + self.database_max_overflow > approved_capacity:
             raise ValueError(
@@ -311,6 +351,85 @@ class Settings(BaseSettings):
         if not 1 <= value <= 365 * 24 * 60 * 60:
             raise ValueError("SESSION_MAX_AGE_SECONDS must be between 1 second and 1 year")
         return value
+
+    @field_validator("session_touch_interval_seconds")
+    @classmethod
+    def validate_session_touch_interval(cls, value: int) -> int:
+        if not 1 <= value <= 24 * 60 * 60:
+            raise ValueError(
+                "SESSION_TOUCH_INTERVAL_SECONDS must be between 1 second and 1 day"
+            )
+        return value
+
+    @field_validator("agent_last_seen_interval_seconds")
+    @classmethod
+    def validate_agent_last_seen_interval(cls, value: int) -> int:
+        if not 1 <= value <= 24 * 60 * 60:
+            raise ValueError(
+                "AGENT_LAST_SEEN_INTERVAL_SECONDS must be between 1 second and 1 day"
+            )
+        return value
+
+    @field_validator("database_readiness_timeout_seconds")
+    @classmethod
+    def validate_database_readiness_timeout(cls, value: float) -> float:
+        if not 0.1 <= value <= 15:
+            raise ValueError(
+                "DATABASE_READINESS_TIMEOUT_SECONDS must be between 0.1 and 15"
+            )
+        return value
+
+    @field_validator("database_slow_query_threshold_ms")
+    @classmethod
+    def validate_slow_query_threshold(cls, value: int) -> int:
+        if not 10 <= value <= 60_000:
+            raise ValueError(
+                "DATABASE_SLOW_QUERY_THRESHOLD_MS must be between 10 and 60000"
+            )
+        return value
+
+    @field_validator("maintenance_revision", "maintenance_replica_id")
+    @classmethod
+    def validate_maintenance_identity(cls, value: str) -> str:
+        normalized = value.strip()
+        if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", normalized):
+            raise ValueError(
+                "Maintenance revision and replica identity must be safe identifiers"
+            )
+        return normalized
+
+    @field_validator("maintenance_retry_after_seconds")
+    @classmethod
+    def validate_maintenance_retry_after(cls, value: int) -> int:
+        if not 1 <= value <= 3600:
+            raise ValueError(
+                "MAINTENANCE_RETRY_AFTER_SECONDS must be between 1 and 3600"
+            )
+        return value
+
+    @field_validator("maintenance_validation_allowlist")
+    @classmethod
+    def validate_maintenance_allowlist(cls, value: list[str]) -> list[str]:
+        required = {"/health/live", "/health/ready"}
+        normalized: list[str] = []
+        for path in value:
+            candidate = path.strip()
+            if (
+                not candidate.startswith("/")
+                or "?" in candidate
+                or "#" in candidate
+                or any(character.isspace() for character in candidate)
+                or ("*" in candidate and not candidate.endswith("/*"))
+            ):
+                raise ValueError(
+                    "MAINTENANCE_VALIDATION_ALLOWLIST must contain exact paths or /prefix/*"
+                )
+            normalized.append(candidate.rstrip("/") or "/")
+        if not required.issubset(normalized):
+            raise ValueError(
+                "MAINTENANCE_VALIDATION_ALLOWLIST must include /health/live and /health/ready"
+            )
+        return list(dict.fromkeys(normalized))
 
     @field_validator("outbound_delivery_poll_seconds")
     @classmethod

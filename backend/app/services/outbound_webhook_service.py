@@ -14,6 +14,8 @@ from sqlalchemy import or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.database_runtime import run_database_retry
+from app.maintenance import require_background_writes_enabled
 from app.models.outbound_webhook import (
     OutboundDeliveryChannel,
     OutboundWebhookDelivery,
@@ -32,6 +34,7 @@ from app.schemas.outbound_webhook import (
 )
 from app.utils.time import as_utc, utc_now
 from app.utils.url_policy import URLPolicyError, normalize_external_http_url
+from app.runtime_telemetry import activity, metrics
 
 
 logger = logging.getLogger(__name__)
@@ -111,7 +114,10 @@ MAX_RESPONSE_BODY_LENGTH = 2000
 DEFAULT_MAX_ATTEMPTS = 5
 DEFAULT_RETRY_BASE_SECONDS = 30
 DEFAULT_RETRY_MAX_SECONDS = 3600
-DEFAULT_LEASE_SECONDS = 30
+# The provider timeout budget is currently 30 seconds. A lease must outlive
+# that full I/O boundary plus acknowledgement/finalization headroom, otherwise
+# a healthy slow provider could make the same attempt claimable twice.
+DEFAULT_LEASE_SECONDS = 120
 
 
 class OutboundWebhookValidationError(ValueError):
@@ -154,6 +160,12 @@ class OutboundWebhookService:
 
     def _enum_value(self, value: Any) -> Any:
         return value.value if hasattr(value, "value") else value
+
+    @staticmethod
+    def _lease_token(worker_id: str) -> str:
+        """Return a PostgreSQL-safe token within the model's 64-char column."""
+        worker_digest = hashlib.sha256(worker_id.encode("utf-8")).hexdigest()[:16]
+        return f"{worker_digest}:{uuid4().hex}"
 
     def _json_safe(self, value: Any) -> Any:
         """Convert domain payloads into values accepted by SQL JSON columns."""
@@ -738,7 +750,7 @@ class OutboundWebhookService:
         require_due: bool = True,
     ) -> Optional[str]:
         """Claim one row through a compare-and-set update."""
-        lease_token = f"{worker_id}:{uuid4().hex}"
+        lease_token = self._lease_token(worker_id)
         statement = update(OutboundWebhookDelivery).where(
             OutboundWebhookDelivery.id == delivery_id,
             OutboundWebhookDelivery.status
@@ -761,10 +773,62 @@ class OutboundWebhookService:
             .returning(OutboundWebhookDelivery.id)
             .execution_options(synchronize_session=False)
         )
-        result = await self.db.execute(statement)
-        claimed = result.scalar_one_or_none()
-        await self.db.commit()
-        return lease_token if claimed is not None else None
+        async def claim_once(_attempt: int) -> Optional[str]:
+            result = await self.db.execute(statement)
+            claimed = result.scalar_one_or_none()
+            await self.db.commit()
+            return lease_token if claimed is not None else None
+
+        return await run_database_retry(
+            claim_once,
+            operation_name="outbound_delivery_claim",
+            safe_to_retry=True,
+            rollback=self.db.rollback,
+        )
+
+    async def _claim_due_postgresql(
+        self,
+        *,
+        limit: int,
+        worker_id: str,
+        now: datetime,
+    ) -> list[tuple[int, str]]:
+        """Claim one fair PostgreSQL batch under SKIP LOCKED row locks."""
+
+        async def claim_batch(_attempt: int) -> list[tuple[int, str]]:
+            result = await self.db.execute(
+                select(OutboundWebhookDelivery.id)
+                .where(*self._claim_conditions(now))
+                .order_by(
+                    OutboundWebhookDelivery.next_retry_at.asc().nulls_first(),
+                    OutboundWebhookDelivery.created_at.asc().nulls_last(),
+                    OutboundWebhookDelivery.id.asc(),
+                )
+                .limit(limit)
+                .with_for_update(skip_locked=True)
+            )
+            claimed: list[tuple[int, str]] = []
+            for delivery_id in result.scalars().all():
+                lease_token = self._lease_token(worker_id)
+                await self.db.execute(
+                    update(OutboundWebhookDelivery)
+                    .where(OutboundWebhookDelivery.id == delivery_id)
+                    .values(
+                        lease_token=lease_token,
+                        lease_expires_at=now + timedelta(seconds=self.lease_seconds),
+                    )
+                    .execution_options(synchronize_session=False)
+                )
+                claimed.append((delivery_id, lease_token))
+            await self.db.commit()
+            return claimed
+
+        return await run_database_retry(
+            claim_batch,
+            operation_name="outbound_delivery_claim_batch",
+            safe_to_retry=True,
+            rollback=self.db.rollback,
+        )
 
     async def claim_due_deliveries(
         self,
@@ -776,13 +840,19 @@ class OutboundWebhookService:
         """Claim due rows so concurrent workers cannot send the same attempt."""
         claimed_at = as_utc(now) if now is not None else utc_now()
         worker = worker_id or f"worker-{uuid4().hex}"
+        if self.db.get_bind().dialect.name == "postgresql":
+            return await self._claim_due_postgresql(
+                limit=limit,
+                worker_id=worker,
+                now=claimed_at,
+            )
         result = await self.db.execute(
             select(OutboundWebhookDelivery.id)
             .where(*self._claim_conditions(claimed_at))
             .order_by(
-                OutboundWebhookDelivery.next_retry_at,
-                OutboundWebhookDelivery.created_at,
-                OutboundWebhookDelivery.id,
+                OutboundWebhookDelivery.next_retry_at.asc().nulls_first(),
+                OutboundWebhookDelivery.created_at.asc().nulls_last(),
+                OutboundWebhookDelivery.id.asc(),
             )
             .limit(limit)
         )
@@ -840,12 +910,15 @@ class OutboundWebhookService:
         )
         completed = 0
         for delivery_id, lease_token in claimed:
+            activity.worker_job_started()
+            success = False
             try:
                 processed = await self.process_claimed_delivery(
                     delivery_id,
                     lease_token,
                     now=now,
                 )
+                success = bool(processed)
             except Exception:
                 # A database/process failure is isolated to one claimed row; its
                 # lease expiry makes it recoverable by a restarted worker.
@@ -855,8 +928,18 @@ class OutboundWebhookService:
                     extra={"delivery_id": delivery_id},
                 )
                 await self.db.rollback()
+                metrics.increment(
+                    "workchord_delivery_worker_jobs_total",
+                    labels={"outcome": "failed"},
+                )
                 continue
-            completed += int(processed)
+            finally:
+                activity.worker_job_finished(success=success)
+            completed += int(success)
+            metrics.increment(
+                "workchord_delivery_worker_jobs_total",
+                labels={"outcome": "processed" if success else "lease_lost"},
+            )
         return completed
 
     async def test_target(self, target_id: int) -> Optional[OutboundWebhookRetryResponse]:
@@ -944,6 +1027,7 @@ async def run_due_outbound_delivery_jobs(
     """Callable one-shot entry point for embedded or external workers."""
     from app.database import async_session_maker
 
+    require_background_writes_enabled("outbound delivery worker")
     async with async_session_maker() as db:
         return await OutboundWebhookService(db).run_due_jobs(
             limit=limit,
@@ -958,17 +1042,22 @@ async def outbound_delivery_worker_loop(
     batch_size: int = 50,
 ) -> None:
     """Poll durable outbound jobs until application shutdown."""
-    while not stop_event.is_set():
-        try:
-            await run_due_outbound_delivery_jobs(limit=batch_size)
-        except Exception:
-            # The process boundary stays alive after a transient database error;
-            # claimed rows become available when their leases expire.
-            logger.error("Outbound delivery worker iteration failed", exc_info=True)
-        try:
-            await asyncio.wait_for(stop_event.wait(), timeout=poll_seconds)
-        except TimeoutError:
-            continue
+    require_background_writes_enabled("outbound delivery worker")
+    activity.worker_started()
+    try:
+        while not stop_event.is_set():
+            try:
+                await run_due_outbound_delivery_jobs(limit=batch_size)
+            except Exception:
+                # The process boundary stays alive after a transient database error;
+                # claimed rows become available when their leases expire.
+                logger.error("Outbound delivery worker iteration failed", exc_info=True)
+            try:
+                await asyncio.wait_for(stop_event.wait(), timeout=poll_seconds)
+            except TimeoutError:
+                continue
+    finally:
+        activity.worker_stopped()
 
 
 async def emit_outbound_webhook_event(

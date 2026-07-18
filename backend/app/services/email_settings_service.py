@@ -153,6 +153,11 @@ class EmailSettingsService:
         """Send a test email using current settings."""
         try:
             settings = await self.get_settings(include_secret=True)
+            # The resolved dataclass no longer depends on ORM state. Release
+            # the transaction before DNS/connect/TLS/provider waits without
+            # expiring other objects attached to this request session.
+            if self.db is not None:
+                await self.db.commit()
         except RuntimeSettingsEncryptionError as exc:
             return False, str(exc)
         except RuntimeSettingsError as exc:

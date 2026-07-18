@@ -59,6 +59,13 @@ class NotificationService:
         """
         try:
             settings = await self._settings()
+            # Runtime settings are copied into an application dataclass. End
+            # the transaction before entering the potentially slow SMTP
+            # boundary so provider latency cannot occupy a pooled connection.
+            # Commit is intentional: the delivery worker may already have
+            # in-memory attempt state, and its sessions use expire_on_commit=False.
+            if self.db is not None:
+                await self.db.commit()
         except Exception:
             logger.error(
                 "[Notification] Failed to resolve email settings",

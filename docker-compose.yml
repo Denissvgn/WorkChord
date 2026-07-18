@@ -1,6 +1,47 @@
 name: workchord
 
 services:
+  migration:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - workchord_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_PROCESS_ROLE=migration
+      - DATABASE_POOL_SIZE=1
+      - DATABASE_MAX_OVERFLOW=0
+      - DEPLOYMENT_ENVIRONMENT=development
+      - MAINTENANCE_MODE=off
+      - OUTBOUND_DELIVERY_WORKER_ENABLED=false
+    command: ["python", "-m", "app.cli.upgrade", "--no-repairs"]
+    networks:
+      - workchord
+    restart: "no"
+
+  repair:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - workchord_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_PROCESS_ROLE=repair
+      - DATABASE_POOL_SIZE=1
+      - DATABASE_MAX_OVERFLOW=0
+      - DEPLOYMENT_ENVIRONMENT=development
+      - MAINTENANCE_MODE=off
+      - OUTBOUND_DELIVERY_WORKER_ENABLED=false
+    command: ["python", "-m", "app.cli.upgrade", "--repairs-only"]
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - workchord
+    restart: "no"
+
   backend:
     build:
       context: .
@@ -11,6 +52,7 @@ services:
       - workchord_data:/app/data
     environment:
       - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_PROCESS_ROLE=web
       - API_PREFIX=/api
       - DEBUG=false
       - CORS_ORIGINS=["http://localhost","http://frontend"]
@@ -23,8 +65,10 @@ services:
       - TRUSTED_PROXY_IPS=${TRUSTED_PROXY_IPS:-[]}
       - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
       - SESSION_MAX_AGE_SECONDS=${SESSION_MAX_AGE_SECONDS:-2592000}
+      - SESSION_TOUCH_INTERVAL_SECONDS=${SESSION_TOUCH_INTERVAL_SECONDS:-300}
+      - AGENT_LAST_SEEN_INTERVAL_SECONDS=${AGENT_LAST_SEEN_INTERVAL_SECONDS:-300}
       - NOTIFICATIONS_ENABLED=${NOTIFICATIONS_ENABLED:-false}
-      - OUTBOUND_DELIVERY_WORKER_ENABLED=${OUTBOUND_DELIVERY_WORKER_ENABLED:-true}
+      - OUTBOUND_DELIVERY_WORKER_ENABLED=false
       - OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
       - OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
       - SMTP_HOST=${SMTP_HOST:-}
@@ -33,18 +77,57 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD:-}
       - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-notifications@workchord.local}
       - SMTP_USE_TLS=${SMTP_USE_TLS:-true}
-    command: >
-      sh -c "python -m app.cli.upgrade --no-repairs &&
-      uvicorn app.main:app --host 0.0.0.0 --port 8001"
+      - MAINTENANCE_MODE=${MAINTENANCE_MODE:-off}
+      - MAINTENANCE_REVISION=${MAINTENANCE_REVISION:-development}
+      - MAINTENANCE_REPLICA_ID=${MAINTENANCE_REPLICA_ID:-backend-local}
+      - MAINTENANCE_RETRY_AFTER_SECONDS=${MAINTENANCE_RETRY_AFTER_SECONDS:-60}
+      - MAINTENANCE_VALIDATION_ALLOWLIST=${MAINTENANCE_VALIDATION_ALLOWLIST:-["/health","/health/live","/health/ready","/metrics"]}
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    depends_on:
+      repair:
+        condition: service_completed_successfully
     networks:
       - workchord
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')" ]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health/ready')" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  delivery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - workchord_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/workchord.db
+      - DATABASE_PROCESS_ROLE=delivery_worker
+      - DATABASE_POOL_SIZE=8
+      - DATABASE_MAX_OVERFLOW=2
+      - DEPLOYMENT_ENVIRONMENT=development
+      - OUTBOUND_DELIVERY_WORKER_ENABLED=true
+      - OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
+      - OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
+      - MAINTENANCE_MODE=${MAINTENANCE_MODE:-off}
+      - MAINTENANCE_REVISION=${MAINTENANCE_REVISION:-development}
+      - MAINTENANCE_REPLICA_ID=${MAINTENANCE_REPLICA_ID:-delivery-worker-local}
+      - NOTIFICATIONS_ENABLED=${NOTIFICATIONS_ENABLED:-false}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-notifications@workchord.local}
+      - SMTP_USE_TLS=${SMTP_USE_TLS:-true}
+    command: ["python", "-m", "app.cli.worker"]
+    depends_on:
+      repair:
+        condition: service_completed_successfully
+    networks:
+      - workchord
+    restart: "on-failure:5"
 
   frontend:
     build:

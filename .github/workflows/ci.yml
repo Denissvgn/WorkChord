@@ -92,6 +92,7 @@ jobs:
               "app/__init__.py",
               "app/main.py",
               "app/mcp_server.py",
+              "app/cli/worker.py",
               "app/config/scheduling_rules.yaml",
           }
           source_migrations = Path(argv[2])
@@ -137,8 +138,9 @@ jobs:
           assert before.state == "empty"
           assert after.is_current
           assert after.current_revision == head_revision()
-          PY
+            PY
             "$installed_wheel_venv/bin/workchord-mcp" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-worker" --help >/dev/null
           )
           (
             cd "$(mktemp -d)"

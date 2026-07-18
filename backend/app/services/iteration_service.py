@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Optional, Sequence
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -12,6 +12,11 @@ from app.models.iteration import Iteration
 from app.models.project import Project, ProjectMilestone
 from app.models.task import Task, TaskStatus as TaskStatusModel
 from app.models.team_member import TeamMember
+from app.query_limits import (
+    CollectionLimitExceededError,
+    MAX_ITERATION_LIST_ITEMS,
+    MAX_ITERATION_TREE_TASKS,
+)
 from app.schemas.iteration import (
     IterationCreate,
     IterationProjectSummary,
@@ -180,9 +185,17 @@ class IterationService:
             return
 
         result = await self.db.execute(
-            select(Task).where(Task.iteration_id == iteration.id)
+            select(Task)
+            .where(Task.iteration_id == iteration.id)
+            .order_by(Task.id.asc())
+            .limit(MAX_ITERATION_TREE_TASKS + 1)
         )
         tasks = list(result.scalars().all())
+        if len(tasks) > MAX_ITERATION_TREE_TASKS:
+            raise CollectionLimitExceededError(
+                "iteration project-scope update",
+                MAX_ITERATION_TREE_TASKS,
+            )
         tasks_to_update: list[Task] = []
         old_project_id = iteration.project_id
 
@@ -240,7 +253,7 @@ class IterationService:
             )
 
     async def get_all(self) -> Sequence[Iteration]:
-        """Get all iterations."""
+        """Preserve the small-workspace list contract and refuse overflow."""
         result = await self.db.execute(
             select(Iteration)
             .options(
@@ -248,7 +261,52 @@ class IterationService:
                 selectinload(Iteration.project),
             )
             .order_by(Iteration.start_date.desc(), Iteration.id.desc())
+            .limit(MAX_ITERATION_LIST_ITEMS + 1)
         )
+        iterations = list(result.scalars().all())
+        if len(iterations) > MAX_ITERATION_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "iteration list",
+                MAX_ITERATION_LIST_ITEMS,
+            )
+        return iterations
+
+    async def get_page(
+        self,
+        *,
+        limit: int,
+        cursor_start_date: date | None = None,
+        cursor_id: int | None = None,
+    ) -> Sequence[Iteration]:
+        """Return one stable keyset page in newest-first order."""
+
+        if not 1 <= limit <= MAX_ITERATION_LIST_ITEMS:
+            raise ValueError(
+                f"limit must be between 1 and {MAX_ITERATION_LIST_ITEMS}"
+            )
+        if (cursor_start_date is None) != (cursor_id is None):
+            raise ValueError("cursor_start_date and cursor_id must be provided together")
+
+        query = (
+            select(Iteration)
+            .options(
+                selectinload(Iteration.calendar),
+                selectinload(Iteration.project),
+            )
+            .order_by(Iteration.start_date.desc(), Iteration.id.desc())
+            .limit(limit)
+        )
+        if cursor_start_date is not None and cursor_id is not None:
+            query = query.where(
+                or_(
+                    Iteration.start_date < cursor_start_date,
+                    (
+                        (Iteration.start_date == cursor_start_date)
+                        & (Iteration.id < cursor_id)
+                    ),
+                )
+            )
+        result = await self.db.execute(query)
         return result.scalars().all()
 
     async def get_by_id(self, iteration_id: int) -> Iteration | None:
@@ -258,8 +316,6 @@ class IterationService:
             .options(
                 selectinload(Iteration.calendar),
                 selectinload(Iteration.project),
-                selectinload(Iteration.team_members),
-                selectinload(Iteration.tasks)
             )
             .where(Iteration.id == iteration_id)
         )
@@ -388,23 +444,44 @@ class IterationService:
             iteration.calendar, iteration.start_date, iteration.end_date
         )
 
-        # Count tasks
-        total_tasks = len(iteration.tasks)
-        completed_tasks = sum(
-            1 for t in iteration.tasks if t.status == TaskStatusModel.CLOSED.value
-        )
-
-        # Calculate total effort
-        total_effort_days = sum(t.effort_days for t in iteration.tasks)
+        task_row = (
+            await self.db.execute(
+                select(
+                    func.count(Task.id),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (Task.status == TaskStatusModel.CLOSED.value, 1),
+                                else_=0,
+                            )
+                        ),
+                        0,
+                    ),
+                    func.coalesce(func.sum(Task.effort_days), 0.0),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (
+                                    Task.end_date.is_not(None)
+                                    & (Task.end_date > iteration.end_date),
+                                    1,
+                                ),
+                                else_=0,
+                            )
+                        ),
+                        0,
+                    ),
+                ).where(Task.iteration_id == iteration_id)
+            )
+        ).one()
+        total_tasks = int(task_row[0])
+        completed_tasks = int(task_row[1])
+        total_effort_days = float(task_row[2])
 
         # Calculate team capacity
         team_capacity = await self._calculate_team_capacity(iteration)
 
-        # Count overdue tasks
-        overdue_count = sum(
-            1 for t in iteration.tasks
-            if t.end_date and t.end_date > iteration.end_date
-        )
+        overdue_count = int(task_row[3])
 
         return IterationSummary(
             id=iteration.id,
@@ -428,11 +505,21 @@ class IterationService:
             iteration.calendar, iteration.start_date, iteration.end_date
         ).working_days
 
-        total_capacity = 0.0
-        for member in iteration.team_members:
-            available = working_days * (member.availability_percent / 100)
-            effective = available * (1 - member.operational_utilization / 100)
-            adjusted = effective * member.professionalism_coefficient
-            total_capacity += adjusted
+        total_capacity = float(
+            (
+                await self.db.execute(
+                    select(
+                        func.coalesce(
+                            func.sum(
+                                (TeamMember.availability_percent / 100.0)
+                                * (1.0 - TeamMember.operational_utilization / 100.0)
+                                * TeamMember.professionalism_coefficient
+                            ),
+                            0.0,
+                        )
+                    ).where(TeamMember.iteration_id == iteration.id)
+                )
+            ).scalar_one()
+        ) * working_days
 
         return round(total_capacity, 1)

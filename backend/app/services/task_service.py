@@ -14,6 +14,10 @@ from app.models.request_source import RequestSourceLink
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.team_member import TeamMember
 from app.models.triage import TriageItem
+from app.query_limits import (
+    CollectionLimitExceededError,
+    MAX_ITERATION_TREE_TASKS,
+)
 from app.schemas.task import (
     TaskAssignee,
     TaskClaimedBy,
@@ -415,7 +419,12 @@ class TaskService:
         expected_version: int | None,
     ) -> int:
         """Atomically reserve the next task version at the database write boundary."""
-        statement = sql_update(Task).where(Task.id == task.id)
+        # Rollback expires ORM state even with expire_on_commit=False. Capture
+        # conflict identifiers before the write so a losing async transaction
+        # never triggers an implicit synchronous refresh (MissingGreenlet).
+        task_id = task.id
+        loaded_version = task.version
+        statement = sql_update(Task).where(Task.id == task_id)
         if expected_version is not None:
             statement = statement.where(Task.version == expected_version)
         statement = (
@@ -428,11 +437,11 @@ class TaskService:
         row = result.one_or_none()
         if row is None:
             await self.db.rollback()
-            current = await self._current_task_metadata(task.id)
+            current = await self._current_task_metadata(task_id)
             if current is None:
-                raise ValueError(f"Task with id {task.id} not found")
+                raise ValueError(f"Task with id {task_id} not found")
             if expected_version is None:
-                expected_version = task.version
+                expected_version = loaded_version
             raise TaskVersionConflictError(expected_version, current)
 
         attributes.set_committed_value(task, "version", row.version)
@@ -443,15 +452,28 @@ class TaskService:
     async def get_by_iteration(
         self,
         iteration_id: int,
-        include_children: bool = True
+        include_children: bool = True,
+        *,
+        max_tasks: int = MAX_ITERATION_TREE_TASKS,
     ) -> Sequence[Task]:
-        """Get an unbounded iteration tree assembled from one flat task query."""
+        """Get one explicitly bounded iteration tree from a flat task query."""
         if not include_children:
             result = await self.db.execute(
-                self._task_graph_query(iteration_id).where(Task.parent_id.is_(None))
+                self._task_graph_query(iteration_id)
+                .where(Task.parent_id.is_(None))
+                .limit(max_tasks + 1)
             )
-            return result.scalars().all()
-        roots, _ = await self._load_iteration_tree(iteration_id)
+            roots = list(result.scalars().all())
+            if len(roots) > max_tasks:
+                raise CollectionLimitExceededError(
+                    "iteration task roots",
+                    max_tasks,
+                )
+            return roots
+        roots, _ = await self._load_iteration_tree(
+            iteration_id,
+            max_tasks=max_tasks,
+        )
         return roots
 
     def _task_graph_query(self, iteration_id: int):
@@ -477,10 +499,16 @@ class TaskService:
     async def _load_iteration_tree(
         self,
         iteration_id: int,
+        *,
+        max_tasks: int = MAX_ITERATION_TREE_TASKS,
     ) -> tuple[list[Task], dict[int, Task]]:
-        """Load and defensively assemble every task in one iteration."""
-        result = await self.db.execute(self._task_graph_query(iteration_id))
+        """Load and defensively assemble a contract-bounded iteration."""
+        result = await self.db.execute(
+            self._task_graph_query(iteration_id).limit(max_tasks + 1)
+        )
         tasks = list(result.scalars().all())
+        if len(tasks) > max_tasks:
+            raise CollectionLimitExceededError("iteration task tree", max_tasks)
         tasks_by_id = {task.id: task for task in tasks}
 
         visit_state: dict[int, int] = {}
@@ -1219,7 +1247,7 @@ class TaskService:
         result = await self.db.execute(
             select(Task.sort_order)
             .where(Task.iteration_id == iteration_id, Task.parent_id.is_(None))
-            .order_by(Task.sort_order.desc())
+            .order_by(Task.sort_order.desc(), Task.id.desc())
             .limit(1)
         )
         max_order_row = result.first()
@@ -1598,7 +1626,7 @@ class TaskService:
         result = await self.db.execute(
             select(Task)
             .where(Task.iteration_id == iteration_id, Task.parent_id.is_(None))
-            .order_by(Task.sort_order.desc())
+            .order_by(Task.sort_order.desc(), Task.id.desc())
         )
         existing = result.scalars().first()
         return (existing.sort_order + 1) if existing else 0
@@ -1608,7 +1636,7 @@ class TaskService:
         result = await self.db.execute(
             select(Task)
             .where(Task.parent_id == parent_id)
-            .order_by(Task.sort_order.desc())
+            .order_by(Task.sort_order.desc(), Task.id.desc())
         )
         existing = result.scalars().first()
         return (existing.sort_order + 1) if existing else 0

@@ -1,13 +1,77 @@
 name: workchord
 
 services:
+  migration:
+    image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
+      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_PROCESS_ROLE: migration
+      DATABASE_POOL_SIZE: 1
+      DATABASE_MAX_OVERFLOW: 0
+      DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
+      DATABASE_SSL_ROOT_CERT: ${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}
+      DATABASE_SSL_CERT: ${DATABASE_SSL_CERT:-}
+      DATABASE_SSL_KEY: ${DATABASE_SSL_KEY:-}
+      DATABASE_EXTERNAL_BACKUP_REFERENCE: ${DATABASE_EXTERNAL_BACKUP_REFERENCE:?Set the approved backup or PITR recovery point}
+      DEPLOYMENT_ENVIRONMENT: production
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}
+      OUTBOUND_DELIVERY_WORKER_ENABLED: "false"
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-off}
+      MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
+      MAINTENANCE_REPLICA_ID: migration
+    volumes:
+      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
+    command: ["sh", "-c", "python -m app.cli.upgrade --no-repairs --external-backup-reference \"$DATABASE_EXTERNAL_BACKUP_REFERENCE\""]
+    networks:
+      - application
+
+  repair:
+    image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
+      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_PROCESS_ROLE: repair
+      DATABASE_POOL_SIZE: 1
+      DATABASE_MAX_OVERFLOW: 0
+      DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
+      DATABASE_SSL_ROOT_CERT: ${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}
+      DATABASE_SSL_CERT: ${DATABASE_SSL_CERT:-}
+      DATABASE_SSL_KEY: ${DATABASE_SSL_KEY:-}
+      DEPLOYMENT_ENVIRONMENT: production
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}
+      OUTBOUND_DELIVERY_WORKER_ENABLED: "false"
+      MAINTENANCE_MODE: "off"
+      MAINTENANCE_REVISION: production-repair
+      MAINTENANCE_REPLICA_ID: repair
+    volumes:
+      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
+    command: ["python", "-m", "app.cli.upgrade", "--repairs-only"]
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - application
+
   backend:
     image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag for offline use or repository@sha256 digest for registry deployment}
     restart: unless-stopped
     expose:
       - "8001"
     environment:
-      DATABASE_URL: ${DATABASE_URL:-sqlite+aiosqlite:////app/data/workchord.db}
+      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
+      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_PROCESS_ROLE: web
+      DATABASE_POOL_SIZE: ${DATABASE_WEB_POOL_SIZE:-15}
+      DATABASE_MAX_OVERFLOW: ${DATABASE_WEB_MAX_OVERFLOW:-5}
+      DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
+      DATABASE_SSL_ROOT_CERT: ${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}
+      DATABASE_SSL_CERT: ${DATABASE_SSL_CERT:-}
+      DATABASE_SSL_KEY: ${DATABASE_SSL_KEY:-}
       API_PREFIX: ${API_PREFIX:-/api}
       DEPLOYMENT_ENVIRONMENT: production
       DEBUG: "false"
@@ -25,6 +89,8 @@ services:
       TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?Set the proxy IP or subnet allowlist}
       SESSION_COOKIE_SECURE: "true"
       SESSION_MAX_AGE_SECONDS: ${SESSION_MAX_AGE_SECONDS:-2592000}
+      SESSION_TOUCH_INTERVAL_SECONDS: ${SESSION_TOUCH_INTERVAL_SECONDS:-300}
+      AGENT_LAST_SEEN_INTERVAL_SECONDS: ${AGENT_LAST_SEEN_INTERVAL_SECONDS:-300}
       LLM_PROVIDER: ${LLM_PROVIDER:-openai}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_API_URL: ${LLM_API_URL:-}
@@ -39,7 +105,7 @@ services:
       WEB_INTAKE_TOKEN: ${WEB_INTAKE_TOKEN:-}
       WEB_INTAKE_RATE_LIMIT_PER_MINUTE: ${WEB_INTAKE_RATE_LIMIT_PER_MINUTE:-30}
       NOTIFICATIONS_ENABLED: ${NOTIFICATIONS_ENABLED:-false}
-      OUTBOUND_DELIVERY_WORKER_ENABLED: ${OUTBOUND_DELIVERY_WORKER_ENABLED:-true}
+      OUTBOUND_DELIVERY_WORKER_ENABLED: "false"
       OUTBOUND_DELIVERY_POLL_SECONDS: ${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
       OUTBOUND_DELIVERY_BATCH_SIZE: ${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
       SMTP_HOST: ${SMTP_HOST:-}
@@ -48,17 +114,65 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-notifications@workchord.local}
       SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-off}
+      MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
+      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WEB_REPLICA_ID:-backend}
+      MAINTENANCE_RETRY_AFTER_SECONDS: ${MAINTENANCE_RETRY_AFTER_SECONDS:-60}
+      MAINTENANCE_VALIDATION_ALLOWLIST: ${MAINTENANCE_VALIDATION_ALLOWLIST:-["/health","/health/live","/health/ready","/metrics"]}
     volumes:
       - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
     networks:
       - application
       - egress
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health/ready')"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
+    depends_on:
+      repair:
+        condition: service_completed_successfully
+
+  delivery-worker:
+    image: ${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}
+    restart: "on-failure:5"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set the approved production database URL}
+      DATABASE_POSTGRESQL_REQUIRED: ${DATABASE_POSTGRESQL_REQUIRED:-false}
+      DATABASE_PROCESS_ROLE: delivery_worker
+      DATABASE_POOL_SIZE: ${DATABASE_WORKER_POOL_SIZE:-8}
+      DATABASE_MAX_OVERFLOW: ${DATABASE_WORKER_MAX_OVERFLOW:-2}
+      DATABASE_SSL_MODE: ${DATABASE_SSL_MODE:-verify-full}
+      DATABASE_SSL_ROOT_CERT: ${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}
+      DATABASE_SSL_CERT: ${DATABASE_SSL_CERT:-}
+      DATABASE_SSL_KEY: ${DATABASE_SSL_KEY:-}
+      DEPLOYMENT_ENVIRONMENT: production
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}
+      OUTBOUND_DELIVERY_WORKER_ENABLED: "true"
+      OUTBOUND_DELIVERY_POLL_SECONDS: ${OUTBOUND_DELIVERY_POLL_SECONDS:-1}
+      OUTBOUND_DELIVERY_BATCH_SIZE: ${OUTBOUND_DELIVERY_BATCH_SIZE:-50}
+      NOTIFICATIONS_ENABLED: ${NOTIFICATIONS_ENABLED:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-notifications@workchord.local}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-off}
+      MAINTENANCE_REVISION: ${MAINTENANCE_REVISION:-production-off}
+      MAINTENANCE_REPLICA_ID: ${WORKCHORD_WORKER_REPLICA_ID:-delivery-worker}
+    volumes:
+      - ${WORKCHORD_DATA_VOLUME:-workchord_data}:/app/data
+      - ${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro
+    command: ["python", "-m", "app.cli.worker"]
+    depends_on:
+      repair:
+        condition: service_completed_successfully
+    networks:
+      - application
+      - egress
 
   frontend:
     image: ${WORKCHORD_FRONTEND_IMAGE:?Set an exact frontend image tag for offline use or repository@sha256 digest for registry deployment}

@@ -149,6 +149,8 @@ def test_total_pool_capacity_is_bounded() -> None:
     [
         ("web", 16, 5, 20),
         ("delivery_worker", 9, 2, 10),
+        ("migration", 2, 1, 2),
+        ("repair", 2, 1, 2),
     ],
 )
 def test_pool_capacity_cannot_exceed_the_approved_process_budget(
@@ -211,6 +213,24 @@ def test_production_sqlite_fallback_gate_is_explicit() -> None:
             database_url="sqlite+aiosqlite:////app/data/workchord.db",
             deployment_environment="production",
             database_postgresql_required=True,
+        )
+
+
+def test_production_web_cannot_enable_an_embedded_worker() -> None:
+    with pytest.raises(ValidationError, match="embedded delivery worker"):
+        settings(
+            database_url="sqlite+aiosqlite:////app/data/workchord.db",
+            deployment_environment="production",
+            outbound_delivery_worker_enabled=True,
+        )
+
+
+def test_production_fenced_mode_requires_an_explicit_revision() -> None:
+    with pytest.raises(ValidationError, match="MAINTENANCE_REVISION"):
+        settings(
+            database_url="sqlite+aiosqlite:////app/data/workchord.db",
+            deployment_environment="production",
+            maintenance_mode="validation-only",
         )
 
 

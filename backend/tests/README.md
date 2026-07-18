@@ -20,6 +20,6 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend \
   .venv/bin/python -m pytest -q -m postgresql backend/tests
 ```
 
-The Psycopg dependency is test-only in Wave 0. DBM-DEP-001 promotes it into the
-packaged runtime dependency set.
-
+Psycopg is a packaged runtime dependency. CI pins PostgreSQL 18.4 by digest,
+runs both dialect lanes, and validates the installed wheel outside the source
+tree, including the `workchord-mcp` and `workchord-worker` entry points.

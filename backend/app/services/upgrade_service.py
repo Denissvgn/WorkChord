@@ -228,6 +228,7 @@ def backup_sqlite_database(backup_dir: Optional[Path] = None) -> Optional[Path]:
 
 async def run_post_migration_repairs() -> None:
     """Run idempotent seeders and compatibility repairs after migrations."""
+    from app.maintenance import require_background_writes_enabled
     from app.database import async_session_maker
     from app.services.calendar_service import CalendarService
     from app.services.github_status_automation_service import GitHubStatusAutomationService
@@ -236,6 +237,7 @@ async def run_post_migration_repairs() -> None:
     from app.services.system_settings_service import RuntimeSettingsService
     from app.services.template_service import TemplateService
 
+    require_background_writes_enabled("database repair and default seeding")
     async with async_session_maker() as db:
         await CalendarService(db).get_or_create_default()
         await TemplateService(db).seed_default_templates()
@@ -437,7 +439,9 @@ def assert_database_current() -> None:
         return
     raise UpgradeError(
         "Database schema is not ready. Run "
-        "`cd backend && ../.venv/bin/python -m app.cli.upgrade` before starting the API. "
+        "`cd backend && DATABASE_PROCESS_ROLE=migration DATABASE_POOL_SIZE=1 "
+        "DATABASE_MAX_OVERFLOW=0 ../.venv/bin/python -m app.cli.upgrade --no-repairs` "
+        "before starting the API. "
         f"Detected state={status.state}, revision={status.current_revision or 'none'}, "
         f"head={status.head_revision}."
     )

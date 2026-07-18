@@ -14,7 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_db
+from app.maintenance import MaintenanceModeError
 from app.models.user_session import UserSession
+from app.runtime_telemetry import metrics
 from app.utils.time import as_utc, utc_now
 
 
@@ -75,8 +77,8 @@ async def _get_session_by_token(
     if not session or session.revoked_at is not None:
         return None
     if session.expires_at is not None and as_utc(session.expires_at) <= utc_now():
-        session.revoked_at = utc_now()
-        await db.commit()
+        # Expiry is already fail-closed. Do not manufacture a hidden GET write;
+        # explicit cleanup can mark old rows revoked outside request handling.
         return None
     return session
 
@@ -116,16 +118,39 @@ async def get_or_create_session(
     """Resolve an opaque token or create a fresh session without IP ownership."""
     session = await _get_session_by_token(db, session_token)
     if session is None:
+        mode = get_settings().maintenance_mode
+        if mode != "off":
+            raise MaintenanceModeError(
+                operation="browser session creation",
+                mode=mode,
+            )
         return await _create_session(db, ip_address, user_agent)
 
     now = utc_now()
-    session.last_seen_at = now
-    session.expires_at = now + timedelta(seconds=get_settings().session_max_age_seconds)
-    session.ip_address = ip_address
-    if user_agent and session.user_agent != user_agent:
-        session.user_agent = user_agent
-    await db.commit()
-    await db.refresh(session)
+    settings = get_settings()
+    if settings.maintenance_mode != "off":
+        return session, session_token
+
+    last_seen = as_utc(session.last_seen_at)
+    touch_due = now - last_seen >= timedelta(
+        seconds=settings.session_touch_interval_seconds
+    )
+    metadata_changed = (
+        session.ip_address != ip_address
+        or (user_agent is not None and session.user_agent != user_agent)
+    )
+    if touch_due or metadata_changed:
+        session.last_seen_at = now
+        session.expires_at = now + timedelta(seconds=settings.session_max_age_seconds)
+        if session.ip_address != ip_address:
+            session.ip_address = ip_address
+        if user_agent is not None and session.user_agent != user_agent:
+            session.user_agent = user_agent
+        await db.commit()
+        await db.refresh(session)
+        metrics.increment("workchord_browser_session_touches_total")
+    else:
+        metrics.increment("workchord_browser_session_touch_skips_total")
     return session, session_token
 
 

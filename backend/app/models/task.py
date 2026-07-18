@@ -135,7 +135,7 @@ class Task(Base):
     )
     children: Mapped[list["Task"]] = relationship(
         "Task", back_populates="parent", cascade="all, delete-orphan",
-        order_by="Task.sort_order"
+        order_by="Task.sort_order, Task.id"
     )
 
     # Dependencies (many-to-many through TaskDependency)
