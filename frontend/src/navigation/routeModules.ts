@@ -1,6 +1,7 @@
 import { matchPath } from 'react-router-dom';
 
 export const routeModuleLoaders = {
+    landing: () => import('../pages/LandingPage'),
     overview: () => import('../pages/OverviewPage'),
     plan: () => import('../pages/PlanPage'),
     planMaster: () => import('../pages/PlanMasterPage'),
@@ -29,6 +30,7 @@ type RouteMetadata = {
 };
 
 export const routeMetadata: RouteMetadata[] = [
+    { key: 'landing', path: '/welcome', titleKey: 'documentTitles.landing' },
     { key: 'overview', path: '/', titleKey: 'documentTitles.overview' },
     { key: 'planMaster', path: '/plan/master', titleKey: 'documentTitles.planMaster' },
     { key: 'plan', path: '/plan', titleKey: 'documentTitles.plan' },

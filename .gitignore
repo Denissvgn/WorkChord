@@ -52,3 +52,5 @@ build/
 # Operating systems
 .DS_Store
 Thumbs.db
+.hallmark/
+docs/plans/

@@ -109,6 +109,7 @@ export const resources = {
             },
             documentTitles: {
                 format: '{{page}} — {{app}}',
+                landing: 'Planning that holds',
                 overview: 'Overview',
                 plan: 'Plan Work',
                 planMaster: 'Planning workspace',
@@ -3398,6 +3399,7 @@ export const resources = {
             },
             documentTitles: {
                 format: '{{page}} — {{app}}',
+                landing: 'Планирование, которое выдерживает изменения',
                 overview: 'Обзор',
                 plan: 'Планирование работы',
                 planMaster: 'Рабочее пространство планирования',
