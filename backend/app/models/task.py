@@ -11,7 +11,13 @@ from app.models.external_link import ExternalLink
 from app.utils.time import UTCDateTime, utc_now
 
 if TYPE_CHECKING:
-    from app.models.agent import AgentActor, AgentRun, AgentTaskAssignment, TaskEvent
+    from app.models.agent import (
+        AgentActor,
+        AgentRun,
+        AgentTaskAssignment,
+        TaskEvent,
+        TaskRoutingAssessment,
+    )
     from app.models.external_link import ExternalLink
     from app.models.iteration import Iteration
     from app.models.project import Project, ProjectMilestone
@@ -170,6 +176,13 @@ class Task(Base):
         back_populates="task",
         cascade="all, delete-orphan",
         order_by="AgentTaskAssignment.created_at.desc()",
+    )
+    routing_assessments: Mapped[list["TaskRoutingAssessment"]] = relationship(
+        "TaskRoutingAssessment",
+        back_populates="task",
+        passive_deletes=True,
+        order_by="TaskRoutingAssessment.task_version.desc(), "
+        "TaskRoutingAssessment.created_at.desc()",
     )
     external_links: Mapped[list["ExternalLink"]] = relationship(
         "ExternalLink",

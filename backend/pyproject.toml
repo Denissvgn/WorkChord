@@ -32,6 +32,24 @@ workchord-mcp = "app.mcp_server:main"
 
 [dependency-groups]
 build = ["setuptools==83.0.0"]
+test = [
+    "psycopg[binary]>=3.2,<4",
+    "pytest>=8.4,<10",
+    "pytest-asyncio>=1.2,<2",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "contract: machine-readable architecture and workload contract tests",
+    "sqlite: tests that exercise the SQLite dialect",
+    "postgresql: tests that require a real PostgreSQL server",
+    "integration: tests that cross a process or database-server boundary",
+    "destructive: tests that create and drop only safety-fenced test databases",
+    "allow_network: tests allowed to use an explicitly scoped local network target",
+]
 
 [tool.setuptools]
 include-package-data = false

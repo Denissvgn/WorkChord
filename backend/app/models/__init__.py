@@ -2,10 +2,14 @@
 from app.models.agent import (
     AgentActor,
     AgentIdempotencyRecord,
+    AgentModelBinding,
+    AgentModelCatalogEntry,
     AgentRun,
     AgentRunEvent,
     AgentTaskAssignment,
+    ImmutableRoutingAssessmentError,
     TaskEvent,
+    TaskRoutingAssessment,
 )
 from app.models.calendar import Calendar
 from app.models.external_link import ExternalLink, ExternalLinkEntityType, ExternalLinkProvider
@@ -46,9 +50,12 @@ from app.models.user_session import UserSession
 __all__ = [
     "AgentActor",
     "AgentIdempotencyRecord",
+    "AgentModelBinding",
+    "AgentModelCatalogEntry",
     "AgentRun",
     "AgentRunEvent",
     "AgentTaskAssignment",
+    "ImmutableRoutingAssessmentError",
     "Calendar",
     "ExternalLink",
     "ExternalLinkEntityType",
@@ -84,6 +91,7 @@ __all__ = [
     "TeamMemberProfileSkill",
     "TemplateType",
     "TaskEvent",
+    "TaskRoutingAssessment",
     "Vacation",
     "Task",
     "TaskDependency",

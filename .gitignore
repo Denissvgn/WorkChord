@@ -54,3 +54,5 @@ build/
 Thumbs.db
 .hallmark/
 docs/plans/
+docs/adr/
+docs/contracts/

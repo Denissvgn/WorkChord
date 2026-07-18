@@ -356,6 +356,10 @@ class AgentRunResponse(BaseModel):
     claim_generation: Optional[int] = None
     status: str
     trace_id: Optional[str] = None
+    model_binding_id: Optional[int] = None
+    model_binding_revision: Optional[int] = None
+    configured_model_alias: Optional[str] = None
+    resolved_model_id: Optional[str] = None
     model: Optional[str] = None
     tool_name: Optional[str] = None
     metadata: dict[str, Any]
@@ -468,6 +472,8 @@ class AgentTaskAssignmentResponse(BaseModel):
     assigned_by_actor_id: Optional[int] = None
     reviewer_profile_id: Optional[int] = None
     task_version: int
+    model_binding_id: Optional[int] = None
+    model_binding_revision: Optional[int] = None
     routing_snapshot: dict[str, Any] = Field(default_factory=dict)
     reason: Optional[str] = None
     created_at: datetime
