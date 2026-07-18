@@ -8,11 +8,14 @@ from .database import (
 )
 from .factories import LegacySQLiteFactory, MappedModelFactory
 from .faults import AsyncBarrier, FailureInjector, FrozenClock
+from .schema import cross_dialect_schema_diff, schema_snapshot
 
 __all__ = [
     "AsyncBarrier",
     "FailureInjector",
     "FrozenClock",
+    "cross_dialect_schema_diff",
+    "schema_snapshot",
     "LegacySQLiteFactory",
     "MappedModelFactory",
     "PostgresTestDatabase",
@@ -20,4 +23,3 @@ __all__ = [
     "UnsafeDatabaseTarget",
     "assert_safe_test_database_url",
 ]
-

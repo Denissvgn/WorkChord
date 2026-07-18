@@ -19,6 +19,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "httpx>=0.25.0",
     "aiosqlite>=0.19.0",
+    "psycopg[binary]>=3.2,<4",
     "PyYAML>=6.0",
     "python-multipart",
     "aiosmtplib>=3.0.0",
@@ -33,7 +34,6 @@ workchord-mcp = "app.mcp_server:main"
 [dependency-groups]
 build = ["setuptools==83.0.0"]
 test = [
-    "psycopg[binary]>=3.2,<4",
     "pytest>=8.4,<10",
     "pytest-asyncio>=1.2,<2",
 ]

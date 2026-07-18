@@ -42,11 +42,9 @@ def upgrade() -> None:
             "schema_version >= 1",
             name="ck_saved_views_schema_version_min",
         ),
-        sa.ForeignKeyConstraint(
-            ["created_by_session_id"],
-            ["user_sessions.id"],
-            ondelete="SET NULL",
-        ),
+        # ``user_sessions`` is introduced by revision 0023. SQLite historically
+        # accepted this forward reference, while PostgreSQL rejects it. The
+        # foreign key is added by 0023 after the target table exists.
     )
     op.create_index("ix_saved_views_view_type", "saved_views", ["view_type"])
     op.create_index("ix_saved_views_scope", "saved_views", ["scope"])

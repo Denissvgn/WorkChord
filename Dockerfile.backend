@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
+# Install hash-locked runtime dependencies, including Psycopg's supported
+# binary distribution for both async application and sync migration paths.
 COPY backend/requirements.lock .
 RUN python -m pip install --user --no-cache-dir --require-hashes -r requirements.lock
 

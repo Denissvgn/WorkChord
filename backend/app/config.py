@@ -1,12 +1,12 @@
 from functools import lru_cache
 from ipaddress import ip_network
-from pathlib import Path
 import re
 from typing import Any, Literal
 
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import make_url
+
+from app.database_config import parse_database_configuration
 
 
 class Settings(BaseSettings):
@@ -20,6 +20,23 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite+aiosqlite:///./workchord.db"
     deployment_environment: Literal["development", "test", "production"] = "development"
+    database_postgresql_required: bool = False
+    database_process_role: Literal["web", "delivery_worker"] = "web"
+    database_pool_size: int = 15
+    database_max_overflow: int = 5
+    database_pool_timeout_seconds: float = 30.0
+    database_pool_recycle_seconds: int = 1800
+    database_pool_pre_ping: bool = True
+    database_connect_timeout_seconds: int = 10
+    database_statement_timeout_ms: int = 30_000
+    database_lock_timeout_ms: int = 5_000
+    database_application_name: str = "workchord"
+    database_ssl_mode: Literal[
+        "disable", "allow", "prefer", "require", "verify-ca", "verify-full"
+    ] = "prefer"
+    database_ssl_root_cert: str = ""
+    database_ssl_cert: str = ""
+    database_ssl_key: str = ""
 
     # API
     api_prefix: str = "/api"
@@ -204,25 +221,79 @@ class Settings(BaseSettings):
                 "MCP_UNSAFE_ALLOW_PUBLIC_BINDING override in development only"
             )
 
-        if self.deployment_environment == "production":
-            url = make_url(self.database_url)
-            if url.get_backend_name() == "sqlite":
-                database = url.database
-                if not database or database == ":memory:":
-                    raise ValueError(
-                        "Production SQLite requires a persistent database under /app/data"
-                    )
-                database_path = Path(database)
-                data_root = Path("/app/data")
-                if (
-                    not database_path.is_absolute()
-                    or database_path.resolve() == data_root
-                    or not database_path.resolve().is_relative_to(data_root)
-                ):
-                    raise ValueError(
-                        "Production SQLite DATABASE_URL must resolve inside "
-                        f"{data_root}"
-                    )
+        parse_database_configuration(self)
+        return self
+
+    @field_validator("database_pool_size")
+    @classmethod
+    def validate_database_pool_size(cls, value: int) -> int:
+        if not 1 <= value <= 50:
+            raise ValueError("DATABASE_POOL_SIZE must be between 1 and 50")
+        return value
+
+    @field_validator("database_max_overflow")
+    @classmethod
+    def validate_database_max_overflow(cls, value: int) -> int:
+        if not 0 <= value <= 50:
+            raise ValueError("DATABASE_MAX_OVERFLOW must be between 0 and 50")
+        return value
+
+    @field_validator("database_pool_timeout_seconds")
+    @classmethod
+    def validate_database_pool_timeout(cls, value: float) -> float:
+        if not 0.1 <= value <= 120:
+            raise ValueError(
+                "DATABASE_POOL_TIMEOUT_SECONDS must be between 0.1 and 120"
+            )
+        return value
+
+    @field_validator("database_pool_recycle_seconds")
+    @classmethod
+    def validate_database_pool_recycle(cls, value: int) -> int:
+        if value != 0 and not 60 <= value <= 86_400:
+            raise ValueError(
+                "DATABASE_POOL_RECYCLE_SECONDS must be 0 or between 60 and 86400"
+            )
+        return value
+
+    @field_validator("database_connect_timeout_seconds")
+    @classmethod
+    def validate_database_connect_timeout(cls, value: int) -> int:
+        if not 1 <= value <= 60:
+            raise ValueError(
+                "DATABASE_CONNECT_TIMEOUT_SECONDS must be between 1 and 60"
+            )
+        return value
+
+    @field_validator("database_statement_timeout_ms")
+    @classmethod
+    def validate_database_statement_timeout(cls, value: int) -> int:
+        if not 100 <= value <= 300_000:
+            raise ValueError(
+                "DATABASE_STATEMENT_TIMEOUT_MS must be between 100 and 300000"
+            )
+        return value
+
+    @field_validator("database_lock_timeout_ms")
+    @classmethod
+    def validate_database_lock_timeout(cls, value: int) -> int:
+        if not 100 <= value <= 60_000:
+            raise ValueError(
+                "DATABASE_LOCK_TIMEOUT_MS must be between 100 and 60000"
+            )
+        return value
+
+    @model_validator(mode="after")
+    def validate_database_pool_capacity(self) -> "Settings":
+        approved_capacity = {
+            "web": 20,
+            "delivery_worker": 10,
+        }[self.database_process_role]
+        if self.database_pool_size + self.database_max_overflow > approved_capacity:
+            raise ValueError(
+                "DATABASE_POOL_SIZE plus DATABASE_MAX_OVERFLOW exceeds the approved "
+                f"{self.database_process_role} process budget of {approved_capacity}"
+            )
         return self
 
     @field_validator("session_cookie_name")

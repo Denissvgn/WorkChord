@@ -23,7 +23,10 @@ def upgrade() -> None:
         sa.Column("display_name", sa.String(length=255), nullable=False),
         sa.Column("api_key_hash", sa.String(length=128), nullable=False, unique=True),
         sa.Column("scopes", sa.Text(), nullable=False, server_default="[]"),
-        sa.Column("enabled", sa.Boolean(), nullable=False, server_default=sa.text("1")),
+        # Historical compatibility repair: ``1`` is accepted by SQLite but is
+        # not a valid PostgreSQL Boolean default.  Preserve the revision ID and
+        # use SQLAlchemy's portable Boolean expression for both dialects.
+        sa.Column("enabled", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("last_seen_at", sa.DateTime(), nullable=True),
     )

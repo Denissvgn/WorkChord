@@ -58,10 +58,20 @@ jobs:
       - name: Run the backend database harness
         env:
           DEPLOYMENT_ENVIRONMENT: test
+          DATABASE_SSL_MODE: disable
           POSTGRES_ADMIN_URL: postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres
+          WORKCHORD_SCHEMA_DIFF_ARTIFACT: /tmp/workchord-schema-diff.json
         run: |
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m "not postgresql" backend/tests
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m postgresql backend/tests
+          test -s "$WORKCHORD_SCHEMA_DIFF_ARTIFACT"
+      - name: Upload the dual-dialect schema diff
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: workchord-schema-diff
+          path: /tmp/workchord-schema-diff.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Validate the backend wheel boundary
         run: |
           wheel_dir="$(mktemp -d)"
@@ -129,6 +139,86 @@ jobs:
           assert after.current_revision == head_revision()
           PY
             "$installed_wheel_venv/bin/workchord-mcp" --help >/dev/null
+          )
+          (
+            cd "$(mktemp -d)"
+            export DEPLOYMENT_ENVIRONMENT=test
+            export DATABASE_SSL_MODE=disable
+            export POSTGRES_ADMIN_URL="postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres"
+            "$installed_wheel_venv/bin/python" - <<'PY'
+          import asyncio
+          import os
+          from secrets import token_hex
+
+          import psycopg
+          from psycopg import sql
+          from sqlalchemy import create_engine, text
+
+          admin_url = os.environ["POSTGRES_ADMIN_URL"]
+          admin_psycopg_url = admin_url.replace("postgresql+psycopg://", "postgresql://", 1)
+          database_name = f"workchord_test_{token_hex(16)}"
+          target_url = admin_url.rsplit("/", 1)[0] + f"/{database_name}"
+          with psycopg.connect(admin_psycopg_url, autocommit=True) as connection:
+              connection.execute(
+                  sql.SQL(
+                      "CREATE DATABASE {} TEMPLATE template0 ENCODING 'UTF8' "
+                      "LOCALE_PROVIDER builtin BUILTIN_LOCALE 'PG_UNICODE_FAST'"
+                  ).format(sql.Identifier(database_name))
+              )
+          try:
+              target_psycopg_url = target_url.replace(
+                  "postgresql+psycopg://", "postgresql://", 1
+              )
+              with psycopg.connect(target_psycopg_url, autocommit=True) as connection:
+                  connection.execute("CREATE SCHEMA workchord")
+                  connection.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
+                  connection.execute(
+                      sql.SQL("ALTER DATABASE {} SET timezone TO 'UTC'").format(
+                          sql.Identifier(database_name)
+                      )
+                  )
+                  connection.execute(
+                      sql.SQL(
+                          "ALTER DATABASE {} SET search_path TO workchord, pg_catalog"
+                      ).format(sql.Identifier(database_name))
+                  )
+
+              os.environ["DATABASE_URL"] = target_url
+              from app.config import get_settings
+              get_settings.cache_clear()
+              from app.database import close_database, engine as async_engine
+              from app.database_config import parse_database_configuration
+              from app.services.upgrade_service import bootstrap_database_schema
+
+              before, _, after = bootstrap_database_schema()
+              assert before.state == "empty"
+              assert after.is_current
+
+              configuration = parse_database_configuration(get_settings())
+              sync_engine = create_engine(
+                  configuration.sync_url,
+                  connect_args=dict(configuration.connect_args),
+              )
+              try:
+                  with sync_engine.connect() as connection:
+                      assert connection.execute(text("SELECT 1")).scalar_one() == 1
+              finally:
+                  sync_engine.dispose()
+
+              async def async_smoke() -> None:
+                  async with async_engine.connect() as connection:
+                      assert (await connection.execute(text("SELECT 1"))).scalar_one() == 1
+                  await close_database()
+
+              asyncio.run(async_smoke())
+          finally:
+              with psycopg.connect(admin_psycopg_url, autocommit=True) as connection:
+                  connection.execute(
+                      sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(
+                          sql.Identifier(database_name)
+                      )
+                  )
+          PY
           )
       - name: Validate Python source and migrations
         run: |

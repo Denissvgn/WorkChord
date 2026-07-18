@@ -34,7 +34,6 @@ def upgrade() -> None:
         sa.Column(
             "created_by_session_id",
             sa.Integer(),
-            sa.ForeignKey("user_sessions.id", ondelete="SET NULL"),
             nullable=True,
         ),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),

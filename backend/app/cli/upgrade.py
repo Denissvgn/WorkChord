@@ -7,8 +7,10 @@ import sys
 
 from app.services.upgrade_service import (
     UpgradeError,
+    bootstrap_database_schema,
     inspect_database,
     run_alembic_upgrade,
+    run_database_repairs,
 )
 
 
@@ -26,21 +28,43 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Upgrade WorkChord database schema safely.",
     )
-    parser.add_argument(
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
         "--check",
         action="store_true",
         help="Inspect schema state and exit without changing the database.",
     )
+    mode.add_argument(
+        "--schema-only",
+        action="store_true",
+        help="Bootstrap an empty target to head without application rows or seed repairs.",
+    )
+    mode.add_argument(
+        "--repairs-only",
+        action="store_true",
+        help="Run serialized post-copy seed and compatibility repairs on a current schema.",
+    )
     parser.add_argument(
         "--skip-backup",
         action="store_true",
-        help="Do not create a SQLite backup before upgrading.",
+        help=(
+            "Do not create an automatic SQLite backup. This never bypasses the "
+            "PostgreSQL external backup/PITR gate."
+        ),
     )
     parser.add_argument(
         "--backup-dir",
         type=Path,
         default=None,
         help="Directory for SQLite backups. Defaults to ./backups next to the DB file.",
+    )
+    parser.add_argument(
+        "--external-backup-reference",
+        default=None,
+        help=(
+            "Operator-provided backup/PITR recovery-point reference required before "
+            "upgrading a non-empty PostgreSQL database."
+        ),
     )
     parser.add_argument(
         "--no-repairs",
@@ -64,18 +88,37 @@ def main(argv: list[str] | None = None) -> int:
             _print_status("Database status")
             return 0
 
-        before, backup_path, after = run_alembic_upgrade(
-            backup=not args.skip_backup,
-            backup_dir=args.backup_dir,
-            stamp_unversioned_current=not args.no_stamp_unversioned_current,
-            run_repairs=not args.no_repairs,
-        )
+        if args.repairs_only:
+            before, after = run_database_repairs()
+            print(
+                f"Before repairs: state={before.state}, "
+                f"revision={before.current_revision or 'none'}"
+            )
+            print(
+                f"After repairs: state={after.state}, "
+                f"revision={after.current_revision or 'none'}"
+            )
+            return 0
+
+        if args.schema_only:
+            before, backup_path, after = bootstrap_database_schema()
+        else:
+            before, backup_path, after = run_alembic_upgrade(
+                backup=not args.skip_backup,
+                backup_dir=args.backup_dir,
+                stamp_unversioned_current=not args.no_stamp_unversioned_current,
+                run_repairs=not args.no_repairs,
+                external_backup_reference=args.external_backup_reference,
+            )
+
         print(
             f"Before: state={before.state}, "
             f"revision={before.current_revision or 'none'}, head={before.head_revision}"
         )
         if backup_path:
             print(f"Backup: {backup_path}")
+        elif args.external_backup_reference:
+            print(f"External backup/PITR gate: {args.external_backup_reference}")
         else:
             print("Backup: not created")
         print(

@@ -19,6 +19,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.database import Base
+from app.config import get_settings
 from app import models  # noqa: F401 - register every mapper
 from tests.support import (
     FailureInjector,
@@ -67,6 +68,21 @@ def frozen_clock() -> FrozenClock:
 @pytest.fixture
 def failure_injector() -> FailureInjector:
     return FailureInjector()
+
+
+@pytest.fixture
+def configure_database(monkeypatch: pytest.MonkeyPatch):
+    """Point shared database helpers at one test target and clear caches."""
+
+    def configure(database_url: str, *, ssl_mode: str = "disable") -> str:
+        monkeypatch.setenv("DATABASE_URL", database_url)
+        monkeypatch.setenv("DEPLOYMENT_ENVIRONMENT", "test")
+        monkeypatch.setenv("DATABASE_SSL_MODE", ssl_mode)
+        get_settings.cache_clear()
+        return database_url
+
+    yield configure
+    get_settings.cache_clear()
 
 
 @pytest.fixture

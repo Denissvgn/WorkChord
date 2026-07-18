@@ -1228,6 +1228,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
+    { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
@@ -1242,7 +1243,6 @@ build = [
     { name = "setuptools" },
 ]
 test = [
-    { name = "psycopg", extra = ["binary"] },
     { name = "pytest" },
     { name = "pytest-asyncio" },
 ]
@@ -1257,6 +1257,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.104.0" },
     { name = "httpx", specifier = ">=0.25.0" },
     { name = "mcp", extras = ["cli"], specifier = ">=1,<2" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
     { name = "pydantic", specifier = ">=2.5.0" },
     { name = "pydantic-settings", specifier = ">=2.1.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
@@ -1269,7 +1270,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 build = [{ name = "setuptools", specifier = "==83.0.0" }]
 test = [
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
     { name = "pytest", specifier = ">=8.4,<10" },
     { name = "pytest-asyncio", specifier = ">=1.2,<2" },
 ]

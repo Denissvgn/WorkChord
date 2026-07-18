@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.database import async_session_maker, init_db
+from app.database import async_session_maker, close_database, init_db
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
 from app.services.github_status_automation_service import GitHubStatusAutomationService
@@ -23,32 +23,36 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
-    async with mcp.session_manager.run():
-        # Startup
-        await init_db()
-        async with async_session_maker() as db:
-            await TemplateService(db).seed_default_templates()
-            await LabelService(db).seed_default_labels()
-            await SavedViewService(db).seed_default_views()
-            await GitHubStatusAutomationService(db).seed_default_rules()
-            await RuntimeSettingsService(db).migrate_legacy_email_settings()
-        delivery_stop = asyncio.Event()
-        delivery_worker = None
-        if settings.outbound_delivery_worker_enabled:
-            delivery_worker = asyncio.create_task(
-                outbound_delivery_worker_loop(
-                    delivery_stop,
-                    poll_seconds=settings.outbound_delivery_poll_seconds,
-                    batch_size=settings.outbound_delivery_batch_size,
-                ),
-                name="outbound-delivery-worker",
-            )
-        try:
-            yield
-        finally:
-            delivery_stop.set()
-            if delivery_worker is not None:
-                await delivery_worker
+    try:
+        async with mcp.session_manager.run():
+            # Startup is assert-only for schema state. A dedicated upgrade
+            # command owns all DDL before replicas begin serving traffic.
+            await init_db()
+            async with async_session_maker() as db:
+                await TemplateService(db).seed_default_templates()
+                await LabelService(db).seed_default_labels()
+                await SavedViewService(db).seed_default_views()
+                await GitHubStatusAutomationService(db).seed_default_rules()
+                await RuntimeSettingsService(db).migrate_legacy_email_settings()
+            delivery_stop = asyncio.Event()
+            delivery_worker = None
+            if settings.outbound_delivery_worker_enabled:
+                delivery_worker = asyncio.create_task(
+                    outbound_delivery_worker_loop(
+                        delivery_stop,
+                        poll_seconds=settings.outbound_delivery_poll_seconds,
+                        batch_size=settings.outbound_delivery_batch_size,
+                    ),
+                    name="outbound-delivery-worker",
+                )
+            try:
+                yield
+            finally:
+                delivery_stop.set()
+                if delivery_worker is not None:
+                    await delivery_worker
+    finally:
+        await close_database()
 
 
 app = FastAPI(

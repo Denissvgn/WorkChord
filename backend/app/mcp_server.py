@@ -18,7 +18,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app import mcp_agent_tools
 from app.config import get_settings
-from app.database import async_session_maker, init_db
+from app.database import async_session_maker, close_database, init_db
 from app.models.agent import AgentActor
 from app.services.agent_service import (
     AgentConflictError,
@@ -2005,6 +2005,18 @@ def mount_mcp_http(app: Any, path: str) -> None:
     app.mount(normalized_path, mcp_http_app, name="mcp")
 
 
+async def _run_standalone_transport(transport: str) -> None:
+    """Run and dispose a standalone transport on one event loop."""
+
+    try:
+        if transport == "stdio":
+            await mcp.run_stdio_async()
+        else:
+            await mcp.run_streamable_http_async()
+    finally:
+        await close_database()
+
+
 def main(argv: Optional[list[str]] = None) -> None:
     """Run the standalone MCP server."""
     parser = argparse.ArgumentParser(description="Run WorkChord MCP server")
@@ -2026,7 +2038,7 @@ def main(argv: Optional[list[str]] = None) -> None:
             asyncio.run(init_db())
     else:
         asyncio.run(init_db())
-    mcp.run(transport=args.transport)
+    asyncio.run(_run_standalone_transport(args.transport))
 
 
 if __name__ == "__main__":
