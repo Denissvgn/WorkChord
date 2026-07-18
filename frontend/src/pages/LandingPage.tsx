@@ -110,7 +110,7 @@ const LandingPage = () => {
                 <Link className="landing-nav__action landing-action" to="/">Open workspace <span aria-hidden="true">↗</span></Link>
             </header>
 
-            <main id="landing-main">
+            <main id="landing-main" tabIndex={-1}>
                 <section className="landing-hero" aria-labelledby="landing-title">
                     <div className="landing-hero__copy">
                         <p className="landing-hero__context">SELF-HOSTED PLANNING + DELIVERY</p>
