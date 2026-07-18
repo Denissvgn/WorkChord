@@ -95,7 +95,15 @@ const LandingPage = () => {
 
     return (
         <div className="landing-page">
-            <a className="landing-skip-link landing-action" href="#landing-main">Skip to content</a>
+            <a
+                className="landing-skip-link landing-action"
+                href="#landing-main"
+                onClick={() => {
+                    document.getElementById('landing-main')?.focus();
+                }}
+            >
+                Skip to content
+            </a>
 
             <header className="landing-nav" aria-label="Landing page navigation">
                 <Link className="landing-wordmark landing-action" to="/welcome">WorkChord</Link>
