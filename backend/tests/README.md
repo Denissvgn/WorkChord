@@ -22,4 +22,6 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend \
 
 Psycopg is a packaged runtime dependency. CI pins PostgreSQL 18.4 by digest,
 runs both dialect lanes, and validates the installed wheel outside the source
-tree, including the `workchord-mcp` and `workchord-worker` entry points.
+tree, including the `workchord-mcp`, `workchord-worker`,
+`workchord-db-migrate`, `workchord-db-cutover`, and
+`workchord-db-closeout` entry points plus their packaged evidence schemas.

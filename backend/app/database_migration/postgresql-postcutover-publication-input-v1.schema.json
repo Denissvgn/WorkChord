@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://workchord.local/schemas/postgresql-postcutover-publication-input-v1.schema.json",
+  "title": "WorkChord PostgreSQL post-cutover publication input v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "schema_version",
+    "publication_id",
+    "published_at",
+    "status",
+    "application_version",
+    "postgresql_version",
+    "postgresql_version_evidence_sha256",
+    "release_boundary",
+    "artifact_references",
+    "operational_exceptions",
+    "approval"
+  ],
+  "properties": {
+    "kind": {
+      "const": "workchord-postgresql-postcutover-publication-input"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "publication_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "published_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "status": {
+      "const": "approved_for_publication"
+    },
+    "application_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "postgresql_version": {
+      "type": "string",
+      "pattern": "^18\\.[0-9]+$"
+    },
+    "postgresql_version_evidence_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "release_boundary": {
+      "$ref": "#/$defs/identifier"
+    },
+    "artifact_references": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "public_uri", "sha256"],
+        "properties": {
+          "kind": {
+            "enum": ["precutover_qualification", "production_cutover"]
+          },
+          "public_uri": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 2048
+          },
+          "sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "operational_exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "summary",
+          "owner",
+          "approved_at",
+          "expires_at",
+          "approval_evidence_sha256"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "approved_at": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "expires_at": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "approval_evidence_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_owner", "release_owner", "evidence_sha256"],
+      "properties": {
+        "product_owner": {
+          "$ref": "#/$defs/text"
+        },
+        "release_owner": {
+          "$ref": "#/$defs/text"
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/+\\-]{2,255}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 3
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

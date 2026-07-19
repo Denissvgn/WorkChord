@@ -32,10 +32,9 @@ its placeholder readiness fields with the exact payload from every replica,
 and set `captured_at` immediately before sealing it:
 
 ~~~bash
-cd backend
 .venv/bin/workchord-db-migrate seal-document \
-  --input ../reports/migration/writer-drain.raw.json \
-  --output ../reports/migration/writer-drain.json
+  --input reports/migration/writer-drain.raw.json \
+  --output reports/migration/writer-drain.json
 ~~~
 
 Never put a database URL, password, certificate key, API token, setting
@@ -48,7 +47,6 @@ by the migration operator. The snapshot and manifest paths must not already
 exist.
 
 ~~~bash
-cd backend
 .venv/bin/workchord-db-migrate preflight \
   --source "$SOURCE_DB" \
   --snapshot "$SNAPSHOT_DB" \
@@ -73,7 +71,6 @@ Use the dedicated migrator login. `DATABASE_SESSION_ROLE` is the NOLOGIN owner
 role granted only to the migrator. Production requires verified TLS.
 
 ~~~bash
-cd backend
 DATABASE_PROCESS_ROLE=migration \
 DATABASE_POOL_SIZE=1 \
 DATABASE_MAX_OVERFLOW=0 \
@@ -97,7 +94,6 @@ insert benchmark and the approved outage/WAL/restart tradeoff. Seal both with
 ## Load
 
 ~~~bash
-cd backend
 .venv/bin/workchord-db-migrate load \
   --snapshot "$SNAPSHOT_DB" \
   --manifest "$EVIDENCE_DIR/source-manifest.json" \
@@ -117,7 +113,6 @@ the next table. A different manifest or target identity is refused.
 ## Raw reconciliation, repairs, and final reconciliation
 
 ~~~bash
-cd backend
 .venv/bin/workchord-db-migrate reconcile \
   --phase raw \
   --snapshot "$SNAPSHOT_DB" \

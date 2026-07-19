@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 import pytest_asyncio
-from sqlalchemy import Column, Integer, MetaData, String, Table, func, select, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Column, Integer, MetaData, String, Table, func, select, text, update
+from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -35,6 +35,7 @@ from app.models.outbound_webhook import (
 from app.models.task import Task
 from app.models.triage import TriageItem, TriageItemStatus
 from app.services.outbound_webhook_service import OutboundWebhookService
+from app.services.agent_planning_service import AgentPlanningService
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.upgrade_service import bootstrap_database_schema
 from app.sql_semantics import portable_contains
@@ -542,6 +543,80 @@ async def test_postgresql_race_matrix_preserves_all_invariants(
     assert unicode_matches == [3]
     assert escaped_matches == [5]
     assert ordered == [1, 4, 2, 3, 5]
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+@pytest.mark.asyncio
+async def test_schedule_locks_are_iteration_scoped(
+    postgresql_session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """Different aggregates proceed while the same aggregate is serialized."""
+    factory = postgresql_session_factory
+    seeded = await _seed_race_workspace(factory)
+    first_iteration_id = int(seeded["iteration_id"])
+    async with factory() as db:
+        first_iteration = await db.get(Iteration, first_iteration_id)
+        assert first_iteration is not None
+        second_iteration = Iteration(
+            name="Independent schedule iteration",
+            start_date=date(2026, 2, 1),
+            end_date=date(2026, 2, 14),
+            calendar_id=first_iteration.calendar_id,
+        )
+        db.add(second_iteration)
+        await db.flush()
+        db.add(Task(title="Independent schedule task", iteration_id=second_iteration.id))
+        await db.commit()
+        second_iteration_id = second_iteration.id
+
+    first_locked = asyncio.Event()
+    release_first = asyncio.Event()
+
+    async def hold_first_aggregate() -> None:
+        async with factory() as db:
+            await AgentPlanningService(db)._lock_schedule_task_set(
+                first_iteration_id
+            )
+            first_locked.set()
+            await release_first.wait()
+            await db.rollback()
+
+    holder = asyncio.create_task(hold_first_aggregate())
+    await first_locked.wait()
+    try:
+        async with factory() as db:
+            await db.execute(text("SET LOCAL lock_timeout = '250ms'"))
+            await asyncio.wait_for(
+                AgentPlanningService(db)._lock_schedule_task_set(
+                    second_iteration_id
+                ),
+                timeout=1.0,
+            )
+            await db.rollback()
+
+        async with factory() as db:
+            await db.execute(text("SET LOCAL lock_timeout = '250ms'"))
+            with pytest.raises(DBAPIError, match="lock timeout"):
+                await AgentPlanningService(db)._lock_schedule_task_set(
+                    first_iteration_id
+                )
+            await db.rollback()
+    finally:
+        release_first.set()
+        await holder
+
+
+def test_schedule_lock_implementation_has_no_global_table_lock() -> None:
+    source = (
+        Path(__file__).resolve().parents[3]
+        / "backend/app/services/agent_planning_service.py"
+    ).read_text(encoding="utf-8")
+
+    assert "LOCK TABLE tasks" not in source
+    assert ".with_for_update(read=True)" in source
+    assert "Schedule inputs changed during apply" in source
 
 
 def test_global_lock_order_is_documented_and_implemented() -> None:

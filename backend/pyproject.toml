@@ -32,6 +32,8 @@ dependencies = [
 workchord-mcp = "app.mcp_server:main"
 workchord-worker = "app.cli.worker:main"
 workchord-db-migrate = "app.cli.database_migration:main"
+workchord-db-cutover = "app.cli.cutover:main"
+workchord-db-closeout = "app.cli.closeout:main"
 
 [dependency-groups]
 build = ["setuptools==83.0.0"]
@@ -62,4 +64,9 @@ include = ["app", "app.*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-app = ["config/*.yaml", "migrations/alembic.ini", "migrations/script.py.mako"]
+app = [
+    "config/*.yaml",
+    "database_migration/*.json",
+    "migrations/alembic.ini",
+    "migrations/script.py.mako",
+]

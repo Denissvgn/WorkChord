@@ -32,7 +32,7 @@ Current `FOR UPDATE` inventory:
 | Task context revision | `Task` | `task_context_revision_service.lock_task_context` |
 | Atomic assignment/work lifecycle | `Task -> AgentActor -> AgentTaskAssignment -> AgentRun` | ordered helpers in `AgentWorkService` |
 | Legacy claim/event/run lifecycle | `Task` or `AgentRun` | focused transitions in `AgentService`; live uniqueness indexes are the final fence |
-| Planning preview/apply | `Iteration -> Task[id...]` | `AgentPlanningService`; the later schedule table-lock optimization remains DBM-RES-001 |
+| Planning preview/apply | `Iteration -> Calendar[FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | `AgentPlanningService`; all exclusive locks are scoped to one iteration aggregate |
 | Profile preset creation | `TeamMemberProfile` | seed-key uniqueness plus locked re-read |
 | Triage reservation | `TriageItem` | `TriageService.get_by_id(for_update=True)` |
 | Delivery queue | due `OutboundWebhookDelivery[id...]` | PostgreSQL `FOR UPDATE SKIP LOCKED`; SQLite compare-and-set lease update |
@@ -42,6 +42,16 @@ SQLite ignores `SELECT FOR UPDATE`. Its compatibility path may use a no-op
 write only inside an explicit `dialect.name == "sqlite"` branch to reserve the
 single writer. PostgreSQL paths never classify or retry SQLite "database is
 locked" messages.
+
+The iteration row is the schedule aggregate root. Its `FOR UPDATE` lock fences
+new task and team-member foreign keys for that iteration; existing task,
+dependency, member, and vacation rows are then locked in deterministic order.
+The calendar uses `FOR SHARE`, so a calendar edit waits but schedules for two
+different iterations using the same calendar do not block one another. Apply
+also re-hashes every input after scheduling, normalizing only the three
+scheduler-owned output fields back to their pre-apply values, before task
+versions and audit events are committed. PostgreSQL schedule code contains no
+table-level lock.
 
 ## Retry boundary
 

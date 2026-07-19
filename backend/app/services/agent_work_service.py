@@ -74,6 +74,11 @@ from app.services.triage_service import TriageService
 from app.utils.time import as_utc, utc_now
 
 
+AGENT_BUSY_POLL_SECONDS = 1
+AGENT_IDLE_POLL_SECONDS = 5
+AGENT_RETRY_MAX_SECONDS = 30
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -837,7 +842,7 @@ class AgentWorkService:
                 state="attention_required",
                 current=current_item,
                 recovery_codes=recovery_codes,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_BUSY_POLL_SECONDS),
             )
         if accepted:
             current = await self._work_item(accepted[0], 0, now, running=running)
@@ -860,7 +865,7 @@ class AgentWorkService:
                 cursor=pagination.next_cursor,
                 state="resume",
                 current=current,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_BUSY_POLL_SECONDS),
             )
 
         queued_result = await self.db.execute(
@@ -912,11 +917,11 @@ class AgentWorkService:
                 next=items[0],
                 queue=page,
                 blocked_assigned=blocked_page,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
             )
         if blocked:
             future_times = [
-                item.assignment.not_before
+                as_utc(item.assignment.not_before)
                 for item in blocked
                 if item.assignment.not_before is not None
                 and as_utc(item.assignment.not_before) > as_utc(now)
@@ -930,7 +935,14 @@ class AgentWorkService:
                 state="wait",
                 next=blocked[0],
                 blocked_assigned=blocked_page,
-                next_poll_after=min(future_times) if future_times else now + timedelta(minutes=5),
+                next_poll_after=(
+                    min(
+                        min(future_times),
+                        now + timedelta(seconds=AGENT_RETRY_MAX_SECONDS),
+                    )
+                    if future_times
+                    else now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS)
+                ),
             )
         return AgentWorkDecisionResponse(
             actor=self.actor_response(actor),
@@ -939,7 +951,7 @@ class AgentWorkService:
             pagination=pagination,
             cursor=pagination.next_cursor,
             state="no_work",
-            next_poll_after=now + timedelta(minutes=5),
+            next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
         )
 
     async def get_reviews(

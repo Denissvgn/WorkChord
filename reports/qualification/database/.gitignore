@@ -1,0 +1,5 @@
+# Qualification outputs are large, environment-specific, and may contain
+# operational metadata. Keep only the workspace contract in Git.
+*
+!.gitignore
+!README.md

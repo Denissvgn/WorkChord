@@ -7,7 +7,9 @@ and authenticated MCP workflows into one application.
 
 ## Included components
 
-- A FastAPI and SQLAlchemy backend with SQLite storage and Alembic migrations.
+- A FastAPI and SQLAlchemy backend with PostgreSQL integration storage,
+  Alembic migrations, and an explicit SQLite development/migration-source
+  compatibility path.
 - A React and Vite frontend with English and Russian interfaces.
 - Docker Compose profiles for local and production-style deployments.
 - Portable WorkChord planner and worker role packages for agent integrations.
@@ -59,17 +61,27 @@ The MCP command is installed with the backend package:
 
 ## Docker
 
-For a local container deployment:
+For a clean local PostgreSQL container deployment:
 
 ```bash
 cp .env.example .env
-docker compose up --build
+docker compose config --quiet
+docker compose up --build --detach
+docker compose ps
 ```
 
-The backend data is stored in the `workchord_data` volume. Back up that volume
-before upgrades. `docker-compose.prod.yml` is the hardened deployment profile;
-it requires exact image references, HTTPS origins, host allowlists, proxy trust,
-and production secrets supplied through the environment.
+The integration stack runs PostgreSQL 18 and stores its cluster, WAL archive,
+and backup artifacts in separate major-version-aware volumes. Do not copy a
+live database volume. Use the checksummed logical/base backup jobs and prove an
+isolated restore as described in the
+[backup and restore runbook](docs/runbooks/postgresql-backup-restore.md).
+
+`docker-compose.prod.yml` is the hardened PostgreSQL deployment profile. It
+requires separate migration, runtime, and backup credentials; exact image
+identities; verified database TLS; HTTPS origins; host allowlists; proxy trust;
+and independently managed secrets. Start with the
+[PostgreSQL operator and developer guide](docs/runbooks/postgresql-operations.md)
+rather than adapting the local defaults for production.
 
 ## Configuration
 
@@ -77,9 +89,41 @@ and production secrets supplied through the environment.
 `SETTINGS_ENCRYPTION_KEY` before saving runtime credentials. Keep `.env`, API
 keys, database files, and certificates outside version control.
 
+The direct Python development default remains SQLite only for local work and
+tests. PostgreSQL is the integration and production target, and production
+fails closed when it is configured with SQLite. Database URL, pool, TLS,
+process-role, migration, maintenance, and readiness policies are indexed in
+the [database operations guide](docs/runbooks/postgresql-operations.md).
+
 The protected control plane uses `WORKCHORD_ADMIN_API_KEY`. Agent provisioning
 uses `AGENT_BOOTSTRAP_API_KEY`; normal MCP actors should receive separate,
 least-privilege credentials.
+
+## PostgreSQL migration and capacity
+
+The pre-cutover runbook set is deliberately fail closed:
+
+- [SQLite source migration](docs/runbooks/sqlite-to-postgresql-migration.md)
+- [cutover, rollback, and stop conditions](docs/runbooks/sqlite-to-postgresql-cutover.md)
+- [security and credential rotation](docs/runbooks/postgresql-security.md)
+- [backup, PITR, and isolated restore](docs/runbooks/postgresql-backup-restore.md)
+- [scale and resilience qualification](docs/runbooks/postgresql-qualification.md)
+- [signed rehearsal and production-cutover evidence](docs/runbooks/postgresql-rehearsal-cutover-evidence.md)
+- [post-cutover release publication and independent closeout](docs/runbooks/postgresql-postcutover-release-and-closeout.md)
+- [troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
+
+Qualification can certify only **1,250 opaque browser identities, 250 active
+browser sessions, and 200 concurrent MCP/agent clients** under the frozen
+workload contract. Opaque identities are not authenticated people;
+authentication, RBAC, and any people-based capacity claim are separate scope.
+The repository's load tooling is not itself qualification evidence: three
+complete, consecutive, independently reviewed production-shaped attempts are
+required before migration rehearsal or production cutover.
+
+This repository supports the production PostgreSQL path but does not by itself
+assert that a particular deployment has cut over. Post-cutover release notes
+and a final SHIP decision are generated only from the trusted production
+evidence chain; missing production evidence remains NO-SHIP.
 
 ## Agent role packages
 

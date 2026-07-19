@@ -93,6 +93,13 @@ jobs:
               "app/main.py",
               "app/mcp_server.py",
               "app/cli/worker.py",
+              "app/cli/cutover.py",
+              "app/cli/closeout.py",
+              "app/database_migration/cutover.py",
+              "app/database_migration/closeout.py",
+              "app/database_migration/postgresql-cutover-execution-v1.schema.json",
+              "app/database_migration/postgresql-postcutover-publication-input-v1.schema.json",
+              "app/database_migration/postgresql-closeout-observations-v1.schema.json",
               "app/config/scheduling_rules.yaml",
           }
           source_migrations = Path(argv[2])
@@ -141,92 +148,45 @@ jobs:
             PY
             "$installed_wheel_venv/bin/workchord-mcp" --help >/dev/null
             "$installed_wheel_venv/bin/workchord-worker" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-migrate" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-cutover" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-closeout" --help >/dev/null
           )
-          (
-            cd "$(mktemp -d)"
-            export DEPLOYMENT_ENVIRONMENT=test
-            export DATABASE_SSL_MODE=disable
-            export POSTGRES_ADMIN_URL="postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres"
-            "$installed_wheel_venv/bin/python" - <<'PY'
-          import asyncio
-          import os
-          from secrets import token_hex
-
-          import psycopg
-          from psycopg import sql
-          from sqlalchemy import create_engine, text
-
-          admin_url = os.environ["POSTGRES_ADMIN_URL"]
-          admin_psycopg_url = admin_url.replace("postgresql+psycopg://", "postgresql://", 1)
-          database_name = f"workchord_test_{token_hex(16)}"
-          target_url = admin_url.rsplit("/", 1)[0] + f"/{database_name}"
-          with psycopg.connect(admin_psycopg_url, autocommit=True) as connection:
-              connection.execute(
-                  sql.SQL(
-                      "CREATE DATABASE {} TEMPLATE template0 ENCODING 'UTF8' "
-                      "LOCALE_PROVIDER builtin BUILTIN_LOCALE 'PG_UNICODE_FAST'"
-                  ).format(sql.Identifier(database_name))
-              )
-          try:
-              target_psycopg_url = target_url.replace(
-                  "postgresql+psycopg://", "postgresql://", 1
-              )
-              with psycopg.connect(target_psycopg_url, autocommit=True) as connection:
-                  connection.execute("CREATE SCHEMA workchord")
-                  connection.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
-                  connection.execute(
-                      sql.SQL("ALTER DATABASE {} SET timezone TO 'UTC'").format(
-                          sql.Identifier(database_name)
-                      )
-                  )
-                  connection.execute(
-                      sql.SQL(
-                          "ALTER DATABASE {} SET search_path TO workchord, pg_catalog"
-                      ).format(sql.Identifier(database_name))
-                  )
-
-              os.environ["DATABASE_URL"] = target_url
-              from app.config import get_settings
-              get_settings.cache_clear()
-              from app.database import close_database, engine as async_engine
-              from app.database_config import parse_database_configuration
-              from app.services.upgrade_service import bootstrap_database_schema
-
-              before, _, after = bootstrap_database_schema()
-              assert before.state == "empty"
-              assert after.is_current
-
-              configuration = parse_database_configuration(get_settings())
-              sync_engine = create_engine(
-                  configuration.sync_url,
-                  connect_args=dict(configuration.connect_args),
-              )
-              try:
-                  with sync_engine.connect() as connection:
-                      assert connection.execute(text("SELECT 1")).scalar_one() == 1
-              finally:
-                  sync_engine.dispose()
-
-              async def async_smoke() -> None:
-                  async with async_engine.connect() as connection:
-                      assert (await connection.execute(text("SELECT 1"))).scalar_one() == 1
-                  await close_database()
-
-              asyncio.run(async_smoke())
-          finally:
-              with psycopg.connect(admin_psycopg_url, autocommit=True) as connection:
-                  connection.execute(
-                      sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(
-                          sql.Identifier(database_name)
-                      )
-                  )
-          PY
-          )
+          "$installed_wheel_venv/bin/python" \
+            scripts/ci/installed_wheel_postgresql_qualification.py \
+            --admin-url "postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres"
       - name: Validate Python source and migrations
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.6.2'"
+      - name: Validate the PostgreSQL qualification harness contract
+        run: |
+          qualification_dir="$(mktemp -d)"
+          PYTHONPATH=backend .venv/bin/python scripts/load/seed.py \
+            --profile full \
+            --dry-run \
+            --manifest "$qualification_dir/full-seed-plan.json"
+          for profile in human_peak_v1 mixed_peak_v1 connection_surge_v1 external_llm_wait_v1; do
+            PYTHONPATH=backend .venv/bin/python scripts/load/run.py \
+              --profile "$profile" \
+              --phase dry \
+              --base-url http://127.0.0.1:8001 \
+              --authorize-host 127.0.0.1:8001 \
+              --environment test \
+              --output "$qualification_dir/$profile-dry.json"
+          done
+          cp -R "$qualification_dir" /tmp/workchord-qualification-contracts
+      - name: Validate PostgreSQL operator documentation
+        run: |
+          .venv/bin/python scripts/ci/check_postgresql_documentation.py
+      - name: Upload the qualification harness contracts
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: workchord-qualification-contracts
+          path: /tmp/workchord-qualification-contracts
+          if-no-files-found: error
+          retention-days: 14
       - name: Validate agent role packages
         run: |
           .venv/bin/python scripts/build_agent_skills.py validate

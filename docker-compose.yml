@@ -24,6 +24,18 @@ services:
       - archive_command=mkdir -p /var/lib/postgresql/wal-archive && test ! -f /var/lib/postgresql/wal-archive/%f && cp %p /var/lib/postgresql/wal-archive/%f
       - -c
       - log_min_duration_statement=500ms
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.track=all
+      - -c
+      - track_io_timing=on
+      - -c
+      - track_wal_io_timing=on
+      - -c
+      - log_lock_waits=on
+      - -c
+      - deadlock_timeout=200ms
     volumes:
       - workchord_postgresql18_data:/var/lib/postgresql
       - workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive

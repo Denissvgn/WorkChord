@@ -12,6 +12,13 @@ No other SQLite or PostgreSQL driver is part of the support contract. Database
 credentials and connection-policy values must not be logged; use the redacted
 database summary exposed by `app.database` for diagnostics.
 
+The production fallback allowed value is always false. PostgreSQL production
+support is declared only by the signed post-cutover publication for the actual
+release boundary. At that boundary SQLite production support is removed;
+SQLite remains available only for direct development, tests, and the frozen
+read-only migration source. Repository support code or a synthetic evidence
+chain is not proof that a particular deployment completed cutover.
+
 `DATABASE_PROCESS_ROLE=web` permits at most 20 pooled connections per process
 (15 steady plus 5 overflow by default). `delivery_worker` permits at most 10
 (8 plus 2 in the approved deployment contract). One-shot migration and

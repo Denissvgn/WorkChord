@@ -2,7 +2,12 @@
 
 This DBM-CUT-001 runbook is a production mutation checklist, not production
 authorization. Execute it first in a timed tabletop and then in the required
-rehearsals. Preserve every command result and checksummed artifact.
+rehearsals. Preserve every command result and checksummed artifact. Copy
+`postgresql-cutover-checklist.md` into the approved evidence system and use it
+as the signed timer, authority, gate, go/no-go, and point-of-no-return record.
+Encode that reviewed record with the installed `workchord-db-cutover` workflow
+in `postgresql-rehearsal-cutover-evidence.md`; the command records evidence and
+never performs or authorizes a database or deployment mutation.
 
 ## Named authority and immutable inputs
 
@@ -94,6 +99,14 @@ not an invitation to improvise.
     accepted PostgreSQL application write is the point of no return. Record its
     timestamp/correlation ID and begin stabilization monitoring.
 
+All source snapshot, target bootstrap, load, reconciliation, and repair
+commands are executed from the repository root exactly as published in
+`sqlite-to-postgresql-migration.md`. Deployment, backup, restore, maintenance,
+and troubleshooting prerequisites are indexed in `postgresql-operations.md`.
+Run each command's `--help` from the frozen released artifact during the
+pre-cutover walkthrough; a flag/path difference is a stop condition, not an
+operator improvisation.
+
 ## Mandatory stop conditions
 
 Stop immediately for SQLite integrity/FK/orphan failure; unknown table/column
@@ -134,3 +147,6 @@ Stabilization monitors readiness, errors, latency, connections, locks,
 deadlocks, queue depth/age, WAL/archive/replication lag, storage/I/O,
 autovacuum/analyze, bloat, backup duration, and integrity. Monthly 99.9%
 availability is claimable only after the full 30-day client/gateway SLI window.
+Publish the actual release boundary and run the independent closure audit with
+the [post-cutover workflow](postgresql-postcutover-release-and-closeout.md);
+the production cutover record alone is not a SHIP decision.

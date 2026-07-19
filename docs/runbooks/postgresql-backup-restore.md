@@ -27,7 +27,7 @@ not replace, that service.
 Run a portable logical backup through the distinct backup URL:
 
 ~~~bash
-docker compose --profile backup run --rm logical-backup
+docker compose -f docker-compose.prod.yml --profile backup run --rm logical-backup
 ~~~
 
 The job refuses unconfirmed encrypted storage, writes with mode 0600, uses
@@ -35,7 +35,7 @@ custom format, verifies the archive catalog, records server/client versions,
 fsync-safe atomic naming, byte count, and SHA-256, and applies only the explicit
 retention window below `/backups/logical`.
 
-For a self-operated rehearsal primary, run:
+For the self-operated local/rehearsal primary, run:
 
 ~~~bash
 docker compose --profile backup run --rm base-backup

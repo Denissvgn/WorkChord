@@ -32,6 +32,15 @@ def test_local_compose_makes_postgresql_the_integration_database() -> None:
         "workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive" in volume
         for volume in services["postgres"]["volumes"]
     )
+    command = services["postgres"]["command"]
+    for setting in (
+        "shared_preload_libraries=pg_stat_statements",
+        "pg_stat_statements.track=all",
+        "track_io_timing=on",
+        "track_wal_io_timing=on",
+        "log_lock_waits=on",
+    ):
+        assert setting in command
     assert services["postgres"]["healthcheck"]["test"] == [
         "CMD-SHELL",
         "pg_isready -U postgres -d workchord",
@@ -46,6 +55,10 @@ def test_local_compose_makes_postgresql_the_integration_database() -> None:
         assert all("/app/data" not in volume for volume in services[service_name].get("volumes", []))
     assert services["logical-backup"]["image"] == POSTGRES_IMAGE
     assert services["base-backup"]["image"] == POSTGRES_IMAGE
+    initialization = (
+        REPOSITORY_ROOT / "deploy/postgresql/init-development.sql"
+    ).read_text(encoding="utf-8")
+    assert "CREATE EXTENSION IF NOT EXISTS pg_stat_statements" in initialization
 
 
 def test_rehearsal_and_production_topologies_have_multiple_bounded_replicas() -> None:

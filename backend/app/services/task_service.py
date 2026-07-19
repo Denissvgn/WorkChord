@@ -491,7 +491,6 @@ class TaskService:
                 selectinload(Task.request_source_links).selectinload(
                     RequestSourceLink.request_source
                 ),
-                selectinload(Task.dependencies).selectinload(TaskDependency.depends_on),
             )
             .order_by(Task.sort_order, Task.id)
         )
@@ -510,6 +509,29 @@ class TaskService:
         if len(tasks) > max_tasks:
             raise CollectionLimitExceededError("iteration task tree", max_tasks)
         tasks_by_id = {task.id: task for task in tasks}
+
+        # Relationship access from synchronous scheduling/snapshot serializers
+        # must never initiate async I/O.  Rebuild this collection explicitly
+        # from one bounded query so concurrent flushes cannot leave a task with
+        # an expired or partially populated dependency relationship.
+        dependencies_by_task: dict[int, list[TaskDependency]] = {
+            task.id: [] for task in tasks
+        }
+        if tasks_by_id:
+            dependency_result = await self.db.execute(
+                select(TaskDependency)
+                .where(TaskDependency.task_id.in_(tasks_by_id))
+                .options(selectinload(TaskDependency.depends_on))
+                .order_by(TaskDependency.task_id, TaskDependency.id)
+            )
+            for dependency in dependency_result.scalars():
+                dependencies_by_task[dependency.task_id].append(dependency)
+        for task in tasks:
+            attributes.set_committed_value(
+                task,
+                "dependencies",
+                dependencies_by_task[task.id],
+            )
 
         visit_state: dict[int, int] = {}
 
