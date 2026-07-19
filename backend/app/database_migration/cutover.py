@@ -25,6 +25,11 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PublicKey,
 )
 
+from app.autonomy.execution_mode import (
+    local_signing_rejection_message,
+    zero_human_execution_enabled,
+)
+
 from app.database_migration.manifest import (
     ManifestError,
     canonical_json_bytes,
@@ -242,6 +247,8 @@ def _reject_secret_material(value: object, *, path: str = "<root>") -> None:
 
 
 def _private_key(path: Path) -> Ed25519PrivateKey:
+    if zero_human_execution_enabled():
+        raise CutoverEvidenceError(local_signing_rejection_message())
     mode = stat.S_IMODE(path.stat().st_mode)
     if mode & 0o077:
         raise CutoverEvidenceError(
@@ -304,6 +311,9 @@ def verify_signed_document(
     expected_kind: str | None = None,
 ) -> str:
     """Verify the checksum, Ed25519 signature, and external trust-key pin."""
+
+    if zero_human_execution_enabled():
+        raise CutoverEvidenceError(local_signing_rejection_message())
 
     try:
         verify_document(document)

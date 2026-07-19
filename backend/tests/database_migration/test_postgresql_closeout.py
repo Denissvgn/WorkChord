@@ -122,7 +122,7 @@ def _production_chain(tmp_path: Path) -> tuple[dict, dict]:
         "source_scope": {
             "deployment_id": "workchord-primary",
             "sqlite_identifier": "/srv/workchord/workchord.db",
-            "revision": "20260718_0032",
+            "revision": "20260719_0033",
         },
         "target": _target(),
         "authorities": _operators(),

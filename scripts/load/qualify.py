@@ -87,6 +87,16 @@ REPORT_GATES = frozenset(
     }
 )
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+ZERO_HUMAN_EXECUTION_MODE = "zero-human-agent-v1"
+
+
+def _reject_local_signing_in_zero_human_mode() -> None:
+    if os.getenv("WORKCHORD_EXECUTION_MODE", "").strip() == ZERO_HUMAN_EXECUTION_MODE:
+        raise QualificationInputError(
+            "File private keys and embedded trust keys are forbidden in "
+            f"{ZERO_HUMAN_EXECUTION_MODE}; use the remote-KMS detached-signature "
+            "interface and an externally resolved pinned trust anchor"
+        )
 
 
 def _schema_errors(document: Mapping[str, Any]) -> list[str]:
@@ -465,6 +475,7 @@ def _validate_run_bundle(
 
 
 def _private_key(path: Path) -> Ed25519PrivateKey:
+    _reject_local_signing_in_zero_human_mode()
     mode = stat.S_IMODE(path.stat().st_mode)
     if mode & 0o077:
         raise QualificationInputError(
@@ -608,6 +619,7 @@ def _finalize(args: argparse.Namespace) -> int:
 
 
 def _verify_report(document: Mapping[str, Any]) -> None:
+    _reject_local_signing_in_zero_human_mode()
     verify_document(document)
     errors = _schema_errors(document)
     if errors:

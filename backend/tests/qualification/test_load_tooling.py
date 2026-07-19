@@ -93,6 +93,15 @@ def test_load_target_and_seed_safety_fences_fail_closed(
         )
 
 
+def test_zero_human_mode_rejects_legacy_qualification_trust(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("WORKCHORD_EXECUTION_MODE", "zero-human-agent-v1")
+
+    with pytest.raises(QualificationInputError, match="embedded trust keys"):
+        _verify_report({})
+
+
 def test_weight_plan_and_browser_state_selection_are_deterministic() -> None:
     operations = [
         {"id": "one", "weight_percent": 41},

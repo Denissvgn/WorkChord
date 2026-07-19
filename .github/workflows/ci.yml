@@ -100,6 +100,14 @@ jobs:
               "app/database_migration/postgresql-cutover-execution-v1.schema.json",
               "app/database_migration/postgresql-postcutover-publication-input-v1.schema.json",
               "app/database_migration/postgresql-closeout-observations-v1.schema.json",
+              "app/autonomy/contracts/postgresql/contract-manifest-v1.json",
+              "app/autonomy/contracts/postgresql/autonomous-dag-v1.json",
+              "app/autonomy/contracts/postgresql/status-rules-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-capacity-contract-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-data-lifecycle-policy-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-load-result-v1.schema.json",
+              "app/autonomy/contracts/postgresql/postgresql-precutover-qualification-v1.schema.json",
+              "app/autonomy/contracts/postgresql/postgresql-resilience-observations-v1.schema.json",
               "app/config/scheduling_rules.yaml",
           }
           source_migrations = Path(argv[2])
@@ -138,9 +146,14 @@ jobs:
             export DATABASE_URL="sqlite+aiosqlite:///./workchord.db"
             "$installed_wheel_venv/bin/python" - <<'PY'
           from app.main import app
+          from app.autonomy.contracts.postgresql import load_postgresql_contract_bundle
           from app.services.upgrade_service import head_revision, run_alembic_upgrade
 
           assert app.title == "WorkChord API"
+          bundle = load_postgresql_contract_bundle()
+          assert len(bundle.members) == 7
+          assert bundle.archive_verified is False
+          assert bundle.blocker_codes == ("immutable-contract-archive-unavailable",)
           before, _, after = run_alembic_upgrade(backup=False, run_repairs=False)
           assert before.state == "empty"
           assert after.is_current
@@ -151,6 +164,7 @@ jobs:
             "$installed_wheel_venv/bin/workchord-db-migrate" --help >/dev/null
             "$installed_wheel_venv/bin/workchord-db-cutover" --help >/dev/null
             "$installed_wheel_venv/bin/workchord-db-closeout" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-agent-preflight" --help >/dev/null
           )
           "$installed_wheel_venv/bin/python" \
             scripts/ci/installed_wheel_postgresql_qualification.py \

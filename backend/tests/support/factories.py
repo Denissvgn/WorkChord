@@ -10,6 +10,7 @@ from typing import Any
 from sqlalchemy import Boolean, Date, DateTime, Float, Integer, JSON, LargeBinary, Numeric
 from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.types import TypeDecorator
 
 
 class MappedModelFactory:
@@ -32,7 +33,10 @@ class MappedModelFactory:
         column_type = column.type
         if isinstance(column_type, Boolean):
             return False
-        if isinstance(column_type, DateTime):
+        if isinstance(column_type, DateTime) or (
+            isinstance(column_type, TypeDecorator)
+            and isinstance(column_type.impl, DateTime)
+        ):
             return datetime(2026, 1, 1, tzinfo=UTC)
         if isinstance(column_type, Date):
             return date(2026, 1, 1)

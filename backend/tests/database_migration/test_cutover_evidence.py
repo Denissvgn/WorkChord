@@ -58,6 +58,27 @@ def _key_pair(directory: Path, name: str) -> tuple[Path, Path]:
     return private_path, public_path
 
 
+def test_zero_human_mode_rejects_file_signing_and_file_trust(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    private_key, public_key = _key_pair(tmp_path, "zero-human")
+    monkeypatch.setenv("WORKCHORD_EXECUTION_MODE", "zero-human-agent-v1")
+
+    with pytest.raises(CutoverEvidenceError, match="File private keys"):
+        _sign_document(
+            tmp_path / "forbidden.json",
+            {"kind": "test"},
+            signing_key=private_key,
+            signer="test-signer",
+        )
+
+    with pytest.raises(CutoverEvidenceError, match="file/embedded trust keys"):
+        from app.database_migration.cutover import verify_signed_document
+
+        verify_signed_document({}, trusted_public_key=public_key)
+
+
 def _timestamp(value: datetime) -> str:
     return value.astimezone(UTC).isoformat()
 
@@ -77,7 +98,7 @@ def _release(tmp_path: Path) -> dict:
                 ("gateway", "3"),
             )
         ],
-        "schema_head": "20260718_0032",
+        "schema_head": "20260719_0033",
         "configuration": {"name": "release.env", "sha256": "4" * 64},
         "hardware_evidence_sha256": "5" * 64,
         "seed_manifest_sha256": "6" * 64,
@@ -186,7 +207,7 @@ def _source(seed: str) -> dict:
     return {
         "deployment_id": "workchord-primary",
         "sqlite_identifier": "/srv/workchord/workchord.db",
-        "revision": "20260718_0032",
+        "revision": "20260719_0033",
         "snapshot_sha256": seed * 64,
         "manifest_sha256": chr(ord(seed) + 1) * 64,
     }
@@ -197,7 +218,7 @@ def _target() -> dict:
         "identifier": "postgres.internal:5432/workchord",
         "identity_sha256": "b" * 64,
         "managed_resource_id": "postgres-cluster-primary",
-        "revision": "20260718_0032",
+        "revision": "20260719_0033",
     }
 
 
@@ -496,7 +517,7 @@ def test_abort_two_rehearsals_and_production_cutover_are_cryptographically_bound
         "source_scope": {
             "deployment_id": "workchord-primary",
             "sqlite_identifier": "/srv/workchord/workchord.db",
-            "revision": "20260718_0032",
+            "revision": "20260719_0033",
         },
         "target": _target(),
         "authorities": _operators(),

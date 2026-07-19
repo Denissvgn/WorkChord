@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://workchord.local/contracts/postgresql-resilience-observations-v1.schema.json",
+  "title": "WorkChord PostgreSQL resilience observations v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schema_version", "release_fingerprint", "scenarios", "document_sha256"],
+  "properties": {
+    "kind": {"const": "workchord-postgresql-resilience-observations"},
+    "schema_version": {"const": 1},
+    "release_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scenarios": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backend_replica_loss", "worker_loss", "database_failover", "pool_saturation", "slow_query", "restore"],
+      "properties": {
+        "backend_replica_loss": {"$ref": "#/$defs/backend"},
+        "worker_loss": {"$ref": "#/$defs/worker"},
+        "database_failover": {"$ref": "#/$defs/database"},
+        "pool_saturation": {"$ref": "#/$defs/pool"},
+        "slow_query": {"$ref": "#/$defs/slow"},
+        "restore": {"$ref": "#/$defs/restore"}
+      }
+    },
+    "document_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "timestamp": {"type": "string", "format": "date-time"},
+    "count": {"type": "integer", "minimum": 0},
+    "backend": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fault_at", "first_success_at", "eligible_attempts", "unexpected_failures"],
+      "properties": {
+        "fault_at": {"$ref": "#/$defs/timestamp"},
+        "first_success_at": {"$ref": "#/$defs/timestamp"},
+        "eligible_attempts": {"type": "integer", "minimum": 1},
+        "unexpected_failures": {"$ref": "#/$defs/count"}
+      }
+    },
+    "worker": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fault_at", "replacement_ready_at", "queue_drained_at", "oldest_ready_seconds_max", "ready_backlog_max"],
+      "properties": {
+        "fault_at": {"$ref": "#/$defs/timestamp"},
+        "replacement_ready_at": {"$ref": "#/$defs/timestamp"},
+        "queue_drained_at": {"$ref": "#/$defs/timestamp"},
+        "oldest_ready_seconds_max": {"type": "number", "minimum": 0},
+        "ready_backlog_max": {"$ref": "#/$defs/count"}
+      }
+    },
+    "database": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fault_at", "unready_at", "writer_ready_at", "eligible_attempts", "unexpected_failures"],
+      "properties": {
+        "fault_at": {"$ref": "#/$defs/timestamp"},
+        "unready_at": {"$ref": "#/$defs/timestamp"},
+        "writer_ready_at": {"$ref": "#/$defs/timestamp"},
+        "eligible_attempts": {"type": "integer", "minimum": 1},
+        "unexpected_failures": {"$ref": "#/$defs/count"}
+      }
+    },
+    "pool": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checkout_samples_ms", "timeouts", "database_connections_peak", "database_max_connections"],
+      "properties": {
+        "checkout_samples_ms": {"type": "array", "minItems": 100, "items": {"type": "number", "minimum": 0}},
+        "timeouts": {"$ref": "#/$defs/count"},
+        "database_connections_peak": {"$ref": "#/$defs/count"},
+        "database_max_connections": {"type": "integer", "minimum": 1}
+      }
+    },
+    "slow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinary_lock_wait_samples_ms", "deadlocks", "ranked_query_ids", "explained_query_ids"],
+      "properties": {
+        "ordinary_lock_wait_samples_ms": {"type": "array", "minItems": 100, "items": {"type": "number", "minimum": 0}},
+        "deadlocks": {"$ref": "#/$defs/count"},
+        "ranked_query_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "explained_query_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "restore": {
+      "type": "object", "additionalProperties": false,
+      "required": ["failure_at", "restore_started_at", "restore_ready_at", "restored_latest_event_at", "integrity_failures", "backup_artifact_sha256", "restore_report_sha256"],
+      "properties": {
+        "failure_at": {"$ref": "#/$defs/timestamp"},
+        "restore_started_at": {"$ref": "#/$defs/timestamp"},
+        "restore_ready_at": {"$ref": "#/$defs/timestamp"},
+        "restored_latest_event_at": {"$ref": "#/$defs/timestamp"},
+        "integrity_failures": {"$ref": "#/$defs/count"},
+        "backup_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "restore_report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

@@ -12,6 +12,15 @@ from app.models.agent import (
     TaskRoutingAssessment,
 )
 from app.models.calendar import Calendar
+from app.models.autonomy import (
+    AgentAutonomyTopology,
+    AgentAutonomyTopologyMember,
+    AgentObservationJob,
+    AgentVerificationEvent,
+    AgentVerificationRequirement,
+    AgentWorkPackage,
+    ImmutableAutonomyEventError,
+)
 from app.models.database_migration import DatabaseMigrationGate
 from app.models.external_link import ExternalLink, ExternalLinkEntityType, ExternalLinkProvider
 from app.models.github import GitHubStatusAutomationRule
@@ -56,6 +65,13 @@ __all__ = [
     "AgentRun",
     "AgentRunEvent",
     "AgentTaskAssignment",
+    "AgentAutonomyTopology",
+    "AgentAutonomyTopologyMember",
+    "AgentObservationJob",
+    "AgentVerificationEvent",
+    "AgentVerificationRequirement",
+    "AgentWorkPackage",
+    "ImmutableAutonomyEventError",
     "ImmutableRoutingAssessmentError",
     "Calendar",
     "DatabaseMigrationGate",

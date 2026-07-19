@@ -125,6 +125,19 @@ assert that a particular deployment has cut over. Post-cutover release notes
 and a final SHIP decision are generated only from the trusted production
 evidence chain; missing production evidence remains NO-SHIP.
 
+The autonomous migration control-plane foundation also installs a fail-closed
+diagnostic:
+
+```bash
+workchord-agent-preflight
+```
+
+The current diagnostic deliberately accepts no external evidence and exits
+`2`, listing the missing charter, immutable archive, identity/KMS/WORM,
+adapter, and qualification predicates. Its JSON is explicitly unsigned and is
+not a release or production authorization. See the
+[autonomous execution preflight runbook](docs/runbooks/postgresql-autonomous-execution-preflight.md).
+
 ## Agent role packages
 
 Canonical planner and worker roles live in `agent-skills/`. Validate or build

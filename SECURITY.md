@@ -26,3 +26,31 @@ reporting channel before sharing exploit details.
 
 Public agent-role bundles are fail-closed: enabling delivery requires the exact
 trusted checksum in `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256`.
+
+## Autonomous PostgreSQL execution boundary
+
+The PostgreSQL autonomy package is fail closed. It validates externally signed
+standing delegation, finite bootstrap slots, pinned public trust, immutable
+evidence ancestry, exact-target action leases, and an external-CAS journal. The
+autonomous path intentionally contains no private-key loader, local autonomous
+signer, provider credential, release-publication adapter, or fallback that
+converts an interactive approval into autonomous evidence. Legacy manual
+evidence tools retain file-key support outside that mode, but reject file
+private keys and file/embedded trust whenever
+`WORKCHORD_EXECUTION_MODE=zero-human-agent-v1`.
+
+Private resource identifiers and generations belong only in the restricted
+class of the charter-selected immutable evidence store. They must not appear in
+task prose, prompts, commits, ordinary logs, public projections, or generated
+candidate notes. `reports/` is an untrusted cache and cannot establish a gate.
+
+`workchord-agent-preflight` is an unsigned local diagnostic. Its output is never
+accepted as autonomy or production evidence, and it exits nonzero while the
+external charter, immutable archive, identities, remote KMS, WORM store,
+provider adapters, and qualification reports are absent. Production execution
+must also keep bootstrap and header-admin paths revoked and use only a current,
+single-use, exact-target policy authorization.
+
+No WorkChord component has a release-publication destination or credential.
+The immutable handoff renderer labels its output `NOT-PUBLISHED` and
+`MANUAL-PUBLICATION-REQUIRED`; publication remains a separate manual process.
