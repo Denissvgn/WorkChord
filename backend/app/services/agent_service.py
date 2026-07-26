@@ -14,6 +14,8 @@ from app.config import get_settings
 from app.models.agent import (
     AgentActor,
     AgentIdempotencyRecord,
+    AgentModelBinding,
+    AgentModelCatalogEntry,
     AgentRun,
     AgentRunEvent,
     AgentTaskAssignment,
@@ -154,12 +156,32 @@ class AgentService:
             created_at=utc_now(),
         )
 
-    async def create_actor(self, data: AgentActorCreate) -> tuple[AgentActor, str]:
-        """Create an agent actor and return the one-time API key."""
+    async def create_actor(
+        self,
+        data: AgentActorCreate,
+        *,
+        principal: AgentActor | None = None,
+    ) -> tuple[AgentActor, str, AgentModelBinding | None]:
+        """Create an actor and optional secret-free model binding atomically."""
         if data.profile_id is not None:
             profile = await self.db.get(TeamMemberProfile, data.profile_id)
             if profile is None:
                 raise ValueError("Team member profile not found")
+        catalog: AgentModelCatalogEntry | None = None
+        if data.model_binding is not None:
+            result = await self.db.execute(
+                select(AgentModelCatalogEntry).where(
+                    AgentModelCatalogEntry.key
+                    == data.model_binding.model_catalog_key,
+                    AgentModelCatalogEntry.enabled.is_(True),
+                )
+            )
+            catalog = result.scalar_one_or_none()
+            if catalog is None:
+                raise ValueError(
+                    "Enabled model catalog entry not found for "
+                    f"{data.model_binding.model_catalog_key!r}"
+                )
         api_key = f"pmag_{secrets.token_urlsafe(32)}"
         actor = AgentActor(
             name=data.name,
@@ -173,9 +195,57 @@ class AgentService:
             max_parallel_work=data.max_parallel_work,
         )
         self.db.add(actor)
+        binding: AgentModelBinding | None = None
+        if data.model_binding is not None:
+            assert catalog is not None
+            await self.db.flush()
+            binding = AgentModelBinding(
+                actor_id=actor.id,
+                model_catalog_id=catalog.id,
+                is_default=data.model_binding.is_default,
+                enabled=True,
+                tool_tags=data.model_binding.tool_tags,
+                data_policy_tags=data.model_binding.data_policy_tags,
+                revision=1,
+            )
+            self.db.add(binding)
+            await self.db.flush()
+            self.db.add(
+                TaskEvent(
+                    task_id=None,
+                    actor_type=(
+                        "agent"
+                        if principal is not None and principal.id > 0
+                        else "bootstrap"
+                    ),
+                    actor_id=(
+                        principal.id
+                        if principal is not None and principal.id > 0
+                        else None
+                    ),
+                    event_type="agent.model_configuration_changed",
+                    payload=json.dumps(
+                        {
+                            "operation": "actor.model_binding.create",
+                            "target_type": "model_binding",
+                            "target_id": binding.id,
+                            "actor_id": actor.id,
+                            "model_catalog_key": (
+                                data.model_binding.model_catalog_key
+                            ),
+                            "authoritative_revision": binding.revision,
+                            "invalidated_assignment_ids": [],
+                        },
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ),
+                )
+            )
         await self.db.commit()
         await self.db.refresh(actor)
-        return actor, api_key
+        if binding is not None:
+            await self.db.refresh(binding)
+        return actor, api_key, binding
 
     async def list_ready_tasks(
         self,

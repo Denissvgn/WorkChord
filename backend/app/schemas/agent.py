@@ -1,10 +1,12 @@
 """Agent integration API schemas."""
 import json
+import re
 from datetime import datetime
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.schemas.agent_routing import AgentModelBindingResponse
 from app.schemas.project import ProjectHealth, ProjectUpdateEntryResponse
 from app.schemas.request_source import RequestSourceLinkWithSourceResponse
 from app.schemas.task import TaskCreate, TaskResponse, TaskStatus, TaskUpdate
@@ -101,8 +103,49 @@ def _normalize_url_list(values: list[str]) -> list[str]:
     return normalized
 
 
+class AgentActorModelBindingCreate(BaseModel):
+    """Secret-free model binding optionally created with a new actor."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    model_catalog_key: str = Field(..., min_length=1, max_length=120)
+    is_default: bool = True
+    tool_tags: list[str] = Field(default_factory=list, max_length=32)
+    data_policy_tags: list[str] = Field(default_factory=list, max_length=32)
+
+    @field_validator("model_catalog_key")
+    @classmethod
+    def normalize_catalog_key(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(
+            r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?",
+            normalized,
+        ):
+            raise ValueError("model_catalog_key must be a stable lowercase key")
+        return normalized
+
+    @field_validator("tool_tags", "data_policy_tags")
+    @classmethod
+    def normalize_tags(cls, values: list[str]) -> list[str]:
+        normalized: list[str] = []
+        for value in values:
+            tag = value.strip().lower()
+            if not re.fullmatch(
+                r"[a-z0-9](?:[a-z0-9._-]{0,118}[a-z0-9])?",
+                tag,
+            ):
+                raise ValueError("Model binding tags must be stable lowercase keys")
+            normalized.append(tag)
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("Model binding tags must be unique")
+        return sorted(normalized)
+
+
 class AgentActorCreate(BaseModel):
     """Request for creating an agent actor."""
+
+    model_config = ConfigDict(extra="forbid")
+
     name: str = Field(..., min_length=1, max_length=100)
     display_name: str = Field(..., min_length=1, max_length=255)
     scopes: list[str] = Field(
@@ -113,6 +156,7 @@ class AgentActorCreate(BaseModel):
     profile_id: Optional[int] = None
     work_policy: Literal["assigned_only"] = "assigned_only"
     max_parallel_work: Literal[1] = 1
+    model_binding: Optional[AgentActorModelBindingCreate] = None
 
     @field_validator("scopes")
     @classmethod
@@ -179,7 +223,11 @@ class AgentActorResponse(BaseModel):
 
 class AgentActorCreatedResponse(AgentActorResponse):
     """Agent actor creation response including the one-time API key."""
+
     api_key: str
+    model_binding_id: Optional[int] = None
+    model_binding_revision: Optional[int] = None
+    model_catalog_key: Optional[str] = None
 
 
 class AgentTaskCreate(TaskCreate):
@@ -488,6 +536,13 @@ class AgentTaskAssignmentResponse(BaseModel):
     task_version: int
     model_binding_id: Optional[int] = None
     model_binding_revision: Optional[int] = None
+    model_binding_status: Literal[
+        "not_selected",
+        "current",
+        "stale",
+        "unresolved",
+    ] = "not_selected"
+    model_binding_stale_reasons: list[str] = Field(default_factory=list)
     routing_snapshot: dict[str, Any] = Field(default_factory=dict)
     reason: Optional[str] = None
     created_at: datetime
@@ -510,9 +565,41 @@ class AgentCapabilitiesResponse(BaseModel):
     skill_discovery_url: Optional[str] = None
 
 
+class AgentActorRosterProfileSkill(BaseModel):
+    """Bounded capability evidence attached to one roster profile."""
+
+    id: int
+    skill_key: str
+    skill_name: str
+    category: Optional[str] = None
+    level: int
+    interest: int
+    is_weakness: bool
+    updated_at: datetime
+
+
+class AgentActorRosterProfile(BaseModel):
+    """Secret-free profile projection used for exact-actor routing."""
+
+    id: int
+    revision: str
+    display_name: str
+    automation_enabled: bool
+    profile_kind: str
+    assignment_modes: list[str] = Field(default_factory=list)
+    skills: list[AgentActorRosterProfileSkill] = Field(default_factory=list)
+    updated_at: datetime
+
+
 class AgentActorRosterItem(AgentActorResponse):
     """Secret-free actor dispatch roster item."""
 
+    actor_revision: int = 1
+    profile_revision: Optional[str] = None
+    profile: Optional[AgentActorRosterProfile] = None
+    eligible_model_bindings: list[AgentModelBindingResponse] = Field(
+        default_factory=list
+    )
     queued_assignments: int = 0
     accepted_assignments: int = 0
     running_runs: int = 0

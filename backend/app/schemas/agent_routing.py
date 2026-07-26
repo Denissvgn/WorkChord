@@ -155,6 +155,95 @@ class AgentModelCatalogFields(RoutingContractModel):
 class AgentModelCatalogCreate(AgentModelCatalogFields):
     """Create payload for a catalog entry."""
 
+    revision: Literal[1] = 1
+
+
+class AgentModelCatalogUpdate(RoutingContractModel):
+    """Optimistic partial update for one catalog entry."""
+
+    expected_revision: PositiveRevision
+    provider: str | None = Field(default=None, min_length=1, max_length=120)
+    configured_model_alias: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=255,
+    )
+    reasoning_tier: ReasoningTier | None = None
+    context_tier: ModelContextTier | None = None
+    modality_tags: list[str] | None = None
+    cost_tier: ModelCostTier | None = None
+    latency_tier: ModelLatencyTier | None = None
+    enabled: Literal[True] | None = None
+    last_verified_at: datetime | None = None
+    reconcile_live_assignments: bool = False
+
+    @field_validator("reasoning_tier", mode="before")
+    @classmethod
+    def require_integer_reasoning_tier(cls, value: Any) -> Any:
+        if value is not None and (
+            isinstance(value, bool) or not isinstance(value, int)
+        ):
+            raise ValueError("reasoning_tier must be an integer")
+        return value
+
+    @field_validator("provider", "configured_model_alias")
+    @classmethod
+    def strip_optional_text(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("Catalog text fields must not be blank")
+        return normalized
+
+    @field_validator("modality_tags")
+    @classmethod
+    def validate_modality_tags(
+        cls,
+        value: list[str] | None,
+    ) -> list[str] | None:
+        if value is None:
+            return None
+        normalized = _normalize_tags(value, label="modality_tags")
+        if not normalized:
+            raise ValueError("modality_tags must contain at least one entry")
+        return normalized
+
+    @model_validator(mode="after")
+    def require_catalog_change(self) -> "AgentModelCatalogUpdate":
+        non_nullable = {
+            "provider",
+            "configured_model_alias",
+            "reasoning_tier",
+            "context_tier",
+            "modality_tags",
+            "cost_tier",
+            "latency_tier",
+            "enabled",
+        }
+        invalid = sorted(
+            field_name
+            for field_name in self.model_fields_set.intersection(non_nullable)
+            if getattr(self, field_name) is None
+        )
+        if invalid:
+            raise ValueError(
+                "Catalog fields cannot be null: " + ", ".join(invalid)
+            )
+        mutable_fields = self.model_fields_set.difference(
+            {"expected_revision", "reconcile_live_assignments"}
+        )
+        if not mutable_fields:
+            raise ValueError("At least one catalog field must be updated")
+        return self
+
+
+class AgentModelCatalogDisable(RoutingContractModel):
+    """Optimistic soft-disable command for a catalog entry."""
+
+    expected_revision: PositiveRevision
+    reconcile_live_assignments: bool = False
+
 
 class AgentModelCatalogResponse(AgentModelCatalogFields):
     """Persisted catalog projection."""
@@ -195,6 +284,74 @@ class AgentModelBindingFields(RoutingContractModel):
 class AgentModelBindingCreate(AgentModelBindingFields):
     """Create payload for an actor-model binding."""
 
+    revision: Literal[1] = 1
+
+
+class AgentModelBindingUpdate(RoutingContractModel):
+    """Optimistic partial update for one actor-model binding."""
+
+    expected_revision: PositiveRevision
+    is_default: bool | None = None
+    enabled: Literal[True] | None = None
+    tool_tags: list[str] | None = None
+    data_policy_tags: list[str] | None = None
+    reconcile_live_assignments: bool = False
+
+    @field_validator("tool_tags")
+    @classmethod
+    def validate_tool_tags(
+        cls,
+        value: list[str] | None,
+    ) -> list[str] | None:
+        return (
+            _normalize_tags(value, label="tool_tags")
+            if value is not None
+            else None
+        )
+
+    @field_validator("data_policy_tags")
+    @classmethod
+    def validate_data_policy_tags(
+        cls,
+        value: list[str] | None,
+    ) -> list[str] | None:
+        return (
+            _normalize_tags(value, label="data_policy_tags")
+            if value is not None
+            else None
+        )
+
+    @model_validator(mode="after")
+    def require_binding_change(self) -> "AgentModelBindingUpdate":
+        non_nullable = {
+            "is_default",
+            "enabled",
+            "tool_tags",
+            "data_policy_tags",
+        }
+        invalid = sorted(
+            field_name
+            for field_name in self.model_fields_set.intersection(non_nullable)
+            if getattr(self, field_name) is None
+        )
+        if invalid:
+            raise ValueError(
+                "Binding fields cannot be null: " + ", ".join(invalid)
+            )
+        mutable_fields = self.model_fields_set.difference(
+            {"expected_revision", "reconcile_live_assignments"}
+        )
+        if not mutable_fields:
+            raise ValueError("At least one binding field must be updated")
+        return self
+
+
+class AgentModelBindingDisable(RoutingContractModel):
+    """Optimistic soft-disable command for an actor-model binding."""
+
+    expected_revision: PositiveRevision
+    reconcile_live_assignments: bool = False
+
 
 class AgentModelBindingResponse(AgentModelBindingFields):
     """Persisted binding projection."""
@@ -202,8 +359,28 @@ class AgentModelBindingResponse(AgentModelBindingFields):
     id: int
     model_catalog_key: str | None = None
     selectable: bool = False
+    model_catalog: AgentModelCatalogResponse | None = None
+    live_assignment_count: int = 0
+    historical_assignment_count: int = 0
+    run_reference_count: int = 0
     created_at: datetime
     updated_at: datetime
+
+
+class AgentModelMutationReceipt(RoutingContractModel):
+    """Durable, replay-safe receipt for an operator model mutation."""
+
+    operation: str = Field(..., min_length=1, max_length=100)
+    actor_id: int = Field(..., ge=1)
+    target_type: Literal["model_catalog", "model_binding"]
+    target_id: int = Field(..., ge=1)
+    idempotency_key: str = Field(..., min_length=1, max_length=255)
+    rationale: str = Field(..., min_length=1, max_length=2_000)
+    correlation_id: str = Field(..., min_length=1, max_length=255)
+    authoritative_revision: PositiveRevision
+    invalidated_assignment_ids: list[int] = Field(default_factory=list)
+    audit_event_ids: list[int] = Field(default_factory=list)
+    result: dict[str, Any]
 
 
 class TaskDifficultyAxes(RoutingContractModel):

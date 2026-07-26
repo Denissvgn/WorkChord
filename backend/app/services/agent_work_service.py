@@ -13,10 +13,12 @@ from typing import Any, Callable, Iterable, Optional
 
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.agent import (
     AgentActor,
     AgentIdempotencyRecord,
+    AgentModelBinding,
     AgentRun,
     AgentTaskAssignment,
     TaskEvent,
@@ -28,6 +30,8 @@ from app.models.triage import TriageItem
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
     AgentActorResponse,
+    AgentActorRosterProfile,
+    AgentActorRosterProfileSkill,
     AgentDiscoveryTriageCreate,
     AgentDiscoveryTriageResponse,
     AgentProjectUpdateCreate,
@@ -70,6 +74,7 @@ from app.services.agent_routing_policy import (
     canonical_routing_json_bytes,
     evaluate_actor_authorization,
 )
+from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
 from app.schemas.project import ProjectUpdateEntryCreate
@@ -192,7 +197,39 @@ class AgentWorkService:
         )
 
     @staticmethod
-    def assignment_response(assignment: AgentTaskAssignment) -> AgentTaskAssignmentResponse:
+    def assignment_response(
+        assignment: AgentTaskAssignment,
+        *,
+        model_binding: AgentModelBinding | None = None,
+        binding_loaded: bool = False,
+    ) -> AgentTaskAssignmentResponse:
+        binding_status = "not_selected"
+        binding_stale_reasons: list[str] = []
+        if assignment.model_binding_id is not None:
+            binding_status = "unresolved"
+            if binding_loaded:
+                if model_binding is None:
+                    binding_stale_reasons.append("model_binding_missing")
+                else:
+                    if model_binding.actor_id != assignment.actor_id:
+                        binding_stale_reasons.append("model_binding_actor_mismatch")
+                    if not model_binding.enabled:
+                        binding_stale_reasons.append("model_binding_disabled")
+                    if (
+                        model_binding.model_catalog is None
+                        or not model_binding.model_catalog.enabled
+                    ):
+                        binding_stale_reasons.append("model_catalog_disabled")
+                    if (
+                        assignment.model_binding_revision
+                        != model_binding.revision
+                    ):
+                        binding_stale_reasons.append(
+                            "model_binding_revision_mismatch"
+                        )
+                binding_status = (
+                    "stale" if binding_stale_reasons else "current"
+                )
         return AgentTaskAssignmentResponse(
             id=assignment.id,
             task_id=assignment.task_id,
@@ -208,6 +245,8 @@ class AgentWorkService:
             task_version=assignment.task_version,
             model_binding_id=assignment.model_binding_id,
             model_binding_revision=assignment.model_binding_revision,
+            model_binding_status=binding_status,
+            model_binding_stale_reasons=binding_stale_reasons,
             routing_snapshot=_json_loads(assignment.routing_snapshot, {}),
             reason=assignment.reason,
             created_at=assignment.created_at,
@@ -247,15 +286,92 @@ class AgentWorkService:
             heartbeat_at=run.heartbeat_at,
         )
 
-    async def list_actor_roster(self, actor: AgentActor) -> list[AgentActorRosterItem]:
-        """Return enabled actor dispatch metadata without any key material."""
-        self._require_any_scope(actor, "assignments:write", "planning:read")
-        result = await self.db.execute(
+    @staticmethod
+    def _profile_roster_response(
+        profile: TeamMemberProfile,
+    ) -> AgentActorRosterProfile:
+        skills = [
+            AgentActorRosterProfileSkill(
+                id=skill.id,
+                skill_key=skill.skill_key,
+                skill_name=skill.skill_name,
+                category=skill.category,
+                level=skill.level,
+                interest=skill.interest,
+                is_weakness=skill.is_weakness,
+                updated_at=skill.updated_at,
+            )
+            for skill in sorted(
+                profile.skills,
+                key=lambda item: (item.skill_key, item.id),
+            )
+        ]
+        revision_payload = {
+            "profile_id": profile.id,
+            "updated_at": profile.updated_at.isoformat(),
+            "automation_enabled": profile.automation_enabled,
+            "profile_kind": profile.profile_kind,
+            "assignment_modes": sorted(profile.assignment_modes or []),
+            "skills": [
+                {
+                    "id": skill.id,
+                    "key": skill.skill_key,
+                    "level": skill.level,
+                    "interest": skill.interest,
+                    "weakness": skill.is_weakness,
+                    "updated_at": skill.updated_at.isoformat(),
+                }
+                for skill in skills
+            ],
+        }
+        digest = hashlib.sha256(
+            json.dumps(
+                revision_payload,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()[:24]
+        revision = f"p{profile.id}-{digest}"
+        return AgentActorRosterProfile(
+            id=profile.id,
+            revision=revision,
+            display_name=profile.display_name,
+            automation_enabled=profile.automation_enabled,
+            profile_kind=profile.profile_kind,
+            assignment_modes=sorted(profile.assignment_modes or []),
+            skills=skills,
+            updated_at=profile.updated_at,
+        )
+
+    async def list_actor_roster(
+        self,
+        actor: AgentActor,
+        *,
+        include_disabled: bool = False,
+    ) -> list[AgentActorRosterItem]:
+        """Return bounded exact-actor/profile/binding evidence without key material."""
+        self._require_any_scope(
+            actor,
+            "assignments:read",
+            "assignments:write",
+            "planning:read",
+        )
+        query = (
             select(AgentActor)
-            .where(AgentActor.enabled.is_(True))
+            .options(
+                selectinload(AgentActor.profile).selectinload(
+                    TeamMemberProfile.skills
+                ),
+                selectinload(AgentActor.model_bindings).selectinload(
+                    AgentModelBinding.model_catalog
+                ),
+            )
             .order_by(AgentActor.display_name, AgentActor.id)
             .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
+        if not include_disabled:
+            query = query.where(AgentActor.enabled.is_(True))
+        result = await self.db.execute(query)
         actors = list(result.scalars().all())
         if len(actors) > MAX_BOUNDED_LIST_ITEMS:
             raise CollectionLimitExceededError(
@@ -301,10 +417,31 @@ class AgentWorkService:
                 actor_id: int(count) for actor_id, count in running_rows
             }
         roster: list[AgentActorRosterItem] = []
+        model_catalog_service = AgentModelCatalogService(self.db)
         for item in actors:
+            profile = (
+                self._profile_roster_response(item.profile)
+                if item.profile is not None
+                else None
+            )
+            eligible_bindings = [
+                model_catalog_service.binding_response(binding)
+                for binding in sorted(
+                    item.model_bindings,
+                    key=lambda binding: (
+                        not binding.is_default,
+                        binding.id,
+                    ),
+                )
+                if item.enabled and binding.selectable
+            ]
             roster.append(
                 AgentActorRosterItem(
                     **self.actor_response(item).model_dump(),
+                    actor_revision=item.queue_revision,
+                    profile_revision=profile.revision if profile else None,
+                    profile=profile,
+                    eligible_model_bindings=eligible_bindings,
                     queued_assignments=assignment_counts.get((item.id, "queued"), 0),
                     accepted_assignments=assignment_counts.get((item.id, "accepted"), 0),
                     running_runs=running_counts.get(item.id, 0),
@@ -503,7 +640,36 @@ class AgentWorkService:
                 AgentTaskAssignment.id,
             ).limit(limit)
         )
-        return [self.assignment_response(item) for item in result.scalars().all()]
+        assignments = list(result.scalars().all())
+        binding_ids = sorted(
+            {
+                item.model_binding_id
+                for item in assignments
+                if item.model_binding_id is not None
+            }
+        )
+        bindings: dict[int, AgentModelBinding] = {}
+        if binding_ids:
+            binding_result = await self.db.execute(
+                select(AgentModelBinding)
+                .options(selectinload(AgentModelBinding.model_catalog))
+                .where(AgentModelBinding.id.in_(binding_ids))
+            )
+            bindings = {
+                binding.id: binding for binding in binding_result.scalars().all()
+            }
+        return [
+            self.assignment_response(
+                item,
+                model_binding=(
+                    bindings.get(item.model_binding_id)
+                    if item.model_binding_id is not None
+                    else None
+                ),
+                binding_loaded=item.model_binding_id is not None,
+            )
+            for item in assignments
+        ]
 
     async def create_assignment(
         self,

@@ -116,6 +116,10 @@ def create_actor(
     work_policy: str,
     max_parallel_work: int,
     enabled: bool,
+    model_catalog_key: str | None,
+    model_tool_tags: list[str],
+    model_data_policy_tags: list[str],
+    model_binding_is_default: bool,
     timeout: float,
 ) -> dict[str, Any]:
     """Call POST /agent/actors and return the response body."""
@@ -129,6 +133,13 @@ def create_actor(
         "max_parallel_work": max_parallel_work,
         "enabled": enabled,
     }
+    if model_catalog_key is not None:
+        payload["model_binding"] = {
+            "model_catalog_key": model_catalog_key,
+            "is_default": model_binding_is_default,
+            "tool_tags": model_tool_tags,
+            "data_policy_tags": model_data_policy_tags,
+        }
     body = json.dumps(payload).encode("utf-8")
     req = request.Request(
         url,
@@ -173,6 +184,15 @@ def render_env(data: dict[str, Any], *, comments: bool) -> str:
         f"AGENT_API_KEY={data['api_key']}",
         f"MCP_AGENT_API_KEY={data['api_key']}",
     ])
+    if data.get("model_binding_id") is not None:
+        lines.extend(
+            [
+                f"AGENT_MODEL_BINDING_ID={data['model_binding_id']}",
+                "AGENT_MODEL_BINDING_REVISION="
+                f"{data['model_binding_revision']}",
+                f"AGENT_MODEL_CATALOG_KEY={data['model_catalog_key']}",
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -187,6 +207,17 @@ def render_shell(data: dict[str, Any], *, comments: bool) -> str:
         f"export AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
         f"export MCP_AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
     ])
+    if data.get("model_binding_id") is not None:
+        lines.extend(
+            [
+                "export AGENT_MODEL_BINDING_ID="
+                f"{shlex.quote(str(data['model_binding_id']))}",
+                "export AGENT_MODEL_BINDING_REVISION="
+                f"{shlex.quote(str(data['model_binding_revision']))}",
+                "export AGENT_MODEL_CATALOG_KEY="
+                f"{shlex.quote(str(data['model_catalog_key']))}",
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -218,6 +249,30 @@ def parse_args() -> argparse.Namespace:
         help="Actor role and default least-privilege scope preset.",
     )
     parser.add_argument("--profile-id", type=int, help="Optional capability profile binding.")
+    parser.add_argument(
+        "--model-catalog-key",
+        help=(
+            "Existing provider-neutral catalog key to bind atomically. "
+            "Provider credentials are never accepted."
+        ),
+    )
+    parser.add_argument(
+        "--model-tool-tag",
+        action="append",
+        default=[],
+        help="Secret-free tool capability tag. Repeat as needed.",
+    )
+    parser.add_argument(
+        "--model-data-policy-tag",
+        action="append",
+        default=[],
+        help="Secret-free data-policy tag. Repeat as needed.",
+    )
+    parser.add_argument(
+        "--model-binding-secondary",
+        action="store_true",
+        help="Create the requested model binding as non-default.",
+    )
     parser.add_argument(
         "--work-policy",
         choices=["assigned_only"],
@@ -260,6 +315,20 @@ def main() -> None:
         raise SystemExit("Actor name cannot be blank")
 
     scopes = normalize_scopes(args.scope or ROLE_SCOPES[args.role], args.admin)
+    model_catalog_key = (
+        args.model_catalog_key.strip().lower()
+        if args.model_catalog_key
+        else None
+    )
+    if not model_catalog_key and (
+        args.model_tool_tag
+        or args.model_data_policy_tag
+        or args.model_binding_secondary
+    ):
+        raise SystemExit(
+            "Model tags require --model-catalog-key; provider credentials "
+            "must not be supplied."
+        )
     data = create_actor(
         url=actor_url(args.base_url, args.api_prefix),
         bootstrap_key=args.bootstrap_key,
@@ -271,6 +340,10 @@ def main() -> None:
         work_policy=args.work_policy,
         max_parallel_work=args.max_parallel_work,
         enabled=not args.disabled,
+        model_catalog_key=model_catalog_key,
+        model_tool_tags=args.model_tool_tag,
+        model_data_policy_tags=args.model_data_policy_tag,
+        model_binding_is_default=not args.model_binding_secondary,
         timeout=args.timeout,
     )
 
@@ -285,6 +358,15 @@ def main() -> None:
         "The api_key is returned once; store it securely before closing this terminal.",
         file=sys.stderr,
     )
+    if data.get("model_binding_id") is None:
+        print(
+            "No model binding was configured. Choose a secret-free key from "
+            f"GET {normalize_api_prefix(args.api_prefix)}/agent/model-catalog, "
+            "then create the binding with POST "
+            f"{normalize_api_prefix(args.api_prefix)}/agent/model-bindings "
+            f"for actor_id={data['id']}.",
+            file=sys.stderr,
+        )
 
 
 if __name__ == "__main__":

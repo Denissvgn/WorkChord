@@ -329,24 +329,43 @@ async def create_agent_actor(
     """Create an agent actor. Requires admin scope."""
     try:
         require_scope(actor, "admin")
-        created, api_key = await service.create_actor(data)
+        created, api_key, binding = await service.create_actor(
+            data,
+            principal=actor,
+        )
     except Exception as exc:
         _handle_agent_error(exc)
     response.headers["Cache-Control"] = "no-store"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     base = _actor_response(created).model_dump()
-    return AgentActorCreatedResponse(**base, api_key=api_key)
+    return AgentActorCreatedResponse(
+        **base,
+        api_key=api_key,
+        model_binding_id=binding.id if binding is not None else None,
+        model_binding_revision=(
+            binding.revision if binding is not None else None
+        ),
+        model_catalog_key=(
+            data.model_binding.model_catalog_key
+            if data.model_binding is not None
+            else None
+        ),
+    )
 
 
 @router.get("/agent/actors", response_model=list[AgentActorRosterItem])
 async def list_agent_actors(
     actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
     service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
+    include_disabled: Annotated[bool, Query()] = False,
 ):
     """Return the secret-free actor roster for scoped PM planning."""
     try:
-        return await service.list_actor_roster(actor)
+        return await service.list_actor_roster(
+            actor,
+            include_disabled=include_disabled,
+        )
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
 

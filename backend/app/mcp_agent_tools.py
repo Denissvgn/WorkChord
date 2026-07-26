@@ -47,6 +47,14 @@ from app.schemas.agent_planning import (
     AgentPlanningCommandContext,
     AgentScheduleCommand,
 )
+from app.schemas.agent_routing import (
+    AgentModelBindingCreate,
+    AgentModelBindingDisable,
+    AgentModelBindingUpdate,
+    AgentModelCatalogCreate,
+    AgentModelCatalogDisable,
+    AgentModelCatalogUpdate,
+)
 from app.schemas.agent_skill_bundle import (
     SkillBundleCatalogResponse,
     SkillBundleManifestResponse,
@@ -98,6 +106,7 @@ from app.schemas.triage import (
     TriageTaskDraftRequest,
 )
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
+from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_service import (
     AgentConflictError,
@@ -1242,9 +1251,236 @@ async def get_agent_capabilities(
 async def list_agent_actor_roster(
     db: AsyncSession,
     actor: AgentActor,
+    *,
+    include_disabled: bool = False,
 ) -> list[dict[str, Any]]:
     """MCP handler: return secret-free enabled actor dispatch metadata."""
-    return _dump(await AgentWorkService(db).list_actor_roster(actor))
+    return _dump(
+        await AgentWorkService(db).list_actor_roster(
+            actor,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def list_agent_model_catalog(
+    db: AsyncSession,
+    actor: AgentActor,
+    *,
+    include_disabled: bool = False,
+) -> list[dict[str, Any]]:
+    """MCP handler: list provider-neutral secret-free model declarations."""
+
+    return _dump(
+        await AgentModelCatalogService(db).list_catalog(
+            actor,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def get_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_key: str,
+) -> dict[str, Any]:
+    """MCP handler: read one stable model catalog entry."""
+
+    return _dump(
+        await AgentModelCatalogService(db).get_catalog(
+            actor,
+            catalog_key.strip().lower(),
+        )
+    )
+
+
+async def list_agent_model_bindings(
+    db: AsyncSession,
+    actor: AgentActor,
+    *,
+    actor_id: int | None = None,
+    include_disabled: bool = False,
+) -> list[dict[str, Any]]:
+    """MCP handler: list secret-free actor model bindings."""
+
+    return _dump(
+        await AgentModelCatalogService(db).list_bindings(
+            actor,
+            actor_id=actor_id,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def get_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+) -> dict[str, Any]:
+    """MCP handler: read one current or historical model binding."""
+
+    return _dump(
+        await AgentModelCatalogService(db).get_binding(actor, binding_id)
+    )
+
+
+def _model_command(
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> AgentPlanningCommandContext:
+    return AgentPlanningCommandContext(
+        idempotency_key=idempotency_key,
+        rationale=rationale,
+        correlation_id=correlation_id,
+    )
+
+
+async def create_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: create one operator-owned model declaration."""
+
+    receipt = await AgentModelCatalogService(db).create_catalog(
+        actor,
+        AgentModelCatalogCreate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def update_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: update one model declaration behind its revision."""
+
+    receipt = await AgentModelCatalogService(db).update_catalog(
+        catalog_id,
+        actor,
+        AgentModelCatalogUpdate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def disable_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: soft-disable one model declaration."""
+
+    receipt = await AgentModelCatalogService(db).disable_catalog(
+        catalog_id,
+        actor,
+        AgentModelCatalogDisable.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def create_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: bind an actor to one catalog entry."""
+
+    receipt = await AgentModelCatalogService(db).create_binding(
+        actor,
+        AgentModelBindingCreate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def update_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: update one actor binding behind its revision."""
+
+    receipt = await AgentModelCatalogService(db).update_binding(
+        binding_id,
+        actor,
+        AgentModelBindingUpdate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def disable_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: soft-disable one actor binding."""
+
+    receipt = await AgentModelCatalogService(db).disable_binding(
+        binding_id,
+        actor,
+        AgentModelBindingDisable.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
 
 
 async def create_agent_assignment(
