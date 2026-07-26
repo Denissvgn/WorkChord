@@ -78,6 +78,18 @@ Missing inputs remain `BLOCKED_EXTERNAL` or `AUTONOMY-NOT-READY`. They never
 trigger an interactive approval, a local private-key fallback, or inferred
 provider/production authority.
 
+## Separate self-hosted server acceptance
+
+The [self-hosted server acceptance profile](self-hosted-server-acceptance.md)
+provides a smaller installation check backed by PostgreSQL, OpenBao Transit,
+MinIO object retention, and Valkey CAS containers. It emits its own schema and
+never creates `SignedAutonomousEvidence`, `VerifiedPreflightArtifact`, status
+evidence, or a production handoff.
+
+Its successful decision is limited to `SELF-HOSTED-SERVER-ACCEPTED`. The
+receipt always retains `NO-SHIP`, does not qualify production autonomy, and
+does not satisfy G1-G15.
+
 ## Publication handoff
 
 The deterministic handoff bundle is immutable and always labels itself

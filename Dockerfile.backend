@@ -1,7 +1,25 @@
 # syntax=docker/dockerfile:1.7
 
 ARG PYTHON_IMAGE=python:3.12.13-slim-bookworm@sha256:8a7e7cc04fd3e2bd787f7f24e22d5d119aa590d429b50c95dfe12b3abe52f48b
+ARG NODE_IMAGE=node:22.23.1-alpine3.23@sha256:8516dce0483394d5708d4b2ee6cacb79fb1d617ea4e2787c2120bcca92ce372e
 ARG WORKCHORD_VERSION=1.6.2
+ARG WORKCHORD_SOURCE_REVISION=unknown
+
+# Build the frontend identity independently into the acceptance/backend image.
+# The running gateway must serve the same deterministic artifact digest.
+FROM ${NODE_IMAGE} AS frontend-identity
+
+ARG WORKCHORD_SOURCE_REVISION
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend .
+COPY scripts/build_frontend_image_identity.mjs /tmp/build_frontend_image_identity.mjs
+RUN npm run build \
+    && node /tmp/build_frontend_image_identity.mjs \
+      /frontend/dist \
+      "${WORKCHORD_SOURCE_REVISION}" \
+      /tmp/workchord-frontend-build.json
 
 # Build stage. Keep this on the target platform because installed wheels are
 # copied into the runtime image.
@@ -14,27 +32,52 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install hash-locked runtime dependencies, including Psycopg's supported
+# Install hash-locked build/runtime dependencies, including Psycopg's supported
 # binary distribution for both async application and sync migration paths.
-COPY backend/requirements.lock .
-RUN python -m pip install --user --no-cache-dir --require-hashes -r requirements.lock
+COPY backend/build-requirements.lock backend/requirements.lock ./
+RUN python -m pip install --user --no-cache-dir --require-hashes \
+      -r build-requirements.lock \
+    && python -m pip install --user --no-cache-dir --require-hashes \
+      -r requirements.lock
+
+# Build and install the same package boundary qualified by CI. The runtime image
+# therefore contains the console scripts and package resources from the wheel,
+# rather than a second source-copy installation shape.
+COPY backend /tmp/workchord-backend
+RUN python -m pip wheel \
+      --no-build-isolation \
+      --no-deps \
+      --wheel-dir /tmp/workchord-wheel \
+      /tmp/workchord-backend \
+    && python -m pip install \
+      --user \
+      --no-cache-dir \
+      --no-deps \
+      /tmp/workchord-wheel/workchord_backend-*.whl
 
 # Final stage
 FROM ${PYTHON_IMAGE}
 
 ARG WORKCHORD_VERSION
+ARG WORKCHORD_SOURCE_REVISION
 LABEL org.opencontainers.image.title="WorkChord backend" \
       org.opencontainers.image.version="${WORKCHORD_VERSION}" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.revision="${WORKCHORD_SOURCE_REVISION}"
 
 WORKDIR /app
 
 # Copy installed dependencies
 COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
+COPY --from=frontend-identity /tmp/workchord-frontend-build.json /app/workchord-frontend-build.json
 
-# Copy application code
-COPY backend .
+# Generate a content digest over the installed package and bake the revision
+# into a fixed image file. Runtime environment overrides cannot alter it.
+RUN python -m app.build_identity \
+      --source-revision "${WORKCHORD_SOURCE_REVISION}" \
+      --frontend-identity /app/workchord-frontend-build.json \
+      --output /app/workchord-build.json
 
 # Validate and build checksum-verified, exact-version role-skill artifacts. The
 # runtime serves only this trusted generated directory, never database prose.

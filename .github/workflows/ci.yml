@@ -90,11 +90,14 @@ jobs:
 
           required = {
               "app/__init__.py",
+              "app/build_identity.py",
               "app/main.py",
               "app/mcp_server.py",
               "app/cli/worker.py",
               "app/cli/cutover.py",
               "app/cli/closeout.py",
+              "app/cli/server_acceptance.py",
+              "app/autonomy/server_acceptance.py",
               "app/database_migration/cutover.py",
               "app/database_migration/closeout.py",
               "app/database_migration/postgresql-cutover-execution-v1.schema.json",
@@ -165,6 +168,7 @@ jobs:
             "$installed_wheel_venv/bin/workchord-db-cutover" --help >/dev/null
             "$installed_wheel_venv/bin/workchord-db-closeout" --help >/dev/null
             "$installed_wheel_venv/bin/workchord-agent-preflight" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-server-acceptance" --help >/dev/null
           )
           "$installed_wheel_venv/bin/python" \
             scripts/ci/installed_wheel_postgresql_qualification.py \
@@ -214,4 +218,57 @@ jobs:
           npm run lint
           npm run build
       - name: Validate the local Compose profile
-        run: docker compose config --quiet
+        env:
+          WORKCHORD_SOURCE_REVISION: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          WORKCHORD_ACCEPTANCE_REPORT_DIR: /tmp/workchord-server-acceptance
+          OPENBAO_DEV_ROOT_TOKEN: workchord-ci-openbao-only
+          MINIO_ROOT_USER: workchordci
+          MINIO_ROOT_PASSWORD: workchord-ci-minio-only
+          AUTONOMY_MINIO_ACCESS_KEY: workchordciaccept
+          AUTONOMY_MINIO_SECRET_KEY: workchord-ci-accept-only
+          POSTGRES_PASSWORD: workchord-ci-postgres-only
+          WORKCHORD_MIGRATOR_PASSWORD: workchord-ci-migrator-only
+          WORKCHORD_RUNTIME_PASSWORD: workchord-ci-runtime-only
+          WORKCHORD_BACKUP_PASSWORD: workchord-ci-backup-only
+          DATABASE_MIGRATION_URL: postgresql+psycopg://workchord_migrator:workchord-ci-migrator-only@postgres:5432/workchord
+          DATABASE_RUNTIME_URL: postgresql+psycopg://workchord_runtime:workchord-ci-runtime-only@postgres:5432/workchord
+        run: |
+          docker compose config --quiet
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.server.yml \
+            --profile autonomy \
+            config --quiet
+
+  server-acceptance:
+    name: Self-hosted server acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build and accept the self-hosted stack
+        run: |
+          ./scripts/server/accept_self_hosted.sh
+          ./scripts/server/accept_self_hosted.sh
+      - name: Validate the bounded receipt
+        run: |
+          test -s .runtime/autonomy/reports/latest.json
+          test -s .runtime/autonomy/reports/trusted-signer-public-key.b64
+          test "$(find .runtime/autonomy/reports \
+            -maxdepth 1 -name 'previous-*.json' | wc -l)" -ge 1
+          grep -q '"decision": "SELF-HOSTED-SERVER-ACCEPTED"' \
+            .runtime/autonomy/reports/latest.json
+          grep -q '"accepted_as_production_evidence": false' \
+            .runtime/autonomy/reports/latest.json
+      - name: Stop the acceptance stack
+        if: always()
+        run: |
+          if test -f .runtime/autonomy/server.env; then
+            docker compose \
+              --project-name workchord-server \
+              --env-file .runtime/autonomy/server.env \
+              -f docker-compose.yml \
+              -f docker-compose.server.yml \
+              --profile autonomy \
+              down
+          fi

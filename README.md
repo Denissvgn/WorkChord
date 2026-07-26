@@ -70,6 +70,21 @@ docker compose up --build --detach
 docker compose ps
 ```
 
+For a clean self-hosted server checkout, the container-backed acceptance
+profile builds revision-bound backend and frontend artifacts, starts the
+application plus its signing, locked-object, and CAS analogues, and writes a
+bounded acceptance receipt:
+
+```bash
+./scripts/server/accept_self_hosted.sh
+```
+
+This receipt confirms only the self-hosted server profile. It is structurally
+separate from production autonomy evidence and never changes the production
+`NO-SHIP` decision or G1-G15. The server binds to loopback by default; terminate
+TLS at a host reverse proxy before remote access. See the
+[self-hosted server acceptance runbook](docs/runbooks/self-hosted-server-acceptance.md).
+
 The integration stack runs PostgreSQL 18 and stores its cluster, WAL archive,
 and backup artifacts in separate major-version-aware volumes. Do not copy a
 live database volume. Use the checksummed logical/base backup jobs and prove an
@@ -137,6 +152,13 @@ The current diagnostic deliberately accepts no external evidence and exits
 adapter, and qualification predicates. Its JSON is explicitly unsigned and is
 not a release or production authorization. See the
 [autonomous execution preflight runbook](docs/runbooks/postgresql-autonomous-execution-preflight.md).
+
+The separate `workchord-server-acceptance` command is used only by the
+self-hosted Compose profile. The live command checks the listed database,
+revision-bound artifact, signing, retention, and CAS predicates, then signs
+the receipt. Offline verification also requires the separate signer public-key
+pin emitted by the bootstrap. The receipt is not accepted by the production
+preflight, status, cutover, handoff, or closeout paths.
 
 ## Agent role packages
 

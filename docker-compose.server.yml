@@ -1,0 +1,262 @@
+x-server-backend: &server-backend
+  image: workchord-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+  build:
+    context: .
+    dockerfile: Dockerfile.backend
+    args:
+      WORKCHORD_SOURCE_REVISION: ${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+
+x-server-frontend: &server-frontend
+  image: workchord-frontend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+  build:
+    context: .
+    dockerfile: Dockerfile.frontend
+    args:
+      WORKCHORD_SOURCE_REVISION: ${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+
+services:
+  postgres:
+    environment:
+      WORKCHORD_MIGRATOR_PASSWORD: ${WORKCHORD_MIGRATOR_PASSWORD:?Set WORKCHORD_MIGRATOR_PASSWORD}
+      WORKCHORD_RUNTIME_PASSWORD: ${WORKCHORD_RUNTIME_PASSWORD:?Set WORKCHORD_RUNTIME_PASSWORD}
+      WORKCHORD_BACKUP_PASSWORD: ${WORKCHORD_BACKUP_PASSWORD:?Set WORKCHORD_BACKUP_PASSWORD}
+    volumes:
+      - ./deploy/postgresql/init-server-roles.sh:/docker-entrypoint-initdb.d/15-server-roles.sh:ro
+
+  migration:
+    <<: *server-backend
+    environment:
+      DATABASE_URL: ${DATABASE_MIGRATION_URL:?Set DATABASE_MIGRATION_URL}
+      DATABASE_SESSION_ROLE: workchord_owner
+    depends_on:
+      database-bootstrap:
+        condition: service_completed_successfully
+
+  repair:
+    <<: *server-backend
+    environment:
+      DATABASE_URL: ${DATABASE_MIGRATION_URL:?Set DATABASE_MIGRATION_URL}
+      DATABASE_SESSION_ROLE: workchord_owner
+    depends_on:
+      database-security:
+        condition: service_completed_successfully
+
+  backend:
+    <<: *server-backend
+    environment:
+      DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}
+      DATABASE_SESSION_ROLE: ""
+      DEPLOYMENT_ENVIRONMENT: development
+      SESSION_COOKIE_SECURE: ${WORKCHORD_SESSION_COOKIE_SECURE:-true}
+      MCP_DNS_REBINDING_PROTECTION: "true"
+      MCP_ALLOWED_HOSTS: '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}'
+      MCP_ALLOWED_ORIGINS: '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}'
+      MCP_UNSAFE_ALLOW_PUBLIC_BINDING: "false"
+    volumes:
+      - workchord_server_data:/app/data
+
+  delivery-worker:
+    <<: *server-backend
+    environment:
+      DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}
+      DATABASE_SESSION_ROLE: ""
+
+  frontend:
+    <<: *server-frontend
+
+  database-bootstrap:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["autonomy"]
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: workchord
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      WORKCHORD_MIGRATOR_PASSWORD: ${WORKCHORD_MIGRATOR_PASSWORD:?Set WORKCHORD_MIGRATOR_PASSWORD}
+      WORKCHORD_RUNTIME_PASSWORD: ${WORKCHORD_RUNTIME_PASSWORD:?Set WORKCHORD_RUNTIME_PASSWORD}
+      WORKCHORD_BACKUP_PASSWORD: ${WORKCHORD_BACKUP_PASSWORD:?Set WORKCHORD_BACKUP_PASSWORD}
+    command: ["/opt/workchord/init-server-roles.sh"]
+    volumes:
+      - ./deploy/postgresql/init-server-roles.sh:/opt/workchord/init-server-roles.sh:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workchord
+    restart: "no"
+
+  database-security:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    profiles: ["autonomy"]
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: workchord
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    command: ["/opt/workchord/apply-server-security.sh"]
+    volumes:
+      - ./deploy/postgresql/apply-server-security.sh:/opt/workchord/apply-server-security.sh:ro
+      - ./deploy/postgresql/apply-security.sql:/opt/workchord/apply-security.sql:ro
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - workchord
+    restart: "no"
+
+  openbao:
+    image: openbao/openbao:2.6.1@sha256:5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0
+    profiles: ["autonomy"]
+    environment:
+      BAO_ADDR: http://127.0.0.1:8200
+      BAO_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      BAO_DEV_ROOT_TOKEN_ID: ${OPENBAO_DEV_ROOT_TOKEN:?Set OPENBAO_DEV_ROOT_TOKEN}
+    command: ["server", "-dev"]
+    networks:
+      - autonomy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bao", "status", "-address=http://127.0.0.1:8200"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 3s
+
+  openbao-bootstrap:
+    image: openbao/openbao:2.6.1@sha256:5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0
+    profiles: ["autonomy"]
+    user: "0:0"
+    entrypoint: ["/bin/sh", "/opt/workchord/openbao-bootstrap.sh"]
+    command: []
+    environment:
+      BAO_ADDR: http://openbao:8200
+      OPENBAO_DEV_ROOT_TOKEN: ${OPENBAO_DEV_ROOT_TOKEN:?Set OPENBAO_DEV_ROOT_TOKEN}
+      AUTONOMY_SIGNER_KEY: workchord-server-acceptance
+      AUTONOMY_SIGNER_TOKEN_FILE: /run/workchord-autonomy/openbao-token
+      AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE: /run/workchord-autonomy/openbao-signer-public-key.b64
+      AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_OUTPUT: /var/lib/workchord/acceptance/trusted-signer-public-key.b64
+    volumes:
+      - ./deploy/autonomy/openbao-bootstrap.sh:/opt/workchord/openbao-bootstrap.sh:ro
+      - ./deploy/autonomy/openbao-acceptance-policy.hcl:/opt/workchord/openbao-acceptance-policy.hcl:ro
+      - workchord_autonomy_runtime:/run/workchord-autonomy
+      - ${WORKCHORD_ACCEPTANCE_REPORT_DIR:?Set WORKCHORD_ACCEPTANCE_REPORT_DIR}:/var/lib/workchord/acceptance
+    depends_on:
+      openbao:
+        condition: service_healthy
+    networks:
+      - autonomy
+    restart: "no"
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
+    profiles: ["autonomy"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+    command: ["server", "/data", "--console-address", ":9001"]
+    volumes:
+      - workchord_autonomy_minio:/data
+    networks:
+      - autonomy
+    restart: unless-stopped
+
+  minio-bootstrap:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727
+    profiles: ["autonomy"]
+    entrypoint: ["/bin/sh", "/opt/workchord/minio-bootstrap.sh"]
+    command: []
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+      AUTONOMY_MINIO_ACCESS_KEY: ${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}
+      AUTONOMY_MINIO_SECRET_KEY: ${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}
+      AUTONOMY_MINIO_ENDPOINT: http://minio:9000
+      AUTONOMY_MINIO_EVIDENCE_BUCKET: workchord-server-acceptance
+      AUTONOMY_MINIO_RETENTION: ${AUTONOMY_MINIO_RETENTION:-1d}
+    volumes:
+      - ./deploy/autonomy/minio-bootstrap.sh:/opt/workchord/minio-bootstrap.sh:ro
+      - ./deploy/autonomy/minio-acceptance-policy.json:/opt/workchord/minio-acceptance-policy.json:ro
+    depends_on:
+      minio:
+        condition: service_started
+    networks:
+      - autonomy
+    restart: "no"
+
+  valkey:
+    image: valkey/valkey:8.1.9-alpine@sha256:a038175878d66b9d274fbf8be73c0305e93798b83917647f167e18cef3c71eec
+    profiles: ["autonomy"]
+    command:
+      - valkey-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --save
+      - ""
+    volumes:
+      - workchord_autonomy_valkey:/data
+    networks:
+      - autonomy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 3s
+
+  autonomy-acceptance:
+    <<: *server-backend
+    profiles: ["autonomy"]
+    environment:
+      DEPLOYMENT_ENVIRONMENT: development
+      AUTONOMY_BACKEND_URL: http://backend:8001
+      AUTONOMY_GATEWAY_URL: http://frontend
+      AUTONOMY_SIGNER_URL: http://openbao:8200
+      AUTONOMY_SIGNER_TOKEN_FILE: /run/workchord-autonomy/openbao-token
+      AUTONOMY_SIGNER_KEY: workchord-server-acceptance
+      AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE: /run/workchord-autonomy/openbao-signer-public-key.b64
+      AUTONOMY_MINIO_ENDPOINT: http://minio:9000
+      AUTONOMY_MINIO_ACCESS_KEY: ${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}
+      AUTONOMY_MINIO_SECRET_KEY: ${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}
+      AUTONOMY_MINIO_EVIDENCE_BUCKET: workchord-server-acceptance
+      AUTONOMY_MINIO_REGION: us-east-1
+      AUTONOMY_VALKEY_HOST: valkey
+      AUTONOMY_VALKEY_PORT: "6379"
+      AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS: ${AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS:-10}
+    command:
+      - workchord-server-acceptance
+      - --output
+      - /var/lib/workchord/acceptance/pending.json
+    volumes:
+      - workchord_autonomy_runtime:/run/workchord-autonomy:ro
+      - ${WORKCHORD_ACCEPTANCE_REPORT_DIR:?Set WORKCHORD_ACCEPTANCE_REPORT_DIR}:/var/lib/workchord/acceptance
+    depends_on:
+      backend:
+        condition: service_healthy
+      delivery-worker:
+        condition: service_started
+      openbao-bootstrap:
+        condition: service_completed_successfully
+      minio-bootstrap:
+        condition: service_completed_successfully
+      valkey:
+        condition: service_healthy
+    networks:
+      - workchord
+      - autonomy
+    restart: "no"
+
+networks:
+  autonomy:
+    driver: bridge
+    internal: true
+
+volumes:
+  workchord_autonomy_minio:
+  workchord_autonomy_runtime:
+  workchord_autonomy_valkey:
+  workchord_server_data:

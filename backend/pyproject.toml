@@ -35,6 +35,7 @@ workchord-db-migrate = "app.cli.database_migration:main"
 workchord-db-cutover = "app.cli.cutover:main"
 workchord-db-closeout = "app.cli.closeout:main"
 workchord-agent-preflight = "app.cli.agent_preflight:main"
+workchord-server-acceptance = "app.cli.server_acceptance:main"
 
 [dependency-groups]
 build = ["setuptools==83.0.0"]

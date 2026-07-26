@@ -29,6 +29,7 @@ npm-debug.log*
 backend/data/
 backend/email_settings.json
 logs/
+.runtime/
 
 # Generated artifacts
 dist/

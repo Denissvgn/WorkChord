@@ -191,7 +191,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "80:80"
+      - "${WORKCHORD_HTTP_BIND:-127.0.0.1}:${WORKCHORD_HTTP_PORT:-80}:80"
     depends_on:
       backend:
         condition: service_healthy

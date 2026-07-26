@@ -3,9 +3,12 @@
 ARG NODE_IMAGE=node:22.23.1-alpine3.23@sha256:8516dce0483394d5708d4b2ee6cacb79fb1d617ea4e2787c2120bcca92ce372e
 ARG NGINX_IMAGE=nginx:1.28.3-alpine3.23@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
 ARG WORKCHORD_VERSION=1.6.2
+ARG WORKCHORD_SOURCE_REVISION=unknown
 
 # Build stage
 FROM ${NODE_IMAGE} AS builder
+
+ARG WORKCHORD_SOURCE_REVISION
 
 WORKDIR /app
 
@@ -17,18 +20,27 @@ RUN npm ci
 COPY frontend .
 
 # Build
-RUN npm run build
+COPY scripts/build_frontend_image_identity.mjs /tmp/build_frontend_image_identity.mjs
+RUN npm run build \
+    && node /tmp/build_frontend_image_identity.mjs \
+      /app/dist \
+      "${WORKCHORD_SOURCE_REVISION}" \
+      /tmp/workchord-build.json
 
 # Production stage
 FROM ${NGINX_IMAGE}
 
 ARG WORKCHORD_VERSION
+ARG WORKCHORD_SOURCE_REVISION
 LABEL org.opencontainers.image.title="WorkChord frontend" \
       org.opencontainers.image.version="${WORKCHORD_VERSION}" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.revision="${WORKCHORD_SOURCE_REVISION}"
 
 # Copy build output
 COPY --from=builder /app/dist /usr/share/nginx/html
+RUN mkdir -p /usr/share/nginx/html/.well-known
+COPY --from=builder /tmp/workchord-build.json /usr/share/nginx/html/.well-known/workchord-build.json
 
 # Copy nginx config
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf

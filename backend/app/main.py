@@ -216,6 +216,20 @@ async def readiness_check():
     return JSONResponse(status_code=200 if ready else 503, content=payload)
 
 
+@app.get("/.well-known/workchord-build.json")
+async def build_identity():
+    """Expose non-secret immutable build identity for internal attestation."""
+    from app.autonomy.contracts.postgresql import load_postgresql_contract_bundle
+    from app.build_identity import load_backend_build_identity
+
+    return {
+        **load_backend_build_identity().model_dump(mode="json"),
+        "contract_manifest_digest": (
+            load_postgresql_contract_bundle().manifest_digest
+        ),
+    }
+
+
 @app.get("/metrics", response_class=PlainTextResponse)
 async def metrics_endpoint():
     """Export process/database qualification inputs without SQL or secrets."""

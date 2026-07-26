@@ -51,6 +51,19 @@ provider adapters, and qualification reports are absent. Production execution
 must also keep bootstrap and header-admin paths revoked and use only a current,
 single-use, exact-target policy authorization.
 
+The optional self-hosted server acceptance profile uses an internal-only
+OpenBao dev server, a single-node MinIO object-lock bucket, and a single-node
+Valkey AOF store. Their generated credentials live under ignored `.runtime/`
+state, and their administrative ports are not published by the profile. Do not
+expose those services or treat their receipt as production evidence. The
+receipt schema fixes production authorization, production autonomy, and
+production-gate satisfaction to `false` and keeps the program decision
+`NO-SHIP`. OpenBao and MinIO administrative credentials are present only in
+their service daemons and one-shot bootstrap jobs; they are withheld from the
+acceptance container, which receives short-lived or bucket-scoped credentials.
+The application listener defaults to loopback and requires a TLS reverse proxy
+for remote access.
+
 No WorkChord component has a release-publication destination or credential.
 The immutable handoff renderer labels its output `NOT-PUBLISHED` and
 `MANUAL-PUBLICATION-REQUIRED`; publication remains a separate manual process.
