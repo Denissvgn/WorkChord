@@ -2,18 +2,24 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
+from threading import Event, current_thread
+from typing import Any
 
 from cryptography.fernet import Fernet
 import pytest
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, func, select, text
+from sqlalchemy.engine import Connection
 from sqlalchemy.orm import Session
 
+from app.database_migration import transfer as transfer_module
+from app.database_migration.catalog import transfer_order, transfer_tables
 from app.database_migration.manifest import write_document
 from app.database_migration.source import preflight_source
 from app.database_migration.source import MigrationDataError
@@ -142,6 +148,160 @@ def _source_artifacts(
         manifest_path=manifest,
     )
     return snapshot, manifest, encryption_key.decode()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+def test_loader_rejects_concurrent_attempt_for_the_same_target(
+    tmp_path: Path,
+    postgres_database,
+    configure_database,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    snapshot, manifest, _encryption_key = _source_artifacts(
+        tmp_path, configure_database
+    )
+    configure_database(postgres_database.url)
+    bootstrap_database_schema()
+    configuration = database_configuration()
+    authorized_target = target_identifier(configuration)
+    manifest_payload = json.loads(manifest.read_text(encoding="utf-8"))
+    expected_counts = {
+        table_name: int(details["row_count"])
+        for table_name, details in manifest_payload["tables"].items()
+    }
+    contender_manifest_payload = dict(manifest_payload)
+    contender_manifest_payload.pop("document_sha256")
+    contender_manifest_payload["migration_run_id"] = (
+        f"{manifest_payload['migration_run_id']}-contender"
+    )
+    contender_manifest = tmp_path / "source-manifest-contender.json"
+    write_document(contender_manifest, contender_manifest_payload)
+    contender_report_path = tmp_path / "load-contender.json"
+
+    owner_entered_loader = Event()
+    release_owner = Event()
+    original_load_table = transfer_module._load_table
+
+    def event_controlled_load_table(
+        connection: Connection,
+        source: Any,
+        table: Any,
+        *,
+        chunk_size: int,
+    ) -> int:
+        if current_thread().name.startswith("migration-loader-owner"):
+            owner_entered_loader.set()
+            if not release_owner.wait(timeout=30):
+                raise AssertionError("timed out waiting to release migration loader")
+        return original_load_table(
+            connection,
+            source,
+            table,
+            chunk_size=chunk_size,
+        )
+
+    monkeypatch.setattr(
+        transfer_module,
+        "_load_table",
+        event_controlled_load_table,
+    )
+
+    with (
+        ThreadPoolExecutor(
+            max_workers=1,
+            thread_name_prefix="migration-loader-owner",
+        ) as owner_pool,
+        ThreadPoolExecutor(
+            max_workers=1,
+            thread_name_prefix="migration-loader-contender",
+        ) as contender_pool,
+    ):
+        owner = owner_pool.submit(
+            transfer_module.load_snapshot,
+            snapshot_path=snapshot,
+            source_manifest_path=manifest,
+            report_path=tmp_path / "load-owner.json",
+            authorized_target=authorized_target,
+            chunk_size=7,
+        )
+        assert owner_entered_loader.wait(timeout=20)
+
+        contender = contender_pool.submit(
+            transfer_module.load_snapshot,
+            snapshot_path=snapshot,
+            source_manifest_path=contender_manifest,
+            report_path=contender_report_path,
+            authorized_target=authorized_target,
+            chunk_size=7,
+        )
+        try:
+            with pytest.raises(MigrationDataError) as contention:
+                contender.result(timeout=5)
+            assert contention.value.code == "migration_loader_busy"
+            assert not owner.done()
+            assert not contender_report_path.exists()
+
+            engine = create_engine(postgres_database.url)
+            try:
+                with engine.connect() as connection:
+                    gate_status, failure_code = connection.execute(
+                        text(
+                            "SELECT status, failure_code "
+                            "FROM database_migration_gates"
+                        )
+                    ).one()
+            finally:
+                engine.dispose()
+            assert gate_status == "loading"
+            assert failure_code is None
+        finally:
+            release_owner.set()
+
+        owner_report = owner.result(timeout=30)
+
+    assert owner_report["status"] == "loaded_closed_to_traffic"
+    assert {
+        table_name: int(result["row_count"])
+        for table_name, result in owner_report["tables"].items()
+    } == expected_counts
+
+    engine = create_engine(postgres_database.url)
+    try:
+        with engine.connect() as connection:
+            gate_status, failure_code = connection.execute(
+                text(
+                    "SELECT status, failure_code "
+                    "FROM database_migration_gates"
+                )
+            ).one()
+            target_counts = {
+                table_name: int(
+                    connection.execute(
+                        select(func.count()).select_from(
+                            transfer_tables()[table_name]
+                        )
+                    ).scalar_one()
+                )
+                for table_name in transfer_order()
+            }
+    finally:
+        engine.dispose()
+    assert gate_status == "loaded"
+    assert failure_code is None
+    assert target_counts == expected_counts
+
+    resumed_report = transfer_module.load_snapshot(
+        snapshot_path=snapshot,
+        source_manifest_path=manifest,
+        report_path=tmp_path / "load-after-unlock.json",
+        authorized_target=authorized_target,
+        chunk_size=7,
+    )
+    assert resumed_report["status"] == "loaded_closed_to_traffic"
+    assert resumed_report["tables"]
+    assert all(result["resumed"] for result in resumed_report["tables"].values())
 
 
 @pytest.mark.postgresql

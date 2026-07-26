@@ -106,9 +106,25 @@ insert benchmark and the approved outage/WAL/restart tradeoff. Seal both with
 
 The loader preserves primary keys, converts declared Boolean/date/time/JSON
 types, stages nullable references, repairs all owned sequences, runs `ANALYZE`,
-and keeps credentials out of output. A process failure leaves the gate failed;
-rerunning the same command verifies completed-table row counts and resumes at
-the next table. A different manifest or target identity is refused.
+and keeps credentials out of output. Run exactly one loader against a target
+database. A concurrent attempt exits immediately with
+`migration_loader_busy`; it does not wait for or take over the active loader.
+
+On contention, inspect the migration job or process controller and query the
+gate through the approved read-only operator connection:
+
+~~~sql
+SELECT run_id, status, completed_tables, failure_code, updated_at
+FROM workchord.database_migration_gates
+ORDER BY updated_at DESC;
+~~~
+
+If the owning loader is still active, do not start another one. If inspection
+confirms that no loader remains, recovery is an explicit rerun of the exact
+`load` command above with the same snapshot, manifest, target authorization,
+evidence files, and chunk size. Do not rewrite the gate. The rerun verifies
+completed-table row counts and resumes at the next table. A different manifest
+or target identity is refused.
 
 ## Raw reconciliation, repairs, and final reconciliation
 

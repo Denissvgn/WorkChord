@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator, Mapping
+from contextlib import contextmanager
 from datetime import UTC, datetime
 import hashlib
 import json
@@ -54,6 +55,7 @@ LOAD_REPORT_SCHEMA_VERSION = 1
 RECONCILIATION_REPORT_SCHEMA_VERSION = 1
 REPAIR_REPORT_SCHEMA_VERSION = 1
 MAXIMUM_CHUNK_SIZE = 10_000
+MIGRATION_LOADER_LOCK_NAMESPACE = int.from_bytes(b"WCML", "big")
 REPAIR_OWNED_TABLES = frozenset(
     {
         "calendars",
@@ -79,6 +81,76 @@ def _target_engine() -> tuple[Engine, Any]:
         connect_args=dict(configuration.connect_args),
     )
     return engine, configuration
+
+
+def _signed_int32(value: int) -> int:
+    if not 0 <= value <= 0xFFFFFFFF:
+        raise ValueError(f"{value} is outside the unsigned 32-bit range")
+    return value if value <= 0x7FFFFFFF else value - 0x100000000
+
+
+@contextmanager
+def _exclusive_loader_connection(engine: Engine) -> Iterator[Connection]:
+    with engine.connect() as connection:
+        database_oid = _signed_int32(
+            int(
+                connection.execute(
+                    text(
+                        "SELECT oid::bigint FROM pg_database "
+                        "WHERE datname = current_database()"
+                    )
+                ).scalar_one()
+            )
+        )
+        acquired = False
+        try:
+            acquired = bool(
+                connection.execute(
+                    text(
+                        "SELECT pg_try_advisory_lock("
+                        "CAST(:namespace AS integer), CAST(:database_oid AS integer))"
+                    ),
+                    {
+                        "namespace": MIGRATION_LOADER_LOCK_NAMESPACE,
+                        "database_oid": database_oid,
+                    },
+                ).scalar_one()
+            )
+            connection.commit()
+            if not acquired:
+                raise MigrationDataError(
+                    "migration_loader_busy",
+                    "Another migration loader is active for this target database",
+                )
+            yield connection
+        finally:
+            if acquired:
+                try:
+                    if connection.in_transaction():
+                        connection.rollback()
+                except Exception:
+                    pass
+                if not connection.invalidated:
+                    try:
+                        connection.execute(
+                            text(
+                                "SELECT pg_advisory_unlock("
+                                "CAST(:namespace AS integer), "
+                                "CAST(:database_oid AS integer))"
+                            ),
+                            {
+                                "namespace": MIGRATION_LOADER_LOCK_NAMESPACE,
+                                "database_oid": database_oid,
+                            },
+                        )
+                        connection.commit()
+                    except Exception:
+                        # Closing the physical session is the crash-safe fallback.
+                        try:
+                            if connection.in_transaction():
+                                connection.rollback()
+                        except Exception:
+                            pass
 
 
 def target_identifier(configuration: Any) -> str:
@@ -306,6 +378,27 @@ def _mark_failed(engine: Engine, run_id: str, code: str) -> None:
         # The original failure remains authoritative; readiness also fails if
         # the gate database itself is unavailable.
         return
+
+
+def _mark_load_failed(connection: Connection, run_id: str, code: str) -> None:
+    if connection.invalidated:
+        return
+    try:
+        if connection.in_transaction():
+            connection.rollback()
+        with connection.begin():
+            connection.execute(
+                update(DatabaseMigrationGate)
+                .where(DatabaseMigrationGate.run_id == run_id)
+                .values(status="failed", failure_code=code, updated_at=utc_now())
+            )
+    except Exception:
+        # Do not reconnect outside the lock-owning session to rewrite the gate.
+        try:
+            if connection.in_transaction():
+                connection.rollback()
+        except Exception:
+            pass
 
 
 def _initialize_gate(
@@ -577,119 +670,154 @@ def load_snapshot(
     table_results: dict[str, Any] = {}
     sequence_results: dict[str, Any] = {}
     try:
-        with engine.begin() as connection:
-            _assert_postgresql_contract(connection)
-            gate = _initialize_gate(
-                connection,
-                manifest=manifest,
-                target_identity_sha256=target_sha256,
-            )
-            if gate.get("status") == "reconciled":
-                return write_document(
-                    report_path,
-                    {
-                        "kind": "workchord-postgresql-load-report",
-                        "schema_version": LOAD_REPORT_SCHEMA_VERSION,
-                        "migration_run_id": run_id,
-                        "source_manifest_sha256": manifest["document_sha256"],
-                        "target_identity_sha256": target_sha256,
-                        "status": "already_reconciled",
-                        "tables": {},
-                    },
-                )
-            completed = set(gate.get("completed_tables") or [])
-            connection.execute(
-                update(DatabaseMigrationGate)
-                .where(DatabaseMigrationGate.run_id == run_id)
-                .values(status="loading", failure_code=None, updated_at=utc_now())
-            )
-
-        with read_only_sqlite(snapshot_path) as source:
-            for table_name in transfer_order():
-                table = transfer_tables()[table_name]
-                expected_count = int(manifest["tables"][table_name]["row_count"])
-                if table_name in completed:
-                    with engine.connect() as connection:
-                        actual_count = _table_count(connection, table)
-                    if actual_count != expected_count:
-                        raise MigrationDataError(
-                            "resume_checkpoint_mismatch",
-                            f"Completed table {table_name} has {actual_count}, expected {expected_count}",
-                        )
-                    table_results[table_name] = {
-                        "row_count": actual_count,
-                        "resumed": True,
-                    }
-                    continue
-                with engine.begin() as connection:
-                    loaded = _load_table(
-                        connection, source, table, chunk_size=chunk_size
+        with _exclusive_loader_connection(engine) as connection:
+            try:
+                with connection.begin():
+                    _assert_postgresql_contract(connection)
+                    gate = _initialize_gate(
+                        connection,
+                        manifest=manifest,
+                        target_identity_sha256=target_sha256,
                     )
-                    if loaded != expected_count:
-                        raise MigrationDataError(
-                            "loader_count_mismatch",
-                            f"Loaded {loaded} {table_name} rows; expected {expected_count}",
+                    if gate.get("status") == "reconciled":
+                        return write_document(
+                            report_path,
+                            {
+                                "kind": "workchord-postgresql-load-report",
+                                "schema_version": LOAD_REPORT_SCHEMA_VERSION,
+                                "migration_run_id": run_id,
+                                "source_manifest_sha256": manifest["document_sha256"],
+                                "target_identity_sha256": target_sha256,
+                                "status": "already_reconciled",
+                                "tables": {},
+                            },
                         )
-                    completed.add(table_name)
+                    completed = set(gate.get("completed_tables") or [])
                     connection.execute(
                         update(DatabaseMigrationGate)
                         .where(DatabaseMigrationGate.run_id == run_id)
                         .values(
-                            completed_tables=sorted(completed),
+                            status="loading",
+                            failure_code=None,
                             updated_at=utc_now(),
                         )
                     )
-                table_results[table_name] = {"row_count": loaded, "resumed": False}
-                if _failure_after_table == table_name:
-                    raise RuntimeError("injected table-boundary interruption")
 
-            staged_results: dict[str, int] = {}
-            for table_name in transfer_order():
-                table = transfer_tables()[table_name]
-                with engine.begin() as connection:
-                    staged_results[table_name] = _restore_staged_references(
-                        connection, source, table, chunk_size=chunk_size
+                with read_only_sqlite(snapshot_path) as source:
+                    for table_name in transfer_order():
+                        table = transfer_tables()[table_name]
+                        expected_count = int(
+                            manifest["tables"][table_name]["row_count"]
+                        )
+                        if table_name in completed:
+                            with connection.begin():
+                                actual_count = _table_count(connection, table)
+                            if actual_count != expected_count:
+                                raise MigrationDataError(
+                                    "resume_checkpoint_mismatch",
+                                    f"Completed table {table_name} has {actual_count}, "
+                                    f"expected {expected_count}",
+                                )
+                            table_results[table_name] = {
+                                "row_count": actual_count,
+                                "resumed": True,
+                            }
+                            continue
+                        with connection.begin():
+                            loaded = _load_table(
+                                connection, source, table, chunk_size=chunk_size
+                            )
+                            if loaded != expected_count:
+                                raise MigrationDataError(
+                                    "loader_count_mismatch",
+                                    f"Loaded {loaded} {table_name} rows; "
+                                    f"expected {expected_count}",
+                                )
+                            completed.add(table_name)
+                            connection.execute(
+                                update(DatabaseMigrationGate)
+                                .where(DatabaseMigrationGate.run_id == run_id)
+                                .values(
+                                    completed_tables=sorted(completed),
+                                    updated_at=utc_now(),
+                                )
+                            )
+                        table_results[table_name] = {
+                            "row_count": loaded,
+                            "resumed": False,
+                        }
+                        if _failure_after_table == table_name:
+                            raise RuntimeError(
+                                "injected table-boundary interruption"
+                            )
+
+                    staged_results: dict[str, int] = {}
+                    for table_name in transfer_order():
+                        table = transfer_tables()[table_name]
+                        with connection.begin():
+                            staged_results[table_name] = (
+                                _restore_staged_references(
+                                    connection,
+                                    source,
+                                    table,
+                                    chunk_size=chunk_size,
+                                )
+                            )
+
+                with connection.begin():
+                    sequence_results = _repair_sequences(connection)
+                for table_name in transfer_order():
+                    with connection.begin():
+                        connection.exec_driver_sql(f'ANALYZE "{table_name}"')
+                with connection.begin():
+                    connection.execute(
+                        update(DatabaseMigrationGate)
+                        .where(DatabaseMigrationGate.run_id == run_id)
+                        .values(
+                            status="loaded",
+                            failure_code=None,
+                            updated_at=utc_now(),
+                        )
                     )
 
-        with engine.begin() as connection:
-            sequence_results = _repair_sequences(connection)
-        with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
-            for table_name in transfer_order():
-                connection.exec_driver_sql(f'ANALYZE "{table_name}"')
-        with engine.begin() as connection:
-            connection.execute(
-                update(DatabaseMigrationGate)
-                .where(DatabaseMigrationGate.run_id == run_id)
-                .values(status="loaded", failure_code=None, updated_at=utc_now())
-            )
-
-        if _file_sha256(snapshot_path) != manifest["snapshot"]["sha256"]:
-            raise MigrationDataError(
-                "source_changed_during_load", "Read-only snapshot checksum changed during load"
-            )
-        payload = {
-            "kind": "workchord-postgresql-load-report",
-            "schema_version": LOAD_REPORT_SCHEMA_VERSION,
-            "migration_run_id": run_id,
-            "source_manifest_sha256": manifest["document_sha256"],
-            "source_snapshot_sha256": manifest["snapshot"]["sha256"],
-            "target_identity_sha256": target_sha256,
-            "status": "loaded_closed_to_traffic",
-            "loader_method": "bounded-inserts-v1",
-            "chunk_size": chunk_size,
-            "capacity_evidence_sha256": capacity_sha256,
-            "loader_method_evidence_sha256": method_sha256,
-            "tables": table_results,
-            "staged_reference_updates": staged_results,
-            "sequences": sequence_results,
-            "analyze_completed": True,
-        }
-        return write_document(report_path, payload)
+                if _file_sha256(snapshot_path) != manifest["snapshot"]["sha256"]:
+                    raise MigrationDataError(
+                        "source_changed_during_load",
+                        "Read-only snapshot checksum changed during load",
+                    )
+                payload = {
+                    "kind": "workchord-postgresql-load-report",
+                    "schema_version": LOAD_REPORT_SCHEMA_VERSION,
+                    "migration_run_id": run_id,
+                    "source_manifest_sha256": manifest["document_sha256"],
+                    "source_snapshot_sha256": manifest["snapshot"]["sha256"],
+                    "target_identity_sha256": target_sha256,
+                    "status": "loaded_closed_to_traffic",
+                    "loader_method": "bounded-inserts-v1",
+                    "chunk_size": chunk_size,
+                    "capacity_evidence_sha256": capacity_sha256,
+                    "loader_method_evidence_sha256": method_sha256,
+                    "tables": table_results,
+                    "staged_reference_updates": staged_results,
+                    "sequences": sequence_results,
+                    "analyze_completed": True,
+                }
+                return write_document(report_path, payload)
+            except Exception as exc:
+                code = (
+                    exc.code
+                    if isinstance(exc, MigrationDataError)
+                    else "loader_exception"
+                )
+                _mark_load_failed(connection, run_id, code)
+                if isinstance(exc, MigrationDataError):
+                    raise
+                raise MigrationDataError(
+                    "loader_exception", f"Loader stopped with {type(exc).__name__}"
+                ) from exc
+    except MigrationDataError:
+        raise
     except Exception as exc:
-        code = exc.code if isinstance(exc, MigrationDataError) else "loader_exception"
-        _mark_failed(engine, run_id, code)
-        if isinstance(exc, MigrationDataError):
-            raise
         raise MigrationDataError(
             "loader_exception", f"Loader stopped with {type(exc).__name__}"
         ) from exc
