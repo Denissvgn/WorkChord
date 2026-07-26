@@ -142,8 +142,10 @@ query string, gateway/upstream status, timings, and response bytes. Its exact
 The deployment monitor must call that public URL every 30 seconds and record
 DNS, connect, TLS, timeout, and HTTP outcomes, including failures that cannot
 reach Nginx. Alert and qualification thresholds come directly from
-`docs/contracts/postgresql-capacity-contract-v1.json`; collectors must retain
-the raw gateway/synthetic denominator needed by its availability SLI.
+the installed contract bundle member
+`backend/app/autonomy/contracts/postgresql/postgresql-capacity-contract-v1.json`;
+collectors must retain the raw gateway/synthetic denominator needed by its
+availability SLI.
 
 PostgreSQL deployments enable slow-query logging and `pg_stat_statements` only
 through the approved database topology/role grants. The application continues

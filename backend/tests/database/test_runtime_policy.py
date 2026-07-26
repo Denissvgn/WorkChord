@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 import pytest
 from sqlalchemy import Column, Integer, MetaData, String, Table, create_engine, select
 
+from app.autonomy.contracts.postgresql import load_postgresql_contract_bundle
 from app.database_runtime import (
     DatabaseConflictError,
     DatabaseFailureKind,
@@ -20,9 +18,6 @@ from app.query_limits import (
     MAX_ITERATION_TREE_TASKS,
 )
 from app.sql_semantics import portable_contains
-
-
-REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 
 
 class SqlStateFailure(RuntimeError):
@@ -217,10 +212,10 @@ def test_ascii_unicode_null_and_tie_ordering_golden_case() -> None:
 
 
 def test_response_bounds_match_the_approved_capacity_contract() -> None:
-    contract = json.loads(
-        (REPOSITORY_ROOT / "docs/contracts/postgresql-capacity-contract-v1.json")
-        .read_text(encoding="utf-8")
+    contract = load_postgresql_contract_bundle().member_json(
+        "postgresql-capacity-contract-v1.json"
     )
+    assert isinstance(contract, dict)
     response_profiles = contract["traffic"]["response_profiles"]
 
     assert MAX_BOUNDED_LIST_ITEMS == response_profiles["bounded_list"][

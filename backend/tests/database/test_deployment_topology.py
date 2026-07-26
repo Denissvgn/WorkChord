@@ -58,6 +58,33 @@ def test_github_actions_run_scripts_have_valid_bash_syntax() -> None:
             )
 
 
+def test_executable_python_does_not_read_ignored_contract_sources() -> None:
+    forbidden_sources = (
+        "docs" + "/contracts/",
+        "docs" + "/adr/",
+    )
+    offenders: list[str] = []
+
+    source_roots = (
+        REPOSITORY_ROOT / "backend/app",
+        REPOSITORY_ROOT / "backend/tests",
+        REPOSITORY_ROOT / "scripts",
+    )
+    for source_root in source_roots:
+        for path in sorted(source_root.rglob("*.py")):
+            text = path.read_text(encoding="utf-8")
+            for forbidden_source in forbidden_sources:
+                if forbidden_source in text:
+                    offenders.append(
+                        f"{path.relative_to(REPOSITORY_ROOT)}: {forbidden_source}"
+                    )
+
+    assert offenders == [], (
+        "Executable Python must use tracked package resources, not ignored "
+        f"contract sources: {offenders}"
+    )
+
+
 def test_local_compose_makes_postgresql_the_integration_database() -> None:
     compose = _yaml("docker-compose.yml")
     services = compose["services"]

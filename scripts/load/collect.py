@@ -20,22 +20,18 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.load.common import (
+    DATA_LIFECYCLE_POLICY_MEMBER,
     QualificationInputError,
-    REPOSITORY_ROOT,
     atomic_write_json,
     capacity_contract,
+    contract_member_sha256,
     contract_sha256,
     read_json_object,
-    sha256_file,
     utc_now_text,
     verify_document,
 )
 
 
-LIFECYCLE_POLICY = (
-    REPOSITORY_ROOT
-    / "docs/contracts/postgresql-data-lifecycle-policy-v1.json"
-)
 MINIMUM_HORIZON_SAMPLE_SECONDS = 8 * 60 * 60
 DERIVATION_PHASES = (
     "small",
@@ -361,7 +357,9 @@ def _snapshot(args: argparse.Namespace) -> int:
                 "id": contract["contract_id"],
                 "sha256": contract_sha256(),
             },
-            "lifecycle_policy_sha256": sha256_file(LIFECYCLE_POLICY),
+            "lifecycle_policy_sha256": contract_member_sha256(
+                DATA_LIFECYCLE_POLICY_MEMBER
+            ),
             "facts": facts,
             "database": database,
             "wal": wal,

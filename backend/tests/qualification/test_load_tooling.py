@@ -18,17 +18,17 @@ if str(REPOSITORY_ROOT) not in sys.path:
 
 from scripts.load.collect import _derive
 from scripts.load.common import (
+    DATA_LIFECYCLE_POLICY_MEMBER,
     QualificationInputError,
     atomic_write_json,
     authorized_base_url,
     capacity_contract,
+    contract_member_sha256,
     contract_sha256,
     read_json_object,
-    sha256_file,
     traffic_profile,
 )
 from scripts.load.qualify import (
-    LIFECYCLE_POLICY,
     REQUIRED_RESULTS,
     RUN_GATES,
     _finalize,
@@ -448,7 +448,9 @@ def test_final_report_requires_and_verifies_ed25519_signature(tmp_path: Path) ->
             "id": "workchord-postgresql-capacity-v1",
             "sha256": contract_sha256(),
         },
-        "lifecycle_policy_sha256": sha256_file(LIFECYCLE_POLICY),
+        "lifecycle_policy_sha256": contract_member_sha256(
+            DATA_LIFECYCLE_POLICY_MEMBER
+        ),
         "database": {"major": 18},
     }
     release_body["fingerprint"] = _fingerprint(release_body)

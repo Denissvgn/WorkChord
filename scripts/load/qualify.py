@@ -26,12 +26,14 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.load.common import (
-    QUALIFICATION_SCHEMA_PATH,
+    DATA_LIFECYCLE_POLICY_MEMBER,
+    QUALIFICATION_SCHEMA_MEMBER,
     QualificationInputError,
-    REPOSITORY_ROOT,
     atomic_write_json,
     canonical_json_bytes,
     capacity_contract,
+    contract_member_json,
+    contract_member_sha256,
     contract_sha256,
     read_json_object,
     sha256_bytes,
@@ -44,10 +46,6 @@ from scripts.load.result import validate_result
 
 IMAGE_PATTERN = re.compile(r"^.+@sha256:[0-9a-f]{64}$")
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
-LIFECYCLE_POLICY = (
-    REPOSITORY_ROOT
-    / "docs/contracts/postgresql-data-lifecycle-policy-v1.json"
-)
 ATTESTATION = (
     "The listed attempts are the final three consecutive qualification attempts "
     "for this frozen release, and no failed or excluded attempt is omitted."
@@ -100,7 +98,7 @@ def _reject_local_signing_in_zero_human_mode() -> None:
 
 
 def _schema_errors(document: Mapping[str, Any]) -> list[str]:
-    schema = read_json_object(QUALIFICATION_SCHEMA_PATH)
+    schema = contract_member_json(QUALIFICATION_SCHEMA_MEMBER)
     errors = sorted(
         Draft202012Validator(
             schema, format_checker=FormatChecker()
@@ -174,7 +172,9 @@ def _validate_frozen_release(document: Mapping[str, Any]) -> None:
         "sha256": contract_sha256(),
     }:
         raise QualificationInputError("Frozen release capacity contract differs")
-    if document.get("lifecycle_policy_sha256") != sha256_file(LIFECYCLE_POLICY):
+    if document.get("lifecycle_policy_sha256") != contract_member_sha256(
+        DATA_LIFECYCLE_POLICY_MEMBER
+    ):
         raise QualificationInputError("Frozen release lifecycle policy differs")
 
 
@@ -216,7 +216,9 @@ def _freeze(args: argparse.Namespace) -> int:
             "id": contract["contract_id"],
             "sha256": contract_sha256(),
         },
-        "lifecycle_policy_sha256": sha256_file(LIFECYCLE_POLICY),
+        "lifecycle_policy_sha256": contract_member_sha256(
+            DATA_LIFECYCLE_POLICY_MEMBER
+        ),
         "database": {
             "major": contract["database"]["target"]["major"],
             "reference_minor": contract["database"]["target"]["reference_minor"],

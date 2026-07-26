@@ -16,19 +16,13 @@ if __package__ in {None, ""}:
 
 from scripts.load.common import (
     QualificationInputError,
-    REPOSITORY_ROOT,
+    RESILIENCE_SCHEMA_MEMBER,
     atomic_write_json,
     capacity_contract,
-    read_json_object,
+    contract_member_json,
     utc_now_text,
 )
 from scripts.load.result import percentile
-
-
-SCHEMA_PATH = (
-    REPOSITORY_ROOT
-    / "docs/contracts/postgresql-resilience-observations-v1.schema.json"
-)
 
 
 def _time(value: str) -> datetime:
@@ -54,7 +48,7 @@ def _gate(actual: float, maximum: float) -> dict[str, Any]:
 
 
 def evaluate(document: Mapping[str, Any]) -> dict[str, Any]:
-    schema = read_json_object(SCHEMA_PATH)
+    schema = contract_member_json(RESILIENCE_SCHEMA_MEMBER)
     errors = sorted(
         Draft202012Validator(
             schema, format_checker=FormatChecker()

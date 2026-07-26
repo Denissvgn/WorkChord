@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from functools import lru_cache
 import hashlib
 import json
 import os
@@ -10,18 +11,20 @@ from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlsplit
 
+from app.autonomy.contracts.postgresql import (
+    ContractBundleError,
+    PostgreSQLContractBundle,
+    load_postgresql_contract_bundle,
+)
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-CAPACITY_CONTRACT_PATH = (
-    REPOSITORY_ROOT / "docs/contracts/postgresql-capacity-contract-v1.json"
-)
-RESULT_SCHEMA_PATH = (
-    REPOSITORY_ROOT
-    / "docs/contracts/postgresql-load-result-v1.schema.json"
-)
-QUALIFICATION_SCHEMA_PATH = (
-    REPOSITORY_ROOT
-    / "docs/contracts/postgresql-precutover-qualification-v1.schema.json"
+CAPACITY_CONTRACT_MEMBER = "postgresql-capacity-contract-v1.json"
+DATA_LIFECYCLE_POLICY_MEMBER = "postgresql-data-lifecycle-policy-v1.json"
+LOAD_RESULT_SCHEMA_MEMBER = "postgresql-load-result-v1.schema.json"
+QUALIFICATION_SCHEMA_MEMBER = "postgresql-precutover-qualification-v1.schema.json"
+RESILIENCE_SCHEMA_MEMBER = "postgresql-resilience-observations-v1.schema.json"
+CAPACITY_CONTRACT_REFERENCE = (
+    "backend/app/autonomy/contracts/postgresql/"
+    "postgresql-capacity-contract-v1.json"
 )
 HTTP_TOOL = {"name": "httpx", "version": "0.28.1"}
 MCP_TOOL = {"name": "mcp", "version": "1.28.1"}
@@ -94,6 +97,40 @@ def read_json_object(path: Path, *, sealed: bool = False) -> dict[str, Any]:
     return value
 
 
+@lru_cache(maxsize=1)
+def contract_bundle() -> PostgreSQLContractBundle:
+    try:
+        return load_postgresql_contract_bundle()
+    except ContractBundleError as exc:
+        raise QualificationInputError(
+            "Packaged PostgreSQL contract bundle is unavailable or invalid"
+        ) from exc
+
+
+def contract_member_json(member: str) -> dict[str, Any]:
+    try:
+        value = contract_bundle().member_json(member)
+    except ContractBundleError as exc:
+        raise QualificationInputError(
+            f"Packaged PostgreSQL contract member is unavailable: {member}"
+        ) from exc
+    if not isinstance(value, dict):
+        raise QualificationInputError(
+            f"Packaged PostgreSQL contract member must be an object: {member}"
+        )
+    return value
+
+
+def contract_member_sha256(member: str) -> str:
+    try:
+        payload = contract_bundle().members[member]
+    except KeyError as exc:
+        raise QualificationInputError(
+            f"Packaged PostgreSQL contract member is unavailable: {member}"
+        ) from exc
+    return sha256_bytes(payload)
+
+
 def atomic_write_json(
     path: Path,
     payload: Mapping[str, Any],
@@ -130,7 +167,7 @@ def atomic_write_json(
 
 
 def capacity_contract() -> dict[str, Any]:
-    contract = read_json_object(CAPACITY_CONTRACT_PATH)
+    contract = contract_member_json(CAPACITY_CONTRACT_MEMBER)
     if (
         contract.get("status") != "approved"
         or contract.get("contract_id") != "workchord-postgresql-capacity-v1"
@@ -140,7 +177,7 @@ def capacity_contract() -> dict[str, Any]:
 
 
 def contract_sha256() -> str:
-    return sha256_file(CAPACITY_CONTRACT_PATH)
+    return contract_member_sha256(CAPACITY_CONTRACT_MEMBER)
 
 
 def traffic_profile(contract: Mapping[str, Any], profile_id: str) -> dict[str, Any]:

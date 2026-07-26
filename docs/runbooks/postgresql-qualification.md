@@ -245,9 +245,9 @@ external, and domain-integrity gate passes.
 ## Resilience, query, storage, and retention evidence
 
 Use the JSON schema in
-`docs/contracts/postgresql-resilience-observations-v1.schema.json` for raw
-observations. Account for every eligible client attempt during faults. Query
-IDs in `explained_query_ids` must be present in the captured
+`backend/app/autonomy/contracts/postgresql/postgresql-resilience-observations-v1.schema.json`
+for raw observations. Account for every eligible client attempt during faults.
+Query IDs in `explained_query_ids` must be present in the captured
 `ranked_query_ids`; review actual `EXPLAIN (ANALYZE, BUFFERS, WAL, SETTINGS,
 FORMAT JSON)` output before accepting tuning.
 
@@ -274,11 +274,11 @@ Exercise and record:
 - backup RPO and isolated restore RTO with zero invariant failures.
 
 The reviewed lifecycle contract is
-`docs/contracts/postgresql-data-lifecycle-policy-v1.json`. If the eight-hour
-projection falls below 12 months or reaches 70% planned utilization inside 12
-months, stop. Implement and test the selected expansion/archive/partition/
-purge intervention before starting a new qualification attempt; the policy
-document alone is not a pass.
+`backend/app/autonomy/contracts/postgresql/postgresql-data-lifecycle-policy-v1.json`.
+If the eight-hour projection falls below 12 months or reaches 70% planned
+utilization inside 12 months, stop. Implement and test the selected expansion/
+archive/partition/purge intervention before starting a new qualification
+attempt; the policy document alone is not a pass.
 
 Compare any material tuning change against its sealed baseline:
 

@@ -2,23 +2,29 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 import pytest
 
-
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-CONTRACT_PATH = (
-    REPOSITORY_ROOT / "docs/contracts/postgresql-capacity-contract-v1.json"
+from app.autonomy.contracts.postgresql import (
+    PostgreSQLContractBundle,
+    load_postgresql_contract_bundle,
 )
-ADR_PATH = REPOSITORY_ROOT / "docs/adr/0001-postgresql-18-and-capacity-contract.md"
+
+
+CAPACITY_CONTRACT_MEMBER = "postgresql-capacity-contract-v1.json"
 
 
 @pytest.fixture(scope="module")
-def capacity_contract() -> dict:
-    with CONTRACT_PATH.open(encoding="utf-8") as contract_file:
-        return json.load(contract_file)
+def postgresql_contract_bundle() -> PostgreSQLContractBundle:
+    return load_postgresql_contract_bundle()
+
+
+@pytest.fixture(scope="module")
+def capacity_contract(
+    postgresql_contract_bundle: PostgreSQLContractBundle,
+) -> dict:
+    contract = postgresql_contract_bundle.member_json(CAPACITY_CONTRACT_MEMBER)
+    assert isinstance(contract, dict)
+    return contract
 
 
 @pytest.mark.contract
@@ -147,7 +153,9 @@ def test_surge_and_external_wait_are_explicit(capacity_contract: dict) -> None:
 
 
 @pytest.mark.contract
-def test_every_later_database_task_traces_to_the_adr() -> None:
+def test_every_later_database_task_is_in_the_packaged_trace(
+    postgresql_contract_bundle: PostgreSQLContractBundle,
+) -> None:
     later_tasks = {
         "DBM-DEP-001",
         "DBM-CFG-001",
@@ -180,6 +188,7 @@ def test_every_later_database_task_traces_to_the_adr() -> None:
         "DBM-DOC-002",
         "DBM-CLOSE-001",
     }
-    adr = ADR_PATH.read_text(encoding="utf-8")
-    assert {task for task in later_tasks if task not in adr} == set()
-
+    assert set(postgresql_contract_bundle.manifest.trace.dbm_tasks) == later_tasks | {
+        "DBM-CON-001",
+        "DBM-QA-001",
+    }

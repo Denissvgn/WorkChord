@@ -10,11 +10,11 @@ from typing import Any, Iterable, Mapping
 from jsonschema import Draft202012Validator, FormatChecker
 
 from scripts.load.common import (
+    LOAD_RESULT_SCHEMA_MEMBER,
     QualificationInputError,
-    RESULT_SCHEMA_PATH,
     atomic_write_json,
     capacity_contract,
-    read_json_object,
+    contract_member_json,
     traffic_profile,
     verify_document,
 )
@@ -65,7 +65,7 @@ def measurement(
 def validate_result(document: Mapping[str, Any], *, verify_checksum: bool = True) -> None:
     if verify_checksum:
         verify_document(document)
-    schema = read_json_object(RESULT_SCHEMA_PATH)
+    schema = contract_member_json(LOAD_RESULT_SCHEMA_MEMBER)
     errors = sorted(
         Draft202012Validator(
             schema,

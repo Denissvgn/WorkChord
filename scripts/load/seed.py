@@ -20,7 +20,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.load.common import (
-    CAPACITY_CONTRACT_PATH,
+    CAPACITY_CONTRACT_REFERENCE,
     QualificationInputError,
     atomic_write_json,
     capacity_contract,
@@ -1031,7 +1031,7 @@ def seed_database(args: argparse.Namespace) -> dict[str, Any]:
             "as_of": args.as_of,
             "created_at": utc_now_text(),
             "target_identifier": target,
-            "capacity_contract": str(CAPACITY_CONTRACT_PATH.relative_to(CAPACITY_CONTRACT_PATH.parents[2])),
+            "capacity_contract": CAPACITY_CONTRACT_REFERENCE,
             "capacity_contract_sha256": contract_sha256(),
             "declared_cardinalities": cardinalities,
             "derived_cardinalities": derived,
