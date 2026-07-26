@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
+import pytest
 import yaml
 
 
@@ -29,6 +32,30 @@ VALKEY_IMAGE = (
 
 def _yaml(name: str):
     return yaml.safe_load((REPOSITORY_ROOT / name).read_text(encoding="utf-8"))
+
+
+def test_github_actions_run_scripts_have_valid_bash_syntax() -> None:
+    bash = shutil.which("bash")
+    if bash is None:
+        pytest.skip("bash is unavailable")
+
+    workflow = _yaml(".github/workflows/ci.yml")
+    for job_name, job in workflow["jobs"].items():
+        for step_index, step in enumerate(job.get("steps", [])):
+            script = step.get("run")
+            if not isinstance(script, str):
+                continue
+            result = subprocess.run(
+                [bash, "-n"],
+                input=script,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            step_name = step.get("name", f"step[{step_index}]")
+            assert result.returncode == 0, (
+                f"{job_name}/{step_name} failed bash -n:\n{result.stderr}"
+            )
 
 
 def test_local_compose_makes_postgresql_the_integration_database() -> None:
