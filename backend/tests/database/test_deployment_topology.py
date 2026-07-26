@@ -169,7 +169,12 @@ def test_public_proxy_keeps_detailed_readiness_and_metrics_internal() -> None:
     for gateway in (local_gateway, production_gateway):
         assert "location = /health" in gateway
         assert "location ^~ /health/" not in gateway
-        assert "location = /metrics" not in gateway
+        for private_path in ("/health/live", "/health/ready", "/metrics"):
+            assert (
+                f"location = {private_path} {{\n"
+                "        return 404;\n"
+                "    }"
+            ) in gateway
     assert "$workchord_forwarded_proto" in local_gateway
 
 

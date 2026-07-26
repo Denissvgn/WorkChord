@@ -69,6 +69,18 @@ server {
         proxy_next_upstream_tries 2;
     }
 
+    location = /health/live {
+        return 404;
+    }
+
+    location = /health/ready {
+        return 404;
+    }
+
+    location = /metrics {
+        return 404;
+    }
+
     location /api/ {
         limit_req zone=workchord_api_rate burst=60 nodelay;
         limit_conn workchord_api_connections 100;
