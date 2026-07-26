@@ -1,0 +1,462 @@
+{
+  "schema_version": 1,
+  "contract_id": "workchord-postgresql-capacity-v1",
+  "task_id": "DBM-CON-001",
+  "status": "approved",
+  "approved_on": "2026-07-18",
+  "owner": "WorkChord backend/platform team",
+  "approval_evidence": "Repository-owner instruction to implement DBM-CON-001 through DBM-QA-001",
+  "normative_adr": "docs/adr/0001-postgresql-18-and-capacity-contract.md",
+  "clauses": [
+    "PG-VERSION",
+    "PG-LOCALE",
+    "PG-SCHEMA",
+    "PG-DRIVER",
+    "PG-POOL",
+    "CAP-SHAPE",
+    "CAP-DATA",
+    "CAP-RETENTION",
+    "CAP-HARDWARE",
+    "CAP-SLO",
+    "CAP-SLI",
+    "CUT-BOUNDARY"
+  ],
+  "database": {
+    "production_system_of_record": "postgresql",
+    "source": {
+      "dialect": "sqlite",
+      "mode": "read-only migration source after write freeze"
+    },
+    "target": {
+      "major": 18,
+      "reference_minor": "18.4",
+      "supported_minor_policy": "current PostgreSQL 18 minor",
+      "verified_on": "2026-07-18",
+      "revalidate_on_or_before": "2026-08-13",
+      "ci_image": "postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296",
+      "encoding": "UTF8",
+      "locale_provider": "builtin",
+      "locale": "PG_UNICODE_FAST",
+      "collation_version": "1",
+      "collation_deterministic": true,
+      "database_timezone": "UTC",
+      "role_timezone": "UTC",
+      "application_schema": "workchord",
+      "search_path": [
+        "workchord",
+        "pg_catalog"
+      ],
+      "public_schema_in_search_path": false
+    },
+    "sqlite_policy": {
+      "allowed_environments": [
+        "development",
+        "test"
+      ],
+      "production_fallback_allowed": false
+    },
+    "driver": {
+      "family": "psycopg",
+      "major": 3,
+      "sync_sqlalchemy_url": "postgresql+psycopg://",
+      "async_sqlalchemy_url": "postgresql+psycopg://"
+    },
+    "pooling": {
+      "layers": 1,
+      "web_and_worker_owner": "SQLAlchemy AsyncAdaptedQueuePool",
+      "one_shot_owner": "SQLAlchemy NullPool",
+      "external_pooler_initially_enabled": false,
+      "database_max_connections": 150,
+      "application_and_operations_budget": 100,
+      "maintenance_and_failover_reserve": 50,
+      "reserve_percent": 33.3,
+      "web": {
+        "replicas": 2,
+        "pool_size_per_replica": 15,
+        "max_overflow_per_replica": 5,
+        "maximum_connections": 40
+      },
+      "delivery_worker": {
+        "replicas": 2,
+        "pool_size_per_replica": 8,
+        "max_overflow_per_replica": 2,
+        "maximum_connections": 20
+      },
+      "migration_operations_and_monitoring_reserve": 40
+    }
+  },
+  "identity_claim": {
+    "browser_identities": 1250,
+    "active_browser_sessions": 250,
+    "concurrent_agent_clients": 200,
+    "connection_surge_clients": 1000,
+    "wording": "1,250 opaque browser identities, 250 active browser sessions, and 200 concurrent MCP/agent clients",
+    "authenticated_people_claim": false,
+    "authentication_rbac_scope": "separate prerequisite for a people-based claim"
+  },
+  "seed": {
+    "deterministic": true,
+    "bounded": true,
+    "resumable": true,
+    "production_execution_allowed": false,
+    "cardinalities": {
+      "browser_identities": 1250,
+      "projects": 250,
+      "iterations": 2000,
+      "tasks": 250000,
+      "task_status_audit_events": 1000000,
+      "agent_run_events": 2000000,
+      "outbound_delivery_rows": 250000,
+      "hot_iteration_tasks": 2500,
+      "hot_iteration_dependency_edges": 5000,
+      "hot_project_linked_tasks": 10000
+    }
+  },
+  "retention": {
+    "core_projects_iterations_tasks": "active lifetime plus 7 years after archive",
+    "task_status_audit_events_days": 730,
+    "agent_runs_and_events_days": 365,
+    "completed_outbound_deliveries_days": 90,
+    "failed_outbound_deliveries_days": 180,
+    "expired_or_revoked_browser_sessions_days": 90,
+    "qualification_manifests_and_raw_results_days": 395,
+    "pitr_and_wal_days": 35,
+    "action_if_capacity_horizon_fails": "implement and test archive, partition, purge, or expansion before 70 percent planned utilization"
+  },
+  "reference_hardware": {
+    "postgresql_primary": {
+      "vcpu": 8,
+      "ram_gib": 32,
+      "storage_gib": 1000,
+      "storage_class": "dedicated NVMe-backed SSD",
+      "provisioned_iops_minimum": 10000,
+      "network_gbps_minimum": 2
+    },
+    "postgresql_failover_target": "same or greater than primary",
+    "web_replica": {
+      "count": 2,
+      "vcpu_each": 2,
+      "ram_gib_each": 1
+    },
+    "delivery_worker_replica": {
+      "count": 2,
+      "vcpu_each": 1,
+      "ram_gib_each": 0.5
+    },
+    "gateway": {
+      "count": 2,
+      "vcpu_each": 1,
+      "ram_gib_each": 0.5
+    },
+    "load_generator": {
+      "separate_from_application_hosts": true,
+      "vcpu": 8,
+      "ram_gib": 16,
+      "network_gbps_minimum": 2
+    }
+  },
+  "traffic": {
+    "manifest_version": "1.0.0",
+    "definitions": {
+      "virtual_user": "one stateful workload actor with its own identity and think-time schedule",
+      "open_connection": "one client transport connection currently established to the gateway",
+      "in_flight_request": "one eligible request sent without a final allowed response before its deadline",
+      "active_client": "a virtual user in its started interval, including think time",
+      "read": "an operation that must not durably mutate application state even when transported with POST",
+      "write": "an operation expected to commit or deliberately conflict with a durable mutation"
+    },
+    "allowed_variance": {
+      "operation_weight_percentage_points": 2,
+      "aggregate_rps_percent": 5,
+      "client_counts": 0
+    },
+    "entity_distribution_percent": {
+      "hot_project": 20,
+      "hot_iteration": 20,
+      "same_key_contention": 10,
+      "cold_long_tail": 50
+    },
+    "session_state_percent": {
+      "new": 5,
+      "active": 75,
+      "nearly_expired": 10,
+      "expired": 5,
+      "revoked": 5
+    },
+    "task_mutation_percent": {
+      "metadata_edit": 30,
+      "status_transition": 30,
+      "dependency_add_or_remove": 15,
+      "move_or_reorder": 10,
+      "agent_claim_or_lease": 15
+    },
+    "optimistic_conflict_percent_of_mutations": 5,
+    "agent_lifecycle_percent": {
+      "idle_poll": 45,
+      "begin": 5,
+      "busy_renew": 20,
+      "event_batch": 20,
+      "submit": 8,
+      "fail_or_recover": 2
+    },
+    "agent_poll_intervals_seconds": {
+      "idle": 5,
+      "busy": 1,
+      "retry_minimum": 1,
+      "retry_maximum": 30,
+      "retry_jitter_percent": 25
+    },
+    "agent_event_batch_size": {
+      "p50": 1,
+      "p95": 10,
+      "maximum": 50
+    },
+    "payload_profiles": {
+      "none": {
+        "request_body_bytes": [0, 0, 0]
+      },
+      "small_json": {
+        "request_body_bytes_p50_p95_max": [256, 2048, 8192]
+      },
+      "task_json": {
+        "request_body_bytes_p50_p95_max": [1024, 8192, 65536]
+      },
+      "event_json": {
+        "request_body_bytes_p50_p95_max": [512, 8192, 65536]
+      },
+      "schedule_json": {
+        "request_body_bytes_p50_p95_max": [128, 1024, 4096]
+      }
+    },
+    "response_profiles": {
+      "single": {
+        "cardinality_p50_p95_max": [1, 1, 1],
+        "body_bytes_p50_p95_max": [1024, 8192, 65536]
+      },
+      "bounded_list": {
+        "cardinality_p50_p95_max": [20, 100, 500],
+        "body_bytes_p50_p95_max": [8192, 131072, 1048576]
+      },
+      "task_tree": {
+        "cardinality_p50_p95_max": [100, 2500, 2500],
+        "body_bytes_p50_p95_max": [65536, 2097152, 4194304]
+      },
+      "hot_gantt": {
+        "cardinality_p50_p95_max": [100, 2500, 2500],
+        "body_bytes_p50_p95_max": [131072, 3145728, 6291456]
+      }
+    },
+    "expected_statuses": {
+      "success": [200, 201, 204],
+      "expected_conflict": [409],
+      "deliberate_throttling": [429],
+      "validation_or_authentication": [400, 401, 403, 404, 422],
+      "unexpected": [500, 502, 503, 504]
+    },
+    "profiles": [
+      {
+        "id": "human_peak_v1",
+        "virtual_users": 250,
+        "steady_rps": 50,
+        "burst_rps": 100,
+        "burst_duration_seconds": 600,
+        "arrival_model": "open Poisson arrivals with per-user closed-loop think time",
+        "think_time": {
+          "distribution": "bounded lognormal",
+          "median_seconds": 4,
+          "p95_seconds": 15,
+          "minimum_seconds": 1,
+          "maximum_seconds": 30
+        },
+        "operations": [
+          {"id":"rest_projects_list","transport":"REST","operation":"/api/projects","method":"GET","classification":"read","weight_percent":8,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_project_summary","transport":"REST","operation":"/api/projects/{project_id}/summary","method":"GET","classification":"read","weight_percent":8,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404]},
+          {"id":"rest_iterations_list","transport":"REST","operation":"/api/iterations","method":"GET","classification":"read","weight_percent":6,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_iteration_summary","transport":"REST","operation":"/api/iterations/{iteration_id}/summary","method":"GET","classification":"read","weight_percent":6,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404]},
+          {"id":"rest_iteration_tasks","transport":"REST","operation":"/api/iterations/{iteration_id}/tasks","method":"GET","classification":"read","weight_percent":16,"payload_profile":"none","response_profile":"task_tree","expected_statuses":[200,404]},
+          {"id":"rest_task_get","transport":"REST","operation":"/api/tasks/{task_id}","method":"GET","classification":"read","weight_percent":8,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404]},
+          {"id":"rest_iteration_gantt","transport":"REST","operation":"/api/iterations/{iteration_id}/gantt","method":"GET","classification":"read","weight_percent":8,"payload_profile":"none","response_profile":"hot_gantt","expected_statuses":[200,404]},
+          {"id":"rest_team_list","transport":"REST","operation":"/api/team-members","method":"GET","classification":"read","weight_percent":6,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_dashboard_cards","transport":"REST","operation":"/api/saved-views/dashboard-cards","method":"GET","classification":"read","weight_percent":5,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_task_timeline","transport":"REST","operation":"/api/tasks/{task_id}/timeline","method":"GET","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200,404]},
+          {"id":"rest_session_whoami","transport":"REST","operation":"/api/session/whoami","method":"GET","classification":"read","weight_percent":3,"payload_profile":"none","response_profile":"single","expected_statuses":[200,401]},
+          {"id":"rest_schedule_preview","transport":"REST","operation":"/api/iterations/{iteration_id}/schedule/preview","method":"POST","classification":"read","weight_percent":2,"payload_profile":"schedule_json","response_profile":"hot_gantt","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_update","transport":"REST","operation":"/api/tasks/{task_id}","method":"PUT","classification":"write","weight_percent":5,"payload_profile":"task_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_status","transport":"REST","operation":"/api/tasks/{task_id}/status","method":"PUT","classification":"write","weight_percent":5,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_create","transport":"REST","operation":"/api/iterations/{iteration_id}/tasks","method":"POST","classification":"write","weight_percent":3,"payload_profile":"task_json","response_profile":"single","expected_statuses":[201,404,409,422]},
+          {"id":"rest_dependency_add","transport":"REST","operation":"/api/tasks/{task_id}/dependencies","method":"POST","classification":"write","weight_percent":2,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_saved_view_create","transport":"REST","operation":"/api/saved-views","method":"POST","classification":"write","weight_percent":2,"payload_profile":"small_json","response_profile":"single","expected_statuses":[201,409,422]},
+          {"id":"rest_schedule_apply","transport":"REST","operation":"/api/iterations/{iteration_id}/schedule","method":"POST","classification":"write","weight_percent":1,"payload_profile":"schedule_json","response_profile":"hot_gantt","expected_statuses":[200,404,409,422]},
+          {"id":"rest_session_rotate","transport":"REST","operation":"/api/session/rotate","method":"POST","classification":"write","weight_percent":1,"payload_profile":"none","response_profile":"single","expected_statuses":[200,401,409]},
+          {"id":"rest_dependency_delete","transport":"REST","operation":"/api/tasks/{task_id}/dependencies/{dependency_id}","method":"DELETE","classification":"write","weight_percent":1,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404,409]}
+        ]
+      },
+      {
+        "id": "mixed_peak_v1",
+        "virtual_users": 450,
+        "human_clients": 250,
+        "agent_clients": 200,
+        "steady_rps": 100,
+        "burst_rps": 200,
+        "burst_duration_seconds": 600,
+        "minimum_write_rps": 25,
+        "declared_write_weight_percent": 41,
+        "arrival_model": "human open arrivals plus agent closed-loop polling with server next-poll guidance",
+        "think_time": {
+          "human_distribution": "same as human_peak_v1",
+          "agent_idle_seconds": 5,
+          "agent_busy_seconds": 1,
+          "jitter_percent": 25
+        },
+        "operations": [
+          {"id":"rest_projects_list","transport":"REST","operation":"/api/projects","method":"GET","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_project_summary","transport":"REST","operation":"/api/projects/{project_id}/summary","method":"GET","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404]},
+          {"id":"rest_iteration_tasks","transport":"REST","operation":"/api/iterations/{iteration_id}/tasks","method":"GET","classification":"read","weight_percent":8,"payload_profile":"none","response_profile":"task_tree","expected_statuses":[200,404]},
+          {"id":"rest_task_get","transport":"REST","operation":"/api/tasks/{task_id}","method":"GET","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404]},
+          {"id":"rest_iteration_gantt","transport":"REST","operation":"/api/iterations/{iteration_id}/gantt","method":"GET","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"hot_gantt","expected_statuses":[200,404]},
+          {"id":"rest_team_list","transport":"REST","operation":"/api/team-members","method":"GET","classification":"read","weight_percent":3,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_dashboard_cards","transport":"REST","operation":"/api/saved-views/dashboard-cards","method":"GET","classification":"read","weight_percent":3,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"rest_task_timeline","transport":"REST","operation":"/api/tasks/{task_id}/timeline","method":"GET","classification":"read","weight_percent":2,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200,404]},
+          {"id":"rest_session_whoami","transport":"REST","operation":"/api/session/whoami","method":"GET","classification":"read","weight_percent":1,"payload_profile":"none","response_profile":"single","expected_statuses":[200,401]},
+          {"id":"rest_schedule_preview","transport":"REST","operation":"/api/iterations/{iteration_id}/schedule/preview","method":"POST","classification":"read","weight_percent":2,"payload_profile":"schedule_json","response_profile":"hot_gantt","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_update","transport":"REST","operation":"/api/tasks/{task_id}","method":"PUT","classification":"write","weight_percent":4,"payload_profile":"task_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_status","transport":"REST","operation":"/api/tasks/{task_id}/status","method":"PUT","classification":"write","weight_percent":4,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_task_create","transport":"REST","operation":"/api/iterations/{iteration_id}/tasks","method":"POST","classification":"write","weight_percent":2,"payload_profile":"task_json","response_profile":"single","expected_statuses":[201,404,409,422]},
+          {"id":"rest_dependency_add","transport":"REST","operation":"/api/tasks/{task_id}/dependencies","method":"POST","classification":"write","weight_percent":1,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409,422]},
+          {"id":"rest_saved_view_create","transport":"REST","operation":"/api/saved-views","method":"POST","classification":"write","weight_percent":1,"payload_profile":"small_json","response_profile":"single","expected_statuses":[201,409,422]},
+          {"id":"rest_schedule_apply","transport":"REST","operation":"/api/iterations/{iteration_id}/schedule","method":"POST","classification":"write","weight_percent":1,"payload_profile":"schedule_json","response_profile":"hot_gantt","expected_statuses":[200,404,409,422]},
+          {"id":"rest_session_rotate","transport":"REST","operation":"/api/session/rotate","method":"POST","classification":"write","weight_percent":1,"payload_profile":"none","response_profile":"single","expected_statuses":[200,401,409]},
+          {"id":"rest_dependency_delete","transport":"REST","operation":"/api/tasks/{task_id}/dependencies/{dependency_id}","method":"DELETE","classification":"write","weight_percent":1,"payload_profile":"none","response_profile":"single","expected_statuses":[200,404,409]},
+          {"id":"mcp_agent_get_my_work","transport":"MCP","operation":"agent_get_my_work","method":"tool","classification":"read","weight_percent":10,"payload_profile":"small_json","response_profile":"bounded_list","expected_statuses":[200,409,429]},
+          {"id":"mcp_agent_complete_context","transport":"MCP","operation":"agent_get_complete_task_context","method":"tool","classification":"read","weight_percent":5,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409]},
+          {"id":"mcp_agent_list_claims","transport":"MCP","operation":"agent_list_my_claims","method":"tool","classification":"read","weight_percent":4,"payload_profile":"none","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"mcp_agent_reviews","transport":"MCP","operation":"agent_get_my_reviews","method":"tool","classification":"read","weight_percent":3,"payload_profile":"small_json","response_profile":"bounded_list","expected_statuses":[200]},
+          {"id":"mcp_project_tasks","transport":"MCP","operation":"workspace_list_project_tasks","method":"tool","classification":"read","weight_percent":2,"payload_profile":"small_json","response_profile":"task_tree","expected_statuses":[200,404]},
+          {"id":"mcp_agent_begin","transport":"MCP","operation":"agent_begin_my_work","method":"tool","classification":"write","weight_percent":4,"payload_profile":"task_json","response_profile":"single","expected_statuses":[200,409,422,429]},
+          {"id":"mcp_agent_renew","transport":"MCP","operation":"agent_renew_my_work","method":"tool","classification":"write","weight_percent":8,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,404,409,422,429]},
+          {"id":"mcp_run_event","transport":"MCP","operation":"agent_append_run_event","method":"tool","classification":"write","weight_percent":7,"payload_profile":"event_json","response_profile":"single","expected_statuses":[200,404,409,422,429]},
+          {"id":"mcp_task_event","transport":"MCP","operation":"agent_append_task_event","method":"tool","classification":"write","weight_percent":3,"payload_profile":"event_json","response_profile":"single","expected_statuses":[200,404,409,422,429]},
+          {"id":"mcp_agent_submit","transport":"MCP","operation":"agent_submit_my_work","method":"tool","classification":"write","weight_percent":3,"payload_profile":"task_json","response_profile":"single","expected_statuses":[200,404,409,422,429]},
+          {"id":"mcp_agent_fail","transport":"MCP","operation":"agent_fail_my_work","method":"tool","classification":"write","weight_percent":1,"payload_profile":"task_json","response_profile":"single","expected_statuses":[200,404,409,422,429]}
+        ]
+      },
+      {
+        "id": "connection_surge_v1",
+        "virtual_users": 1000,
+        "operation_mix": "exactly mixed_peak_v1",
+        "steady_rps": 100,
+        "burst_rps": 200,
+        "burst_duration_seconds": 600,
+        "arrival_model": "closed-loop clients ramp linearly over 120 seconds and hold realistic mixed_peak_v1 think time",
+        "report_separately": [
+          "active_clients",
+          "open_connections",
+          "in_flight_requests"
+        ],
+        "retry_policy": {
+          "maximum_attempts": 3,
+          "backoff_seconds": [1, 2, 4],
+          "jitter_percent": 25
+        }
+      },
+      {
+        "id": "external_llm_wait_v1",
+        "concurrent_calls": 25,
+        "core_api_slo_excluded": true,
+        "required_invariant": "provider waits hold no checked-out database connection and no open database transaction",
+        "operations": [
+          {"id":"llm_formalize","transport":"REST","operation":"/api/tasks/{task_id}/formalize","method":"POST","classification":"external_wait","weight_percent":40,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,400,404,422,502,504]},
+          {"id":"llm_improve","transport":"REST","operation":"/api/tasks/{task_id}/improve-description","method":"POST","classification":"external_wait","weight_percent":30,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,400,404,422,502,504]},
+          {"id":"llm_suggest","transport":"REST","operation":"/api/tasks/{task_id}/ai/suggest","method":"POST","classification":"external_wait","weight_percent":20,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,400,404,422,502,504]},
+          {"id":"llm_explain_schedule","transport":"REST","operation":"/api/iterations/{iteration_id}/explain-schedule","method":"POST","classification":"external_wait","weight_percent":10,"payload_profile":"small_json","response_profile":"single","expected_statuses":[200,400,404,422,502,504]}
+        ]
+      }
+    ]
+  },
+  "slos": {
+    "core_read_latency_ms": {"p95": 300, "p99": 750},
+    "core_write_latency_ms": {"p95": 500, "p99": 1000},
+    "hot_task_tree_gantt_latency_ms": {"p95": 1500, "p99": 3000},
+    "schedule_preview_latency_ms": {"p95": 3000},
+    "schedule_apply_latency_ms": {"p95": 5000},
+    "unexpected_5xx_percent_maximum": 0.1,
+    "total_unexpected_error_percent_maximum": 0.5,
+    "pool_checkout_ms": {"p95": 50, "p99": 200, "timeouts": 0},
+    "steady_database_connections_percent_maximum": 70,
+    "database_cpu_percent": {"steady_maximum": 70, "burst_maximum": 85},
+    "ordinary_lock_wait_ms": {"p99": 250, "deadlocks": 0},
+    "integrity_failures": 0,
+    "web_rss_mib_per_replica_maximum": 1024,
+    "worker_rss_mib_per_replica_maximum": 512,
+    "soak_memory_growth_hour_2_to_8_percent_maximum": 10,
+    "delivery_oldest_ready_seconds": {"steady_maximum": 60, "burst_maximum": 300},
+    "delivery_ready_backlog_maximum": 10000,
+    "delivery_drain_to_steady_seconds_maximum": 600,
+    "database_failover_seconds_maximum": 180,
+    "database_unready_detection_seconds_maximum": 15,
+    "database_failover_unexpected_attempt_failures_percent_maximum": 5,
+    "replica_lag_seconds": {"steady_maximum": 30, "burst_maximum": 60},
+    "wal_archive_rpo_lag_seconds_maximum": 300,
+    "storage_used_percent": {"steady_maximum": 70, "burst_maximum": 80},
+    "storage_latency_ms": {"steady_p95_maximum": 10, "burst_p95_maximum": 20},
+    "capacity_horizon_months_minimum": 12,
+    "dead_tuple_or_bloat_percent_maximum": 10,
+    "statistics_refresh_after_bulk_load_seconds_maximum": 900,
+    "backup_rpo_seconds_maximum": 300,
+    "restore_rto_seconds_maximum": 1800,
+    "backend_replica_reroute_seconds_maximum": 30
+  },
+  "availability_sli": {
+    "objective_percent": 99.9,
+    "observation_days": 30,
+    "measurement_boundary": "client or gateway eligible attempt",
+    "numerator": "eligible attempts receiving an allowed response within the operation deadline",
+    "denominator": "all eligible attempts including refusal, reset, DNS, TLS, gateway, and timeout failures",
+    "operation_deadline_ms": {
+      "core_read": 3000,
+      "core_write": 5000,
+      "hot_task_tree_or_gantt": 10000,
+      "schedule": 15000
+    },
+    "reported_separately_not_counted_as_service_failure": [
+      "client validation 400 or 422",
+      "authentication or authorization 401 or 403",
+      "not found 404",
+      "expected optimistic conflict 409",
+      "deliberate throttling 429",
+      "declared upstream provider failure on external LLM scenarios"
+    ],
+    "synthetic_probe_interval_seconds": 30,
+    "synthetic_probe_path": "/health through production DNS, TLS, and gateway",
+    "partial_outage_semantics": "each affected eligible client attempt fails independently; successful traffic to another replica does not erase it",
+    "dependency_scope": [
+      "production DNS",
+      "TLS termination",
+      "gateway",
+      "WorkChord web and worker paths",
+      "PostgreSQL writer endpoint"
+    ],
+    "error_budget_policy": "freeze feature rollout and begin remediation when 50 percent is consumed; fail the objective at 100 percent"
+  },
+  "cutover": {
+    "strategy": "write-frozen offline migration without dual write",
+    "maintenance_window_target_minutes": 120,
+    "hard_stop_minutes": 180,
+    "rollback_to_sqlite_minutes_maximum": 30,
+    "browser_session_policy": "preserve",
+    "point_of_no_return": "first accepted PostgreSQL application write after the write fence is lifted",
+    "before_point_of_no_return": "rollback to the frozen checksummed SQLite snapshot",
+    "after_point_of_no_return": "forward recovery on PostgreSQL only",
+    "reverse_sync_available": false
+  },
+  "qualification": {
+    "warmup_minutes": 15,
+    "steady_minutes": 60,
+    "burst_minutes": 10,
+    "soak_hours": 8,
+    "soak_percent_of_peak": 60,
+    "complete_pre_cutover_runs": 3,
+    "migration_rehearsals": 2,
+    "separate_abort_rollback_drills": 1
+  }
+}

@@ -19,6 +19,19 @@ jobs:
     name: Source and build checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+        env:
+          POSTGRES_PASSWORD: workchord-ci-only
+          POSTGRES_INITDB_ARGS: --locale-provider=builtin --builtin-locale=PG_UNICODE_FAST
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -28,6 +41,7 @@ jobs:
           cache-dependency-path: |
             backend/build-requirements.lock
             backend/requirements.lock
+            backend/test-requirements.lock
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '22.23.1'
@@ -39,7 +53,25 @@ jobs:
         run: |
           .venv/bin/pip install --require-hashes -r backend/build-requirements.lock
           .venv/bin/pip install --require-hashes -r backend/requirements.lock
+          .venv/bin/pip install --require-hashes -r backend/test-requirements.lock
           .venv/bin/pip install --no-build-isolation --no-deps -e ./backend
+      - name: Run the backend database harness
+        env:
+          DEPLOYMENT_ENVIRONMENT: test
+          DATABASE_SSL_MODE: disable
+          POSTGRES_ADMIN_URL: postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres
+          WORKCHORD_SCHEMA_DIFF_ARTIFACT: /tmp/workchord-schema-diff.json
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m "not postgresql" backend/tests
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m postgresql backend/tests
+          test -s "$WORKCHORD_SCHEMA_DIFF_ARTIFACT"
+      - name: Upload the dual-dialect schema diff
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: workchord-schema-diff
+          path: /tmp/workchord-schema-diff.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Validate the backend wheel boundary
         run: |
           wheel_dir="$(mktemp -d)"
@@ -58,8 +90,27 @@ jobs:
 
           required = {
               "app/__init__.py",
+              "app/build_identity.py",
               "app/main.py",
               "app/mcp_server.py",
+              "app/cli/worker.py",
+              "app/cli/cutover.py",
+              "app/cli/closeout.py",
+              "app/cli/server_acceptance.py",
+              "app/autonomy/server_acceptance.py",
+              "app/database_migration/cutover.py",
+              "app/database_migration/closeout.py",
+              "app/database_migration/postgresql-cutover-execution-v1.schema.json",
+              "app/database_migration/postgresql-postcutover-publication-input-v1.schema.json",
+              "app/database_migration/postgresql-closeout-observations-v1.schema.json",
+              "app/autonomy/contracts/postgresql/contract-manifest-v1.json",
+              "app/autonomy/contracts/postgresql/autonomous-dag-v1.json",
+              "app/autonomy/contracts/postgresql/status-rules-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-capacity-contract-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-data-lifecycle-policy-v1.json",
+              "app/autonomy/contracts/postgresql/postgresql-load-result-v1.schema.json",
+              "app/autonomy/contracts/postgresql/postgresql-precutover-qualification-v1.schema.json",
+              "app/autonomy/contracts/postgresql/postgresql-resilience-observations-v1.schema.json",
               "app/config/scheduling_rules.yaml",
           }
           source_migrations = Path(argv[2])
@@ -98,21 +149,62 @@ jobs:
             export DATABASE_URL="sqlite+aiosqlite:///./workchord.db"
             "$installed_wheel_venv/bin/python" - <<'PY'
           from app.main import app
+          from app.autonomy.contracts.postgresql import load_postgresql_contract_bundle
           from app.services.upgrade_service import head_revision, run_alembic_upgrade
 
           assert app.title == "WorkChord API"
+          bundle = load_postgresql_contract_bundle()
+          assert len(bundle.members) == 7
+          assert bundle.archive_verified is False
+          assert bundle.blocker_codes == ("immutable-contract-archive-unavailable",)
           before, _, after = run_alembic_upgrade(backup=False, run_repairs=False)
           assert before.state == "empty"
           assert after.is_current
           assert after.current_revision == head_revision()
           PY
             "$installed_wheel_venv/bin/workchord-mcp" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-worker" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-migrate" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-cutover" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-db-closeout" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-agent-preflight" --help >/dev/null
+            "$installed_wheel_venv/bin/workchord-server-acceptance" --help >/dev/null
           )
+          "$installed_wheel_venv/bin/python" \
+            scripts/ci/installed_wheel_postgresql_qualification.py \
+            --admin-url "postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres"
       - name: Validate Python source and migrations
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.6.2'"
+      - name: Validate the PostgreSQL qualification harness contract
+        run: |
+          qualification_dir="$(mktemp -d)"
+          PYTHONPATH=backend .venv/bin/python scripts/load/seed.py \
+            --profile full \
+            --dry-run \
+            --manifest "$qualification_dir/full-seed-plan.json"
+          for profile in human_peak_v1 mixed_peak_v1 connection_surge_v1 external_llm_wait_v1; do
+            PYTHONPATH=backend .venv/bin/python scripts/load/run.py \
+              --profile "$profile" \
+              --phase dry \
+              --base-url http://127.0.0.1:8001 \
+              --authorize-host 127.0.0.1:8001 \
+              --environment test \
+              --output "$qualification_dir/$profile-dry.json"
+          done
+          cp -R "$qualification_dir" /tmp/workchord-qualification-contracts
+      - name: Validate PostgreSQL operator documentation
+        run: |
+          .venv/bin/python scripts/ci/check_postgresql_documentation.py
+      - name: Upload the qualification harness contracts
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: workchord-qualification-contracts
+          path: /tmp/workchord-qualification-contracts
+          if-no-files-found: error
+          retention-days: 14
       - name: Validate agent role packages
         run: |
           .venv/bin/python scripts/build_agent_skills.py validate
@@ -126,4 +218,57 @@ jobs:
           npm run lint
           npm run build
       - name: Validate the local Compose profile
-        run: docker compose config --quiet
+        env:
+          WORKCHORD_SOURCE_REVISION: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          WORKCHORD_ACCEPTANCE_REPORT_DIR: /tmp/workchord-server-acceptance
+          OPENBAO_DEV_ROOT_TOKEN: workchord-ci-openbao-only
+          MINIO_ROOT_USER: workchordci
+          MINIO_ROOT_PASSWORD: workchord-ci-minio-only
+          AUTONOMY_MINIO_ACCESS_KEY: workchordciaccept
+          AUTONOMY_MINIO_SECRET_KEY: workchord-ci-accept-only
+          POSTGRES_PASSWORD: workchord-ci-postgres-only
+          WORKCHORD_MIGRATOR_PASSWORD: workchord-ci-migrator-only
+          WORKCHORD_RUNTIME_PASSWORD: workchord-ci-runtime-only
+          WORKCHORD_BACKUP_PASSWORD: workchord-ci-backup-only
+          DATABASE_MIGRATION_URL: postgresql+psycopg://workchord_migrator:workchord-ci-migrator-only@postgres:5432/workchord
+          DATABASE_RUNTIME_URL: postgresql+psycopg://workchord_runtime:workchord-ci-runtime-only@postgres:5432/workchord
+        run: |
+          docker compose config --quiet
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.server.yml \
+            --profile autonomy \
+            config --quiet
+
+  server-acceptance:
+    name: Self-hosted server acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build and accept the self-hosted stack
+        run: |
+          ./scripts/server/accept_self_hosted.sh
+          ./scripts/server/accept_self_hosted.sh
+      - name: Validate the bounded receipt
+        run: |
+          test -s .runtime/autonomy/reports/latest.json
+          test -s .runtime/autonomy/reports/trusted-signer-public-key.b64
+          test "$(find .runtime/autonomy/reports \
+            -maxdepth 1 -name 'previous-*.json' | wc -l)" -ge 1
+          grep -q '"decision": "SELF-HOSTED-SERVER-ACCEPTED"' \
+            .runtime/autonomy/reports/latest.json
+          grep -q '"accepted_as_production_evidence": false' \
+            .runtime/autonomy/reports/latest.json
+      - name: Stop the acceptance stack
+        if: always()
+        run: |
+          if test -f .runtime/autonomy/server.env; then
+            docker compose \
+              --project-name workchord-server \
+              --env-file .runtime/autonomy/server.env \
+              -f docker-compose.yml \
+              -f docker-compose.server.yml \
+              --profile autonomy \
+              down
+          fi

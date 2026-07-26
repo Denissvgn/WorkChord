@@ -8,6 +8,7 @@ Use this reference to create a feasible execution timebox and staff it with reus
 - [Configure calendars and iterations](#configure-calendars-and-iterations)
 - [Configure reusable profiles](#configure-reusable-profiles)
 - [Create iteration capacity rows](#create-iteration-capacity-rows)
+- [Read the live routing inventory](#read-the-live-routing-inventory)
 - [Review capacity and workload](#review-capacity-and-workload)
 - [Complete phase contracts](#complete-phase-contracts)
 
@@ -79,6 +80,31 @@ Use bulk team or vacation import only after previewing the source text or CSV an
 
 Ensure every task `assignee_id` points to a team-member row from the same iteration. Do not assign a reusable profile ID or an actor ID to this field.
 
+## Read the Live Routing Inventory
+
+When the server advertises `model-aware-routing-v1`, read its provider-neutral
+model catalog and enriched exact actor roster before assessment or dispatch.
+For each candidate, keep these layers separate:
+
+| Layer | Evidence to read | What it cannot prove |
+| --- | --- | --- |
+| Reusable profile | Kind, automation flag, assignment modes, precise skills, levels, weaknesses | Actor identity, permission, live runtime, or capacity |
+| Iteration capacity owner | Workload, availability, vacations, schedule | Authenticated dispatch identity or model capability |
+| Exact actor | Enabled state, role, scopes, profile binding, queue revision, last seen, current work | Model adequacy by itself |
+| Active model binding | Stable catalog key, binding/catalog revisions, reasoning/context tiers, modality/tool/data-policy tags, cost/latency tiers, verification freshness | Credentials, provider access, or cryptographic runtime attestation |
+
+Use only active bindings and live catalog metadata. Treat the configured alias
+as intended runtime and the worker's later observed model as self-reported
+evidence. Do not derive a tier from a provider-facing model name, profile prose,
+or price. A capability match never bypasses actor scopes, purpose compatibility,
+queue policy, schedule, workload, or vacation gates.
+
+A normal PM may read this secret-free inventory but must not create, edit,
+enable, disable, or rebind model metadata. Ask an operator to correct missing or
+stale catalog/binding data. If the feature, catalog, roster, or required
+metadata is absent, stop automated model-aware selection and record a supervised
+compatibility-routing handoff; never fill the gap from memory or inference.
+
 ## Review Capacity and Workload
 
 For every prospective capacity owner:
@@ -132,7 +158,7 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 
 **Required reads**
 
-- Read profiles and skills, iteration team, vacations, capacity, workload, and—when supported—the enabled actor roster with profile bindings.
+- Read profiles and skills, iteration team, vacations, capacity, workload, and—when supported—the enabled actor roster with profile bindings, active model bindings, catalog revisions, and last-seen evidence.
 
 **Allowed mutations**
 
@@ -143,9 +169,16 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 **Exit and postcondition checks**
 
 - Re-read each capacity row, vacation list, capacity, and workload.
-- Confirm every intended automated target is already provisioned, enabled, compatible, and separately authorized before later dispatch.
+- Confirm every intended automated target is already provisioned, enabled,
+  purpose-compatible, separately authorized, and backed by current live metadata
+  before later dispatch. Do not call this task-specific eligibility until a
+  current assessment and routing preview apply the remaining hard gates.
 
 **Evidence and stop rules**
 
-- Record capacity assumptions, overload decisions, profile-skill rationale, actor availability, and unresolved staffing risks.
-- Stop when capacity is negative without an accepted mitigation, vacations are incomplete, the actor roster is unavailable for exact dispatch, or an actor/profile match is being mistaken for permission.
+- Record capacity assumptions, overload decisions, profile-skill rationale,
+  actor/binding revisions, metadata freshness, availability evidence, and
+  unresolved staffing risks.
+- Stop when capacity is negative without an accepted mitigation, vacations are
+  incomplete, required live routing metadata is unavailable, or a
+  profile/model match is being mistaken for permission or dispatch eligibility.

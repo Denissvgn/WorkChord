@@ -168,8 +168,10 @@ class GitHubStatusService:
             return None
 
         owner, repo, number = self._pr_metadata(link)
-        metadata = dict(link.metadata_json or {})
         refreshed_at = self._now_iso()
+        # The provider request needs only immutable plain values. Release the
+        # read transaction before crossing the network boundary.
+        await self.db.rollback()
 
         try:
             payload = await self._fetch_pull_request(owner, repo, number)
@@ -181,12 +183,26 @@ class GitHubStatusService:
                 exc_info=True,
                 extra={"link_id": link_id, "owner": owner, "repo": repo, "number": number},
             )
+            link = await self.link_service.get_by_id(link_id)
+            if link is None:
+                return None
+            metadata = dict(link.metadata_json or {})
             await self._reserve_task_context_revision(link, outcome="provider_error")
             metadata["status_refreshed_at"] = refreshed_at
             metadata["status_refresh_error"] = self._provider_error_message(error)
             link.metadata_json = metadata
             return await self._save_link(link)
 
+        link = await self.link_service.get_by_id(link_id)
+        if link is None:
+            return None
+        # Revalidate the target after the external wait so a concurrent edit
+        # cannot redirect the fetched payload onto a different link.
+        if self._pr_metadata(link) != (owner, repo, number):
+            raise ExternalLinkValidationError(
+                "GitHub pull request link changed during refresh"
+            )
+        metadata = dict(link.metadata_json or {})
         status = self.status_from_payload(payload)
         await self._reserve_task_context_revision(link, outcome="refreshed")
         title = payload.get("title")

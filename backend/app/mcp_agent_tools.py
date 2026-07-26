@@ -18,6 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agent_contract import agent_contract_features
 from app.config import get_settings
 from app.models.agent import AgentActor, AgentIdempotencyRecord
 from app.schemas.agent import (
@@ -136,25 +137,6 @@ from app.services.triage_service import TriageConflictError, TriageService
 AGENT_SKILLS_DIR_ENV = "WORKCHORD_AGENT_SKILLS_DIR"
 AGENT_SKILL_ARTIFACTS_DIR_ENV = "WORKCHORD_AGENT_SKILL_ARTIFACTS_DIR"
 REQUEST_SOURCE_WRITE_MAX_ATTEMPTS = 6
-AGENT_CONTRACT_FEATURES = [
-    "agent-capabilities-v1",
-    "actor-roster-v1",
-    "actor-task-assignments",
-    "my-work-v1",
-    "snapshot-pagination-v1",
-    "work-etag-v1",
-    "complete-task-context",
-    "atomic-begin-submit",
-    "atomic-renew-v1",
-    "fenced-claims",
-    "typed-rework-recovery",
-    "agent-discovery-triage-v1",
-    "pm-control-v1",
-    "verification-v1",
-    "skill-bundles-v1",
-]
-
-
 def _dump(value: Any) -> Any:
     """Convert Pydantic, SQLAlchemy-ish, and nested values to JSON-safe data."""
     if isinstance(value, BaseModel):
@@ -1205,9 +1187,7 @@ async def get_agent_capabilities(
     """MCP handler: return the authenticated v1 compatibility handshake."""
     recommended: dict[str, str] = {}
     catalog_version: str | None = None
-    features = [
-        feature for feature in AGENT_CONTRACT_FEATURES if feature != "skill-bundles-v1"
-    ]
+    features = agent_contract_features(include_skill_bundles=False)
     catalog_url: str | None = None
     discovery_url: str | None = None
     settings = get_settings()

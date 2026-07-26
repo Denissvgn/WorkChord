@@ -19,6 +19,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "httpx>=0.25.0",
     "aiosqlite>=0.19.0",
+    "psycopg[binary]>=3.2,<4",
     "PyYAML>=6.0",
     "python-multipart",
     "aiosmtplib>=3.0.0",
@@ -29,9 +30,32 @@ dependencies = [
 
 [project.scripts]
 workchord-mcp = "app.mcp_server:main"
+workchord-worker = "app.cli.worker:main"
+workchord-db-migrate = "app.cli.database_migration:main"
+workchord-db-cutover = "app.cli.cutover:main"
+workchord-db-closeout = "app.cli.closeout:main"
+workchord-agent-preflight = "app.cli.agent_preflight:main"
+workchord-server-acceptance = "app.cli.server_acceptance:main"
 
 [dependency-groups]
 build = ["setuptools==83.0.0"]
+test = [
+    "pytest>=8.4,<10",
+    "pytest-asyncio>=1.2,<2",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "contract: machine-readable architecture and workload contract tests",
+    "sqlite: tests that exercise the SQLite dialect",
+    "postgresql: tests that require a real PostgreSQL server",
+    "integration: tests that cross a process or database-server boundary",
+    "destructive: tests that create and drop only safety-fenced test databases",
+    "allow_network: tests allowed to use an explicitly scoped local network target",
+]
 
 [tool.setuptools]
 include-package-data = false
@@ -42,4 +66,10 @@ include = ["app", "app.*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-app = ["config/*.yaml", "migrations/alembic.ini", "migrations/script.py.mako"]
+app = [
+    "autonomy/contracts/postgresql/*.json",
+    "config/*.yaml",
+    "database_migration/*.json",
+    "migrations/alembic.ini",
+    "migrations/script.py.mako",
+]

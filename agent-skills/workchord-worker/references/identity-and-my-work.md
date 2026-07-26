@@ -3,7 +3,7 @@
 Use this reference to establish authority, choose autonomous v1 or supervised
 v0, and interpret the server-owned work decision.
 
-## Separate The Five Identities
+## Separate The Runtime Identities
 
 Keep these concepts independent:
 
@@ -12,7 +12,9 @@ Keep these concepts independent:
 | Capacity owner | Iteration team member carrying planned effort | Actor identity or claim |
 | Actor profile | Advisory capability and routing information | Permission or exact assignment |
 | Task assignment | Durable dispatch to one exact actor and queue position | Capacity ownership or claim |
+| Selected model binding | Operator-declared intended runtime and capability envelope | Credentials, permission, or observed execution |
 | Claim/fence | Temporary exclusive execution authority | Assignment or task status |
+| Observed model evidence | Worker-reported resolved runtime recorded on a run | Independent or cryptographic attestation |
 | Run and task status | Execution attempt and business lifecycle | Each other |
 
 Treat profile capability matches as advisory. Enforce permissions through actor
@@ -39,6 +41,9 @@ Confirm:
 - work policy and `max_parallel_work`;
 - lease limits and supported lifecycle actions;
 - stable feature keys and recommended worker-skill compatibility.
+- when model-aware routing is advertised, the assignment/context fields that
+  carry assessment policy, selected binding/revision, configured alias, and
+  required observed-model evidence.
 
 An actor profile does not grant permission. A broad scope does not authorize a
 worker to perform PM planning or independent verification.
@@ -69,6 +74,15 @@ Use autonomous v1 only when all required features are advertised:
 Do not infer support from an endpoint returning `404`, a similar tool name, or
 skill prose. If any feature is absent, switch to supervised v0 or stop.
 
+Treat `model-aware-routing-v1` separately from the base v1 gate. When it is
+advertised, require the exact selected binding and begin-evidence fields from
+the live operation metadata before model-aware execution. If it is absent,
+continue the base assigned-work lifecycle when all base features above remain
+available, but do not infer a model choice from the assignment reason, profile,
+provider-facing name, or local configuration. If the feature is advertised but
+the binding/evidence contract is incomplete, stop as incompatible rather than
+downgrading silently.
+
 Supervised v0 requires all of the following:
 
 - one explicit task ID supplied by a PM or human;
@@ -97,6 +111,9 @@ claim/run summary, selection reason, blocker codes, and next-poll time.
 
 Treat rework and recovery as explicit assignments, not as normal ready tasks.
 Exclude verification-purpose assignments from this implementation-worker loop.
+For a model-aware decision, require `current` or `next` plus complete context to
+agree on the selected binding ID/revision and routing lineage; local runtime
+availability does not authorize substitution.
 If multiple current items, an orphan active task, a lost lease, a conflicting
 run, or an unknown state appears, stop with `attention_required` semantics even
 if another queue item looks runnable.

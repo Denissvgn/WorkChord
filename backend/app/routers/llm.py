@@ -25,7 +25,11 @@ async def get_llm_service(
     db: Annotated[AsyncSession, Depends(get_db)]
 ) -> LLMService:
     """Dependency for LLM service."""
-    return await LLMService.from_runtime(db)
+    service = await LLMService.from_runtime(db)
+    # Runtime settings are now materialized into the provider client. Release
+    # the read transaction before a slow external call can begin.
+    await db.rollback()
+    return service
 
 
 async def _task_ai_context_pack(
@@ -159,6 +163,7 @@ async def suggest_task_draft(
             detail="Task title or description is required",
         )
     context_pack = await _task_ai_context_pack(db, data)
+    await db.rollback()
     return await llm_service.suggest_task(context_pack)
 
 
@@ -179,9 +184,12 @@ async def formalize_task(
             detail=f"Task with id {task_id} not found"
         )
 
+    title = task.title
+    description = task.description
+    await db.rollback()
     return await llm_service.formalize_task(
-        title=task.title,
-        description=task.description,
+        title=title,
+        description=description,
         context=data.context
     )
 
@@ -203,8 +211,10 @@ async def improve_task_description(
             detail=f"Task with id {task_id} not found"
         )
 
+    current_description = data.current_description or task.description or ""
+    await db.rollback()
     return await llm_service.improve_description(
-        current_description=data.current_description or task.description or "",
+        current_description=current_description,
         context=data.context
     )
 
@@ -225,6 +235,7 @@ async def suggest_existing_task(
             detail=f"Task with id {task_id} not found",
         )
     context_pack = await _task_ai_context_pack(db, data, task=task)
+    await db.rollback()
     return await llm_service.suggest_task(context_pack)
 
 
@@ -247,6 +258,7 @@ async def explain_schedule(
         )
 
     request = data or ExplainScheduleRequest()
+    await db.rollback()
     return await llm_service.explain_schedule(
         decisions=schedule_result.decisions,
         workload_issues=schedule_result.workload_issues,

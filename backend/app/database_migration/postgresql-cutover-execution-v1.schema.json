@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://workchord.local/contracts/postgresql-cutover-execution-v1.schema.json",
+  "title": "WorkChord PostgreSQL cutover execution record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "schema_version",
+    "execution_id",
+    "change_id",
+    "environment",
+    "mode",
+    "sequence_number",
+    "started_at",
+    "completed_at",
+    "release",
+    "dependencies",
+    "source",
+    "target",
+    "operators",
+    "gates",
+    "decision",
+    "point_of_no_return",
+    "outcome"
+  ],
+  "properties": {
+    "kind": {"const": "workchord-postgresql-cutover-execution"},
+    "schema_version": {"const": 1},
+    "execution_id": {"type": "string", "minLength": 8},
+    "change_id": {"type": "string", "minLength": 3},
+    "environment": {"enum": ["rehearsal", "production"]},
+    "mode": {"enum": ["abort_drill", "full"]},
+    "sequence_number": {"type": "integer", "minimum": 0},
+    "started_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "release": {"$ref": "#/$defs/release"},
+    "dependencies": {"$ref": "#/$defs/dependencies"},
+    "source": {"$ref": "#/$defs/source"},
+    "target": {"$ref": "#/$defs/target"},
+    "operators": {"$ref": "#/$defs/operators"},
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13"],
+      "properties": {
+        "C01": {"$ref": "#/$defs/gate"},
+        "C02": {"$ref": "#/$defs/gate"},
+        "C03": {"$ref": "#/$defs/gate"},
+        "C04": {"$ref": "#/$defs/gate"},
+        "C05": {"$ref": "#/$defs/gate"},
+        "C06": {"$ref": "#/$defs/gate"},
+        "C07": {"$ref": "#/$defs/gate"},
+        "C08": {"$ref": "#/$defs/gate"},
+        "C09": {"$ref": "#/$defs/gate"},
+        "C10": {"$ref": "#/$defs/gate"},
+        "C11": {"$ref": "#/$defs/gate"},
+        "C12": {"$ref": "#/$defs/gate"},
+        "C13": {"$ref": "#/$defs/gate"}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "decided_at", "change_commander", "database_operator", "application_operator", "stop_conditions_read", "evidence_sha256"],
+      "properties": {
+        "value": {"enum": ["GO", "ABORT"]},
+        "decided_at": {"type": "string", "format": "date-time"},
+        "change_commander": {"type": "string", "minLength": 3},
+        "database_operator": {"type": "string", "minLength": 3},
+        "application_operator": {"type": "string", "minLength": 3},
+        "stop_conditions_read": {"const": true},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "point_of_no_return": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["postgresql_write_accepted", "accepted_at", "correlation_id", "writer_identity", "observer", "change_commander"],
+      "properties": {
+        "postgresql_write_accepted": {"type": "boolean"},
+        "accepted_at": {"type": ["string", "null"], "format": "date-time"},
+        "correlation_id": {"type": ["string", "null"], "minLength": 3},
+        "writer_identity": {"type": ["string", "null"], "minLength": 3},
+        "observer": {"type": ["string", "null"], "minLength": 3},
+        "change_commander": {"type": ["string", "null"], "minLength": 3}
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "downtime_seconds",
+        "restore_rto_seconds",
+        "rollback_seconds",
+        "unexplained_reconciliation_differences",
+        "critical_smoke_passed",
+        "steady_smoke_passed",
+        "burst_smoke_passed",
+        "rollback_demonstrated",
+        "sqlite_state",
+        "postgresql_state",
+        "writes_reopened_after_signoff",
+        "stabilization_started_at",
+        "manual_steps",
+        "deviations",
+        "final_evidence_index_sha256"
+      ],
+      "properties": {
+        "status": {"enum": ["aborted_as_planned", "passed", "cutover_complete"]},
+        "downtime_seconds": {"type": "number", "minimum": 0, "maximum": 10800},
+        "restore_rto_seconds": {"type": "number", "minimum": 0, "maximum": 1800},
+        "rollback_seconds": {"type": ["number", "null"], "minimum": 0, "maximum": 1800},
+        "unexplained_reconciliation_differences": {"const": 0},
+        "critical_smoke_passed": {"type": "boolean"},
+        "steady_smoke_passed": {"type": "boolean"},
+        "burst_smoke_passed": {"type": "boolean"},
+        "rollback_demonstrated": {"type": "boolean"},
+        "sqlite_state": {"enum": ["sole_writable", "frozen_read_only"]},
+        "postgresql_state": {"enum": ["closed", "sole_writable"]},
+        "writes_reopened_after_signoff": {"type": "boolean"},
+        "stabilization_started_at": {"type": ["string", "null"], "format": "date-time"},
+        "manual_steps": {"type": "array", "maxItems": 0},
+        "deviations": {"type": "array", "maxItems": 0},
+        "final_evidence_index_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "document_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"environment": {"const": "production"}}},
+      "then": {"properties": {"mode": {"const": "full"}, "sequence_number": {"minimum": 1}}}
+    },
+    {
+      "if": {"properties": {"mode": {"const": "abort_drill"}}},
+      "then": {"properties": {"sequence_number": {"const": 0}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fingerprint", "manifest_sha256", "commit", "images"],
+      "properties": {
+        "fingerprint": {"$ref": "#/$defs/sha256"},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "images": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^.+@sha256:[0-9a-f]{64}$"}}
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualification_report_sha256", "documentation_walkthrough_sha256", "authorization_sha256"],
+      "properties": {
+        "qualification_report_sha256": {"$ref": "#/$defs/sha256"},
+        "documentation_walkthrough_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deployment_id", "sqlite_identifier", "revision", "snapshot_sha256", "manifest_sha256"],
+      "properties": {
+        "deployment_id": {"type": "string", "minLength": 3},
+        "sqlite_identifier": {"type": "string", "minLength": 3},
+        "revision": {"type": "string", "minLength": 3},
+        "snapshot_sha256": {"$ref": "#/$defs/sha256"},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "identity_sha256", "managed_resource_id", "revision"],
+      "properties": {
+        "identifier": {"type": "string", "minLength": 3},
+        "identity_sha256": {"$ref": "#/$defs/sha256"},
+        "managed_resource_id": {"type": "string", "minLength": 3},
+        "revision": {"type": "string", "minLength": 3}
+      }
+    },
+    "operators": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_commander", "product_owner", "database_operator", "application_operator", "observer", "incident_commander"],
+      "properties": {
+        "change_commander": {"type": "string", "minLength": 3},
+        "product_owner": {"type": "string", "minLength": 3},
+        "database_operator": {"type": "string", "minLength": 3},
+        "application_operator": {"type": "string", "minLength": 3},
+        "observer": {"type": "string", "minLength": 3},
+        "incident_commander": {"type": "string", "minLength": 3}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "started_at", "completed_at", "evidence_sha256", "signed_by"],
+      "properties": {
+        "status": {"enum": ["passed", "abort", "not_started"]},
+        "started_at": {"type": ["string", "null"], "format": "date-time"},
+        "completed_at": {"type": ["string", "null"], "format": "date-time"},
+        "evidence_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "signed_by": {"type": ["string", "null"], "minLength": 3}
+      }
+    }
+  }
+}

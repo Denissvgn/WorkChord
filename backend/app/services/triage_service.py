@@ -36,6 +36,7 @@ from app.services.task_service import TaskService
 from app.services.request_source_service import RequestSourceService
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.llm_service import LLMService
+from app.sql_semantics import portable_contains
 from app.utils.text_similarity import BM25Similarity, SimilarityDocument, normalize_text
 from app.utils.time import as_utc, utc_now
 
@@ -174,13 +175,12 @@ class TriageService:
             )
 
         if q:
-            pattern = f"%{q}%"
             query = query.where(
                 or_(
-                    TriageItem.title.ilike(pattern),
-                    TriageItem.description.ilike(pattern),
-                    TriageItem.external_key.ilike(pattern),
-                    TriageItem.source_url.ilike(pattern),
+                    portable_contains(TriageItem.title, q),
+                    portable_contains(TriageItem.description, q),
+                    portable_contains(TriageItem.external_key, q),
+                    portable_contains(TriageItem.source_url, q),
                 )
             )
 
@@ -232,7 +232,12 @@ class TriageService:
             (TriageItem.status == TriageItemStatus.ACCEPTED.value, 2),
             else_=3,
         )
-        query = query.order_by(active_order, TriageItem.snoozed_until, TriageItem.created_at.desc())
+        query = query.order_by(
+            active_order.asc(),
+            TriageItem.snoozed_until.asc().nulls_first(),
+            TriageItem.created_at.desc().nulls_last(),
+            TriageItem.id.desc(),
+        )
         query = query.limit(limit).offset(offset)
 
         result = await self.db.execute(query)
@@ -291,8 +296,13 @@ class TriageService:
         assignees = await self._classification_assignee_context(item.iteration_hint_id)
         duplicate_candidates = await self._classification_duplicate_candidates(item.id)
         service = llm_service or await LLMService.from_runtime(self.db)
+        item_id = item.id
+        item_context = self._triage_item_context(item)
+        # Every provider input is now a plain value. Release the connection
+        # while the provider call is in flight, then begin a fresh write phase.
+        await self.db.rollback()
         draft = await service.classify_triage_item(
-            triage_item=self._triage_item_context(item),
+            triage_item=item_context,
             label_groups=label_groups,
             projects=projects,
             assignees=assignees,
@@ -307,7 +317,7 @@ class TriageService:
         )
 
         suggestion = TriageClassificationSuggestion(
-            triage_item_id=item.id,
+            triage_item_id=item_id,
             suggested_type_label_slug=normalized.suggested_type_label_slug,
             suggested_area_label_slug=normalized.suggested_area_label_slug,
             suggested_priority=normalized.suggested_priority,
@@ -332,9 +342,9 @@ class TriageService:
                 commit=False,
                 event_type="triage.classification_suggested",
                 entity_type="triage_item",
-                entity_id=item.id,
+                entity_id=item_id,
                 data={
-                    "triage_item_id": item.id,
+                    "triage_item_id": item_id,
                     "classification_suggestion_id": suggestion.id,
                     "is_fallback": suggestion.is_fallback,
                     "confidence": suggestion.confidence,
@@ -366,14 +376,18 @@ class TriageService:
             classification_suggestion_id=data.classification_suggestion_id,
         )
         service = llm_service or await LLMService.from_runtime(self.db)
+        item_context = self._triage_item_context(item)
+        template_context = self._task_template_context(template) if template else None
+        classification_context = (
+            self._classification_suggestion_context(classification)
+            if classification
+            else None
+        )
+        await self.db.rollback()
         draft = await service.draft_triage_task(
-            triage_item=self._triage_item_context(item),
-            template=self._task_template_context(template) if template else None,
-            classification=(
-                self._classification_suggestion_context(classification)
-                if classification
-                else None
-            ),
+            triage_item=item_context,
+            template=template_context,
+            classification=classification_context,
             current_title=data.current_title,
             current_description=data.current_description,
         )
@@ -536,7 +550,12 @@ class TriageService:
     async def _classification_project_context(self) -> list[dict[str, Any]]:
         """Return compact project candidates for classification."""
         result = await self.db.execute(
-            select(Project).order_by(Project.sort_order, Project.target_date, Project.name, Project.id)
+            select(Project).order_by(
+                Project.sort_order.asc(),
+                Project.target_date.asc().nulls_last(),
+                Project.name.asc(),
+                Project.id.asc(),
+            )
         )
         return [
             {

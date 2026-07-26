@@ -1,0 +1,31 @@
+{
+  "schema_version": "workchord-postgresql-contract-manifest-v1",
+  "bundle_state": "implementation-seed-external-archive-required",
+  "source_inputs": [
+    {"logical_key":"postgresql-source-plan-2026-07-18","sha256":"78bdd92460c4744df05497dc02905daacc46f767157daedaf54af2ad8b0f5edc","byte_length":123591,"media_type":"text/markdown","schema_version":"postgresql-migration-plan-2026-07-18","archive_requirement":"charter-pinned-worm-object","packaged_member":null},
+    {"logical_key":"model-aware-routing-plan-2026-07-18","sha256":"125db833a4afee5a0602cf36a39bf62812ac4f6b6e055e44892e9d8a13a787d3","byte_length":93417,"media_type":"text/markdown","schema_version":"model-aware-routing-plan-2026-07-18","archive_requirement":"charter-pinned-worm-object","packaged_member":null},
+    {"logical_key":"postgresql-autonomous-plan-2026-07-19","sha256":"f60c06d3c127754daf7c6158d2edc438134c5c9377399e545db6dab14bf64d08","byte_length":198118,"media_type":"text/markdown","schema_version":"zero-human-agent-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":null},
+    {"logical_key":"postgresql-capacity-contract-v1","sha256":"d88a5563fbfd54c05ccb0cf9b8563260502b3fba595ee80eb9544bd5f05c3b09","byte_length":27349,"media_type":"application/json","schema_version":"postgresql-capacity-contract-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":"postgresql-capacity-contract-v1.json"},
+    {"logical_key":"postgresql-data-lifecycle-policy-v1","sha256":"984fb6eef916ee25e0f15bf228fdbbfaa01fc223df88f36ad838870b870af489","byte_length":6214,"media_type":"application/json","schema_version":"postgresql-data-lifecycle-policy-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":"postgresql-data-lifecycle-policy-v1.json"},
+    {"logical_key":"postgresql-load-result-v1","sha256":"901583b0ce216a0309eb71461aff3008a6f86900b353dbc00251a7baaeaa6a2a","byte_length":6726,"media_type":"application/schema+json","schema_version":"postgresql-load-result-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":"postgresql-load-result-v1.schema.json"},
+    {"logical_key":"postgresql-precutover-qualification-v1","sha256":"7285e8783d517116df92632920a4bfe5aec3429c4483141dcf3221fe60075fe6","byte_length":3927,"media_type":"application/schema+json","schema_version":"postgresql-precutover-qualification-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":"postgresql-precutover-qualification-v1.schema.json"},
+    {"logical_key":"postgresql-resilience-observations-v1","sha256":"fa9ee6eb664e35060cf3e2298e467efeb79888235fc32b2990ba9d9a64ef6ddd","byte_length":4700,"media_type":"application/schema+json","schema_version":"postgresql-resilience-observations-v1","archive_requirement":"charter-pinned-worm-object","packaged_member":"postgresql-resilience-observations-v1.schema.json"}
+  ],
+  "machine_members": [
+    {"path":"status-rules-v1.json","sha256":"7f7a0ebb35a7032d10e6901fb3cf63a45347370a7a52220e8153349c9e608f9e","byte_length":8443},
+    {"path":"autonomous-dag-v1.json","sha256":"faf92f02bcff25342435e0820d1d37a0a034af1680257fdc3879b2d941130ec6","byte_length":2351},
+    {"path":"postgresql-capacity-contract-v1.json","sha256":"d88a5563fbfd54c05ccb0cf9b8563260502b3fba595ee80eb9544bd5f05c3b09","byte_length":27349},
+    {"path":"postgresql-data-lifecycle-policy-v1.json","sha256":"984fb6eef916ee25e0f15bf228fdbbfaa01fc223df88f36ad838870b870af489","byte_length":6214},
+    {"path":"postgresql-load-result-v1.schema.json","sha256":"901583b0ce216a0309eb71461aff3008a6f86900b353dbc00251a7baaeaa6a2a","byte_length":6726},
+    {"path":"postgresql-precutover-qualification-v1.schema.json","sha256":"7285e8783d517116df92632920a4bfe5aec3429c4483141dcf3221fe60075fe6","byte_length":3927},
+    {"path":"postgresql-resilience-observations-v1.schema.json","sha256":"fa9ee6eb664e35060cf3e2298e467efeb79888235fc32b2990ba9d9a64ef6ddd","byte_length":4700}
+  ],
+  "trace": {
+    "aut_tasks":["AUT-GOV-001","AUT-BOOT-001","AUT-IAM-001","AUT-EVD-001","AUT-ORCH-001","AUT-CON-001","AUT-QA-001","AUT-INF-001","AUT-COL-001","AUT-SAN-001","AUT-SEC-001","AUT-REC-001","AUT-QUAL-001","AUT-CUT-001","AUT-CLOSE-001","AUT-ADV-001"],
+    "dbc_tasks":["DBC-GOV-001","DBC-QA-001","DBC-ENV-001","DBC-CAL-001","DBC-SEC-001","DBC-REC-001","DBC-RES-001","DBC-FREEZE-001","DBC-DOC-001","DBC-QUAL-001","DBC-REHEARSE-001","DBC-CUT-001","DBC-HANDOFF-001","DBC-STAB-001","DBC-CLOSE-001","DBC-AVAIL-001","DBC-RET-001"],
+    "dbm_tasks":["DBM-CON-001","DBM-QA-001","DBM-DEP-001","DBM-CFG-001","DBM-MIG-001","DBM-MIG-002","DBM-QA-002","DBM-RUN-001","DBM-RUN-002","DBM-RUN-003","DBM-PERF-001","DBM-PERF-002","DBM-WORK-001","DBM-OBS-001","DBM-MAINT-001","DBM-DATA-001","DBM-DATA-002","DBM-DATA-003","DBM-DEPLOY-001","DBM-DEPLOY-002","DBM-SEC-001","DBM-BACKUP-001","DBM-CUT-001","DBM-QA-003","DBM-SCALE-001","DBM-RES-001","DBM-DOC-001","DBM-QUAL-001","DBM-REHEARSE-001","DBM-CUT-002","DBM-DOC-002","DBM-CLOSE-001"],
+    "gates":["G1","G2","G3","G4","G5","G6","G7","G8","G9","G10","G11","G12","G13","G14","G15"],
+    "manual_external":["DBM-DOC-002","G15"],
+    "external_post_publication":["DBM-CLOSE-001"]
+  }
+}

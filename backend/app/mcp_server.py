@@ -18,7 +18,8 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app import mcp_agent_tools
 from app.config import get_settings
-from app.database import async_session_maker, init_db
+from app.database import async_session_maker, close_database, init_db
+from app.maintenance import MaintenanceModeError, enforce_mcp_access
 from app.models.agent import AgentActor
 from app.services.agent_service import (
     AgentConflictError,
@@ -235,6 +236,8 @@ def _structured_tool_error(exc: Exception) -> str:
         payload = {"code": "agent_permission_denied", "message": str(exc)}
     elif isinstance(exc, MCPAuthError):
         payload = {"code": "agent_authentication_failed", "message": str(exc)}
+    elif isinstance(exc, MaintenanceModeError):
+        payload = exc.detail()
     elif isinstance(exc, LookupError):
         payload = {"code": "agent_resource_not_found", "message": str(exc)}
     elif isinstance(exc, PydanticValidationError):
@@ -257,12 +260,14 @@ def _structured_tool_error(exc: Exception) -> str:
 async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any]) -> Any:
     """Run a service-backed MCP tool and return MCP-safe errors."""
     try:
+        enforce_mcp_access(required_scope)
         async with _agent_context(required_scope) as (db, actor):
             return await func(db, actor)
     except ToolError:
         raise
     except (
         MCPAuthError,
+        MaintenanceModeError,
         AgentConflictError,
         AgentPermissionError,
         TriageConflictError,
@@ -2005,6 +2010,18 @@ def mount_mcp_http(app: Any, path: str) -> None:
     app.mount(normalized_path, mcp_http_app, name="mcp")
 
 
+async def _run_standalone_transport(transport: str) -> None:
+    """Run and dispose a standalone transport on one event loop."""
+
+    try:
+        if transport == "stdio":
+            await mcp.run_stdio_async()
+        else:
+            await mcp.run_streamable_http_async()
+    finally:
+        await close_database()
+
+
 def main(argv: Optional[list[str]] = None) -> None:
     """Run the standalone MCP server."""
     parser = argparse.ArgumentParser(description="Run WorkChord MCP server")
@@ -2026,7 +2043,7 @@ def main(argv: Optional[list[str]] = None) -> None:
             asyncio.run(init_db())
     else:
         asyncio.run(init_db())
-    mcp.run(transport=args.transport)
+    asyncio.run(_run_standalone_transport(args.transport))
 
 
 if __name__ == "__main__":

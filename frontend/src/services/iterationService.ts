@@ -9,8 +9,28 @@ import type {
 
 export const iterationService = {
     getAll: async () => {
-        const response = await api.get<Iteration[]>('/iterations');
-        return response.data;
+        const pageSize = 500;
+        const iterations: Iteration[] = [];
+        let cursorStartDate: string | undefined;
+        let cursorId: number | undefined;
+
+        while (true) {
+            const response = await api.get<Iteration[]>('/iterations', {
+                params: {
+                    limit: pageSize,
+                    cursor_start_date: cursorStartDate,
+                    cursor_id: cursorId,
+                },
+            });
+            const page = response.data;
+            iterations.push(...page);
+            if (page.length < pageSize) break;
+
+            const last = page[page.length - 1];
+            cursorStartDate = last.start_date;
+            cursorId = last.id;
+        }
+        return iterations;
     },
 
     getById: async (id: number) => {

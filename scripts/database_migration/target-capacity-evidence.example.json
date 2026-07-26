@@ -1,0 +1,12 @@
+{
+  "free_space_bytes": {
+    "archive": 107374182400,
+    "data": 107374182400,
+    "index": 107374182400,
+    "temporary": 107374182400,
+    "wal": 107374182400
+  },
+  "kind": "workchord-target-capacity-evidence",
+  "schema_version": 1,
+  "target_identifier": "postgres:5432/workchord"
+}

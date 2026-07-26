@@ -11,6 +11,7 @@ from sqlalchemy.orm import selectinload
 from app.models.iteration import Iteration
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.task_status_log import TaskStatusLog
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.services.language_service import (
     automatic_child_status_reason,
     incomplete_dependency_message,
@@ -371,9 +372,16 @@ class TaskStatusService:
         result = await self.db.execute(
             select(TaskStatusLog)
             .where(TaskStatusLog.task_id == task_id)
-            .order_by(TaskStatusLog.changed_at.desc())
+            .order_by(TaskStatusLog.changed_at.desc(), TaskStatusLog.id.desc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return list(result.scalars().all())
+        history = list(result.scalars().all())
+        if len(history) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "task status history",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return history
 
     async def get_overdue_tasks(self, iteration_id: int) -> Sequence[Task]:
         """Get planned tasks whose start date has passed."""
@@ -386,9 +394,16 @@ class TaskStatusService:
                 Task.start_date.isnot(None),
             )
             .options(selectinload(Task.assignee), selectinload(Task.dependencies))
-            .order_by(Task.start_date)
+            .order_by(Task.start_date.asc().nulls_last(), Task.id.asc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        tasks = list(result.scalars().all())
+        if len(tasks) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "overdue task list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return tasks
 
     async def get_iteration_status_history(
         self,
@@ -400,7 +415,7 @@ class TaskStatusService:
             select(TaskStatusLog, Task.title)
             .join(Task, TaskStatusLog.task_id == Task.id)
             .where(Task.iteration_id == iteration_id)
-            .order_by(desc(TaskStatusLog.changed_at))
+            .order_by(desc(TaskStatusLog.changed_at), TaskStatusLog.id.desc())
             .limit(limit)
         )
         history = []

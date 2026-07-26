@@ -48,7 +48,9 @@ async def get_llm_service(
     db: Annotated[AsyncSession, Depends(get_db)]
 ) -> LLMService:
     """Dependency for LLM-powered triage classification."""
-    return await LLMService.from_runtime(db)
+    service = await LLMService.from_runtime(db)
+    await db.rollback()
+    return service
 
 
 async def get_assignee_recommendation_service(

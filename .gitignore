@@ -29,6 +29,7 @@ npm-debug.log*
 backend/data/
 backend/email_settings.json
 logs/
+.runtime/
 
 # Generated artifacts
 dist/
@@ -54,3 +55,5 @@ build/
 Thumbs.db
 .hallmark/
 docs/plans/
+docs/adr/
+docs/contracts/

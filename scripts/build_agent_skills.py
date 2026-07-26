@@ -44,9 +44,10 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.3.0"
+CATALOG_VERSION = "1.4.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.6.1,<2.0.0"
+MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 ARTIFACT_LICENSE = "MIT"
 NORMALIZED_FILE_MODE = 0o644
 
@@ -99,6 +100,7 @@ def _assigned_work_operation(
     header_optional: Iterable[str] = (),
     tool_required: Iterable[str] = (),
     tool_optional: Iterable[str] = (),
+    required_feature: str | None = None,
 ) -> dict[str, Any]:
     """Build one canonical REST/Pydantic/MCP operation declaration."""
     body = None
@@ -107,7 +109,7 @@ def _assigned_work_operation(
             "model": body_model,
             "fields": _contract_parameters(body_required, body_optional),
         }
-    return {
+    operation = {
         "id": operation_id,
         "audience": audience,
         "summary": summary,
@@ -126,6 +128,9 @@ def _assigned_work_operation(
             "parameters": _contract_parameters(tool_required, tool_optional),
         },
     }
+    if required_feature is not None:
+        operation["required_feature"] = required_feature
+    return operation
 
 
 # This JSON-compatible value is the single authored operation contract. Generated
@@ -149,6 +154,73 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "/api/agent/actors",
             "agent_list_actor_roster",
             "Read enabled secret-free dispatch targets.",
+        ),
+        _assigned_work_operation(
+            "model-catalog",
+            "PM",
+            "GET",
+            "/api/agent/model-catalog",
+            "agent_list_model_catalog",
+            "Read provider-neutral model capability declarations.",
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
+            "routing-assessment-current",
+            "PM",
+            "GET",
+            "/api/agent/planning/tasks/{task_id}/routing-assessment",
+            "agent_get_task_routing_assessment",
+            "Read the current task-version-bound routing assessment.",
+            path_required=("task_id",),
+            tool_required=("task_id",),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
+            "routing-assessment-create",
+            "PM",
+            "POST",
+            "/api/agent/planning/tasks/{task_id}/routing-assessment",
+            "agent_create_task_routing_assessment",
+            "Append an audited assessment for the current task version.",
+            body_model="TaskRoutingAssessmentCommand",
+            body_required=(
+                "expected_task_version",
+                "band",
+                "axes",
+                "required_model",
+                "review_mode",
+                "confidence",
+                "rationale",
+            ),
+            body_optional=("required_skill_levels", "reason_codes"),
+            path_required=("task_id",),
+            header_required=(
+                "Idempotency-Key",
+                "X-Agent-Rationale",
+                "X-Correlation-ID",
+            ),
+            tool_required=(
+                "task_id",
+                "payload",
+                "idempotency_key",
+                "rationale",
+                "correlation_id",
+            ),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
+            "routing-preview",
+            "PM",
+            "POST",
+            "/api/agent/tasks/{task_id}/routing-preview",
+            "agent_preview_task_routing",
+            "Preview exact eligible actor/model bindings without mutation.",
+            body_model="AgentRoutingPreviewCreate",
+            body_required=("purpose", "assessment_id", "expected_task_version"),
+            body_optional=("reviewer_profile_id",),
+            path_required=("task_id",),
+            tool_required=("task_id", "payload"),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
         ),
         _assigned_work_operation(
             "assignment-list",
@@ -223,6 +295,85 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             ),
         ),
         _assigned_work_operation(
+            "model-aware-assignment-create",
+            "PM",
+            "POST",
+            "/api/agent/assignments",
+            "agent_create_assignment",
+            "Dispatch one preview-selected actor/binding with server-owned evidence.",
+            body_model="ModelAwareAgentTaskAssignmentCreate",
+            body_required=(
+                "task_id",
+                "actor_id",
+                "expected_task_version",
+                "purpose",
+                "assessment_id",
+                "model_binding_id",
+                "model_binding_revision",
+                "routing_preview_id",
+                "routing_preview_digest",
+            ),
+            body_optional=(
+                "team_member_id",
+                "reviewer_profile_id",
+                "queue_class",
+                "queue_rank",
+                "not_before",
+                "reason",
+            ),
+            header_required=(
+                "Idempotency-Key",
+                "X-Agent-Rationale",
+                "X-Correlation-ID",
+            ),
+            tool_required=(
+                "payload",
+                "idempotency_key",
+                "rationale",
+                "correlation_id",
+            ),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
+            "model-aware-assignment-update",
+            "PM",
+            "PATCH",
+            "/api/agent/assignments/{assignment_id}",
+            "agent_update_assignment",
+            "Reroute queued work only through a fresh preview-bound selection.",
+            body_model="ModelAwareAgentTaskAssignmentUpdate",
+            body_required=(
+                "expected_queue_revision",
+                "assessment_id",
+                "model_binding_id",
+                "model_binding_revision",
+                "routing_preview_id",
+                "routing_preview_digest",
+            ),
+            body_optional=(
+                "actor_id",
+                "reviewer_profile_id",
+                "queue_rank",
+                "not_before",
+                "state",
+                "reason",
+            ),
+            path_required=("assignment_id",),
+            header_required=(
+                "Idempotency-Key",
+                "X-Agent-Rationale",
+                "X-Correlation-ID",
+            ),
+            tool_required=(
+                "assignment_id",
+                "payload",
+                "idempotency_key",
+                "rationale",
+                "correlation_id",
+            ),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
             "work-decision",
             "worker",
             "GET",
@@ -284,6 +435,26 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             ),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
+        ),
+        _assigned_work_operation(
+            "model-aware-begin",
+            "worker",
+            "POST",
+            "/api/agent/me/work/begin",
+            "agent_begin_my_work",
+            "Begin only the selected binding and report the observed runtime model.",
+            body_model="ModelAwareAgentWorkBegin",
+            body_required=(
+                "assignment_id",
+                "queue_revision",
+                "model_binding_id",
+                "model_binding_revision",
+                "resolved_model_id",
+            ),
+            body_optional=("lease_seconds", "trace_id", "tool_name", "metadata"),
+            header_required=("Idempotency-Key",),
+            tool_required=("payload", "idempotency_key"),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
         ),
         _assigned_work_operation(
             "renew",
@@ -525,7 +696,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.3.0",
+        "version": "1.4.0",
         "required_features": [
             "agent-capabilities-v1",
             "actor-roster-v1",
@@ -563,7 +734,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "required_features": [
             "agent-capabilities-v1",
             "actor-task-assignments",
@@ -897,11 +1068,13 @@ def render_assigned_work_contract_markdown() -> str:
         (
             f"Canonical schema: `{ASSIGNED_WORK_CONTRACT_SCHEMA}`. This exact block is "
             "generated by `scripts/build_agent_skills.py sync-generated`; `!` marks a "
-            "required input and `?` an optional input."
+            "required input and `?` an optional input. A feature-gated row is usable "
+            "only when the live capability response advertises that exact feature "
+            "and the live operation metadata matches the row."
         ),
         "",
-        "| Operation | Audience | REST contract | MCP contract | Semantics |",
-        "| --- | --- | --- | --- | --- |",
+        "| Operation | Feature gate | Audience | REST contract | MCP contract | Semantics |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     for operation in ASSIGNED_WORK_V1_CONTRACT["operations"]:
         rows.append(
@@ -909,6 +1082,11 @@ def render_assigned_work_contract_markdown() -> str:
             + " | ".join(
                 (
                     f"`{operation['id']}`",
+                    (
+                        f"`{operation['required_feature']}`"
+                        if operation.get("required_feature")
+                        else "—"
+                    ),
                     operation["audience"],
                     _format_generated_rest(operation),
                     _format_generated_mcp(operation),

@@ -5,6 +5,7 @@ Use this reference to evaluate resolved work independently, close accepted tasks
 ## Contents
 
 - [Build an independent verification packet](#build-an-independent-verification-packet)
+- [Handle model evidence and escalation](#handle-model-evidence-and-escalation)
 - [Record a verdict](#record-a-verdict)
 - [Return work for rework](#return-work-for-rework)
 - [Recover stale or inconsistent execution](#recover-stale-or-inconsistent-execution)
@@ -25,13 +26,44 @@ Use this reference to evaluate resolved work independently, close accepted tasks
 
 Do not accept a succeeded run, green local check, commit link, or worker summary as sufficient by itself. Verify the task's stated outcome.
 
-Create or activate a verification-purpose assignment only after the task is
-`resolved`, its execution run is terminal, and its claim is released. Bind it
-to the exact verifier and current task/run versions. Rank verification work in
-the verifier's own queue by explicit review rank and task priority; do not place
-it in an implementation queue or let it reserve execution capacity while the
-task is still active. If an earlier queued review placeholder exists, revalidate
-and activate it only after these gates hold.
+Create a verification-purpose assignment only after the task is `resolved`, its
+execution run is terminal, and its claim is released. Under
+`model-aware-routing-v1`, request a fresh verification-purpose routing preview
+against current independent actors and bindings; the verifier named in the
+earlier assessment or execution preview was policy evidence, not reserved
+capacity. Bind the resulting assignment to the exact verifier, current
+task/run/assessment versions, selected binding, and fresh preview digest. Rank
+verification work in the verifier's own queue by explicit review rank and task
+priority; do not place it in an implementation queue or reserve execution
+capacity while the task is still active.
+
+## Handle Model Evidence and Escalation
+
+Read the execution assignment's selected binding and routing snapshot beside
+the run's configured alias, binding ID/revision, observed resolved model, and
+trust state. Keep the evidence classes distinct:
+
+| Trust state | Meaning | PM response |
+| --- | --- | --- |
+| `matched` | Worker-reported model is consistent with the configured binding or an allowed alias | Continue only if all other evidence passes; label it self-reported, not attested |
+| `mismatch` | Reported model materially differs from the selected binding | Stop verification/closure, preserve evidence, and use typed recovery or operator escalation |
+| `unreported` | Required observed model data is absent | Stop model-aware acceptance and request supported runtime evidence or recovery |
+| `unverifiable` | The server cannot compare the declaration and report reliably | Require supervised judgment; never call the model independently verified |
+
+A normal PM must not edit or bypass a binding to clear a mismatch. Ask an
+operator to reconcile configuration when catalog/binding metadata is wrong, or
+use typed recovery/reassignment when the execution attempt is wrong. Keep
+credentials, prompts, provider secrets, and raw runtime logs out of routing
+evidence.
+
+Escalate model capability only when run, review, or failure evidence is
+attributable to reasoning, context, modality, or tool insufficiency. Record the
+specific insufficiency and create a fresh assessment/preview before rework or
+recovery. Access denial, missing credentials, unavailable dependencies,
+rate-limited or down external services, scheduling conflicts, and invalid task
+scope are non-model blockers: correct or escalate their actual cause without
+buying a higher model tier. Never downgrade an independent/specialist review
+requirement during rework.
 
 ## Record a Verdict
 
@@ -78,6 +110,13 @@ In assigned-work v1:
 4. Confirm that no old execution claim or run remains current.
 5. Re-read the worker queue and require the server to surface the item as rework, not normal planned work.
 
+For model-aware rework, require the rejection transaction or follow-up routing
+flow to preserve the prior assessment, assignment, run, routing snapshot, and
+failure reason as lineage. Generate a fresh execution preview before selecting
+the rework actor/binding. Change the required model envelope only through a new
+current assessment backed by evidence; never copy an empty routing snapshot or
+silently reuse the prior candidate list.
+
 In supervised v0:
 
 1. Append the rejection evidence before status change.
@@ -118,6 +157,12 @@ For each recovery:
 4. Reuse the same idempotency key only for an identical retried request.
 5. Re-read every execution dimension and pipeline placement.
 6. Record the recovery cause, action, response, next owner, and follow-up prevention.
+
+For model-aware recovery, preserve the original assessment, selected binding,
+routing snapshot, run model evidence, and recovery cause. Require a fresh
+preview for the recovery assignment. A stale or mismatched binding may require
+operator correction, but recovery never grants the PM authority to mutate the
+catalog or bypass a hard gate.
 
 Stable `agent_requeue_recovery` /
 `POST /api/agent/recovery/{task_id}/requeue` is one audited transaction: it
@@ -190,20 +235,29 @@ the human owner and state clearly that no durable update was written.
 
 **Required reads**
 
-- Read task/brief, timeline, assignment, claim, run, artifacts, source links, project summary, milestone/release state, latest project update, and discovery Triage.
+- Read task/brief, timeline, assignment, claim, run, artifacts, source links,
+  project summary, milestone/release state, latest project update, and discovery
+  Triage. For model-aware work, also read assessment, routing snapshot, selected
+  binding, observed model, trust state, and a fresh verification preview.
 
 **Allowed mutations**
 
-- Submit a typed pass/reject verdict when available.
+- Submit a typed pass/reject verdict when available, preserving model-routing
+  lineage and independent/specialist requirements.
 - Transition `resolved -> closed` on pass or `resolved -> active` through explicit rework on reject.
 - Create linked Triage, perform audited recovery, and append a project update within granted authority.
 
 **Exit and postcondition checks**
 
-- Re-read task status/version, review and execution assignments, pipeline, milestone/project progress, project update freshness, and new rework/recovery ownership.
+- Re-read task status/version, review and execution assignments, routing
+  snapshots/model evidence, pipeline, milestone/project progress, project update
+  freshness, and new rework/recovery ownership.
 - Leave every rejected or recovered task with one explicit next owner.
 
 **Evidence and stop rules**
 
 - Record criterion-by-criterion results, commands/checks, artifacts, limitations, verdict, status transition, project impact, and next owner.
-- Stop when independence is missing, evidence conflicts, a run remains active, current versions are stale, durable rework/recovery is unavailable for unattended work, or the project-update write is unauthorized.
+- Stop when independence is missing, model trust is mismatch, unreported, or
+  unverifiable without accepted supervised handling, evidence conflicts, a run
+  remains active, current versions are stale, durable rework/recovery is
+  unavailable for unattended work, or the project-update write is unauthorized.

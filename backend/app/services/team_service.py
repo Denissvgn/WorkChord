@@ -11,6 +11,7 @@ from sqlalchemy.orm import selectinload
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill, Vacation
 from app.models.task import Task
 from app.models.iteration import Iteration
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.team import (
     TeamMemberCreate,
     TeamMemberProfileCreate,
@@ -27,6 +28,7 @@ from app.schemas.team import (
     MemberWorkload,
 )
 from app.services.calendar_service import CalendarService
+from app.sql_semantics import portable_case_insensitive_equal
 
 
 class TeamService:
@@ -103,7 +105,12 @@ class TeamService:
             result = await self.db.execute(
                 select(TeamMemberProfile)
                 .options(self._profile_options())
-                .where(TeamMemberProfile.email.ilike(normalized_email))
+                .where(
+                    portable_case_insensitive_equal(
+                        TeamMemberProfile.email,
+                        normalized_email,
+                    )
+                )
                 .order_by(TeamMemberProfile.id)
             )
             profile = result.scalars().first()
@@ -142,8 +149,15 @@ class TeamService:
             select(TeamMemberProfile)
             .options(self._profile_options())
             .order_by(TeamMemberProfile.display_name, TeamMemberProfile.id)
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().unique().all()
+        profiles = list(result.scalars().unique().all())
+        if len(profiles) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "team member profile list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return profiles
 
     async def get_profile(self, profile_id: int) -> TeamMemberProfile | None:
         """Get a reusable capability profile by id."""
@@ -259,18 +273,31 @@ class TeamService:
             select(TeamMember)
             .options(*self._member_options())
             .where(TeamMember.iteration_id == iteration_id)
-            .order_by(TeamMember.name)
+            .order_by(TeamMember.name.asc(), TeamMember.id.asc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        members = list(result.scalars().all())
+        if len(members) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "iteration team member list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return members
 
     async def get_all_unique_members(self) -> list[dict]:
         """Get unique members by name across all iterations (for reuse)."""
         result = await self.db.execute(
             select(TeamMember.name, TeamMember.position)
             .distinct(TeamMember.name)
-            .order_by(TeamMember.name)
+            .order_by(TeamMember.name.asc(), TeamMember.position.asc(), TeamMember.id.asc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
         rows = result.all()
+        if len(rows) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "unique employee list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
         return [{"name": row[0], "position": row[1]} for row in rows]
 
     async def list_member_options(self) -> list[TeamMemberOptionResponse]:
@@ -284,10 +311,17 @@ class TeamService:
                 TeamMember.iteration_id,
                 TeamMember.id,
             )
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
+        members = list(result.scalars().unique().all())
+        if len(members) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "team member option list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
         return [
             TeamMemberOptionResponse.model_validate(member)
-            for member in result.scalars().unique().all()
+            for member in members
         ]
 
     async def get_by_id(self, member_id: int) -> TeamMember | None:

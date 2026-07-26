@@ -18,6 +18,7 @@ from app.services.language_service import (
     entity_not_found_message,
     resolve_runtime_ui_language,
 )
+from app.sql_semantics import portable_contains
 
 
 DEFAULT_LABEL_GROUP_DEFINITIONS: list[dict[str, Any]] = [
@@ -206,12 +207,11 @@ class LabelService:
         if not include_inactive:
             query = query.where(Label.is_active.is_(True), LabelGroup.is_active.is_(True))
         if q:
-            pattern = f"%{q.strip().lower()}%"
             query = query.where(
                 or_(
-                    Label.slug.ilike(pattern),
-                    Label.name.ilike(pattern),
-                    Label.description.ilike(pattern),
+                    portable_contains(Label.slug, q),
+                    portable_contains(Label.name, q),
+                    portable_contains(Label.description, q),
                 )
             )
 

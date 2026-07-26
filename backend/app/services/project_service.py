@@ -2,7 +2,8 @@
 from datetime import date, datetime
 from typing import Optional, Sequence
 
-from sqlalchemy import Select, func, select, update
+from sqlalchemy import Select, case, exists, func, select, update
+from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -17,6 +18,12 @@ from app.models.project import (
 )
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.team_member import TeamMember, TeamMemberProfile
+from app.query_limits import (
+    CollectionLimitExceededError,
+    MAX_BOUNDED_LIST_ITEMS,
+    MAX_PROJECT_LIST_ITEMS,
+    MAX_PROJECT_TREE_TASKS,
+)
 from app.schemas.project import (
     InitiativeCreate,
     InitiativeUpdate,
@@ -36,6 +43,7 @@ from app.schemas.project import (
 from app.schemas.team import TeamMemberOptionResponse, TeamMemberProfileCompact
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.request_source_service import RequestSourceService
+from app.sql_semantics import portable_case_insensitive_equal
 from app.utils.time import as_utc, utc_now
 
 
@@ -106,7 +114,12 @@ class ProjectService:
         if normalized_email:
             result = await self.db.execute(
                 select(TeamMemberProfile)
-                .where(TeamMemberProfile.email.ilike(normalized_email))
+                .where(
+                    portable_case_insensitive_equal(
+                        TeamMemberProfile.email,
+                        normalized_email,
+                    )
+                )
                 .order_by(TeamMemberProfile.id)
             )
             profile = result.scalars().first()
@@ -212,13 +225,19 @@ class ProjectService:
                 selectinload(Initiative.owner_profile).selectinload(TeamMemberProfile.skills),
             )
             .order_by(
-                Initiative.target_date.is_(None),
-                Initiative.target_date,
-                Initiative.name,
-                Initiative.id,
+                Initiative.target_date.asc().nulls_last(),
+                Initiative.name.asc(),
+                Initiative.id.asc(),
             )
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        initiatives = list(result.scalars().all())
+        if len(initiatives) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "initiative list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return initiatives
 
     async def get_initiative_by_id(self, initiative_id: int) -> Optional[Initiative]:
         """Get initiative by ID."""
@@ -353,9 +372,21 @@ class ProjectService:
     async def list_projects(self) -> Sequence[Project]:
         """List projects ordered for planning views."""
         result = await self.db.execute(
-            self._project_query().order_by(Project.sort_order, Project.target_date, Project.id)
+            self._project_query()
+            .order_by(
+                Project.sort_order.asc(),
+                Project.target_date.asc().nulls_last(),
+                Project.id.asc(),
+            )
+            .limit(MAX_PROJECT_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        projects = list(result.scalars().all())
+        if len(projects) > MAX_PROJECT_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project list",
+                MAX_PROJECT_LIST_ITEMS,
+            )
+        return projects
 
     async def get_by_id(self, project_id: int) -> Optional[Project]:
         """Get project by ID."""
@@ -547,8 +578,15 @@ class ProjectService:
             select(ProjectUpdateEntry)
             .where(ProjectUpdateEntry.project_id == project_id)
             .order_by(ProjectUpdateEntry.created_at.desc(), ProjectUpdateEntry.id.desc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        updates = list(result.scalars().all())
+        if len(updates) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project update list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return updates
 
     async def list_milestones(
         self,
@@ -562,12 +600,19 @@ class ProjectService:
             select(ProjectMilestone)
             .where(ProjectMilestone.project_id == project_id)
             .order_by(
-                ProjectMilestone.sort_order,
-                ProjectMilestone.target_date,
-                ProjectMilestone.id,
+                ProjectMilestone.sort_order.asc(),
+                ProjectMilestone.target_date.asc().nulls_last(),
+                ProjectMilestone.id.asc(),
             )
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        milestones = list(result.scalars().all())
+        if len(milestones) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project milestone list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return milestones
 
     async def get_milestone_for_project(
         self,
@@ -719,8 +764,15 @@ class ProjectService:
                 selectinload(Iteration.project),
             )
             .order_by(Iteration.start_date.desc(), Iteration.id.desc())
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        iterations = list(result.scalars().all())
+        if len(iterations) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project iteration list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return iterations
 
     async def get_latest_project_update(
         self,
@@ -783,6 +835,22 @@ class ProjectService:
         """Get linked root tasks for a project with response relationships loaded."""
         if not await self.get_by_id(project_id):
             return None
+
+        bounded_ids = list(
+            (
+                await self.db.execute(
+                    select(Task.id)
+                    .where(Task.project_id == project_id)
+                    .order_by(Task.id.asc())
+                    .limit(MAX_PROJECT_TREE_TASKS + 1)
+                )
+            ).scalars()
+        )
+        if len(bounded_ids) > MAX_PROJECT_TREE_TASKS:
+            raise CollectionLimitExceededError(
+                "project task tree",
+                MAX_PROJECT_TREE_TASKS,
+            )
 
         query = (
             select(Task)
@@ -1095,13 +1163,194 @@ class ProjectService:
 
         return groups
 
+    async def _project_task_aggregates(
+        self,
+        project: Project,
+    ) -> dict[str, object]:
+        """Compute workspace-sized project summary inputs inside the database."""
+
+        dependency_task = aliased(Task)
+        done_statuses = (TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value)
+        remaining_statuses = (TaskStatus.PLANNED.value, TaskStatus.ACTIVE.value)
+        blocked = exists(
+            select(TaskDependency.task_id)
+            .join(
+                dependency_task,
+                dependency_task.id == TaskDependency.depends_on_id,
+            )
+            .where(
+                TaskDependency.task_id == Task.id,
+                dependency_task.status.not_in(done_statuses),
+            )
+        )
+        overdue_expression = (
+            case(
+                (
+                    Task.end_date.is_not(None)
+                    & (Task.end_date > project.target_date),
+                    1,
+                ),
+                else_=0,
+            )
+            if project.target_date is not None
+            else 0
+        )
+        row = (
+            await self.db.execute(
+                select(
+                    func.count(Task.id).label("total_tasks"),
+                    *(
+                        func.coalesce(
+                            func.sum(case((Task.status == status, 1), else_=0)),
+                            0,
+                        ).label(f"status_{status}")
+                        for status in self._empty_task_status_counts()
+                    ),
+                    func.coalesce(func.sum(Task.effort_days), 0.0).label(
+                        "total_effort_days"
+                    ),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (Task.status.in_(remaining_statuses), Task.effort_days),
+                                else_=0.0,
+                            )
+                        ),
+                        0.0,
+                    ).label("remaining_effort_days"),
+                    func.coalesce(
+                        func.sum(case((blocked, 1), else_=0)),
+                        0,
+                    ).label("blocked_tasks"),
+                    func.coalesce(func.sum(overdue_expression), 0).label(
+                        "overdue_tasks"
+                    ),
+                    func.min(Task.start_date).label("task_start_date"),
+                    func.max(Task.end_date).label("task_end_date"),
+                ).where(Task.project_id == project.id)
+            )
+        ).one()
+        status_counts = {
+            status: int(getattr(row, f"status_{status}"))
+            for status in self._empty_task_status_counts()
+        }
+        return {
+            "total_tasks": int(row.total_tasks),
+            "status_counts": status_counts,
+            "total_effort_days": float(row.total_effort_days),
+            "remaining_effort_days": float(row.remaining_effort_days),
+            "blocked_tasks": int(row.blocked_tasks),
+            "overdue_tasks": int(row.overdue_tasks),
+            "task_start_date": row.task_start_date,
+            "task_end_date": row.task_end_date,
+        }
+
+    async def _aggregated_milestone_groups(
+        self,
+        project_id: int,
+    ) -> list[ProjectMilestoneTaskGroup]:
+        """Build milestone summaries from grouped rows rather than task objects."""
+
+        milestones = list(await self.list_milestones(project_id) or [])
+        rows = (
+            await self.db.execute(
+                select(
+                    Task.milestone_id,
+                    Task.status,
+                    func.count(Task.id),
+                    func.coalesce(func.sum(Task.effort_days), 0.0),
+                )
+                .where(Task.project_id == project_id)
+                .group_by(Task.milestone_id, Task.status)
+                .order_by(Task.milestone_id.asc().nulls_last(), Task.status.asc())
+            )
+        ).all()
+        buckets: dict[int | None, dict[str, object]] = {}
+        for milestone_id, task_status, task_count, effort in rows:
+            bucket = buckets.setdefault(
+                milestone_id,
+                {
+                    "status_counts": self._empty_task_status_counts(),
+                    "total_effort_days": 0.0,
+                    "effort_by_status": {},
+                },
+            )
+            status_counts = bucket["status_counts"]
+            assert isinstance(status_counts, dict)
+            if task_status in status_counts:
+                status_counts[task_status] = int(task_count)
+            bucket["total_effort_days"] = float(bucket["total_effort_days"]) + float(
+                effort
+            )
+            effort_by_status = bucket["effort_by_status"]
+            assert isinstance(effort_by_status, dict)
+            effort_by_status[task_status] = float(effort)
+
+        groups: list[ProjectMilestoneTaskGroup] = []
+        done_statuses = {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
+        remaining_statuses = {TaskStatus.PLANNED.value, TaskStatus.ACTIVE.value}
+        for milestone in [*milestones, None]:
+            milestone_id = milestone.id if milestone is not None else None
+            bucket = buckets.get(milestone_id)
+            if milestone is None and bucket is None:
+                continue
+            status_counts = (
+                dict(bucket["status_counts"])
+                if bucket is not None
+                else self._empty_task_status_counts()
+            )
+            task_count = sum(status_counts.values())
+            completed_tasks = sum(status_counts[status] for status in done_statuses)
+            total_effort = (
+                float(bucket["total_effort_days"])
+                if bucket is not None
+                else 0.0
+            )
+            effort_by_status = (
+                bucket["effort_by_status"] if bucket is not None else {}
+            )
+            assert isinstance(effort_by_status, dict)
+            remaining_effort = sum(
+                float(effort_by_status.get(status, 0.0))
+                for status in remaining_statuses
+            )
+            milestone_summary = (
+                ProjectMilestoneSummary(
+                    id=milestone.id,
+                    project_id=milestone.project_id,
+                    name=milestone.name,
+                    status=milestone.status,
+                    target_date=milestone.target_date,
+                    sort_order=milestone.sort_order,
+                )
+                if milestone is not None
+                else None
+            )
+            groups.append(
+                ProjectMilestoneTaskGroup(
+                    milestone_id=milestone_id,
+                    milestone=milestone_summary,
+                    name=milestone.name if milestone is not None else "Unassigned",
+                    task_count=task_count,
+                    completed_tasks=completed_tasks,
+                    completion_percent=self._calculate_completion_percent(
+                        task_count,
+                        completed_tasks,
+                    ),
+                    status_counts=status_counts,
+                    total_effort_days=total_effort,
+                    remaining_effort_days=remaining_effort,
+                )
+            )
+        return groups
+
     async def get_summary(self, project_id: int) -> Optional[ProjectSummary]:
         """Calculate project task summary metrics."""
         project = await self.get_by_id(project_id)
         if not project:
             return None
 
-        tasks = await self._get_all_linked_tasks(project_id)
+        aggregates = await self._project_task_aggregates(project)
         latest_update = await self.get_latest_project_update(project_id)
         days_since_latest_update = (
             (date.today() - latest_update.created_at.date()).days
@@ -1112,48 +1361,18 @@ class ProjectService:
             project,
             days_since_latest_update,
         )
-        status_counts = self._empty_task_status_counts()
-        done_statuses = {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
-        remaining_statuses = {TaskStatus.PLANNED.value, TaskStatus.ACTIVE.value}
-
-        blocked_tasks = 0
-        overdue_tasks = 0
-        total_effort_days = 0.0
-        remaining_effort_days = 0.0
-
-        for task in tasks:
-            if task.status in status_counts:
-                status_counts[task.status] += 1
-
-            task_effort = float(task.effort_days or 0)
-            total_effort_days += task_effort
-            if task.status in remaining_statuses:
-                remaining_effort_days += task_effort
-
-            if any(
-                dependency.depends_on
-                and dependency.depends_on.status not in done_statuses
-                for dependency in task.dependencies
-            ):
-                blocked_tasks += 1
-
-            if (
-                project.target_date is not None
-                and task.end_date is not None
-                and task.end_date > project.target_date
-            ):
-                overdue_tasks += 1
-
-        task_start_date, task_end_date = self._calculate_task_date_range(tasks)
-        milestone_groups = await self._calculate_milestone_groups(
-            project_id,
-            tasks,
-            done_statuses,
-            remaining_statuses,
-        )
+        status_counts = aggregates["status_counts"]
+        assert isinstance(status_counts, dict)
+        blocked_tasks = int(aggregates["blocked_tasks"])
+        overdue_tasks = int(aggregates["overdue_tasks"])
+        total_effort_days = float(aggregates["total_effort_days"])
+        remaining_effort_days = float(aggregates["remaining_effort_days"])
+        task_start_date = aggregates["task_start_date"]
+        task_end_date = aggregates["task_end_date"]
+        milestone_groups = await self._aggregated_milestone_groups(project_id)
         request_count = await RequestSourceService(self.db).count_for_project(project_id)
 
-        total_tasks = len(tasks)
+        total_tasks = int(aggregates["total_tasks"])
         completed_tasks = (
             status_counts[TaskStatus.RESOLVED.value]
             + status_counts[TaskStatus.CLOSED.value]

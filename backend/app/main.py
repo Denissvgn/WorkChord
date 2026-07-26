@@ -1,21 +1,24 @@
-import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 
 from app.config import get_settings
-from app.database import async_session_maker, init_db
+from app.database import close_database, init_db
+from app.database_runtime import DatabaseConflictError, DatabaseUnavailableError
+from app.maintenance import (
+    MaintenanceModeError,
+    RuntimeBoundaryMiddleware,
+    maintenance_state,
+)
+from app.observability import collect_metrics, readiness_snapshot
+from app.query_limits import CollectionLimitExceededError
+from app.runtime_telemetry import metrics
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
-from app.services.github_status_automation_service import GitHubStatusAutomationService
-from app.services.label_service import LabelService
-from app.services.outbound_webhook_service import outbound_delivery_worker_loop
-from app.services.saved_view_service import SavedViewService
-from app.services.system_settings_service import RuntimeSettingsService
-from app.services.template_service import TemplateService
 
 settings = get_settings()
 
@@ -23,32 +26,17 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
-    async with mcp.session_manager.run():
-        # Startup
-        await init_db()
-        async with async_session_maker() as db:
-            await TemplateService(db).seed_default_templates()
-            await LabelService(db).seed_default_labels()
-            await SavedViewService(db).seed_default_views()
-            await GitHubStatusAutomationService(db).seed_default_rules()
-            await RuntimeSettingsService(db).migrate_legacy_email_settings()
-        delivery_stop = asyncio.Event()
-        delivery_worker = None
-        if settings.outbound_delivery_worker_enabled:
-            delivery_worker = asyncio.create_task(
-                outbound_delivery_worker_loop(
-                    delivery_stop,
-                    poll_seconds=settings.outbound_delivery_poll_seconds,
-                    batch_size=settings.outbound_delivery_batch_size,
-                ),
-                name="outbound-delivery-worker",
-            )
-        try:
+    try:
+        async with mcp.session_manager.run():
+            # Web startup is entirely assert-only. Dedicated migration/repair
+            # commands own DDL and default creation; dedicated workers own
+            # durable outbound delivery.
+            if settings.database_process_role != "web":
+                raise RuntimeError("app.main may run only with DATABASE_PROCESS_ROLE=web")
+            await init_db()
             yield
-        finally:
-            delivery_stop.set()
-            if delivery_worker is not None:
-                await delivery_worker
+    finally:
+        await close_database()
 
 
 app = FastAPI(
@@ -77,6 +65,91 @@ async def redact_request_validation_input(
         content={"detail": errors},
     )
 
+
+@app.exception_handler(MaintenanceModeError)
+async def maintenance_mode_error(
+    request: Request, exc: MaintenanceModeError
+) -> JSONResponse:
+    """Keep hidden-write fences typed even when raised by a dependency."""
+    del request
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={"detail": exc.detail()},
+        headers={
+            "Retry-After": str(exc.detail()["retry_after_seconds"]),
+            "Cache-Control": "no-store",
+        },
+    )
+
+
+@app.exception_handler(CollectionLimitExceededError)
+async def collection_limit_error(
+    request: Request, exc: CollectionLimitExceededError
+) -> JSONResponse:
+    """Refuse oversized synchronous graphs without silent truncation."""
+    del request
+    return JSONResponse(
+        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+        content={"detail": exc.detail()},
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@app.exception_handler(DatabaseConflictError)
+async def database_conflict_error(
+    request: Request, exc: DatabaseConflictError
+) -> JSONResponse:
+    """Expose exhausted replay-safe conflicts without leaking DB details."""
+    del request
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={
+            "detail": {
+                "code": "database_transaction_conflict",
+                "message": str(exc),
+            }
+        },
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@app.exception_handler(DatabaseUnavailableError)
+async def database_unavailable_error(
+    request: Request, exc: DatabaseUnavailableError
+) -> JSONResponse:
+    """Expose exhausted transient availability failures as retryable 503s."""
+    del request
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={
+            "detail": {
+                "code": "database_unavailable",
+                "message": str(exc),
+            }
+        },
+        headers={"Cache-Control": "no-store", "Retry-After": "1"},
+    )
+
+
+@app.exception_handler(SQLAlchemyTimeoutError)
+async def database_pool_timeout_error(
+    request: Request, exc: SQLAlchemyTimeoutError
+) -> JSONResponse:
+    """Turn pool saturation into an observable retryable failure."""
+    del request, exc
+    metrics.increment("workchord_database_pool_timeouts_total")
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={
+            "detail": {
+                "code": "database_pool_timeout",
+                "message": "Database connection capacity is temporarily exhausted",
+            }
+        },
+        headers={"Cache-Control": "no-store", "Retry-After": "1"},
+    )
+
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -85,6 +158,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RuntimeBoundaryMiddleware)
 
 # Routers
 app.include_router(calendars.router, prefix=settings.api_prefix, tags=["Calendars"])
@@ -125,5 +199,42 @@ mount_mcp_http(app, f"{settings.api_prefix}/mcp")
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
-    return {"status": "ok"}
+    """Backward-compatible process liveness endpoint."""
+    return {"status": "ok", "maintenance": maintenance_state()}
+
+
+@app.get("/health/live")
+async def liveness_check():
+    """Report only whether this process can service HTTP."""
+    return {"status": "ok", "maintenance": maintenance_state()}
+
+
+@app.get("/health/ready")
+async def readiness_check():
+    """Fail when the database is unavailable or not at packaged Alembic head."""
+    ready, payload = await readiness_snapshot()
+    return JSONResponse(status_code=200 if ready else 503, content=payload)
+
+
+@app.get("/.well-known/workchord-build.json")
+async def build_identity():
+    """Expose non-secret immutable build identity for internal attestation."""
+    from app.autonomy.contracts.postgresql import load_postgresql_contract_bundle
+    from app.build_identity import load_backend_build_identity
+
+    return {
+        **load_backend_build_identity().model_dump(mode="json"),
+        "contract_manifest_digest": (
+            load_postgresql_contract_bundle().manifest_digest
+        ),
+    }
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+async def metrics_endpoint():
+    """Export process/database qualification inputs without SQL or secrets."""
+    await collect_metrics()
+    return PlainTextResponse(
+        metrics.render_prometheus(),
+        media_type="text/plain; version=0.0.4; charset=utf-8",
+    )

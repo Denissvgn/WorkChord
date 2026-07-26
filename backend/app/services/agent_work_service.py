@@ -25,6 +25,7 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.models.triage import TriageItem
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
     AgentActorResponse,
     AgentDiscoveryTriageCreate,
@@ -71,6 +72,11 @@ from app.schemas.project import ProjectUpdateEntryCreate
 from app.schemas.triage import TriageItemCreate
 from app.services.triage_service import TriageService
 from app.utils.time import as_utc, utc_now
+
+
+AGENT_BUSY_POLL_SECONDS = 1
+AGENT_IDLE_POLL_SECONDS = 5
+AGENT_RETRY_MAX_SECONDS = 30
 
 
 logger = logging.getLogger(__name__)
@@ -196,6 +202,8 @@ class AgentWorkService:
             assigned_by_actor_id=assignment.assigned_by_actor_id,
             reviewer_profile_id=assignment.reviewer_profile_id,
             task_version=assignment.task_version,
+            model_binding_id=assignment.model_binding_id,
+            model_binding_revision=assignment.model_binding_revision,
             routing_snapshot=_json_loads(assignment.routing_snapshot, {}),
             reason=assignment.reason,
             created_at=assignment.created_at,
@@ -212,6 +220,10 @@ class AgentWorkService:
             claim_generation=run.claim_generation,
             status=run.status,
             trace_id=run.trace_id,
+            model_binding_id=run.model_binding_id,
+            model_binding_revision=run.model_binding_revision,
+            configured_model_alias=run.configured_model_alias,
+            resolved_model_id=run.resolved_model_id,
             model=run.model,
             tool_name=run.tool_name,
             metadata=_json_loads(run.run_metadata, {}),
@@ -232,24 +244,60 @@ class AgentWorkService:
             select(AgentActor)
             .where(AgentActor.enabled.is_(True))
             .order_by(AgentActor.display_name, AgentActor.id)
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        actors = result.scalars().all()
+        actors = list(result.scalars().all())
+        if len(actors) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "agent actor roster",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        actor_ids = [item.id for item in actors]
+        assignment_counts: dict[tuple[int, str], int] = {}
+        running_counts: dict[int, int] = {}
+        if actor_ids:
+            assignment_rows = (
+                await self.db.execute(
+                    select(
+                        AgentTaskAssignment.actor_id,
+                        AgentTaskAssignment.state,
+                        func.count(AgentTaskAssignment.id),
+                    )
+                    .where(
+                        AgentTaskAssignment.actor_id.in_(actor_ids),
+                        AgentTaskAssignment.state.in_(LIVE_ASSIGNMENT_STATES),
+                    )
+                    .group_by(
+                        AgentTaskAssignment.actor_id,
+                        AgentTaskAssignment.state,
+                    )
+                )
+            ).all()
+            assignment_counts = {
+                (actor_id, state): int(count)
+                for actor_id, state, count in assignment_rows
+            }
+            running_rows = (
+                await self.db.execute(
+                    select(AgentRun.actor_id, func.count(AgentRun.id))
+                    .where(
+                        AgentRun.actor_id.in_(actor_ids),
+                        AgentRun.status == "running",
+                    )
+                    .group_by(AgentRun.actor_id)
+                )
+            ).all()
+            running_counts = {
+                actor_id: int(count) for actor_id, count in running_rows
+            }
         roster: list[AgentActorRosterItem] = []
         for item in actors:
-            queued = await self._assignment_count(item.id, "queued")
-            accepted = await self._assignment_count(item.id, "accepted")
-            running_result = await self.db.execute(
-                select(func.count(AgentRun.id)).where(
-                    AgentRun.actor_id == item.id,
-                    AgentRun.status == "running",
-                )
-            )
             roster.append(
                 AgentActorRosterItem(
                     **self.actor_response(item).model_dump(),
-                    queued_assignments=queued,
-                    accepted_assignments=accepted,
-                    running_runs=int(running_result.scalar_one()),
+                    queued_assignments=assignment_counts.get((item.id, "queued"), 0),
+                    accepted_assignments=assignment_counts.get((item.id, "accepted"), 0),
+                    running_runs=running_counts.get(item.id, 0),
                 )
             )
         return roster
@@ -794,7 +842,7 @@ class AgentWorkService:
                 state="attention_required",
                 current=current_item,
                 recovery_codes=recovery_codes,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_BUSY_POLL_SECONDS),
             )
         if accepted:
             current = await self._work_item(accepted[0], 0, now, running=running)
@@ -817,7 +865,7 @@ class AgentWorkService:
                 cursor=pagination.next_cursor,
                 state="resume",
                 current=current,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_BUSY_POLL_SECONDS),
             )
 
         queued_result = await self.db.execute(
@@ -828,9 +876,9 @@ class AgentWorkService:
                 AgentTaskAssignment.state == "queued",
             )
             .order_by(
-                AgentTaskAssignment.queue_rank,
-                AgentTaskAssignment.not_before,
-                AgentTaskAssignment.id,
+                AgentTaskAssignment.queue_rank.asc(),
+                AgentTaskAssignment.not_before.asc().nulls_first(),
+                AgentTaskAssignment.id.asc(),
             )
         )
         assignments = queued_result.scalars().all()
@@ -869,11 +917,11 @@ class AgentWorkService:
                 next=items[0],
                 queue=page,
                 blocked_assigned=blocked_page,
-                next_poll_after=now + timedelta(minutes=5),
+                next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
             )
         if blocked:
             future_times = [
-                item.assignment.not_before
+                as_utc(item.assignment.not_before)
                 for item in blocked
                 if item.assignment.not_before is not None
                 and as_utc(item.assignment.not_before) > as_utc(now)
@@ -887,7 +935,14 @@ class AgentWorkService:
                 state="wait",
                 next=blocked[0],
                 blocked_assigned=blocked_page,
-                next_poll_after=min(future_times) if future_times else now + timedelta(minutes=5),
+                next_poll_after=(
+                    min(
+                        min(future_times),
+                        now + timedelta(seconds=AGENT_RETRY_MAX_SECONDS),
+                    )
+                    if future_times
+                    else now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS)
+                ),
             )
         return AgentWorkDecisionResponse(
             actor=self.actor_response(actor),
@@ -896,7 +951,7 @@ class AgentWorkService:
             pagination=pagination,
             cursor=pagination.next_cursor,
             state="no_work",
-            next_poll_after=now + timedelta(minutes=5),
+            next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
         )
 
     async def get_reviews(
@@ -978,7 +1033,10 @@ class AgentWorkService:
                     AgentTaskAssignment.actor_id == actor.id,
                     AgentTaskAssignment.state.in_(LIVE_ASSIGNMENT_STATES),
                 )
-                .order_by(AgentTaskAssignment.created_at.desc())
+                .order_by(
+                    AgentTaskAssignment.created_at.desc().nulls_last(),
+                    AgentTaskAssignment.id.desc(),
+                )
             )
             assignment = result.scalars().first()
         if (

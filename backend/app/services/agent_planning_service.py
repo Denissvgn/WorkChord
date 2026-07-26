@@ -7,7 +7,7 @@ services, then stores an exact actor-attributed receipt in the same transaction.
 import hashlib
 import json
 import secrets
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping
 from typing import Any
 
 from sqlalchemy import select, text
@@ -834,14 +834,63 @@ class AgentPlanningService:
         return iteration
 
     async def _lock_schedule_task_set(self, iteration_id: int) -> None:
-        """Prevent task-set inserts, updates, or deletes until schedule commit."""
+        """Lock only the mutable rows in one scheduling aggregate.
+
+        The aggregate-root ``FOR UPDATE`` lock also fences new tasks and team
+        members because their foreign-key checks need a conflicting key-share
+        lock. Existing child rows are locked explicitly so updates and deletes
+        cannot change the snapshot. A shared calendar lock prevents calendar
+        edits while still allowing unrelated iterations that use the same
+        calendar to schedule concurrently.
+        """
         dialect = self.db.get_bind().dialect.name
         if dialect == "postgresql":
-            await self.db.execute(
-                text(
-                    "LOCK TABLE tasks, task_dependencies, team_members, "
-                    "vacations, calendars IN SHARE ROW EXCLUSIVE MODE"
+            iteration = await self._require_iteration_for_update(iteration_id)
+            calendar_result = await self.db.execute(
+                select(Calendar.id)
+                .where(Calendar.id == iteration.calendar_id)
+                .with_for_update(read=True)
+            )
+            if calendar_result.scalar_one_or_none() is None:
+                raise AgentConflictError(
+                    "Iteration scheduling calendar is unavailable"
                 )
+
+            task_result = await self.db.execute(
+                select(Task.id)
+                .where(Task.iteration_id == iteration_id)
+                .order_by(Task.id)
+                .with_for_update()
+            )
+            task_ids = list(task_result.scalars().all())
+            await self.db.execute(
+                select(TaskDependency.id)
+                .where(TaskDependency.task_id.in_(task_ids or [-1]))
+                .order_by(
+                    TaskDependency.task_id,
+                    TaskDependency.depends_on_id,
+                    TaskDependency.id,
+                )
+                .with_for_update()
+            )
+
+            member_result = await self.db.execute(
+                select(TeamMember.id)
+                .where(TeamMember.iteration_id == iteration_id)
+                .order_by(TeamMember.id)
+                .with_for_update()
+            )
+            member_ids = list(member_result.scalars().all())
+            await self.db.execute(
+                select(Vacation.id)
+                .where(Vacation.team_member_id.in_(member_ids or [-1]))
+                .order_by(
+                    Vacation.team_member_id,
+                    Vacation.start_date,
+                    Vacation.end_date,
+                    Vacation.id,
+                )
+                .with_for_update()
             )
             return
         if dialect == "sqlite":
@@ -890,6 +939,10 @@ class AgentPlanningService:
     async def _schedule_input_digest(
         self,
         iteration_id: int,
+        *,
+        schedule_output_overrides: Mapping[
+            int, tuple[Any, Any, Any]
+        ] | None = None,
     ) -> tuple[str, str]:
         """Hash every mutable input consumed by ``SchedulerService``."""
         iteration = await self._require_iteration_for_update(iteration_id)
@@ -991,10 +1044,37 @@ class AgentPlanningService:
                     "effort_days": task.effort_days,
                     "status": task.status,
                     "start_date": (
-                        task.start_date.isoformat() if task.start_date else None
+                        (
+                            schedule_output_overrides[task.id][0].isoformat()
+                            if schedule_output_overrides
+                            and task.id in schedule_output_overrides
+                            and schedule_output_overrides[task.id][0]
+                            else None
+                        )
+                        if schedule_output_overrides
+                        and task.id in schedule_output_overrides
+                        else (
+                            task.start_date.isoformat() if task.start_date else None
+                        )
                     ),
-                    "end_date": task.end_date.isoformat() if task.end_date else None,
-                    "calculated_effort_days": task.calculated_effort_days,
+                    "end_date": (
+                        (
+                            schedule_output_overrides[task.id][1].isoformat()
+                            if schedule_output_overrides
+                            and task.id in schedule_output_overrides
+                            and schedule_output_overrides[task.id][1]
+                            else None
+                        )
+                        if schedule_output_overrides
+                        and task.id in schedule_output_overrides
+                        else task.end_date.isoformat() if task.end_date else None
+                    ),
+                    "calculated_effort_days": (
+                        schedule_output_overrides[task.id][2]
+                        if schedule_output_overrides
+                        and task.id in schedule_output_overrides
+                        else task.calculated_effort_days
+                    ),
                     "min_start_date": (
                         task.min_start_date.isoformat()
                         if task.min_start_date
@@ -1137,6 +1217,23 @@ class AgentPlanningService:
             if {task.id for task in tasks} != set(before):
                 raise AgentConflictError(
                     "Iteration task set changed during schedule apply; run a new preview"
+                )
+            post_schedule_digest, post_rules_digest = (
+                await self._schedule_input_digest(
+                    iteration_id,
+                    schedule_output_overrides={
+                        task_id: values[:3]
+                        for task_id, values in before.items()
+                    },
+                )
+            )
+            if not secrets.compare_digest(current_digest, post_schedule_digest):
+                raise AgentConflictError(
+                    "Schedule inputs changed during apply; run a new preview"
+                )
+            if not secrets.compare_digest(rules_digest, post_rules_digest):
+                raise AgentConflictError(
+                    "Scheduling rules changed during apply; run a new preview"
                 )
             for task in tasks:
                 previous = before[task.id]

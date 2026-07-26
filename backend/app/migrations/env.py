@@ -6,11 +6,16 @@ from sqlalchemy import engine_from_config, pool
 
 from app.config import get_settings
 from app.database import Base
+from app.database_config import alembic_safe_url, parse_database_configuration
 from app import models  # noqa: F401
 
 config = context.config
 settings = get_settings()
-config.set_main_option("sqlalchemy.url", settings.database_url.replace("+aiosqlite", ""))
+database_configuration = parse_database_configuration(settings)
+config.set_main_option(
+    "sqlalchemy.url",
+    alembic_safe_url(database_configuration.sync_url),
+)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -33,10 +38,21 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in online mode."""
+    provided_connection = config.attributes.get("connection")
+    if provided_connection is not None:
+        context.configure(
+            connection=provided_connection,
+            target_metadata=target_metadata,
+        )
+        with context.begin_transaction():
+            context.run_migrations()
+        return
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args=dict(database_configuration.connect_args),
     )
 
     with connectable.connect() as connection:

@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.security import require_admin_api_key
+from app.query_limits import MAX_SYNC_EXPORT_TASKS
 from app.schemas.common import MessageResponse
 from app.services.iteration_service import IterationService
 from app.services.task_service import TaskService
@@ -85,7 +86,10 @@ async def export_iteration(
         )
 
     task_service = TaskService(db)
-    tasks = await task_service.get_by_iteration(iteration_id)
+    tasks = await task_service.get_by_iteration(
+        iteration_id,
+        max_tasks=MAX_SYNC_EXPORT_TASKS,
+    )
 
     team_service = TeamService(db)
     team_members = await team_service.get_by_iteration(iteration_id)

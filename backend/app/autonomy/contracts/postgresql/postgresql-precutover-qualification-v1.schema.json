@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://workchord.local/contracts/postgresql-precutover-qualification-v1.schema.json",
+  "title": "WorkChord PostgreSQL pre-cutover qualification v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schema_version", "report_id", "created_at", "status", "capacity_contract", "capacity_claim", "frozen_release", "consecutive_runs", "qualification_gates", "attestation", "signature", "document_sha256"],
+  "properties": {
+    "kind": {"const": "workchord-postgresql-precutover-qualification"},
+    "schema_version": {"const": 1},
+    "report_id": {"type": "string", "minLength": 8, "maxLength": 128},
+    "created_at": {"type": "string", "format": "date-time"},
+    "status": {"const": "qualified"},
+    "capacity_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "sha256"],
+      "properties": {
+        "id": {"const": "workchord-postgresql-capacity-v1"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "capacity_claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["browser_identities", "active_browser_sessions", "concurrent_agent_clients", "authenticated_people_claim"],
+      "properties": {
+        "browser_identities": {"const": 1250},
+        "active_browser_sessions": {"const": 250},
+        "concurrent_agent_clients": {"const": 200},
+        "authenticated_people_claim": {"const": false}
+      }
+    },
+    "frozen_release": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fingerprint", "manifest_sha256", "commit", "images"],
+      "properties": {
+        "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "images": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "@sha256:[0-9a-f]{64}$"}}
+      }
+    },
+    "consecutive_runs": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["run_id", "attempt_number", "bundle_sha256", "started_at", "completed_at"],
+        "properties": {
+          "run_id": {"type": "string", "minLength": 8},
+          "attempt_number": {"type": "integer", "minimum": 1},
+          "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "started_at": {"type": "string", "format": "date-time"},
+          "completed_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "qualification_gates": {
+      "type": "object", "minProperties": 8,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["status", "evidence"],
+        "properties": {
+          "status": {"const": "passed"},
+          "evidence": {}
+        }
+      }
+    },
+    "attestation": {"const": "The listed attempts are the final three consecutive qualification attempts for this frozen release, and no failed or excluded attempt is omitted."},
+    "signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "signer", "public_key_pem", "public_key_sha256", "signed_payload_sha256", "value_base64"],
+      "properties": {
+        "algorithm": {"const": "Ed25519"},
+        "signer": {"type": "string", "minLength": 3, "maxLength": 200},
+        "public_key_pem": {"type": "string", "minLength": 50},
+        "public_key_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "signed_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "value_base64": {"type": "string", "minLength": 80, "maxLength": 100}
+      }
+    },
+    "document_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

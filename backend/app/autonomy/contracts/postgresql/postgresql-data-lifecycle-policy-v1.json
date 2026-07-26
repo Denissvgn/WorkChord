@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "policy_id": "workchord-postgresql-data-lifecycle-v1",
+  "status": "approved",
+  "approved_on": "2026-07-18",
+  "owner": "WorkChord backend/platform team",
+  "capacity_contract": "docs/contracts/postgresql-capacity-contract-v1.json",
+  "policy_boundary": "Retention decisions are inherited from the approved capacity contract. Any destructive implementation requires a separately reviewed, resumable job with export verification and domain-integrity checks.",
+  "families": [
+    {
+      "id": "core_work_graph",
+      "tables": ["projects", "iterations", "tasks", "task_dependencies"],
+      "decision": "retain",
+      "retention": "active lifetime plus 7 years after archive",
+      "intervention": "archive an entire closed project graph to a checksummed immutable export before batched deletion",
+      "integrity_requirement": "project, iteration, task, dependency, external-link, request-source, and milestone references reconcile before and after archive"
+    },
+    {
+      "id": "task_audit",
+      "tables": ["task_status_logs", "task_events"],
+      "decision": "archive_then_purge",
+      "retention_days": 730,
+      "intervention": "time-window archive with checksummed row counts, followed by primary-key-bounded purge",
+      "integrity_requirement": "no retained event may reference a missing retained task"
+    },
+    {
+      "id": "agent_execution_history",
+      "tables": ["agent_runs", "agent_run_events", "agent_task_assignments"],
+      "decision": "archive_then_purge",
+      "retention_days": 365,
+      "intervention": "archive terminal runs, their events, and terminal assignments as one referential unit before batched purge",
+      "integrity_requirement": "active or nonterminal runs, claims, assignments, and their events are never eligible"
+    },
+    {
+      "id": "outbound_delivery_success",
+      "tables": ["outbound_webhook_events", "outbound_webhook_deliveries"],
+      "decision": "purge",
+      "retention_days": 90,
+      "selector": "all deliveries for an event are completed and older than cutoff",
+      "intervention": "delete deliveries in bounded event groups, then delete unreferenced events",
+      "integrity_requirement": "pending, leased, retryable, or partially failed event groups are never eligible"
+    },
+    {
+      "id": "outbound_delivery_failure",
+      "tables": ["outbound_webhook_events", "outbound_webhook_deliveries"],
+      "decision": "archive_then_purge",
+      "retention_days": 180,
+      "selector": "all deliveries for an event are terminal and the newest terminal timestamp is older than cutoff",
+      "intervention": "checksummed failure archive followed by bounded event-group purge",
+      "integrity_requirement": "failure payload and attempt history remain complete in the archive"
+    },
+    {
+      "id": "browser_identity_sessions",
+      "tables": ["user_sessions"],
+      "decision": "purge",
+      "retention_days": 90,
+      "selector": "revoked or expired and older than cutoff",
+      "intervention": "primary-key-bounded purge after saved-view ownership has been detached or retained by policy",
+      "integrity_requirement": "active and nearly-expired browser identities are never eligible"
+    },
+    {
+      "id": "idempotency_receipts",
+      "tables": ["agent_idempotency_records"],
+      "decision": "retain_with_parent_window",
+      "retention_days": 365,
+      "intervention": "purge only receipts whose command target and related execution history are terminal beyond the same cutoff",
+      "integrity_requirement": "no replay key within the supported retry or audit window may be removed"
+    },
+    {
+      "id": "routing_assessments",
+      "tables": ["task_routing_assessments"],
+      "decision": "archive_then_purge",
+      "retention_days": 365,
+      "intervention": "archive immutable assessment inputs and result digests before bounded purge",
+      "integrity_requirement": "the latest assessment for every retained task is retained"
+    },
+    {
+      "id": "project_updates",
+      "tables": ["project_updates"],
+      "decision": "retain_with_core_project",
+      "retention": "active lifetime plus 7 years after project archive",
+      "intervention": "included in the project graph archive",
+      "integrity_requirement": "updates retain author, ordering, and project linkage"
+    },
+    {
+      "id": "qualification_evidence",
+      "tables": [],
+      "artifact_paths": ["reports/qualification/database"],
+      "decision": "retain",
+      "retention_days": 395,
+      "intervention": "move raw and signed reports to immutable artifact storage with checksum manifests",
+      "integrity_requirement": "signed reports retain every referenced raw artifact for the full window"
+    },
+    {
+      "id": "pitr_wal",
+      "tables": [],
+      "decision": "purge",
+      "retention_days": 35,
+      "intervention": "backup-system expiry only after a newer restore chain has passed verification",
+      "integrity_requirement": "the declared RPO window always has a complete base-backup and WAL chain"
+    }
+  ],
+  "capacity_trigger": {
+    "planned_utilization_percent": 70,
+    "minimum_projected_headroom_months": 12,
+    "evaluation": "The qualification collector projects database, table, index, and WAL growth from the measured steady, burst, and eight-hour soak deltas.",
+    "fail_closed_action": "If projected utilization reaches 70 percent inside 12 months, DBM-QUAL-001 remains incomplete until an online expansion or the selected archive, partition, or purge mechanism is implemented and exercised under load."
+  },
+  "execution_guards": {
+    "production_automation_present": false,
+    "reason": "The certified baseline is expected to retain at least 12 months of headroom. No destructive retention worker is authorized until measured evidence crosses the trigger and its implementation receives a separate review.",
+    "required_before_first_purge": [
+      "dry-run candidate manifest",
+      "bounded batch and resumable checkpoint",
+      "checksummed export where decision includes archive",
+      "foreign-key and domain-integrity queries",
+      "backup and restore verification",
+      "load-test comparison showing no SLO regression"
+    ]
+  }
+}

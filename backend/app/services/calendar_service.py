@@ -67,8 +67,9 @@ class CalendarService:
 
     async def get_all(self) -> Sequence[Calendar]:
         """Get all calendars."""
-        await self.get_or_create_default()
-        result = await self.db.execute(select(Calendar).order_by(Calendar.year.desc()))
+        result = await self.db.execute(
+            select(Calendar).order_by(Calendar.year.desc(), Calendar.id.desc())
+        )
         return result.scalars().all()
 
     async def get_or_create_default(self, *, commit: bool = True) -> Calendar:

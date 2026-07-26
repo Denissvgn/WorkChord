@@ -5,6 +5,7 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 ## Contents
 
 - [Route capacity ownership](#route-capacity-ownership)
+- [Route exact actor and model bindings](#route-exact-actor-and-model-bindings)
 - [Dispatch exact actors](#dispatch-exact-actors)
 - [Order assigned work](#order-assigned-work)
 - [Schedule and re-read](#schedule-and-re-read)
@@ -22,11 +23,71 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 
 Treat recommendations as explainable advice. Do not auto-assign solely by top score, and never infer permissions from a capability profile.
 
+The top team-member/capacity recommendation is never an exact actor or model
+selection. It may inform `Task.assignee_id`, but exact dispatch requires the
+separate roster, assessment, routing-preview, and assignment contracts below.
+
+## Route Exact Actor and Model Bindings
+
+Use this loop only when the live capability response advertises
+`model-aware-routing-v1` and the live operation metadata contains the matching
+assessment, preview, model-bound assignment, and begin-evidence fields.
+
+1. Re-read the definition-ready leaf, current task version, capacity owner,
+   current typed assessment, policy version, dependencies, schedule, workload,
+   vacations, exact actor roster, and active model bindings.
+2. Reject a missing or stale assessment. Do not reuse an assessment from an
+   earlier task version or average away an advanced axis.
+3. Request a read-only routing preview for purpose `execution`. Preserve its
+   preview ID, input digest, generation/expiry time, assessment ID/version,
+   task version, actor queue revisions, binding revisions, ordered eligible
+   candidates, excluded candidates, blocker codes, and review policy.
+4. Inspect every hard exclusion. Require actor authorization and purpose
+   compatibility, matching profile/capacity ownership, skills and weaknesses,
+   adequate model/tool/data-policy metadata, availability, workload, vacation,
+   queue, schedule, and one-current-task compliance. A profile, model, or cost
+   match cannot bypass any hard gate.
+5. Rank only eligible candidates. Within the best adequacy and availability
+   class, select the lowest-cost adequate binding; then apply the advertised
+   queue, schedule, latency, and stable actor-ID tie-breakers. Cost or latency
+   never compensates for missing permission, skill, tier, tool, policy,
+   independence, or capacity.
+6. If no candidate is eligible, create no assignment. Preserve the returned
+   blockers and choose a legitimate PM action: clarify, decompose, reschedule,
+   defer, change supported planning inputs, or ask an operator to correct
+   staffing/binding metadata. Never lower a hard minimum silently or mutate a
+   model binding as a normal PM.
+7. Create the assignment with the current task/assessment/policy versions,
+   selected actor and model-binding ID/revision, routing preview ID and complete
+   digest, purpose, queue data, deterministic idempotency key, rationale, and
+   correlation ID. Let the server recompute eligibility and generate the
+   bounded routing snapshot; do not submit client-authored candidate evidence
+   as authoritative truth.
+8. Re-read the task, assignment, actor queue, selected binding, and server-owned
+   routing snapshot. Confirm that the selected versions and reason codes match
+   the decision and that the snapshot contains no credentials, prompts, or raw
+   logs.
+
+Discard the preview and start again after expiry or any task, assessment,
+dependency, capacity, vacation, actor policy/queue, binding, reviewer, purpose,
+or topology-membership change. On stale-candidate or digest conflict, refetch
+authoritative inputs and generate a fresh preview. Reassignment or any update
+that changes actor, binding, purpose, or reviewer also requires a new preview;
+queue-only reordering may reuse evidence only when the live policy explicitly
+permits it.
+
+Low confidence is not a hard-blocker override. Clarify or seek supervised
+judgment when confidence is below the live policy threshold. If the model-aware
+feature or one required live operation is absent, keep the assigned-work queue
+only when its base feature set is complete, use the existing supervised
+capability/capacity comparison, and label the actor/model choice as not
+model-aware.
+
 ## Dispatch Exact Actors
 
 ### Assigned-work v1
 
-Use exact actor dispatch only when the server advertises a durable assignment contract and an enabled actor roster. Confirm that the actor is already provisioned, enabled, compatible, appropriately scoped, and bound to the intended profile.
+Use exact actor dispatch only when the server advertises a durable assignment contract and an enabled actor roster. Confirm that the actor is already provisioned, enabled, compatible, appropriately scoped, and bound to the intended profile. For model-aware routing, complete the preview loop above before mutation; for compatibility routing, state that no model-aware adequacy claim was made.
 
 Create or update an audited assignment with:
 
@@ -37,6 +98,8 @@ Create or update an audited assignment with:
 - lifecycle state, explicit queue rank, and optional not-before time;
 - capacity owner/profile and reviewer;
 - routing rationale and matched capabilities;
+- for model-aware dispatch, assessment/policy versions, selected model-binding
+  ID/revision, preview ID/digest, and server-generated routing snapshot;
 - rework, recovery, reassignment, or cancellation reason when applicable.
 
 Use the server's assign, reassign, reorder, cancel, rework, and recovery commands exactly as advertised. Stable v1 assignment and recovery writes require an expected assignment/task token, one deterministic idempotency key, a concise rationale, and a correlation ID; REST carries the last three as `Idempotency-Key`, `X-Agent-Rationale`, and `X-Correlation-ID`, while MCP exposes named arguments. Re-read the assignment and actor queue after every command.
@@ -88,8 +151,11 @@ item. Treat managed unassigned-pool acquisition and higher concurrency as
 future contracts, even if a newer server later exposes them.
 
 Account for expected review effort in the task estimate and verifier workload
-before dispatch. A verification assignment is routing, not a capacity
-reservation. If review effort is material enough to require its own dates or
+before dispatch. A planned verifier in an assessment or execution preview is
+policy evidence, not a capacity reservation. After execution resolves and its
+claim/run are terminal, request a fresh `verification` routing preview against
+current independent actors and bindings before creating the verification
+assignment. If review effort is material enough to require its own dates or
 artifacts, plan a linked verification leaf task with its own capacity owner;
 otherwise record the review allowance in the selected verifier's operational
 load and do not claim that Gantt reserved it automatically.
@@ -157,23 +223,35 @@ Never edit worker-produced artifacts, finish the worker run, or transition activ
 
 **Required reads**
 
-- Read task, versions, dependencies, readiness, recommendations, profiles, weaknesses, capacity, workload, vacations, actor roster, assignments, iteration, calendar, and Gantt as available.
+- Read task, versions, dependencies, readiness, capacity recommendations,
+  profiles, weaknesses, capacity, workload, vacations, actor roster,
+  assignments, iteration, calendar, and Gantt. For model-aware routing, also
+  read the current assessment, policy, catalog/bindings, exclusions, and fresh
+  routing preview.
 
 **Allowed mutations**
 
 - Set the iteration capacity assignee, constraints, and deliberate planning fields.
-- Create or change exact actor assignments only through advertised v1 commands.
+- Create or change exact actor assignments only through advertised v1 commands;
+  require a fresh version-bound preview for model-aware selection and every
+  routing-relevant reassignment.
 - Schedule the selected iteration and update queue order with optimistic concurrency where supported.
 
 **Exit and postcondition checks**
 
-- Re-read task, capacity owner, actor dispatch, queue, dates, readiness, Gantt, workload, and target risk.
+- Re-read task, capacity owner, actor/binding dispatch, routing snapshot, queue,
+  dates, readiness, Gantt, workload, and target risk.
 - Confirm each task is start-ready, explicitly waiting, or returned to definition with exact blockers.
 
 **Evidence and stop rules**
 
-- Record recommendation comparison, capability/weakness rationale, capacity impact, actor and reviewer, queue rank, schedule decisions, and blockers.
-- Stop on stale version, overload without mitigation, missing exact assignment support, incompatible actor, unresolved dependency, or unexplained schedule violation.
+- Record the distinction between capacity advice and exact routing, assessment
+  and preview versions, candidate exclusions, adequacy/cost choice, confidence,
+  capacity impact, actor/binding and reviewer, queue rank, schedule decisions,
+  and blockers.
+- Stop on stale task/assessment/preview/binding state, no eligible candidate,
+  overload without mitigation, missing exact assignment support, incompatible
+  actor, unresolved dependency, or unexplained schedule violation.
 
 ### Phase 7: Supervise delivery
 

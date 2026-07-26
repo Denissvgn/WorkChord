@@ -10,6 +10,7 @@ from app.models.agent import TaskEvent
 from app.models.project import Project
 from app.models.release import Release, ReleaseStatus
 from app.models.task import Task
+from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.release import ReleaseCreateRequest, ReleaseUpdateRequest
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.task_service import TaskService
@@ -106,9 +107,19 @@ class ReleaseService:
             select(Release)
             .options(*self._release_options())
             .where(Release.project_id == project_id)
-            .order_by(Release.target_date.is_(None), Release.target_date, Release.id)
+            .order_by(
+                Release.target_date.asc().nulls_last(),
+                Release.id.asc(),
+            )
+            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
-        return result.scalars().all()
+        releases = list(result.scalars().all())
+        if len(releases) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project release list",
+                MAX_BOUNDED_LIST_ITEMS,
+            )
+        return releases
 
     async def _validate_task_ids(
         self,

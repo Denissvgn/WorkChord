@@ -9,6 +9,7 @@ Use this reference to move uncertain requests through Triage and turn accepted o
 - [Choose a disposition](#choose-a-disposition)
 - [Decompose accepted work](#decompose-accepted-work)
 - [Write the complete task brief](#write-the-complete-task-brief)
+- [Assess difficulty and routing requirements](#assess-difficulty-and-routing-requirements)
 - [Check definition and start readiness](#check-definition-and-start-readiness)
 - [Complete phase contracts](#complete-phase-contracts)
 
@@ -85,7 +86,9 @@ Before conversion:
 
 1. Keep a parent task only for roll-up when several deliverables share one accepted outcome.
 2. Create leaf tasks that one worker can complete and one verifier can evaluate.
-3. Separate work when ownership, capability, dependency, risk, artifact, or verification method differs.
+3. Separate work when ownership, capability, dependency, risk, context breadth,
+   artifact, access boundary, model/tool requirement, or verification method
+   differs. Assess and route executable leaves, not a mixed-capability parent.
 4. Add dependencies only for real predecessor constraints. Confirm the dependency graph has no self-edge, duplicate edge, cycle, or cross-iteration edge before mutation.
 5. Set priority from `1` to `10`, where `1` is highest. Do not use priority as a hidden queue rank.
 6. Set positive effort and distinguish effort from elapsed schedule time.
@@ -121,6 +124,13 @@ Name adjacent work the worker must report instead of absorbing.
 ## Constraints and risks
 Record compatibility, security, migration, rollout, timing, and access limits.
 
+## Difficulty and routing requirements
+Record the five governed axes, derived band, confidence, governed reason codes,
+minimum skill levels, provider-neutral model/tool/data-policy minimums, review
+mode, and assessment rationale. Use a typed live assessment when advertised;
+otherwise label this as supervised planning evidence rather than a model-aware
+selection.
+
 ## Expected deliverables
 Name the files, records, artifacts, or decisions that must exist.
 
@@ -141,6 +151,77 @@ Reject vague phrases such as “make it work,” “update as needed,” or “t
 
 Never place credentials, private keys, secret values, or inaccessible personal context in the brief.
 
+## Assess Difficulty and Routing Requirements
+
+Do this after the leaf brief is definition-ready and before exact candidate
+selection. Difficulty is not priority, effort, elapsed time, or business value.
+Score the work that one actor will execute, not the size of its parent outcome.
+
+### Score the five axes
+
+| Axis | `1` | `2` | `3` |
+| --- | --- | --- | --- |
+| Reasoning/novelty | Known local pattern | Normal implementation or debugging | Novel architecture or deep synthesis |
+| Ambiguity | Fully specified | Bounded judgment remains | Conflicting or materially incomplete direction |
+| Context breadth | One local boundary | Several modules or sources | Repository-wide, cross-repository, or long-context synthesis |
+| Risk/blast radius | Reversible and isolated | Moderate compatibility or data impact | Security, auth, migration, concurrency, production, or irreversible impact |
+| Verification burden | One deterministic check | Several integration checks | Specialist, adversarial, or independent evidence required |
+
+Derive the band without averaging:
+
+- use `routine` only when every axis is `1` and no governed reason code forces
+  escalation;
+- use `standard` when no axis is `3` but one or more axes is `2`;
+- use `advanced` when any decisive axis is `3` or a live governed reason code
+  requires escalation.
+
+High risk or ambiguity cannot be diluted by small effort. A large quantity of
+repetitive local work can remain routine only after decomposition makes each
+leaf bounded, low-risk, and independently checkable.
+
+### Record the routing envelope
+
+Read the live capability handshake, model catalog, exact actor roster, reusable
+profiles and skills, capacity, workload, vacations, queue state, and active
+actor-model bindings. Record:
+
+- current task ID/version and routing policy version;
+- five axis values and derived band;
+- confidence from `0..1`, with the evidence gap behind any value below full
+  confidence;
+- only reason codes and precise skill keys recognized by the live routing
+  policy, plus minimum skill levels from `1..5`;
+- minimum reasoning and context tiers plus required modality, tool, and
+  data-policy tags;
+- review mode `none`, `standard`, `independent`, or
+  `specialist-independent`; risk `3` always requires an independent mode;
+- concise rationale tied to task evidence, not a provider/model reputation.
+
+Never infer capability from a raw model name, provider brand, cost tier, profile
+prose, or historical popularity. Never invent an unsupported reason code,
+skill mapping, binding, or tier. Low confidence is a reason to clarify,
+decompose, defer, or obtain supervised judgment; it is not permission to lower
+a hard minimum.
+
+When `model-aware-routing-v1` and its assessment operation are advertised,
+create or revise the typed assessment with the current task version,
+idempotency key, rationale, and correlation ID; then re-read it. A later task
+mutation makes that assessment stale and requires a new assessment. When the
+feature, live catalog, roster, or required metadata is absent, stop automated
+model-aware selection and use explicitly labeled supervised compatibility
+routing. The durable assigned-work lifecycle may still be used if its own
+feature set remains complete.
+
+### Check representative cases
+
+| Case | Axes `(reasoning, ambiguity, context, risk, verification)` | Intended result |
+| --- | --- | --- |
+| Known one-file text correction with one exact check | `(1, 1, 1, 1, 1)` | `routine` |
+| Normal multi-module feature with bounded decisions and integration tests | `(2, 2, 2, 2, 2)` | `standard` |
+| Novel cross-repository migration requiring adversarial review | `(3, 2, 3, 3, 3)` | `advanced`, specialist-independent review |
+| Small authentication permission change | `(1, 1, 1, 3, 3)` | `advanced`; small effort does not lower risk |
+| Large repetitive rename split into local, reversible, exactly checked leaves | `(1, 1, 1, 1, 1)` per leaf | `routine` per leaf; total volume remains effort/scheduling data |
+
 ## Check Definition and Start Readiness
 
 ### Definition-ready
@@ -157,6 +238,9 @@ Require all of these before routing or scheduling:
 - Resolve all open questions that could change scope.
 - Set constraints that make the work schedulable.
 - Name expected artifacts, verification evidence, reviewer, and escalation conditions.
+- For model-aware routing, persist a current assessment for the exact task
+  version; otherwise record that selection will remain supervised and cannot be
+  described as model-aware.
 
 Treat the current server's description-length and keyword readiness check as a minimum signal, not proof of this contract.
 
@@ -210,19 +294,26 @@ Re-read `agent_readiness.criteria`, blockers, warnings, task version, schedule, 
 
 **Required reads**
 
-- Read templates, labels, existing task tree, dependencies, project/milestone, iteration team, source links, and relevant prior decisions.
+- Read templates, labels, existing task tree, dependencies, project/milestone,
+  iteration team, source links, relevant prior decisions, and—when advertised—
+  the live routing policy, model catalog, actor roster, and active bindings.
 
 **Allowed mutations**
 
-- Create or update task hierarchy, description, effort, priority, capacity assignee, project, milestone, dependencies, labels, flags, and constraints.
+- Create or update task hierarchy, description, effort, priority, capacity
+  assignee, project, milestone, dependencies, labels, flags, constraints, and a
+  current typed routing assessment when supported.
 - Use optimistic task versions where supported.
 
 **Exit and postcondition checks**
 
 - Re-read each leaf task and its readiness criteria.
-- Confirm the brief, links, dependency graph, capacity ownership, and definition-ready result.
+- Confirm the brief, links, dependency graph, capacity ownership, definition-ready
+  result, and current assessment or explicit supervised-routing fallback.
 
 **Evidence and stop rules**
 
-- Record decomposition rationale, dependency reasons, estimate basis, required capability, verifier, and exact blockers.
+- Record decomposition rationale, dependency reasons, estimate basis, five-axis
+  assessment, required capability envelope, confidence, verifier mode, and exact
+  blockers.
 - Stop on a cycle, cross-iteration dependency, ambiguous scope, missing acceptance evidence, or stale task version.
