@@ -149,7 +149,7 @@ def test_catalog_and_binding_schemas_are_secret_free_and_deterministic() -> None
         AgentModelCatalogCreate.model_validate(
             _catalog_values(modality_tags=["text", "TEXT"])
         )
-    with pytest.raises(ValidationError, match="less than or equal to 3"):
+    with pytest.raises(ValidationError, match="Input should be 1, 2 or 3"):
         AgentModelCatalogCreate.model_validate(_catalog_values(reasoning_tier=4))
     with pytest.raises(ValidationError, match="default model binding must be enabled"):
         AgentModelBindingCreate(

@@ -7,10 +7,11 @@ from sqlalchemy.orm import attributes
 
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.schemas.task import TaskAgentReadiness, TaskAgentReadinessCriterion
+from app.services.agent_routing_policy import CAPABILITY_LABEL_SKILL_KEYS
 from app.utils.time import as_utc, utc_now
 
 
-DEFAULT_AGENT_CAPABILITY_SLUGS = {"cap:code", "cap:test", "cap:docs", "cap:research"}
+DEFAULT_AGENT_CAPABILITY_SLUGS = frozenset(CAPABILITY_LABEL_SKILL_KEYS)
 DESCRIPTION_SIGNAL_PATTERN = re.compile(
     r"\b(acceptance|criteria|checklist|scope|verify|verification|test|tests|expected|output|done)\b",
     re.IGNORECASE,

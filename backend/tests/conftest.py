@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
+from datetime import date
+from itertools import count
+import json
 import os
 from pathlib import Path
 import socket
@@ -21,6 +24,11 @@ from sqlalchemy.ext.asyncio import (
 from app.database import Base
 from app.config import get_settings
 from app import models  # noqa: F401 - register every mapper
+from app.models.agent import AgentActor
+from app.models.calendar import Calendar
+from app.models.iteration import Iteration
+from app.models.task import Task
+from app.models.team_member import TeamMember, TeamMemberProfile
 from tests.support import (
     FailureInjector,
     FrozenClock,
@@ -132,6 +140,173 @@ async def db_session(
     async with db_session_factory() as session:
         yield session
         await session.rollback()
+
+
+@pytest_asyncio.fixture
+async def profile_factory(
+    db_session: AsyncSession,
+) -> AsyncIterator[Callable[..., Awaitable[TeamMemberProfile]]]:
+    """Persist deterministic reusable routing profiles."""
+
+    sequence = count(1)
+
+    async def create_profile(**overrides: Any) -> TeamMemberProfile:
+        marker = next(sequence)
+        values: dict[str, Any] = {
+            "seed_key": f"routing-test-profile-{marker}",
+            "display_name": f"Routing Test Profile {marker}",
+            "automation_enabled": True,
+            "profile_kind": "agent",
+            "assignment_modes": ["execution"],
+        }
+        values.update(overrides)
+        profile = TeamMemberProfile(**values)
+        db_session.add(profile)
+        await db_session.flush()
+        return profile
+
+    yield create_profile
+
+
+@pytest_asyncio.fixture
+async def actor_factory(
+    db_session: AsyncSession,
+) -> AsyncIterator[Callable[..., Awaitable[AgentActor]]]:
+    """Persist deterministic actors with optional profile bindings."""
+
+    sequence = count(1)
+
+    async def create_actor(
+        *,
+        profile: TeamMemberProfile | None = None,
+        **overrides: Any,
+    ) -> AgentActor:
+        marker = next(sequence)
+        values: dict[str, Any] = {
+            "name": f"routing-test-actor-{marker}",
+            "display_name": f"Routing Test Actor {marker}",
+            "api_key_hash": f"routing-test-key-hash-{marker}",
+            "scopes": json.dumps(["work:execute"], separators=(",", ":")),
+            "enabled": True,
+            "role": "worker",
+        }
+        if profile is not None:
+            if "profile" in overrides or "profile_id" in overrides:
+                raise TypeError(
+                    "Pass either profile or a profile/profile_id override, not both"
+                )
+            values["profile"] = profile
+        values.update(overrides)
+        actor = AgentActor(**values)
+        db_session.add(actor)
+        await db_session.flush()
+        return actor
+
+    yield create_actor
+
+
+@pytest_asyncio.fixture
+async def team_member_factory(
+    db_session: AsyncSession,
+) -> AsyncIterator[Callable[..., Awaitable[TeamMember]]]:
+    """Persist deterministic capacity owners with optional profile/iteration links."""
+
+    sequence = count(1)
+
+    async def create_team_member(
+        *,
+        profile: TeamMemberProfile | None = None,
+        iteration: Iteration | None = None,
+        **overrides: Any,
+    ) -> TeamMember:
+        marker = next(sequence)
+        values: dict[str, Any] = {
+            "name": f"Routing Test Member {marker}",
+            "position": "Routing Test Capacity Owner",
+        }
+        if profile is not None:
+            if "profile" in overrides or "profile_id" in overrides:
+                raise TypeError(
+                    "Pass either profile or a profile/profile_id override, not both"
+                )
+            values["profile"] = profile
+        if iteration is not None:
+            if "iteration" in overrides or "iteration_id" in overrides:
+                raise TypeError(
+                    "Pass either iteration or an iteration/iteration_id override, "
+                    "not both"
+                )
+            values["iteration"] = iteration
+        values.update(overrides)
+        team_member = TeamMember(**values)
+        db_session.add(team_member)
+        await db_session.flush()
+        return team_member
+
+    yield create_team_member
+
+
+@pytest_asyncio.fixture
+async def task_factory(
+    db_session: AsyncSession,
+) -> AsyncIterator[Callable[..., Awaitable[Task]]]:
+    """Persist deterministic tasks with an isolated valid calendar/iteration graph."""
+
+    sequence = count(1)
+
+    async def create_task(
+        *,
+        iteration: Iteration | None = None,
+        assignee: TeamMember | None = None,
+        **overrides: Any,
+    ) -> Task:
+        if {
+            "iteration",
+            "iteration_id",
+            "assignee",
+            "assignee_id",
+        }.intersection(overrides):
+            raise TypeError(
+                "Pass iteration and assignee as explicit factory arguments"
+            )
+
+        marker = next(sequence)
+        if (
+            iteration is None
+            and assignee is not None
+            and assignee.iteration_id is not None
+        ):
+            iteration = await db_session.get(Iteration, assignee.iteration_id)
+        if iteration is None:
+            calendar = Calendar(
+                name=f"Routing Test Calendar {marker}",
+                year=2026,
+            )
+            iteration = Iteration(
+                name=f"Routing Test Iteration {marker}",
+                start_date=date(2026, 7, 1),
+                end_date=date(2026, 7, 31),
+                calendar=calendar,
+            )
+            db_session.add(iteration)
+            await db_session.flush()
+
+        if assignee is not None and assignee.iteration_id is None:
+            assignee.iteration = iteration
+
+        values: dict[str, Any] = {
+            "title": f"Routing Test Task {marker}",
+            "iteration": iteration,
+        }
+        if assignee is not None:
+            values["assignee"] = assignee
+        values.update(overrides)
+        task = Task(**values)
+        db_session.add(task)
+        await db_session.flush()
+        return task
+
+    yield create_task
 
 
 @pytest.fixture

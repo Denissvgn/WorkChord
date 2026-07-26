@@ -55,15 +55,32 @@ jobs:
           .venv/bin/pip install --require-hashes -r backend/requirements.lock
           .venv/bin/pip install --require-hashes -r backend/test-requirements.lock
           .venv/bin/pip install --no-build-isolation --no-deps -e ./backend
+      - name: Run the focused backend routing contracts
+        env:
+          DEPLOYMENT_ENVIRONMENT: test
+          DATABASE_SSL_MODE: disable
+          PYTHONPYCACHEPREFIX: /tmp/workchord-routing-pycache
+          PYTHONPATH: backend
+        run: >-
+          .venv/bin/python -m pytest -q
+          -o cache_dir=/tmp/workchord-routing-pytest-cache
+          backend/tests/test_agent_routing_contract.py
+          backend/tests/test_agent_routing_harness.py
       - name: Run the backend database harness
         env:
           DEPLOYMENT_ENVIRONMENT: test
           DATABASE_SSL_MODE: disable
           POSTGRES_ADMIN_URL: postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:5432/postgres
+          PYTHONPYCACHEPREFIX: /tmp/workchord-backend-pycache
+          PYTHONPATH: backend
           WORKCHORD_SCHEMA_DIFF_ARTIFACT: /tmp/workchord-schema-diff.json
         run: |
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m "not postgresql" backend/tests
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -m pytest -q -m postgresql backend/tests
+          .venv/bin/python -m pytest -q \
+            -o cache_dir=/tmp/workchord-backend-pytest-cache \
+            -m "not postgresql" backend/tests
+          .venv/bin/python -m pytest -q \
+            -o cache_dir=/tmp/workchord-backend-pytest-cache \
+            -m postgresql backend/tests
           test -s "$WORKCHORD_SCHEMA_DIFF_ARTIFACT"
       - name: Upload the dual-dialect schema diff
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0

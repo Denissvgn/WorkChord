@@ -66,6 +66,10 @@ from app.services.agent_service import (
     actor_scopes,
     validate_idempotency_key,
 )
+from app.services.agent_routing_policy import (
+    canonical_routing_json_bytes,
+    evaluate_actor_authorization,
+)
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
 from app.schemas.project import ProjectUpdateEntryCreate
@@ -209,6 +213,12 @@ class AgentWorkService:
             created_at=assignment.created_at,
             updated_at=assignment.updated_at,
         )
+
+    @staticmethod
+    def _serialize_routing_snapshot(snapshot: dict[str, Any]) -> str:
+        """Use the same bounded canonical encoding validated by the schema."""
+
+        return canonical_routing_json_bytes(snapshot).decode("utf-8")
 
     @staticmethod
     def run_response(run: AgentRun) -> AgentRunResponse:
@@ -422,23 +432,20 @@ class AgentWorkService:
 
     @staticmethod
     def _validate_assignment_actor(actor: AgentActor, purpose: str) -> None:
-        """Require an enabled role plus the scope needed to perform its purpose."""
-        if not actor.enabled:
-            raise ValueError("Assignment actor must be enabled")
-        if purpose == "execution":
-            if actor.role not in {"worker", "pm"} or not actor_has_scope(
-                actor, "work:execute"
-            ):
-                raise ValueError(
-                    "Execution assignments require a worker or PM actor with work:execute"
-                )
+        """Require authority before separate profile/model compatibility evidence."""
+
+        decision = evaluate_actor_authorization(
+            intent=purpose,
+            enabled=actor.enabled,
+            role=actor.role,
+            scopes=actor_scopes(actor),
+        )
+        if decision.authorized:
             return
-        if actor.role not in {"verifier", "pm"} or not actor_has_scope(
-            actor, "verification:write"
-        ):
-            raise ValueError(
-                "Verification assignments require a verifier or PM actor with verification:write"
-            )
+        raise ValueError(
+            "Assignment actor is not authorized: "
+            + ", ".join(decision.authority_blocker_codes)
+        )
 
     async def _validate_assignment_context(
         self,
@@ -606,7 +613,7 @@ class AgentWorkService:
             assigned_by_actor_id=principal.id if principal.id else None,
             reviewer_profile_id=data.reviewer_profile_id,
             task_version=task.version,
-            routing_snapshot=json.dumps(data.routing_snapshot, ensure_ascii=False, default=str),
+            routing_snapshot=self._serialize_routing_snapshot(data.routing_snapshot),
             reason=data.reason,
         )
         self.db.add(assignment)

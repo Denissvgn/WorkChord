@@ -9,6 +9,10 @@ from app.schemas.project import ProjectHealth, ProjectUpdateEntryResponse
 from app.schemas.request_source import RequestSourceLinkWithSourceResponse
 from app.schemas.task import TaskCreate, TaskResponse, TaskStatus, TaskUpdate
 from app.schemas.triage import TriageItemResponse
+from app.services.agent_routing_policy import (
+    assignment_intent,
+    validate_routing_packet_size,
+)
 from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
 
 
@@ -440,7 +444,17 @@ class AgentTaskAssignmentCreate(BaseModel):
         cls, value: dict[str, Any]
     ) -> dict[str, Any]:
         """Keep assignment routing evidence bounded in durable queue responses."""
-        return _validate_bounded_json(value, label="Assignment routing snapshot")
+        return validate_routing_packet_size(
+            value,
+            label="Assignment routing snapshot",
+        )
+
+    @model_validator(mode="after")
+    def validate_assignment_intent(self) -> "AgentTaskAssignmentCreate":
+        """Freeze the four supported purpose/queue-class combinations."""
+
+        assignment_intent(self.purpose, self.queue_class)
+        return self
 
 
 class AgentTaskAssignmentUpdate(BaseModel):

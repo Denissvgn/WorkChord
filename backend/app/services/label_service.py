@@ -18,6 +18,7 @@ from app.services.language_service import (
     entity_not_found_message,
     resolve_runtime_ui_language,
 )
+from app.services.agent_routing_policy import CAPABILITY_LABEL_SKILL_KEYS
 from app.sql_semantics import portable_contains
 
 
@@ -97,6 +98,14 @@ DEFAULT_LABEL_GROUP_DEFINITIONS: list[dict[str, Any]] = [
     },
 ]
 
+CAPABILITY_LABEL_DESCRIPTIONS = {
+    slug: (
+        "Readiness category only; exact routing requires one or more explicit "
+        f"profile skills: {', '.join(sorted(skill_keys))}."
+    )
+    for slug, skill_keys in CAPABILITY_LABEL_SKILL_KEYS.items()
+}
+
 
 class LabelService:
     """Service for label group and label CRUD plus built-in label seeding."""
@@ -164,7 +173,7 @@ class LabelService:
                     slug=slug,
                     name=name,
                     group_id=group.id,
-                    description=None,
+                    description=CAPABILITY_LABEL_DESCRIPTIONS.get(slug),
                     color=color,
                     sort_order=index * 10,
                 )
