@@ -34,9 +34,11 @@ Use this loop only when the live capability response advertises
 assessment, preview, model-bound assignment, and begin-evidence fields.
 
 1. Re-read the definition-ready leaf, current task version, capacity owner,
-   current typed assessment, policy version, dependencies, schedule, workload,
-   vacations, exact actor roster, and active model bindings.
-2. Reject a missing or stale assessment. Do not reuse an assessment from an
+   current typed assessment, bounded immutable assessment history, policy
+   version, dependencies, schedule, workload, vacations, exact actor roster,
+   and active model bindings.
+2. Reject a missing or stale assessment. Require exactly one current immutable
+   assessment for this task/policy version; do not reuse an assessment from an
    earlier task version or average away an advanced axis.
 3. Request a read-only routing preview for purpose `execution`. Preserve its
    preview ID, input digest, generation/expiry time, assessment ID/version,
@@ -71,10 +73,11 @@ assessment, preview, model-bound assignment, and begin-evidence fields.
 Discard the preview and start again after expiry or any task, assessment,
 dependency, capacity, vacation, actor policy/queue, binding, reviewer, purpose,
 or topology-membership change. On stale-candidate or digest conflict, refetch
-authoritative inputs and generate a fresh preview. Reassignment or any update
-that changes actor, binding, purpose, or reviewer also requires a new preview;
-queue-only reordering may reuse evidence only when the live policy explicitly
-permits it.
+authoritative inputs, read the assessment history, create a new assessment only
+when a new task version requires one, and generate a fresh preview.
+Reassignment or any update that changes actor, binding, purpose, or reviewer
+also requires a new preview; queue-only reordering may reuse evidence only when
+the live policy explicitly permits it.
 
 Low confidence is not a hard-blocker override. Clarify or seek supervised
 judgment when confidence is below the live policy threshold. If the model-aware

@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.4.0"
+CATALOG_VERSION = "1.5.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.6.1,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -154,6 +154,8 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "/api/agent/actors",
             "agent_list_actor_roster",
             "Read enabled secret-free dispatch targets.",
+            query_optional=("include_disabled",),
+            tool_optional=("include_disabled",),
         ),
         _assigned_work_operation(
             "model-catalog",
@@ -162,6 +164,8 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "/api/agent/model-catalog",
             "agent_list_model_catalog",
             "Read provider-neutral model capability declarations.",
+            query_optional=("include_disabled",),
+            tool_optional=("include_disabled",),
             required_feature=MODEL_AWARE_ROUTING_FEATURE,
         ),
         _assigned_work_operation(
@@ -173,6 +177,19 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "Read the current task-version-bound routing assessment.",
             path_required=("task_id",),
             tool_required=("task_id",),
+            required_feature=MODEL_AWARE_ROUTING_FEATURE,
+        ),
+        _assigned_work_operation(
+            "routing-assessment-history",
+            "PM",
+            "GET",
+            "/api/agent/planning/tasks/{task_id}/routing-assessments",
+            "agent_list_task_routing_assessments",
+            "Read bounded immutable assessment history newest first.",
+            path_required=("task_id",),
+            query_optional=("limit",),
+            tool_required=("task_id",),
+            tool_optional=("limit",),
             required_feature=MODEL_AWARE_ROUTING_FEATURE,
         ),
         _assigned_work_operation(
@@ -696,7 +713,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.4.0",
+        "version": "1.5.0",
         "required_features": [
             "agent-capabilities-v1",
             "actor-roster-v1",
@@ -734,7 +751,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.3.0",
+        "version": "1.4.0",
         "required_features": [
             "agent-capabilities-v1",
             "actor-task-assignments",

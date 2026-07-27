@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.4.0",
+  "catalog_version": "1.5.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,23 +8,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.4.0.tar.gz",
-          "sha256": "a3a7ecbc1d6d2dbc4d6d5e5fe821ac22bc1be736de76ec691235130ce18cae2d",
+          "path": "workchord-pm-1.5.0.tar.gz",
+          "sha256": "a3ff7d29d535873bcb7d1932b80d3277104445d882e47b775492e651d2c6ef0c",
           "size": 122908
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.4.0.zip",
-          "sha256": "006d082be6b0e9e3513fd48e20b032d5e1ac7bda0cb675d3155f5c323e9fba53",
-          "size": 115311
+          "path": "workchord-pm-1.5.0.zip",
+          "sha256": "b9139f1ef6095a89cabe81302b8939321f1f475e2b21661162e2f49cf6e3cda7",
+          "size": 116980
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "5f8e81184d589ec3cb00788b6730da51be323bdf3fac3b8990eed2d496e178d3",
-          "size": 9659
+          "sha256": "a8d1318b0d6181fd1962a92a74d928b0ac96b4a583e187f0ad9a65488d573f69",
+          "size": 9740
         },
         {
           "path": "agents/openai.yaml",
@@ -33,18 +33,18 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "da96cd58b81a2d666eb963c79a61c185e1032030a8af8e835a679501242922cd",
-          "size": 35452
+          "sha256": "5f8f1dcdcd19a1c50b0dddacc70efbecfb704e5142f5e17ac3efe81e60fae0c2",
+          "size": 35838
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "af7a1af0d722f524161e8a6d0867a85c3a71fa0e74c20fada8624f83699a105e",
-          "size": 16801
+          "sha256": "67f4720379aee59ca3ce473cf9fbd1dffaab182377a7fc4cf664d636b063a4de",
+          "size": 17021
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
-          "sha256": "24a84e5bd7812065d2c914db88a3a6f62f050eeb8e1fbece68c17253db782d14",
-          "size": 16546
+          "sha256": "c5519203e783a7345b8cd36c74719abc59e253a2b6f5df60cf6ed15d7f99d294",
+          "size": 16902
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -58,8 +58,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "8635c71614d231716be755b14880ea92cc8c3a1aea788079f395a9d454d2c120",
-          "size": 16131
+          "sha256": "f23648a141bb74ebf289fc09e6ed4bb599ff6a82f2780eb29894e6cb2a4a97bb",
+          "size": 16757
         }
       ],
       "license": "MIT",
@@ -101,22 +101,22 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.6.1,<2.0.0",
-      "version": "1.4.0"
+      "version": "1.5.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.3.0.tar.gz",
-          "sha256": "ae0c8c4699d7984c5460b29170d0e9fe1c8da7f9105c4c64a2d2ab0f581fa631",
+          "path": "workchord-worker-1.4.0.tar.gz",
+          "sha256": "ccd051240da762e29787c5a826ae933045997331b12a08a2b067a41bd31efd04",
           "size": 61463
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.3.0.zip",
-          "sha256": "72b47c36ad9802f00ef1121af17027ffd4eaf0dfe12b3464df47978b841ff65c",
-          "size": 54962
+          "path": "workchord-worker-1.4.0.zip",
+          "sha256": "62c011c335c62145523aca55174e12151df2a234c4c23d96b97dced58858b9ac",
+          "size": 55348
         }
       ],
       "entrypoint": "SKILL.md",
@@ -133,8 +133,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "a1ffb129b8e216e201fecb966344d8c48dc51ec79c4f9994ea425b9fffa4c7a2",
-          "size": 19206
+          "sha256": "c29c9e6638ffe1eab816f99234bc9831301b75de94e141354d7be50a69c3eddc",
+          "size": 19592
         },
         {
           "path": "references/claim-run-and-task-state.md",
@@ -186,8 +186,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.6.1,<2.0.0",
-      "version": "1.3.0"
+      "version": "1.4.0"
     }
   ],
-  "source_revision": "sha256:d09accade104755fa909d2789cca468b154347c890bcedbfab08e678a8afc4d3"
+  "source_revision": "sha256:0fa2acccc60a007a1573b0124154e3468a2b6067661ce900a10e10eba32f2759"
 }

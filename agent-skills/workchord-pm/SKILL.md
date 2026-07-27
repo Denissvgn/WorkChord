@@ -51,7 +51,7 @@ Select or create the accountable project, milestones or release target, calendar
 
 ### 3. Triage, Define, and Assess Work
 
-Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing is available, create a current five-axis difficulty and routing assessment before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
+Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing is available, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
 
 ### 4. Route, Assign, Order, and Schedule
 

@@ -203,14 +203,18 @@ skill mapping, binding, or tier. Low confidence is a reason to clarify,
 decompose, defer, or obtain supervised judgment; it is not permission to lower
 a hard minimum.
 
-When `model-aware-routing-v1` and its assessment operation are advertised,
-create or revise the typed assessment with the current task version,
-idempotency key, rationale, and correlation ID; then re-read it. A later task
-mutation makes that assessment stale and requires a new assessment. When the
-feature, live catalog, roster, or required metadata is absent, stop automated
-model-aware selection and use explicitly labeled supervised compatibility
-routing. The durable assigned-work lifecycle may still be used if its own
-feature set remains complete.
+When `model-aware-routing-v1` and its assessment operations are advertised,
+read the current state and bounded immutable history first. If the current task
+version has no assessment, create exactly one typed assessment with that
+version, idempotency key, rationale, and correlation ID; then re-read both
+surfaces. A second assessment for the same task/policy version is a conflict,
+not a revision mechanism. If requirements change, update the authoritative
+task brief through the audited planning contract, accept the resulting task
+version, and create a new assessment for that version. Any later task mutation
+makes the prior assessment stale. When the feature, live catalog, roster, or
+required metadata is absent, stop automated model-aware selection and use
+explicitly labeled supervised compatibility routing. The durable assigned-work
+lifecycle may still be used if its own feature set remains complete.
 
 ### Check representative cases
 
