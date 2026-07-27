@@ -29,6 +29,7 @@ from app.services.agent_service import (
     require_scope,
 )
 from app.services.agent_model_catalog_service import AgentModelConflictError
+from app.services.agent_routing_service import AgentRoutingConflictError
 from app.services.task_service import TaskVersionConflictError
 from app.services.triage_service import TriageConflictError
 
@@ -193,6 +194,12 @@ async def _authenticate_agent_key(db: Any, api_key: str) -> AgentActor:
 
 
 ScopeRequirement = Optional[str | tuple[str, ...]]
+ROUTING_READ_SCOPE_REQUIREMENT: tuple[str, ...] = (
+    "planning:read",
+    "planning:write",
+    "assignments:read",
+    "assignments:write",
+)
 
 
 def _skill_bundle_scope_requirement() -> ScopeRequirement:
@@ -227,7 +234,9 @@ async def _agent_context(required_scope: ScopeRequirement = None) -> AsyncIterat
 
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
-    if isinstance(exc, AgentModelConflictError):
+    if isinstance(exc, AgentRoutingConflictError):
+        payload = exc.detail()
+    elif isinstance(exc, AgentModelConflictError):
         payload = exc.detail()
     elif isinstance(exc, TaskVersionConflictError):
         payload = exc.detail()
@@ -271,6 +280,7 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
     except (
         MCPAuthError,
         MaintenanceModeError,
+        AgentRoutingConflictError,
         AgentModelConflictError,
         AgentConflictError,
         AgentPermissionError,
@@ -390,6 +400,74 @@ def create_mcp_server() -> FastMCP:
                 db,
                 actor,
                 binding_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_get_task_routing_assessment(
+        task_id: int,
+    ) -> dict[str, Any]:
+        """Read the current task-version-bound routing assessment."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.get_task_routing_assessment(
+                db,
+                actor,
+                task_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_list_task_routing_assessments(
+        task_id: int,
+        limit: int = 100,
+    ) -> dict[str, Any]:
+        """List bounded append-only routing-assessment history newest first."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.list_task_routing_assessments(
+                db,
+                actor,
+                task_id,
+                limit=limit,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_create_task_routing_assessment(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Append an audited assessment for the current task version."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.create_task_routing_assessment(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_preview_task_routing(
+        task_id: int,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Preview exact eligible actor/model bindings without mutation."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.preview_task_routing(
+                db,
+                actor,
+                task_id,
+                payload,
             ),
         )
 
@@ -2013,6 +2091,21 @@ def create_mcp_server() -> FastMCP:
         return await _json_resource(
             ("planning:read", "admin"),
             lambda db, actor: mcp_agent_tools.list_agent_model_catalog(db, actor),
+        )
+
+    @mcp.resource(
+        "workchord://agent/tasks/{task_id}/routing-assessment",
+        mime_type="application/json",
+    )
+    async def task_routing_assessment_resource(task_id: str) -> str:
+        """Current task-version-bound routing assessment resource."""
+        return await _json_resource(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.get_task_routing_assessment(
+                db,
+                actor,
+                int(task_id),
+            ),
         )
 
     @mcp.resource("workchord://agent/me/work", mime_type="application/json")

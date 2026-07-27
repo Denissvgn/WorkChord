@@ -604,6 +604,18 @@ class AgentRun(Base):
             "AND model_binding_revision >= 1)",
             name="ck_agent_runs_model_binding_pair",
         ),
+        CheckConstraint(
+            "model_trust_state IN "
+            "('matched', 'mismatch', 'unreported', 'unverifiable')",
+            name="ck_agent_runs_model_trust_state",
+        ),
+        CheckConstraint(
+            "(model_trust_state = 'matched' AND "
+            "model_match_basis IS NOT NULL AND "
+            "model_match_basis IN ('configured_alias', 'catalog_key')) OR "
+            "(model_trust_state <> 'matched' AND model_match_basis IS NULL)",
+            name="ck_agent_runs_model_match_basis",
+        ),
         Index(
             "uq_agent_runs_running_assignment",
             "assignment_id",
@@ -643,6 +655,15 @@ class AgentRun(Base):
     )
     resolved_model_id: Mapped[Optional[str]] = mapped_column(
         String(255), nullable=True
+    )
+    model_trust_state: Mapped[str] = mapped_column(
+        String(30),
+        default="unreported",
+        server_default="unreported",
+        nullable=False,
+    )
+    model_match_basis: Mapped[Optional[str]] = mapped_column(
+        String(40), nullable=True
     )
     model: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     tool_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)

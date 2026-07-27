@@ -12,6 +12,7 @@ SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
 AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     "agent-capabilities-v1",
     "actor-roster-v1",
+    MODEL_AWARE_ROUTING_FEATURE,
     "actor-task-assignments",
     "my-work-v1",
     "snapshot-pagination-v1",

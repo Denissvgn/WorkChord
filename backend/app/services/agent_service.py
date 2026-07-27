@@ -1026,6 +1026,9 @@ class AgentService:
             claim_generation=data.claim_generation,
             status="running",
             trace_id=data.trace_id,
+            model_trust_state=(
+                "unverifiable" if (data.model or "").strip() else "unreported"
+            ),
             model=data.model,
             tool_name=data.tool_name,
             run_metadata=json.dumps(data.metadata, ensure_ascii=False, default=str),

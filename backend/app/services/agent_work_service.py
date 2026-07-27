@@ -61,6 +61,9 @@ from app.schemas.agent import (
     AgentWorkSubmit,
     AgentWorkTerminal,
     AgentWorkTerminalResponse,
+    ModelAwareAgentTaskAssignmentCreate,
+    ModelAwareAgentTaskAssignmentUpdate,
+    ModelAwareAgentWorkBegin,
 )
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.services.agent_service import (
@@ -73,6 +76,7 @@ from app.services.agent_service import (
 from app.services.agent_routing_policy import (
     canonical_routing_json_bytes,
     evaluate_actor_authorization,
+    validate_routing_packet_size,
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.task_service import TaskService, TaskVersionConflictError
@@ -113,6 +117,63 @@ PENDING_RECOVERY_SIGNAL_TYPES = {
     "agent.work_recovery_required",
     "agent.recovery_requeued",
 }
+MODEL_FAILURE_CATEGORIES = frozenset(
+    {
+        "reasoning_insufficiency",
+        "context_insufficiency",
+        "modality_insufficiency",
+        "tool_insufficiency",
+    }
+)
+ROUTING_REVIEW_ORDER = {
+    "none": 0,
+    "standard": 1,
+    "independent": 2,
+    "specialist-independent": 3,
+}
+ROUTING_DECISION_LINEAGE_FIELDS = (
+    "schema_version",
+    "policy_version",
+    "task_id",
+    "task_version",
+    "assessment_id",
+    "assessment_task_version",
+    "assessment_band",
+    "assessment_confidence",
+    "assessment_reason_codes",
+    "purpose",
+    "actor_id",
+    "actor_revision",
+    "actor_queue_revision",
+    "profile_id",
+    "profile_revision",
+    "capacity_owner_id",
+    "capacity_owner_profile_id",
+    "model_binding_id",
+    "model_binding_revision",
+    "model_catalog_id",
+    "model_catalog_key",
+    "model_catalog_revision",
+    "configured_model_alias",
+    "selected_reasoning_tier",
+    "selected_context_tier",
+    "review_mode",
+    "reviewer_profile_id",
+    "routing_preview_id",
+    "routing_preview_digest",
+    "input_digest",
+    "preview_generated_at",
+    "preview_expires_at",
+    "selected_rank",
+    "adequacy_class",
+    "selection_reason_codes",
+    "eligible_candidate_summaries",
+    "exclusion_summaries",
+    "eligible_candidates_omitted",
+    "exclusions_omitted",
+    "confidence",
+    "trust_lineage",
+)
 
 
 def _json_loads(value: Optional[str], fallback: Any) -> Any:
@@ -260,6 +321,152 @@ class AgentWorkService:
         return canonical_routing_json_bytes(snapshot).decode("utf-8")
 
     @staticmethod
+    def _routing_snapshot(assignment: AgentTaskAssignment) -> dict[str, Any]:
+        snapshot = _json_loads(assignment.routing_snapshot, {})
+        return snapshot if isinstance(snapshot, dict) else {}
+
+    @classmethod
+    def _selection_pending(cls, assignment: AgentTaskAssignment) -> bool:
+        return cls._routing_snapshot(assignment).get("selection_pending") is True
+
+    @classmethod
+    def _is_model_aware_assignment(
+        cls,
+        assignment: AgentTaskAssignment,
+    ) -> bool:
+        snapshot = cls._routing_snapshot(assignment)
+        return bool(
+            assignment.model_binding_id is not None
+            or snapshot.get("schema_version")
+            in {
+                "routing-decision-snapshot-v1",
+                "routing-lineage-snapshot-v1",
+            }
+        )
+
+    @staticmethod
+    def _failure_category(evidence: Any) -> str:
+        """Recognize only explicit governed model-failure evidence."""
+
+        if not isinstance(evidence, dict):
+            return "non_model_or_unclassified"
+        candidates = (
+            evidence.get("routing_failure_category"),
+            evidence.get("failure_category"),
+            evidence.get("category"),
+        )
+        nested = evidence.get("model_failure")
+        if isinstance(nested, dict):
+            candidates += (nested.get("category"),)
+        for candidate in candidates:
+            normalized = str(candidate or "").strip().lower().replace("-", "_")
+            if normalized in MODEL_FAILURE_CATEGORIES:
+                return normalized
+        return "non_model_or_unclassified"
+
+    @classmethod
+    def _routing_lineage_snapshot(
+        cls,
+        *,
+        task: Task,
+        source_assignments: Iterable[AgentTaskAssignment],
+        transition: str,
+        provisional_actor_id: int,
+        reason: str,
+        evidence: Any = None,
+    ) -> dict[str, Any]:
+        """Build bounded pending-selection evidence without copying opaque payloads."""
+
+        decisions: list[dict[str, Any]] = []
+        reviewer_profile_ids: set[int] = set()
+        review_mode = "none"
+        policy_version = "model-aware-routing-v1"
+        ordered_sources = sorted(
+            source_assignments,
+            key=lambda item: (item.updated_at, item.id),
+            reverse=True,
+        )[:20]
+        for source in ordered_sources:
+            if source.reviewer_profile_id is not None:
+                reviewer_profile_ids.add(source.reviewer_profile_id)
+            snapshot = cls._routing_snapshot(source)
+            candidate_review_mode = str(snapshot.get("review_mode") or "none")
+            if ROUTING_REVIEW_ORDER.get(candidate_review_mode, -1) > (
+                ROUTING_REVIEW_ORDER[review_mode]
+            ):
+                review_mode = candidate_review_mode
+            snapshot_reviewer_id = snapshot.get("reviewer_profile_id")
+            if isinstance(snapshot_reviewer_id, int):
+                reviewer_profile_ids.add(snapshot_reviewer_id)
+            candidate_policy = snapshot.get("policy_version")
+            if isinstance(candidate_policy, str) and candidate_policy:
+                policy_version = candidate_policy
+            if snapshot.get("schema_version") != "routing-decision-snapshot-v1":
+                continue
+            decision = {
+                field: snapshot[field]
+                for field in ROUTING_DECISION_LINEAGE_FIELDS
+                if field in snapshot
+            }
+            eligible_summaries = list(
+                decision.get("eligible_candidate_summaries") or []
+            )
+            exclusion_summaries = list(
+                decision.get("exclusion_summaries") or []
+            )
+            decision["eligible_candidate_summaries"] = eligible_summaries[:5]
+            decision["exclusion_summaries"] = exclusion_summaries[:10]
+            decision["eligible_candidates_omitted"] = int(
+                decision.get("eligible_candidates_omitted") or 0
+            ) + max(len(eligible_summaries) - 5, 0)
+            decision["exclusions_omitted"] = int(
+                decision.get("exclusions_omitted") or 0
+            ) + max(len(exclusion_summaries) - 10, 0)
+            decision["source_assignment_id"] = source.id
+            decision["snapshot_sha256"] = hashlib.sha256(
+                canonical_routing_json_bytes(snapshot)
+            ).hexdigest()
+            decisions.append(decision)
+            if len(decisions) == 4:
+                break
+        category = cls._failure_category(evidence)
+        snapshot = {
+            "schema_version": "routing-lineage-snapshot-v1",
+            "policy_version": policy_version,
+            "selection_pending": True,
+            "task_id": task.id,
+            "task_version": task.version,
+            "purpose": "execution",
+            "queue_class": transition,
+            "provisional_actor_id": provisional_actor_id,
+            "source_assignment_ids": [item.id for item in ordered_sources],
+            "prior_decisions": decisions,
+            "review_floor": {
+                "review_mode": review_mode,
+                "reviewer_profile_ids": sorted(reviewer_profile_ids),
+                "independence_must_be_revalidated": (
+                    ROUTING_REVIEW_ORDER[review_mode]
+                    >= ROUTING_REVIEW_ORDER["independent"]
+                ),
+            },
+            "cause": {
+                "category": category,
+                "reason": reason[:2_000],
+            },
+            "model_tier_change": {
+                "eligible": category in MODEL_FAILURE_CATEGORIES,
+                "applied": False,
+                "reason": (
+                    "fresh_selection_required"
+                    if category in MODEL_FAILURE_CATEGORIES
+                    else "non_model_failure_no_escalation"
+                ),
+            },
+        }
+        validate_routing_packet_size(snapshot, label="Routing lineage snapshot")
+        return snapshot
+
+    @staticmethod
     def run_response(run: AgentRun) -> AgentRunResponse:
         return AgentRunResponse(
             id=run.id,
@@ -273,6 +480,8 @@ class AgentWorkService:
             model_binding_revision=run.model_binding_revision,
             configured_model_alias=run.configured_model_alias,
             resolved_model_id=run.resolved_model_id,
+            model_trust_state=run.model_trust_state,
+            model_match_basis=run.model_match_basis,
             model=run.model,
             tool_name=run.tool_name,
             metadata=_json_loads(run.run_metadata, {}),
@@ -674,7 +883,7 @@ class AgentWorkService:
     async def create_assignment(
         self,
         principal: AgentActor,
-        data: AgentTaskAssignmentCreate,
+        data: AgentTaskAssignmentCreate | ModelAwareAgentTaskAssignmentCreate,
         *,
         idempotency_key: Optional[str] = None,
         rationale: str,
@@ -684,6 +893,21 @@ class AgentWorkService:
         self._require_any_scope(principal, "assignments:write")
         idempotency_key = validate_idempotency_key(idempotency_key, required=True)
         assert idempotency_key is not None
+        if isinstance(data, AgentTaskAssignmentCreate):
+            from app.services.agent_routing_service import (
+                AgentRoutingConflictError,
+            )
+
+            raise AgentRoutingConflictError(
+                "model_aware_assignment_required",
+                "This server requires model-aware assignment creation",
+                task_id=data.task_id,
+                expected_task_version=data.expected_task_version,
+            )
+        from app.services.agent_routing_service import AgentRoutingService
+
+        routing_service = AgentRoutingService(self.db)
+        await routing_service.lock_selection_inputs(data.task_id)
         task = await self._lock_task(data.task_id)
         command, request_payload = self._audited_command_request(
             data,
@@ -702,7 +926,9 @@ class AgentWorkService:
         if replay:
             snapshot = replay.get("response")
             if snapshot is not None:
-                return AgentTaskAssignmentResponse.model_validate(snapshot)
+                response = AgentTaskAssignmentResponse.model_validate(snapshot)
+                await self.db.rollback()
+                return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
 
         if task is None:
@@ -767,6 +993,25 @@ class AgentWorkService:
         ):
             raise AgentConflictError("Task already has a live assignment for this purpose")
 
+        routing_validation = None
+        routing_snapshot = (
+            data.routing_snapshot
+            if isinstance(data, AgentTaskAssignmentCreate)
+            else None
+        )
+        if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
+            routing_validation = await routing_service.validate_assignment_selection(
+                task=task,
+                selected_actor=target,
+                data=data,
+                existing_assignment=None,
+                task_assignments=task_assignments,
+                now=utc_now(),
+                assignment_created_by_actor=principal,
+                selection_inputs_locked=True,
+            )
+            routing_snapshot = routing_validation.snapshot.model_dump(mode="json")
+        assert routing_snapshot is not None
         assignment = AgentTaskAssignment(
             task_id=task.id,
             actor_id=target.id,
@@ -777,9 +1022,23 @@ class AgentWorkService:
             queue_rank=data.queue_rank,
             not_before=data.not_before,
             assigned_by_actor_id=principal.id if principal.id else None,
-            reviewer_profile_id=data.reviewer_profile_id,
+            reviewer_profile_id=(
+                routing_validation.snapshot.reviewer_profile_id
+                if routing_validation is not None
+                else data.reviewer_profile_id
+            ),
             task_version=task.version,
-            routing_snapshot=self._serialize_routing_snapshot(data.routing_snapshot),
+            model_binding_id=(
+                routing_validation.binding.id
+                if routing_validation is not None
+                else None
+            ),
+            model_binding_revision=(
+                routing_validation.binding.revision
+                if routing_validation is not None
+                else None
+            ),
+            routing_snapshot=self._serialize_routing_snapshot(routing_snapshot),
             reason=data.reason,
         )
         self.db.add(assignment)
@@ -795,6 +1054,23 @@ class AgentWorkService:
                 "queue_class": assignment.queue_class,
                 "queue_rank": assignment.queue_rank,
                 "queue_revision": target.queue_revision,
+                "assessment_id": (
+                    routing_validation.assessment.id
+                    if routing_validation is not None
+                    else None
+                ),
+                "model_binding_id": assignment.model_binding_id,
+                "model_binding_revision": assignment.model_binding_revision,
+                "routing_preview_id": (
+                    routing_validation.preview.preview_id
+                    if routing_validation is not None
+                    else None
+                ),
+                "routing_reason_codes": (
+                    list(routing_validation.snapshot.selection_reason_codes)
+                    if routing_validation is not None
+                    else []
+                ),
                 "rationale": command.rationale,
             },
             actor_type="agent",
@@ -802,7 +1078,15 @@ class AgentWorkService:
             correlation_id=command.correlation_id,
             idempotency_key=idempotency_key,
         )
-        response = self.assignment_response(assignment)
+        response = self.assignment_response(
+            assignment,
+            model_binding=(
+                routing_validation.binding
+                if routing_validation is not None
+                else None
+            ),
+            binding_loaded=routing_validation is not None,
+        )
         await self._record_idempotency(
             principal,
             "assignment.create",
@@ -819,7 +1103,7 @@ class AgentWorkService:
         self,
         assignment_id: int,
         principal: AgentActor,
-        data: AgentTaskAssignmentUpdate,
+        data: AgentTaskAssignmentUpdate | ModelAwareAgentTaskAssignmentUpdate,
         *,
         idempotency_key: Optional[str] = None,
         rationale: str,
@@ -832,6 +1116,12 @@ class AgentWorkService:
         hint = await self._assignment_lock_hint(assignment_id)
         if hint is None:
             raise ValueError("Assignment not found")
+        routing_service = None
+        if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
+            from app.services.agent_routing_service import AgentRoutingService
+
+            routing_service = AgentRoutingService(self.db)
+            await routing_service.lock_selection_inputs(hint[0])
         task = await self._lock_task(hint[0])
         if task is None:
             raise AgentConflictError("Assigned task is missing")
@@ -871,7 +1161,9 @@ class AgentWorkService:
         if replay:
             snapshot = replay.get("response")
             if snapshot is not None:
-                return AgentTaskAssignmentResponse.model_validate(snapshot)
+                response = AgentTaskAssignmentResponse.model_validate(snapshot)
+                await self.db.rollback()
+                return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
         if assignment.state != "queued":
             raise AgentConflictError("Only queued assignments can be changed by PM control")
@@ -884,6 +1176,7 @@ class AgentWorkService:
                 f"current {current_actor.queue_revision}"
             )
         old_actor = current_actor
+        selected_actor = current_actor
         if data.actor_id is not None and data.actor_id != assignment.actor_id:
             replacement = locked_actors.get(data.actor_id)
             if replacement is None:
@@ -899,20 +1192,76 @@ class AgentWorkService:
                     raise AgentConflictError(
                         "Verification actor must be independent from the implementation actor"
                     )
-            assignment.actor_id = replacement.id
-            replacement.queue_revision += 1
-            current_actor = replacement
-        if data.queue_rank is not None:
-            assignment.queue_rank = data.queue_rank
-        if "not_before" in data.model_fields_set:
-            assignment.not_before = data.not_before
+            selected_actor = replacement
         if "reviewer_profile_id" in data.model_fields_set:
             await self._validate_assignment_context(
                 task,
                 team_member_id=assignment.team_member_id,
                 reviewer_profile_id=data.reviewer_profile_id,
             )
+
+        routing_validation = None
+        if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
+            assert routing_service is not None
+            routing_validation = await routing_service.validate_assignment_selection(
+                task=task,
+                selected_actor=selected_actor,
+                data=data,
+                existing_assignment=assignment,
+                task_assignments=task_assignments,
+                now=utc_now(),
+                assignment_created_by_actor=principal,
+                selection_inputs_locked=True,
+            )
+        else:
+            changed_routing_fields: set[str] = set()
+            if (
+                "actor_id" in data.model_fields_set
+                and data.actor_id != assignment.actor_id
+            ):
+                changed_routing_fields.add("actor_id")
+            if (
+                "reviewer_profile_id" in data.model_fields_set
+                and data.reviewer_profile_id != assignment.reviewer_profile_id
+            ):
+                changed_routing_fields.add("reviewer_profile_id")
+            if (
+                "not_before" in data.model_fields_set
+                and data.not_before != assignment.not_before
+            ):
+                changed_routing_fields.add("not_before")
+            if changed_routing_fields:
+                from app.services.agent_routing_service import (
+                    AgentRoutingConflictError,
+                )
+
+                raise AgentRoutingConflictError(
+                    "model_aware_assignment_update_required",
+                    "A fresh model-aware routing preview is required to change "
+                    + ", ".join(sorted(changed_routing_fields)),
+                    assignment_id=assignment.id,
+                    changed_fields=sorted(changed_routing_fields),
+                )
+
+        if selected_actor.id != assignment.actor_id:
+            assignment.actor_id = selected_actor.id
+            selected_actor.queue_revision += 1
+            current_actor = selected_actor
+        if data.queue_rank is not None:
+            assignment.queue_rank = data.queue_rank
+        if "not_before" in data.model_fields_set:
+            assignment.not_before = data.not_before
+        if "reviewer_profile_id" in data.model_fields_set:
             assignment.reviewer_profile_id = data.reviewer_profile_id
+        if routing_validation is not None:
+            assignment.reviewer_profile_id = (
+                routing_validation.snapshot.reviewer_profile_id
+            )
+            assignment.model_binding_id = routing_validation.binding.id
+            assignment.model_binding_revision = routing_validation.binding.revision
+            assignment.routing_snapshot = self._serialize_routing_snapshot(
+                routing_validation.snapshot.model_dump(mode="json")
+            )
         if data.state is not None:
             assignment.state = data.state
         if "reason" in data.model_fields_set:
@@ -928,6 +1277,23 @@ class AgentWorkService:
                 "queue_rank": assignment.queue_rank,
                 "queue_revision": current_actor.queue_revision,
                 "reason": assignment.reason,
+                "assessment_id": (
+                    routing_validation.assessment.id
+                    if routing_validation is not None
+                    else None
+                ),
+                "model_binding_id": assignment.model_binding_id,
+                "model_binding_revision": assignment.model_binding_revision,
+                "routing_preview_id": (
+                    routing_validation.preview.preview_id
+                    if routing_validation is not None
+                    else None
+                ),
+                "routing_reason_codes": (
+                    list(routing_validation.snapshot.selection_reason_codes)
+                    if routing_validation is not None
+                    else []
+                ),
                 "rationale": command.rationale,
             },
             actor_type="agent",
@@ -935,7 +1301,15 @@ class AgentWorkService:
             correlation_id=command.correlation_id,
             idempotency_key=idempotency_key,
         )
-        response = self.assignment_response(assignment)
+        response = self.assignment_response(
+            assignment,
+            model_binding=(
+                routing_validation.binding
+                if routing_validation is not None
+                else None
+            ),
+            binding_loaded=routing_validation is not None,
+        )
         await self._record_idempotency(
             principal,
             "assignment.update",
@@ -1272,7 +1646,7 @@ class AgentWorkService:
     async def begin(
         self,
         actor: AgentActor,
-        data: AgentWorkBegin,
+        data: AgentWorkBegin | ModelAwareAgentWorkBegin,
         *,
         idempotency_key: str,
     ) -> AgentWorkBeginResponse:
@@ -1319,6 +1693,113 @@ class AgentWorkService:
             raise AgentConflictError(
                 f"Queue revision conflict: expected {data.queue_revision}, current {actor.queue_revision}"
             )
+        from app.services.agent_routing_service import AgentRoutingConflictError
+
+        model_aware_request = isinstance(data, ModelAwareAgentWorkBegin)
+        model_aware_assignment = self._is_model_aware_assignment(assignment)
+        if self._selection_pending(assignment):
+            raise AgentRoutingConflictError(
+                "routing_selection_pending",
+                "A fresh routing preview and model-aware assignment update are required",
+                assignment_id=assignment.id,
+            )
+        if not model_aware_request:
+            raise AgentRoutingConflictError(
+                "model_aware_begin_required",
+                "This server requires binding revision and observed model evidence",
+                assignment_id=assignment.id,
+            )
+        if model_aware_request and not model_aware_assignment:
+            raise AgentRoutingConflictError(
+                "model_aware_assignment_required",
+                "Model-aware begin cannot claim a legacy assignment",
+                assignment_id=assignment.id,
+            )
+
+        selected_binding: AgentModelBinding | None = None
+        configured_model_alias: str | None = None
+        resolved_model_id: str | None = None
+        model_match_basis: str | None = None
+        if model_aware_request:
+            assert isinstance(data, ModelAwareAgentWorkBegin)
+            binding_result = await self.db.execute(
+                select(AgentModelBinding)
+                .options(selectinload(AgentModelBinding.model_catalog))
+                .where(AgentModelBinding.id == data.model_binding_id)
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+            selected_binding = binding_result.scalar_one_or_none()
+            snapshot = self._routing_snapshot(assignment)
+            stale_reasons: list[str] = []
+            if data.model_binding_id != assignment.model_binding_id:
+                stale_reasons.append("assignment_model_binding_id_mismatch")
+            if data.model_binding_revision != assignment.model_binding_revision:
+                stale_reasons.append("assignment_model_binding_revision_mismatch")
+            if selected_binding is None:
+                stale_reasons.append("model_binding_missing")
+            else:
+                catalog = selected_binding.model_catalog
+                if selected_binding.actor_id != actor.id:
+                    stale_reasons.append("model_binding_actor_mismatch")
+                if not selected_binding.enabled:
+                    stale_reasons.append("model_binding_disabled")
+                if selected_binding.revision != data.model_binding_revision:
+                    stale_reasons.append("model_binding_revision_mismatch")
+                if catalog is None or not catalog.enabled:
+                    stale_reasons.append("model_catalog_disabled")
+                if snapshot.get("schema_version") != "routing-decision-snapshot-v1":
+                    stale_reasons.append("routing_snapshot_invalid")
+                if snapshot.get("actor_id") != actor.id:
+                    stale_reasons.append("routing_snapshot_actor_mismatch")
+                if snapshot.get("model_binding_id") != selected_binding.id:
+                    stale_reasons.append("routing_snapshot_binding_mismatch")
+                if (
+                    snapshot.get("model_binding_revision")
+                    != selected_binding.revision
+                ):
+                    stale_reasons.append("routing_snapshot_binding_revision_mismatch")
+                if catalog is not None:
+                    configured_model_alias = catalog.configured_model_alias
+                    if snapshot.get("model_catalog_id") != catalog.id:
+                        stale_reasons.append("routing_snapshot_catalog_mismatch")
+                    if snapshot.get("model_catalog_key") != catalog.key:
+                        stale_reasons.append("routing_snapshot_catalog_key_mismatch")
+                    if (
+                        snapshot.get("model_catalog_revision")
+                        != catalog.revision
+                    ):
+                        stale_reasons.append(
+                            "routing_snapshot_catalog_revision_mismatch"
+                        )
+                    if (
+                        snapshot.get("configured_model_alias")
+                        != configured_model_alias
+                    ):
+                        stale_reasons.append("routing_snapshot_alias_mismatch")
+            if stale_reasons:
+                raise AgentRoutingConflictError(
+                    "model_binding_stale",
+                    "The selected model binding no longer matches the assignment evidence",
+                    assignment_id=assignment.id,
+                    stale_reasons=sorted(set(stale_reasons)),
+                )
+            assert selected_binding is not None
+            assert selected_binding.model_catalog is not None
+            assert configured_model_alias is not None
+            resolved_model_id = data.resolved_model_id
+            if resolved_model_id == configured_model_alias:
+                model_match_basis = "configured_alias"
+            elif resolved_model_id == selected_binding.model_catalog.key:
+                model_match_basis = "catalog_key"
+            else:
+                raise AgentRoutingConflictError(
+                    "resolved_model_mismatch",
+                    "The observed model does not match the selected configured alias or catalog key",
+                    assignment_id=assignment.id,
+                    model_binding_id=selected_binding.id,
+                    observed_model=resolved_model_id,
+                )
         if await self._assignment_count(actor.id, "accepted") >= actor.max_parallel_work:
             raise AgentConflictError("Actor has reached max_parallel_work")
         decision = await self.get_work(actor, limit=1)
@@ -1368,7 +1849,27 @@ class AgentWorkService:
             claim_generation=task.claim_generation,
             status="running",
             trace_id=data.trace_id,
-            model=data.model,
+            model_binding_id=(
+                selected_binding.id if selected_binding is not None else None
+            ),
+            model_binding_revision=(
+                selected_binding.revision if selected_binding is not None else None
+            ),
+            configured_model_alias=configured_model_alias,
+            resolved_model_id=resolved_model_id,
+            model_trust_state=(
+                "matched"
+                if model_aware_request
+                else "unverifiable"
+                if (data.model or "").strip()
+                else "unreported"
+            ),
+            model_match_basis=model_match_basis,
+            model=(
+                resolved_model_id
+                if model_aware_request
+                else data.model
+            ),
             tool_name=data.tool_name,
             run_metadata=json.dumps(data.metadata, ensure_ascii=False, default=str),
             artifact_links="[]",
@@ -1378,7 +1879,11 @@ class AgentWorkService:
         self.db.add(run)
         await self.db.flush()
         response = AgentWorkBeginResponse(
-            assignment=self.assignment_response(assignment),
+            assignment=self.assignment_response(
+                assignment,
+                model_binding=selected_binding,
+                binding_loaded=model_aware_request,
+            ),
             task=self.task_service.task_to_response(task),
             run=self.run_response(run),
             claim_id=task.claim_id,
@@ -1396,6 +1901,18 @@ class AgentWorkService:
                 "claim_generation": task.claim_generation,
                 "claim_expires_at": task.claim_expires_at.isoformat(),
                 "task_version": task.version,
+                "model_binding_id": run.model_binding_id,
+                "model_binding_revision": run.model_binding_revision,
+                "model_trust_state": run.model_trust_state,
+                "model_match_basis": run.model_match_basis,
+                "model_evidence_source": (
+                    "worker_report"
+                    if model_aware_request
+                    else "legacy_report"
+                    if run.model_trust_state == "unverifiable"
+                    else "unreported"
+                ),
+                "model_attested": False,
             },
             actor_type="agent",
             actor_id=actor.id,
@@ -1824,8 +2341,17 @@ class AgentWorkService:
         assignment.task_version = task.version
         assignment_actor.queue_revision += 1
         rework: Optional[AgentTaskAssignment] = None
+        rework_snapshot: dict[str, Any] | None = None
         if data.verdict == "reject":
             assert rework_worker is not None
+            rework_snapshot = self._routing_lineage_snapshot(
+                task=task,
+                source_assignments=task_assignments,
+                transition="rework",
+                provisional_actor_id=rework_worker.id,
+                reason=data.reason or "Verification rejected",
+                evidence=data.evidence,
+            )
             rework = AgentTaskAssignment(
                 task_id=task.id,
                 actor_id=rework_worker.id,
@@ -1836,7 +2362,9 @@ class AgentWorkService:
                 queue_rank=data.rework_queue_rank,
                 assigned_by_actor_id=actor.id,
                 task_version=task.version,
-                routing_snapshot="{}",
+                routing_snapshot=self._serialize_routing_snapshot(
+                    rework_snapshot
+                ),
                 reason=data.reason or "Verification rejected",
             )
             self.db.add(rework)
@@ -1856,6 +2384,21 @@ class AgentWorkService:
                 "reason": data.reason,
                 "evidence": data.evidence,
                 "rework_assignment_id": rework.id if rework else None,
+                "routing_selection_pending": (
+                    rework_snapshot is not None
+                ),
+                "routing_lineage_digest": (
+                    hashlib.sha256(
+                        canonical_routing_json_bytes(rework_snapshot)
+                    ).hexdigest()
+                    if rework_snapshot is not None
+                    else None
+                ),
+                "routing_failure_category": (
+                    rework_snapshot["cause"]["category"]
+                    if rework_snapshot is not None
+                    else None
+                ),
                 "task_version": task.version,
                 "rationale": command.rationale,
             },
@@ -2263,10 +2806,12 @@ class AgentWorkService:
             raise ValueError("Recovery actor must be an enabled worker or PM")
         self._validate_assignment_actor(target, "execution")
 
-        live_assignments = await self._lock_task_assignments(
-            task.id,
-            states=LIVE_ASSIGNMENT_STATES,
-        )
+        task_assignments = await self._lock_task_assignments(task.id)
+        live_assignments = [
+            item
+            for item in task_assignments
+            if item.state in LIVE_ASSIGNMENT_STATES
+        ]
         if any(item.actor_id not in locked_actors for item in live_assignments):
             raise AgentConflictError(
                 "Recovery ownership changed while acquiring canonical row locks"
@@ -2403,6 +2948,32 @@ class AgentWorkService:
         task.claimed_by = None
         task.claim_expires_at = None
         task.claim_id = None
+        recovery_evidence_result = await self.db.execute(
+            select(TaskEvent.payload)
+            .where(
+                TaskEvent.task_id == task.id,
+                TaskEvent.event_type == "agent.work_recovery_required",
+            )
+            .order_by(TaskEvent.created_at.desc(), TaskEvent.id.desc())
+            .limit(1)
+        )
+        recovery_event_payload = _json_loads(
+            recovery_evidence_result.scalar_one_or_none(),
+            {},
+        )
+        recovery_evidence = (
+            recovery_event_payload.get("evidence", {})
+            if isinstance(recovery_event_payload, dict)
+            else {}
+        )
+        recovery_snapshot = self._routing_lineage_snapshot(
+            task=task,
+            source_assignments=task_assignments,
+            transition="recovery",
+            provisional_actor_id=target.id,
+            reason=data.reason,
+            evidence=recovery_evidence,
+        )
         recovery_assignment = AgentTaskAssignment(
             task_id=task.id,
             actor_id=target.id,
@@ -2413,7 +2984,9 @@ class AgentWorkService:
             queue_rank=data.queue_rank,
             assigned_by_actor_id=principal.id,
             task_version=task.version,
-            routing_snapshot="{}",
+            routing_snapshot=self._serialize_routing_snapshot(
+                recovery_snapshot
+            ),
             reason=data.reason,
         )
         self.db.add(recovery_assignment)
@@ -2439,6 +3012,13 @@ class AgentWorkService:
                 "actor_id": target.id,
                 "task_version": task.version,
                 "reason": data.reason,
+                "routing_selection_pending": True,
+                "routing_lineage_digest": hashlib.sha256(
+                    canonical_routing_json_bytes(recovery_snapshot)
+                ).hexdigest(),
+                "routing_failure_category": recovery_snapshot["cause"][
+                    "category"
+                ],
                 "rationale": command.rationale,
             },
             actor_type="agent",
@@ -2698,6 +3278,8 @@ class AgentWorkService:
         blockers: list[str] = []
         if assignment is None:
             return ["assignment_missing"]
+        if self._selection_pending(assignment):
+            blockers.append("routing_selection_pending")
         if assignment.task_version != task.version:
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
@@ -2711,6 +3293,27 @@ class AgentWorkService:
             blockers.append("assignment_not_queued_execution")
         if assignment.not_before is not None and as_utc(assignment.not_before) > as_utc(now):
             blockers.append("not_before_future")
+        if assignment.model_binding_id is not None:
+            binding_result = await self.db.execute(
+                select(AgentModelBinding)
+                .options(selectinload(AgentModelBinding.model_catalog))
+                .where(AgentModelBinding.id == assignment.model_binding_id)
+            )
+            binding = binding_result.scalar_one_or_none()
+            if binding is None:
+                blockers.append("model_binding_missing")
+            else:
+                if binding.actor_id != assignment.actor_id:
+                    blockers.append("model_binding_actor_mismatch")
+                if not binding.enabled:
+                    blockers.append("model_binding_disabled")
+                if (
+                    binding.model_catalog is None
+                    or not binding.model_catalog.enabled
+                ):
+                    blockers.append("model_catalog_disabled")
+                if assignment.model_binding_revision != binding.revision:
+                    blockers.append("model_binding_revision_mismatch")
         expected_status = (
             TaskStatus.PLANNED.value
             if assignment.queue_class == "normal"
@@ -2981,6 +3584,32 @@ class AgentWorkService:
             and run.task_id == task.id
             and run.status == run_data.get("status") == "running"
             and run.claim_generation == task.claim_generation
+            and (
+                "model_binding_id" not in run_data
+                or run.model_binding_id == run_data.get("model_binding_id")
+            )
+            and (
+                "model_binding_revision" not in run_data
+                or run.model_binding_revision
+                == run_data.get("model_binding_revision")
+            )
+            and (
+                "configured_model_alias" not in run_data
+                or run.configured_model_alias
+                == run_data.get("configured_model_alias")
+            )
+            and (
+                "resolved_model_id" not in run_data
+                or run.resolved_model_id == run_data.get("resolved_model_id")
+            )
+            and (
+                "model_trust_state" not in run_data
+                or run.model_trust_state == run_data.get("model_trust_state")
+            )
+            and (
+                "model_match_basis" not in run_data
+                or run.model_match_basis == run_data.get("model_match_basis")
+            )
             and actor.queue_revision == queue_revision
             and secrets.compare_digest(
                 hashlib.sha256(current_claim.encode("utf-8")).hexdigest(),

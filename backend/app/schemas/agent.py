@@ -412,6 +412,21 @@ class AgentRunResponse(BaseModel):
     model_binding_revision: Optional[int] = None
     configured_model_alias: Optional[str] = None
     resolved_model_id: Optional[str] = None
+    model_trust_state: Literal[
+        "matched",
+        "mismatch",
+        "unreported",
+        "unverifiable",
+    ] = Field(
+        default="unreported",
+        description=(
+            "Configured-versus-reported comparison only; matched worker "
+            "self-report is not launcher attestation."
+        ),
+    )
+    model_match_basis: Optional[
+        Literal["configured_alias", "catalog_key"]
+    ] = None
     model: Optional[str] = None
     tool_name: Optional[str] = None
     metadata: dict[str, Any]
@@ -505,6 +520,51 @@ class AgentTaskAssignmentCreate(BaseModel):
         return self
 
 
+class ModelAwareAgentTaskAssignmentCreate(BaseModel):
+    """PM command to dispatch one preview-selected actor/model binding."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    task_id: int = Field(..., ge=1)
+    actor_id: int = Field(..., ge=1)
+    expected_task_version: int = Field(..., ge=1)
+    purpose: AgentAssignmentPurpose
+    assessment_id: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    routing_preview_id: str = Field(..., min_length=1, max_length=255)
+    routing_preview_digest: str = Field(..., min_length=64, max_length=64)
+    team_member_id: Optional[int] = Field(default=None, ge=1)
+    reviewer_profile_id: Optional[int] = Field(default=None, ge=1)
+    queue_class: AgentAssignmentQueueClass = "normal"
+    queue_rank: int = Field(default=1000, ge=0)
+    not_before: Optional[datetime] = None
+    reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
+
+    @field_validator("routing_preview_id")
+    @classmethod
+    def normalize_routing_preview_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("routing_preview_id must not be blank")
+        return normalized
+
+    @field_validator("routing_preview_digest")
+    @classmethod
+    def normalize_routing_preview_digest(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(r"[a-f0-9]{64}", normalized):
+            raise ValueError("routing_preview_digest must be a SHA-256 digest")
+        return normalized
+
+    @model_validator(mode="after")
+    def validate_assignment_intent(
+        self,
+    ) -> "ModelAwareAgentTaskAssignmentCreate":
+        assignment_intent(self.purpose, self.queue_class)
+        return self
+
+
 class AgentTaskAssignmentUpdate(BaseModel):
     """PM command to reorder, reassign, or cancel a queued assignment."""
     model_config = ConfigDict(extra="forbid")
@@ -517,6 +577,41 @@ class AgentTaskAssignmentUpdate(BaseModel):
     state: Optional[Literal["queued", "cancelled"]] = None
     reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
     expected_queue_revision: int = Field(..., ge=1)
+
+
+class ModelAwareAgentTaskAssignmentUpdate(BaseModel):
+    """PM command to reroute queued work through a fresh routing preview."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    expected_queue_revision: int = Field(..., ge=1)
+    assessment_id: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    routing_preview_id: str = Field(..., min_length=1, max_length=255)
+    routing_preview_digest: str = Field(..., min_length=64, max_length=64)
+    actor_id: Optional[int] = Field(default=None, ge=1)
+    reviewer_profile_id: Optional[int] = Field(default=None, ge=1)
+    queue_rank: Optional[int] = Field(default=None, ge=0)
+    not_before: Optional[datetime] = None
+    state: Optional[Literal["queued", "cancelled"]] = None
+    reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
+
+    @field_validator("routing_preview_id")
+    @classmethod
+    def normalize_routing_preview_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("routing_preview_id must not be blank")
+        return normalized
+
+    @field_validator("routing_preview_digest")
+    @classmethod
+    def normalize_routing_preview_digest(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(r"[a-f0-9]{64}", normalized):
+            raise ValueError("routing_preview_digest must be a SHA-256 digest")
+        return normalized
 
 
 class AgentTaskAssignmentResponse(BaseModel):
@@ -707,6 +802,37 @@ class AgentWorkBegin(BaseModel):
     metadata: dict[str, Any] = Field(
         default_factory=dict, max_length=MAX_AGENT_JSON_FIELDS
     )
+
+    @field_validator("metadata")
+    @classmethod
+    def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_bounded_json(value, label="Work metadata")
+
+
+class ModelAwareAgentWorkBegin(BaseModel):
+    """Atomically begin only the model binding selected by routing."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    assignment_id: int = Field(..., ge=1)
+    queue_revision: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    resolved_model_id: str = Field(..., min_length=1, max_length=255)
+    lease_seconds: int = Field(default=3600, ge=60, le=86400)
+    trace_id: Optional[str] = Field(default=None, max_length=255)
+    tool_name: Optional[str] = Field(default=None, max_length=255)
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, max_length=MAX_AGENT_JSON_FIELDS
+    )
+
+    @field_validator("resolved_model_id")
+    @classmethod
+    def normalize_resolved_model_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("resolved_model_id must not be blank")
+        return normalized
 
     @field_validator("metadata")
     @classmethod

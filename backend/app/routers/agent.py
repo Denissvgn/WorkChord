@@ -45,6 +45,9 @@ from app.schemas.agent import (
     AgentWorkSubmit,
     AgentWorkTerminal,
     AgentWorkTerminalResponse,
+    ModelAwareAgentTaskAssignmentCreate,
+    ModelAwareAgentTaskAssignmentUpdate,
+    ModelAwareAgentWorkBegin,
     TaskClaimRequest,
     TaskClaimResponse,
     TaskEventCreate,
@@ -56,6 +59,10 @@ from app.schemas.agent import (
 )
 from app.schemas.common import MessageResponse
 from app.schemas.agent_skill_bundle import SkillBundleCatalogResponse
+from app.schemas.agent_routing import (
+    AgentRoutingPreviewCreate,
+    AgentRoutingPreviewResponse,
+)
 from app.schemas.task import TaskResponse
 from app.utils.time import utc_now
 from app.services.agent_service import (
@@ -67,6 +74,10 @@ from app.services.agent_service import (
     require_scope,
 )
 from app.services.agent_work_service import AgentWorkService
+from app.services.agent_routing_service import (
+    AgentRoutingConflictError,
+    AgentRoutingService,
+)
 from app.services.agent_skill_bundle_service import (
     AgentSkillBundleService,
     SkillBundleArtifactError,
@@ -104,6 +115,13 @@ async def get_agent_work_service(
 ) -> AgentWorkService:
     """Dependency for durable assignment and worker lifecycle operations."""
     return AgentWorkService(db)
+
+
+async def get_agent_routing_service(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> AgentRoutingService:
+    """Dependency for deterministic model-aware routing operations."""
+    return AgentRoutingService(db)
 
 
 async def get_agent_actor(
@@ -202,6 +220,8 @@ def _handle_agent_error(exc: Exception, *, structured: bool = False) -> NoReturn
             else str(exc)
         )
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
+    if isinstance(exc, AgentRoutingConflictError):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
     if isinstance(exc, TaskVersionConflictError):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
     if isinstance(exc, AgentConflictError):
@@ -211,6 +231,13 @@ def _handle_agent_error(exc: Exception, *, structured: bool = False) -> NoReturn
             else str(exc)
         )
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
+    if isinstance(exc, LookupError):
+        detail = (
+            {"code": "agent_resource_not_found", "message": str(exc)}
+            if structured
+            else str(exc)
+        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
     if isinstance(exc, ValueError):
         detail = (
             {"code": "agent_validation_error", "message": str(exc)}
@@ -392,6 +419,7 @@ async def update_agent_actor(
             "enabled",
             "role",
             "profile_id",
+            "scopes",
             "work_policy",
             "max_parallel_work",
         }
@@ -412,12 +440,29 @@ async def update_agent_actor(
 
 
 @router.post(
+    "/agent/tasks/{task_id}/routing-preview",
+    response_model=AgentRoutingPreviewResponse,
+)
+async def preview_task_routing(
+    task_id: int,
+    data: AgentRoutingPreviewCreate,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)],
+):
+    """Preview exact eligible actor/model-binding candidates without mutation."""
+    try:
+        return await service.preview_task_routing(task_id, actor, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post(
     "/agent/assignments",
     response_model=AgentTaskAssignmentResponse,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_agent_assignment(
-    data: AgentTaskAssignmentCreate,
+    data: ModelAwareAgentTaskAssignmentCreate | AgentTaskAssignmentCreate,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
     idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
@@ -470,7 +515,7 @@ async def list_agent_assignments(
 )
 async def update_agent_assignment(
     assignment_id: int,
-    data: AgentTaskAssignmentUpdate,
+    data: ModelAwareAgentTaskAssignmentUpdate | AgentTaskAssignmentUpdate,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
     idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
@@ -600,7 +645,7 @@ async def get_agent_task_context(
 
 @router.post("/agent/me/work/begin", response_model=AgentWorkBeginResponse)
 async def begin_my_agent_work(
-    data: AgentWorkBegin,
+    data: ModelAwareAgentWorkBegin | AgentWorkBegin,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
     idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
@@ -998,6 +1043,8 @@ def _run_response(service: AgentService, run) -> AgentRunResponse:
         model_binding_revision=run.model_binding_revision,
         configured_model_alias=run.configured_model_alias,
         resolved_model_id=run.resolved_model_id,
+        model_trust_state=run.model_trust_state,
+        model_match_basis=run.model_match_basis,
         model=run.model,
         tool_name=run.tool_name,
         metadata=service.event_to_payload(run.run_metadata),
@@ -1036,6 +1083,12 @@ def _run_detail_response(service: AgentService, run) -> AgentRunDetailResponse:
         claim_generation=run.claim_generation,
         status=run.status,
         trace_id=run.trace_id,
+        model_binding_id=run.model_binding_id,
+        model_binding_revision=run.model_binding_revision,
+        configured_model_alias=run.configured_model_alias,
+        resolved_model_id=run.resolved_model_id,
+        model_trust_state=run.model_trust_state,
+        model_match_basis=run.model_match_basis,
         model=run.model,
         tool_name=run.tool_name,
         metadata=service.event_to_payload(run.run_metadata),

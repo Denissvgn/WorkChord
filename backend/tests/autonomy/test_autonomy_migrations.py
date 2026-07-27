@@ -58,7 +58,7 @@ def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config
         with engine.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260719_0033"
+            ).scalar_one() == "20260727_0034"
     finally:
         engine.dispose()
 
@@ -77,7 +77,7 @@ def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config
         with upgraded.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260719_0033"
+            ).scalar_one() == "20260727_0034"
     finally:
         upgraded.dispose()
 
@@ -108,4 +108,4 @@ def test_autonomy_projection_postgresql_ddl_preserves_fences() -> None:
 @pytest.mark.contract
 def test_autonomy_migration_chain_has_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260719_0033"]
+    assert script.get_heads() == ["20260727_0034"]

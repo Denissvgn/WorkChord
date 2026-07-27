@@ -167,13 +167,13 @@ def test_model_aware_operation_contract_is_feature_gated() -> None:
 
 
 @pytest.mark.contract
-def test_server_does_not_advertise_incomplete_model_aware_feature() -> None:
+def test_server_advertises_complete_model_aware_feature() -> None:
     features = agent_contract_features(include_skill_bundles=True)
 
     assert agent_router.agent_contract_features is agent_contract_features
     assert mcp_agent_tools.agent_contract_features is agent_contract_features
     assert build_agent_skills.MODEL_AWARE_ROUTING_FEATURE == MODEL_AWARE_ROUTING_FEATURE
-    assert MODEL_AWARE_ROUTING_FEATURE not in features
+    assert MODEL_AWARE_ROUTING_FEATURE in features
     assert "skill-bundles-v1" in features
     assert len(features) == len(set(features))
 

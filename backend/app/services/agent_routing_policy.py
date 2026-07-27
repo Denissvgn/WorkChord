@@ -18,6 +18,12 @@ from typing import Any, Iterable, Mapping
 ROUTING_POLICY_VERSION = "model-aware-routing-v1"
 MAX_ROUTING_PACKET_BYTES = 32_768
 MAX_ROUTING_SNAPSHOT_BYTES = MAX_ROUTING_PACKET_BYTES
+MIN_ROUTING_ASSESSMENT_CONFIDENCE = 0.60
+ROUTING_PREVIEW_TTL_SECONDS = 300
+MAX_ROUTING_ELIGIBLE_CANDIDATES = 25
+MAX_ROUTING_EXCLUSIONS = 50
+# Keep the shorter name as the shared service/schema boundary.
+MAX_ROUTING_CANDIDATES = MAX_ROUTING_ELIGIBLE_CANDIDATES
 
 
 class ReasoningTier(IntEnum):
@@ -106,14 +112,24 @@ class AssignmentIntent(StrEnum):
 
 
 class RoutingBlockerCode(StrEnum):
-    """Stable authority and compatibility blockers for exact-actor routing."""
+    """Stable hard blockers shared by preview and assignment enforcement."""
 
     ASSIGNMENT_PURPOSE_QUEUE_CLASS_INCOMPATIBLE = (
         "assignment_purpose_queue_class_incompatible"
     )
+    ASSESSMENT_MISSING = "assessment_missing"
+    ASSESSMENT_STALE = "assessment_stale"
+    ASSESSMENT_POLICY_MISMATCH = "assessment_policy_mismatch"
+    ASSESSMENT_LOW_CONFIDENCE = "assessment_low_confidence"
+    TASK_DEFINITION_NOT_READY = "task_definition_not_ready"
+    TASK_STATUS_INCOMPATIBLE = "task_status_incompatible"
+    TASK_DEFERRED = "task_deferred"
+    TASK_COMPOSITE = "task_composite"
+    TASK_DEPENDENCY_UNRESOLVED = "task_dependency_unresolved"
     ACTOR_DISABLED = "actor_disabled"
     ACTOR_ROLE_INCOMPATIBLE = "actor_role_incompatible"
     ACTOR_SCOPE_MISSING = "actor_scope_missing"
+    ACTOR_POLICY_INCOMPATIBLE = "actor_policy_incompatible"
     ACTOR_PROFILE_MISSING = "actor_profile_missing"
     CAPACITY_OWNER_MISSING = "capacity_owner_missing"
     CAPACITY_OWNER_PROFILE_MISSING = "capacity_owner_profile_missing"
@@ -122,6 +138,26 @@ class RoutingBlockerCode(StrEnum):
     PROFILE_KIND_UNSUPPORTED = "profile_kind_unsupported"
     PROFILE_AUTOMATION_DISABLED = "profile_automation_disabled"
     PROFILE_ASSIGNMENT_MODE_MISSING = "profile_assignment_mode_missing"
+    REQUIRED_SKILL_MISSING = "required_skill_missing"
+    REQUIRED_SKILL_LEVEL_INSUFFICIENT = "required_skill_level_insufficient"
+    REQUIRED_SKILL_BLOCKING_WEAKNESS = "required_skill_blocking_weakness"
+    MODEL_BINDING_MISSING = "model_binding_missing"
+    MODEL_BINDING_DISABLED = "model_binding_disabled"
+    MODEL_BINDING_STALE = "model_binding_stale"
+    MODEL_CATALOG_MISSING = "model_catalog_missing"
+    MODEL_CATALOG_DISABLED = "model_catalog_disabled"
+    MODEL_REASONING_TIER_INSUFFICIENT = "model_reasoning_tier_insufficient"
+    MODEL_CONTEXT_TIER_INSUFFICIENT = "model_context_tier_insufficient"
+    MODEL_MODALITY_MISSING = "model_modality_missing"
+    MODEL_TOOL_MISSING = "model_tool_missing"
+    MODEL_DATA_POLICY_MISSING = "model_data_policy_missing"
+    CAPACITY_UNAVAILABLE = "capacity_unavailable"
+    WORKLOAD_LIMIT_EXCEEDED = "workload_limit_exceeded"
+    VACATION_CONFLICT = "vacation_conflict"
+    SCHEDULE_MISSING = "schedule_missing"
+    SCHEDULE_CONFLICT = "schedule_conflict"
+    QUEUE_LIMIT_EXCEEDED = "queue_limit_exceeded"
+    CURRENT_WORK_CONFLICT = "current_work_conflict"
     REVIEWER_PROFILE_MISSING = "reviewer_profile_missing"
     REVIEWER_PROFILE_MISMATCH = "reviewer_profile_mismatch"
     VERIFICATION_ACTOR_NOT_INDEPENDENT = "verification_actor_not_independent"
@@ -132,6 +168,11 @@ class RoutingBlockerCode(StrEnum):
     VERIFICATION_SPECIALIST_SKILL_MISSING = (
         "verification_specialist_skill_missing"
     )
+    PREVIEW_NOT_FOUND = "preview_not_found"
+    PREVIEW_STALE = "preview_stale"
+    PREVIEW_EXPIRED = "preview_expired"
+    PREVIEW_DIGEST_MISMATCH = "preview_digest_mismatch"
+    NO_ELIGIBLE_CANDIDATE = "no_eligible_candidate"
 
 
 CONTEXT_TIER_ORDER = MappingProxyType(
@@ -495,6 +536,36 @@ class RoutingEligibilityDecision:
         )
 
 
+@dataclass(frozen=True)
+class RoutingSkillDecision:
+    """Deterministic required-skill evidence for one profile."""
+
+    hard_blocker_codes: tuple[str, ...] = ()
+    matched_skill_levels: tuple[tuple[str, int], ...] = ()
+    missing_skill_keys: tuple[str, ...] = ()
+    insufficient_skill_keys: tuple[str, ...] = ()
+    blocking_weakness_keys: tuple[str, ...] = ()
+
+    @property
+    def eligible(self) -> bool:
+        return not self.hard_blocker_codes
+
+
+@dataclass(frozen=True)
+class RoutingModelEnvelopeDecision:
+    """Deterministic binding/catalog capability evidence for one candidate."""
+
+    hard_blocker_codes: tuple[str, ...] = ()
+    adequacy_class: int | None = None
+    missing_modality_tags: tuple[str, ...] = ()
+    missing_tool_tags: tuple[str, ...] = ()
+    missing_data_policy_tags: tuple[str, ...] = ()
+
+    @property
+    def eligible(self) -> bool:
+        return not self.hard_blocker_codes
+
+
 def _axis_values(axes: Mapping[str, Any] | Any) -> dict[str, int]:
     expected = tuple(axis.value for axis in DifficultyAxis)
     if isinstance(axes, Mapping):
@@ -577,6 +648,19 @@ def review_mode_meets(actual: str, minimum: str) -> bool:
         raise ValueError("Unknown review mode") from exc
 
 
+def assessment_confidence_meets_minimum(confidence: float) -> bool:
+    """Return whether an authoritative assessment meets the frozen v1 floor."""
+
+    if (
+        isinstance(confidence, bool)
+        or not isinstance(confidence, (int, float))
+        or not math.isfinite(confidence)
+        or not 0.0 <= confidence <= 1.0
+    ):
+        raise ValueError("confidence must be a finite number from 0 to 1")
+    return confidence >= MIN_ROUTING_ASSESSMENT_CONFIDENCE
+
+
 def context_tier_meets(actual: str, minimum: str) -> bool:
     """Return whether an actual context tier meets a required tier."""
 
@@ -598,6 +682,311 @@ def routing_skills_for_capability_labels(labels: Iterable[str]) -> tuple[str, ..
         label = str(raw_label).strip().lower()
         skills.update(CAPABILITY_LABEL_SKILL_KEYS.get(label, ()))
     return tuple(sorted(skills))
+
+
+def _normalized_skill_levels(
+    levels: Mapping[str, int],
+    *,
+    label: str,
+    governed_keys_only: bool,
+) -> dict[str, int]:
+    if not isinstance(levels, Mapping):
+        raise ValueError(f"{label} must be a mapping")
+    normalized: dict[str, int] = {}
+    for raw_key, raw_level in levels.items():
+        if not isinstance(raw_key, str):
+            raise ValueError(f"{label} keys must be strings")
+        key = raw_key.strip().lower()
+        if not key:
+            raise ValueError(f"{label} keys must not be blank")
+        if key in normalized:
+            raise ValueError(f"{label} keys must be unique after normalization")
+        if governed_keys_only and key not in ROUTING_SKILL_KEYS:
+            raise ValueError(f"Unknown routing skill key: {key}")
+        if (
+            isinstance(raw_level, bool)
+            or not isinstance(raw_level, int)
+            or not 1 <= raw_level <= 5
+        ):
+            raise ValueError(f"{label} levels must be integers from 1 to 5")
+        normalized[key] = raw_level
+    return normalized
+
+
+def evaluate_required_skills(
+    *,
+    required_skill_levels: Mapping[str, int],
+    actual_skill_levels: Mapping[str, int],
+    weakness_keys: Iterable[str] = (),
+) -> RoutingSkillDecision:
+    """Evaluate precise governed skill requirements without prose inference."""
+
+    required = _normalized_skill_levels(
+        required_skill_levels,
+        label="Required skill",
+        governed_keys_only=True,
+    )
+    actual = _normalized_skill_levels(
+        actual_skill_levels,
+        label="Actual skill",
+        governed_keys_only=False,
+    )
+    weaknesses = {
+        str(raw_key).strip().lower()
+        for raw_key in weakness_keys
+        if str(raw_key).strip()
+    }
+
+    missing = tuple(sorted(set(required).difference(actual)))
+    insufficient = tuple(
+        sorted(
+            key
+            for key, minimum_level in required.items()
+            if key in actual and actual[key] < minimum_level
+        )
+    )
+    blocking_weaknesses = tuple(sorted(set(required).intersection(weaknesses)))
+    disqualified = set(missing) | set(insufficient) | set(blocking_weaknesses)
+    matched = tuple(
+        sorted(
+            (key, actual[key])
+            for key in required
+            if key not in disqualified
+        )
+    )
+
+    blockers: list[str] = []
+    if missing:
+        blockers.append(RoutingBlockerCode.REQUIRED_SKILL_MISSING.value)
+    if insufficient:
+        blockers.append(
+            RoutingBlockerCode.REQUIRED_SKILL_LEVEL_INSUFFICIENT.value
+        )
+    if blocking_weaknesses:
+        blockers.append(
+            RoutingBlockerCode.REQUIRED_SKILL_BLOCKING_WEAKNESS.value
+        )
+    return RoutingSkillDecision(
+        hard_blocker_codes=tuple(blockers),
+        matched_skill_levels=matched,
+        missing_skill_keys=missing,
+        insufficient_skill_keys=insufficient,
+        blocking_weakness_keys=blocking_weaknesses,
+    )
+
+
+def _envelope_value(envelope: Mapping[str, Any] | Any, key: str) -> Any:
+    if isinstance(envelope, Mapping):
+        if key not in envelope:
+            raise ValueError(f"Required model envelope is missing {key}")
+        return envelope[key]
+    try:
+        return getattr(envelope, key)
+    except AttributeError as exc:
+        raise ValueError(
+            f"Required model envelope is missing {key}"
+        ) from exc
+
+
+def _normalized_tag_set(values: Iterable[str], *, label: str) -> frozenset[str]:
+    normalized: set[str] = set()
+    for raw_value in values:
+        if not isinstance(raw_value, str):
+            raise ValueError(f"{label} entries must be strings")
+        value = raw_value.strip().lower()
+        if not value:
+            raise ValueError(f"{label} entries must not be blank")
+        normalized.add(value)
+    return frozenset(normalized)
+
+
+def model_adequacy_class(
+    *,
+    minimum_reasoning_tier: int,
+    actual_reasoning_tier: int,
+    minimum_context_tier: str,
+    actual_context_tier: str,
+) -> int:
+    """Return deterministic excess capability steps for an adequate model."""
+
+    for label, value in (
+        ("minimum_reasoning_tier", minimum_reasoning_tier),
+        ("actual_reasoning_tier", actual_reasoning_tier),
+    ):
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, int)
+            or value not in {tier.value for tier in ReasoningTier}
+        ):
+            raise ValueError(f"{label} must be a governed reasoning tier")
+    try:
+        minimum_context_order = CONTEXT_TIER_ORDER[str(minimum_context_tier)]
+        actual_context_order = CONTEXT_TIER_ORDER[str(actual_context_tier)]
+    except KeyError as exc:
+        raise ValueError("Unknown context tier") from exc
+    if actual_reasoning_tier < minimum_reasoning_tier:
+        raise ValueError("Actual reasoning tier is below the required minimum")
+    if actual_context_order < minimum_context_order:
+        raise ValueError("Actual context tier is below the required minimum")
+    return (
+        actual_reasoning_tier
+        - minimum_reasoning_tier
+        + actual_context_order
+        - minimum_context_order
+    )
+
+
+def evaluate_model_envelope(
+    required_model: Mapping[str, Any] | Any,
+    *,
+    binding_present: bool = True,
+    binding_enabled: bool = True,
+    binding_revision_current: bool = True,
+    catalog_present: bool = True,
+    catalog_enabled: bool = True,
+    actual_reasoning_tier: int | None,
+    actual_context_tier: str | None,
+    actual_modality_tags: Iterable[str] = (),
+    actual_tool_tags: Iterable[str] = (),
+    actual_data_policy_tags: Iterable[str] = (),
+) -> RoutingModelEnvelopeDecision:
+    """Evaluate one binding/catalog pair against a required model envelope."""
+
+    minimum_reasoning_tier = _envelope_value(
+        required_model,
+        "minimum_reasoning_tier",
+    )
+    minimum_context_tier = str(
+        _envelope_value(required_model, "minimum_context_tier")
+    )
+    required_modalities = _normalized_tag_set(
+        _envelope_value(required_model, "modality_tags"),
+        label="Required modality",
+    )
+    required_tools = _normalized_tag_set(
+        _envelope_value(required_model, "tool_tags"),
+        label="Required tool",
+    )
+    required_data_policies = _normalized_tag_set(
+        _envelope_value(required_model, "data_policy_tags"),
+        label="Required data policy",
+    )
+    actual_modalities = _normalized_tag_set(
+        actual_modality_tags,
+        label="Actual modality",
+    )
+    actual_tools = _normalized_tag_set(actual_tool_tags, label="Actual tool")
+    actual_data_policies = _normalized_tag_set(
+        actual_data_policy_tags,
+        label="Actual data policy",
+    )
+
+    blockers: list[str] = []
+    if not binding_present:
+        blockers.append(RoutingBlockerCode.MODEL_BINDING_MISSING.value)
+    elif not binding_enabled:
+        blockers.append(RoutingBlockerCode.MODEL_BINDING_DISABLED.value)
+    if binding_present and not binding_revision_current:
+        blockers.append(RoutingBlockerCode.MODEL_BINDING_STALE.value)
+    if not catalog_present:
+        blockers.append(RoutingBlockerCode.MODEL_CATALOG_MISSING.value)
+    elif not catalog_enabled:
+        blockers.append(RoutingBlockerCode.MODEL_CATALOG_DISABLED.value)
+
+    reasoning_adequate = (
+        actual_reasoning_tier is not None
+        and not isinstance(actual_reasoning_tier, bool)
+        and isinstance(actual_reasoning_tier, int)
+        and actual_reasoning_tier >= minimum_reasoning_tier
+    )
+    if not reasoning_adequate:
+        blockers.append(
+            RoutingBlockerCode.MODEL_REASONING_TIER_INSUFFICIENT.value
+        )
+    context_adequate = (
+        actual_context_tier is not None
+        and context_tier_meets(actual_context_tier, minimum_context_tier)
+    )
+    if not context_adequate:
+        blockers.append(
+            RoutingBlockerCode.MODEL_CONTEXT_TIER_INSUFFICIENT.value
+        )
+
+    missing_modalities = tuple(sorted(required_modalities - actual_modalities))
+    missing_tools = tuple(sorted(required_tools - actual_tools))
+    missing_data_policies = tuple(
+        sorted(required_data_policies - actual_data_policies)
+    )
+    if missing_modalities:
+        blockers.append(RoutingBlockerCode.MODEL_MODALITY_MISSING.value)
+    if missing_tools:
+        blockers.append(RoutingBlockerCode.MODEL_TOOL_MISSING.value)
+    if missing_data_policies:
+        blockers.append(RoutingBlockerCode.MODEL_DATA_POLICY_MISSING.value)
+
+    adequacy_class: int | None = None
+    if reasoning_adequate and context_adequate:
+        adequacy_class = model_adequacy_class(
+            minimum_reasoning_tier=minimum_reasoning_tier,
+            actual_reasoning_tier=actual_reasoning_tier,
+            minimum_context_tier=minimum_context_tier,
+            actual_context_tier=actual_context_tier,
+        )
+    return RoutingModelEnvelopeDecision(
+        hard_blocker_codes=tuple(dict.fromkeys(blockers)),
+        adequacy_class=adequacy_class,
+        missing_modality_tags=missing_modalities,
+        missing_tool_tags=missing_tools,
+        missing_data_policy_tags=missing_data_policies,
+    )
+
+
+def routing_candidate_rank_key(
+    *,
+    adequacy_class: int,
+    cost_tier: str,
+    queue_depth: int,
+    schedule_delay_days: float,
+    latency_tier: str,
+    actor_id: int,
+    binding_id: int,
+) -> tuple[int, int, int, float, int, int, int]:
+    """Freeze v1 ranking after all hard eligibility gates have passed."""
+
+    integer_values = {
+        "adequacy_class": adequacy_class,
+        "queue_depth": queue_depth,
+        "actor_id": actor_id,
+        "binding_id": binding_id,
+    }
+    for label, value in integer_values.items():
+        minimum = 1 if label in {"actor_id", "binding_id"} else 0
+        if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+            raise ValueError(f"{label} must be an integer of at least {minimum}")
+    if (
+        isinstance(schedule_delay_days, bool)
+        or not isinstance(schedule_delay_days, (int, float))
+        or not math.isfinite(schedule_delay_days)
+        or schedule_delay_days < 0
+    ):
+        raise ValueError("schedule_delay_days must be a finite non-negative number")
+    try:
+        cost_order = COST_TIER_ORDER[str(cost_tier)]
+    except KeyError as exc:
+        raise ValueError("Unknown cost tier") from exc
+    try:
+        latency_order = LATENCY_TIER_ORDER[str(latency_tier)]
+    except KeyError as exc:
+        raise ValueError("Unknown latency tier") from exc
+    return (
+        adequacy_class,
+        cost_order,
+        queue_depth,
+        float(schedule_delay_days),
+        latency_order,
+        actor_id,
+        binding_id,
+    )
 
 
 def _validate_json_native(

@@ -2,7 +2,7 @@
 
 from typing import Annotated, NoReturn
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import mcp_agent_tools
@@ -14,6 +14,12 @@ from app.schemas.agent_planning import (
     AgentPlanningCommandContext,
     AgentPlanningReceipt,
     AgentScheduleCommand,
+)
+from app.schemas.agent_routing import (
+    TaskRoutingAssessmentCommand,
+    TaskRoutingAssessmentListResponse,
+    TaskRoutingAssessmentMutationReceipt,
+    TaskRoutingAssessmentState,
 )
 from app.schemas.iteration import IterationCreate, IterationUpdate
 from app.schemas.project import (
@@ -42,6 +48,10 @@ from app.schemas.triage import (
     TriageSnoozeRequest,
 )
 from app.services.agent_planning_service import AgentPlanningService
+from app.services.agent_routing_service import (
+    AgentRoutingConflictError,
+    AgentRoutingService,
+)
 from app.services.agent_service import (
     AgentConflictError,
     AgentPermissionError,
@@ -59,6 +69,13 @@ async def get_agent_planning_service(
 ) -> AgentPlanningService:
     """Return the request-scoped PM setup command adapter."""
     return AgentPlanningService(db)
+
+
+async def get_agent_routing_service(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> AgentRoutingService:
+    """Return the request-scoped model-aware routing service."""
+    return AgentRoutingService(db)
 
 
 async def get_agent_planning_command_context(
@@ -84,6 +101,8 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
     """Map safe command-domain errors to stable HTTP status codes."""
     if isinstance(exc, AgentPermissionError):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc))
+    if isinstance(exc, AgentRoutingConflictError):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
     if isinstance(exc, TaskVersionConflictError):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
     if isinstance(exc, AgentConflictError):
@@ -95,6 +114,70 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     raise exc
+
+
+@router.get(
+    "/agent/planning/tasks/{task_id}/routing-assessment",
+    response_model=TaskRoutingAssessmentState,
+)
+async def get_task_routing_assessment(
+    task_id: int,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)],
+):
+    """Read the current task-version-bound routing assessment state."""
+    try:
+        return await service.get_assessment_state(task_id, actor)
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.get(
+    "/agent/planning/tasks/{task_id}/routing-assessments",
+    response_model=TaskRoutingAssessmentListResponse,
+)
+async def list_task_routing_assessments(
+    task_id: int,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)],
+    limit: int = Query(default=100, ge=1, le=100),
+):
+    """List bounded append-only routing-assessment history newest first."""
+    try:
+        return await service.list_assessments(
+            task_id,
+            actor,
+            limit=limit,
+        )
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.post(
+    "/agent/planning/tasks/{task_id}/routing-assessment",
+    response_model=TaskRoutingAssessmentMutationReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_task_routing_assessment(
+    task_id: int,
+    data: TaskRoutingAssessmentCommand,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Append one audited routing assessment for the expected task version."""
+    try:
+        return await service.create_assessment(
+            task_id,
+            actor,
+            data,
+            command=command,
+        )
+    except Exception as exc:
+        _handle_agent_error(exc)
 
 
 @router.post(

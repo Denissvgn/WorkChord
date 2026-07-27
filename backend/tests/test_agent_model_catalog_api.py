@@ -10,15 +10,16 @@ from typing import Any
 
 import httpx
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlalchemy import event, select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from app import mcp_agent_tools
 from app.agent_contract import MODEL_AWARE_ROUTING_FEATURE
+from app.config import get_settings
 from app.database import get_db
 from app.main import app as main_app
-from app.mcp_server import mcp
+from app.mcp_server import _structured_tool_error, mcp
 from app.models.agent import (
     AgentActor,
     AgentModelBinding,
@@ -28,7 +29,17 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
-from app.schemas.agent import AgentActorCreate
+from app.routers import agent as agent_router
+from app.routers import agent_planning
+from app.schemas.agent import (
+    AgentActorCreate,
+    AgentTaskAssignmentCreate,
+    AgentTaskAssignmentUpdate,
+    AgentWorkBegin,
+    ModelAwareAgentTaskAssignmentCreate,
+    ModelAwareAgentTaskAssignmentUpdate,
+    ModelAwareAgentWorkBegin,
+)
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import (
     AgentModelBindingDisable,
@@ -39,6 +50,7 @@ from app.services.agent_model_catalog_service import (
     AgentModelCatalogService,
     AgentModelConflictError,
 )
+from app.services.agent_routing_service import AgentRoutingConflictError
 from app.services.agent_service import AgentPermissionError, AgentService, hash_api_key
 from app.services.agent_work_service import AgentWorkService
 from app.utils.time import utc_now
@@ -773,12 +785,55 @@ async def test_actor_provisioning_creates_binding_and_audit_atomically(
 
 
 @pytest.mark.contract
-def test_wave2_surfaces_do_not_prematurely_advertise_full_routing() -> None:
+def test_wave3_surfaces_advertise_model_aware_routing() -> None:
     from app.agent_contract import agent_contract_features
 
-    assert MODEL_AWARE_ROUTING_FEATURE not in agent_contract_features(
+    assert MODEL_AWARE_ROUTING_FEATURE in agent_contract_features(
         include_skill_bundles=True
     )
+    api_prefix = get_settings().api_prefix
+    registered_routes = {
+        (f"{api_prefix}{route.path}", method)
+        for router in (agent_router.router, agent_planning.router)
+        for route in router.routes
+        for method in (getattr(route, "methods", None) or ())
+    }
+    assert (
+        "/api/agent/planning/tasks/{task_id}/routing-assessment",
+        "GET",
+    ) in registered_routes
+    assert (
+        "/api/agent/planning/tasks/{task_id}/routing-assessment",
+        "POST",
+    ) in registered_routes
+    assert (
+        "/api/agent/tasks/{task_id}/routing-preview",
+        "POST",
+    ) in registered_routes
+
+    openapi_paths = main_app.openapi()["paths"]
+    expected_request_unions = {
+        ("/api/agent/assignments", "post"): (
+            "ModelAwareAgentTaskAssignmentCreate",
+            "AgentTaskAssignmentCreate",
+        ),
+        ("/api/agent/assignments/{assignment_id}", "patch"): (
+            "ModelAwareAgentTaskAssignmentUpdate",
+            "AgentTaskAssignmentUpdate",
+        ),
+        ("/api/agent/me/work/begin", "post"): (
+            "ModelAwareAgentWorkBegin",
+            "AgentWorkBegin",
+        ),
+    }
+    for (path, method), expected_models in expected_request_unions.items():
+        body_schema = openapi_paths[path][method]["requestBody"]["content"][
+            "application/json"
+        ]["schema"]
+        assert [
+            entry["$ref"].removeprefix("#/components/schemas/")
+            for entry in body_schema["anyOf"]
+        ] == list(expected_models)
 
 
 @pytest.mark.contract
@@ -786,6 +841,10 @@ def test_wave2_surfaces_do_not_prematurely_advertise_full_routing() -> None:
 async def test_mcp_registers_roster_catalog_resources_and_admin_tools() -> None:
     tool_names = {tool.name for tool in await mcp.list_tools()}
     resource_uris = {str(resource.uri) for resource in await mcp.list_resources()}
+    resource_templates = {
+        str(template.uriTemplate)
+        for template in await mcp.list_resource_templates()
+    }
 
     assert {
         "agent_list_actor_roster",
@@ -799,6 +858,93 @@ async def test_mcp_registers_roster_catalog_resources_and_admin_tools() -> None:
         "agent_create_model_binding",
         "agent_update_model_binding",
         "agent_disable_model_binding",
+        "agent_get_task_routing_assessment",
+        "agent_create_task_routing_assessment",
+        "agent_preview_task_routing",
     }.issubset(tool_names)
     assert "workchord://agent/actors" in resource_uris
     assert "workchord://agent/model-catalog" in resource_uris
+    assert (
+        "workchord://agent/tasks/{task_id}/routing-assessment"
+        in resource_templates
+    )
+
+
+@pytest.mark.contract
+def test_mcp_assignment_and_begin_payloads_preserve_additive_legacy_union() -> None:
+    digest = "a" * 64
+    legacy_create = mcp_agent_tools._AGENT_ASSIGNMENT_CREATE_ADAPTER.validate_python(
+        {"task_id": 1, "actor_id": 2, "expected_task_version": 3}
+    )
+    aware_create = mcp_agent_tools._AGENT_ASSIGNMENT_CREATE_ADAPTER.validate_python(
+        {
+            "task_id": 1,
+            "actor_id": 2,
+            "expected_task_version": 3,
+            "purpose": "execution",
+            "assessment_id": 4,
+            "model_binding_id": 5,
+            "model_binding_revision": 6,
+            "routing_preview_id": "preview-7",
+            "routing_preview_digest": digest,
+        }
+    )
+    legacy_update = mcp_agent_tools._AGENT_ASSIGNMENT_UPDATE_ADAPTER.validate_python(
+        {"expected_queue_revision": 1, "queue_rank": 10}
+    )
+    aware_update = mcp_agent_tools._AGENT_ASSIGNMENT_UPDATE_ADAPTER.validate_python(
+        {
+            "expected_queue_revision": 1,
+            "assessment_id": 4,
+            "model_binding_id": 5,
+            "model_binding_revision": 6,
+            "routing_preview_id": "preview-7",
+            "routing_preview_digest": digest,
+        }
+    )
+    legacy_begin = mcp_agent_tools._AGENT_WORK_BEGIN_ADAPTER.validate_python(
+        {"assignment_id": 8, "queue_revision": 2}
+    )
+    aware_begin = mcp_agent_tools._AGENT_WORK_BEGIN_ADAPTER.validate_python(
+        {
+            "assignment_id": 8,
+            "queue_revision": 2,
+            "model_binding_id": 5,
+            "model_binding_revision": 6,
+            "resolved_model_id": "resolved-model",
+        }
+    )
+
+    assert isinstance(legacy_create, AgentTaskAssignmentCreate)
+    assert isinstance(aware_create, ModelAwareAgentTaskAssignmentCreate)
+    assert isinstance(legacy_update, AgentTaskAssignmentUpdate)
+    assert isinstance(aware_update, ModelAwareAgentTaskAssignmentUpdate)
+    assert isinstance(legacy_begin, AgentWorkBegin)
+    assert isinstance(aware_begin, ModelAwareAgentWorkBegin)
+
+
+@pytest.mark.contract
+def test_routing_conflicts_keep_structured_detail_across_rest_and_mcp() -> None:
+    conflict = AgentRoutingConflictError(
+        "routing_preview_stale",
+        "Routing preview no longer matches authoritative inputs",
+        task_id=17,
+        expected_task_version=4,
+    )
+    expected = {
+        "code": "routing_preview_stale",
+        "message": "Routing preview no longer matches authoritative inputs",
+        "task_id": 17,
+        "expected_task_version": 4,
+    }
+
+    with pytest.raises(HTTPException) as agent_error:
+        agent_router._handle_agent_error(conflict, structured=True)
+    with pytest.raises(HTTPException) as planning_error:
+        agent_planning._handle_agent_error(conflict)
+
+    assert agent_error.value.status_code == 409
+    assert agent_error.value.detail == expected
+    assert planning_error.value.status_code == 409
+    assert planning_error.value.detail == expected
+    assert json.loads(_structured_tool_error(conflict)) == expected
