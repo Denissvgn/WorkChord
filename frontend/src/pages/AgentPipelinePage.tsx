@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -9,21 +9,23 @@ import {
     Folder,
     RefreshCw,
     Terminal,
-    ExternalLink,
     Search,
     Clock,
     AlertTriangle
 } from 'lucide-react';
 import { agentService } from '../services/agentService';
-import type { Task } from '../types/task';
-import { safeExternalHref } from '../utils/safeUrl';
+import type { AgentModelTrustState, TaskTimelineItem } from '../types/agent';
+import type { Task, TaskStatus } from '../types/task';
 import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
 import { SlideOverDrawer } from '../components/ui/SlideOverDrawer';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { useAdminAccess } from '../hooks/useAdminAccess';
+import { useAgentAccess } from '../hooks/useAgentAccess';
+import { getApiErrorStatus } from '../utils/apiError';
 import { protectedQueryRetry } from '../utils/protectedQueries';
 import { formatDateTime } from '../utils/formatDate';
+import { TaskRoutingPanel } from '../components/agent/TaskRoutingPanel';
 import clsx from 'clsx';
 
 const EMPTY_PIPELINE = {
@@ -37,10 +39,48 @@ const EMPTY_PIPELINE = {
     recovery_required: [],
 } satisfies Record<keyof import('../types/agent').AgentPipeline, Task[]>;
 
+const TIMELINE_ITEM_LABELS: Record<TaskTimelineItem['item_type'], string> = {
+    task_event: 'taskEvent',
+    status_log: 'statusChange',
+    agent_run: 'agentRun',
+    agent_run_event: 'runEvent',
+};
+
+const RUN_STATUSES = new Set(['running', 'succeeded', 'failed', 'canceled']);
+const MODEL_TRUST_STATES = new Set<AgentModelTrustState>([
+    'matched',
+    'mismatch',
+    'unreported',
+    'unverifiable',
+]);
+const TASK_STATUSES = new Set<TaskStatus>(['planned', 'active', 'resolved', 'closed']);
+
+const safeRunStatus = (value?: string | null) => (
+    value && RUN_STATUSES.has(value) ? value : 'unknown'
+);
+
+const safeModelTrustState = (value?: string | null) => (
+    value && MODEL_TRUST_STATES.has(value as AgentModelTrustState)
+        ? value as AgentModelTrustState
+        : 'unknown'
+);
+
+const safeTaskStatus = (value: string) => (
+    TASK_STATUSES.has(value as TaskStatus) ? value as TaskStatus : null
+);
+
+const safeTimelineItemLabel = (value: string) => (
+    Object.prototype.hasOwnProperty.call(TIMELINE_ITEM_LABELS, value)
+        ? TIMELINE_ITEM_LABELS[value as TaskTimelineItem['item_type']]
+        : 'unknown'
+);
+
 export default function AgentPipelinePage() {
     const { t } = useTranslation();
     const { hasAdminKey } = useAdminAccess();
-    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const { hasAgentKey } = useAgentAccess();
+    const hasProtectedAccess = hasAdminKey || hasAgentKey;
+    const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [projectFilter, setProjectFilter] = useState('');
     const [agentFilter, setAgentFilter] = useState('');
@@ -56,19 +96,38 @@ export default function AgentPipelinePage() {
     } = useQuery({
         queryKey: ['agent-pipeline'],
         queryFn: agentService.getPipeline,
-        enabled: hasAdminKey,
+        enabled: hasProtectedAccess,
         retry: protectedQueryRetry,
-        refetchInterval: hasAdminKey ? 5000 : false, // short-poll every 5 seconds for board
+        refetchInterval: hasProtectedAccess ? 5000 : false, // short-poll every 5 seconds for board
     });
-    const pipeline = pipelineData ?? EMPTY_PIPELINE;
+    const pipelineErrorStatus = getApiErrorStatus(pipelineError);
+    const pipelineAuthorizationFailed = pipelineIsError
+        && (pipelineErrorStatus === 401 || pipelineErrorStatus === 403);
+    const usablePipelineData = pipelineAuthorizationFailed ? undefined : pipelineData;
+    const pipeline = usablePipelineData ?? EMPTY_PIPELINE;
+    const allTasks = useMemo(() => {
+        return [
+            ...pipeline.needs_definition,
+            ...pipeline.ready_for_agent,
+            ...pipeline.definition_ready_unassigned,
+            ...pipeline.assigned_waiting,
+            ...pipeline.start_ready,
+            ...pipeline.executing,
+            ...pipeline.verification_required,
+            ...pipeline.recovery_required,
+        ];
+    }, [pipeline]);
+    const selectedTask = selectedTaskId === null
+        ? null
+        : allTasks.find(task => task.id === selectedTaskId) ?? null;
 
     // Query task timeline
     const { data: timelineData, error: timelineError, refetch: refetchTimeline } = useQuery({
         queryKey: ['task-timeline', selectedTask?.id],
         queryFn: () => selectedTask ? agentService.getTaskTimeline(selectedTask.id) : null,
-        enabled: hasAdminKey && !!selectedTask,
+        enabled: hasProtectedAccess && !!selectedTask,
         retry: protectedQueryRetry,
-        refetchInterval: hasAdminKey && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
+        refetchInterval: hasProtectedAccess && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
     });
 
     // Extract active run id for the selected task if it's currently executing/running
@@ -87,24 +146,12 @@ export default function AgentPipelinePage() {
     const { data: runDetail, error: runError, refetch: refetchRun } = useQuery({
         queryKey: ['agent-run-detail', activeRunId],
         queryFn: () => activeRunId ? agentService.getRunDetail(activeRunId) : null,
-        enabled: hasAdminKey && !!activeRunId,
+        enabled: hasProtectedAccess && !!activeRunId,
         retry: protectedQueryRetry,
-        refetchInterval: hasAdminKey && activeRunId ? 3000 : false, // short-poll logs dynamically
+        refetchInterval: hasProtectedAccess && activeRunId ? 3000 : false, // short-poll logs dynamically
     });
 
     // Unique options for dropdown filters
-    const allTasks = useMemo(() => {
-        return [
-            ...pipeline.needs_definition,
-            ...pipeline.ready_for_agent,
-            ...pipeline.assigned_waiting,
-            ...pipeline.start_ready,
-            ...pipeline.executing,
-            ...pipeline.verification_required,
-            ...pipeline.recovery_required,
-        ];
-    }, [pipeline]);
-
     const projectOptions = useMemo(() => {
         const set = new Set<string>();
         allTasks.forEach(t => {
@@ -158,6 +205,14 @@ export default function AgentPipelinePage() {
             description: t('agentPipeline.columns.ready_for_agent.description')
         },
         {
+            id: 'definition_ready_unassigned' as const,
+            title: t('agentPipeline.columns.definition_ready_unassigned.title'),
+            color: 'text-feedback-info-foreground',
+            bgColor: 'bg-feedback-info-muted border-feedback-info-border',
+            tasks: filterAndSegment(pipeline.definition_ready_unassigned),
+            description: t('agentPipeline.columns.definition_ready_unassigned.description')
+        },
+        {
             id: 'assigned_waiting' as const,
             title: t('agentPipeline.columns.assigned_waiting.title'),
             color: 'text-content-secondary',
@@ -202,40 +257,59 @@ export default function AgentPipelinePage() {
         (count, column) => count + column.tasks.length,
         0,
     );
+    const runStatus = safeRunStatus(runDetail?.status);
+    const modelTrustState = safeModelTrustState(runDetail?.model_trust_state);
+    const modelBindingEvidence = runDetail
+        && typeof runDetail.model_binding_id === 'number'
+        && typeof runDetail.model_binding_revision === 'number'
+        ? {
+            id: runDetail.model_binding_id,
+            revision: runDetail.model_binding_revision,
+        }
+        : null;
+    const externalReferenceCount = runDetail
+        ? (runDetail.commit_url ? 1 : 0)
+            + (runDetail.pr_url ? 1 : 0)
+            + (Array.isArray(runDetail.artifact_links) ? runDetail.artifact_links.length : 0)
+        : 0;
 
     return (
         <PageLayout testId="agent-pipeline-page">
             <PageHeader
                 title={t('agentPipeline.title')}
                 subtitle={t('agentPipeline.description')}
-                actions={hasAdminKey ? (
+                actions={hasProtectedAccess ? (
                     <button className="btn" onClick={() => refetch()} disabled={isFetching}>
                     <RefreshCw className={clsx("h-4 w-4", isFetching && "animate-spin")}/>
                     {isFetching ? t('actions.refreshing') : t('actions.refresh')}
                     </button>
                 ) : null}
             />
-            {!hasAdminKey && (
+            {!hasProtectedAccess && (
                 <AdminAccessGate>
                     <span />
                 </AdminAccessGate>
             )}
-            {hasAdminKey && pipelinePending && !pipelineData && (
+            {hasProtectedAccess && pipelinePending && !usablePipelineData && (
                 <QueryLoadingState message={t('agentPipeline.loading')} />
             )}
-            {hasAdminKey && pipelineIsError && !pipelineData && (
-                <QueryErrorState error={pipelineError} onRetry={() => { void refetch(); }} />
+            {hasProtectedAccess && pipelineIsError && !usablePipelineData && (
+                <QueryErrorState
+                    error={pipelineError}
+                    message={t('agentPipeline.pipelineUnavailable')}
+                    onRetry={() => { void refetch(); }}
+                />
             )}
-            {hasAdminKey && pipelineIsError && pipelineData && (
+            {hasProtectedAccess && pipelineIsError && usablePipelineData && (
                 <QueryStaleState message={t('agentPipeline.staleWarning')} onRetry={() => { void refetch(); }} />
             )}
-            {hasAdminKey && pipelineData && allTasks.length === 0 && (
+            {hasProtectedAccess && usablePipelineData && allTasks.length === 0 && (
                 <QueryEmptyState
                     title={t('agentPipeline.emptyTitle')}
                     description={t('agentPipeline.emptyDescription')}
                 />
             )}
-            {hasAdminKey && pipelineData && allTasks.length > 0 && (
+            {hasProtectedAccess && usablePipelineData && allTasks.length > 0 && (
             <>
             <MetricGrid columns={6}>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.needs_definition.title')}</div><div className="kpi-val tnum">{pipeline.needs_definition.length}</div></div>
@@ -325,13 +399,14 @@ export default function AgentPipelinePage() {
                                 </div>
                             ) : (
                                 column.tasks.map(task => {
-                                    const latestEvent = task.agent_readiness?.blockers?.[0] || t('agentPipeline.stateUpdated', 'State updated');
+                                    const latestReadinessSignal = task.agent_readiness?.blockers?.[0]
+                                        || t('agentPipeline.stateUpdated');
                                     return (
                                         <motion.button
                                             key={task.id}
                                             type="button"
                                             layoutId={`card-${task.id}`}
-                                            onClick={() => setSelectedTask(task)}
+                                            onClick={() => setSelectedTaskId(task.id)}
                                             aria-label={t('agentPipeline.inspectTask', { title: task.title, state: column.title })}
                                             className="group flex w-full flex-col gap-2 rounded-lg border border-border bg-surface-muted p-3 text-left shadow-xs hover:border-feedback-indigo-border hover:shadow-md cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2"
                                             data-testid={`task-card-${task.id}`}
@@ -378,7 +453,7 @@ export default function AgentPipelinePage() {
 
                                             {/* Footer hint */}
                                             <div className="mt-1 flex items-center justify-between text-[10px] text-content-secondary bg-surface-card px-2 py-1 rounded">
-                                                <span className="truncate max-w-[120px]">{latestEvent}</span>
+                                                <span className="truncate max-w-[120px]">{latestReadinessSignal}</span>
                                                 <span className="shrink-0 text-content-tertiary">{t('agentPipeline.inspect')}</span>
                                             </div>
                                         </motion.button>
@@ -398,8 +473,8 @@ export default function AgentPipelinePage() {
                         subtitle={t('agentPipeline.taskNumber', { id: selectedTask.id })}
                         ariaLabel={selectedTask.title}
                         closeLabel={t('agentPipeline.closePanel')}
-                        onClose={() => setSelectedTask(null)}
-                        className="max-w-5xl"
+                        onClose={() => setSelectedTaskId(null)}
+                        className="max-w-7xl"
                     >
                         <div className="flex h-full flex-col overflow-hidden md:flex-row" data-testid="pipeline-detail-panel">
 
@@ -426,7 +501,9 @@ export default function AgentPipelinePage() {
                                     <div>
                                         <p className="text-xs text-content-secondary uppercase tracking-wider font-semibold">{t('agentPipeline.status')}</p>
                                         <p className="font-semibold text-content-primary uppercase mt-0.5">
-                                            {t(`statuses.${selectedTask.status}`, { defaultValue: selectedTask.status })}
+                                            {safeTaskStatus(selectedTask.status)
+                                                ? t(`statuses.${selectedTask.status}`)
+                                                : t('common.unknown')}
                                         </p>
                                     </div>
                                     <div>
@@ -439,6 +516,11 @@ export default function AgentPipelinePage() {
                                     </div>
                                 </div>
 
+                                <TaskRoutingPanel
+                                    task={selectedTask}
+                                    onAssigned={() => { void refetch(); }}
+                                />
+
                                 {/* Combined Timeline */}
                                 <div className="flex-1 flex flex-col gap-3">
                                     <h3 className="font-bold text-sm text-content-primary font-sans flex items-center gap-2">
@@ -447,7 +529,11 @@ export default function AgentPipelinePage() {
                                     </h3>
 
                                     {Boolean(timelineError) && (
-                                        <QueryErrorState error={timelineError} onRetry={() => { void refetchTimeline(); }} />
+                                        <QueryErrorState
+                                            error={timelineError}
+                                            message={t('agentPipeline.timelineUnavailable')}
+                                            onRetry={() => { void refetchTimeline(); }}
+                                        />
                                     )}
                                     <div className="flex-1 space-y-4 border-l-2 border-border ml-2 pl-4 py-2 mt-2 overflow-y-auto max-h-[300px]">
                                         {!timelineData?.items || timelineData.items.length === 0 ? (
@@ -455,8 +541,7 @@ export default function AgentPipelinePage() {
                                         ) : (
                                             timelineData.items.map((item, idx) => {
                                                 const timestampStr = formatDateTime(item.timestamp);
-                                                const reason = typeof item.payload.reason === 'string' ? item.payload.reason : null;
-                                                const summary = typeof item.payload.summary === 'string' ? item.payload.summary : null;
+                                                const itemLabel = safeTimelineItemLabel(item.item_type);
                                                 return (
                                                     <div key={idx} className="relative flex flex-col gap-0.5">
                                                         {/* Dot indicator */}
@@ -464,22 +549,15 @@ export default function AgentPipelinePage() {
 
                                                         <div className="flex items-center gap-2 text-xs font-semibold text-content-primary">
                                                             <span className="uppercase text-[10px] bg-surface-muted px-1.5 py-0.5 rounded text-content-secondary font-mono">
-                                                                {item.item_type}
+                                                                {t(`agentPipeline.timelineItemTypes.${itemLabel}`)}
                                                             </span>
-                                                            <span>{item.title}</span>
+                                                            <span>{t('agentPipeline.timelineEntry')}</span>
                                                             <span className="text-[10px] text-content-tertiary ml-auto font-mono">{timestampStr}</span>
                                                         </div>
 
-                                                        {reason && (
-                                                            <p className="text-xs text-content-secondary pl-1 italic font-sans">
-                                                                &ldquo;{reason}&rdquo;
-                                                            </p>
-                                                        )}
-                                                        {summary && (
-                                                            <p className="text-xs text-content-secondary pl-1 font-sans">
-                                                                {t('agentPipeline.summary', { summary })}
-                                                            </p>
-                                                        )}
+                                                        <p className="text-xs text-content-secondary pl-1 font-sans">
+                                                            {t('agentPipeline.timelineDetailsWithheld')}
+                                                        </p>
                                                     </div>
                                                 );
                                             })
@@ -491,7 +569,11 @@ export default function AgentPipelinePage() {
                             {/* Right Pane: rich darkness monospace Console Log Terminal */}
                             <div className="w-full md:w-1/2 bg-terminal-surface text-terminal-primary p-6 flex flex-col gap-4 font-mono select-text pt-16 h-full border-t md:border-t-0 md:border-l border-terminal-border">
                                 {Boolean(runError) && (
-                                    <QueryErrorState error={runError} onRetry={() => { void refetchRun(); }} />
+                                    <QueryErrorState
+                                        error={runError}
+                                        message={t('agentPipeline.runUnavailable')}
+                                        onRetry={() => { void refetchRun(); }}
+                                    />
                                 )}
                                 <div className="flex items-center justify-between border-b border-terminal-border pb-3">
                                     <div className="flex items-center gap-2">
@@ -505,52 +587,46 @@ export default function AgentPipelinePage() {
                                         runDetail?.status === 'running' ? "bg-feedback-info-muted text-feedback-info-foreground border border-feedback-info-border animate-pulse" :
                                         "bg-terminal-canvas text-terminal-secondary border border-terminal-border"
                                     )}>
-                                        {runDetail?.status
-                                            ? t(`agentPipeline.runStatuses.${runDetail.status}`, { defaultValue: runDetail.status })
+                                        {runDetail
+                                            ? t(`agentPipeline.runStatuses.${runStatus}`)
                                             : t('agentPipeline.noActiveRun')}
                                     </span>
                                 </div>
 
-                                {/* Active Run Metadata (Model, tool name, artifact links) */}
+                                {/* Only bounded, non-secret run metadata is rendered in this operator view. */}
                                 {runDetail && (
                                     <div className="grid grid-cols-2 gap-2 text-[11px] p-3 rounded-lg bg-terminal-canvas border border-terminal-border text-terminal-secondary">
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.modelTarget')}</span>
-                                            <span className="text-terminal-primary font-semibold">{runDetail.model || t('common.unknown')}</span>
+                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.runIdentifier')}</span>
+                                            <span className="text-terminal-primary font-semibold">#{activeRunId}</span>
                                         </div>
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.currentTool')}</span>
-                                            <span className="text-terminal-primary font-semibold">{runDetail.tool_name || t('common.unassigned')}</span>
+                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.eventCount')}</span>
+                                            <span className="text-terminal-primary font-semibold">{runDetail.events?.length ?? 0}</span>
                                         </div>
-                                        {runDetail.commit_url && (
-                                            <div className="col-span-2 border-t border-terminal-border/50 pt-1.5 mt-1.5 flex items-center justify-between">
-                                                <span className="text-terminal-muted">{t('agentPipeline.githubCommit')}</span>
-                                                <a href={safeExternalHref(runDetail.commit_url)} target="_blank" rel="noopener noreferrer" className="text-terminal-primary hover:text-terminal-secondary hover:underline flex items-center gap-1">
-                                                    {t('agentPipeline.openCommit')} <ExternalLink className="h-3 w-3" />
-                                                </a>
-                                            </div>
-                                        )}
-                                        {runDetail.pr_url && (
-                                            <div className="col-span-2 border-t border-terminal-border/50 pt-1 flex items-center justify-between">
-                                                <span className="text-terminal-muted">{t('agentPipeline.pullRequest')}</span>
-                                                <a href={safeExternalHref(runDetail.pr_url)} target="_blank" rel="noopener noreferrer" className="text-terminal-primary hover:text-terminal-secondary hover:underline flex items-center gap-1">
-                                                    {t('agentPipeline.reviewPr')} <ExternalLink className="h-3 w-3" />
-                                                </a>
-                                            </div>
-                                        )}
-                                        {runDetail.artifact_links && runDetail.artifact_links.length > 0 && (
-                                            <div className="col-span-2 border-t border-terminal-border/50 pt-1 text-terminal-secondary">
-                                                <span className="text-terminal-muted font-semibold block uppercase tracking-wider">{t('agentPipeline.producedArtifacts')}</span>
-                                                <ul className="list-disc pl-4 space-y-1 mt-1 text-[10px]">
-                                                    {runDetail.artifact_links.map((link, idx) => (
-                                                        <li key={idx}>
-                                                            <a href={safeExternalHref(link)} target="_blank" rel="noopener noreferrer" className="text-terminal-primary hover:text-terminal-secondary hover:underline break-all">
-                                                                {link}
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
+                                        <div>
+                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.modelBindingEvidence')}</span>
+                                            <span className="text-terminal-primary font-semibold">
+                                                {modelBindingEvidence
+                                                    ? t('agentPipeline.modelBindingEvidenceValue', modelBindingEvidence)
+                                                    : t('agentPipeline.notReported')}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.modelTrust')}</span>
+                                            <span className="text-terminal-primary font-semibold">
+                                                {t(`agentPipeline.modelTrustStates.${modelTrustState}`)}
+                                            </span>
+                                        </div>
+                                        <p className="col-span-2 border-t border-terminal-border/50 pt-2 text-terminal-muted" role="note">
+                                            {t('agentPipeline.sensitiveRunFieldsWithheld')}
+                                        </p>
+                                        {externalReferenceCount > 0 && (
+                                            <p className="col-span-2 text-terminal-muted" role="note">
+                                                {t('agentPipeline.externalReferencesWithheld', {
+                                                    count: externalReferenceCount,
+                                                })}
+                                            </p>
                                         )}
                                     </div>
                                 )}
@@ -570,24 +646,19 @@ export default function AgentPipelinePage() {
                                                     <div className="flex items-start gap-2">
                                                         <span className="text-terminal-muted select-none shrink-0 font-mono">[{time}]</span>
                                                         <span className="text-terminal-secondary select-none shrink-0 font-semibold uppercase tracking-wider text-[10px] mt-0.5">
-                                                            {evt.event_type}
+                                                            {t('agentPipeline.runEvent')}
                                                         </span>
                                                         <span className="text-terminal-primary break-words flex-1 font-mono font-medium leading-relaxed font-sans">
-                                                            {evt.message}
+                                                            {t('agentPipeline.runEventDetailsWithheld')}
                                                         </span>
                                                     </div>
-                                                    {evt.payload && Object.keys(evt.payload).length > 0 && (
-                                                        <pre className="text-[10px] text-terminal-secondary bg-terminal-surface/20 p-2 rounded border border-terminal-border pl-8 overflow-x-auto whitespace-pre-wrap break-all">
-                                                            {JSON.stringify(evt.payload, null, 2)}
-                                                        </pre>
-                                                    )}
                                                 </div>
                                             );
                                         })
                                     )}
 
                                     {/* Append running cursor if active */}
-                                    {runDetail?.status === 'running' && (
+                                    {runStatus === 'running' && (
                                         <div className="flex items-center gap-1.5 text-terminal-secondary text-[11px] animate-pulse py-1 font-semibold pl-1">
                                             <span className="h-1.5 w-1.5 rounded-full bg-terminal-primary animate-ping" />
                                             <span>{t('agentPipeline.streaming')}</span>
@@ -595,23 +666,23 @@ export default function AgentPipelinePage() {
                                     )}
 
                                     {/* Output failed indicator */}
-                                    {runDetail?.status === 'failed' && (
+                                    {runStatus === 'failed' && (
                                         <div className="mt-4 p-3 bg-feedback-danger-muted border border-feedback-danger-border rounded-md flex items-start gap-2.5 text-feedback-danger-foreground">
                                             <AlertTriangle className="h-4.5 w-4.5 shrink-0 text-feedback-danger mt-0.5" />
                                             <div className="flex flex-col font-mono text-[11px]">
                                                 <span className="font-bold text-feedback-danger-foreground">{t('agentPipeline.outcomeFailed')}</span>
-                                                <p className="text-feedback-danger-foreground mt-1 whitespace-pre-wrap">{runDetail.error || t('agentPipeline.unknownRuntimeError')}</p>
+                                                <p className="text-feedback-danger-foreground mt-1 whitespace-pre-wrap">{t('agentPipeline.failureDetailsWithheld')}</p>
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Succeeded summary indicator */}
-                                    {runDetail?.status === 'succeeded' && (
+                                    {runStatus === 'succeeded' && (
                                         <div className="mt-4 p-3 bg-feedback-success-muted border border-feedback-success-border rounded-md flex items-start gap-2.5 text-feedback-success-foreground">
                                             <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-feedback-success mt-0.5" />
                                             <div className="flex flex-col font-mono text-[11px]">
                                                 <span className="font-bold text-feedback-success-foreground">{t('agentPipeline.outcomeSuccess')}</span>
-                                                <p className="text-feedback-success-foreground mt-1 whitespace-pre-wrap">{runDetail.summary || t('agentPipeline.successSummary')}</p>
+                                                <p className="text-feedback-success-foreground mt-1 whitespace-pre-wrap">{t('agentPipeline.successDetailsWithheld')}</p>
                                             </div>
                                         </div>
                                     )}

@@ -13,7 +13,16 @@ const protectedQueryKeys = [
     ['email-settings'],
     ['outbound-webhook-targets'],
     ['outbound-webhook-deliveries'],
+    ['agent-capabilities'],
+    ['agent-actor-roster'],
+    ['agent-model-catalog'],
+    ['agent-model-bindings'],
+    ['agent-profile-skill-catalog'],
+    ['routing-assessment'],
+    ['routing-preview'],
+    ['agent-assignments'],
     ['agent-pipeline'],
+    ['task-timeline'],
     ['agent-run-detail'],
 ] as const;
 
@@ -30,6 +39,12 @@ export const AdminAccessPanel = () => {
         });
     };
 
+    const removeProtectedQueries = () => {
+        protectedQueryKeys.forEach(queryKey => {
+            queryClient.removeQueries({ queryKey: [...queryKey] });
+        });
+    };
+
     const saveKey = () => {
         const nextKey = draftKey.trim();
         if (!nextKey) {
@@ -38,6 +53,7 @@ export const AdminAccessPanel = () => {
         }
 
         setAdminApiKey(nextKey);
+        removeProtectedQueries();
         setDraftKey('');
         setMessage({ type: 'success', text: t('settings.adminAccessSaved') });
         refreshProtectedQueries();
@@ -45,9 +61,9 @@ export const AdminAccessPanel = () => {
 
     const clearKey = () => {
         clearAdminApiKey();
+        removeProtectedQueries();
         setDraftKey('');
         setMessage({ type: 'success', text: t('settings.adminAccessCleared') });
-        refreshProtectedQueries();
     };
 
     return (
