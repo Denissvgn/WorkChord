@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
     AgentCommandMetadata,
     AgentModelCatalogCreate,
+    AgentTeamMaster,
+    AgentTeamPlan,
     ModelAwareAgentTaskAssignmentCreate,
     TaskRoutingAssessmentCommand,
 } from '../types/agent';
@@ -83,6 +85,27 @@ const assignmentCommand: ModelAwareAgentTaskAssignmentCreate = {
     reason: 'Selected from the current routing preview.',
 };
 
+const agentTeamMaster = {
+    schema_version: 'agent-team-master-v1',
+    topology_key: 'delivery-team',
+    server_url: 'https://workchord.invalid',
+    credential_sink_ref: 'agent-team-secure-sink',
+    required_server_features: ['agent-team-master-v1'],
+    controller: {},
+    workers: [{}],
+    verifiers: [],
+    readiness_policy: {
+        minimum_execution_workers: 1,
+        require_independent_verifier_when_assessed: false,
+        maximum_runtime_staleness_seconds: 300,
+    },
+} as unknown as AgentTeamMaster;
+
+const agentTeamPlan = {
+    expected_topology_revision: 3,
+    plan_digest: 'c'.repeat(64),
+} as AgentTeamPlan;
+
 describe('agentService model-aware routing requests', () => {
     beforeEach(() => {
         mockedApi.get.mockReset();
@@ -153,6 +176,49 @@ describe('agentService model-aware routing requests', () => {
         expect(mockedApi.post).toHaveBeenCalledWith(
             '/agent/assignments',
             assignmentCommand,
+            expectedCommandConfig,
+        );
+    });
+
+    it('uses the setup status, validate, plan, and single-action apply contracts', async () => {
+        await agentService.getAgentTeamStatus('delivery-team');
+        await agentService.validateAgentTeamMaster(agentTeamMaster);
+        await agentService.planAgentTeamMaster(agentTeamMaster, 3);
+        await agentService.applyAgentTeamAction(
+            agentTeamMaster,
+            agentTeamPlan,
+            'safe-update-worker',
+            true,
+            metadata,
+        );
+
+        expect(mockedApi.get).toHaveBeenCalledWith(
+            '/agent/team-setup/status',
+            { params: { topology_key: 'delivery-team' } },
+        );
+        expect(mockedApi.post).toHaveBeenNthCalledWith(
+            1,
+            '/agent/team-setup/validate',
+            { manifest: agentTeamMaster },
+        );
+        expect(mockedApi.post).toHaveBeenNthCalledWith(
+            2,
+            '/agent/team-setup/plan',
+            {
+                manifest: agentTeamMaster,
+                expected_topology_revision: 3,
+            },
+        );
+        expect(mockedApi.post).toHaveBeenNthCalledWith(
+            3,
+            '/agent/team-setup/apply',
+            {
+                manifest: agentTeamMaster,
+                expected_topology_revision: 3,
+                plan_digest: agentTeamPlan.plan_digest,
+                approved_action_ids: ['safe-update-worker'],
+                confirmed_action_ids: ['safe-update-worker'],
+            },
             expectedCommandConfig,
         );
     });

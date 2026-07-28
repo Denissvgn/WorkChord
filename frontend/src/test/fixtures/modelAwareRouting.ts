@@ -92,6 +92,8 @@ export const modelAwareRoutingPreview: AgentRoutingPreviewResponse = {
     preview_digest: 'a'.repeat(64),
     input_digest: 'b'.repeat(64),
     task_id: 42,
+    topology_key: 'backend-test-topology',
+    topology_revision: 1,
     purpose: 'execution',
     assessment_id: 91,
     assessment_task_version: 7,

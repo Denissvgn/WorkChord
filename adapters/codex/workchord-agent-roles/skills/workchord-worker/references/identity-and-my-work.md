@@ -21,6 +21,29 @@ Treat profile capability matches as advisory. Enforce permissions through actor
 scopes and enforce execution ownership through the assignment plus live claim
 and fence.
 
+## Complete Restricted Topology Onboarding
+
+An operator-managed runtime may start with an
+`agent-team-runtime-handoff-v1` packet and a credential delivered separately by
+the external sink. Check the handoff's topology and logical actor keys,
+resolved actor ID, role, server URL, required features, package
+version/checksum, profile revision, binding revisions, assignment modes, and
+credential reference. Verify the installed package bytes against the checksum.
+
+Before normal capabilities, MCP, roster, assignment, or work calls, send only
+the exact `agent-team-runtime-ack-v1` body to
+`POST /api/agent/team-setup/onboarding/acknowledge` with the onboarding key in
+`X-Agent-API-Key`. The body repeats the current topology key/revision, logical
+actor key, role, package identity, profile revision, binding-revision map,
+required server features, and supported assignment modes from the handoff and
+runtime. Do not add credential values, prompts, environment data, or logs.
+
+A successful acknowledgement activates only that exact identity. A revision,
+package, profile, binding, feature, role, mode, or actor mismatch is a stop
+condition: retain the handoff, report the bounded conflict code to the operator,
+and wait for a fresh handoff. Do not retry a changed body under an old
+topology revision and do not use MCP during onboarding.
+
 ## Read Identity Safely
 
 Obtain configuration from the runtime secret/configuration store:
@@ -41,6 +64,8 @@ Confirm:
 - work policy and `max_parallel_work`;
 - lease limits and supported lifecycle actions;
 - stable feature keys and recommended worker-skill compatibility.
+- the active actor identity and `agent-team-master-v1` feature against the
+  exact secret-free handoff that was acknowledged during onboarding;
 - when model-aware routing is advertised, the assignment/context fields that
   carry assessment policy, selected binding/revision, configured alias, and
   required observed-model evidence.
@@ -60,6 +85,7 @@ Use autonomous v1 only when all required features are advertised:
 | Feature | Guarantee required by this skill |
 | --- | --- |
 | `agent-capabilities-v1` | Authenticated actor, scope, policy, action, feature, and compatibility handshake |
+| `agent-team-master-v1` | Operator-reconciled membership, restricted onboarding acknowledgement, and backend-derived runtime readiness |
 | `actor-task-assignments` | Exact, durable execution dispatch to this actor |
 | `my-work-v1` | Server-owned current/next decision and queue revision |
 | `snapshot-pagination-v1` | Ready, blocked, review, and recovery pages use opaque snapshot-bound cursors |

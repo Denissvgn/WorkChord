@@ -1,0 +1,86 @@
+{
+  "controller": {
+    "actor_key": "primary-pm",
+    "actor_name": "workchord-primary-pm",
+    "assignment_modes": [
+      "ownership"
+    ],
+    "credential_ref": "agent-team-secure-sink/primary-pm",
+    "default_model_binding_key": "planning-default",
+    "display_name": "Primary Planning Controller",
+    "model_binding_keys": [
+      "planning-default"
+    ],
+    "profile_key": "pm-planning-agent",
+    "role": "pm",
+    "runtime_ref": "runtime://primary-pm",
+    "scope_preset": "pm-v1",
+    "skill_package": {
+      "name": "workchord-pm",
+      "sha256": "ec20029aa798ae3cd2cfc11b78c857e8d187830472dbe48fe2dd6b722bfd0ad3",
+      "version": "1.7.0"
+    }
+  },
+  "credential_sink_ref": "agent-team-secure-sink",
+  "readiness_policy": {
+    "maximum_runtime_staleness_seconds": 300,
+    "minimum_execution_workers": 1,
+    "require_independent_verifier_when_assessed": true
+  },
+  "required_server_features": [
+    "actor-roster-v1",
+    "agent-team-master-v1",
+    "model-aware-routing-v1"
+  ],
+  "schema_version": "agent-team-master-v1",
+  "server_url": "http://localhost:8001",
+  "topology_key": "default-agent-team",
+  "verifiers": [
+    {
+      "actor_key": "independent-verifier",
+      "actor_name": "workchord-independent-verifier",
+      "assignment_modes": [
+        "verification"
+      ],
+      "credential_ref": "agent-team-secure-sink/independent-verifier",
+      "default_model_binding_key": "verification-default",
+      "display_name": "Independent Verification Runtime",
+      "model_binding_keys": [
+        "verification-default"
+      ],
+      "profile_key": "qa-verification-agent",
+      "role": "verifier",
+      "runtime_ref": "runtime://independent-verifier",
+      "scope_preset": "verifier-v1",
+      "skill_package": {
+        "name": "workchord-pm",
+        "sha256": "ec20029aa798ae3cd2cfc11b78c857e8d187830472dbe48fe2dd6b722bfd0ad3",
+        "version": "1.7.0"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "actor_key": "backend-worker",
+      "actor_name": "workchord-backend-worker",
+      "assignment_modes": [
+        "execution"
+      ],
+      "credential_ref": "agent-team-secure-sink/backend-worker",
+      "default_model_binding_key": "implementation-default",
+      "display_name": "Backend Implementation Runtime",
+      "model_binding_keys": [
+        "implementation-default"
+      ],
+      "profile_key": "backend-implementation-agent",
+      "role": "worker",
+      "runtime_ref": "runtime://backend-worker",
+      "scope_preset": "worker-v1",
+      "skill_package": {
+        "name": "workchord-worker",
+        "sha256": "8e6a9cae0def70887367378de3d73ff7e2cd2ba385c6d6d60391b7b364470ba8",
+        "version": "1.6.0"
+      }
+    }
+  ]
+}

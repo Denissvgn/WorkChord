@@ -15,6 +15,10 @@
     {
       "catalog_sha256": "c220ecb25b39b94ae5c86549d25dffd587d4addbe23c7e45941e68a275147ae1",
       "version": "1.6.0"
+    },
+    {
+      "catalog_sha256": "3b6a33884b1fc67ffe87e2646dc4f813a01799b47fc02d8798c61866ae57a7ef",
+      "version": "1.7.0"
     }
   ],
   "releases": [
@@ -39,6 +43,11 @@
       "version": "1.6.0"
     },
     {
+      "catalog_entry_sha256": "badc0d5082ab7fce640f3c3b010cd5d3f08ca85b4c8d3e245eced2f20e986d76",
+      "name": "workchord-pm",
+      "version": "1.7.0"
+    },
+    {
       "catalog_entry_sha256": "c5d8fc003ae547b6478a808347181eb2952d1ffd4ae1603153bbc44f57e42602",
       "name": "workchord-worker",
       "version": "1.2.0"
@@ -57,6 +66,11 @@
       "catalog_entry_sha256": "bf040ba44237b6fa8f33446883f3b1d7ec6d806559f103bce89c4d5ac749e565",
       "name": "workchord-worker",
       "version": "1.5.0"
+    },
+    {
+      "catalog_entry_sha256": "f7a309605cf5437d8bade1e6c1139b191825b4fc0dc3fa73f0b92e45cf3b6c55",
+      "name": "workchord-worker",
+      "version": "1.6.0"
     }
   ],
   "schema_version": "workchord-agent-skills-baseline/v2"

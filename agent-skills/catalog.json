@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.6.0",
+  "catalog_version": "1.7.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,23 +8,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.6.0.tar.gz",
-          "sha256": "3e6583c516cc618496e9916e0a50ea2ca835d2c6aec3b68c32f7a11db576ad51",
+          "path": "workchord-pm-1.7.0.tar.gz",
+          "sha256": "1904ce5948ba34ffa4f7b6e338515d3f7175d3eb743303952a64908c30c6475b",
           "size": 133153
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.6.0.zip",
-          "sha256": "abd0085cf8a2dc23d445d2a3854d7ab241ffa70c08d68bfd330f7742b9d7d6ba",
-          "size": 118692
+          "path": "workchord-pm-1.7.0.zip",
+          "sha256": "ec20029aa798ae3cd2cfc11b78c857e8d187830472dbe48fe2dd6b722bfd0ad3",
+          "size": 120404
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "6b7de118ab6a99c631c76e37dfd6cc0b9e40fb09ee39553b603ca871a5f13a57",
-          "size": 10238
+          "sha256": "b54943cc79c4a5602a4d3aadb18ae4f6ef9a728ceb30c8f916c9fda8a69bfbaf",
+          "size": 11143
         },
         {
           "path": "agents/openai.yaml",
@@ -33,8 +33,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "87e40d8f930d4539ceb6b28564745b854c28a4e32c0cb64df33f03c2759f00bc",
-          "size": 36466
+          "sha256": "4c2376a89b0e71da92e534d339dde4a93a88524a87e94951d55f871dbe4b651c",
+          "size": 36753
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/system-map-and-authority.md",
-          "sha256": "5ee76623222beeb456d3fa2e08425da4e84ea00d81040a64fcdf5ce827e822d3",
-          "size": 9064
+          "sha256": "ac19b0795daba042bf1057e23bdc537575a3986dd5bcb6a428673b856a8649aa",
+          "size": 9584
         },
         {
           "path": "references/team-capacity-and-calendar.md",
@@ -76,6 +76,7 @@
         "actor-task-assignments",
         "agent-capabilities-v1",
         "agent-discovery-triage-v1",
+        "agent-team-master-v1",
         "atomic-begin-submit",
         "atomic-renew-v1",
         "complete-task-context",
@@ -100,31 +101,31 @@
         "team:write"
       ],
       "role": "pm",
-      "server_compatibility": ">=1.6.1,<2.0.0",
-      "version": "1.6.0"
+      "server_compatibility": ">=1.7.0,<2.0.0",
+      "version": "1.7.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.5.0.tar.gz",
-          "sha256": "c2a95cf09f0019f05e082a8f9304640bec9e3569e90f229db11519b6ac2679a5",
-          "size": 61463
+          "path": "workchord-worker-1.6.0.tar.gz",
+          "sha256": "48d86a4f18ca0b446f439f1ba2e80b2e6d00a0aac5969eecf2aae0a7ffefb3d7",
+          "size": 71708
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.5.0.zip",
-          "sha256": "f3e28ecba44ff86ce4641623d0e5d2ea2a92bef80af0cb5e795d00d17589242b",
-          "size": 56100
+          "path": "workchord-worker-1.6.0.zip",
+          "sha256": "8e6a9cae0def70887367378de3d73ff7e2cd2ba385c6d6d60391b7b364470ba8",
+          "size": 58624
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "a986203b3d8bbf34eb0d8919a8a32f4ccda10af7a1cffc19fad7b875c3824a9c",
-          "size": 7577
+          "sha256": "b0e28789f0320f17341d12a34820f50664153db5c7ef3dd315c6202bd91444a7",
+          "size": 8196
         },
         {
           "path": "agents/openai.yaml",
@@ -133,8 +134,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "343a252bb39c23c80585affa8fa3401cb20fc9224fe3cdb44d8900429f0dc239",
-          "size": 19932
+          "sha256": "5e2f03ae4d184ec61d85b0a82b79ec37c4b50419c0eb37548405dfdb42f1c025",
+          "size": 20219
         },
         {
           "path": "references/claim-run-and-task-state.md",
@@ -148,8 +149,8 @@
         },
         {
           "path": "references/identity-and-my-work.md",
-          "sha256": "59222ff79a7aa1ceb5d0fe5c7cd7a501310748c75424cf6c20cec7791e1bdcaa",
-          "size": 8123
+          "sha256": "3e32655f93a8cbc2d1bf1ce60af445775cc8519897d99120a7dceae80e5dfbf3",
+          "size": 9741
         },
         {
           "path": "references/task-context-and-scope.md",
@@ -168,6 +169,7 @@
         "actor-task-assignments",
         "agent-capabilities-v1",
         "agent-discovery-triage-v1",
+        "agent-team-master-v1",
         "atomic-begin-submit",
         "atomic-renew-v1",
         "complete-task-context",
@@ -185,9 +187,9 @@
         "work:execute"
       ],
       "role": "worker",
-      "server_compatibility": ">=1.6.1,<2.0.0",
-      "version": "1.5.0"
+      "server_compatibility": ">=1.7.0,<2.0.0",
+      "version": "1.6.0"
     }
   ],
-  "source_revision": "sha256:c1919e1d890fcae90305ac0525143b25f1b703d825998da7620c460f292c1531"
+  "source_revision": "sha256:6577a4ab67e0c8b540f8489ba5df141f90f87e5508816bfc93d1c0d4de091db4"
 }

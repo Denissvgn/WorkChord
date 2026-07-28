@@ -11,11 +11,18 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 
 1. Identify the WorkChord base URL or connected MCP server without exposing credentials.
 2. Read the live capabilities contract when the server provides it. Otherwise inspect the available tools and treat the session as supervised v0.
-3. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
-4. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
-5. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
+3. When `agent-team-master-v1` is advertised, read the bound team status and
+   confirm the controller identity, topology revision, required runtime
+   acknowledgements, and `runtime_ready` state. Treat
+   `availability_unknown` as intentional until a concrete task is evaluated.
+4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
+5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
+6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
 
 Never provision actors, issue or rotate keys, modify runtime secrets, or infer authorization from a profile skill, task label, or installed procedural skill. Ask an operator to perform identity administration.
+The Setup Master validate/plan/apply surfaces are operator-only. A bound PM may
+read its secret-free topology status and handoffs but must not adopt, create,
+replace, disable, activate, or broaden any member.
 
 The full assigned-work v1 PM controller requires both `recovery:read` and
 `recovery:write`. A PM without recovery write authority may diagnose and hand
@@ -83,6 +90,7 @@ Compare submitted evidence with every acceptance criterion. Let an independent v
 
 Use assigned-work v1 only when the live server advertises
 `agent-capabilities-v1`, `actor-roster-v1`, `actor-task-assignments`,
+`agent-team-master-v1`,
 `my-work-v1`, `snapshot-pagination-v1`, `work-etag-v1`,
 `complete-task-context`, `atomic-begin-submit`, `atomic-renew-v1`,
 `fenced-claims`, `verification-v1`,
@@ -110,6 +118,12 @@ assigned-work lifecycle when otherwise supported but use supervised
 compatibility routing and state explicitly that the actor/model choice was not
 model-aware. Never infer missing model capability from a deployment name,
 provider-facing model name, profile summary, or local prose.
+
+When `agent-team-master-v1` is present, the roster is scoped to the caller's
+current runtime-ready topology. Preserve the topology revision from status and
+routing preview evidence. Any setup, membership, package, profile, binding, or
+acknowledgement change requires a fresh status read and a fresh routing preview;
+never dispatch to an actor visible only in a manifest or an older receipt.
 
 ## Handle Failures Conservatively
 

@@ -50,6 +50,7 @@ export type RoutingBlockerCode =
     | 'actor_role_incompatible'
     | 'actor_scope_missing'
     | 'actor_policy_incompatible'
+    | 'actor_topology_incompatible'
     | 'actor_profile_missing'
     | 'capacity_owner_missing'
     | 'capacity_owner_profile_missing'
@@ -102,6 +103,7 @@ export interface AgentActor {
     display_name: string;
     scopes: string[];
     enabled: boolean;
+    lifecycle_state?: 'active' | 'onboarding' | 'disabled';
     role: AgentActorRole | string;
     profile_id: number | null;
     work_policy: string;
@@ -472,6 +474,8 @@ export interface AgentRoutingPreviewResponse {
     preview_digest: string;
     input_digest: string;
     task_id: number;
+    topology_key: string | null;
+    topology_revision: number | null;
     purpose: AgentAssignmentPurpose;
     assessment_id: number;
     assessment_task_version: number;
@@ -623,4 +627,193 @@ export interface TaskTimelineItem {
 export interface TaskTimelineResponse {
     task_id: number;
     items: TaskTimelineItem[];
+}
+
+export type AgentTeamRole = 'pm' | 'worker' | 'verifier';
+export type AgentTeamStepState = 'done' | 'warn' | 'blocked' | 'todo';
+export type AgentTeamLifecycle =
+    | 'desired'
+    | 'configured'
+    | 'credential_delivered'
+    | 'onboarding'
+    | 'connected'
+    | 'runtime_ready'
+    | 'disabled';
+
+export interface AgentTeamSkillPackage {
+    name: string;
+    version: string;
+    sha256: string;
+}
+
+export interface AgentTeamMemberSpec {
+    actor_key: string;
+    actor_name: string;
+    display_name: string;
+    role: AgentTeamRole;
+    scope_preset: 'pm-v1' | 'worker-v1' | 'verifier-v1';
+    profile_key: string;
+    skill_package: AgentTeamSkillPackage;
+    assignment_modes: string[];
+    model_binding_keys: string[];
+    default_model_binding_key: string;
+    runtime_ref: string;
+    credential_ref: string;
+}
+
+export interface AgentTeamMaster {
+    schema_version: 'agent-team-master-v1';
+    topology_key: string;
+    server_url: string;
+    credential_sink_ref: string;
+    required_server_features: string[];
+    controller: AgentTeamMemberSpec;
+    workers: AgentTeamMemberSpec[];
+    verifiers: AgentTeamMemberSpec[];
+    readiness_policy: {
+        minimum_execution_workers: number;
+        require_independent_verifier_when_assessed: boolean;
+        maximum_runtime_staleness_seconds: number;
+    };
+}
+
+export interface AgentTeamValidation {
+    schema_version: 'agent-team-validation-v1';
+    valid: boolean;
+    manifest_digest: string;
+    normalized_manifest: AgentTeamMaster;
+    blocker_codes: string[];
+}
+
+export type AgentTeamReconciliationClass =
+    | 'create'
+    | 'safe_update'
+    | 'no_change'
+    | 'blocked_conflict'
+    | 'requires_replacement'
+    | 'propose_disable'
+    | 'unmanaged';
+
+export interface AgentTeamPlanAction {
+    action_id: string;
+    action_digest: string;
+    reconciliation_class: AgentTeamReconciliationClass;
+    operation: string;
+    actor_key: string;
+    target_actor_id: number | null;
+    expected_object_revision: number | null;
+    expected_actor_revision: number | null;
+    before: Record<string, JsonValue> | null;
+    after: Record<string, JsonValue> | null;
+    preconditions: Record<string, JsonValue>;
+    blocker_code: string | null;
+    requires_explicit_confirmation: boolean;
+    authority_change: boolean;
+}
+
+export interface AgentTeamPlan {
+    schema_version: 'agent-team-reconciliation-plan-v1';
+    topology_key: string;
+    expected_topology_revision: number;
+    manifest_digest: string;
+    plan_digest: string;
+    actions: AgentTeamPlanAction[];
+    blocker_codes: string[];
+}
+
+export interface AgentTeamActionReceipt {
+    action_id: string;
+    action_digest: string;
+    reconciliation_class: AgentTeamReconciliationClass;
+    operation: string;
+    actor_key: string;
+    status: 'pending' | 'applied' | 'no_change' | 'blocked';
+    target_actor_id: number | null;
+    before_revision: number | null;
+    after_revision: number | null;
+    blocker_code: string | null;
+    next_action: string | null;
+}
+
+export interface AgentTeamApplyResponse {
+    schema_version: 'agent-team-apply-receipt-v1';
+    apply_id: string;
+    topology_key: string;
+    manifest_digest: string;
+    plan_digest: string;
+    expected_topology_revision: number;
+    resulting_topology_revision: number;
+    status: 'completed' | 'partial' | 'blocked';
+    replayed: boolean;
+    receipts: AgentTeamActionReceipt[];
+    pending_action_ids: string[];
+    blocker_codes: string[];
+}
+
+export interface AgentTeamRuntimeHandoff {
+    schema_version: 'agent-team-runtime-handoff-v1';
+    topology_key: string;
+    topology_revision: number;
+    actor_key: string;
+    actor_id: number;
+    role: AgentTeamRole;
+    server_url: string;
+    required_server_features: string[];
+    skill_package: AgentTeamSkillPackage;
+    profile_key: string;
+    profile_revision: string;
+    model_binding_revisions: Record<string, number>;
+    supported_assignment_modes: string[];
+    startup_instructions: string[];
+    credential_ref: string;
+}
+
+export interface AgentTeamMemberStatus {
+    actor_key: string;
+    actor_id: number | null;
+    actor_name: string;
+    display_name: string;
+    role: AgentTeamRole;
+    desired: boolean;
+    configured: boolean;
+    lifecycle_state: AgentTeamLifecycle;
+    enabled: boolean;
+    profile_key: string;
+    profile_revision: string | null;
+    binding_revisions: Record<string, number>;
+    skill_package: AgentTeamSkillPackage;
+    package_acknowledged: boolean;
+    credential_delivery_state: 'pending' | 'delivered' | 'uncertain' | 'not_required';
+    connection_state: 'unobserved' | 'observed' | 'stale';
+    last_seen_at: string | null;
+    queued_assignments: number | null;
+    accepted_assignments: number | null;
+    running_runs: number | null;
+    runtime_ready: boolean;
+    availability: 'availability_unknown';
+    blocker_codes: string[];
+    handoff: AgentTeamRuntimeHandoff | null;
+}
+
+export interface AgentTeamSetupStep {
+    id: 'authority' | 'master' | 'controller' | 'workers' | 'bindings' | 'verifier' | 'review';
+    state: AgentTeamStepState;
+    blocker_codes: string[];
+    next_action: string | null;
+}
+
+export interface AgentTeamStatus {
+    schema_version: 'agent-team-status-v1';
+    topology_key: string | null;
+    topology_revision: number | null;
+    manifest_digest: string | null;
+    topology_state: 'absent' | 'configured' | 'onboarding' | 'runtime_ready' | 'blocked' | 'disabled';
+    runtime_ready: boolean;
+    availability: 'availability_unknown';
+    blocker_codes: string[];
+    steps: AgentTeamSetupStep[];
+    members: AgentTeamMemberStatus[];
+    pending_action_ids: string[];
+    can_mutate: boolean;
+    next_action: string | null;
 }

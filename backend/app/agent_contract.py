@@ -5,6 +5,7 @@ from __future__ import annotations
 
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
+AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
 
 # Add a feature only after every REST/MCP read, mutation, validation, and
 # compatibility boundary behind it is live. In particular, the Wave 1 routing
@@ -12,6 +13,7 @@ SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
 AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     "agent-capabilities-v1",
     "actor-roster-v1",
+    AGENT_TEAM_MASTER_FEATURE,
     "actor-task-assignments",
     "my-work-v1",
     "snapshot-pagination-v1",

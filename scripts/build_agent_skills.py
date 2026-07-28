@@ -44,10 +44,11 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.6.0"
+CATALOG_VERSION = "1.7.0"
 API_CONTRACT = "workchord-agent/v1"
-SERVER_COMPATIBILITY = ">=1.6.1,<2.0.0"
+SERVER_COMPATIBILITY = ">=1.7.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
+AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
 ARTIFACT_LICENSE = "MIT"
 NORMALIZED_FILE_MODE = 0o644
 
@@ -146,6 +147,17 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "/api/agent/capabilities",
             "agent_get_capabilities",
             "Read identity, authority, limits, features, and compatibility first.",
+        ),
+        _assigned_work_operation(
+            "agent-team-status",
+            "PM/operator",
+            "GET",
+            "/api/agent/team-setup/status",
+            "agent_get_team_setup_status",
+            "Read the caller-bound topology revision, handoff, and backend-derived "
+            "runtime readiness without inferring task availability.",
+            query_optional=("topology_key",),
+            required_feature=AGENT_TEAM_MASTER_FEATURE,
         ),
         _assigned_work_operation(
             "actor-roster",
@@ -714,9 +726,10 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.6.0",
+        "version": "1.7.0",
         "required_features": [
             "agent-capabilities-v1",
+            AGENT_TEAM_MASTER_FEATURE,
             "actor-roster-v1",
             "actor-task-assignments",
             "atomic-begin-submit",
@@ -752,9 +765,10 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.5.0",
+        "version": "1.6.0",
         "required_features": [
             "agent-capabilities-v1",
+            AGENT_TEAM_MASTER_FEATURE,
             "actor-task-assignments",
             "agent-discovery-triage-v1",
             "atomic-begin-submit",

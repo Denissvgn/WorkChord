@@ -202,6 +202,7 @@ class RoutingBlockerCode(StrEnum):
     ACTOR_ROLE_INCOMPATIBLE = "actor_role_incompatible"
     ACTOR_SCOPE_MISSING = "actor_scope_missing"
     ACTOR_POLICY_INCOMPATIBLE = "actor_policy_incompatible"
+    ACTOR_TOPOLOGY_INCOMPATIBLE = "actor_topology_incompatible"
     ACTOR_PROFILE_MISSING = "actor_profile_missing"
     CAPACITY_OWNER_MISSING = "capacity_owner_missing"
     CAPACITY_OWNER_PROFILE_MISSING = "capacity_owner_profile_missing"

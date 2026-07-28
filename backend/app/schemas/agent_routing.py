@@ -1127,6 +1127,8 @@ class AgentRoutingPreviewResponse(RoutingContractModel):
     preview_digest: RoutingDigest
     input_digest: RoutingDigest
     task_id: int = Field(..., strict=True, ge=1)
+    topology_key: str | None = Field(default=None, min_length=1, max_length=100)
+    topology_revision: int | None = Field(default=None, strict=True, ge=1)
     purpose: Literal["execution", "verification"]
     assessment_id: int = Field(..., strict=True, ge=1)
     assessment_task_version: int = Field(..., strict=True, ge=1)
@@ -1331,6 +1333,8 @@ class RoutingDecisionSnapshot(RoutingContractModel):
     selection_pending: Literal[False] = False
     policy_version: Literal["model-aware-routing-v1"] = ROUTING_POLICY_VERSION
     task_id: int = Field(..., strict=True, ge=1)
+    topology_key: str | None = Field(default=None, min_length=1, max_length=100)
+    topology_revision: int | None = Field(default=None, strict=True, ge=1)
     task_version: int = Field(..., strict=True, ge=1)
     assessment_id: int = Field(..., strict=True, ge=1)
     assessment_task_version: int = Field(..., strict=True, ge=1)

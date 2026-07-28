@@ -119,6 +119,7 @@ class AgentService:
             select(AgentActor).where(
                 AgentActor.api_key_hash == key_hash,
                 AgentActor.enabled.is_(True),
+                AgentActor.lifecycle_state == "active",
             )
         )
         actor = result.scalar_one_or_none()
@@ -140,6 +141,19 @@ class AgentService:
                 await self.db.refresh(actor)
 
         return actor
+
+    async def authenticate_onboarding(self, api_key: str) -> Optional[AgentActor]:
+        """Authenticate only a disabled onboarding identity for setup acknowledgement."""
+
+        key_hash = hash_api_key(api_key)
+        result = await self.db.execute(
+            select(AgentActor).where(
+                AgentActor.api_key_hash == key_hash,
+                AgentActor.enabled.is_(False),
+                AgentActor.lifecycle_state == "onboarding",
+            )
+        )
+        return result.scalar_one_or_none()
 
     def authenticate_bootstrap_key(self, api_key: str) -> Optional[AgentActor]:
         """Return a transient provisioning actor for the bootstrap API key."""
@@ -189,6 +203,7 @@ class AgentService:
             api_key_hash=hash_api_key(api_key),
             scopes=json.dumps(data.scopes),
             enabled=data.enabled,
+            lifecycle_state="active" if data.enabled else "disabled",
             role=data.role,
             profile_id=data.profile_id,
             work_policy=data.work_policy,

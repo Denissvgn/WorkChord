@@ -20,6 +20,11 @@ import type {
     AgentRoutingPreviewResponse,
     AgentRun,
     AgentTaskAssignment,
+    AgentTeamApplyResponse,
+    AgentTeamMaster,
+    AgentTeamPlan,
+    AgentTeamStatus,
+    AgentTeamValidation,
     ModelAwareAgentTaskAssignmentCreate,
     ModelAwareAgentTaskAssignmentUpdate,
     TaskRoutingAssessmentCommand,
@@ -38,6 +43,58 @@ const commandHeaders = (metadata: AgentCommandMetadata) => ({
 export const agentService = {
     async getCapabilities(): Promise<AgentCapabilities> {
         const response = await api.get<AgentCapabilities>('/agent/capabilities');
+        return response.data;
+    },
+
+    async getAgentTeamStatus(topologyKey?: string): Promise<AgentTeamStatus> {
+        const response = await api.get<AgentTeamStatus>('/agent/team-setup/status', {
+            params: topologyKey ? { topology_key: topologyKey } : undefined,
+        });
+        return response.data;
+    },
+
+    async validateAgentTeamMaster(
+        manifest: AgentTeamMaster,
+    ): Promise<AgentTeamValidation> {
+        const response = await api.post<AgentTeamValidation>(
+            '/agent/team-setup/validate',
+            { manifest },
+        );
+        return response.data;
+    },
+
+    async planAgentTeamMaster(
+        manifest: AgentTeamMaster,
+        expectedTopologyRevision: number,
+    ): Promise<AgentTeamPlan> {
+        const response = await api.post<AgentTeamPlan>(
+            '/agent/team-setup/plan',
+            {
+                manifest,
+                expected_topology_revision: expectedTopologyRevision,
+            },
+        );
+        return response.data;
+    },
+
+    async applyAgentTeamAction(
+        manifest: AgentTeamMaster,
+        plan: AgentTeamPlan,
+        actionId: string,
+        confirmed: boolean,
+        metadata: AgentCommandMetadata,
+    ): Promise<AgentTeamApplyResponse> {
+        const response = await api.post<AgentTeamApplyResponse>(
+            '/agent/team-setup/apply',
+            {
+                manifest,
+                expected_topology_revision: plan.expected_topology_revision,
+                plan_digest: plan.plan_digest,
+                approved_action_ids: [actionId],
+                confirmed_action_ids: confirmed ? [actionId] : [],
+            },
+            { headers: commandHeaders(metadata) },
+        );
         return response.data;
     },
 

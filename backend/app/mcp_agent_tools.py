@@ -114,7 +114,10 @@ from app.services.agent_profile_catalog_service import AgentProfileCatalogServic
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_routing_service import AgentRoutingService
-from app.services.agent_routing_rollout import AgentRoutingRolloutService
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutService,
+    AgentRoutingTopologyReadinessStatus,
+)
 from app.services.agent_service import (
     AgentConflictError,
     AgentService,
@@ -127,6 +130,7 @@ from app.services.agent_skill_bundle_service import (
     SkillBundleArtifactError,
     SkillBundleNotFoundError,
 )
+from app.services.agent_team_setup_service import AgentTeamSetupService
 from app.services.agent_work_service import AgentWorkService
 from app.services.assignee_recommendation_service import AssigneeRecommendationService
 from app.services.external_link_service import ExternalLinkService
@@ -1214,7 +1218,20 @@ async def get_agent_capabilities(
     """MCP handler: return the authenticated v1 compatibility handshake."""
     recommended: dict[str, str] = {}
     catalog_version: str | None = None
-    rollout_status = AgentRoutingRolloutService().status()
+    if db is None:
+        rollout_status = AgentRoutingRolloutService().status()
+    else:
+        topology_readiness = await AgentTeamSetupService(
+            db
+        ).routing_readiness(actor)
+        rollout_status = (
+            AgentRoutingRolloutService()
+            if topology_readiness.status
+            == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
+            else AgentRoutingRolloutService(
+                topology_readiness=topology_readiness
+            )
+        ).status()
     features = agent_contract_features(
         include_skill_bundles=False,
         model_aware_routing_mode=rollout_status.effective_mode.value,
@@ -1269,6 +1286,15 @@ async def get_agent_capabilities(
         model_aware_routing=rollout_status.as_dict(),
     )
     return response.model_dump(mode="json")
+
+
+async def get_agent_team_setup_status(
+    db: AsyncSession,
+    actor: AgentActor,
+) -> dict[str, Any]:
+    """MCP handler: return the caller's backend-derived topology status."""
+    status = await AgentTeamSetupService(db).status(actor)
+    return status.model_dump(mode="json")
 
 
 async def list_agent_actor_roster(

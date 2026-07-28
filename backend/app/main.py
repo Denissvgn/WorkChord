@@ -42,7 +42,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="WorkChord API",
     description="API для планирования работ команды разработки",
-    version="1.6.2",
+    version="1.7.0",
     lifespan=lifespan,
 )
 

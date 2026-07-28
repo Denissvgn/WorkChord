@@ -93,6 +93,7 @@ from app.services.agent_routing_rollout import (
     AgentRoutingRolloutError,
     AgentRoutingRolloutMode,
     AgentRoutingRolloutService,
+    AgentRoutingTopologyReadinessStatus,
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.task_service import TaskService, TaskVersionConflictError
@@ -177,12 +178,39 @@ class AgentWorkService:
         self.db = db
         self.task_service = TaskService(db)
         self.rollout_service = rollout_service or AgentRoutingRolloutService()
+        self._rollout_service_explicit = rollout_service is not None
 
-    def _require_enforced_routing(self):
+    async def _resolve_rollout(
+        self,
+        actor: AgentActor,
+    ) -> AgentRoutingRolloutService:
+        if self._rollout_service_explicit:
+            return self.rollout_service
+        if self.db is None:
+            return self.rollout_service
+        from app.services.agent_team_setup_service import AgentTeamSetupService
+
+        readiness = await AgentTeamSetupService(self.db).routing_readiness(
+            actor
+        )
+        if (
+            readiness.status
+            == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
+        ):
+            return self.rollout_service
+        self.rollout_service = AgentRoutingRolloutService(
+            topology_readiness=readiness
+        )
+        return self.rollout_service
+
+    @staticmethod
+    def _require_enforced_rollout(
+        rollout_service: AgentRoutingRolloutService,
+    ):
         """Require effective enforcement and return its bounded status."""
 
         try:
-            return self.rollout_service.require_enforced_dispatch()
+            return rollout_service.require_enforced_dispatch()
         except AgentRoutingRolloutError as exc:
             from app.services.agent_routing_service import (
                 AgentRoutingConflictError,
@@ -198,10 +226,25 @@ class AgentWorkService:
                 topology_readiness=status.topology_readiness.as_dict(),
             ) from exc
 
-    def _require_supervised_routing(self):
+    def _require_enforced_routing(self):
+        """Preserve the explicit/static rollout guard for compatibility."""
+
+        return self._require_enforced_rollout(self.rollout_service)
+
+    async def _require_enforced_routing_for_actor(self, actor: AgentActor):
+        """Require enforcement using the actor's authoritative topology."""
+
+        return self._require_enforced_rollout(
+            await self._resolve_rollout(actor)
+        )
+
+    @staticmethod
+    def _require_supervised_rollout(
+        rollout_service: AgentRoutingRolloutService,
+    ):
         """Permit legacy/supervised dispatch only while enforcement is inactive."""
 
-        status = self.rollout_service.status()
+        status = rollout_service.status()
         if status.effective_mode == AgentRoutingRolloutMode.ENFORCED:
             from app.services.agent_routing_service import (
                 AgentRoutingConflictError,
@@ -214,6 +257,33 @@ class AgentWorkService:
                 effective_mode=status.effective_mode.value,
             )
         return status
+
+    def _require_supervised_routing(self):
+        """Preserve the explicit/static rollout guard for compatibility."""
+
+        return self._require_supervised_rollout(self.rollout_service)
+
+    async def _require_supervised_routing_for_actor(
+        self,
+        actor: AgentActor,
+    ):
+        """Require supervised mode using the actor's authoritative topology."""
+
+        return self._require_supervised_rollout(
+            await self._resolve_rollout(actor)
+        )
+
+    async def _require_team_dispatch_member(
+        self,
+        principal: AgentActor,
+        target_actor_id: int,
+    ) -> None:
+        from app.services.agent_team_setup_service import AgentTeamSetupService
+
+        await AgentTeamSetupService(self.db).require_dispatch_member(
+            principal,
+            target_actor_id,
+        )
 
     @staticmethod
     def _audited_command_request(
@@ -254,6 +324,9 @@ class AgentWorkService:
             display_name=actor.display_name,
             scopes=actor_scopes(actor),
             enabled=actor.enabled,
+            lifecycle_state=actor.lifecycle_state or (
+                "active" if actor.enabled else "disabled"
+            ),
             role=actor.role,
             profile_id=actor.profile_id,
             work_policy=actor.work_policy or "assigned_only",
@@ -735,7 +808,22 @@ class AgentWorkService:
             .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
         if not include_disabled:
-            query = query.where(AgentActor.enabled.is_(True))
+            query = query.where(
+                AgentActor.enabled.is_(True),
+                AgentActor.lifecycle_state == "active",
+            )
+        from app.services.agent_team_setup_service import AgentTeamSetupService
+
+        boundary = await AgentTeamSetupService(self.db).membership_boundary(
+            actor.id
+        )
+        if boundary is not None:
+            allowed_actor_ids = (
+                boundary.member_actor_ids
+                if include_disabled
+                else boundary.runtime_ready_actor_ids
+            )
+            query = query.where(AgentActor.id.in_(allowed_actor_ids))
         result = await self.db.execute(query)
         actors = list(result.scalars().all())
         if len(actors) > MAX_BOUNDED_LIST_ITEMS:
@@ -936,6 +1024,8 @@ class AgentWorkService:
     def _validate_assignment_actor(actor: AgentActor, purpose: str) -> None:
         """Require authority before separate profile/model compatibility evidence."""
 
+        if (actor.lifecycle_state or "active") != "active":
+            raise ValueError("Assignment actor is not runtime active")
         decision = evaluate_actor_authorization(
             intent=purpose,
             enabled=actor.enabled,
@@ -1079,9 +1169,9 @@ class AgentWorkService:
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
         if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
-            self._require_enforced_routing()
+            await self._require_enforced_routing_for_actor(principal)
         else:
-            self._require_supervised_routing()
+            await self._require_supervised_routing_for_actor(principal)
 
         if task is None:
             raise ValueError("Task not found")
@@ -1094,6 +1184,7 @@ class AgentWorkService:
         target = locked_actors.get(data.actor_id)
         if target is None:
             raise ValueError("Assignment actor must exist and be enabled")
+        await self._require_team_dispatch_member(principal, target.id)
         self._validate_assignment_actor(target, data.purpose)
         await self._validate_assignment_context(
             task,
@@ -1337,9 +1428,11 @@ class AgentWorkService:
                 await self.db.rollback()
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
-        rollout_status = self.rollout_service.status()
+        rollout_status = (await self._resolve_rollout(principal)).status()
         if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
-            rollout_status = self._require_enforced_routing()
+            rollout_status = await self._require_enforced_routing_for_actor(
+                principal
+            )
         if assignment.state != "queued":
             raise AgentConflictError("Only queued assignments can be changed by PM control")
         current_actor = locked_actors.get(assignment.actor_id)
@@ -1368,6 +1461,10 @@ class AgentWorkService:
                         "Verification actor must be independent from the implementation actor"
                     )
             selected_actor = replacement
+        await self._require_team_dispatch_member(
+            principal,
+            selected_actor.id,
+        )
         if "reviewer_profile_id" in data.model_fields_set:
             await self._validate_assignment_context(
                 task,
@@ -1898,6 +1995,7 @@ class AgentWorkService:
         actor = (await self._lock_actors((actor.id,))).get(actor.id)
         if actor is None:
             raise AgentPermissionError("Assignment actor is missing")
+        await self._require_team_dispatch_member(actor, actor.id)
         task_assignments = await self._lock_task_assignments(task.id)
         assignment = next(
             (item for item in task_assignments if item.id == data.assignment_id),
@@ -1933,7 +2031,7 @@ class AgentWorkService:
                 assignment_id=assignment.id,
             )
         if model_aware_request:
-            self._require_enforced_routing()
+            await self._require_enforced_routing_for_actor(actor)
         if model_aware_request and not model_aware_assignment:
             raise AgentRoutingConflictError(
                 "model_aware_assignment_required",
@@ -1941,7 +2039,9 @@ class AgentWorkService:
                 assignment_id=assignment.id,
             )
         if not model_aware_request and model_aware_assignment:
-            effective_mode = self.rollout_service.status().effective_mode
+            effective_mode = (
+                await self._resolve_rollout(actor)
+            ).status().effective_mode
             raise AgentRoutingConflictError(
                 (
                     "model_aware_begin_required"
@@ -2566,6 +2666,7 @@ class AgentWorkService:
             or assignment.actor_id != current_hint[1]
         ):
             raise AgentConflictError("Review assignment changed while acquiring row locks")
+        await self._require_team_dispatch_member(actor, assignment.actor_id)
         command, request_payload = self._audited_command_request(
             data,
             idempotency_key=idempotency_key,
@@ -2587,7 +2688,7 @@ class AgentWorkService:
             raise AgentConflictError("Idempotent verification receipt is unavailable")
         if (
             self._is_model_aware_assignment(assignment)
-            and self.rollout_service.status().effective_mode
+            and (await self._resolve_rollout(actor)).status().effective_mode
             != AgentRoutingRolloutMode.ENFORCED
         ):
             from app.services.agent_routing_service import (
@@ -2638,6 +2739,10 @@ class AgentWorkService:
             rework_worker = locked_actors.get(data.rework_actor_id)
             if rework_worker is None:
                 raise ValueError("Rework actor must be an enabled worker or PM")
+            await self._require_team_dispatch_member(
+                actor,
+                rework_worker.id,
+            )
             self._validate_assignment_actor(rework_worker, "execution")
         new_status = TaskStatus.CLOSED if data.verdict == "pass" else TaskStatus.ACTIVE
         task, _, _ = await self.task_service.change_status(
@@ -3165,6 +3270,7 @@ class AgentWorkService:
         target = locked_actors.get(data.actor_id)
         if target is None:
             raise ValueError("Recovery actor must be an enabled worker or PM")
+        await self._require_team_dispatch_member(principal, target.id)
         self._validate_assignment_actor(target, "execution")
 
         task_assignments = await self._lock_task_assignments(task.id)
@@ -3641,15 +3747,20 @@ class AgentWorkService:
             return ["assignment_missing"]
         if self._selection_pending(assignment):
             blockers.append("routing_selection_pending")
-        if (
-            self._is_model_aware_assignment(assignment)
-            and self.rollout_service.status().effective_mode
-            != AgentRoutingRolloutMode.ENFORCED
-        ):
-            blockers.append("model_aware_assignment_inactive")
         if assignment.task_version != task.version:
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
+        rollout_status = (
+            (await self._resolve_rollout(assignment_actor)).status()
+            if assignment_actor is not None
+            else self.rollout_service.status()
+        )
+        if (
+            self._is_model_aware_assignment(assignment)
+            and rollout_status.effective_mode
+            != AgentRoutingRolloutMode.ENFORCED
+        ):
+            blockers.append("model_aware_assignment_inactive")
         try:
             if assignment_actor is None:
                 raise ValueError("Assignment actor is missing")

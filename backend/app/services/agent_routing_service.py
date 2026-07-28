@@ -76,6 +76,7 @@ from app.services.agent_routing_rollout import (
     AgentRoutingRolloutError,
     AgentRoutingRolloutMode,
     AgentRoutingRolloutService,
+    AgentRoutingTopologyReadinessStatus,
 )
 from app.services.agent_service import (
     AgentConflictError,
@@ -206,13 +207,33 @@ class AgentRoutingService:
     ):
         self.db = db
         self.task_service = TaskService(db)
-        self.rollout_service = rollout_service or AgentRoutingRolloutService()
+        self.rollout_service = rollout_service
 
-    def _require_preview_rollout(self):
+    async def _require_preview_rollout(self, actor: AgentActor):
         """Translate fail-closed rollout state into the routing error envelope."""
 
+        rollout_service = self.rollout_service
+        if rollout_service is None:
+            if self.db is None:
+                rollout_service = AgentRoutingRolloutService()
+            else:
+                from app.services.agent_team_setup_service import (
+                    AgentTeamSetupService,
+                )
+
+                readiness = await AgentTeamSetupService(
+                    self.db
+                ).routing_readiness(actor)
+                rollout_service = (
+                    AgentRoutingRolloutService()
+                    if readiness.status
+                    == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
+                    else AgentRoutingRolloutService(
+                        topology_readiness=readiness
+                    )
+                )
         try:
-            return self.rollout_service.require_preview()
+            return rollout_service.require_preview()
         except AgentRoutingRolloutError as exc:
             status = exc.status
             raise AgentRoutingConflictError(
@@ -286,6 +307,7 @@ class AgentRoutingService:
                     "team_member_profile_skills, team_members, vacations, "
                     "tasks, task_dependencies, agent_actors, "
                     "agent_model_catalog_entries, agent_model_bindings, "
+                    "agent_team_topologies, agent_team_topology_members, "
                     "task_routing_assessments, agent_task_assignments, "
                     "agent_runs "
                     "IN SHARE ROW EXCLUSIVE MODE"
@@ -508,7 +530,7 @@ class AgentRoutingService:
             if replay is not None:
                 await self.db.rollback()
                 return replay
-            self._require_preview_rollout()
+            await self._require_preview_rollout(actor)
             if task.version != data.expected_task_version:
                 raise TaskVersionConflictError(
                     data.expected_task_version,
@@ -1375,6 +1397,11 @@ class AgentRoutingService:
         generated_at: datetime,
         requesting_actor_id: int,
     ) -> AgentRoutingPreviewResponse:
+        from app.services.agent_team_setup_service import AgentTeamSetupService
+
+        topology_boundary = await AgentTeamSetupService(
+            self.db
+        ).membership_boundary(requesting_actor_id)
         if len(task.children) > _MAX_ROUTING_INPUT_ROWS:
             raise CollectionLimitExceededError(
                 "routing task children",
@@ -1454,6 +1481,17 @@ class AgentRoutingService:
             assignment_counts=assignment_counts,
             running_counts=running_counts,
             capacity=capacity,
+        )
+        input_evidence["topology"] = (
+            {
+                "key": topology_boundary.topology_key,
+                "revision": topology_boundary.topology_revision,
+                "runtime_ready_actor_ids": sorted(
+                    topology_boundary.runtime_ready_actor_ids
+                ),
+            }
+            if topology_boundary is not None
+            else None
         )
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
@@ -1568,6 +1606,14 @@ class AgentRoutingService:
                 *compatibility.hard_blocker_codes,
                 *skill.hard_blocker_codes,
             ]
+            if (
+                topology_boundary is not None
+                and actor.id
+                not in topology_boundary.runtime_ready_actor_ids
+            ):
+                actor_blockers.append(
+                    RoutingBlockerCode.ACTOR_TOPOLOGY_INCOMPATIBLE.value
+                )
             if (
                 actor.work_policy != "assigned_only"
                 or actor.max_parallel_work != 1
@@ -1894,6 +1940,16 @@ class AgentRoutingService:
             "preview_id": preview_id,
             "input_digest": input_digest,
             "task_id": task.id,
+            "topology_key": (
+                topology_boundary.topology_key
+                if topology_boundary is not None
+                else None
+            ),
+            "topology_revision": (
+                topology_boundary.topology_revision
+                if topology_boundary is not None
+                else None
+            ),
             "purpose": data.purpose,
             "assessment_id": assessment.id,
             "assessment_task_version": assessment.task_version,
@@ -1966,7 +2022,7 @@ class AgentRoutingService:
     ) -> AgentRoutingPreviewResponse:
         """Return a deterministic preview and stage bounded shadow/audit evidence."""
 
-        rollout = self._require_preview_rollout()
+        rollout = await self._require_preview_rollout(actor)
         self._require_read(actor)
         if actor.id <= 0:
             raise AgentPermissionError(
@@ -2495,6 +2551,8 @@ class AgentRoutingService:
         )
         snapshot = RoutingDecisionSnapshot(
             task_id=task.id,
+            topology_key=recomputed.topology_key,
+            topology_revision=recomputed.topology_revision,
             task_version=task.version,
             assessment_id=assessment.id,
             assessment_task_version=assessment.task_version,

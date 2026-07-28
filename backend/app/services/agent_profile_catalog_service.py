@@ -322,6 +322,7 @@ class AgentProfileCatalogService:
                 automation_enabled=preset["profile_kind"] == "agent",
                 profile_kind=preset["profile_kind"],
                 assignment_modes=preset["assignment_modes"],
+                skills=[],
             )
             try:
                 async with self.db.begin_nested():

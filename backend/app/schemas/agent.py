@@ -213,6 +213,7 @@ class AgentActorResponse(BaseModel):
     display_name: str
     scopes: list[str] = []
     enabled: bool
+    lifecycle_state: Literal["active", "onboarding", "disabled"] = "active"
     role: str = "worker"
     profile_id: Optional[int] = None
     work_policy: str = "assigned_only"

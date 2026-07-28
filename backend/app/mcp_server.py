@@ -30,6 +30,7 @@ from app.services.agent_service import (
 )
 from app.services.agent_model_catalog_service import AgentModelConflictError
 from app.services.agent_routing_service import AgentRoutingConflictError
+from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 from app.services.task_service import TaskVersionConflictError
 from app.services.triage_service import TriageConflictError
 
@@ -236,6 +237,8 @@ def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
     if isinstance(exc, AgentRoutingConflictError):
         payload = exc.detail()
+    elif isinstance(exc, AgentTeamSetupConflictError):
+        payload = exc.detail()
     elif isinstance(exc, AgentModelConflictError):
         payload = exc.detail()
     elif isinstance(exc, TaskVersionConflictError):
@@ -281,6 +284,7 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
         MCPAuthError,
         MaintenanceModeError,
         AgentRoutingConflictError,
+        AgentTeamSetupConflictError,
         AgentModelConflictError,
         AgentConflictError,
         AgentPermissionError,
@@ -331,6 +335,17 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call(
             None,
             lambda db, actor: mcp_agent_tools.get_agent_capabilities(db, actor),
+        )
+
+    @mcp.tool()
+    async def agent_get_team_setup_status() -> dict[str, Any]:
+        """Return desired, configured, and runtime readiness for the bound team."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_agent_team_setup_status(
+                db,
+                actor,
+            ),
         )
 
     @mcp.tool()

@@ -27,6 +27,27 @@ reporting channel before sharing exploit details.
 Public agent-role bundles are fail-closed: enabling delivery requires the exact
 trusted checksum in `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256`.
 
+## Agent-team setup boundary
+
+Agent-team masters, plans, handoffs, status projections, receipts, and audit
+events are secret-free. They may contain stable external credential references
+but never credential values. New actor keys are delivered once to the
+operator-configured credential sink; WorkChord setup records retain only a
+non-secret delivery receipt and the API cannot redisplay a key. Keep the sink on an
+operator-controlled `0700` directory or an equivalently isolated adapter.
+
+Setup mutations require operator authority, an expected topology revision, a
+digest-bound exact action set, idempotency metadata, and explicit confirmation
+for replacement or disablement. Existing unmanaged actors require explicit
+adoption. Missing desired members are never hard-deleted. New identities remain
+disabled during onboarding, and normal agent authentication is unavailable
+until the runtime acknowledges the exact current handoff.
+
+Runtime readiness is backend-derived and topology-bound. It does not establish
+provider access, task-specific capacity, live availability, or independent
+attestation. Routing and exact-actor work commands reject stale revisions and
+members outside the caller's current runtime-ready topology.
+
 ## Model-aware routing boundary
 
 Model catalog entries and actor bindings are provider-neutral declarations.

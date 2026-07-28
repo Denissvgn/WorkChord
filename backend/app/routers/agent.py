@@ -63,6 +63,18 @@ from app.schemas.agent_routing import (
     AgentRoutingPreviewCreate,
     AgentRoutingPreviewResponse,
 )
+from app.schemas.agent_team_setup import (
+    AgentTeamApplyRequest,
+    AgentTeamApplyResponse,
+    AgentTeamManifestRequest,
+    AgentTeamPlanRequest,
+    AgentTeamReconciliationPlan,
+    AgentTeamRuntimeAcknowledgement,
+    AgentTeamRuntimeAcknowledgementResponse,
+    AgentTeamStatusResponse,
+    AgentTeamValidateResponse,
+)
+from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.task import TaskResponse
 from app.utils.time import utc_now
 from app.services.agent_service import (
@@ -78,10 +90,17 @@ from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
 )
-from app.services.agent_routing_rollout import AgentRoutingRolloutService
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutService,
+    AgentRoutingTopologyReadinessStatus,
+)
 from app.services.agent_skill_bundle_service import (
     AgentSkillBundleService,
     SkillBundleArtifactError,
+)
+from app.services.agent_team_setup_service import (
+    AgentTeamSetupConflictError,
+    AgentTeamSetupService,
 )
 from app.routers.agent_skill_bundles import get_agent_skill_bundle_service
 from app.services.task_service import TaskVersionConflictError
@@ -125,6 +144,13 @@ async def get_agent_routing_service(
     return AgentRoutingService(db)
 
 
+async def get_agent_team_setup_service(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> AgentTeamSetupService:
+    """Dependency for manifest-driven agent-team setup operations."""
+    return AgentTeamSetupService(db)
+
+
 async def get_agent_actor(
     service: Annotated[AgentService, Depends(get_agent_service)],
     api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
@@ -163,6 +189,8 @@ async def get_agent_admin_actor(
     admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
 ) -> AgentActor:
     """Authenticate a stored admin actor, bootstrap provisioning key, or admin API key."""
+    if admin_api_key_is_valid(admin_api_key):
+        return _admin_header_actor()
     if agent_api_key:
         actor = await service.authenticate(agent_api_key)
         if actor:
@@ -174,8 +202,6 @@ async def get_agent_admin_actor(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or disabled agent API key",
         )
-    if admin_api_key_is_valid(admin_api_key):
-        return _admin_header_actor()
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=f"Missing or invalid {ADMIN_API_KEY_HEADER} or X-Agent-API-Key header",
@@ -222,6 +248,8 @@ def _handle_agent_error(exc: Exception, *, structured: bool = False) -> NoReturn
         )
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
     if isinstance(exc, AgentRoutingConflictError):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
+    if isinstance(exc, AgentTeamSetupConflictError):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
     if isinstance(exc, TaskVersionConflictError):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail())
@@ -273,6 +301,9 @@ def _actor_response(actor: AgentActor) -> AgentActorResponse:
         display_name=actor.display_name,
         scopes=actor_scopes(actor),
         enabled=actor.enabled,
+        lifecycle_state=actor.lifecycle_state or (
+            "active" if actor.enabled else "disabled"
+        ),
         role=actor.role,
         profile_id=actor.profile_id,
         work_policy=actor.work_policy or "assigned_only",
@@ -293,7 +324,20 @@ async def get_agent_capabilities(
     ],
 ):
     """Return the authenticated actor and supported agent contract features."""
-    rollout_status = AgentRoutingRolloutService().status()
+    if service.db is None:
+        rollout_status = AgentRoutingRolloutService().status()
+    else:
+        topology_readiness = await AgentTeamSetupService(
+            service.db
+        ).routing_readiness(actor)
+        rollout_status = (
+            AgentRoutingRolloutService()
+            if topology_readiness.status
+            == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
+            else AgentRoutingRolloutService(
+                topology_readiness=topology_readiness
+            )
+        ).status()
     features = agent_contract_features(
         include_skill_bundles=False,
         model_aware_routing_mode=rollout_status.effective_mode.value,
@@ -346,6 +390,121 @@ async def get_agent_capabilities(
         skill_discovery_url=discovery_url,
         model_aware_routing=rollout_status.as_dict(),
     )
+
+
+@router.post(
+    "/agent/team-setup/validate",
+    response_model=AgentTeamValidateResponse,
+)
+async def validate_agent_team_master(
+    data: AgentTeamManifestRequest,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+):
+    """Validate a secret-free master and current package/server compatibility."""
+    try:
+        return await service.validate(actor, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post(
+    "/agent/team-setup/plan",
+    response_model=AgentTeamReconciliationPlan,
+)
+async def plan_agent_team_reconciliation(
+    data: AgentTeamPlanRequest,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+):
+    """Return the stable, digest-bound action set for one desired master."""
+    try:
+        return await service.plan(actor, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post(
+    "/agent/team-setup/apply",
+    response_model=AgentTeamApplyResponse,
+)
+async def apply_agent_team_reconciliation(
+    data: AgentTeamApplyRequest,
+    response: Response,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+    idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
+    rationale: Annotated[str, Header(alias="X-Agent-Rationale")],
+    correlation_id: Annotated[str, Header(alias="X-Correlation-ID")],
+):
+    """Apply only the exact approved action IDs from the current plan."""
+    try:
+        command = AgentPlanningCommandContext(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        )
+        result = await service.apply(actor, data, command=command)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    return result
+
+
+@router.get(
+    "/agent/team-setup/status",
+    response_model=AgentTeamStatusResponse,
+)
+async def get_agent_team_setup_status(
+    response: Response,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+    topology_key: Annotated[Optional[str], Query()] = None,
+):
+    """Return backend-derived desired, configured, and runtime readiness."""
+    try:
+        result = await service.status(actor, topology_key=topology_key)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "private, no-store"
+    response.headers["Pragma"] = "no-cache"
+    return result
+
+
+@router.post(
+    "/agent/team-setup/onboarding/acknowledge",
+    response_model=AgentTeamRuntimeAcknowledgementResponse,
+)
+async def acknowledge_agent_team_runtime(
+    data: AgentTeamRuntimeAcknowledgement,
+    response: Response,
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+    api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+):
+    """Accept the restricted exact handoff acknowledgement during onboarding."""
+    if not api_key:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing X-Agent-API-Key header",
+        )
+    try:
+        result = await service.acknowledge_runtime(api_key, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    return result
 
 
 @router.post(
@@ -435,6 +594,8 @@ async def update_agent_actor(
             stored_value = json.dumps(value) if field_name == "scopes" else value
             if getattr(target, field_name) != stored_value:
                 setattr(target, field_name, stored_value)
+                if field_name == "enabled":
+                    target.lifecycle_state = "active" if value else "disabled"
                 queue_policy_changed = queue_policy_changed or field_name in queue_policy_fields
         if queue_policy_changed:
             target.queue_revision += 1

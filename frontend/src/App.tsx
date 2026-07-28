@@ -22,6 +22,7 @@ const GanttPage = lazy(routeModuleLoaders.gantt);
 const AnalyticsPage = lazy(routeModuleLoaders.analytics);
 const SettingsPage = lazy(routeModuleLoaders.settings);
 const AgentPipelinePage = lazy(routeModuleLoaders.agentPipeline);
+const AgentTeamSetupMasterPage = lazy(routeModuleLoaders.agentTeamSetup);
 const NotFoundPage = lazy(routeModuleLoaders.notFound);
 
 export const RouteLoadingState = () => {
@@ -57,6 +58,7 @@ const WorkspaceRoutes = () => (
     <Route path="/analytics" element={<AnalyticsPage />} />
     <Route path="/settings" element={<SettingsPage />} />
     <Route path="/agent-pipeline" element={<AgentPipelinePage />} />
+    <Route path="/agent-team/setup" element={<AgentTeamSetupMasterPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );

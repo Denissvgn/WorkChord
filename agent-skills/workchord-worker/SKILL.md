@@ -10,18 +10,23 @@ do not plan, assign, rank, reorder, or verify the backlog yourself.
 
 ## Establish The Operating Mode
 
-1. Read [identity-and-my-work.md](references/identity-and-my-work.md).
-2. Read actor identity, scopes, server/API contract, work policy, concurrency
+1. If the operator supplied an `agent-team-runtime-handoff-v1` packet, complete
+   the restricted acknowledgement in
+   [identity-and-my-work.md](references/identity-and-my-work.md) before normal
+   authentication. Never print or copy the separately delivered credential.
+2. Read [identity-and-my-work.md](references/identity-and-my-work.md).
+3. Read actor identity, scopes, server/API contract, work policy, concurrency
    limit, and feature keys from the live capability response when available.
-3. Use autonomous v1 only when the server advertises all of:
+4. Use autonomous v1 only when the server advertises all of:
    `agent-capabilities-v1`, `actor-task-assignments`, `my-work-v1`,
+   `agent-team-master-v1`,
    `snapshot-pagination-v1`,
    `work-etag-v1`, `complete-task-context`, `atomic-begin-submit`,
    `atomic-renew-v1`, `fenced-claims`,
    `typed-rework-recovery`, and `agent-discovery-triage-v1`.
-4. Otherwise use supervised v0 only with one task ID explicitly handed off by
+5. Otherwise use supervised v0 only with one task ID explicitly handed off by
    a PM or human. Never select a task from the global ready list in v0.
-5. Stop on an incompatible contract, disabled identity, missing execution
+6. Stop on an incompatible contract, disabled identity, missing execution
    scope, ambiguous actor, or any concurrency policy other than
    `max_parallel_work=1`.
 
@@ -37,6 +42,12 @@ was selected or verified by WorkChord.
 Keep credentials in the client secret store. Never put a key, claim identifier,
 fence value, full prompt, or other secret in task prose, events, logs, or
 artifacts.
+
+After authentication, re-read capabilities and confirm the active actor ID and
+`agent-team-master-v1` feature match the acknowledged handoff. Retain the
+handoff topology and package identity for conflict reporting. The `/me/work`
+decision remains authoritative; runtime readiness is not permission to
+self-select work.
 
 ## Execute One Work Decision
 

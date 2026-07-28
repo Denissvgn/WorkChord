@@ -25,6 +25,7 @@ Use this reference to choose the correct WorkChord object, establish authority, 
 | Team member profile | Reusable capability, interest, and weakness evidence | Permission, credentials, or leases |
 | Iteration team member | Capacity ownership, availability, utilization, workload, and vacations for one iteration | Exact authenticated process identity |
 | Agent actor | An authenticated automation identity and enforced scopes | Capacity accounting or proof of task acceptance |
+| Agent-team topology | Operator-reconciled logical membership, package handoff, and runtime readiness | Task-specific capacity or current availability |
 | Agent task assignment | Exact actor dispatch, purpose, rank, and not-before time when the server supports it | Capacity or exclusive execution |
 | Claim | Temporary exclusive execution lease | Durable dispatch or task lifecycle |
 | Agent run | One traceable execution attempt and its evidence | Acceptance or closure |
@@ -57,15 +58,20 @@ Treat this as PM phase 1.
 
 1. Read live capabilities if available; otherwise enumerate the connected tools and record supervised-v0 mode.
 2. Read actor identity, enabled state, role, profile binding, scopes, work policy, and concurrency limit when exposed.
-3. Read projects, iterations, governed labels, reusable templates, and the agent pipeline.
-4. Read the selected project summary, iteration summary, relevant task tree, Triage queue, and current updates.
-5. Check server/API compatibility against the installed skill manifest when one is present.
+3. When the server advertises `agent-team-master-v1`, read
+   `agent_get_team_setup_status` or `GET /api/agent/team-setup/status` and
+   confirm this PM is the current controller of a runtime-ready topology.
+4. Read projects, iterations, governed labels, reusable templates, and the agent pipeline.
+5. Read the selected project summary, iteration summary, relevant task tree, Triage queue, and current updates.
+6. Check server/API compatibility against the installed skill manifest when one is present.
 
 ### Allowed mutations
 
 - Select an existing planning boundary without mutation.
 - Create or update planning objects only after confirming the exact required surface and scope.
 - Ask an operator to provision or bind an actor when identity administration is required.
+- Read the bound secret-free agent-team status; do not call operator-only setup
+  validation, planning, apply, adoption, replacement, or activation surfaces.
 
 Do not create actors, reveal keys, rotate secrets, edit runtime configuration, or broaden scopes as a normal PM action.
 
