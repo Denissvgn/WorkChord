@@ -132,6 +132,20 @@ const capabilitiesFixture = (scopes: string[]): AgentCapabilities => ({
         maximum_seconds: 86400,
     },
     features: ['actor-roster-v1', 'model-aware-routing-v1'],
+    model_aware_routing: {
+        configured_mode: 'enforced',
+        effective_mode: 'enforced',
+        feature_advertised: true,
+        blocker_codes: [],
+        topology_readiness: {
+            schema_version: 'model-aware-routing-topology-readiness-v1',
+            status: 'ready',
+            source: 'agent-team-master-v1',
+            topology_id: 'routing-topology-1',
+            topology_revision: 1,
+            blocker_codes: [],
+        },
+    },
     recommended_skills: {},
     lifecycle_actions: [],
     skill_catalog_version: null,
@@ -161,6 +175,11 @@ describe('AgentModelAdministration', () => {
             name: 'Model and actor evidence',
         })).toBeInTheDocument();
         expect(screen.getByText('PM reader · read only')).toBeInTheDocument();
+        expect(screen.getByText('Configured routing mode')).toBeInTheDocument();
+        expect(screen.getByText('Effective routing mode')).toBeInTheDocument();
+        expect(screen.getAllByText('Enforced')).toHaveLength(2);
+        expect(screen.getByText('Topology readiness')).toBeInTheDocument();
+        expect(screen.getByText('Ready')).toBeInTheDocument();
 
         expect(screen.getByRole('heading', { name: 'Exact actor roster' })).toBeInTheDocument();
         expect(screen.getAllByRole('heading', { name: 'Worker Alpha' })).toHaveLength(2);

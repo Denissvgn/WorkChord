@@ -23,6 +23,11 @@ from sqlalchemy.ext.asyncio import (
 
 from app.database import Base
 from app.config import get_settings
+from app.services.agent_routing_rollout import (
+    AgentRoutingTopologyReadiness,
+    reset_agent_routing_topology_readiness,
+    set_agent_routing_topology_readiness,
+)
 from app import models  # noqa: F401 - register every mapper
 from app.models.agent import AgentActor
 from app.models.calendar import Calendar
@@ -56,6 +61,27 @@ def no_unapproved_network(
 
     monkeypatch.setattr(socket.socket, "connect", blocked)
     monkeypatch.setattr(socket, "create_connection", blocked)
+
+
+@pytest.fixture
+def qualified_model_aware_routing_test_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[None]:
+    """Run legacy routing suites behind an explicit server-owned test topology."""
+
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "enforced")
+    get_settings.cache_clear()
+    token = set_agent_routing_topology_readiness(
+        AgentRoutingTopologyReadiness.ready(
+            topology_id="backend-test-topology",
+            topology_revision=1,
+        )
+    )
+    try:
+        yield
+    finally:
+        reset_agent_routing_topology_readiness(token)
+        get_settings.cache_clear()
 
 
 @pytest.fixture

@@ -66,6 +66,9 @@ jobs:
           -o cache_dir=/tmp/workchord-routing-pytest-cache
           backend/tests/test_agent_routing_contract.py
           backend/tests/test_agent_routing_harness.py
+          backend/tests/test_agent_routing_rollout.py
+          backend/tests/test_agent_routing_observability.py
+          backend/tests/test_agent_routing_wave6_qualification.py
       - name: Run the backend database harness
         env:
           DEPLOYMENT_ENVIRONMENT: test
@@ -232,6 +235,7 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
+          npm run test:run
           npm run lint
           npm run build
       - name: Validate the local Compose profile

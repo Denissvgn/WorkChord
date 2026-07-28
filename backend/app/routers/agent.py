@@ -78,6 +78,7 @@ from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
 )
+from app.services.agent_routing_rollout import AgentRoutingRolloutService
 from app.services.agent_skill_bundle_service import (
     AgentSkillBundleService,
     SkillBundleArtifactError,
@@ -292,7 +293,11 @@ async def get_agent_capabilities(
     ],
 ):
     """Return the authenticated actor and supported agent contract features."""
-    features = agent_contract_features(include_skill_bundles=False)
+    rollout_status = AgentRoutingRolloutService().status()
+    features = agent_contract_features(
+        include_skill_bundles=False,
+        model_aware_routing_mode=rollout_status.effective_mode.value,
+    )
     recommended_skills: dict[str, str] = {}
     catalog_version = None
     catalog_url = None
@@ -339,6 +344,7 @@ async def get_agent_capabilities(
         skill_catalog_version=catalog_version,
         skill_catalog_url=catalog_url,
         skill_discovery_url=discovery_url,
+        model_aware_routing=rollout_status.as_dict(),
     )
 
 
@@ -449,7 +455,7 @@ async def preview_task_routing(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)],
 ):
-    """Preview exact eligible actor/model-binding candidates without mutation."""
+    """Preview candidates without mutating task or assignment state."""
     try:
         return await service.preview_task_routing(task_id, actor, data)
     except Exception as exc:

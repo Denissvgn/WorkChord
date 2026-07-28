@@ -198,9 +198,21 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
         enabled: hasAgentKey,
         retry: protectedQueryRetry,
     });
-    const featureAdvertised = capabilitiesQuery.data?.features.includes(
-        MODEL_AWARE_ROUTING_FEATURE,
-    ) ?? false;
+    const routingStatus = capabilitiesQuery.data?.model_aware_routing;
+    const configuredRoutingMode = routingStatus?.configured_mode ?? 'off';
+    const effectiveRoutingMode = routingStatus?.effective_mode ?? 'off';
+    const featureAdvertised = (
+        routingStatus?.feature_advertised === true
+        && capabilitiesQuery.data?.features.includes(MODEL_AWARE_ROUTING_FEATURE) === true
+    );
+    const previewAllowed = featureAdvertised
+        && (effectiveRoutingMode === 'shadow' || effectiveRoutingMode === 'enforced');
+    const enforcedDispatchAllowed = featureAdvertised
+        && effectiveRoutingMode === 'enforced';
+    const routingBlockerCodes = Array.from(new Set([
+        ...(routingStatus?.blocker_codes ?? []),
+        ...(routingStatus?.topology_readiness.blocker_codes ?? []),
+    ]));
     const scopes = capabilitiesQuery.data?.scopes ?? [];
     const canReadSkillCatalog = scopes.some(scope => SKILL_CATALOG_READ_SCOPES.has(scope));
     const canReadTeamAssignments = scopes.some(
@@ -216,7 +228,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const assessmentQuery = useQuery({
         queryKey: ['routing-assessment', task.id, task.version],
         queryFn: () => agentService.getTaskRoutingAssessment(task.id),
-        enabled: hasAgentKey && featureAdvertised,
+        enabled: hasAgentKey && previewAllowed,
         retry: protectedQueryRetry,
     });
 
@@ -224,7 +236,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const skillCatalogQuery = useQuery({
         queryKey: ['agent-profile-skill-catalog'],
         queryFn: agentService.getProfileSkillCatalog,
-        enabled: hasAgentKey && featureAdvertised && canReadSkillCatalog,
+        enabled: hasAgentKey && previewAllowed && canReadSkillCatalog,
         retry: protectedQueryRetry,
     });
 
@@ -232,7 +244,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const rosterQuery = useQuery({
         queryKey: ['agent-actor-roster', true],
         queryFn: () => agentService.getActorRoster(true),
-        enabled: hasAgentKey && featureAdvertised,
+        enabled: hasAgentKey && previewAllowed,
         retry: protectedQueryRetry,
         refetchInterval: 30_000,
     });
@@ -254,7 +266,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
             limit: 500,
         }),
         enabled: hasAgentKey
-            && featureAdvertised
+            && previewAllowed
             && needsPendingAssignmentEvidence
             && canReadTeamAssignments,
         retry: protectedQueryRetry,
@@ -578,7 +590,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
         );
     }
 
-    if (!featureAdvertised) {
+    if (!previewAllowed) {
         return (
             <section className="card space-y-3" aria-labelledby={`task-routing-${task.id}`}>
                 <h3 id={`task-routing-${task.id}`} className="flex items-center gap-2 font-semibold text-content-primary">
@@ -586,9 +598,41 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     {t('taskRouting.title')}
                 </h3>
                 <p className="text-sm text-content-secondary">{t('taskRouting.description')}</p>
+                <dl className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <dt className="text-content-tertiary">{t('taskRouting.configuredMode')}</dt>
+                        <dd className="text-content-primary">
+                            {t(`taskRouting.rolloutModes.${configuredRoutingMode}`)}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="text-content-tertiary">{t('taskRouting.effectiveMode')}</dt>
+                        <dd className="text-feedback-danger-foreground">
+                            {t(`taskRouting.rolloutModes.${effectiveRoutingMode}`)}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="text-content-tertiary">{t('taskRouting.topologyReadiness')}</dt>
+                        <dd className="text-content-primary">
+                            {t(`taskRouting.topologyStatuses.${routingStatus?.topology_readiness.status ?? 'unavailable'}`)}
+                        </dd>
+                    </div>
+                </dl>
                 <div className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">
                     {t('taskRouting.featureUnavailable')}
                 </div>
+                {routingBlockerCodes.length > 0 && (
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-content-secondary">
+                            {t('taskRouting.rolloutBlockers')}
+                        </p>
+                        <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-content-secondary">
+                            {routingBlockerCodes.map(code => (
+                                <li key={code}>{formatRoutingCode(code)}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </section>
         );
     }
@@ -633,7 +677,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const parsedReviewerProfileId = Number(reviewerProfileId);
     const reviewerIdValid = reviewerProfileId.trim().length === 0
         || (Number.isInteger(parsedReviewerProfileId) && parsedReviewerProfileId > 0);
-    const canSaveAssessment = featureAdvertised
+    const canSaveAssessment = previewAllowed
         && canAssess
         && !assessmentCurrent
         && !taskEvidenceStale
@@ -642,14 +686,15 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
         && draft.confidence >= 0.6
         && draft.confidence <= 1
         && draft.rationale.trim().length > 0;
-    const canGeneratePreview = featureAdvertised
+    const canGeneratePreview = previewAllowed
         && assessmentCurrent
         && !taskEvidenceStale
         && reviewValid
         && recoveryAssignmentReady
         && reviewerIdValid
         && !previewMutation.isPending;
-    const canSubmitAssignment = canDispatch
+    const canSubmitAssignment = enforcedDispatchAllowed
+        && canDispatch
         && Boolean(selectedCandidate)
         && Boolean(preview)
         && !previewEvidenceStale
@@ -671,9 +716,25 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
 
             <dl className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                    <dt className="text-content-tertiary">{t('taskRouting.enforcementMode')}</dt>
-                    <dd className={featureAdvertised ? 'text-feedback-success-foreground' : 'text-feedback-danger-foreground'}>
-                        {featureAdvertised ? t('taskRouting.enforcedByServer') : t('taskRouting.unsupportedByServer')}
+                    <dt className="text-content-tertiary">{t('taskRouting.configuredMode')}</dt>
+                    <dd className="text-content-primary">
+                        {t(`taskRouting.rolloutModes.${configuredRoutingMode}`)}
+                    </dd>
+                </div>
+                <div>
+                    <dt className="text-content-tertiary">{t('taskRouting.effectiveMode')}</dt>
+                    <dd className={
+                        effectiveRoutingMode === 'enforced'
+                            ? 'text-feedback-success-foreground'
+                            : 'text-feedback-warning-foreground'
+                    }>
+                        {t(`taskRouting.rolloutModes.${effectiveRoutingMode}`)}
+                    </dd>
+                </div>
+                <div>
+                    <dt className="text-content-tertiary">{t('taskRouting.topologyReadiness')}</dt>
+                    <dd className="text-content-primary">
+                        {t(`taskRouting.topologyStatuses.${routingStatus?.topology_readiness.status ?? 'unavailable'}`)}
                     </dd>
                 </div>
                 <div>
@@ -690,9 +751,9 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                 </div>
             </dl>
 
-            {!featureAdvertised && (
-                <div className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">
-                    {t('taskRouting.featureUnavailable')}
+            {effectiveRoutingMode === 'shadow' && (
+                <div className="rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground" role="status">
+                    {t('taskRouting.shadowNotice')}
                 </div>
             )}
             {taskEvidenceStale && (

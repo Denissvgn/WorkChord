@@ -51,11 +51,11 @@ Select or create the accountable project, milestones or release target, calendar
 
 ### 3. Triage, Define, and Assess Work
 
-Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing is available, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
+Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing reports an effective `shadow` or `enforced` mode, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
 
 ### 4. Route, Assign, Order, and Schedule
 
-Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. Dispatch only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
+Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live in effective `shadow` or `enforced` mode, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. In `shadow`, preserve the preview only as comparison evidence and use supervised compatibility dispatch. Create a model-bound assignment only in effective `enforced` mode and only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
 
 ### 5. Supervise Delivery
 
@@ -98,15 +98,18 @@ Otherwise use supervised v0:
 
 Never simulate a missing assignment, queue, fence, review, or atomic transaction in prose. Stop and request the missing server or human action.
 
-Model-aware routing is an additive mode inside assigned-work v1. Use it only
-when the capability response advertises `model-aware-routing-v1` and the live
-REST or MCP metadata exposes the matching assessment, routing-preview,
-model-bound assignment, and begin-evidence operations. If that feature or any
-required operation is absent, keep the durable assigned-work lifecycle when it
-is otherwise supported, but use supervised compatibility routing and state
-explicitly that the actor/model choice was not model-aware. Never infer missing
-model capability from a deployment name, provider-facing model name, profile
-summary, or local prose.
+Model-aware routing is additive inside assigned-work v1. Read the explicit
+`model_aware_routing` capability status; feature presence alone does not select
+an operating mode. Effective `shadow` permits catalog, assessment, and preview
+comparison only. Do not send a model-aware assignment/update or present a
+shadow recommendation as an enforced selection. Effective `enforced` permits
+the complete preview-bound assignment and begin-evidence loop when live REST or
+MCP metadata exposes every required operation. In effective `off`, or when the
+status, feature, or a required operation is absent, keep the durable
+assigned-work lifecycle when otherwise supported but use supervised
+compatibility routing and state explicitly that the actor/model choice was not
+model-aware. Never infer missing model capability from a deployment name,
+provider-facing model name, profile summary, or local prose.
 
 ## Handle Failures Conservatively
 

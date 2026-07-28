@@ -460,7 +460,7 @@ def create_mcp_server() -> FastMCP:
         task_id: int,
         payload: dict[str, Any],
     ) -> dict[str, Any]:
-        """Preview exact eligible actor/model bindings without mutation."""
+        """Preview candidates without mutating task or assignment state."""
         return await _tool_call(
             ROUTING_READ_SCOPE_REQUIREMENT,
             lambda db, actor: mcp_agent_tools.preview_task_routing(

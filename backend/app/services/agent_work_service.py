@@ -74,9 +74,25 @@ from app.services.agent_service import (
     validate_idempotency_key,
 )
 from app.services.agent_routing_policy import (
+    MODEL_FAILURE_CATEGORIES,
+    ROUTING_DECISION_AUTHORITY,
+    ROUTING_DECISION_LINEAGE_FIELDS,
+    ROUTING_LINEAGE_AUTHORITY,
+    ROUTING_POLICY_VERSION,
     canonical_routing_json_bytes,
     evaluate_actor_authorization,
+    normalize_model_failure_category,
     validate_routing_packet_size,
+)
+from app.services.agent_routing_observability import (
+    RoutingOperationalEvent,
+    opaque_value_digest,
+    record_routing_operational_event,
+)
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutError,
+    AgentRoutingRolloutMode,
+    AgentRoutingRolloutService,
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.task_service import TaskService, TaskVersionConflictError
@@ -117,65 +133,12 @@ PENDING_RECOVERY_SIGNAL_TYPES = {
     "agent.work_recovery_required",
     "agent.recovery_requeued",
 }
-MODEL_FAILURE_CATEGORIES = frozenset(
-    {
-        "reasoning_insufficiency",
-        "context_insufficiency",
-        "modality_insufficiency",
-        "tool_insufficiency",
-    }
-)
 ROUTING_REVIEW_ORDER = {
     "none": 0,
     "standard": 1,
     "independent": 2,
     "specialist-independent": 3,
 }
-ROUTING_DECISION_LINEAGE_FIELDS = (
-    "schema_version",
-    "policy_version",
-    "task_id",
-    "task_version",
-    "assessment_id",
-    "assessment_task_version",
-    "assessment_band",
-    "assessment_confidence",
-    "assessment_reason_codes",
-    "purpose",
-    "actor_id",
-    "actor_revision",
-    "actor_queue_revision",
-    "profile_id",
-    "profile_revision",
-    "capacity_owner_id",
-    "capacity_owner_profile_id",
-    "model_binding_id",
-    "model_binding_revision",
-    "model_catalog_id",
-    "model_catalog_key",
-    "model_catalog_revision",
-    "configured_model_alias",
-    "selected_reasoning_tier",
-    "selected_context_tier",
-    "review_mode",
-    "reviewer_profile_id",
-    "routing_preview_id",
-    "routing_preview_digest",
-    "input_digest",
-    "preview_generated_at",
-    "preview_expires_at",
-    "selected_rank",
-    "adequacy_class",
-    "selection_reason_codes",
-    "eligible_candidate_summaries",
-    "exclusion_summaries",
-    "eligible_candidates_omitted",
-    "exclusions_omitted",
-    "confidence",
-    "trust_lineage",
-)
-
-
 def _json_loads(value: Optional[str], fallback: Any) -> Any:
     try:
         return json.loads(value) if value else fallback
@@ -205,9 +168,52 @@ def parse_task_brief(description: Optional[str]) -> dict[str, str]:
 class AgentWorkService:
     """Coordinate PM dispatch and low-freedom worker lifecycle commands."""
 
-    def __init__(self, db: AsyncSession):
+    def __init__(
+        self,
+        db: AsyncSession,
+        *,
+        rollout_service: AgentRoutingRolloutService | None = None,
+    ):
         self.db = db
         self.task_service = TaskService(db)
+        self.rollout_service = rollout_service or AgentRoutingRolloutService()
+
+    def _require_enforced_routing(self):
+        """Require effective enforcement and return its bounded status."""
+
+        try:
+            return self.rollout_service.require_enforced_dispatch()
+        except AgentRoutingRolloutError as exc:
+            from app.services.agent_routing_service import (
+                AgentRoutingConflictError,
+            )
+
+            status = exc.status
+            raise AgentRoutingConflictError(
+                exc.code,
+                "Enforced model-aware dispatch is unavailable",
+                configured_mode=status.configured_mode.value,
+                effective_mode=status.effective_mode.value,
+                blocker_codes=list(status.blocker_codes),
+                topology_readiness=status.topology_readiness.as_dict(),
+            ) from exc
+
+    def _require_supervised_routing(self):
+        """Permit legacy/supervised dispatch only while enforcement is inactive."""
+
+        status = self.rollout_service.status()
+        if status.effective_mode == AgentRoutingRolloutMode.ENFORCED:
+            from app.services.agent_routing_service import (
+                AgentRoutingConflictError,
+            )
+
+            raise AgentRoutingConflictError(
+                "model_aware_assignment_required",
+                "Effective enforced mode requires model-aware routing evidence",
+                configured_mode=status.configured_mode.value,
+                effective_mode=status.effective_mode.value,
+            )
+        return status
 
     @staticmethod
     def _audited_command_request(
@@ -325,6 +331,154 @@ class AgentWorkService:
         snapshot = _json_loads(assignment.routing_snapshot, {})
         return snapshot if isinstance(snapshot, dict) else {}
 
+    async def _record_routing_selection(
+        self,
+        *,
+        assignment: AgentTaskAssignment,
+        routing_validation: Any,
+        principal: AgentActor,
+        correlation_id: str,
+        idempotency_key: str,
+    ) -> None:
+        """Stage bounded selection and governed escalation evidence."""
+
+        snapshot = routing_validation.snapshot.model_dump(mode="json")
+        await record_routing_operational_event(
+            self.db,
+            event=RoutingOperationalEvent.ASSIGNMENT_SELECTED,
+            task_id=assignment.task_id,
+            actor_id=principal.id if principal.id > 0 else None,
+            correlation_id=correlation_id,
+            idempotency_key=idempotency_key,
+            values={
+                "task_version": snapshot["task_version"],
+                "policy_version": snapshot["policy_version"],
+                "rollout_mode": (
+                    self.rollout_service.status().effective_mode.value
+                ),
+                "assessment_id": snapshot["assessment_id"],
+                "assessment_task_version": snapshot[
+                    "assessment_task_version"
+                ],
+                "assignment_id": assignment.id,
+                "actor_id": snapshot["actor_id"],
+                "model_binding_id": snapshot["model_binding_id"],
+                "model_binding_revision": snapshot[
+                    "model_binding_revision"
+                ],
+                "model_catalog_id": snapshot["model_catalog_id"],
+                "model_catalog_revision": snapshot[
+                    "model_catalog_revision"
+                ],
+                "routing_preview_id": snapshot["routing_preview_id"],
+                "routing_preview_digest": snapshot[
+                    "routing_preview_digest"
+                ],
+                "reason_codes": snapshot["selection_reason_codes"],
+                "purpose": snapshot["purpose"],
+                "review_mode": snapshot["review_mode"],
+            },
+        )
+        prior_lineage = snapshot.get("prior_lineage")
+        tier_change = (
+            prior_lineage.get("model_tier_change")
+            if isinstance(prior_lineage, dict)
+            else None
+        )
+        if not isinstance(tier_change, dict) or tier_change.get("applied") is not True:
+            return
+        cause = prior_lineage.get("cause")
+        failure_category = (
+            cause.get("category") if isinstance(cause, dict) else None
+        )
+        failure_category = normalize_model_failure_category(
+            failure_category
+        )
+        await record_routing_operational_event(
+            self.db,
+            event=RoutingOperationalEvent.TIER_ESCALATED,
+            task_id=assignment.task_id,
+            actor_id=principal.id if principal.id > 0 else None,
+            correlation_id=correlation_id,
+            idempotency_key=idempotency_key,
+            values={
+                "task_version": snapshot["task_version"],
+                "policy_version": snapshot["policy_version"],
+                "assignment_id": assignment.id,
+                "actor_id": snapshot["actor_id"],
+                "model_binding_id": snapshot["model_binding_id"],
+                "model_binding_revision": snapshot[
+                    "model_binding_revision"
+                ],
+                "model_catalog_id": snapshot["model_catalog_id"],
+                "model_catalog_revision": snapshot[
+                    "model_catalog_revision"
+                ],
+                "failure_category": failure_category,
+                "previous_reasoning_tier": tier_change.get(
+                    "previous_reasoning_tier"
+                ),
+                "selected_reasoning_tier": tier_change.get(
+                    "selected_reasoning_tier"
+                ),
+                "previous_context_tier": tier_change.get(
+                    "previous_context_tier"
+                ),
+                "selected_context_tier": tier_change.get(
+                    "selected_context_tier"
+                ),
+                "reason_codes": ["governed_model_failure_escalation"],
+            },
+        )
+
+    async def _record_routing_stale_conflict(
+        self,
+        *,
+        task: Task,
+        principal: AgentActor,
+        data: Any,
+        conflict: Any,
+        assignment_id: int | None = None,
+        correlation_id: str | None = None,
+    ) -> None:
+        """Durably record a failed selection attempt without mutating work state."""
+
+        await record_routing_operational_event(
+            self.db,
+            event=RoutingOperationalEvent.STALE_CONFLICT,
+            task_id=task.id,
+            actor_id=principal.id if principal.id > 0 else None,
+            correlation_id=correlation_id,
+            values={
+                "task_version": task.version,
+                "policy_version": ROUTING_POLICY_VERSION,
+                "rollout_mode": (
+                    self.rollout_service.status().effective_mode.value
+                ),
+                "assessment_id": getattr(data, "assessment_id", None),
+                "assignment_id": assignment_id,
+                "actor_id": getattr(data, "actor_id", None),
+                "model_binding_id": getattr(
+                    data,
+                    "model_binding_id",
+                    None,
+                ),
+                "model_binding_revision": getattr(
+                    data,
+                    "model_binding_revision",
+                    None,
+                ),
+                "routing_preview_id": getattr(
+                    data,
+                    "routing_preview_id",
+                    None,
+                ),
+                "conflict_code": conflict.code,
+                "reason_codes": [conflict.code],
+            },
+            commit=True,
+        )
+
     @classmethod
     def _selection_pending(cls, assignment: AgentTaskAssignment) -> bool:
         return cls._routing_snapshot(assignment).get("selection_pending") is True
@@ -359,10 +513,10 @@ class AgentWorkService:
         if isinstance(nested, dict):
             candidates += (nested.get("category"),)
         for candidate in candidates:
-            normalized = str(candidate or "").strip().lower().replace("-", "_")
+            normalized = normalize_model_failure_category(candidate)
             if normalized in MODEL_FAILURE_CATEGORIES:
                 return normalized
-        return "non_model_or_unclassified"
+        return normalize_model_failure_category(None)
 
     @classmethod
     def _routing_lineage_snapshot(
@@ -380,7 +534,7 @@ class AgentWorkService:
         decisions: list[dict[str, Any]] = []
         reviewer_profile_ids: set[int] = set()
         review_mode = "none"
-        policy_version = "model-aware-routing-v1"
+        policy_version = ROUTING_POLICY_VERSION
         ordered_sources = sorted(
             source_assignments,
             key=lambda item: (item.updated_at, item.id),
@@ -390,6 +544,12 @@ class AgentWorkService:
             if source.reviewer_profile_id is not None:
                 reviewer_profile_ids.add(source.reviewer_profile_id)
             snapshot = cls._routing_snapshot(source)
+            if (
+                snapshot.get("schema_version")
+                != "routing-decision-snapshot-v1"
+                or snapshot.get("authority") != ROUTING_DECISION_AUTHORITY
+            ):
+                continue
             candidate_review_mode = str(snapshot.get("review_mode") or "none")
             if ROUTING_REVIEW_ORDER.get(candidate_review_mode, -1) > (
                 ROUTING_REVIEW_ORDER[review_mode]
@@ -398,11 +558,6 @@ class AgentWorkService:
             snapshot_reviewer_id = snapshot.get("reviewer_profile_id")
             if isinstance(snapshot_reviewer_id, int):
                 reviewer_profile_ids.add(snapshot_reviewer_id)
-            candidate_policy = snapshot.get("policy_version")
-            if isinstance(candidate_policy, str) and candidate_policy:
-                policy_version = candidate_policy
-            if snapshot.get("schema_version") != "routing-decision-snapshot-v1":
-                continue
             decision = {
                 field: snapshot[field]
                 for field in ROUTING_DECISION_LINEAGE_FIELDS
@@ -432,6 +587,7 @@ class AgentWorkService:
         category = cls._failure_category(evidence)
         snapshot = {
             "schema_version": "routing-lineage-snapshot-v1",
+            "authority": ROUTING_LINEAGE_AUTHORITY,
             "policy_version": policy_version,
             "selection_pending": True,
             "task_id": task.id,
@@ -893,18 +1049,10 @@ class AgentWorkService:
         self._require_any_scope(principal, "assignments:write")
         idempotency_key = validate_idempotency_key(idempotency_key, required=True)
         assert idempotency_key is not None
-        if isinstance(data, AgentTaskAssignmentCreate):
-            from app.services.agent_routing_service import (
-                AgentRoutingConflictError,
-            )
-
-            raise AgentRoutingConflictError(
-                "model_aware_assignment_required",
-                "This server requires model-aware assignment creation",
-                task_id=data.task_id,
-                expected_task_version=data.expected_task_version,
-            )
-        from app.services.agent_routing_service import AgentRoutingService
+        from app.services.agent_routing_service import (
+            AgentRoutingConflictError,
+            AgentRoutingService,
+        )
 
         routing_service = AgentRoutingService(self.db)
         await routing_service.lock_selection_inputs(data.task_id)
@@ -930,6 +1078,10 @@ class AgentWorkService:
                 await self.db.rollback()
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
+        if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
+            self._require_enforced_routing()
+        else:
+            self._require_supervised_routing()
 
         if task is None:
             raise ValueError("Task not found")
@@ -1000,16 +1152,28 @@ class AgentWorkService:
             else None
         )
         if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
-            routing_validation = await routing_service.validate_assignment_selection(
-                task=task,
-                selected_actor=target,
-                data=data,
-                existing_assignment=None,
-                task_assignments=task_assignments,
-                now=utc_now(),
-                assignment_created_by_actor=principal,
-                selection_inputs_locked=True,
-            )
+            try:
+                routing_validation = (
+                    await routing_service.validate_assignment_selection(
+                        task=task,
+                        selected_actor=target,
+                        data=data,
+                        existing_assignment=None,
+                        task_assignments=task_assignments,
+                        now=utc_now(),
+                        assignment_created_by_actor=principal,
+                        selection_inputs_locked=True,
+                    )
+                )
+            except AgentRoutingConflictError as exc:
+                await self._record_routing_stale_conflict(
+                    task=task,
+                    principal=principal,
+                    data=data,
+                    conflict=exc,
+                    correlation_id=command.correlation_id,
+                )
+                raise
             routing_snapshot = routing_validation.snapshot.model_dump(mode="json")
         assert routing_snapshot is not None
         assignment = AgentTaskAssignment(
@@ -1078,6 +1242,14 @@ class AgentWorkService:
             correlation_id=command.correlation_id,
             idempotency_key=idempotency_key,
         )
+        if routing_validation is not None:
+            await self._record_routing_selection(
+                assignment=assignment,
+                routing_validation=routing_validation,
+                principal=principal,
+                correlation_id=command.correlation_id,
+                idempotency_key=idempotency_key,
+            )
         response = self.assignment_response(
             assignment,
             model_binding=(
@@ -1165,6 +1337,9 @@ class AgentWorkService:
                 await self.db.rollback()
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
+        rollout_status = self.rollout_service.status()
+        if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
+            rollout_status = self._require_enforced_routing()
         if assignment.state != "queued":
             raise AgentConflictError("Only queued assignments can be changed by PM control")
         current_actor = locked_actors.get(assignment.actor_id)
@@ -1203,16 +1378,49 @@ class AgentWorkService:
         routing_validation = None
         if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
             assert routing_service is not None
-            routing_validation = await routing_service.validate_assignment_selection(
-                task=task,
-                selected_actor=selected_actor,
-                data=data,
-                existing_assignment=assignment,
-                task_assignments=task_assignments,
-                now=utc_now(),
-                assignment_created_by_actor=principal,
-                selection_inputs_locked=True,
+            from app.services.agent_routing_service import (
+                AgentRoutingConflictError,
             )
+
+            try:
+                if assignment.queue_class in {"rework", "recovery"}:
+                    existing_snapshot = self._routing_snapshot(assignment)
+                    if (
+                        existing_snapshot.get("schema_version")
+                        != "routing-lineage-snapshot-v1"
+                        or existing_snapshot.get("authority")
+                        != ROUTING_LINEAGE_AUTHORITY
+                        or existing_snapshot.get("selection_pending")
+                        is not True
+                    ):
+                        raise AgentRoutingConflictError(
+                            "routing_lineage_authority_unverified",
+                            "Model-aware rework or recovery requires "
+                            "server-owned pending lineage",
+                            assignment_id=assignment.id,
+                        )
+                routing_validation = (
+                    await routing_service.validate_assignment_selection(
+                        task=task,
+                        selected_actor=selected_actor,
+                        data=data,
+                        existing_assignment=assignment,
+                        task_assignments=task_assignments,
+                        now=utc_now(),
+                        assignment_created_by_actor=principal,
+                        selection_inputs_locked=True,
+                    )
+                )
+            except AgentRoutingConflictError as exc:
+                await self._record_routing_stale_conflict(
+                    task=task,
+                    principal=principal,
+                    data=data,
+                    conflict=exc,
+                    assignment_id=assignment.id,
+                    correlation_id=command.correlation_id,
+                )
+                raise
         else:
             changed_routing_fields: set[str] = set()
             if (
@@ -1230,18 +1438,31 @@ class AgentWorkService:
                 and data.not_before != assignment.not_before
             ):
                 changed_routing_fields.add("not_before")
-            if changed_routing_fields:
+            if changed_routing_fields and (
+                rollout_status.effective_mode
+                == AgentRoutingRolloutMode.ENFORCED
+                or self._is_model_aware_assignment(assignment)
+            ):
                 from app.services.agent_routing_service import (
                     AgentRoutingConflictError,
                 )
 
-                raise AgentRoutingConflictError(
+                conflict = AgentRoutingConflictError(
                     "model_aware_assignment_update_required",
                     "A fresh model-aware routing preview is required to change "
                     + ", ".join(sorted(changed_routing_fields)),
                     assignment_id=assignment.id,
                     changed_fields=sorted(changed_routing_fields),
                 )
+                await self._record_routing_stale_conflict(
+                    task=task,
+                    principal=principal,
+                    data=data,
+                    conflict=conflict,
+                    assignment_id=assignment.id,
+                    correlation_id=command.correlation_id,
+                )
+                raise conflict
 
         if selected_actor.id != assignment.actor_id:
             assignment.actor_id = selected_actor.id
@@ -1301,6 +1522,14 @@ class AgentWorkService:
             correlation_id=command.correlation_id,
             idempotency_key=idempotency_key,
         )
+        if routing_validation is not None:
+            await self._record_routing_selection(
+                assignment=assignment,
+                routing_validation=routing_validation,
+                principal=principal,
+                correlation_id=command.correlation_id,
+                idempotency_key=idempotency_key,
+            )
         response = self.assignment_response(
             assignment,
             model_binding=(
@@ -1703,16 +1932,27 @@ class AgentWorkService:
                 "A fresh routing preview and model-aware assignment update are required",
                 assignment_id=assignment.id,
             )
-        if not model_aware_request:
-            raise AgentRoutingConflictError(
-                "model_aware_begin_required",
-                "This server requires binding revision and observed model evidence",
-                assignment_id=assignment.id,
-            )
+        if model_aware_request:
+            self._require_enforced_routing()
         if model_aware_request and not model_aware_assignment:
             raise AgentRoutingConflictError(
                 "model_aware_assignment_required",
                 "Model-aware begin cannot claim a legacy assignment",
+                assignment_id=assignment.id,
+            )
+        if not model_aware_request and model_aware_assignment:
+            effective_mode = self.rollout_service.status().effective_mode
+            raise AgentRoutingConflictError(
+                (
+                    "model_aware_begin_required"
+                    if effective_mode == AgentRoutingRolloutMode.ENFORCED
+                    else "model_aware_assignment_inactive"
+                ),
+                (
+                    "Model-aware work requires binding revision and observed model evidence"
+                    if effective_mode == AgentRoutingRolloutMode.ENFORCED
+                    else "A historical model-aware assignment cannot begin while enforcement is inactive"
+                ),
                 assignment_id=assignment.id,
             )
 
@@ -1778,6 +2018,32 @@ class AgentWorkService:
                     ):
                         stale_reasons.append("routing_snapshot_alias_mismatch")
             if stale_reasons:
+                await record_routing_operational_event(
+                    self.db,
+                    event=RoutingOperationalEvent.STALE_CONFLICT,
+                    task_id=task.id,
+                    actor_id=actor.id,
+                    values={
+                        "task_version": task.version,
+                        "policy_version": snapshot.get(
+                            "policy_version",
+                            ROUTING_POLICY_VERSION,
+                        ),
+                        "rollout_mode": (
+                            self.rollout_service.status().effective_mode.value
+                        ),
+                        "assignment_id": assignment.id,
+                        "actor_id": actor.id,
+                        "model_binding_id": data.model_binding_id,
+                        "model_binding_revision": data.model_binding_revision,
+                        "routing_preview_id": snapshot.get(
+                            "routing_preview_id"
+                        ),
+                        "conflict_code": "model_binding_stale",
+                        "reason_codes": sorted(set(stale_reasons)),
+                    },
+                    commit=True,
+                )
                 raise AgentRoutingConflictError(
                     "model_binding_stale",
                     "The selected model binding no longer matches the assignment evidence",
@@ -1793,12 +2059,47 @@ class AgentWorkService:
             elif resolved_model_id == selected_binding.model_catalog.key:
                 model_match_basis = "catalog_key"
             else:
+                await record_routing_operational_event(
+                    self.db,
+                    event=(
+                        RoutingOperationalEvent.CONFIGURED_OBSERVED_MISMATCH
+                    ),
+                    task_id=task.id,
+                    actor_id=actor.id,
+                    values={
+                        "task_version": task.version,
+                        "policy_version": snapshot.get(
+                            "policy_version",
+                            ROUTING_POLICY_VERSION,
+                        ),
+                        "rollout_mode": (
+                            self.rollout_service.status().effective_mode.value
+                        ),
+                        "assignment_id": assignment.id,
+                        "actor_id": actor.id,
+                        "model_binding_id": selected_binding.id,
+                        "model_binding_revision": selected_binding.revision,
+                        "model_catalog_id": (
+                            selected_binding.model_catalog.id
+                        ),
+                        "model_catalog_revision": (
+                            selected_binding.model_catalog.revision
+                        ),
+                        "conflict_code": "resolved_model_mismatch",
+                        "model_evidence_source": "worker_report",
+                        "model_attested": False,
+                        "reason_codes": ["configured_observed_mismatch"],
+                    },
+                    commit=True,
+                )
                 raise AgentRoutingConflictError(
                     "resolved_model_mismatch",
                     "The observed model does not match the selected configured alias or catalog key",
                     assignment_id=assignment.id,
                     model_binding_id=selected_binding.id,
-                    observed_model=resolved_model_id,
+                    observed_model_sha256=opaque_value_digest(
+                        resolved_model_id
+                    ),
                 )
         if await self._assignment_count(actor.id, "accepted") >= actor.max_parallel_work:
             raise AgentConflictError("Actor has reached max_parallel_work")
@@ -2284,6 +2585,21 @@ class AgentWorkService:
             if snapshot is not None:
                 return AgentReviewVerdictResponse.model_validate(snapshot)
             raise AgentConflictError("Idempotent verification receipt is unavailable")
+        if (
+            self._is_model_aware_assignment(assignment)
+            and self.rollout_service.status().effective_mode
+            != AgentRoutingRolloutMode.ENFORCED
+        ):
+            from app.services.agent_routing_service import (
+                AgentRoutingConflictError,
+            )
+
+            raise AgentRoutingConflictError(
+                "model_aware_assignment_inactive",
+                "A queued model-aware verification assignment cannot be reviewed "
+                "while enforcement is inactive",
+                assignment_id=assignment.id,
+            )
         if assignment.actor_id != actor.id and not actor_has_scope(actor, "admin"):
             raise AgentPermissionError("Review belongs to another actor")
         assignment_actor = locked_actors.get(assignment.actor_id)
@@ -2407,6 +2723,51 @@ class AgentWorkService:
             correlation_id=command.correlation_id,
             idempotency_key=idempotency_key,
         )
+        if data.verdict == "reject":
+            assert rework is not None
+            assert rework_snapshot is not None
+            lineage_digest = hashlib.sha256(
+                canonical_routing_json_bytes(rework_snapshot)
+            ).hexdigest()
+            failure_category = rework_snapshot["cause"]["category"]
+            await record_routing_operational_event(
+                self.db,
+                event=RoutingOperationalEvent.VERIFIER_REJECTED,
+                task_id=task.id,
+                actor_id=actor.id,
+                correlation_id=command.correlation_id,
+                idempotency_key=idempotency_key,
+                values={
+                    "task_version": task.version,
+                    "policy_version": ROUTING_POLICY_VERSION,
+                    "assignment_id": assignment.id,
+                    "actor_id": actor.id,
+                    "review_mode": rework_snapshot["review_floor"][
+                        "review_mode"
+                    ],
+                    "failure_category": failure_category,
+                    "lineage_digest": lineage_digest,
+                    "reason_codes": ["verifier_rejected"],
+                },
+            )
+            await record_routing_operational_event(
+                self.db,
+                event=RoutingOperationalEvent.REWORK_CREATED,
+                task_id=task.id,
+                actor_id=actor.id,
+                correlation_id=command.correlation_id,
+                idempotency_key=idempotency_key,
+                values={
+                    "task_version": task.version,
+                    "policy_version": ROUTING_POLICY_VERSION,
+                    "source_assignment_id": assignment.id,
+                    "rework_assignment_id": rework.id,
+                    "actor_id": rework.actor_id,
+                    "failure_category": failure_category,
+                    "lineage_digest": lineage_digest,
+                    "reason_codes": ["fresh_selection_required"],
+                },
+            )
         await self._record_idempotency(
             actor,
             "verification.verdict",
@@ -3280,6 +3641,12 @@ class AgentWorkService:
             return ["assignment_missing"]
         if self._selection_pending(assignment):
             blockers.append("routing_selection_pending")
+        if (
+            self._is_model_aware_assignment(assignment)
+            and self.rollout_service.status().effective_mode
+            != AgentRoutingRolloutMode.ENFORCED
+        ):
+            blockers.append("model_aware_assignment_inactive")
         if assignment.task_version != task.version:
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)

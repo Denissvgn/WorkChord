@@ -48,7 +48,11 @@ from app.services.agent_routing_policy import (
     MAX_ROUTING_EXCLUSIONS,
     MAX_ROUTING_PACKET_BYTES,
     MIN_ROUTING_ASSESSMENT_CONFIDENCE,
+    MODEL_FAILURE_CATEGORIES,
     REVIEW_MODE_ORDER,
+    ROUTING_DECISION_AUTHORITY,
+    ROUTING_DECISION_LINEAGE_FIELDS,
+    ROUTING_LINEAGE_AUTHORITY,
     ROUTING_POLICY_VERSION,
     ROUTING_PREVIEW_TTL_SECONDS,
     RoutingBlockerCode,
@@ -58,9 +62,20 @@ from app.services.agent_routing_policy import (
     evaluate_assignment_compatibility,
     evaluate_model_envelope,
     evaluate_required_skills,
+    normalize_model_failure_category,
     routing_candidate_rank_key,
     review_mode_meets,
     validate_routing_packet_size,
+)
+from app.services.agent_routing_observability import (
+    RoutingOperationalEvent,
+    record_routing_operational_event,
+    routing_exclusion_projection,
+)
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutError,
+    AgentRoutingRolloutMode,
+    AgentRoutingRolloutService,
 )
 from app.services.agent_service import (
     AgentConflictError,
@@ -183,9 +198,31 @@ def _json_projection(value: Any) -> Any:
 class AgentRoutingService:
     """Create immutable assessments and deterministic exact-actor previews."""
 
-    def __init__(self, db: AsyncSession):
+    def __init__(
+        self,
+        db: AsyncSession,
+        *,
+        rollout_service: AgentRoutingRolloutService | None = None,
+    ):
         self.db = db
         self.task_service = TaskService(db)
+        self.rollout_service = rollout_service or AgentRoutingRolloutService()
+
+    def _require_preview_rollout(self):
+        """Translate fail-closed rollout state into the routing error envelope."""
+
+        try:
+            return self.rollout_service.require_preview()
+        except AgentRoutingRolloutError as exc:
+            status = exc.status
+            raise AgentRoutingConflictError(
+                exc.code,
+                "Model-aware routing is unavailable in the effective rollout mode",
+                configured_mode=status.configured_mode.value,
+                effective_mode=status.effective_mode.value,
+                blocker_codes=list(status.blocker_codes),
+                topology_readiness=status.topology_readiness.as_dict(),
+            ) from exc
 
     @staticmethod
     def _require_read(actor: AgentActor) -> None:
@@ -471,6 +508,7 @@ class AgentRoutingService:
             if replay is not None:
                 await self.db.rollback()
                 return replay
+            self._require_preview_rollout()
             if task.version != data.expected_task_version:
                 raise TaskVersionConflictError(
                     data.expected_task_version,
@@ -489,15 +527,22 @@ class AgentRoutingService:
                     AgentTaskAssignment.state == "queued",
                 )
             )
-            review_floors = [
-                str(
-                    _json_value(snapshot, {})
-                    .get("review_floor", {})
-                    .get("review_mode", "none")
-                )
-                for snapshot in pending_result.scalars()
-                if _json_value(snapshot, {}).get("selection_pending") is True
-            ]
+            review_floors: list[str] = []
+            for raw_snapshot in pending_result.scalars():
+                snapshot = _json_value(raw_snapshot, {})
+                if (
+                    snapshot.get("schema_version")
+                    != "routing-lineage-snapshot-v1"
+                    or snapshot.get("authority")
+                    != ROUTING_LINEAGE_AUTHORITY
+                    or snapshot.get("selection_pending") is not True
+                ):
+                    continue
+                review_floor = snapshot.get("review_floor")
+                if isinstance(review_floor, dict):
+                    review_floors.append(
+                        str(review_floor.get("review_mode") or "none")
+                    )
             required_review_floor = max(
                 review_floors or ["none"],
                 key=lambda value: REVIEW_MODE_ORDER.get(value, -1),
@@ -571,6 +616,23 @@ class AgentRoutingService:
                 idempotency_key=idempotency_key,
             )
             await self.db.flush()
+            operational_event_id = await record_routing_operational_event(
+                self.db,
+                event=RoutingOperationalEvent.ASSESSMENT_CREATED,
+                task_id=task.id,
+                actor_id=actor.id,
+                correlation_id=command.correlation_id,
+                idempotency_key=idempotency_key,
+                values={
+                    "assessment_id": assessment.id,
+                    "assessment_task_version": assessment.task_version,
+                    "task_version": task.version,
+                    "policy_version": assessment.policy_version,
+                    "band": assessment.band,
+                    "review_mode": assessment.review_mode,
+                    "reason_codes": list(assessment.reason_codes),
+                },
+            )
             receipt = TaskRoutingAssessmentMutationReceipt(
                 operation="routing.assessment.create",
                 actor_id=actor.id,
@@ -582,7 +644,7 @@ class AgentRoutingService:
                 correlation_id=command.correlation_id,
                 authoritative_task_version=task.version,
                 assessment=response,
-                audit_event_ids=[event.id],
+                audit_event_ids=[event.id, operational_event_id],
             )
             self.db.add(
                 AgentIdempotencyRecord(
@@ -1432,8 +1494,12 @@ class AgentRoutingService:
             )
             historical_profile_id = (
                 historical_snapshot.get("profile_id")
-                if historical_snapshot.get("schema_version")
-                == "routing-decision-snapshot-v1"
+                if (
+                    historical_snapshot.get("schema_version")
+                    == "routing-decision-snapshot-v1"
+                    and historical_snapshot.get("authority")
+                    == ROUTING_DECISION_AUTHORITY
+                )
                 else None
             )
             execution_profile_ids.append(
@@ -1898,8 +1964,9 @@ class AgentRoutingService:
         *,
         now: datetime | None = None,
     ) -> AgentRoutingPreviewResponse:
-        """Return an expiring deterministic preview without mutating domain state."""
+        """Return a deterministic preview and stage bounded shadow/audit evidence."""
 
+        rollout = self._require_preview_rollout()
         self._require_read(actor)
         if actor.id <= 0:
             raise AgentPermissionError(
@@ -1908,12 +1975,83 @@ class AgentRoutingService:
         task = await self.task_service.get_by_id(task_id)
         if task is None:
             raise LookupError("Task not found")
-        return await self._build_preview(
+        preview = await self._build_preview(
             task=task,
             data=data,
             generated_at=now or utc_now(),
             requesting_actor_id=actor.id,
         )
+        operational_values = {
+            "task_version": preview.current_task_version,
+            "policy_version": ROUTING_POLICY_VERSION,
+            "rollout_mode": rollout.effective_mode.value,
+            "assessment_id": preview.assessment_id,
+            "assessment_task_version": preview.assessment_task_version,
+            "purpose": preview.purpose,
+            "routing_preview_id": preview.preview_id,
+            "routing_preview_digest": preview.preview_digest,
+            "input_digest": preview.input_digest,
+            "recommended_actor_id": (
+                preview.recommended_candidate.actor_id
+                if preview.recommended_candidate is not None
+                else None
+            ),
+            "recommended_model_binding_id": (
+                preview.recommended_candidate.model_binding_id
+                if preview.recommended_candidate is not None
+                else None
+            ),
+            "recommended_model_binding_revision": (
+                preview.recommended_candidate.model_binding_revision
+                if preview.recommended_candidate is not None
+                else None
+            ),
+            "recommended_model_catalog_id": (
+                preview.recommended_candidate.model_catalog_id
+                if preview.recommended_candidate is not None
+                else None
+            ),
+            "recommended_model_catalog_revision": (
+                preview.recommended_candidate.model_catalog_revision
+                if preview.recommended_candidate is not None
+                else None
+            ),
+            "hard_blocker_codes": list(preview.hard_blocker_codes),
+            **routing_exclusion_projection(preview.exclusions),
+        }
+        recorded = False
+        if rollout.effective_mode == AgentRoutingRolloutMode.SHADOW:
+            await record_routing_operational_event(
+                self.db,
+                event=RoutingOperationalEvent.PREVIEW_RECORDED,
+                task_id=task.id,
+                actor_id=actor.id,
+                values=operational_values,
+            )
+            recorded = True
+        if preview.recommended_candidate is None:
+            await record_routing_operational_event(
+                self.db,
+                event=RoutingOperationalEvent.NO_ELIGIBLE_CANDIDATE,
+                task_id=task.id,
+                actor_id=actor.id,
+                values={
+                    key: value
+                    for key, value in operational_values.items()
+                    if key
+                    not in {
+                        "recommended_actor_id",
+                        "recommended_model_binding_id",
+                        "recommended_model_binding_revision",
+                        "recommended_model_catalog_id",
+                        "recommended_model_catalog_revision",
+                    }
+                },
+            )
+            recorded = True
+        if recorded:
+            await self.db.commit()
+        return preview
 
     @staticmethod
     def _completed_prior_lineage(
@@ -1932,10 +2070,19 @@ class AgentRoutingService:
             or stored.get("selection_pending") is not True
         ):
             return None
-        lineage = json.loads(
+        stored_lineage = json.loads(
             canonical_routing_json_bytes(stored).decode("utf-8")
         )
-        prior_decisions = lineage.get("prior_decisions")
+        source_authority_verified = (
+            stored_lineage.get("authority") == ROUTING_LINEAGE_AUTHORITY
+        )
+        if not source_authority_verified:
+            raise AgentRoutingConflictError(
+                "routing_lineage_authority_unverified",
+                "Legacy routing lineage cannot authorize model-aware selection",
+                assignment_id=existing_assignment.id,
+            )
+        prior_decisions = stored_lineage.get("prior_decisions")
         if not isinstance(prior_decisions, list):
             prior_decisions = []
         compact_decisions: list[dict[str, Any]] = []
@@ -1943,7 +2090,11 @@ class AgentRoutingService:
         for raw_decision in prior_decisions[:4]:
             if not isinstance(raw_decision, dict):
                 continue
-            decision = dict(raw_decision)
+            decision = {
+                field: raw_decision[field]
+                for field in ROUTING_DECISION_LINEAGE_FIELDS
+                if field in raw_decision
+            }
             eligible_summaries = decision.pop(
                 "eligible_candidate_summaries",
                 [],
@@ -1952,15 +2103,33 @@ class AgentRoutingService:
                 "exclusion_summaries",
                 [],
             )
-            decision["eligible_candidates_omitted"] = int(
-                decision.get("eligible_candidates_omitted") or 0
+            stored_eligible_omitted = decision.get(
+                "eligible_candidates_omitted"
+            )
+            if (
+                not isinstance(stored_eligible_omitted, int)
+                or isinstance(stored_eligible_omitted, bool)
+                or stored_eligible_omitted < 0
+            ):
+                stored_eligible_omitted = 0
+            decision["eligible_candidates_omitted"] = (
+                stored_eligible_omitted
             ) + (
                 len(eligible_summaries)
                 if isinstance(eligible_summaries, list)
                 else 0
             )
-            decision["exclusions_omitted"] = int(
-                decision.get("exclusions_omitted") or 0
+            stored_exclusions_omitted = decision.get(
+                "exclusions_omitted"
+            )
+            if (
+                not isinstance(stored_exclusions_omitted, int)
+                or isinstance(stored_exclusions_omitted, bool)
+                or stored_exclusions_omitted < 0
+            ):
+                stored_exclusions_omitted = 0
+            decision["exclusions_omitted"] = (
+                stored_exclusions_omitted
             ) + (
                 len(exclusion_summaries)
                 if isinstance(exclusion_summaries, list)
@@ -1974,8 +2143,88 @@ class AgentRoutingService:
                 and context_tier in {"small", "medium", "large"}
             ):
                 prior_tiers.append((reasoning_tier, str(context_tier)))
+            trust_lineage = decision.get("trust_lineage")
+            if isinstance(trust_lineage, dict):
+                decision["trust_lineage"] = {
+                    field: trust_lineage[field]
+                    for field in (
+                        "assessment_assessor",
+                        "assessment_assessor_actor_id",
+                        "preview_requested_by_actor_id",
+                        "assignment_created_by_actor_id",
+                        "execution_actor_id",
+                        "observed_model_reported_by_actor_id",
+                    )
+                    if field in trust_lineage
+                }
+            else:
+                decision.pop("trust_lineage", None)
             compact_decisions.append(decision)
-        lineage["prior_decisions"] = compact_decisions
+
+        stored_source_ids = stored_lineage.get("source_assignment_ids")
+        source_assignment_ids = sorted(
+            {
+                value
+                for value in (
+                    stored_source_ids
+                    if isinstance(stored_source_ids, list)
+                    else []
+                )
+                if isinstance(value, int)
+                and not isinstance(value, bool)
+                and value > 0
+            }
+        )[:20]
+        stored_review_floor = stored_lineage.get("review_floor")
+        if not isinstance(stored_review_floor, dict):
+            stored_review_floor = {}
+        review_mode = str(
+            stored_review_floor.get("review_mode") or "none"
+        )
+        if review_mode not in REVIEW_MODE_ORDER:
+            review_mode = "none"
+        stored_reviewer_ids = stored_review_floor.get(
+            "reviewer_profile_ids"
+        )
+        reviewer_profile_ids = sorted(
+            {
+                value
+                for value in (
+                    stored_reviewer_ids
+                    if isinstance(stored_reviewer_ids, list)
+                    else []
+                )
+                if isinstance(value, int)
+                and not isinstance(value, bool)
+                and value > 0
+            }
+        )[:20]
+        lineage = {
+            "schema_version": "routing-lineage-snapshot-v1",
+            "authority": ROUTING_LINEAGE_AUTHORITY,
+            "source_authority": "verified",
+            "policy_version": ROUTING_POLICY_VERSION,
+            "selection_pending": True,
+            "task_id": existing_assignment.task_id,
+            "task_version": existing_assignment.task_version,
+            "purpose": "execution",
+            "queue_class": (
+                existing_assignment.queue_class
+                if existing_assignment.queue_class in {"rework", "recovery"}
+                else "rework"
+            ),
+            "provisional_actor_id": existing_assignment.actor_id,
+            "source_assignment_ids": source_assignment_ids,
+            "prior_decisions": compact_decisions,
+            "review_floor": {
+                "review_mode": review_mode,
+                "reviewer_profile_ids": reviewer_profile_ids,
+                "independence_must_be_revalidated": (
+                    REVIEW_MODE_ORDER[review_mode]
+                    >= REVIEW_MODE_ORDER["independent"]
+                ),
+            },
+        }
 
         context_order = {"small": 1, "medium": 2, "large": 3}
         comparison_available = bool(prior_tiers)
@@ -1997,10 +2246,19 @@ class AgentRoutingService:
                 > context_order[str(previous_context_tier)]
             )
         )
-        model_tier_change = lineage.get("model_tier_change")
-        if not isinstance(model_tier_change, dict):
-            model_tier_change = {}
-        escalation_eligible = model_tier_change.get("eligible") is True
+        cause = stored_lineage.get("cause")
+        if not isinstance(cause, dict):
+            cause = {}
+        failure_category = normalize_model_failure_category(
+            cause.get("category")
+        )
+        lineage["cause"] = {
+            "category": failure_category,
+            "reason": "Prior routing handback required fresh selection.",
+        }
+        escalation_eligible = (
+            failure_category in MODEL_FAILURE_CATEGORIES
+        )
         if tier_increased and not escalation_eligible:
             raise AgentRoutingConflictError(
                 "routing_model_escalation_not_allowed",
@@ -2012,7 +2270,7 @@ class AgentRoutingService:
                 selected_context_tier=selected_context_tier,
             )
         lineage["model_tier_change"] = {
-            **model_tier_change,
+            "eligible": escalation_eligible,
             "comparison_available": comparison_available,
             "previous_reasoning_tier": previous_reasoning_tier,
             "previous_context_tier": previous_context_tier,

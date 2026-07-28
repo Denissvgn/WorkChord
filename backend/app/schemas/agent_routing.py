@@ -915,7 +915,7 @@ class TaskRoutingAssessmentMutationReceipt(RoutingContractModel):
 
 
 class AgentRoutingPreviewCreate(RoutingContractModel):
-    """Read-only exact-actor preview command bound to current task state."""
+    """Non-dispatching exact-actor preview bound to current task state."""
 
     purpose: Literal["execution", "verification"]
     assessment_id: int = Field(..., strict=True, ge=1)
@@ -1121,7 +1121,7 @@ class AgentRoutingExclusion(RoutingContractModel):
 
 
 class AgentRoutingPreviewResponse(RoutingContractModel):
-    """Read-only expiring result over a digest-bound routing input snapshot."""
+    """Expiring non-dispatch result over a digest-bound routing input snapshot."""
 
     preview_id: str = Field(..., min_length=1, max_length=255)
     preview_digest: RoutingDigest
@@ -1324,6 +1324,9 @@ class RoutingDecisionSnapshot(RoutingContractModel):
 
     schema_version: Literal["routing-decision-snapshot-v1"] = (
         "routing-decision-snapshot-v1"
+    )
+    authority: Literal["agent-routing-service-v1"] = (
+        "agent-routing-service-v1"
     )
     selection_pending: Literal[False] = False
     policy_version: Literal["model-aware-routing-v1"] = ROUTING_POLICY_VERSION

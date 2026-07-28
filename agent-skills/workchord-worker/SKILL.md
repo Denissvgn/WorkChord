@@ -26,10 +26,13 @@ do not plan, assign, rank, reorder, or verify the backlog yourself.
    `max_parallel_work=1`.
 
 Model-aware execution is additive to autonomous v1. Use it only when the live
-capability response advertises `model-aware-routing-v1` and the selected
-assignment, complete context, and atomic-begin metadata expose one explicit
-model binding. Otherwise follow the base assigned-work lifecycle without
-claiming that the runtime model was selected or verified by WorkChord.
+capability response advertises `model-aware-routing-v1`, reports effective
+`enforced` mode, and the selected assignment, complete context, and
+atomic-begin metadata expose one explicit model binding. In `off` or `shadow`,
+do not attempt model-aware begin; obey the work decision and request PM/operator
+reconciliation for any inactive queued model-aware assignment. Otherwise
+follow the base assigned-work lifecycle without claiming that the runtime model
+was selected or verified by WorkChord.
 
 Keep credentials in the client secret store. Never put a key, claim identifier,
 fence value, full prompt, or other secret in task prose, events, logs, or
@@ -76,11 +79,12 @@ Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
   revision, lease request, safe run metadata, and one deterministic idempotency
   key. Compare the context task version with the assignment-bound version
   before calling; the server revalidates that binding inside begin.
-- For model-aware work, also send the exact assigned binding ID/revision and
-  the runtime's observed resolved model through the advertised begin fields.
-  Never substitute another binding, omit required model evidence, or switch
-  models unilaterally. A stale binding, mismatch, unavailable assigned runtime,
-  or unknown required field is `attention_required`, not permission to continue.
+- For model-aware work in effective `enforced` mode, also send the exact
+  assigned binding ID/revision and the runtime's observed resolved model
+  through the advertised begin fields. Never substitute another binding, omit
+  required model evidence, or switch models unilaterally. Effective `off` or
+  `shadow`, a stale binding, mismatch, unavailable assigned runtime, or unknown
+  required field is `attention_required`, not permission to continue.
 - Replace cached assignment, task version, claim/fence, expiry, and run values
   with every authoritative response.
 - For normal work, accept only the server-owned `planned -> active` transition.

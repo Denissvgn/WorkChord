@@ -574,6 +574,41 @@ def test_routing_packets_share_the_agent_snapshot_byte_limit() -> None:
 
 @pytest.mark.contract
 @pytest.mark.parametrize(
+    "schema_version",
+    (
+        "routing-decision-snapshot-v1",
+        "routing-lineage-snapshot-v1",
+    ),
+)
+def test_supervised_assignment_cannot_author_server_routing_snapshots(
+    schema_version: str,
+) -> None:
+    with pytest.raises(ValidationError, match="server-owned"):
+        AgentTaskAssignmentCreate(
+            task_id=1,
+            actor_id=1,
+            expected_task_version=1,
+            routing_snapshot={"schema_version": schema_version},
+        )
+
+
+@pytest.mark.contract
+@pytest.mark.parametrize("schema_version", ([], {}))
+def test_supervised_snapshot_handles_non_string_schema_version(
+    schema_version: object,
+) -> None:
+    command = AgentTaskAssignmentCreate(
+        task_id=1,
+        actor_id=1,
+        expected_task_version=1,
+        routing_snapshot={"schema_version": schema_version},
+    )
+
+    assert command.routing_snapshot["schema_version"] == schema_version
+
+
+@pytest.mark.contract
+@pytest.mark.parametrize(
     "snapshot",
     (
         {"nested": {"unstable"}},

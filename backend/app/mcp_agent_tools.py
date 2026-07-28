@@ -114,6 +114,7 @@ from app.services.agent_profile_catalog_service import AgentProfileCatalogServic
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_routing_service import AgentRoutingService
+from app.services.agent_routing_rollout import AgentRoutingRolloutService
 from app.services.agent_service import (
     AgentConflictError,
     AgentService,
@@ -1213,7 +1214,11 @@ async def get_agent_capabilities(
     """MCP handler: return the authenticated v1 compatibility handshake."""
     recommended: dict[str, str] = {}
     catalog_version: str | None = None
-    features = agent_contract_features(include_skill_bundles=False)
+    rollout_status = AgentRoutingRolloutService().status()
+    features = agent_contract_features(
+        include_skill_bundles=False,
+        model_aware_routing_mode=rollout_status.effective_mode.value,
+    )
     catalog_url: str | None = None
     discovery_url: str | None = None
     settings = get_settings()
@@ -1261,6 +1266,7 @@ async def get_agent_capabilities(
         skill_catalog_version=catalog_version,
         skill_catalog_url=catalog_url,
         skill_discovery_url=discovery_url,
+        model_aware_routing=rollout_status.as_dict(),
     )
     return response.model_dump(mode="json")
 

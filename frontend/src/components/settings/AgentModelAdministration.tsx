@@ -22,7 +22,11 @@ import type {
     AgentModelCatalogEntry,
 } from '../../types/agent';
 import { normalizeApiError } from '../../utils/apiError';
-import { createAgentCommandMetadata, parseRoutingTags } from '../../utils/modelRouting';
+import {
+    createAgentCommandMetadata,
+    formatRoutingCode,
+    parseRoutingTags,
+} from '../../utils/modelRouting';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { formatDateTime } from '../../utils/formatDate';
 import { Button } from '../common/Button';
@@ -118,6 +122,11 @@ export const AgentModelAdministration = () => {
         : [];
     const canRead = scopes.includes('admin') || scopes.includes('planning:read');
     const canAdminister = scopes.includes('admin');
+    const routingStatus = capabilitiesQuery.data?.model_aware_routing;
+    const routingBlockerCodes = Array.from(new Set([
+        ...(routingStatus?.blocker_codes ?? []),
+        ...(routingStatus?.topology_readiness.blocker_codes ?? []),
+    ]));
 
     // feedback-policy: query loading,error,retry,empty
     const rosterQuery = useQuery({
@@ -496,6 +505,38 @@ export const AgentModelAdministration = () => {
                     <div className="kpi"><div className="kpi-lbl">{t('modelAdministration.catalogEntries')}</div><div className="kpi-val tnum">{catalog.length}</div></div>
                     <div className="kpi"><div className="kpi-lbl">{t('modelAdministration.bindings')}</div><div className="kpi-val tnum">{bindings.length}</div></div>
                 </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="kpi">
+                        <div className="kpi-lbl">{t('modelAdministration.configuredRoutingMode')}</div>
+                        <div className="kpi-val text-base">
+                            {t(`taskRouting.rolloutModes.${routingStatus?.configured_mode ?? 'off'}`)}
+                        </div>
+                    </div>
+                    <div className="kpi">
+                        <div className="kpi-lbl">{t('modelAdministration.effectiveRoutingMode')}</div>
+                        <div className="kpi-val text-base">
+                            {t(`taskRouting.rolloutModes.${routingStatus?.effective_mode ?? 'off'}`)}
+                        </div>
+                    </div>
+                    <div className="kpi">
+                        <div className="kpi-lbl">{t('modelAdministration.topologyReadiness')}</div>
+                        <div className="kpi-val text-base">
+                            {t(`taskRouting.topologyStatuses.${routingStatus?.topology_readiness.status ?? 'unavailable'}`)}
+                        </div>
+                    </div>
+                </div>
+                {routingBlockerCodes.length > 0 && (
+                    <div className="rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-feedback-warning-foreground">
+                            {t('modelAdministration.routingBlockers')}
+                        </p>
+                        <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-feedback-warning-foreground">
+                            {routingBlockerCodes.map(code => (
+                                <li key={code}>{formatRoutingCode(code)}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 <Button type="button" size="sm" variant="secondary" onClick={() => refreshEvidence()}>
                     <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
                     {t('actions.refresh')}

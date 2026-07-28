@@ -114,6 +114,14 @@ The protected control plane uses `WORKCHORD_ADMIN_API_KEY`. Agent provisioning
 uses `AGENT_BOOTSTRAP_API_KEY`; normal MCP actors should receive separate,
 least-privilege credentials.
 
+Model-aware routing is restart-bound and defaults to `off`. Shadow or enforced
+operation requires a server-side topology-readiness authority; readiness cannot
+be supplied through an environment variable, API, or UI override. A deployment
+without that authority must remain off, and configured `shadow` or `enforced`
+resolves to effective `off`. See the
+[model-aware routing operations guide](docs/runbooks/model-aware-routing.md)
+for enablement, evidence handling, and non-destructive rollback.
+
 ## PostgreSQL migration and capacity
 
 The pre-cutover runbook set is deliberately fail closed:

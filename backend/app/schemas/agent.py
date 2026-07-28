@@ -12,6 +12,7 @@ from app.schemas.request_source import RequestSourceLinkWithSourceResponse
 from app.schemas.task import TaskCreate, TaskResponse, TaskStatus, TaskUpdate
 from app.schemas.triage import TriageItemResponse
 from app.services.agent_routing_policy import (
+    SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS,
     assignment_intent,
     validate_routing_packet_size,
 )
@@ -507,6 +508,14 @@ class AgentTaskAssignmentCreate(BaseModel):
         cls, value: dict[str, Any]
     ) -> dict[str, Any]:
         """Keep assignment routing evidence bounded in durable queue responses."""
+        schema_version = value.get("schema_version")
+        if (
+            isinstance(schema_version, str)
+            and schema_version in SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS
+        ):
+            raise ValueError(
+                "Model-aware routing snapshot schemas are server-owned"
+            )
         return validate_routing_packet_size(
             value,
             label="Assignment routing snapshot",
@@ -644,6 +653,36 @@ class AgentTaskAssignmentResponse(BaseModel):
     updated_at: datetime
 
 
+class AgentRoutingTopologyReadinessResponse(BaseModel):
+    """Bounded server-owned topology readiness exposed to agent clients."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: Literal["model-aware-routing-topology-readiness-v1"]
+    status: Literal["unavailable", "not_ready", "ready"]
+    source: Literal["unavailable", "agent-team-master-v1"]
+    topology_id: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=100,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$",
+    )
+    topology_revision: Optional[int] = Field(default=None, ge=1)
+    blocker_codes: list[str] = Field(default_factory=list, max_length=20)
+
+
+class AgentRoutingRolloutStatusResponse(BaseModel):
+    """Explicit configured and effective model-aware routing rollout state."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    configured_mode: Literal["off", "shadow", "enforced"]
+    effective_mode: Literal["off", "shadow", "enforced"]
+    feature_advertised: bool
+    blocker_codes: list[str] = Field(default_factory=list, max_length=20)
+    topology_readiness: AgentRoutingTopologyReadinessResponse
+
+
 class AgentCapabilitiesResponse(BaseModel):
     """Authenticated compatibility and actor capability handshake."""
 
@@ -658,6 +697,7 @@ class AgentCapabilitiesResponse(BaseModel):
     skill_catalog_version: Optional[str] = None
     skill_catalog_url: Optional[str] = None
     skill_discovery_url: Optional[str] = None
+    model_aware_routing: AgentRoutingRolloutStatusResponse
 
 
 class AgentActorRosterProfileSkill(BaseModel):

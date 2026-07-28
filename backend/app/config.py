@@ -97,6 +97,7 @@ class Settings(BaseSettings):
     agent_skill_bundle_max_total_bytes: int = 512 * 1024 * 1024
     agent_skill_bundle_max_metadata_bytes: int = 2 * 1024 * 1024
     agent_skill_bundle_max_file_bytes: int = 2 * 1024 * 1024
+    model_aware_routing_mode: Literal["off", "shadow", "enforced"] = "off"
     mcp_dns_rebinding_protection: bool = True
     mcp_allowed_hosts: list[str] = [
         "localhost:*",

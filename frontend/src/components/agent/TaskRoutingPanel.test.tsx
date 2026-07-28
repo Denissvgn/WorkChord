@@ -199,6 +199,20 @@ const capabilities: AgentCapabilities = {
     scopes: ['planning:write', 'assignments:write'],
     lease_limits: {},
     features: ['model-aware-routing-v1'],
+    model_aware_routing: {
+        configured_mode: 'enforced',
+        effective_mode: 'enforced',
+        feature_advertised: true,
+        blocker_codes: [],
+        topology_readiness: {
+            schema_version: 'model-aware-routing-topology-readiness-v1',
+            status: 'ready',
+            source: 'agent-team-master-v1',
+            topology_id: 'routing-topology-1',
+            topology_revision: 1,
+            blocker_codes: [],
+        },
+    },
     recommended_skills: {},
     lifecycle_actions: [],
     skill_catalog_version: null,
@@ -781,6 +795,20 @@ describe('TaskRoutingPanel routing gates', () => {
         agentServiceMock.getCapabilities.mockResolvedValue({
             ...capabilities,
             features: [],
+            model_aware_routing: {
+                configured_mode: 'off',
+                effective_mode: 'off',
+                feature_advertised: false,
+                blocker_codes: ['model_aware_routing_disabled'],
+                topology_readiness: {
+                    schema_version: 'model-aware-routing-topology-readiness-v1',
+                    status: 'unavailable',
+                    source: 'unavailable',
+                    topology_id: null,
+                    topology_revision: null,
+                    blocker_codes: ['topology_readiness_unavailable'],
+                },
+            },
         });
         renderPanel();
 
@@ -788,6 +816,39 @@ describe('TaskRoutingPanel routing gates', () => {
         expect(agentServiceMock.getTaskRoutingAssessment).not.toHaveBeenCalled();
         expect(agentServiceMock.getProfileSkillCatalog).not.toHaveBeenCalled();
         expect(agentServiceMock.getActorRoster).not.toHaveBeenCalled();
+    });
+
+    it('allows advisory previews in shadow mode but cannot dispatch them', async () => {
+        agentServiceMock.getCapabilities.mockResolvedValue({
+            ...capabilities,
+            model_aware_routing: {
+                ...capabilities.model_aware_routing,
+                configured_mode: 'shadow',
+                effective_mode: 'shadow',
+            },
+        });
+        agentServiceMock.previewTaskRouting.mockResolvedValue(previewFixture());
+        const { user } = renderPanel();
+
+        expect(await screen.findByText(i18n.t('taskRouting.shadowNotice'))).toBeVisible();
+        expect(screen.getAllByText(i18n.t('taskRouting.rolloutModes.shadow'))).toHaveLength(2);
+
+        await generatePreview(user);
+        await user.click(screen.getByRole('radio'));
+        await user.type(
+            screen.getByRole('textbox', {
+                name: i18n.t('taskRouting.dispatchReason'),
+            }),
+            'Compare this advisory route.',
+        );
+        await user.click(screen.getByRole('checkbox', {
+            name: i18n.t('taskRouting.confirmSelection'),
+        }));
+
+        expect(screen.getByRole('button', {
+            name: i18n.t('taskRouting.dispatch'),
+        })).toBeDisabled();
+        expect(agentServiceMock.createAssignment).not.toHaveBeenCalled();
     });
 
     it('disables a dispatch that becomes expired after selection', async () => {

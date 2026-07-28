@@ -789,7 +789,12 @@ def test_wave3_surfaces_advertise_model_aware_routing() -> None:
     from app.agent_contract import agent_contract_features
 
     assert MODEL_AWARE_ROUTING_FEATURE in agent_contract_features(
-        include_skill_bundles=True
+        include_skill_bundles=True,
+        model_aware_routing_mode="enforced",
+    )
+    assert MODEL_AWARE_ROUTING_FEATURE not in agent_contract_features(
+        include_skill_bundles=True,
+        model_aware_routing_mode="off",
     )
     api_prefix = get_settings().api_prefix
     registered_routes = {

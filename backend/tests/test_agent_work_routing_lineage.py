@@ -88,6 +88,7 @@ def test_model_aware_commands_own_selection_and_observed_model_fields() -> None:
 def test_lineage_snapshot_preserves_decision_and_review_floor_without_escalating() -> None:
     prior_snapshot = {
         "schema_version": "routing-decision-snapshot-v1",
+        "authority": "agent-routing-service-v1",
         "policy_version": "model-aware-routing-v1",
         "selection_pending": False,
         "task_id": 7,
@@ -134,6 +135,7 @@ def test_lineage_snapshot_preserves_decision_and_review_floor_without_escalating
         evidence={"failure_category": "tool_insufficiency"},
     )
 
+    assert lineage["authority"] == "agent-work-service-v1"
     assert lineage["selection_pending"] is True
     assert lineage["source_assignment_ids"] == [source.id]
     assert lineage["prior_decisions"][0]["model_binding_id"] == 13
@@ -182,6 +184,7 @@ def test_lineage_failure_classification_is_conservative_and_bounded() -> None:
 def test_completed_rework_selection_retains_lineage_and_governs_escalation() -> None:
     prior_snapshot = {
         "schema_version": "routing-decision-snapshot-v1",
+        "authority": "agent-routing-service-v1",
         "policy_version": "model-aware-routing-v1",
         "task_id": 7,
         "task_version": 3,
@@ -225,6 +228,7 @@ def test_completed_rework_selection_retains_lineage_and_governs_escalation() -> 
     )
 
     assert completed is not None
+    assert completed["source_authority"] == "verified"
     assert completed["cause"]["category"] == "tool_insufficiency"
     assert completed["prior_decisions"][0]["model_binding_id"] == 13
     assert completed["selection_result"] == {

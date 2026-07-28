@@ -111,6 +111,34 @@ export interface AgentActor {
     last_seen_at: string | null;
 }
 
+export type ModelAwareRoutingMode = 'off' | 'shadow' | 'enforced';
+
+export type ModelAwareRoutingTopologyStatus =
+    | 'unavailable'
+    | 'not_ready'
+    | 'ready';
+
+export type ModelAwareRoutingTopologySource =
+    | 'unavailable'
+    | 'agent-team-master-v1';
+
+export interface ModelAwareRoutingTopologyReadiness {
+    schema_version: 'model-aware-routing-topology-readiness-v1';
+    status: ModelAwareRoutingTopologyStatus;
+    source: ModelAwareRoutingTopologySource;
+    topology_id: string | null;
+    topology_revision: number | null;
+    blocker_codes: string[];
+}
+
+export interface ModelAwareRoutingStatus {
+    configured_mode: ModelAwareRoutingMode;
+    effective_mode: ModelAwareRoutingMode;
+    feature_advertised: boolean;
+    blocker_codes: string[];
+    topology_readiness: ModelAwareRoutingTopologyReadiness;
+}
+
 export interface AgentCapabilities {
     server_version: string;
     api_contract: string;
@@ -118,6 +146,7 @@ export interface AgentCapabilities {
     scopes: string[];
     lease_limits: Record<string, number>;
     features: string[];
+    model_aware_routing: ModelAwareRoutingStatus;
     recommended_skills: Record<string, string>;
     lifecycle_actions: string[];
     skill_catalog_version: string | null;

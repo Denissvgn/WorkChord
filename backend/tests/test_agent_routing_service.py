@@ -5,8 +5,10 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, date, datetime
 import json
+from types import SimpleNamespace
 
 import pytest
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.agent import (
@@ -14,10 +16,12 @@ from app.models.agent import (
     AgentModelBinding,
     AgentModelCatalogEntry,
     AgentTaskAssignment,
+    TaskEvent,
 )
 from app.models.team_member import TeamMemberProfileSkill
 from app.schemas.agent import (
     AgentTaskAssignmentCreate,
+    AgentReviewVerdict,
     ModelAwareAgentTaskAssignmentCreate,
     ModelAwareAgentTaskAssignmentUpdate,
     ModelAwareAgentWorkBegin,
@@ -31,7 +35,17 @@ from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
 )
+from app.services.agent_routing_policy import ROUTING_POLICY_VERSION
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutService,
+    AgentRoutingTopologyReadiness,
+)
 from app.services.agent_work_service import AgentWorkService
+
+
+pytestmark = pytest.mark.usefixtures(
+    "qualified_model_aware_routing_test_context"
+)
 
 
 _TASK_BRIEF = """## Goal
@@ -88,6 +102,16 @@ def _command_context(key: str) -> AgentPlanningCommandContext:
         idempotency_key=key,
         rationale="Record the current authoritative routing decision.",
         correlation_id=f"corr-{key}",
+    )
+
+
+def _rollout(mode: str) -> AgentRoutingRolloutService:
+    return AgentRoutingRolloutService(
+        settings_override=SimpleNamespace(model_aware_routing_mode=mode),
+        topology_readiness=AgentRoutingTopologyReadiness.ready(
+            topology_id="routing-test-topology",
+            topology_revision=1,
+        ),
     )
 
 
@@ -183,8 +207,13 @@ async def test_assessment_lifecycle_is_replay_safe_and_version_bound(
 
     created = await service.create_assessment(task.id, pm, command, context)
     replay = await service.create_assessment(task.id, pm, command, context)
+    rollback_replay = await AgentRoutingService(
+        db_session,
+        rollout_service=_rollout("off"),
+    ).create_assessment(task.id, pm, command, context)
 
     assert replay == created
+    assert rollback_replay == created
     assert created.assessment.assessor == pm.name
     assert created.assessment.assessor_actor_id == pm.id
     assert (await service.get_assessment_state(task.id, pm)).state == "current"
@@ -207,6 +236,7 @@ async def test_assessment_lifecycle_is_replay_safe_and_version_bound(
             routing_snapshot=json.dumps(
                 {
                     "schema_version": "routing-lineage-snapshot-v1",
+                    "authority": "agent-work-service-v1",
                     "selection_pending": True,
                     "review_floor": {"review_mode": "independent"},
                 }
@@ -222,6 +252,50 @@ async def test_assessment_lifecycle_is_replay_safe_and_version_bound(
             _command_context("assessment-review-floor"),
         )
     assert review_floor.value.code == "routing_review_floor_not_met"
+
+
+@pytest.mark.asyncio
+async def test_untrusted_legacy_lineage_cannot_raise_assessment_review_floor(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, worker, task, _, _ = await _routing_fixture(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        task_factory,
+    )
+    db_session.add(
+        AgentTaskAssignment(
+            task_id=task.id,
+            actor_id=worker.id,
+            purpose="execution",
+            queue_class="rework",
+            state="queued",
+            task_version=task.version,
+            routing_snapshot=json.dumps(
+                {
+                    "schema_version": "caller-lineage-v1",
+                    "selection_pending": True,
+                    "review_floor": {"review_mode": "independent"},
+                }
+            ),
+        )
+    )
+    await db_session.commit()
+
+    receipt = await AgentRoutingService(db_session).create_assessment(
+        task.id,
+        pm,
+        _assessment_command(task_version=task.version),
+        _command_context("assessment-untrusted-review-floor"),
+    )
+
+    assert receipt.assessment.review_mode == "none"
 
 
 @pytest.mark.asyncio
@@ -389,7 +463,19 @@ async def test_preview_is_deterministic_and_relevant_mutation_invalidates_it(
 
 
 @pytest.mark.asyncio
-async def test_verification_independence_uses_historical_execution_profile(
+@pytest.mark.parametrize(
+    ("snapshot_authority", "expected_blocker"),
+    (
+        (
+            "agent-routing-service-v1",
+            "verification_profile_not_independent",
+        ),
+        (None, "verification_independence_unverifiable"),
+    ),
+)
+async def test_verification_independence_requires_authoritative_profile_history(
+    snapshot_authority: str | None,
+    expected_blocker: str,
     db_session: AsyncSession,
     profile_factory,
     actor_factory,
@@ -479,6 +565,11 @@ async def test_verification_independence_uses_historical_execution_profile(
                     {
                         "schema_version": "routing-decision-snapshot-v1",
                         "profile_id": historical_profile.id,
+                        **(
+                            {"authority": snapshot_authority}
+                            if snapshot_authority is not None
+                            else {}
+                        ),
                     }
                 ),
             ),
@@ -515,10 +606,7 @@ async def test_verification_independence_uses_historical_execution_profile(
         if item.actor_id == verifier.id
         and item.model_binding_id == binding.id
     )
-    assert (
-        "verification_profile_not_independent"
-        in verifier_exclusion.hard_blocker_codes
-    )
+    assert expected_blocker in verifier_exclusion.hard_blocker_codes
 
 
 @pytest.mark.asyncio
@@ -566,19 +654,20 @@ async def test_model_aware_assignment_and_begin_enforce_observed_model(
             expected_task_version=task.version,
         ),
     )
+    assignment_command = ModelAwareAgentTaskAssignmentCreate(
+        task_id=task.id,
+        actor_id=worker.id,
+        expected_task_version=task.version,
+        purpose="execution",
+        assessment_id=receipt.assessment.id,
+        model_binding_id=binding.id,
+        model_binding_revision=binding.revision,
+        routing_preview_id=preview.preview_id,
+        routing_preview_digest=preview.preview_digest,
+    )
     assignment = await AgentWorkService(db_session).create_assignment(
         pm,
-        ModelAwareAgentTaskAssignmentCreate(
-            task_id=task.id,
-            actor_id=worker.id,
-            expected_task_version=task.version,
-            purpose="execution",
-            assessment_id=receipt.assessment.id,
-            model_binding_id=binding.id,
-            model_binding_revision=binding.revision,
-            routing_preview_id=preview.preview_id,
-            routing_preview_digest=preview.preview_digest,
-        ),
+        assignment_command,
         idempotency_key="assignment-model-aware",
         rationale="Dispatch the preview-selected worker and binding.",
         correlation_id="corr-assignment-model-aware",
@@ -624,6 +713,18 @@ async def test_model_aware_assignment_and_begin_enforce_observed_model(
     assert begun.run.model_match_basis == "catalog_key"
     assert begun.assignment.model_binding_status == "current"
 
+    rollback_replay = await AgentWorkService(
+        db_session,
+        rollout_service=_rollout("off"),
+    ).create_assignment(
+        pm,
+        assignment_command,
+        idempotency_key="assignment-model-aware",
+        rationale="Dispatch the preview-selected worker and binding.",
+        correlation_id="corr-assignment-model-aware",
+    )
+    assert rollback_replay == assignment
+
 
 @pytest.mark.asyncio
 async def test_completed_rework_update_persists_prior_and_new_routing_lineage(
@@ -650,6 +751,7 @@ async def test_completed_rework_update_persists_prior_and_new_routing_lineage(
     task.status = "active"
     prior_snapshot = {
         "schema_version": "routing-decision-snapshot-v1",
+        "authority": "agent-routing-service-v1",
         "policy_version": "model-aware-routing-v1",
         "task_id": task.id,
         "task_version": task.version,
@@ -744,3 +846,90 @@ async def test_completed_rework_update_persists_prior_and_new_routing_lineage(
         "completed_by_snapshot": True,
         "assignment_id": pending.id,
     }
+
+
+@pytest.mark.asyncio
+async def test_rejection_telemetry_normalizes_adversarial_legacy_lineage(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    task_factory,
+) -> None:
+    verifier_profile = await profile_factory(
+        assignment_modes=["verification"]
+    )
+    verifier = await actor_factory(
+        profile=verifier_profile,
+        role="verifier",
+        scopes=json.dumps(["verification:write"]),
+    )
+    rework_worker = await actor_factory()
+    task = await task_factory(status="resolved")
+    review_assignment = AgentTaskAssignment(
+        task_id=task.id,
+        actor_id=verifier.id,
+        purpose="verification",
+        queue_class="normal",
+        state="queued",
+        queue_rank=1000,
+        task_version=task.version,
+        routing_snapshot=json.dumps(
+            {
+                "policy_version": "legacy-policy-v999",
+                "review_mode": "caller-authored-review-mode",
+            }
+        ),
+    )
+    db_session.add(review_assignment)
+    await db_session.commit()
+
+    response = await AgentWorkService(db_session).review(
+        verifier,
+        AgentReviewVerdict(
+            assignment_id=review_assignment.id,
+            verdict="reject",
+            expected_task_version=task.version,
+            evidence={"failure_category": "external_service"},
+            reason="The external dependency did not return usable evidence.",
+            rework_actor_id=rework_worker.id,
+        ),
+        idempotency_key="legacy-review-rejection",
+        rationale="Record rejection and create governed rework ownership.",
+        correlation_id="corr-legacy-review-rejection",
+    )
+
+    assert response.review_assignment.state == "fulfilled"
+    assert response.rework_assignment is not None
+    assert response.rework_assignment.state == "queued"
+    assert response.task.status == "active"
+    events = (
+        await db_session.execute(
+            select(TaskEvent)
+            .where(
+                TaskEvent.task_id == task.id,
+                TaskEvent.event_type.in_(
+                    (
+                        "agent.routing.verifier_rejected",
+                        "agent.routing.rework_created",
+                    )
+                ),
+            )
+            .order_by(TaskEvent.id)
+        )
+    ).scalars().all()
+    assert [event.event_type for event in events] == [
+        "agent.routing.verifier_rejected",
+        "agent.routing.rework_created",
+    ]
+    payloads = [json.loads(event.payload) for event in events]
+    assert all(
+        payload["policy_version"] == ROUTING_POLICY_VERSION
+        for payload in payloads
+    )
+    assert payloads[0]["review_mode"] == "none"
+    assert payloads[0]["failure_category"] == (
+        "non_model_or_unclassified"
+    )
+    assert payloads[1]["failure_category"] == (
+        "non_model_or_unclassified"
+    )

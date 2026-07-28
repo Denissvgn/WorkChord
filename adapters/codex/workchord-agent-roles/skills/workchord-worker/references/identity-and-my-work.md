@@ -74,14 +74,16 @@ Use autonomous v1 only when all required features are advertised:
 Do not infer support from an endpoint returning `404`, a similar tool name, or
 skill prose. If any feature is absent, switch to supervised v0 or stop.
 
-Treat `model-aware-routing-v1` separately from the base v1 gate. When it is
-advertised, require the exact selected binding and begin-evidence fields from
-the live operation metadata before model-aware execution. If it is absent,
-continue the base assigned-work lifecycle when all base features above remain
-available, but do not infer a model choice from the assignment reason, profile,
-provider-facing name, or local configuration. If the feature is advertised but
-the binding/evidence contract is incomplete, stop as incompatible rather than
-downgrading silently.
+Treat `model-aware-routing-v1` separately from the base v1 gate. Feature
+presence permits model-aware execution only when
+`model_aware_routing.effective_mode` is `enforced`. Then require the exact
+selected binding and begin-evidence fields from the live operation metadata.
+In effective `off` or `shadow`, continue the base assigned-work lifecycle for
+legacy assignments when all base features remain available, but do not begin a
+queued model-aware assignment or infer a model choice from the assignment
+reason, profile, provider-facing name, or local configuration. If the feature
+is advertised but mode status or the binding/evidence contract is incomplete,
+stop as incompatible rather than downgrading silently.
 
 Supervised v0 requires all of the following:
 

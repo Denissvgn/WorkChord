@@ -27,6 +27,26 @@ reporting channel before sharing exploit details.
 Public agent-role bundles are fail-closed: enabling delivery requires the exact
 trusted checksum in `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256`.
 
+## Model-aware routing boundary
+
+Model catalog entries and actor bindings are provider-neutral declarations.
+They grant no task, tool, data, network, or provider permission. Existing actor
+scopes, assignment policy, data-access controls, and runtime credentials remain
+authoritative. Only an authenticated operator may change model metadata or the
+deployment-owned rollout mode.
+
+Keep provider credentials, endpoints containing credentials, prompts, raw task
+content, private logs, and unbounded runtime payloads out of routing metadata,
+events, metrics, and webhook projections. Tool and data-policy tags describe
+eligibility requirements; they are not authorization tokens. A matching model
+identifier reported by a worker is comparison evidence, not attestation.
+
+The `shadow` mode may record bounded routing comparisons but cannot authorize or
+present an enforced dispatch. The `enforced` mode remains unavailable unless
+the server reports satisfied authoritative topology readiness. Rollback changes
+the mode to `off` and preserves historical assessments, assignments, runs, and
+audit evidence.
+
 ## Autonomous PostgreSQL execution boundary
 
 The PostgreSQL autonomy package is fail closed. It validates externally signed

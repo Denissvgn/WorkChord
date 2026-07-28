@@ -24,6 +24,78 @@ MAX_ROUTING_ELIGIBLE_CANDIDATES = 25
 MAX_ROUTING_EXCLUSIONS = 50
 # Keep the shorter name as the shared service/schema boundary.
 MAX_ROUTING_CANDIDATES = MAX_ROUTING_ELIGIBLE_CANDIDATES
+MODEL_FAILURE_CATEGORIES = frozenset(
+    {
+        "reasoning_insufficiency",
+        "context_insufficiency",
+        "modality_insufficiency",
+        "tool_insufficiency",
+    }
+)
+NON_MODEL_FAILURE_CATEGORY = "non_model_or_unclassified"
+ROUTING_DECISION_AUTHORITY = "agent-routing-service-v1"
+ROUTING_LINEAGE_AUTHORITY = "agent-work-service-v1"
+SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS = frozenset(
+    {
+        "routing-decision-snapshot-v1",
+        "routing-lineage-snapshot-v1",
+    }
+)
+ROUTING_DECISION_LINEAGE_FIELDS = (
+    "schema_version",
+    "authority",
+    "policy_version",
+    "task_id",
+    "task_version",
+    "assessment_id",
+    "assessment_task_version",
+    "assessment_band",
+    "assessment_confidence",
+    "assessment_reason_codes",
+    "purpose",
+    "actor_id",
+    "actor_revision",
+    "actor_queue_revision",
+    "profile_id",
+    "profile_revision",
+    "capacity_owner_id",
+    "capacity_owner_profile_id",
+    "model_binding_id",
+    "model_binding_revision",
+    "model_catalog_id",
+    "model_catalog_key",
+    "model_catalog_revision",
+    "configured_model_alias",
+    "selected_reasoning_tier",
+    "selected_context_tier",
+    "review_mode",
+    "reviewer_profile_id",
+    "routing_preview_id",
+    "routing_preview_digest",
+    "input_digest",
+    "preview_generated_at",
+    "preview_expires_at",
+    "selected_rank",
+    "adequacy_class",
+    "selection_reason_codes",
+    "eligible_candidate_summaries",
+    "exclusion_summaries",
+    "eligible_candidates_omitted",
+    "exclusions_omitted",
+    "confidence",
+    "trust_lineage",
+    "source_assignment_id",
+    "snapshot_sha256",
+)
+
+
+def normalize_model_failure_category(value: Any) -> str:
+    """Project untrusted failure evidence into the closed escalation taxonomy."""
+
+    normalized = str(value or "").strip().lower().replace("-", "_")
+    if normalized in MODEL_FAILURE_CATEGORIES:
+        return normalized
+    return NON_MODEL_FAILURE_CATEGORY
 
 
 class ReasoningTier(IntEnum):
