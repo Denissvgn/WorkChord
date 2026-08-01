@@ -13,7 +13,7 @@ from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
 from typing import Any, Optional, Sequence
 
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,12 +40,25 @@ from app.schemas.agent import (
     AgentWorkRenew,
     AgentWorkSubmit,
     AgentWorkTerminal,
+    ModelAwareAgentTaskAssignmentCreate,
+    ModelAwareAgentTaskAssignmentUpdate,
+    ModelAwareAgentWorkBegin,
     TaskClaimRequest,
     TaskEventCreate,
 )
 from app.schemas.agent_planning import (
     AgentPlanningCommandContext,
     AgentScheduleCommand,
+)
+from app.schemas.agent_routing import (
+    AgentModelBindingCreate,
+    AgentModelBindingDisable,
+    AgentModelBindingUpdate,
+    AgentModelCatalogCreate,
+    AgentModelCatalogDisable,
+    AgentModelCatalogUpdate,
+    AgentRoutingPreviewCreate,
+    TaskRoutingAssessmentCommand,
 )
 from app.schemas.agent_skill_bundle import (
     SkillBundleCatalogResponse,
@@ -98,7 +111,13 @@ from app.schemas.triage import (
     TriageTaskDraftRequest,
 )
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
+from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.agent_planning_service import AgentPlanningService
+from app.services.agent_routing_service import AgentRoutingService
+from app.services.agent_routing_rollout import (
+    AgentRoutingRolloutService,
+    AgentRoutingTopologyReadinessStatus,
+)
 from app.services.agent_service import (
     AgentConflictError,
     AgentService,
@@ -111,6 +130,7 @@ from app.services.agent_skill_bundle_service import (
     SkillBundleArtifactError,
     SkillBundleNotFoundError,
 )
+from app.services.agent_team_setup_service import AgentTeamSetupService
 from app.services.agent_work_service import AgentWorkService
 from app.services.assignee_recommendation_service import AssigneeRecommendationService
 from app.services.external_link_service import ExternalLinkService
@@ -137,6 +157,17 @@ from app.services.triage_service import TriageConflictError, TriageService
 AGENT_SKILLS_DIR_ENV = "WORKCHORD_AGENT_SKILLS_DIR"
 AGENT_SKILL_ARTIFACTS_DIR_ENV = "WORKCHORD_AGENT_SKILL_ARTIFACTS_DIR"
 REQUEST_SOURCE_WRITE_MAX_ATTEMPTS = 6
+_AGENT_ASSIGNMENT_CREATE_ADAPTER = TypeAdapter(
+    ModelAwareAgentTaskAssignmentCreate | AgentTaskAssignmentCreate
+)
+_AGENT_ASSIGNMENT_UPDATE_ADAPTER = TypeAdapter(
+    ModelAwareAgentTaskAssignmentUpdate | AgentTaskAssignmentUpdate
+)
+_AGENT_WORK_BEGIN_ADAPTER = TypeAdapter(
+    ModelAwareAgentWorkBegin | AgentWorkBegin
+)
+
+
 def _dump(value: Any) -> Any:
     """Convert Pydantic, SQLAlchemy-ish, and nested values to JSON-safe data."""
     if isinstance(value, BaseModel):
@@ -1187,7 +1218,24 @@ async def get_agent_capabilities(
     """MCP handler: return the authenticated v1 compatibility handshake."""
     recommended: dict[str, str] = {}
     catalog_version: str | None = None
-    features = agent_contract_features(include_skill_bundles=False)
+    if db is None:
+        rollout_status = AgentRoutingRolloutService().status()
+    else:
+        topology_readiness = await AgentTeamSetupService(
+            db
+        ).routing_readiness(actor)
+        rollout_status = (
+            AgentRoutingRolloutService()
+            if topology_readiness.status
+            == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
+            else AgentRoutingRolloutService(
+                topology_readiness=topology_readiness
+            )
+        ).status()
+    features = agent_contract_features(
+        include_skill_bundles=False,
+        model_aware_routing_mode=rollout_status.effective_mode.value,
+    )
     catalog_url: str | None = None
     discovery_url: str | None = None
     settings = get_settings()
@@ -1235,16 +1283,318 @@ async def get_agent_capabilities(
         skill_catalog_version=catalog_version,
         skill_catalog_url=catalog_url,
         skill_discovery_url=discovery_url,
+        model_aware_routing=rollout_status.as_dict(),
     )
     return response.model_dump(mode="json")
+
+
+async def get_agent_team_setup_status(
+    db: AsyncSession,
+    actor: AgentActor,
+) -> dict[str, Any]:
+    """MCP handler: return the caller's backend-derived topology status."""
+    status = await AgentTeamSetupService(db).status(actor)
+    return status.model_dump(mode="json")
 
 
 async def list_agent_actor_roster(
     db: AsyncSession,
     actor: AgentActor,
+    *,
+    include_disabled: bool = False,
 ) -> list[dict[str, Any]]:
     """MCP handler: return secret-free enabled actor dispatch metadata."""
-    return _dump(await AgentWorkService(db).list_actor_roster(actor))
+    return _dump(
+        await AgentWorkService(db).list_actor_roster(
+            actor,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def list_agent_model_catalog(
+    db: AsyncSession,
+    actor: AgentActor,
+    *,
+    include_disabled: bool = False,
+) -> list[dict[str, Any]]:
+    """MCP handler: list provider-neutral secret-free model declarations."""
+
+    return _dump(
+        await AgentModelCatalogService(db).list_catalog(
+            actor,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def get_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_key: str,
+) -> dict[str, Any]:
+    """MCP handler: read one stable model catalog entry."""
+
+    return _dump(
+        await AgentModelCatalogService(db).get_catalog(
+            actor,
+            catalog_key.strip().lower(),
+        )
+    )
+
+
+async def list_agent_model_bindings(
+    db: AsyncSession,
+    actor: AgentActor,
+    *,
+    actor_id: int | None = None,
+    include_disabled: bool = False,
+) -> list[dict[str, Any]]:
+    """MCP handler: list secret-free actor model bindings."""
+
+    return _dump(
+        await AgentModelCatalogService(db).list_bindings(
+            actor,
+            actor_id=actor_id,
+            include_disabled=include_disabled,
+        )
+    )
+
+
+async def get_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+) -> dict[str, Any]:
+    """MCP handler: read one current or historical model binding."""
+
+    return _dump(
+        await AgentModelCatalogService(db).get_binding(actor, binding_id)
+    )
+
+
+def _model_command(
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> AgentPlanningCommandContext:
+    return AgentPlanningCommandContext(
+        idempotency_key=idempotency_key,
+        rationale=rationale,
+        correlation_id=correlation_id,
+    )
+
+
+async def get_task_routing_assessment(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: read the current task-version-bound routing assessment."""
+    state = await AgentRoutingService(db).get_assessment_state(task_id, actor)
+    return state.model_dump(mode="json")
+
+
+async def list_task_routing_assessments(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    *,
+    limit: int = 100,
+) -> dict[str, Any]:
+    """MCP handler: list bounded append-only routing-assessment history."""
+    history = await AgentRoutingService(db).list_assessments(
+        task_id,
+        actor,
+        limit=limit,
+    )
+    return history.model_dump(mode="json")
+
+
+async def create_task_routing_assessment(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: append one audited task routing assessment."""
+    receipt = await AgentRoutingService(db).create_assessment(
+        task_id,
+        actor,
+        TaskRoutingAssessmentCommand.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def preview_task_routing(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """MCP handler: preview exact eligible actor/model-binding candidates."""
+    preview = await AgentRoutingService(db).preview_task_routing(
+        task_id,
+        actor,
+        AgentRoutingPreviewCreate.model_validate(payload),
+    )
+    return preview.model_dump(mode="json")
+
+
+async def create_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: create one operator-owned model declaration."""
+
+    receipt = await AgentModelCatalogService(db).create_catalog(
+        actor,
+        AgentModelCatalogCreate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def update_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: update one model declaration behind its revision."""
+
+    receipt = await AgentModelCatalogService(db).update_catalog(
+        catalog_id,
+        actor,
+        AgentModelCatalogUpdate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def disable_agent_model_catalog_entry(
+    db: AsyncSession,
+    actor: AgentActor,
+    catalog_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: soft-disable one model declaration."""
+
+    receipt = await AgentModelCatalogService(db).disable_catalog(
+        catalog_id,
+        actor,
+        AgentModelCatalogDisable.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def create_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: bind an actor to one catalog entry."""
+
+    receipt = await AgentModelCatalogService(db).create_binding(
+        actor,
+        AgentModelBindingCreate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def update_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: update one actor binding behind its revision."""
+
+    receipt = await AgentModelCatalogService(db).update_binding(
+        binding_id,
+        actor,
+        AgentModelBindingUpdate.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def disable_agent_model_binding(
+    db: AsyncSession,
+    actor: AgentActor,
+    binding_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: soft-disable one actor binding."""
+
+    receipt = await AgentModelCatalogService(db).disable_binding(
+        binding_id,
+        actor,
+        AgentModelBindingDisable.model_validate(payload),
+        command=_model_command(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
 
 
 async def create_agent_assignment(
@@ -1260,7 +1610,7 @@ async def create_agent_assignment(
     service = AgentWorkService(db)
     assignment = await service.create_assignment(
         actor,
-        AgentTaskAssignmentCreate(**payload),
+        _AGENT_ASSIGNMENT_CREATE_ADAPTER.validate_python(payload),
         idempotency_key=idempotency_key,
         rationale=rationale,
         correlation_id=correlation_id,
@@ -1305,7 +1655,7 @@ async def update_agent_assignment(
     assignment = await service.update_assignment(
         assignment_id,
         actor,
-        AgentTaskAssignmentUpdate(**payload),
+        _AGENT_ASSIGNMENT_UPDATE_ADAPTER.validate_python(payload),
         idempotency_key=idempotency_key,
         rationale=rationale,
         correlation_id=correlation_id,
@@ -1369,7 +1719,7 @@ async def begin_my_work(
     """MCP handler: atomically accept, claim, run, and activate assigned work."""
     result = await AgentWorkService(db).begin(
         actor,
-        AgentWorkBegin(**payload),
+        _AGENT_WORK_BEGIN_ADAPTER.validate_python(payload),
         idempotency_key=idempotency_key,
     )
     return result.model_dump(mode="json")

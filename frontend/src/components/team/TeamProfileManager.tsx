@@ -7,21 +7,36 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { useConfirmDialog } from '../common/useConfirmDialog';
-import { QueryErrorState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import type {
+    TeamMemberAssignmentMode,
     TeamMemberProfile,
     TeamMemberProfileCreate,
+    TeamMemberProfileKind,
     TeamMemberProfileSkill,
     TeamMemberProfileSkillCreate,
+    TeamMemberProfileUpdate,
 } from '../../types/team';
 
+const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
+
+const ASSIGNMENT_MODES: TeamMemberAssignmentMode[] = [
+    'ownership',
+    'execution',
+    'verification',
+    'design_handoff',
+];
+
 const emptyProfileForm: TeamMemberProfileCreate = {
+    seed_key: '',
     display_name: '',
     email: '',
     headline: '',
     summary: '',
     notes: '',
     automation_enabled: true,
+    profile_kind: 'human',
+    assignment_modes: [],
 };
 
 const emptySkillForm: TeamMemberProfileSkillCreate = {
@@ -69,7 +84,12 @@ export const TeamProfileManager = ({
     const [error, setError] = useState<string | null>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
-    const { data: profiles = [], error: profilesError, refetch: refetchProfiles } = useQuery({
+    const {
+        data: profiles = [],
+        error: profilesError,
+        isLoading: profilesLoading,
+        refetch: refetchProfiles,
+    } = useQuery({
         queryKey: ['teamMemberProfiles'],
         queryFn: teamService.getProfiles,
     });
@@ -101,7 +121,7 @@ export const TeamProfileManager = ({
     });
 
     const updateProfileMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileCreate }) => teamService.updateProfile(id, data),
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data),
         onSuccess: profile => {
             invalidate();
             setSelectedProfileId(profile.id);
@@ -149,16 +169,27 @@ export const TeamProfileManager = ({
     const submitProfile = (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
-        const data = {
+        const data: TeamMemberProfileCreate = {
             ...profileForm,
+            seed_key: optionalText(profileForm.seed_key),
             display_name: profileForm.display_name.trim(),
             email: optionalText(profileForm.email),
             headline: optionalText(profileForm.headline),
             summary: optionalText(profileForm.summary),
             notes: optionalText(profileForm.notes),
         };
-        if (editingProfileId) {
-            updateProfileMutation.mutate({ id: editingProfileId, data });
+        if (editingProfileId !== null) {
+            const updateData: TeamMemberProfileUpdate = {
+                display_name: data.display_name,
+                email: data.email,
+                headline: data.headline,
+                summary: data.summary,
+                notes: data.notes,
+                automation_enabled: data.automation_enabled,
+                profile_kind: data.profile_kind,
+                assignment_modes: data.assignment_modes,
+            };
+            updateProfileMutation.mutate({ id: editingProfileId, data: updateData });
         } else {
             createProfileMutation.mutate(data);
         }
@@ -168,13 +199,30 @@ export const TeamProfileManager = ({
         setEditingProfileId(profile.id);
         setSelectedProfileId(profile.id);
         setProfileForm({
+            seed_key: profile.seed_key || '',
             display_name: profile.display_name,
             email: profile.email || '',
             headline: profile.headline || '',
             summary: profile.summary || '',
             notes: profile.notes || '',
             automation_enabled: profile.automation_enabled,
+            profile_kind: profile.profile_kind,
+            assignment_modes: [...profile.assignment_modes],
         });
+    };
+
+    const toggleAssignmentMode = (
+        assignmentMode: TeamMemberAssignmentMode,
+        checked: boolean,
+    ) => {
+        setProfileForm(current => ({
+            ...current,
+            assignment_modes: checked
+                ? current.assignment_modes.includes(assignmentMode)
+                    ? current.assignment_modes
+                    : [...current.assignment_modes, assignmentMode]
+                : current.assignment_modes.filter(mode => mode !== assignmentMode),
+        }));
     };
 
     const submitSkill = (event: React.FormEvent) => {
@@ -213,6 +261,7 @@ export const TeamProfileManager = ({
 
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+            {profilesLoading && <QueryLoadingState className="lg:col-span-2" />}
             {profilesError && <QueryErrorState className="lg:col-span-2" error={profilesError} onRetry={() => void refetchProfiles()} />}
             <div className="card p-4">
                 <div className="mb-4 flex items-center justify-between">
@@ -224,7 +273,21 @@ export const TeamProfileManager = ({
                     </div>
                 </div>
 
-                {error && <div className="mb-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">{error}</div>}
+                <p
+                    className="mb-4 rounded-md border border-feedback-info-border bg-feedback-info-muted p-3 text-sm text-feedback-info-foreground"
+                    role="note"
+                >
+                    {t('teamProfiles.dispatchEligibilityNotice')}
+                </p>
+
+                {error && (
+                    <div
+                        className="mb-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground"
+                        role="alert"
+                    >
+                        {error}
+                    </div>
+                )}
 
                 <div className="space-y-3">
                     {profiles.map(profile => {
@@ -245,10 +308,35 @@ export const TeamProfileManager = ({
                                             <div className="font-medium text-content-primary">{profile.display_name}</div>
                                             <div className="text-sm text-content-secondary">{profile.headline || profile.email || t('teamProfiles.noHeadline')}</div>
                                         </div>
-                                        <span className={`rounded-full px-2 py-0.5 text-xs ${profile.automation_enabled ? 'bg-feedback-success-muted text-feedback-success-foreground' : 'bg-surface-subtle text-content-secondary'}`}>
-                                            {profile.automation_enabled ? t('teamProfiles.automationOn') : t('teamProfiles.automationOff')}
-                                        </span>
                                     </div>
+                                    <div className="mt-2 flex flex-wrap gap-1">
+                                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
+                                            {t(`teamProfiles.profileKinds.${profile.profile_kind}`)}
+                                        </span>
+                                        <span className={`rounded-full px-2 py-0.5 text-xs ${profile.automation_enabled ? 'bg-action-muted text-action' : 'bg-surface-subtle text-content-secondary'}`}>
+                                            {profile.automation_enabled
+                                                ? t('teamProfiles.automationRecommendationsOn')
+                                                : t('teamProfiles.automationRecommendationsOff')}
+                                        </span>
+                                        {profile.assignment_modes.map(mode => (
+                                            <span
+                                                key={mode}
+                                                className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-secondary"
+                                            >
+                                                {t(`teamProfiles.assignmentModeOptions.${mode}`)}
+                                            </span>
+                                        ))}
+                                        {profile.assignment_modes.length === 0 && (
+                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">
+                                                {t('teamProfiles.noAssignmentModes')}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {profile.seed_key && (
+                                        <div className="mt-2 text-xs text-content-tertiary">
+                                            {t('teamProfiles.seedKeyValue', { seedKey: profile.seed_key })}
+                                        </div>
+                                    )}
                                     <div className="mt-2 flex flex-wrap gap-1">
                                         {profile.skills.slice(0, 6).map(skill => (
                                             <span
@@ -281,7 +369,7 @@ export const TeamProfileManager = ({
                             </div>
                         );
                     })}
-                    {profiles.length === 0 && (
+                    {!profilesLoading && !profilesError && profiles.length === 0 && (
                         <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-content-tertiary">
                             {t('teamProfiles.empty')}
                         </div>
@@ -292,26 +380,90 @@ export const TeamProfileManager = ({
             <div className="space-y-4">
                 <form onSubmit={submitProfile} className="card space-y-3 p-4">
                     <h3 className="font-medium text-content-primary">{editingProfileId ? t('teamProfiles.editProfile') : t('teamProfiles.createProfile')}</h3>
+                    <div>
+                        <Input
+                            id="profile-seed-key"
+                            aria-describedby="profile-seed-key-help"
+                            label={t('teamProfiles.seedKey')}
+                            value={profileForm.seed_key || ''}
+                            onChange={event => setProfileForm({ ...profileForm, seed_key: event.target.value })}
+                            placeholder={t('teamProfiles.seedKeyPlaceholder')}
+                            readOnly={editingProfileId !== null}
+                        />
+                        <p id="profile-seed-key-help" className="mt-1 text-xs text-content-tertiary">
+                            {editingProfileId !== null
+                                ? t('teamProfiles.seedKeyImmutableHelp')
+                                : t('teamProfiles.seedKeyHelp')}
+                        </p>
+                    </div>
                     <Input label={t('teamProfiles.displayName')} value={profileForm.display_name} onChange={event => setProfileForm({ ...profileForm, display_name: event.target.value })} required />
                     <Input label={t('teamProfiles.email')} type="email" value={profileForm.email || ''} onChange={event => setProfileForm({ ...profileForm, email: event.target.value })} />
                     <Input label={t('teamProfiles.headline')} value={profileForm.headline || ''} onChange={event => setProfileForm({ ...profileForm, headline: event.target.value })} placeholder={t('teamProfiles.headlinePlaceholder')} />
                     <textarea
+                        aria-label={t('teamProfiles.summaryPlaceholder')}
                         value={profileForm.summary || ''}
                         onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
                         placeholder={t('teamProfiles.summaryPlaceholder')}
                         className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     />
-                    <label className="flex items-center gap-2 text-sm text-content-primary">
-                        <input
-                            type="checkbox"
-                            checked={profileForm.automation_enabled}
-                            onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
-                            className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                        />
-                        {t('teamProfiles.useForRecommendations')}
-                    </label>
+                    <div className="field">
+                        <label htmlFor="profile-kind" className="field-lbl">
+                            {t('teamProfiles.profileKind')}
+                        </label>
+                        <select
+                            id="profile-kind"
+                            className="input"
+                            value={profileForm.profile_kind}
+                            onChange={event => setProfileForm({
+                                ...profileForm,
+                                profile_kind: event.target.value as TeamMemberProfileKind,
+                            })}
+                        >
+                            {PROFILE_KINDS.map(profileKind => (
+                                <option key={profileKind} value={profileKind}>
+                                    {t(`teamProfiles.profileKinds.${profileKind}`)}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <fieldset className="rounded-md border border-border-subtle p-3">
+                        <legend className="px-1 text-sm font-medium text-content-primary">
+                            {t('teamProfiles.assignmentModes')}
+                        </legend>
+                        <div className="mt-1 grid gap-2 sm:grid-cols-2">
+                            {ASSIGNMENT_MODES.map(assignmentMode => (
+                                <label
+                                    key={assignmentMode}
+                                    className="flex items-center gap-2 text-sm text-content-primary"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={profileForm.assignment_modes.includes(assignmentMode)}
+                                        onChange={event => toggleAssignmentMode(assignmentMode, event.target.checked)}
+                                        className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                                    />
+                                    {t(`teamProfiles.assignmentModeOptions.${assignmentMode}`)}
+                                </label>
+                            ))}
+                        </div>
+                    </fieldset>
+                    <div>
+                        <label className="flex items-center gap-2 text-sm text-content-primary">
+                            <input
+                                type="checkbox"
+                                aria-describedby="profile-automation-help"
+                                checked={profileForm.automation_enabled}
+                                onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
+                                className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                            />
+                            {t('teamProfiles.useForRecommendations')}
+                        </label>
+                        <p id="profile-automation-help" className="mt-1 text-xs text-content-tertiary">
+                            {t('teamProfiles.automationEligibilityHelp')}
+                        </p>
+                    </div>
                     <div className="flex justify-between gap-2">
-                        {editingProfileId && (
+                        {editingProfileId !== null && (
                             <Button type="button" variant="ghost" onClick={() => {
                                 setEditingProfileId(null);
                                 setProfileForm(emptyProfileForm);

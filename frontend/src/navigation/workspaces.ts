@@ -13,6 +13,7 @@ import {
     BarChart,
     Bot,
     MapPin,
+    Network,
 } from 'lucide-react';
 
 export type WorkspaceKey = 'delivery' | 'planning' | 'resource';
@@ -71,6 +72,7 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         items: [
             { to: '/team', labelKey: 'nav.team', defaultLabel: 'Team', icon: Users },
             { to: '/analytics', labelKey: 'nav.analytics', defaultLabel: 'Analytics', icon: BarChart },
+            { to: '/agent-team/setup', labelKey: 'nav.agentTeamSetup', defaultLabel: 'Agent Team Setup', icon: Network },
             { to: '/settings', labelKey: 'nav.settings', defaultLabel: 'Settings', icon: Settings },
         ]
     }
@@ -89,6 +91,7 @@ export const getWorkspaceFromPath = (path: string): WorkspaceKey => {
     }
     if (
         path.startsWith('/team') ||
+        path.startsWith('/agent-team') ||
         path.startsWith('/analytics') ||
         path.startsWith('/settings')
     ) {

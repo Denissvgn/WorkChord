@@ -10,30 +10,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
+from app.services.agent_routing_policy import (
+    CAPABILITY_LABEL_SKILL_KEYS,
+    ROUTING_SKILL_DEFINITIONS,
+)
 
 
 CAPABILITY_SKILLS: list[dict[str, Any]] = [
-    {"skill_key": "pm-control", "skill_name": "PM Control", "category": "pm", "keywords": ["commitment", "priority", "scope", "decision"]},
-    {"skill_key": "planning-intake", "skill_name": "Planning And Intake", "category": "planning", "keywords": ["triage", "decompose", "acceptance", "backlog"]},
-    {"skill_key": "iteration-capacity", "skill_name": "Iteration Capacity", "category": "pm", "keywords": ["capacity", "workload", "vacation", "utilization"]},
-    {"skill_key": "schedule-control", "skill_name": "Schedule Control", "category": "pm", "keywords": ["schedule", "gantt", "dependency", "deadline"]},
-    {"skill_key": "delivery-forecast", "skill_name": "Delivery Forecast", "category": "pm", "keywords": ["forecast", "overdue", "risk", "target date"]},
-    {"skill_key": "risk-control", "skill_name": "Risk Control", "category": "pm", "keywords": ["risk", "mitigation", "blocker", "escalation"]},
-    {"skill_key": "status-reporting", "skill_name": "Status Reporting", "category": "reporting", "keywords": ["health", "progress", "decision", "next steps"]},
-    {"skill_key": "agent-routing", "skill_name": "Agent Routing", "category": "agent", "keywords": ["route", "assignment", "capability", "reviewer"]},
-    {"skill_key": "backend-python", "skill_name": "Python Backend", "category": "engineering", "keywords": ["python", "fastapi", "sqlalchemy", "alembic"]},
-    {"skill_key": "backend-go", "skill_name": "Go Backend", "category": "engineering", "keywords": ["go", "service", "concurrency", "api"]},
-    {"skill_key": "backend-rust", "skill_name": "Rust Backend", "category": "engineering", "keywords": ["rust", "systems", "safety", "api"]},
-    {"skill_key": "frontend-react", "skill_name": "React Frontend", "category": "engineering", "keywords": ["react", "typescript", "ui", "state"]},
-    {"skill_key": "quality-verification", "skill_name": "Quality Verification", "category": "quality", "keywords": ["test", "verify", "regression", "evidence"]},
-    {"skill_key": "documentation", "skill_name": "Documentation", "category": "documentation", "keywords": ["docs", "wiki", "guide", "runbook"]},
-    {"skill_key": "operations", "skill_name": "Release And Operations", "category": "operations", "keywords": ["release", "runtime", "deploy", "rollback"]},
-    {"skill_key": "design", "skill_name": "UX And UI Design", "category": "design", "keywords": ["ux", "ui", "prototype", "handoff"]},
-    {"skill_key": "security-review", "skill_name": "Security Review", "category": "security", "keywords": ["security", "permission", "secret", "threat"]},
-    {"skill_key": "data-integrity-review", "skill_name": "Data Integrity Review", "category": "quality", "keywords": ["migration", "transaction", "consistency", "concurrency"]},
-    {"skill_key": "agent-discovery-triage", "skill_name": "Agent Discovery Triage", "category": "planning", "keywords": ["discovery", "out of scope", "follow-up", "triage"]},
-    {"skill_key": "mcp-agent-api", "skill_name": "MCP Agent API", "category": "agent", "keywords": ["mcp", "rest", "claim", "run"]},
-    {"skill_key": "human-decision-authority", "skill_name": "Human Decision Authority", "category": "governance", "keywords": ["stakeholder", "approval", "commitment", "production access"]},
+    {
+        **definition,
+        "keywords": list(definition["keywords"]),
+    }
+    for definition in ROUTING_SKILL_DEFINITIONS
 ]
 
 
@@ -292,6 +280,14 @@ class AgentProfileCatalogService:
     def catalog(self) -> list[dict[str, Any]]:
         return CAPABILITY_SKILLS
 
+    def capability_label_skill_map(self) -> dict[str, list[str]]:
+        """Expose coarse readiness labels as explicit precise-skill choices."""
+
+        return {
+            label: sorted(skill_keys)
+            for label, skill_keys in CAPABILITY_LABEL_SKILL_KEYS.items()
+        }
+
     def presets(self) -> list[dict[str, Any]]:
         return ALL_PROFILE_PRESETS
 
@@ -326,6 +322,7 @@ class AgentProfileCatalogService:
                 automation_enabled=preset["profile_kind"] == "agent",
                 profile_kind=preset["profile_kind"],
                 assignment_modes=preset["assignment_modes"],
+                skills=[],
             )
             try:
                 async with self.db.begin_nested():

@@ -39,6 +39,10 @@ class AgentActor(Base):
             "max_parallel_work = 1",
             name="ck_agent_actors_supported_parallel_work",
         ),
+        CheckConstraint(
+            "lifecycle_state IN ('active', 'onboarding', 'disabled')",
+            name="ck_agent_actors_lifecycle_state",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -47,6 +51,12 @@ class AgentActor(Base):
     api_key_hash: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     scopes: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
     enabled: Mapped[bool] = mapped_column(default=True, nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(
+        String(30),
+        default="active",
+        server_default="active",
+        nullable=False,
+    )
     role: Mapped[str] = mapped_column(String(30), default="worker", nullable=False)
     profile_id: Mapped[Optional[int]] = mapped_column(
         Integer,
@@ -269,6 +279,430 @@ class AgentModelBinding(Base):
             and self.model_catalog is not None
             and self.model_catalog.enabled
         )
+
+
+class AgentTeamTopology(Base):
+    """Applied portable agent-team manifest and authoritative readiness state."""
+
+    __tablename__ = "agent_team_topologies"
+    __table_args__ = (
+        CheckConstraint(
+            "revision >= 1",
+            name="ck_agent_team_topologies_revision",
+        ),
+        CheckConstraint(
+            "state IN ('configured', 'onboarding', 'runtime_ready', "
+            "'blocked', 'disabled')",
+            name="ck_agent_team_topologies_state",
+        ),
+        Index("ix_agent_team_topologies_state", "state"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    topology_key: Mapped[str] = mapped_column(
+        String(100),
+        unique=True,
+        nullable=False,
+    )
+    revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    manifest_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_payload: Mapped[str] = mapped_column(Text, nullable=False)
+    primary_actor_id: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("agent_actors.id", ondelete="RESTRICT"),
+        unique=True,
+        nullable=True,
+    )
+    state: Mapped[str] = mapped_column(
+        String(30),
+        default="configured",
+        nullable=False,
+    )
+    blocker_codes: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        onupdate=utc_now,
+        nullable=False,
+    )
+
+    primary_actor: Mapped[Optional["AgentActor"]] = relationship(
+        "AgentActor",
+        foreign_keys=[primary_actor_id],
+    )
+    members: Mapped[list["AgentTeamTopologyMember"]] = relationship(
+        "AgentTeamTopologyMember",
+        back_populates="topology",
+        passive_deletes=True,
+        order_by="AgentTeamTopologyMember.actor_key",
+    )
+    managed_objects: Mapped[list["AgentTeamManagedObject"]] = relationship(
+        "AgentTeamManagedObject",
+        back_populates="topology",
+        passive_deletes=True,
+    )
+    apply_runs: Mapped[list["AgentTeamApplyRun"]] = relationship(
+        "AgentTeamApplyRun",
+        back_populates="topology",
+        passive_deletes=True,
+    )
+
+
+class AgentTeamTopologyMember(Base):
+    """Installation-local mapping from a portable actor key to one actor."""
+
+    __tablename__ = "agent_team_topology_members"
+    __table_args__ = (
+        CheckConstraint(
+            "object_revision >= 1",
+            name="ck_agent_team_members_object_revision",
+        ),
+        CheckConstraint(
+            "role IN ('pm', 'worker', 'verifier')",
+            name="ck_agent_team_members_role",
+        ),
+        CheckConstraint(
+            "lifecycle_state IN ('desired', 'configured', "
+            "'credential_delivered', 'onboarding', 'connected', "
+            "'runtime_ready', 'disabled')",
+            name="ck_agent_team_members_lifecycle",
+        ),
+        CheckConstraint(
+            "credential_delivery_state IN "
+            "('pending', 'delivered', 'uncertain', 'not_required')",
+            name="ck_agent_team_members_credential_state",
+        ),
+        CheckConstraint(
+            "ack_attempt_count >= 0",
+            name="ck_agent_team_members_ack_attempts",
+        ),
+        UniqueConstraint(
+            "topology_id",
+            "actor_key",
+            name="uq_agent_team_members_actor_key",
+        ),
+        UniqueConstraint(
+            "actor_id",
+            name="uq_agent_team_members_actor",
+        ),
+        UniqueConstraint(
+            "runtime_ref",
+            name="uq_agent_team_members_runtime_ref",
+        ),
+        UniqueConstraint(
+            "credential_ref",
+            name="uq_agent_team_members_credential_ref",
+        ),
+        Index(
+            "ix_agent_team_members_topology_lifecycle",
+            "topology_id",
+            "lifecycle_state",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    topology_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("agent_team_topologies.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    actor_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    actor_id: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("agent_actors.id", ondelete="RESTRICT"),
+        nullable=True,
+    )
+    actor_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    role: Mapped[str] = mapped_column(String(30), nullable=False)
+    object_revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(
+        String(40),
+        default="desired",
+        nullable=False,
+    )
+    desired_member_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    desired_member_payload: Mapped[str] = mapped_column(Text, nullable=False)
+    scope_preset: Mapped[str] = mapped_column(String(40), nullable=False)
+    profile_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    skill_package_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    skill_package_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    skill_package_checksum: Mapped[str] = mapped_column(String(64), nullable=False)
+    model_binding_keys: Mapped[str] = mapped_column(Text, nullable=False)
+    default_model_binding_key: Mapped[str] = mapped_column(
+        String(120),
+        nullable=False,
+    )
+    assignment_modes: Mapped[str] = mapped_column(Text, nullable=False)
+    runtime_ref: Mapped[str] = mapped_column(String(1024), nullable=False)
+    credential_ref: Mapped[str] = mapped_column(String(1024), nullable=False)
+    credential_delivery_state: Mapped[str] = mapped_column(
+        String(30),
+        default="pending",
+        nullable=False,
+    )
+    credential_delivery_receipt_digest: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    handoff_digest: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    runtime_acknowledgement_digest: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    runtime_acknowledgement_payload: Mapped[Optional[str]] = mapped_column(
+        Text,
+        nullable=True,
+    )
+    runtime_acknowledged_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    ack_attempt_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    ack_window_started_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        onupdate=utc_now,
+        nullable=False,
+    )
+
+    topology: Mapped["AgentTeamTopology"] = relationship(
+        "AgentTeamTopology",
+        back_populates="members",
+    )
+    actor: Mapped[Optional["AgentActor"]] = relationship(
+        "AgentActor",
+        foreign_keys=[actor_id],
+    )
+
+
+class AgentTeamManagedObject(Base):
+    """Topology-local mapping for reusable profiles, catalogs, and bindings."""
+
+    __tablename__ = "agent_team_managed_objects"
+    __table_args__ = (
+        CheckConstraint(
+            "object_revision >= 1",
+            name="ck_agent_team_managed_objects_revision",
+        ),
+        CheckConstraint(
+            "object_type IN ('profile', 'model_catalog', 'model_binding')",
+            name="ck_agent_team_managed_objects_type",
+        ),
+        UniqueConstraint(
+            "topology_id",
+            "object_type",
+            "logical_key",
+            name="uq_agent_team_managed_objects_logical",
+        ),
+        UniqueConstraint(
+            "topology_id",
+            "object_type",
+            "object_id",
+            name="uq_agent_team_managed_objects_reference",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    topology_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("agent_team_topologies.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    object_type: Mapped[str] = mapped_column(String(30), nullable=False)
+    logical_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    object_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    object_revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    desired_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        onupdate=utc_now,
+        nullable=False,
+    )
+
+    topology: Mapped["AgentTeamTopology"] = relationship(
+        "AgentTeamTopology",
+        back_populates="managed_objects",
+    )
+
+
+class AgentTeamApplyRun(Base):
+    """Replay-safe setup command receipt with a resumable action plan."""
+
+    __tablename__ = "agent_team_apply_runs"
+    __table_args__ = (
+        CheckConstraint(
+            "expected_topology_revision >= 0",
+            name="ck_agent_team_apply_runs_expected_revision",
+        ),
+        CheckConstraint(
+            "resulting_topology_revision >= 0",
+            name="ck_agent_team_apply_runs_resulting_revision",
+        ),
+        CheckConstraint(
+            "status IN ('running', 'completed', 'partial', 'blocked')",
+            name="ck_agent_team_apply_runs_status",
+        ),
+        UniqueConstraint(
+            "principal_key",
+            "idempotency_key",
+            name="uq_agent_team_apply_runs_idempotency",
+        ),
+        Index(
+            "ix_agent_team_apply_runs_topology_created",
+            "topology_key",
+            "created_at",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    apply_id: Mapped[str] = mapped_column(String(32), unique=True, nullable=False)
+    topology_id: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("agent_team_topologies.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    topology_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    principal_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    principal_actor_id: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("agent_actors.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    request_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    plan_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    expected_topology_revision: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+    resulting_topology_revision: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    approved_action_ids: Mapped[str] = mapped_column(Text, nullable=False)
+    confirmed_action_ids: Mapped[str] = mapped_column(Text, nullable=False)
+    plan_payload: Mapped[str] = mapped_column(Text, nullable=False)
+    rationale: Mapped[str] = mapped_column(String(2000), nullable=False)
+    correlation_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(30),
+        default="running",
+        nullable=False,
+    )
+    blocker_codes: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    response_payload: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        onupdate=utc_now,
+        nullable=False,
+    )
+
+    topology: Mapped[Optional["AgentTeamTopology"]] = relationship(
+        "AgentTeamTopology",
+        back_populates="apply_runs",
+    )
+    principal_actor: Mapped[Optional["AgentActor"]] = relationship(
+        "AgentActor",
+        foreign_keys=[principal_actor_id],
+    )
+    action_receipts: Mapped[list["AgentTeamActionReceipt"]] = relationship(
+        "AgentTeamActionReceipt",
+        back_populates="apply_run",
+        passive_deletes=True,
+        order_by="AgentTeamActionReceipt.id",
+    )
+
+
+class AgentTeamActionReceipt(Base):
+    """Durable redacted result for one explicitly approved setup action."""
+
+    __tablename__ = "agent_team_action_receipts"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('pending', 'applied', 'no_change', 'blocked')",
+            name="ck_agent_team_action_receipts_status",
+        ),
+        CheckConstraint(
+            "(before_revision IS NULL OR before_revision >= 1) AND "
+            "(after_revision IS NULL OR after_revision >= 1)",
+            name="ck_agent_team_action_receipts_revisions",
+        ),
+        UniqueConstraint(
+            "apply_run_id",
+            "action_id",
+            name="uq_agent_team_action_receipts_action",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    apply_run_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("agent_team_apply_runs.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    action_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    action_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    reconciliation_class: Mapped[str] = mapped_column(String(40), nullable=False)
+    operation: Mapped[str] = mapped_column(String(80), nullable=False)
+    actor_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), nullable=False)
+    target_actor_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    before_revision: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    after_revision: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    blocker_code: Mapped[Optional[str]] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+    next_action: Mapped[Optional[str]] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+    result_payload: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(),
+        default=utc_now,
+        nullable=False,
+    )
+
+    apply_run: Mapped["AgentTeamApplyRun"] = relationship(
+        "AgentTeamApplyRun",
+        back_populates="action_receipts",
+    )
 
 
 class TaskRoutingAssessment(Base):
@@ -604,6 +1038,18 @@ class AgentRun(Base):
             "AND model_binding_revision >= 1)",
             name="ck_agent_runs_model_binding_pair",
         ),
+        CheckConstraint(
+            "model_trust_state IN "
+            "('matched', 'mismatch', 'unreported', 'unverifiable')",
+            name="ck_agent_runs_model_trust_state",
+        ),
+        CheckConstraint(
+            "(model_trust_state = 'matched' AND "
+            "model_match_basis IS NOT NULL AND "
+            "model_match_basis IN ('configured_alias', 'catalog_key')) OR "
+            "(model_trust_state <> 'matched' AND model_match_basis IS NULL)",
+            name="ck_agent_runs_model_match_basis",
+        ),
         Index(
             "uq_agent_runs_running_assignment",
             "assignment_id",
@@ -643,6 +1089,15 @@ class AgentRun(Base):
     )
     resolved_model_id: Mapped[Optional[str]] = mapped_column(
         String(255), nullable=True
+    )
+    model_trust_state: Mapped[str] = mapped_column(
+        String(30),
+        default="unreported",
+        server_default="unreported",
+        nullable=False,
+    )
+    model_match_basis: Mapped[Optional[str]] = mapped_column(
+        String(40), nullable=True
     )
     model: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     tool_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)

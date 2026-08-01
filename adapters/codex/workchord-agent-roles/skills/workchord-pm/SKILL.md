@@ -11,11 +11,18 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 
 1. Identify the WorkChord base URL or connected MCP server without exposing credentials.
 2. Read the live capabilities contract when the server provides it. Otherwise inspect the available tools and treat the session as supervised v0.
-3. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
-4. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
-5. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
+3. When `agent-team-master-v1` is advertised, read the bound team status and
+   confirm the controller identity, topology revision, required runtime
+   acknowledgements, and `runtime_ready` state. Treat
+   `availability_unknown` as intentional until a concrete task is evaluated.
+4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
+5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
+6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
 
 Never provision actors, issue or rotate keys, modify runtime secrets, or infer authorization from a profile skill, task label, or installed procedural skill. Ask an operator to perform identity administration.
+The Setup Master validate/plan/apply surfaces are operator-only. A bound PM may
+read its secret-free topology status and handoffs but must not adopt, create,
+replace, disable, activate, or broaden any member.
 
 The full assigned-work v1 PM controller requires both `recovery:read` and
 `recovery:write`. A PM without recovery write authority may diagnose and hand
@@ -51,11 +58,11 @@ Select or create the accountable project, milestones or release target, calendar
 
 ### 3. Triage, Define, and Assess Work
 
-Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing is available, create a current five-axis difficulty and routing assessment before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
+Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing reports an effective `shadow` or `enforced` mode, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
 
 ### 4. Route, Assign, Order, and Schedule
 
-Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. Dispatch only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
+Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live in effective `shadow` or `enforced` mode, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. In `shadow`, preserve the preview only as comparison evidence and use supervised compatibility dispatch. Create a model-bound assignment only in effective `enforced` mode and only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
 
 ### 5. Supervise Delivery
 
@@ -83,6 +90,7 @@ Compare submitted evidence with every acceptance criterion. Let an independent v
 
 Use assigned-work v1 only when the live server advertises
 `agent-capabilities-v1`, `actor-roster-v1`, `actor-task-assignments`,
+`agent-team-master-v1`,
 `my-work-v1`, `snapshot-pagination-v1`, `work-etag-v1`,
 `complete-task-context`, `atomic-begin-submit`, `atomic-renew-v1`,
 `fenced-claims`, `verification-v1`,
@@ -98,15 +106,24 @@ Otherwise use supervised v0:
 
 Never simulate a missing assignment, queue, fence, review, or atomic transaction in prose. Stop and request the missing server or human action.
 
-Model-aware routing is an additive mode inside assigned-work v1. Use it only
-when the capability response advertises `model-aware-routing-v1` and the live
-REST or MCP metadata exposes the matching assessment, routing-preview,
-model-bound assignment, and begin-evidence operations. If that feature or any
-required operation is absent, keep the durable assigned-work lifecycle when it
-is otherwise supported, but use supervised compatibility routing and state
-explicitly that the actor/model choice was not model-aware. Never infer missing
-model capability from a deployment name, provider-facing model name, profile
-summary, or local prose.
+Model-aware routing is additive inside assigned-work v1. Read the explicit
+`model_aware_routing` capability status; feature presence alone does not select
+an operating mode. Effective `shadow` permits catalog, assessment, and preview
+comparison only. Do not send a model-aware assignment/update or present a
+shadow recommendation as an enforced selection. Effective `enforced` permits
+the complete preview-bound assignment and begin-evidence loop when live REST or
+MCP metadata exposes every required operation. In effective `off`, or when the
+status, feature, or a required operation is absent, keep the durable
+assigned-work lifecycle when otherwise supported but use supervised
+compatibility routing and state explicitly that the actor/model choice was not
+model-aware. Never infer missing model capability from a deployment name,
+provider-facing model name, profile summary, or local prose.
+
+When `agent-team-master-v1` is present, the roster is scoped to the caller's
+current runtime-ready topology. Preserve the topology revision from status and
+routing preview evidence. Any setup, membership, package, profile, binding, or
+acknowledgement change requires a fresh status read and a fresh routing preview;
+never dispatch to an actor visible only in a manifest or an older receipt.
 
 ## Handle Failures Conservatively
 

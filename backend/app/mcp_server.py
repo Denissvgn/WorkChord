@@ -28,6 +28,9 @@ from app.services.agent_service import (
     actor_has_scope,
     require_scope,
 )
+from app.services.agent_model_catalog_service import AgentModelConflictError
+from app.services.agent_routing_service import AgentRoutingConflictError
+from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 from app.services.task_service import TaskVersionConflictError
 from app.services.triage_service import TriageConflictError
 
@@ -192,6 +195,12 @@ async def _authenticate_agent_key(db: Any, api_key: str) -> AgentActor:
 
 
 ScopeRequirement = Optional[str | tuple[str, ...]]
+ROUTING_READ_SCOPE_REQUIREMENT: tuple[str, ...] = (
+    "planning:read",
+    "planning:write",
+    "assignments:read",
+    "assignments:write",
+)
 
 
 def _skill_bundle_scope_requirement() -> ScopeRequirement:
@@ -226,7 +235,13 @@ async def _agent_context(required_scope: ScopeRequirement = None) -> AsyncIterat
 
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
-    if isinstance(exc, TaskVersionConflictError):
+    if isinstance(exc, AgentRoutingConflictError):
+        payload = exc.detail()
+    elif isinstance(exc, AgentTeamSetupConflictError):
+        payload = exc.detail()
+    elif isinstance(exc, AgentModelConflictError):
+        payload = exc.detail()
+    elif isinstance(exc, TaskVersionConflictError):
         payload = exc.detail()
     elif isinstance(exc, AgentConflictError):
         payload = {"code": "agent_state_conflict", "message": str(exc)}
@@ -268,6 +283,9 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
     except (
         MCPAuthError,
         MaintenanceModeError,
+        AgentRoutingConflictError,
+        AgentTeamSetupConflictError,
+        AgentModelConflictError,
         AgentConflictError,
         AgentPermissionError,
         TriageConflictError,
@@ -320,11 +338,280 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool()
-    async def agent_list_actor_roster() -> list[dict[str, Any]]:
+    async def agent_get_team_setup_status() -> dict[str, Any]:
+        """Return desired, configured, and runtime readiness for the bound team."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_agent_team_setup_status(
+                db,
+                actor,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_list_actor_roster(
+        include_disabled: bool = False,
+    ) -> list[dict[str, Any]]:
         """List enabled, secret-free actor dispatch metadata for PM routing."""
         return await _tool_call(
             ("assignments:read", "assignments:write", "planning:read"),
-            lambda db, actor: mcp_agent_tools.list_agent_actor_roster(db, actor),
+            lambda db, actor: mcp_agent_tools.list_agent_actor_roster(
+                db,
+                actor,
+                include_disabled=include_disabled,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_list_model_catalog(
+        include_disabled: bool = False,
+    ) -> list[dict[str, Any]]:
+        """List provider-neutral model capability declarations."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.list_agent_model_catalog(
+                db,
+                actor,
+                include_disabled=include_disabled,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_get_model_catalog_entry(
+        catalog_key: str,
+    ) -> dict[str, Any]:
+        """Read one model capability declaration by stable key."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_agent_model_catalog_entry(
+                db,
+                actor,
+                catalog_key,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_list_model_bindings(
+        actor_id: int | None = None,
+        include_disabled: bool = False,
+    ) -> list[dict[str, Any]]:
+        """List secret-free actor model bindings."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.list_agent_model_bindings(
+                db,
+                actor,
+                actor_id=actor_id,
+                include_disabled=include_disabled,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_get_model_binding(binding_id: int) -> dict[str, Any]:
+        """Read one active or historical actor model binding."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_agent_model_binding(
+                db,
+                actor,
+                binding_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_get_task_routing_assessment(
+        task_id: int,
+    ) -> dict[str, Any]:
+        """Read the current task-version-bound routing assessment."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.get_task_routing_assessment(
+                db,
+                actor,
+                task_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_list_task_routing_assessments(
+        task_id: int,
+        limit: int = 100,
+    ) -> dict[str, Any]:
+        """List bounded append-only routing-assessment history newest first."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.list_task_routing_assessments(
+                db,
+                actor,
+                task_id,
+                limit=limit,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_create_task_routing_assessment(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Append an audited assessment for the current task version."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.create_task_routing_assessment(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_preview_task_routing(
+        task_id: int,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Preview candidates without mutating task or assignment state."""
+        return await _tool_call(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.preview_task_routing(
+                db,
+                actor,
+                task_id,
+                payload,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_create_model_catalog_entry(
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Create a provider-neutral model declaration as an admin actor."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.create_agent_model_catalog_entry(
+                db,
+                actor,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_update_model_catalog_entry(
+        catalog_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Update one model declaration behind an optimistic revision."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.update_agent_model_catalog_entry(
+                db,
+                actor,
+                catalog_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_disable_model_catalog_entry(
+        catalog_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Soft-disable one model declaration after reconciliation."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.disable_agent_model_catalog_entry(
+                db,
+                actor,
+                catalog_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_create_model_binding(
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Create one actor model binding as an admin actor."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.create_agent_model_binding(
+                db,
+                actor,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_update_model_binding(
+        binding_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Update one actor model binding behind an optimistic revision."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.update_agent_model_binding(
+                db,
+                actor,
+                binding_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool()
+    async def agent_disable_model_binding(
+        binding_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Soft-disable one actor model binding after reconciliation."""
+        return await _tool_call(
+            "admin:write",
+            lambda db, actor: mcp_agent_tools.disable_agent_model_binding(
+                db,
+                actor,
+                binding_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
         )
 
     @mcp.tool()
@@ -1803,6 +2090,37 @@ def create_mcp_server() -> FastMCP:
         return await _json_resource(
             None,
             lambda db, actor: mcp_agent_tools.get_agent_capabilities(db, actor),
+        )
+
+    @mcp.resource("workchord://agent/actors", mime_type="application/json")
+    async def agent_actor_roster_resource() -> str:
+        """Authoritative secret-free exact-actor roster resource."""
+        return await _json_resource(
+            ("assignments:read", "assignments:write", "planning:read"),
+            lambda db, actor: mcp_agent_tools.list_agent_actor_roster(db, actor),
+        )
+
+    @mcp.resource("workchord://agent/model-catalog", mime_type="application/json")
+    async def agent_model_catalog_resource() -> str:
+        """Provider-neutral model capability catalog resource."""
+        return await _json_resource(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.list_agent_model_catalog(db, actor),
+        )
+
+    @mcp.resource(
+        "workchord://agent/tasks/{task_id}/routing-assessment",
+        mime_type="application/json",
+    )
+    async def task_routing_assessment_resource(task_id: str) -> str:
+        """Current task-version-bound routing assessment resource."""
+        return await _json_resource(
+            ROUTING_READ_SCOPE_REQUIREMENT,
+            lambda db, actor: mcp_agent_tools.get_task_routing_assessment(
+                db,
+                actor,
+                int(task_id),
+            ),
         )
 
     @mcp.resource("workchord://agent/me/work", mime_type="application/json")

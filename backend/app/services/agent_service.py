@@ -14,6 +14,8 @@ from app.config import get_settings
 from app.models.agent import (
     AgentActor,
     AgentIdempotencyRecord,
+    AgentModelBinding,
+    AgentModelCatalogEntry,
     AgentRun,
     AgentRunEvent,
     AgentTaskAssignment,
@@ -117,6 +119,7 @@ class AgentService:
             select(AgentActor).where(
                 AgentActor.api_key_hash == key_hash,
                 AgentActor.enabled.is_(True),
+                AgentActor.lifecycle_state == "active",
             )
         )
         actor = result.scalar_one_or_none()
@@ -139,6 +142,19 @@ class AgentService:
 
         return actor
 
+    async def authenticate_onboarding(self, api_key: str) -> Optional[AgentActor]:
+        """Authenticate only a disabled onboarding identity for setup acknowledgement."""
+
+        key_hash = hash_api_key(api_key)
+        result = await self.db.execute(
+            select(AgentActor).where(
+                AgentActor.api_key_hash == key_hash,
+                AgentActor.enabled.is_(False),
+                AgentActor.lifecycle_state == "onboarding",
+            )
+        )
+        return result.scalar_one_or_none()
+
     def authenticate_bootstrap_key(self, api_key: str) -> Optional[AgentActor]:
         """Return a transient provisioning actor for the bootstrap API key."""
         configured = get_settings().agent_bootstrap_api_key
@@ -154,12 +170,32 @@ class AgentService:
             created_at=utc_now(),
         )
 
-    async def create_actor(self, data: AgentActorCreate) -> tuple[AgentActor, str]:
-        """Create an agent actor and return the one-time API key."""
+    async def create_actor(
+        self,
+        data: AgentActorCreate,
+        *,
+        principal: AgentActor | None = None,
+    ) -> tuple[AgentActor, str, AgentModelBinding | None]:
+        """Create an actor and optional secret-free model binding atomically."""
         if data.profile_id is not None:
             profile = await self.db.get(TeamMemberProfile, data.profile_id)
             if profile is None:
                 raise ValueError("Team member profile not found")
+        catalog: AgentModelCatalogEntry | None = None
+        if data.model_binding is not None:
+            result = await self.db.execute(
+                select(AgentModelCatalogEntry).where(
+                    AgentModelCatalogEntry.key
+                    == data.model_binding.model_catalog_key,
+                    AgentModelCatalogEntry.enabled.is_(True),
+                )
+            )
+            catalog = result.scalar_one_or_none()
+            if catalog is None:
+                raise ValueError(
+                    "Enabled model catalog entry not found for "
+                    f"{data.model_binding.model_catalog_key!r}"
+                )
         api_key = f"pmag_{secrets.token_urlsafe(32)}"
         actor = AgentActor(
             name=data.name,
@@ -167,15 +203,64 @@ class AgentService:
             api_key_hash=hash_api_key(api_key),
             scopes=json.dumps(data.scopes),
             enabled=data.enabled,
+            lifecycle_state="active" if data.enabled else "disabled",
             role=data.role,
             profile_id=data.profile_id,
             work_policy=data.work_policy,
             max_parallel_work=data.max_parallel_work,
         )
         self.db.add(actor)
+        binding: AgentModelBinding | None = None
+        if data.model_binding is not None:
+            assert catalog is not None
+            await self.db.flush()
+            binding = AgentModelBinding(
+                actor_id=actor.id,
+                model_catalog_id=catalog.id,
+                is_default=data.model_binding.is_default,
+                enabled=True,
+                tool_tags=data.model_binding.tool_tags,
+                data_policy_tags=data.model_binding.data_policy_tags,
+                revision=1,
+            )
+            self.db.add(binding)
+            await self.db.flush()
+            self.db.add(
+                TaskEvent(
+                    task_id=None,
+                    actor_type=(
+                        "agent"
+                        if principal is not None and principal.id > 0
+                        else "bootstrap"
+                    ),
+                    actor_id=(
+                        principal.id
+                        if principal is not None and principal.id > 0
+                        else None
+                    ),
+                    event_type="agent.model_configuration_changed",
+                    payload=json.dumps(
+                        {
+                            "operation": "actor.model_binding.create",
+                            "target_type": "model_binding",
+                            "target_id": binding.id,
+                            "actor_id": actor.id,
+                            "model_catalog_key": (
+                                data.model_binding.model_catalog_key
+                            ),
+                            "authoritative_revision": binding.revision,
+                            "invalidated_assignment_ids": [],
+                        },
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ),
+                )
+            )
         await self.db.commit()
         await self.db.refresh(actor)
-        return actor, api_key
+        if binding is not None:
+            await self.db.refresh(binding)
+        return actor, api_key, binding
 
     async def list_ready_tasks(
         self,
@@ -956,6 +1041,9 @@ class AgentService:
             claim_generation=data.claim_generation,
             status="running",
             trace_id=data.trace_id,
+            model_trust_state=(
+                "unverifiable" if (data.model or "").strip() else "unreported"
+            ),
             model=data.model,
             tool_name=data.tool_name,
             run_metadata=json.dumps(data.metadata, ensure_ascii=False, default=str),

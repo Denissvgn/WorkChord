@@ -49,14 +49,25 @@ export interface TeamMemberProfileSkillCreate {
 
 export type TeamMemberProfileSkillUpdate = Partial<TeamMemberProfileSkillCreate>;
 
+export type TeamMemberProfileKind = 'human' | 'agent' | 'hybrid';
+
+export type TeamMemberAssignmentMode =
+    | 'ownership'
+    | 'execution'
+    | 'verification'
+    | 'design_handoff';
+
 export interface TeamMemberProfile {
     id: number;
+    seed_key?: string | null;
     display_name: string;
     email?: string | null;
     headline?: string | null;
     summary?: string | null;
     notes?: string | null;
     automation_enabled: boolean;
+    profile_kind: TeamMemberProfileKind;
+    assignment_modes: TeamMemberAssignmentMode[];
     skills: TeamMemberProfileSkill[];
     created_at: string;
     updated_at: string;
@@ -68,19 +79,33 @@ export interface TeamMemberProfileCompact {
     email?: string | null;
     headline?: string | null;
     automation_enabled: boolean;
+    profile_kind: TeamMemberProfileKind;
+    assignment_modes: TeamMemberAssignmentMode[];
     skills: TeamMemberProfileSkill[];
 }
 
 export interface TeamMemberProfileCreate {
+    seed_key?: string | null;
     display_name: string;
     email?: string | null;
     headline?: string | null;
     summary?: string | null;
     notes?: string | null;
     automation_enabled: boolean;
+    profile_kind: TeamMemberProfileKind;
+    assignment_modes: TeamMemberAssignmentMode[];
 }
 
-export type TeamMemberProfileUpdate = Partial<TeamMemberProfileCreate>;
+export interface TeamMemberProfileUpdate {
+    display_name?: string;
+    email?: string | null;
+    headline?: string | null;
+    summary?: string | null;
+    notes?: string | null;
+    automation_enabled?: boolean;
+    profile_kind?: TeamMemberProfileKind;
+    assignment_modes?: TeamMemberAssignmentMode[];
+}
 
 export interface TeamMember {
     id: number;

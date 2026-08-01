@@ -106,7 +106,7 @@ def test_preflight_creates_deterministic_secret_free_manifest(
     assert first == second
     assert first["source_revision"] == head_revision()
     assert first["snapshot"]["read_only_recheck"] is True
-    assert len(first["tables"]) == 45
+    assert len(first["tables"]) == 50
     assert first["repair_policy"]["automatic_source_repairs"] == []
     assert {
         entry["table"]: entry["disposition"] for entry in first["catalog"]

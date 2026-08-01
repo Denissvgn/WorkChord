@@ -13,12 +13,33 @@ from app.agent_contract import (
     MODEL_AWARE_ROUTING_FEATURE,
     agent_contract_features,
 )
+from app.main import app as main_app
+from app.mcp_server import mcp
 from app.routers import agent as agent_router
+from app.schemas.agent import (
+    ModelAwareAgentTaskAssignmentCreate,
+    ModelAwareAgentTaskAssignmentUpdate,
+    ModelAwareAgentWorkBegin,
+)
+from app.schemas.agent_routing import (
+    AgentRoutingPreviewCreate,
+    TaskRoutingAssessmentCommand,
+)
 from scripts import build_agent_skills
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SKILLS_ROOT = REPOSITORY_ROOT / "agent-skills"
+MODEL_AWARE_BODY_MODELS = {
+    model.__name__: model
+    for model in (
+        TaskRoutingAssessmentCommand,
+        AgentRoutingPreviewCreate,
+        ModelAwareAgentTaskAssignmentCreate,
+        ModelAwareAgentTaskAssignmentUpdate,
+        ModelAwareAgentWorkBegin,
+    )
+}
 
 
 def _read(relative: str) -> str:
@@ -47,6 +68,23 @@ def _derived_band(axes: tuple[int, int, int, int, int]) -> str:
     return "standard"
 
 
+def _schema_refs(value: object) -> set[str]:
+    if isinstance(value, dict):
+        refs: set[str] = set()
+        reference = value.get("$ref")
+        if isinstance(reference, str):
+            refs.add(reference.removeprefix("#/components/schemas/"))
+        for item in value.values():
+            refs.update(_schema_refs(item))
+        return refs
+    if isinstance(value, list):
+        refs = set()
+        for item in value:
+            refs.update(_schema_refs(item))
+        return refs
+    return set()
+
+
 @pytest.mark.contract
 @pytest.mark.parametrize(
     ("label", "axes", "expected"),
@@ -73,6 +111,8 @@ def test_pm_skill_covers_governed_difficulty_scenarios(
     assert f"`{expected}`" in guidance
     assert "Difficulty is not priority, effort, elapsed time, or business value" in guidance
     assert "supervised compatibility routing" in guidance
+    assert "A second assessment for the same task/policy version is a conflict" in guidance
+    assert "bounded immutable history" in guidance
 
 
 @pytest.mark.contract
@@ -89,6 +129,8 @@ def test_pm_skill_hard_gates_selection_before_cost() -> None:
     assert "generate a fresh preview" in guidance
     assert "planned verifier" in guidance
     assert "not a capacity reservation" in guidance
+    assert "In `shadow`, perform steps 1 through 6 only" in guidance
+    assert "Perform model-bound assignment steps 7 and 8 only in effective `enforced` mode" in guidance
 
 
 @pytest.mark.contract
@@ -104,6 +146,8 @@ def test_pm_skill_distinguishes_model_and_external_blockers() -> None:
     assert "Access denial" in guidance
     assert "non-model blockers" in guidance
     assert "Never downgrade an independent/specialist review requirement" in guidance
+    assert "Resolution advances the task version" in guidance
+    assert "one current assessment required by the reopened task version" in guidance
 
 
 @pytest.mark.contract
@@ -116,6 +160,8 @@ def test_worker_skill_obeys_selected_binding_without_expanding_authority() -> No
     assert "send the exact assigned binding ID/revision" in skill
     assert "Never substitute another binding" in skill
     assert "do not request or perform a model-tier change yourself" in skill
+    assert "reports effective `enforced` mode" in skill
+    assert "In `off` or `shadow`, do not attempt model-aware begin" in skill
     assert "workers cannot change model bindings" in lifecycle
     assert "Do not substitute a default, cheaper, newer, or locally preferred model" in lifecycle
     assert "execution evidence, not a model request and not attestation" in lifecycle
@@ -126,6 +172,7 @@ def test_model_aware_operation_contract_is_feature_gated() -> None:
     operation_ids = {
         "model-catalog",
         "routing-assessment-current",
+        "routing-assessment-history",
         "routing-assessment-create",
         "routing-preview",
         "model-aware-assignment-create",
@@ -139,7 +186,20 @@ def test_model_aware_operation_contract_is_feature_gated() -> None:
         for operation in operations
     )
     assert _operation("routing-preview")["rest"]["method"] == "POST"
-    assert _operation("routing-preview")["summary"].endswith("without mutation.")
+    assert _operation("routing-preview")["summary"].endswith(
+        "shadow may append bounded audit evidence."
+    )
+    history = _operation("routing-assessment-history")
+    assert history["rest"]["query_parameters"] == [
+        {"name": "limit", "required": False}
+    ]
+    assert history["mcp"]["tool"] == "agent_list_task_routing_assessments"
+    assert _operation("model-catalog")["rest"]["query_parameters"] == [
+        {"name": "include_disabled", "required": False}
+    ]
+    assert _operation("actor-roster")["rest"]["query_parameters"] == [
+        {"name": "include_disabled", "required": False}
+    ]
 
     assignment_fields = {
         field["name"]: field["required"]
@@ -167,19 +227,82 @@ def test_model_aware_operation_contract_is_feature_gated() -> None:
 
 
 @pytest.mark.contract
-def test_server_does_not_advertise_incomplete_model_aware_feature() -> None:
-    features = agent_contract_features(include_skill_bundles=True)
+@pytest.mark.asyncio
+async def test_model_aware_package_contract_matches_live_rest_and_mcp() -> None:
+    openapi_paths = main_app.openapi()["paths"]
+    live_tools = {tool.name: tool for tool in await mcp.list_tools()}
+    operations = [
+        operation
+        for operation in build_agent_skills.ASSIGNED_WORK_V1_CONTRACT["operations"]
+        if operation["id"] == "actor-roster"
+        or operation.get("required_feature") == MODEL_AWARE_ROUTING_FEATURE
+    ]
+
+    for operation in operations:
+        rest = operation["rest"]
+        live_rest = openapi_paths[rest["path"]][rest["method"].lower()]
+        live_parameters = {
+            (parameter["in"], parameter["name"]): parameter
+            for parameter in live_rest.get("parameters", [])
+        }
+        for location, key in (
+            ("path", "path_parameters"),
+            ("query", "query_parameters"),
+            ("header", "header_parameters"),
+        ):
+            for parameter in rest[key]:
+                live_parameter = live_parameters[(location, parameter["name"])]
+                assert live_parameter["required"] is parameter["required"]
+
+        body = rest["body"]
+        if body is not None:
+            body_model = MODEL_AWARE_BODY_MODELS[body["model"]]
+            declared_fields = {
+                field["name"]: field["required"] for field in body["fields"]
+            }
+            assert declared_fields == {
+                name: field.is_required()
+                for name, field in body_model.model_fields.items()
+            }
+            live_body_schema = live_rest["requestBody"]["content"][
+                "application/json"
+            ]["schema"]
+            assert body["model"] in _schema_refs(live_body_schema)
+
+        mcp_contract = operation["mcp"]
+        live_tool_schema = live_tools[mcp_contract["tool"]].inputSchema
+        declared_tool_parameters = {
+            parameter["name"]: parameter["required"]
+            for parameter in mcp_contract["parameters"]
+        }
+        assert set(live_tool_schema["properties"]) == set(declared_tool_parameters)
+        live_required = set(live_tool_schema.get("required", []))
+        assert declared_tool_parameters == {
+            name: name in live_required for name in declared_tool_parameters
+        }
+
+
+@pytest.mark.contract
+def test_server_advertises_complete_model_aware_feature() -> None:
+    features = agent_contract_features(
+        include_skill_bundles=True,
+        model_aware_routing_mode="enforced",
+    )
 
     assert agent_router.agent_contract_features is agent_contract_features
     assert mcp_agent_tools.agent_contract_features is agent_contract_features
     assert build_agent_skills.MODEL_AWARE_ROUTING_FEATURE == MODEL_AWARE_ROUTING_FEATURE
-    assert MODEL_AWARE_ROUTING_FEATURE not in features
+    assert MODEL_AWARE_ROUTING_FEATURE in features
+    assert MODEL_AWARE_ROUTING_FEATURE not in agent_contract_features(
+        include_skill_bundles=True,
+        model_aware_routing_mode="off",
+    )
     assert "skill-bundles-v1" in features
     assert len(features) == len(set(features))
 
 
 @pytest.mark.contract
-def test_wave4_versions_are_new_frozen_identities() -> None:
+def test_role_versions_are_new_frozen_identities() -> None:
     baseline = json.loads(
         (SKILLS_ROOT / build_agent_skills.RELEASE_BASELINE_FILENAME).read_text(
             encoding="utf-8"
@@ -190,12 +313,21 @@ def test_wave4_versions_are_new_frozen_identities() -> None:
     }
     catalogs = {catalog["version"] for catalog in baseline["catalogs"]}
 
-    assert build_agent_skills.CATALOG_VERSION == "1.4.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.4.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.3.0"
+    assert build_agent_skills.CATALOG_VERSION == "1.7.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.7.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.6.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
     assert ("workchord-pm", "1.4.0") in releases
     assert ("workchord-worker", "1.3.0") in releases
     assert "1.4.0" in catalogs
+    assert ("workchord-pm", "1.5.0") in releases
+    assert ("workchord-worker", "1.4.0") in releases
+    assert "1.5.0" in catalogs
+    assert ("workchord-pm", "1.6.0") in releases
+    assert ("workchord-worker", "1.5.0") in releases
+    assert "1.6.0" in catalogs
+    assert ("workchord-pm", "1.7.0") in releases
+    assert ("workchord-worker", "1.6.0") in releases
+    assert "1.7.0" in catalogs

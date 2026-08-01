@@ -29,13 +29,17 @@ Do not accept a succeeded run, green local check, commit link, or worker summary
 Create a verification-purpose assignment only after the task is `resolved`, its
 execution run is terminal, and its claim is released. Under
 `model-aware-routing-v1`, request a fresh verification-purpose routing preview
-against current independent actors and bindings; the verifier named in the
-earlier assessment or execution preview was policy evidence, not reserved
-capacity. Bind the resulting assignment to the exact verifier, current
-task/run/assessment versions, selected binding, and fresh preview digest. Rank
-verification work in the verifier's own queue by explicit review rank and task
-priority; do not place it in an implementation queue or reserve execution
-capacity while the task is still active.
+against current independent actors and bindings. Resolution advances the task
+version, so first read the current assessment and bounded history; create
+exactly one assessment for the resolved task version when none is current,
+preserving or strengthening the prior review floor and capability envelope
+unless new authoritative evidence justifies another change. The verifier named
+in the earlier assessment or execution preview was policy evidence, not
+reserved capacity. Bind the resulting assignment to the exact verifier,
+current task/run/assessment versions, selected binding, and fresh preview
+digest. Rank verification work in the verifier's own queue by explicit review
+rank and task priority; do not place it in an implementation queue or reserve
+execution capacity while the task is still active.
 
 ## Handle Model Evidence and Escalation
 
@@ -112,8 +116,10 @@ In assigned-work v1:
 
 For model-aware rework, require the rejection transaction or follow-up routing
 flow to preserve the prior assessment, assignment, run, routing snapshot, and
-failure reason as lineage. Generate a fresh execution preview before selecting
-the rework actor/binding. Change the required model envelope only through a new
+failure reason as lineage. Read the immutable assessment history and create the
+one current assessment required by the reopened task version before generating
+a fresh execution preview and selecting the rework actor/binding. Preserve the
+prior review floor. Change the required model envelope only through that new
 current assessment backed by evidence; never copy an empty routing snapshot or
 silently reuse the prior candidate list.
 
@@ -159,7 +165,9 @@ For each recovery:
 6. Record the recovery cause, action, response, next owner, and follow-up prevention.
 
 For model-aware recovery, preserve the original assessment, selected binding,
-routing snapshot, run model evidence, and recovery cause. Require a fresh
+routing snapshot, run model evidence, and recovery cause. Read the immutable
+assessment history, create the one current assessment required by the recovered
+task version while preserving the prior review floor, and require a fresh
 preview for the recovery assignment. A stale or mismatched binding may require
 operator correction, but recovery never grants the PM authority to mutate the
 catalog or bypass a hard gate.

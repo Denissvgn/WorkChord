@@ -90,6 +90,8 @@ class Settings(BaseSettings):
     # Security
     settings_encryption_key: str = ""
     agent_bootstrap_api_key: str = ""
+    agent_team_credential_sink_dir: str = ""
+    agent_team_credential_sink_ref: str = "agent-team-secure-sink"
     agent_skill_bundles_public: bool = False
     agent_skill_bundle_trusted_checksums_sha256: str = ""
     agent_skill_bundle_max_artifacts: int = 256
@@ -97,6 +99,7 @@ class Settings(BaseSettings):
     agent_skill_bundle_max_total_bytes: int = 512 * 1024 * 1024
     agent_skill_bundle_max_metadata_bytes: int = 2 * 1024 * 1024
     agent_skill_bundle_max_file_bytes: int = 2 * 1024 * 1024
+    model_aware_routing_mode: Literal["off", "shadow", "enforced"] = "off"
     mcp_dns_rebinding_protection: bool = True
     mcp_allowed_hosts: list[str] = [
         "localhost:*",
@@ -156,6 +159,19 @@ class Settings(BaseSettings):
         if isinstance(value, str):
             return value.strip().lower()
         return value
+
+    @field_validator("agent_team_credential_sink_ref")
+    @classmethod
+    def validate_agent_team_credential_sink_ref(cls, value: str) -> str:
+        normalized = value.strip()
+        if not re.fullmatch(
+            r"[a-z0-9](?:[a-z0-9._/-]{0,126}[a-z0-9])?",
+            normalized,
+        ):
+            raise ValueError(
+                "AGENT_TEAM_CREDENTIAL_SINK_REF must be a stable non-secret reference"
+            )
+        return normalized
 
     @field_validator("agent_skill_bundle_trusted_checksums_sha256")
     @classmethod

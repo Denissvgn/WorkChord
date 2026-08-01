@@ -1,0 +1,351 @@
+{
+  "decision": "local_implementation_complete",
+  "external_validation": {
+    "deployment_acceptance": {
+      "accepted": false,
+      "status": "not_performed"
+    },
+    "provider_catalog_truth": {
+      "accepted": false,
+      "status": "not_performed"
+    }
+  },
+  "release": {
+    "agent_team_report_schema": "agent-team-setup-report-v1",
+    "backend_version": "1.7.0",
+    "frontend_version": "1.7.0",
+    "model_aware_routing_feature": "model-aware-routing-v1",
+    "setup_feature": "agent-team-master-v1"
+  },
+  "release_gates": [
+    {
+      "evidence": [
+        "backend/app/schemas/agent_routing.py",
+        "backend/tests/test_agent_routing_contract.py"
+      ],
+      "id": "G1",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py",
+        "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py",
+        "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py",
+        "backend/tests/test_agent_routing_migrations.py"
+      ],
+      "id": "G2",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/routers/agent_catalog.py",
+        "backend/app/services/agent_team_setup_service.py",
+        "backend/tests/test_agent_model_catalog_api.py",
+        "backend/tests/test_agent_team_setup.py"
+      ],
+      "id": "G3",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_policy.py",
+        "backend/app/services/agent_routing_service.py",
+        "backend/tests/test_agent_routing_harness.py"
+      ],
+      "id": "G4",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_service.py",
+        "backend/tests/test_agent_routing_wave3_contract.py"
+      ],
+      "id": "G5",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_policy.py",
+        "backend/tests/test_agent_routing_wave6_qualification.py",
+        "backend/tests/test_agent_team_setup_qualification.py"
+      ],
+      "id": "G6",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_work_service.py",
+        "backend/tests/test_agent_work_routing_lineage.py"
+      ],
+      "id": "G7",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/app/agent_contract.py",
+        "backend/app/services/agent_routing_rollout.py",
+        "backend/tests/test_agent_routing_rollout.py"
+      ],
+      "id": "G8",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "agent-skills/catalog.json",
+        "scripts/build_agent_skills.py",
+        "adapters/codex/workchord-agent-roles/.codex-plugin/plugin.json",
+        ".github/workflows/ci.yml"
+      ],
+      "id": "G9",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "frontend/src/components/settings/AgentModelAdministration.test.tsx",
+        "frontend/src/components/agent/TaskRoutingPanel.test.tsx",
+        "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
+      ],
+      "id": "G10",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "backend/tests/test_agent_routing_service.py",
+        "backend/tests/test_agent_work_routing_lineage.py",
+        "backend/tests/test_agent_routing_wave6_qualification.py"
+      ],
+      "id": "G11",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "config/model-aware-routing-closeout.json",
+        "scripts/ci/check_model_aware_routing_closeout.py",
+        ".github/workflows/ci.yml"
+      ],
+      "id": "G12",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        "config/examples/agent-team-master.json",
+        "backend/tests/test_agent_team_setup_qualification.py",
+        "scripts/generate_agent_team_report_contract.py",
+        "docs/agent-team-setup.md"
+      ],
+      "id": "G13",
+      "status": "pass"
+    }
+  ],
+  "representative_master": {
+    "expected_digest": "acf8cd83bba4e9ad6d4109498dff7bbdf95ef08d74630db835696c4c12617472",
+    "path": "config/examples/agent-team-master.json"
+  },
+  "schema_version": "model-aware-routing-closeout-v1",
+  "tasks": [
+    {
+      "evidence": [
+        "backend/app/schemas/agent_routing.py",
+        "backend/app/services/agent_routing_policy.py",
+        "backend/tests/test_agent_routing_contract.py"
+      ],
+      "id": "MAR-CON-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_policy.py",
+        "backend/tests/test_agent_routing_contract.py",
+        "backend/tests/test_agent_routing_harness.py"
+      ],
+      "id": "MAR-CON-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/tests/test_agent_routing_harness.py",
+        "backend/tests/test_agent_routing_service.py"
+      ],
+      "id": "MAR-QA-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py",
+        "backend/app/services/agent_model_catalog_service.py",
+        "backend/tests/test_agent_model_catalog_api.py"
+      ],
+      "id": "MAR-DATA-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py",
+        "backend/tests/test_agent_routing_data.py",
+        "backend/tests/test_agent_routing_migrations.py"
+      ],
+      "id": "MAR-DATA-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/routers/agent_catalog.py",
+        "backend/app/services/agent_model_catalog_service.py",
+        "backend/tests/test_agent_model_catalog_api.py"
+      ],
+      "id": "MAR-API-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/routers/agent.py",
+        "backend/app/schemas/agent.py",
+        "backend/tests/test_agent_routing_history_surfaces.py"
+      ],
+      "id": "MAR-API-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_service.py",
+        "backend/tests/test_agent_routing_service.py"
+      ],
+      "id": "MAR-ROUTE-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_policy.py",
+        "backend/app/services/agent_routing_service.py",
+        "backend/tests/test_agent_routing_harness.py"
+      ],
+      "id": "MAR-ROUTE-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_service.py",
+        "backend/tests/test_agent_routing_wave3_contract.py"
+      ],
+      "id": "MAR-ROUTE-003",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_work_service.py",
+        "backend/tests/test_agent_work_routing_lineage.py"
+      ],
+      "id": "MAR-RUN-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "agent-skills/workchord-pm/SKILL.md",
+        "agent-skills/workchord-pm/references/assignment-scheduling-and-delivery-control.md",
+        "backend/tests/test_agent_skill_routing_guidance.py"
+      ],
+      "id": "MAR-SKILL-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "agent-skills/workchord-pm/references/verification-rework-and-recovery.md",
+        "agent-skills/workchord-worker/references/events-errors-and-recovery.md",
+        "backend/tests/test_agent_skill_routing_guidance.py"
+      ],
+      "id": "MAR-SKILL-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "agent-skills/catalog.json",
+        "scripts/build_agent_skills.py",
+        "adapters/codex/workchord-agent-roles/.codex-plugin/plugin.json"
+      ],
+      "id": "MAR-PKG-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "frontend/src/components/settings/AgentModelAdministration.tsx",
+        "frontend/src/components/settings/AgentModelAdministration.test.tsx",
+        "frontend/src/services/agentService.test.ts"
+      ],
+      "id": "MAR-UI-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "frontend/src/components/agent/TaskRoutingPanel.tsx",
+        "frontend/src/components/agent/TaskRoutingPanel.test.tsx",
+        "frontend/src/components/agent/RoutingCandidateComparison.test.tsx"
+      ],
+      "id": "MAR-UI-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/tests/test_agent_routing_wave6_qualification.py",
+        "backend/tests/test_agent_routing_observability.py"
+      ],
+      "id": "MAR-QA-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/services/agent_routing_observability.py",
+        "backend/app/services/agent_routing_rollout.py",
+        "docs/runbooks/model-aware-routing.md"
+      ],
+      "id": "MAR-OPS-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/schemas/agent_team_setup.py",
+        "config/examples/agent-team-master.json",
+        "scripts/generate_agent_team_contract.py"
+      ],
+      "id": "MAR-SETUP-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py",
+        "backend/app/services/agent_team_setup_service.py",
+        "scripts/api_keys/setup_agent_team.py",
+        "backend/tests/test_agent_team_setup.py"
+      ],
+      "id": "MAR-SETUP-002",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "frontend/src/pages/AgentTeamSetupMasterPage.tsx",
+        "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx",
+        "frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts",
+        "docs/agent-team-setup.md"
+      ],
+      "id": "MAR-SETUP-003",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "backend/tests/test_agent_team_setup_qualification.py",
+        "backend/tests/test_agent_team_setup_cli.py",
+        "scripts/generate_agent_team_report_contract.py"
+      ],
+      "id": "MAR-SETUP-QA-001",
+      "status": "implemented"
+    },
+    {
+      "evidence": [
+        "config/model-aware-routing-closeout.json",
+        "scripts/ci/check_model_aware_routing_closeout.py",
+        ".github/workflows/ci.yml"
+      ],
+      "id": "MAR-CLOSE-001",
+      "status": "implemented"
+    }
+  ]
+}

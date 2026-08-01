@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { SchedulingRulesSettings } from '../components/settings/SchedulingRulesSettings';
 import { EmailSettingsPanel } from '../components/settings/EmailSettingsPanel';
@@ -11,27 +12,43 @@ import { RuntimeConfigSettings } from '../components/settings/RuntimeConfigSetti
 import { InterfaceLanguageSettings } from '../components/settings/InterfaceLanguageSettings';
 import { AdminAccessPanel } from '../components/settings/AdminAccessPanel';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
+import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
+import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { PageHeader, PageLayout } from '../components/ui';
 
-type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'runtime' | 'github' | 'webhooks' | 'notifications' | 'about';
+type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'runtime' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'about';
 
 const TABS: { id: SettingsTab; labelKey: string }[] = [
     { id: 'appearance',       labelKey: 'settingsPage.appearance' },
     { id: 'scheduling',       labelKey: 'settingsPage.scheduling' },
     { id: 'templates_labels', labelKey: 'settingsPage.templatesLabels' },
     { id: 'runtime',          labelKey: 'settingsPage.runtimeConfig' },
+    { id: 'models_agents',    labelKey: 'settingsPage.modelsAgents' },
     { id: 'github',           labelKey: 'settingsPage.github' },
     { id: 'webhooks',         labelKey: 'settingsPage.webhooks' },
     { id: 'notifications',    labelKey: 'settingsPage.notifications' },
     { id: 'about',            labelKey: 'settingsPage.about' },
 ];
 
+const parseSettingsTab = (value: string | null): SettingsTab => (
+    TABS.some(tab => tab.id === value) ? value as SettingsTab : 'appearance'
+);
+
 const SettingsPage = () => {
-    const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const requestedTab = parseSettingsTab(searchParams.get('tab'));
+    const activeTab = requestedTab;
     const { theme, setTheme } = useThemeStore();
     const { t } = useTranslation();
     const tabRefs = useRef<Partial<Record<SettingsTab, HTMLButtonElement | null>>>({});
+
+    const activateTab = (tab: SettingsTab) => {
+        const nextParams = new URLSearchParams(searchParams);
+        if (tab === 'appearance') nextParams.delete('tab');
+        else nextParams.set('tab', tab);
+        setSearchParams(nextParams, { replace: true });
+    };
 
     const themes = [
         { id: 'light', name: t('settingsPage.themes.light') },
@@ -49,7 +66,7 @@ const SettingsPage = () => {
         if (nextIndex === null) return;
         event.preventDefault();
         const nextTab = TABS[nextIndex].id;
-        setActiveTab(nextTab);
+        activateTab(nextTab);
         tabRefs.current[nextTab]?.focus();
     };
 
@@ -74,7 +91,7 @@ const SettingsPage = () => {
                         tabIndex={activeTab === tab.id ? 0 : -1}
                         ref={node => { tabRefs.current[tab.id] = node; }}
                         onKeyDown={event => handleTabKeyDown(event, index)}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => activateTab(tab.id)}
                         style={{borderRadius:'var(--r)', padding:'5px 12px'}}>
                         {t(tab.labelKey)}
                     </button>
@@ -127,6 +144,12 @@ const SettingsPage = () => {
                     <AdminAccessGate showPanel={false}>
                         <RuntimeConfigSettings/>
                     </AdminAccessGate>
+                )}
+                {activeTab === 'models_agents'    && (
+                    <div className="space-y-5">
+                        <AgentAccessPanel />
+                        <AgentModelAdministration />
+                    </div>
                 )}
                 {activeTab === 'github'           && <GitHubSettingsPanel/>}
                 {activeTab === 'webhooks'         && (

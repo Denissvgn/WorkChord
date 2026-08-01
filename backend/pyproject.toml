@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "workchord-backend"
-version = "1.6.2"
+version = "1.7.0"
 description = "Backend API for WorkChord application"
 readme = { text = "WorkChord backend API and MCP server.", content-type = "text/plain" }
 license = "MIT"

@@ -18,6 +18,7 @@ export const routeModuleLoaders = {
     analytics: () => import('../pages/AnalyticsPage'),
     settings: () => import('../pages/SettingsPage'),
     agentPipeline: () => import('../pages/AgentPipelinePage'),
+    agentTeamSetup: () => import('../pages/AgentTeamSetupMasterPage'),
     notFound: () => import('../pages/NotFoundPage'),
 } as const;
 
@@ -47,6 +48,7 @@ export const routeMetadata: RouteMetadata[] = [
     { key: 'analytics', path: '/analytics', titleKey: 'documentTitles.analytics' },
     { key: 'settings', path: '/settings', titleKey: 'documentTitles.settings' },
     { key: 'agentPipeline', path: '/agent-pipeline', titleKey: 'documentTitles.agentPipeline' },
+    { key: 'agentTeamSetup', path: '/agent-team/setup', titleKey: 'documentTitles.agentTeamSetup' },
 ];
 
 export const metadataForPath = (pathname: string): RouteMetadata => (

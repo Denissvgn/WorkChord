@@ -1,14 +1,21 @@
 """Agent integration API schemas."""
 import json
+import re
 from datetime import datetime
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.schemas.agent_routing import AgentModelBindingResponse
 from app.schemas.project import ProjectHealth, ProjectUpdateEntryResponse
 from app.schemas.request_source import RequestSourceLinkWithSourceResponse
 from app.schemas.task import TaskCreate, TaskResponse, TaskStatus, TaskUpdate
 from app.schemas.triage import TriageItemResponse
+from app.services.agent_routing_policy import (
+    SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS,
+    assignment_intent,
+    validate_routing_packet_size,
+)
 from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
 
 
@@ -97,8 +104,49 @@ def _normalize_url_list(values: list[str]) -> list[str]:
     return normalized
 
 
+class AgentActorModelBindingCreate(BaseModel):
+    """Secret-free model binding optionally created with a new actor."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    model_catalog_key: str = Field(..., min_length=1, max_length=120)
+    is_default: bool = True
+    tool_tags: list[str] = Field(default_factory=list, max_length=32)
+    data_policy_tags: list[str] = Field(default_factory=list, max_length=32)
+
+    @field_validator("model_catalog_key")
+    @classmethod
+    def normalize_catalog_key(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(
+            r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?",
+            normalized,
+        ):
+            raise ValueError("model_catalog_key must be a stable lowercase key")
+        return normalized
+
+    @field_validator("tool_tags", "data_policy_tags")
+    @classmethod
+    def normalize_tags(cls, values: list[str]) -> list[str]:
+        normalized: list[str] = []
+        for value in values:
+            tag = value.strip().lower()
+            if not re.fullmatch(
+                r"[a-z0-9](?:[a-z0-9._-]{0,118}[a-z0-9])?",
+                tag,
+            ):
+                raise ValueError("Model binding tags must be stable lowercase keys")
+            normalized.append(tag)
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("Model binding tags must be unique")
+        return sorted(normalized)
+
+
 class AgentActorCreate(BaseModel):
     """Request for creating an agent actor."""
+
+    model_config = ConfigDict(extra="forbid")
+
     name: str = Field(..., min_length=1, max_length=100)
     display_name: str = Field(..., min_length=1, max_length=255)
     scopes: list[str] = Field(
@@ -109,6 +157,7 @@ class AgentActorCreate(BaseModel):
     profile_id: Optional[int] = None
     work_policy: Literal["assigned_only"] = "assigned_only"
     max_parallel_work: Literal[1] = 1
+    model_binding: Optional[AgentActorModelBindingCreate] = None
 
     @field_validator("scopes")
     @classmethod
@@ -164,6 +213,7 @@ class AgentActorResponse(BaseModel):
     display_name: str
     scopes: list[str] = []
     enabled: bool
+    lifecycle_state: Literal["active", "onboarding", "disabled"] = "active"
     role: str = "worker"
     profile_id: Optional[int] = None
     work_policy: str = "assigned_only"
@@ -175,7 +225,11 @@ class AgentActorResponse(BaseModel):
 
 class AgentActorCreatedResponse(AgentActorResponse):
     """Agent actor creation response including the one-time API key."""
+
     api_key: str
+    model_binding_id: Optional[int] = None
+    model_binding_revision: Optional[int] = None
+    model_catalog_key: Optional[str] = None
 
 
 class AgentTaskCreate(TaskCreate):
@@ -360,6 +414,21 @@ class AgentRunResponse(BaseModel):
     model_binding_revision: Optional[int] = None
     configured_model_alias: Optional[str] = None
     resolved_model_id: Optional[str] = None
+    model_trust_state: Literal[
+        "matched",
+        "mismatch",
+        "unreported",
+        "unverifiable",
+    ] = Field(
+        default="unreported",
+        description=(
+            "Configured-versus-reported comparison only; matched worker "
+            "self-report is not launcher attestation."
+        ),
+    )
+    model_match_basis: Optional[
+        Literal["configured_alias", "catalog_key"]
+    ] = None
     model: Optional[str] = None
     tool_name: Optional[str] = None
     metadata: dict[str, Any]
@@ -440,7 +509,70 @@ class AgentTaskAssignmentCreate(BaseModel):
         cls, value: dict[str, Any]
     ) -> dict[str, Any]:
         """Keep assignment routing evidence bounded in durable queue responses."""
-        return _validate_bounded_json(value, label="Assignment routing snapshot")
+        schema_version = value.get("schema_version")
+        if (
+            isinstance(schema_version, str)
+            and schema_version in SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS
+        ):
+            raise ValueError(
+                "Model-aware routing snapshot schemas are server-owned"
+            )
+        return validate_routing_packet_size(
+            value,
+            label="Assignment routing snapshot",
+        )
+
+    @model_validator(mode="after")
+    def validate_assignment_intent(self) -> "AgentTaskAssignmentCreate":
+        """Freeze the four supported purpose/queue-class combinations."""
+
+        assignment_intent(self.purpose, self.queue_class)
+        return self
+
+
+class ModelAwareAgentTaskAssignmentCreate(BaseModel):
+    """PM command to dispatch one preview-selected actor/model binding."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    task_id: int = Field(..., ge=1)
+    actor_id: int = Field(..., ge=1)
+    expected_task_version: int = Field(..., ge=1)
+    purpose: AgentAssignmentPurpose
+    assessment_id: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    routing_preview_id: str = Field(..., min_length=1, max_length=255)
+    routing_preview_digest: str = Field(..., min_length=64, max_length=64)
+    team_member_id: Optional[int] = Field(default=None, ge=1)
+    reviewer_profile_id: Optional[int] = Field(default=None, ge=1)
+    queue_class: AgentAssignmentQueueClass = "normal"
+    queue_rank: int = Field(default=1000, ge=0)
+    not_before: Optional[datetime] = None
+    reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
+
+    @field_validator("routing_preview_id")
+    @classmethod
+    def normalize_routing_preview_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("routing_preview_id must not be blank")
+        return normalized
+
+    @field_validator("routing_preview_digest")
+    @classmethod
+    def normalize_routing_preview_digest(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(r"[a-f0-9]{64}", normalized):
+            raise ValueError("routing_preview_digest must be a SHA-256 digest")
+        return normalized
+
+    @model_validator(mode="after")
+    def validate_assignment_intent(
+        self,
+    ) -> "ModelAwareAgentTaskAssignmentCreate":
+        assignment_intent(self.purpose, self.queue_class)
+        return self
 
 
 class AgentTaskAssignmentUpdate(BaseModel):
@@ -455,6 +587,41 @@ class AgentTaskAssignmentUpdate(BaseModel):
     state: Optional[Literal["queued", "cancelled"]] = None
     reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
     expected_queue_revision: int = Field(..., ge=1)
+
+
+class ModelAwareAgentTaskAssignmentUpdate(BaseModel):
+    """PM command to reroute queued work through a fresh routing preview."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    expected_queue_revision: int = Field(..., ge=1)
+    assessment_id: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    routing_preview_id: str = Field(..., min_length=1, max_length=255)
+    routing_preview_digest: str = Field(..., min_length=64, max_length=64)
+    actor_id: Optional[int] = Field(default=None, ge=1)
+    reviewer_profile_id: Optional[int] = Field(default=None, ge=1)
+    queue_rank: Optional[int] = Field(default=None, ge=0)
+    not_before: Optional[datetime] = None
+    state: Optional[Literal["queued", "cancelled"]] = None
+    reason: Optional[str] = Field(default=None, max_length=MAX_AGENT_TEXT_LENGTH)
+
+    @field_validator("routing_preview_id")
+    @classmethod
+    def normalize_routing_preview_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("routing_preview_id must not be blank")
+        return normalized
+
+    @field_validator("routing_preview_digest")
+    @classmethod
+    def normalize_routing_preview_digest(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not re.fullmatch(r"[a-f0-9]{64}", normalized):
+            raise ValueError("routing_preview_digest must be a SHA-256 digest")
+        return normalized
 
 
 class AgentTaskAssignmentResponse(BaseModel):
@@ -474,10 +641,47 @@ class AgentTaskAssignmentResponse(BaseModel):
     task_version: int
     model_binding_id: Optional[int] = None
     model_binding_revision: Optional[int] = None
+    model_binding_status: Literal[
+        "not_selected",
+        "current",
+        "stale",
+        "unresolved",
+    ] = "not_selected"
+    model_binding_stale_reasons: list[str] = Field(default_factory=list)
     routing_snapshot: dict[str, Any] = Field(default_factory=dict)
     reason: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+
+
+class AgentRoutingTopologyReadinessResponse(BaseModel):
+    """Bounded server-owned topology readiness exposed to agent clients."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: Literal["model-aware-routing-topology-readiness-v1"]
+    status: Literal["unavailable", "not_ready", "ready"]
+    source: Literal["unavailable", "agent-team-master-v1"]
+    topology_id: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=100,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$",
+    )
+    topology_revision: Optional[int] = Field(default=None, ge=1)
+    blocker_codes: list[str] = Field(default_factory=list, max_length=20)
+
+
+class AgentRoutingRolloutStatusResponse(BaseModel):
+    """Explicit configured and effective model-aware routing rollout state."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    configured_mode: Literal["off", "shadow", "enforced"]
+    effective_mode: Literal["off", "shadow", "enforced"]
+    feature_advertised: bool
+    blocker_codes: list[str] = Field(default_factory=list, max_length=20)
+    topology_readiness: AgentRoutingTopologyReadinessResponse
 
 
 class AgentCapabilitiesResponse(BaseModel):
@@ -494,11 +698,44 @@ class AgentCapabilitiesResponse(BaseModel):
     skill_catalog_version: Optional[str] = None
     skill_catalog_url: Optional[str] = None
     skill_discovery_url: Optional[str] = None
+    model_aware_routing: AgentRoutingRolloutStatusResponse
+
+
+class AgentActorRosterProfileSkill(BaseModel):
+    """Bounded capability evidence attached to one roster profile."""
+
+    id: int
+    skill_key: str
+    skill_name: str
+    category: Optional[str] = None
+    level: int
+    interest: int
+    is_weakness: bool
+    updated_at: datetime
+
+
+class AgentActorRosterProfile(BaseModel):
+    """Secret-free profile projection used for exact-actor routing."""
+
+    id: int
+    revision: str
+    display_name: str
+    automation_enabled: bool
+    profile_kind: str
+    assignment_modes: list[str] = Field(default_factory=list)
+    skills: list[AgentActorRosterProfileSkill] = Field(default_factory=list)
+    updated_at: datetime
 
 
 class AgentActorRosterItem(AgentActorResponse):
     """Secret-free actor dispatch roster item."""
 
+    actor_revision: int = 1
+    profile_revision: Optional[str] = None
+    profile: Optional[AgentActorRosterProfile] = None
+    eligible_model_bindings: list[AgentModelBindingResponse] = Field(
+        default_factory=list
+    )
     queued_assignments: int = 0
     accepted_assignments: int = 0
     running_runs: int = 0
@@ -606,6 +843,37 @@ class AgentWorkBegin(BaseModel):
     metadata: dict[str, Any] = Field(
         default_factory=dict, max_length=MAX_AGENT_JSON_FIELDS
     )
+
+    @field_validator("metadata")
+    @classmethod
+    def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_bounded_json(value, label="Work metadata")
+
+
+class ModelAwareAgentWorkBegin(BaseModel):
+    """Atomically begin only the model binding selected by routing."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    assignment_id: int = Field(..., ge=1)
+    queue_revision: int = Field(..., ge=1)
+    model_binding_id: int = Field(..., ge=1)
+    model_binding_revision: int = Field(..., ge=1)
+    resolved_model_id: str = Field(..., min_length=1, max_length=255)
+    lease_seconds: int = Field(default=3600, ge=60, le=86400)
+    trace_id: Optional[str] = Field(default=None, max_length=255)
+    tool_name: Optional[str] = Field(default=None, max_length=255)
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, max_length=MAX_AGENT_JSON_FIELDS
+    )
+
+    @field_validator("resolved_model_id")
+    @classmethod
+    def normalize_resolved_model_id(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("resolved_model_id must not be blank")
+        return normalized
 
     @field_validator("metadata")
     @classmethod

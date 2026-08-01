@@ -10,6 +10,7 @@ from alembic.script import ScriptDirectory
 import pytest
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.schema import CreateIndex, CreateTable
 
 from app.config import get_settings
@@ -65,12 +66,14 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
             "model_binding_revision",
             "configured_model_alias",
             "resolved_model_id",
+            "model_trust_state",
+            "model_match_basis",
             "model",
         }.issubset(column["name"] for column in inspector.get_columns("agent_runs"))
         with engine.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260719_0033"
+            ).scalar_one() == "20260728_0035"
     finally:
         engine.dispose()
 
@@ -93,7 +96,7 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
         with upgraded.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260719_0033"
+            ).scalar_one() == "20260728_0035"
     finally:
         upgraded.dispose()
 
@@ -158,12 +161,32 @@ def test_legacy_assignment_and_model_less_run_survive_upgrade(
                 ),
                 {"timestamp": timestamp},
             )
+            connection.execute(
+                text(
+                    "INSERT INTO agent_runs "
+                    "(id, task_id, actor_id, assignment_id, status, model, "
+                    "run_metadata, artifact_links, started_at) "
+                    "VALUES (2, 1, 1, 1, 'failed', 'legacy-model-alias', "
+                    "'{}', '[]', :timestamp)"
+                ),
+                {"timestamp": timestamp},
+            )
     finally:
         engine.dispose()
 
     command.upgrade(config, "head")
     upgraded = create_engine(_sync_url(database_path))
     try:
+        with upgraded.begin() as connection:
+            connection.execute(
+                text(
+                    "INSERT INTO agent_runs "
+                    "(id, task_id, actor_id, assignment_id, status, model, "
+                    "run_metadata, artifact_links, started_at) "
+                    "VALUES (3, 1, 1, 1, 'succeeded', NULL, '{}', '[]', :timestamp)"
+                ),
+                {"timestamp": timestamp},
+            )
         with upgraded.connect() as connection:
             assignment = connection.execute(
                 text(
@@ -171,27 +194,68 @@ def test_legacy_assignment_and_model_less_run_survive_upgrade(
                     "model_binding_revision FROM agent_task_assignments WHERE id = 1"
                 )
             ).mappings().one()
-            run = connection.execute(
+            runs = connection.execute(
                 text(
                     "SELECT model, model_binding_id, model_binding_revision, "
-                    "configured_model_alias, resolved_model_id "
-                    "FROM agent_runs WHERE id = 1"
+                    "configured_model_alias, resolved_model_id, "
+                    "model_trust_state, model_match_basis "
+                    "FROM agent_runs WHERE id IN (1, 2) ORDER BY id"
                 )
-            ).mappings().one()
+            ).mappings().all()
+            assert connection.execute(
+                text(
+                    "SELECT model_trust_state FROM agent_runs WHERE id = 3"
+                )
+            ).scalar_one() == "unreported"
         assert assignment == {
             "routing_snapshot": "{}",
             "model_binding_id": None,
             "model_binding_revision": None,
         }
-        assert run == {
-            "model": None,
-            "model_binding_id": None,
-            "model_binding_revision": None,
-            "configured_model_alias": None,
-            "resolved_model_id": None,
-        }
+        assert runs == [
+            {
+                "model": None,
+                "model_binding_id": None,
+                "model_binding_revision": None,
+                "configured_model_alias": None,
+                "resolved_model_id": None,
+                "model_trust_state": "unreported",
+                "model_match_basis": None,
+            },
+            {
+                "model": "legacy-model-alias",
+                "model_binding_id": None,
+                "model_binding_revision": None,
+                "configured_model_alias": None,
+                "resolved_model_id": None,
+                "model_trust_state": "unverifiable",
+                "model_match_basis": None,
+            },
+        ]
     finally:
         upgraded.dispose()
+
+    constrained = create_engine(_sync_url(database_path))
+    try:
+        with pytest.raises(IntegrityError):
+            with constrained.begin() as connection:
+                connection.execute(
+                    text(
+                        "UPDATE agent_runs "
+                        "SET model_trust_state = 'matched', model_match_basis = NULL "
+                        "WHERE id = 2"
+                    )
+                )
+        with pytest.raises(IntegrityError):
+            with constrained.begin() as connection:
+                connection.execute(
+                    text(
+                        "UPDATE agent_runs SET model_trust_state = 'trusted' "
+                        "WHERE id = 2"
+                    )
+                )
+    finally:
+        constrained.dispose()
 
     command.downgrade(config, "20260711_0028")
     command.upgrade(config, "head")
@@ -204,6 +268,16 @@ def test_legacy_assignment_and_model_less_run_survive_upgrade(
             assert connection.execute(
                 text("SELECT model FROM agent_runs WHERE id = 1")
             ).scalar_one_or_none() is None
+            assert connection.execute(
+                text(
+                    "SELECT model_trust_state FROM agent_runs "
+                    "WHERE id IN (1, 2, 3) ORDER BY id"
+                )
+            ).scalars().all() == [
+                "unreported",
+                "unverifiable",
+                "unreported",
+            ]
     finally:
         round_tripped.dispose()
 
@@ -245,4 +319,4 @@ def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> Non
 @pytest.mark.contract
 def test_alembic_reports_exactly_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260719_0033"]
+    assert script.get_heads() == ["20260728_0035"]
