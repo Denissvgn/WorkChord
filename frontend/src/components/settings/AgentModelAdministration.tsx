@@ -60,6 +60,11 @@ interface BindingForm {
     dataPolicyTags: string;
 }
 
+interface ConflictResolution {
+    scope: 'catalog' | 'binding';
+    currentRevision: number;
+}
+
 const EMPTY_CATALOG_FORM: CatalogForm = {
     id: null,
     revision: null,
@@ -92,9 +97,29 @@ const toLocalDateTime = (value?: string | null) => {
     return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
 
-const toIsoDateTime = (value: string) => (
-    value ? new Date(value).toISOString() : null
-);
+const toIsoDateTime = (value: string) => {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+};
+
+const conflictRevisionFromError = (error: unknown): number | null => {
+    const detail = (
+        error as {
+            response?: {
+                data?: {
+                    detail?: {
+                        current_revision?: unknown;
+                    };
+                };
+            };
+        }
+    )?.response?.data?.detail;
+    return typeof detail?.current_revision === 'number'
+        && Number.isFinite(detail.current_revision)
+        ? detail.current_revision
+        : null;
+};
 
 export const AgentModelAdministration = () => {
     const { t } = useTranslation();
@@ -107,6 +132,7 @@ export const AgentModelAdministration = () => {
     const [auditRationale, setAuditRationale] = useState('');
     const [reconcileLiveAssignments, setReconcileLiveAssignments] = useState(false);
     const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+    const [conflictResolution, setConflictResolution] = useState<ConflictResolution | null>(null);
 
     // feedback-policy: query loading,error,retry,empty
     const capabilitiesQuery = useQuery({
@@ -153,7 +179,10 @@ export const AgentModelAdministration = () => {
     });
 
     const refreshEvidence = (clearConflict = true) => {
-        if (clearConflict) setConflictMessage(null);
+        if (clearConflict) {
+            setConflictMessage(null);
+            setConflictResolution(null);
+        }
         void queryClient.invalidateQueries({ queryKey: ['agent-capabilities'] });
         void queryClient.invalidateQueries({ queryKey: ['agent-actor-roster'] });
         void queryClient.invalidateQueries({ queryKey: ['agent-model-catalog'] });
@@ -164,22 +193,30 @@ export const AgentModelAdministration = () => {
     const mutationError = (
         error: unknown,
         fallback: string,
-        recoverConflict?: () => void,
+        conflictScope?: ConflictResolution['scope'],
     ) => {
         const normalized = normalizeApiError(error, fallback);
         if (normalized.status === 409) {
-            recoverConflict?.();
             setConflictMessage(normalized.message);
+            const currentRevision = conflictRevisionFromError(error);
+            setConflictResolution(
+                conflictScope && currentRevision != null
+                    ? { scope: conflictScope, currentRevision }
+                    : null,
+            );
             refreshEvidence(false);
             return;
         }
         toast.error(normalized.message);
     };
 
-    const mutationSuccess = (message: string) => {
+    const mutationSuccess = (
+        message: string,
+        completedForm: 'catalog' | 'binding' | null = null,
+    ) => {
         refreshEvidence();
-        setCatalogForm(EMPTY_CATALOG_FORM);
-        setBindingForm(EMPTY_BINDING_FORM);
+        if (completedForm === 'catalog') setCatalogForm(EMPTY_CATALOG_FORM);
+        if (completedForm === 'binding') setBindingForm(EMPTY_BINDING_FORM);
         setReconcileLiveAssignments(false);
         toast.success(message);
     };
@@ -192,7 +229,7 @@ export const AgentModelAdministration = () => {
                 createAgentCommandMetadata(auditRationale),
             )
         ),
-        onSuccess: () => mutationSuccess(t('modelAdministration.catalogCreateSuccess')),
+        onSuccess: () => mutationSuccess(t('modelAdministration.catalogCreateSuccess'), 'catalog'),
         onError: error => mutationError(error, t('modelAdministration.catalogMutationFailed')),
     });
 
@@ -206,11 +243,11 @@ export const AgentModelAdministration = () => {
             data,
             createAgentCommandMetadata(auditRationale),
         ),
-        onSuccess: () => mutationSuccess(t('modelAdministration.catalogUpdateSuccess')),
+        onSuccess: () => mutationSuccess(t('modelAdministration.catalogUpdateSuccess'), 'catalog'),
         onError: error => mutationError(
             error,
             t('modelAdministration.catalogMutationFailed'),
-            () => setCatalogForm(EMPTY_CATALOG_FORM),
+            'catalog',
         ),
     });
 
@@ -255,7 +292,7 @@ export const AgentModelAdministration = () => {
                 createAgentCommandMetadata(auditRationale),
             )
         ),
-        onSuccess: () => mutationSuccess(t('modelAdministration.bindingCreateSuccess')),
+        onSuccess: () => mutationSuccess(t('modelAdministration.bindingCreateSuccess'), 'binding'),
         onError: error => mutationError(error, t('modelAdministration.bindingMutationFailed')),
     });
 
@@ -269,11 +306,11 @@ export const AgentModelAdministration = () => {
             data,
             createAgentCommandMetadata(auditRationale),
         ),
-        onSuccess: () => mutationSuccess(t('modelAdministration.bindingUpdateSuccess')),
+        onSuccess: () => mutationSuccess(t('modelAdministration.bindingUpdateSuccess'), 'binding'),
         onError: error => mutationError(
             error,
             t('modelAdministration.bindingMutationFailed'),
-            () => setBindingForm(EMPTY_BINDING_FORM),
+            'binding',
         ),
     });
 
@@ -404,6 +441,8 @@ export const AgentModelAdministration = () => {
     };
 
     const editCatalog = (entry: AgentModelCatalogEntry) => {
+        setConflictMessage(null);
+        setConflictResolution(null);
         setCatalogForm({
             id: entry.id,
             revision: entry.revision,
@@ -420,6 +459,8 @@ export const AgentModelAdministration = () => {
     };
 
     const editBinding = (binding: AgentModelBinding) => {
+        setConflictMessage(null);
+        setConflictResolution(null);
         setBindingForm({
             id: binding.id,
             revision: binding.revision,
@@ -428,6 +469,74 @@ export const AgentModelAdministration = () => {
             isDefault: binding.is_default,
             toolTags: binding.tool_tags.join(', '),
             dataPolicyTags: binding.data_policy_tags.join(', '),
+        });
+    };
+
+    const enableCatalog = (entry: AgentModelCatalogEntry) => {
+        if (!reconcileLiveAssignments) {
+            enableCatalogMutation.mutate(entry);
+            return;
+        }
+        requestConfirmation({
+            title: t('modelAdministration.enableCatalogTitle'),
+            description: t('modelAdministration.enableCatalogDescription', {
+                alias: entry.configured_model_alias,
+            }),
+            confirmLabel: t('common.enable'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            tone: 'warning',
+            onConfirm: () => enableCatalogMutation.mutateAsync(entry),
+        });
+    };
+
+    const enableBinding = (
+        binding: AgentModelBinding,
+        actorName: string | number,
+    ) => {
+        if (!reconcileLiveAssignments) {
+            enableBindingMutation.mutate(binding);
+            return;
+        }
+        requestConfirmation({
+            title: t('modelAdministration.enableBindingTitle'),
+            description: t('modelAdministration.enableBindingDescription', {
+                actor: actorName,
+            }),
+            confirmLabel: t('common.enable'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            tone: 'warning',
+            onConfirm: () => enableBindingMutation.mutateAsync(binding),
+        });
+    };
+
+    const prepareConflictOverwrite = () => {
+        if (!conflictResolution) return;
+        requestConfirmation({
+            title: t('modelAdministration.conflictOverwriteTitle'),
+            description: t('modelAdministration.conflictOverwriteDescription', {
+                revision: conflictResolution.currentRevision,
+            }),
+            confirmLabel: t('modelAdministration.conflictUseLatestRevision'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            tone: 'warning',
+            onConfirm: () => {
+                if (conflictResolution.scope === 'catalog') {
+                    setCatalogForm(current => ({
+                        ...current,
+                        revision: conflictResolution.currentRevision,
+                    }));
+                } else {
+                    setBindingForm(current => ({
+                        ...current,
+                        revision: conflictResolution.currentRevision,
+                    }));
+                }
+                setConflictMessage(null);
+                setConflictResolution(null);
+            },
         });
     };
 
@@ -483,12 +592,12 @@ export const AgentModelAdministration = () => {
         <div className="space-y-5">
             <section className="card space-y-3" aria-labelledby="model-admin-overview-heading">
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
+                    <div className="min-w-0">
                         <h2 id="model-admin-overview-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                             <ShieldCheck aria-hidden="true" className="h-5 w-5 text-action" />
                             {t('modelAdministration.title')}
                         </h2>
-                        <p className="mt-1 text-sm text-content-secondary">{t('modelAdministration.description')}</p>
+                        <p className="mt-1 break-words text-sm text-content-secondary">{t('modelAdministration.description')}</p>
                     </div>
                     <div className={`rounded-full border px-3 py-1 text-xs font-medium ${
                         canAdminister
@@ -549,9 +658,36 @@ export const AgentModelAdministration = () => {
                         <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                         <div className="flex-1">
                             <p className="font-semibold">{t('modelAdministration.conflictTitle')}</p>
-                            <p>{conflictMessage}</p>
+                            <p className="break-words">{conflictMessage}</p>
+                            <p className="mt-1 break-words text-xs">
+                                {t(
+                                    conflictResolution
+                                        ? 'modelAdministration.conflictRecovery'
+                                        : 'modelAdministration.conflictRefresh',
+                                )}
+                            </p>
+                            {conflictResolution && (
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    className="mt-2"
+                                    onClick={prepareConflictOverwrite}
+                                >
+                                    {t('modelAdministration.conflictUseLatestRevision')}
+                                </Button>
+                            )}
                         </div>
-                        <Button type="button" size="sm" variant="ghost" onClick={() => setConflictMessage(null)} aria-label={t('actions.close')}>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                                setConflictMessage(null);
+                                setConflictResolution(null);
+                            }}
+                            aria-label={t('actions.close')}
+                        >
                             <X aria-hidden="true" className="h-4 w-4" />
                         </Button>
                     </div>
@@ -566,12 +702,14 @@ export const AgentModelAdministration = () => {
                         value={auditRationale}
                         onChange={event => setAuditRationale(event.target.value)}
                         placeholder={t('modelAdministration.auditRationalePlaceholder')}
+                        disabled={isMutating}
                         required
                     />
                     <Checkbox
                         checked={reconcileLiveAssignments}
                         onChange={setReconcileLiveAssignments}
                         label={t('modelAdministration.reconcileLiveAssignments')}
+                        disabled={isMutating}
                     />
                     <p className="text-xs text-content-secondary">{t('modelAdministration.reconcileWarning')}</p>
                 </section>
@@ -596,11 +734,11 @@ export const AgentModelAdministration = () => {
                             return (
                                 <article key={actor.id} className="rounded-lg border border-border bg-surface-muted p-4">
                                     <div className="flex items-start justify-between gap-3">
-                                        <div>
-                                            <h4 className="font-medium text-content-primary">{actor.display_name}</h4>
-                                            <p className="text-xs text-content-secondary">{actor.name} · {actor.role}</p>
+                                        <div className="min-w-0">
+                                            <h4 className="break-words font-medium text-content-primary">{actor.display_name}</h4>
+                                            <p className="break-all text-xs text-content-secondary">{actor.name} · {actor.role}</p>
                                         </div>
-                                        <span className={`rounded-full border px-2 py-0.5 text-xs ${
+                                        <span className={`max-w-full break-words rounded-full border px-2 py-0.5 text-center text-xs ${
                                             hasSelectableBindingEvidence
                                                 ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
                                                 : 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground'
@@ -620,7 +758,7 @@ export const AgentModelAdministration = () => {
                                     </dl>
                                     <div className="mt-3 flex flex-wrap gap-1">
                                         {actor.eligible_model_bindings.map(binding => (
-                                            <span key={binding.id} className="rounded-full border border-feedback-success-border bg-feedback-success-muted px-2 py-0.5 text-xs text-feedback-success-foreground">
+                                            <span key={binding.id} className="max-w-full break-words rounded-full border border-feedback-success-border bg-feedback-success-muted px-2 py-0.5 text-xs text-feedback-success-foreground">
                                                 {binding.model_catalog?.configured_model_alias ?? binding.model_catalog_key}
                                                 {' · '}r{binding.revision}
                                             </span>
@@ -652,11 +790,11 @@ export const AgentModelAdministration = () => {
                             {catalog.map(entry => (
                                 <article key={entry.id} className="rounded-lg border border-border bg-surface-muted p-4">
                                     <div className="flex items-start justify-between gap-3">
-                                        <div>
-                                            <h4 className="font-medium text-content-primary">{entry.configured_model_alias}</h4>
-                                            <p className="text-xs text-content-secondary">{entry.key} · {entry.provider}</p>
+                                        <div className="min-w-0">
+                                            <h4 className="break-words font-medium text-content-primary">{entry.configured_model_alias}</h4>
+                                            <p className="break-all text-xs text-content-secondary">{entry.key} · {entry.provider}</p>
                                         </div>
-                                        <span className={`rounded-full border px-2 py-0.5 text-xs ${
+                                        <span className={`max-w-[55%] break-words rounded-full border px-2 py-0.5 text-center text-xs ${
                                             entry.enabled
                                                 ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
                                                 : 'border-border bg-surface-subtle text-content-secondary'
@@ -676,7 +814,7 @@ export const AgentModelAdministration = () => {
                                         <span className="text-xs text-content-secondary">{t('modelAdministration.modalities')}: {entry.modality_tags.join(', ')}</span>
                                     </div>
                                     {canAdminister && (
-                                        <div className="mt-3 flex gap-2">
+                                        <div className="mt-3 flex flex-wrap gap-2">
                                             <Button
                                                 type="button"
                                                 size="sm"
@@ -714,7 +852,7 @@ export const AgentModelAdministration = () => {
                                                     variant="outline"
                                                     disabled={!rationaleReady || isMutating}
                                                     aria-label={t('modelAdministration.enableCatalogAction', { alias: entry.configured_model_alias })}
-                                                    onClick={() => enableCatalogMutation.mutate(entry)}
+                                                    onClick={() => enableCatalog(entry)}
                                                 >
                                                     {t('common.enable')}
                                                 </Button>
@@ -728,60 +866,62 @@ export const AgentModelAdministration = () => {
                 </div>
 
                 {canAdminister && (
-                    <form className="card space-y-3" onSubmit={submitCatalog}>
+                    <form className="card space-y-3" onSubmit={submitCatalog} aria-busy={isMutating}>
                         <h3 className="font-semibold text-content-primary">
                             {catalogForm.id
                                 ? t('modelAdministration.editCatalogEntry')
                                 : t('modelAdministration.createCatalogEntry')}
                         </h3>
-                        <Input label={t('modelAdministration.catalogKey')} value={catalogForm.key} onChange={event => setCatalogForm({ ...catalogForm, key: event.target.value })} disabled={Boolean(catalogForm.id)} required />
-                        <Input label={t('modelAdministration.provider')} value={catalogForm.provider} onChange={event => setCatalogForm({ ...catalogForm, provider: event.target.value })} required />
-                        <Input label={t('modelAdministration.configuredAlias')} value={catalogForm.configuredModelAlias} onChange={event => setCatalogForm({ ...catalogForm, configuredModelAlias: event.target.value })} required />
-                        <div className="grid grid-cols-2 gap-3">
-                            <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.reasoningTier')}</span>
-                                <select className="input" value={catalogForm.reasoningTier} onChange={event => setCatalogForm({ ...catalogForm, reasoningTier: Number(event.target.value) as 1 | 2 | 3 })}>
-                                    <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
-                                </select>
-                            </label>
-                            <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.contextTier')}</span>
-                                <select className="input" value={catalogForm.contextTier} onChange={event => setCatalogForm({ ...catalogForm, contextTier: event.target.value as CatalogForm['contextTier'] })}>
-                                    <option value="small">{t('modelAdministration.small')}</option>
-                                    <option value="medium">{t('modelAdministration.medium')}</option>
-                                    <option value="large">{t('modelAdministration.large')}</option>
-                                </select>
-                            </label>
-                            <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.costTier')}</span>
-                                <select className="input" value={catalogForm.costTier} onChange={event => setCatalogForm({ ...catalogForm, costTier: event.target.value as CatalogForm['costTier'] })}>
-                                    <option value="low">{t('modelAdministration.low')}</option>
-                                    <option value="medium">{t('modelAdministration.medium')}</option>
-                                    <option value="high">{t('modelAdministration.high')}</option>
-                                </select>
-                            </label>
-                            <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.latencyTier')}</span>
-                                <select className="input" value={catalogForm.latencyTier} onChange={event => setCatalogForm({ ...catalogForm, latencyTier: event.target.value as CatalogForm['latencyTier'] })}>
-                                    <option value="fast">{t('modelAdministration.fast')}</option>
-                                    <option value="balanced">{t('modelAdministration.balanced')}</option>
-                                    <option value="slow">{t('modelAdministration.slow')}</option>
-                                </select>
-                            </label>
-                        </div>
-                        <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
-                        <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />
-                        <div className="flex gap-2">
-                            {catalogForm.id && (
-                                <Button type="button" variant="ghost" onClick={() => setCatalogForm(EMPTY_CATALOG_FORM)}>
-                                    {t('actions.cancel')}
+                        <fieldset className="contents" disabled={isMutating}>
+                            <Input label={t('modelAdministration.catalogKey')} value={catalogForm.key} onChange={event => setCatalogForm({ ...catalogForm, key: event.target.value })} disabled={Boolean(catalogForm.id)} required />
+                            <Input label={t('modelAdministration.provider')} value={catalogForm.provider} onChange={event => setCatalogForm({ ...catalogForm, provider: event.target.value })} required />
+                            <Input label={t('modelAdministration.configuredAlias')} value={catalogForm.configuredModelAlias} onChange={event => setCatalogForm({ ...catalogForm, configuredModelAlias: event.target.value })} required />
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <label className="field">
+                                    <span className="field-lbl">{t('modelAdministration.reasoningTier')}</span>
+                                    <select className="input" value={catalogForm.reasoningTier} onChange={event => setCatalogForm({ ...catalogForm, reasoningTier: Number(event.target.value) as 1 | 2 | 3 })}>
+                                        <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
+                                    </select>
+                                </label>
+                                <label className="field">
+                                    <span className="field-lbl">{t('modelAdministration.contextTier')}</span>
+                                    <select className="input" value={catalogForm.contextTier} onChange={event => setCatalogForm({ ...catalogForm, contextTier: event.target.value as CatalogForm['contextTier'] })}>
+                                        <option value="small">{t('modelAdministration.small')}</option>
+                                        <option value="medium">{t('modelAdministration.medium')}</option>
+                                        <option value="large">{t('modelAdministration.large')}</option>
+                                    </select>
+                                </label>
+                                <label className="field">
+                                    <span className="field-lbl">{t('modelAdministration.costTier')}</span>
+                                    <select className="input" value={catalogForm.costTier} onChange={event => setCatalogForm({ ...catalogForm, costTier: event.target.value as CatalogForm['costTier'] })}>
+                                        <option value="low">{t('modelAdministration.low')}</option>
+                                        <option value="medium">{t('modelAdministration.medium')}</option>
+                                        <option value="high">{t('modelAdministration.high')}</option>
+                                    </select>
+                                </label>
+                                <label className="field">
+                                    <span className="field-lbl">{t('modelAdministration.latencyTier')}</span>
+                                    <select className="input" value={catalogForm.latencyTier} onChange={event => setCatalogForm({ ...catalogForm, latencyTier: event.target.value as CatalogForm['latencyTier'] })}>
+                                        <option value="fast">{t('modelAdministration.fast')}</option>
+                                        <option value="balanced">{t('modelAdministration.balanced')}</option>
+                                        <option value="slow">{t('modelAdministration.slow')}</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
+                            <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />
+                            <div className="flex flex-wrap gap-2">
+                                {catalogForm.id && (
+                                    <Button type="button" variant="ghost" onClick={() => setCatalogForm(EMPTY_CATALOG_FORM)}>
+                                        {t('actions.cancel')}
+                                    </Button>
+                                )}
+                                <Button type="submit" isLoading={createCatalogMutation.isPending || updateCatalogMutation.isPending} disabled={!rationaleReady || isMutating}>
+                                    <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
+                                    {catalogForm.id ? t('actions.save') : t('actions.create')}
                                 </Button>
-                            )}
-                            <Button type="submit" isLoading={createCatalogMutation.isPending || updateCatalogMutation.isPending} disabled={!rationaleReady || isMutating}>
-                                <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
-                                {catalogForm.id ? t('actions.save') : t('actions.create')}
-                            </Button>
-                        </div>
+                            </div>
+                        </fieldset>
                     </form>
                 )}
             </section>
@@ -809,16 +949,16 @@ export const AgentModelAdministration = () => {
                                 return (
                                     <article key={binding.id} className="rounded-lg border border-border bg-surface-muted p-4">
                                         <div className="flex items-start justify-between gap-3">
-                                            <div>
-                                                <h4 className="font-medium text-content-primary">
+                                            <div className="min-w-0">
+                                                <h4 className="break-words font-medium text-content-primary">
                                                     {actor?.display_name ?? t('modelAdministration.actorNumber', { id: binding.actor_id })}
                                                 </h4>
-                                                <p className="text-xs text-content-secondary">
+                                                <p className="break-all text-xs text-content-secondary">
                                                     {entry?.configured_model_alias ?? binding.model_catalog_key ?? t('common.unknown')}
                                                     {' · '}r{binding.revision}
                                                 </p>
                                             </div>
-                                            <span className={`rounded-full border px-2 py-0.5 text-xs ${
+                                            <span className={`max-w-[55%] break-words rounded-full border px-2 py-0.5 text-center text-xs ${
                                                 isSelectable
                                                     ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
                                                     : 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground'
@@ -836,10 +976,10 @@ export const AgentModelAdministration = () => {
                                             <div><dt className="text-content-tertiary">{t('modelAdministration.liveAssignments')}</dt><dd className="text-content-primary tnum">{binding.live_assignment_count}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('modelAdministration.runReferences')}</dt><dd className="text-content-primary tnum">{binding.run_reference_count}</dd></div>
                                         </dl>
-                                        <p className="mt-2 text-xs text-content-secondary">{t('modelAdministration.tools')}: {binding.tool_tags.join(', ') || t('common.none')}</p>
-                                        <p className="mt-1 text-xs text-content-secondary">{t('modelAdministration.dataPolicy')}: {binding.data_policy_tags.join(', ') || t('common.none')}</p>
+                                        <p className="mt-2 break-words text-xs text-content-secondary">{t('modelAdministration.tools')}: {binding.tool_tags.join(', ') || t('common.none')}</p>
+                                        <p className="mt-1 break-words text-xs text-content-secondary">{t('modelAdministration.dataPolicy')}: {binding.data_policy_tags.join(', ') || t('common.none')}</p>
                                         {canAdminister && (
-                                            <div className="mt-3 flex gap-2">
+                                            <div className="mt-3 flex flex-wrap gap-2">
                                                 <Button
                                                     type="button"
                                                     size="sm"
@@ -886,7 +1026,10 @@ export const AgentModelAdministration = () => {
                                                             actor: actor?.display_name ?? binding.actor_id,
                                                             model: entry?.configured_model_alias ?? binding.model_catalog_key ?? binding.model_catalog_id,
                                                         })}
-                                                        onClick={() => enableBindingMutation.mutate(binding)}
+                                                        onClick={() => enableBinding(
+                                                            binding,
+                                                            actor?.display_name ?? binding.actor_id,
+                                                        )}
                                                     >
                                                         {t('common.enable')}
                                                     </Button>
@@ -901,40 +1044,42 @@ export const AgentModelAdministration = () => {
                 </div>
 
                 {canAdminister && (
-                    <form className="card space-y-3" onSubmit={submitBinding}>
+                    <form className="card space-y-3" onSubmit={submitBinding} aria-busy={isMutating}>
                         <h3 className="font-semibold text-content-primary">
                             {bindingForm.id
                                 ? t('modelAdministration.editBinding')
                                 : t('modelAdministration.createBinding')}
                         </h3>
-                        <label className="field">
-                            <span className="field-lbl">{t('modelAdministration.actor')}</span>
-                            <select className="input" value={bindingForm.actorId ?? ''} onChange={event => setBindingForm({ ...bindingForm, actorId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
-                                <option value="">{t('modelAdministration.selectActor')}</option>
-                                {actors.map(actor => <option key={actor.id} value={actor.id}>{actor.display_name} ({actor.role})</option>)}
-                            </select>
-                        </label>
-                        <label className="field">
-                            <span className="field-lbl">{t('modelAdministration.catalogEntry')}</span>
-                            <select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
-                                <option value="">{t('modelAdministration.selectCatalogEntry')}</option>
-                                {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key})</option>)}
-                            </select>
-                        </label>
-                        <Input label={t('modelAdministration.tools')} value={bindingForm.toolTags} onChange={event => setBindingForm({ ...bindingForm, toolTags: event.target.value })} placeholder="code-edit, shell" />
-                        <Input label={t('modelAdministration.dataPolicy')} value={bindingForm.dataPolicyTags} onChange={event => setBindingForm({ ...bindingForm, dataPolicyTags: event.target.value })} placeholder="private-code" />
-                        <Checkbox checked={bindingForm.isDefault} onChange={isDefault => setBindingForm({ ...bindingForm, isDefault })} label={t('modelAdministration.defaultBinding')} />
-                        <div className="flex gap-2">
-                            {bindingForm.id && (
-                                <Button type="button" variant="ghost" onClick={() => setBindingForm(EMPTY_BINDING_FORM)}>
-                                    {t('actions.cancel')}
+                        <fieldset className="contents" disabled={isMutating}>
+                            <label className="field">
+                                <span className="field-lbl">{t('modelAdministration.actor')}</span>
+                                <select className="input" value={bindingForm.actorId ?? ''} onChange={event => setBindingForm({ ...bindingForm, actorId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
+                                    <option value="">{t('modelAdministration.selectActor')}</option>
+                                    {actors.map(actor => <option key={actor.id} value={actor.id}>{actor.display_name} ({actor.role})</option>)}
+                                </select>
+                            </label>
+                            <label className="field">
+                                <span className="field-lbl">{t('modelAdministration.catalogEntry')}</span>
+                                <select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
+                                    <option value="">{t('modelAdministration.selectCatalogEntry')}</option>
+                                    {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key})</option>)}
+                                </select>
+                            </label>
+                            <Input label={t('modelAdministration.tools')} value={bindingForm.toolTags} onChange={event => setBindingForm({ ...bindingForm, toolTags: event.target.value })} placeholder="code-edit, shell" />
+                            <Input label={t('modelAdministration.dataPolicy')} value={bindingForm.dataPolicyTags} onChange={event => setBindingForm({ ...bindingForm, dataPolicyTags: event.target.value })} placeholder="private-code" />
+                            <Checkbox checked={bindingForm.isDefault} onChange={isDefault => setBindingForm({ ...bindingForm, isDefault })} label={t('modelAdministration.defaultBinding')} />
+                            <div className="flex flex-wrap gap-2">
+                                {bindingForm.id && (
+                                    <Button type="button" variant="ghost" onClick={() => setBindingForm(EMPTY_BINDING_FORM)}>
+                                        {t('actions.cancel')}
+                                    </Button>
+                                )}
+                                <Button type="submit" isLoading={createBindingMutation.isPending || updateBindingMutation.isPending} disabled={!rationaleReady || isMutating}>
+                                    <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
+                                    {bindingForm.id ? t('actions.save') : t('actions.create')}
                                 </Button>
-                            )}
-                            <Button type="submit" isLoading={createBindingMutation.isPending || updateBindingMutation.isPending} disabled={!rationaleReady || isMutating}>
-                                <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
-                                {bindingForm.id ? t('actions.save') : t('actions.create')}
-                            </Button>
-                        </div>
+                            </div>
+                        </fieldset>
                     </form>
                 )}
             </section>

@@ -16,6 +16,7 @@ interface QueryErrorStateProps extends SharedStateProps {
     fallback?: string;
     message?: string;
     onRetry?: () => void;
+    retryLabel?: string;
     title?: string;
 }
 
@@ -49,6 +50,7 @@ export const QueryErrorState = ({
     fallback,
     message,
     onRetry,
+    retryLabel,
     title,
     className = '',
 }: QueryErrorStateProps) => {
@@ -69,7 +71,7 @@ export const QueryErrorState = ({
                     {onRetry && (
                         <Button className="mt-3" onClick={onRetry} size="sm" variant="secondary">
                             <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
-                            {t('queryFeedback.retry')}
+                            {retryLabel ?? t('queryFeedback.retry')}
                         </Button>
                     )}
                 </div>

@@ -216,10 +216,12 @@
   display: grid;
   grid-template-columns: 260px 1fr 320px;
   height: 100%;
+  min-width: 0;
   min-height: 0;
 }
+.wc .wc-master > * { min-width: 0; }
 .wc .wc-master-rail {
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   background: var(--panel-2);
   overflow-y: auto;
 }
@@ -228,17 +230,72 @@
   border-bottom: 1px solid var(--border);
 }
 .wc .wc-master-main {
+  min-width: 0;
   overflow-y: auto;
   padding: 20px 24px 32px;
 }
 .wc .wc-master-aux {
-  border-left: 1px solid var(--border);
+  border-inline-start: 1px solid var(--border);
   background: var(--panel-2);
   overflow-y: auto;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+.wc .plan-master-header {
+  flex-shrink: 0;
+  padding-block-start: 14px;
+  padding-inline: 24px;
+  border-block-end: 1px solid var(--border);
+  background: var(--panel);
+}
+.wc .plan-master-header-row {
+  min-width: 0;
+  flex-wrap: wrap;
+  padding-block-end: 12px;
+}
+.wc .plan-master-header-title {
+  flex: 1 1 320px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.wc .plan-master-header-title > *,
+.wc .plan-master-header-actions > * {
+  min-width: 0;
+}
+.wc .plan-master-header-title .muted {
+  overflow-wrap: anywhere;
+}
+.wc .plan-master-header-actions {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.wc .plan-master-mobile-step-select {
+  display: none;
+}
+.wc .plan-master-data-banner {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  margin-block-start: 8px;
+  margin-inline: 24px;
+}
+.wc .plan-master-data-banner .btn {
+  margin-inline-start: auto;
+}
+.wc .plan-master-refresh-status {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding-block: 6px;
+  padding-inline: 24px;
+  font-size: var(--wc-type-meta);
+}
+.wc a.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.58;
 }
 
 /* ── Utility ──────────────────────────────────────────────────────────────── */
@@ -794,6 +851,99 @@
 .wc .step-h h2 { font-size: var(--wc-type-step); font-weight: 600; letter-spacing: -0.015em; margin: 0; line-height: var(--wc-leading-tight); }
 .wc .step-h p  { color: var(--ink-2); font-size: var(--wc-type-base); margin: 6px 0 0; max-width: 60ch; }
 
+/* ── Plan master resilience ─────────────────────────────────────────────── */
+.wc .step-body,
+.wc .plan-master-min,
+.wc .plan-master-break,
+.wc .plan-master-table .who {
+  min-width: 0;
+}
+.wc .plan-master-break {
+  overflow-wrap: anywhere;
+}
+.wc .wc-master-main .wc-table-frame,
+.wc .plan-master-gantt-scroll {
+  max-width: 100%;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.wc .wc-master-main .wc-table-frame:focus-visible,
+.wc .plan-master-gantt-scroll:focus-visible {
+  outline: 2px solid rgb(var(--color-focus-ring));
+  outline-offset: 2px;
+}
+.wc .plan-master-table {
+  min-width: 660px;
+}
+.wc .plan-master-table th,
+.wc .plan-master-table td {
+  text-align: start;
+}
+.wc .plan-master-gantt-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.wc .plan-master-gantt {
+  min-width: 700px;
+}
+.wc .plan-master-task-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wc .plan-master-row-disclosure {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  color: var(--ink-3);
+  font-size: var(--wc-type-meta);
+  overflow-wrap: anywhere;
+}
+.wc .card > .plan-master-row-disclosure {
+  padding: 10px 12px;
+  border-block-start: 1px solid var(--border);
+}
+.wc .plan-master-gantt-scroll + .plan-master-row-disclosure {
+  margin-block-start: 12px;
+}
+.wc .plan-master-step-footer,
+.wc .plan-master-step-footer-group {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.wc .plan-master-step-footer {
+  align-items: flex-start;
+}
+.wc .plan-master-step-footer-group:last-child {
+  justify-content: flex-end;
+  margin-inline-start: auto;
+}
+.wc .plan-master-step-footer-group .muted,
+.wc .step-body .banner > div,
+.wc .step-body .card-head > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wc .step-body > .row,
+.wc .step-body > .row > .row,
+.wc .step-body .empty-actions {
+  flex-wrap: wrap;
+}
+.wc .step-body .cap-bar > i {
+  left: auto;
+  inset-inline-start: 0;
+}
+.wc .step-body .banner {
+  flex-wrap: wrap;
+}
+.wc .step-body .banner > .btn {
+  margin-inline-start: auto;
+}
+
 /* Why callout */
 .wc .why {
   background: var(--panel-2); border: 1px solid var(--border);
@@ -1010,9 +1160,73 @@
   .wc .wc-action-group > * {
     max-width: 100%;
   }
-  .wc .wc-master { grid-template-columns: 1fr; }
+  .wc .plan-master-header {
+    padding-inline: 20px;
+  }
+  .wc .plan-master-header-row,
+  .wc .plan-master-header-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .wc .plan-master-header-title,
+  .wc .plan-master-header-actions {
+    width: 100%;
+  }
+  .wc .plan-master-header-actions {
+    justify-content: space-between;
+  }
+  .wc .plan-master-mobile-step-select {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin-block-end: 12px;
+    padding-block: 8px;
+    padding-inline: 12px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--wc-r);
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+    line-height: var(--wc-leading-ui);
+  }
+  .wc .plan-master-mobile-step-select > span {
+    color: var(--ink-2);
+    font-size: var(--wc-type-label);
+    font-weight: 600;
+  }
+  .wc .plan-master-mobile-step-select > select {
+    min-height: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  .wc .plan-master-data-banner {
+    margin-inline: 20px;
+  }
+  .wc .plan-master-refresh-status {
+    padding-inline: 20px;
+  }
+  .wc .wc-master { grid-template-columns: minmax(0, 1fr); }
   .wc .wc-master-rail { display: none; }
-  .wc .step-body { border-top: 2px solid var(--thread); padding-top: 14px; }
+  .wc .wc-master-main { padding: 16px 20px 24px; }
+  .wc .step-body { border-block-start: 2px solid var(--thread); padding-block-start: 14px; }
+  .wc .step-body .card-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .wc .plan-master-step-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .wc .plan-master-step-footer-group {
+    width: 100%;
+  }
+  .wc .plan-master-step-footer-group:last-child {
+    justify-content: flex-start;
+    margin-inline-start: 0;
+  }
   .wc .roadmap-filter-grid { grid-template-columns: 1fr; }
   .wc .roadmap-filter-reset { width: 100%; }
   .wc .calendar-period-nav { align-items: stretch; }
@@ -1063,6 +1277,66 @@
     --wc-page-gutter-y: 16px;
   }
   .wc .wc-workbench { padding: 12px; }
+  .wc .plan-master-header {
+    padding-inline: 16px;
+  }
+  .wc .plan-master-data-banner {
+    align-items: flex-start;
+    margin-inline: 16px;
+  }
+  .wc .plan-master-data-banner .btn {
+    margin-inline-start: 0;
+  }
+  .wc .plan-master-refresh-status {
+    padding-inline: 16px;
+  }
+  .wc .plan-master-header-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .wc .wc-master-main {
+    padding: 14px 16px 20px;
+  }
+  .wc .step-body > :first-child > .row {
+    flex-wrap: wrap;
+  }
+  .wc .step-body > :first-child > .row > :last-child {
+    margin: 0 !important;
+  }
+  .wc .step-body .seg {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .wc .step-body .seg > button {
+    flex: 0 0 auto;
+  }
+  .wc .step-body .cap-row {
+    grid-template-columns: 22px minmax(0, 1fr) !important;
+  }
+  .wc .step-body .cap-row > :where(.btn, .cap-bar, .cap-value) {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .wc .step-body .cap-row > .cap-bar {
+    width: 100%;
+  }
+  .wc .step-body .cap-row > .cap-value {
+    text-align: start;
+  }
+  .wc .plan-master-row-disclosure {
+    align-items: flex-start;
+  }
+  .wc .step-body :where(.btn):is(button, a, label),
+  .wc .plan-master-header-actions :where(.btn):is(button, a, label) {
+    height: auto;
+    min-height: var(--wc-control-h);
+    padding-block: 6px;
+  }
+  .wc .step-body :where(.btn.sm):is(button, a, label) {
+    min-height: var(--wc-control-h-sm);
+  }
   .wc .kpi-grid,
   .wc .kpi-grid-3,
   .wc .kpi-grid-4,

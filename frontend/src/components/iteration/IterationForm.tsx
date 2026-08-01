@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
@@ -8,7 +8,12 @@ import { CollapsibleSection } from '../common/CollapsibleSection';
 import { iterationService } from '../../services/iterationService';
 import { projectService } from '../../services/projectService';
 import { useIterationStore } from '../../store/iterationStore';
-import type { Iteration, IterationCreate, IterationSeriesCreate } from '../../types/iteration';
+import type {
+    Iteration,
+    IterationCreate,
+    IterationSeriesCreate,
+    IterationUpdate,
+} from '../../types/iteration';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 
@@ -21,6 +26,7 @@ interface IterationFormProps {
     hideProjectScope?: boolean;
     onSuccess: (iteration?: Iteration, iterations?: Iteration[]) => void;
     onCancel: () => void;
+    onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
 }
 
 type EditorMode = 'single' | 'series';
@@ -43,6 +49,12 @@ type SeriesDraft = {
     count: number;
     until_date: string;
     manager_email: string;
+};
+
+type EditorBaseline = {
+    mode: EditorMode;
+    singleDraft: SingleDraft;
+    seriesDraft: SeriesDraft;
 };
 
 const MAX_SERIES_ITERATIONS = 100;
@@ -103,19 +115,46 @@ const initialSeriesDraft = (lockedProject: IterationFormProps['lockedProject']):
     };
 };
 
+const singleDraftsMatch = (left: SingleDraft, right: SingleDraft) => (
+    left.name === right.name
+    && left.project_id === right.project_id
+    && left.start_date === right.start_date
+    && left.end_date === right.end_date
+    && left.manager_email === right.manager_email
+);
+
+const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
+    left.base_name === right.base_name
+    && left.project_id === right.project_id
+    && left.start_date === right.start_date
+    && left.duration_days === right.duration_days
+    && left.stop_mode === right.stop_mode
+    && left.count === right.count
+    && left.until_date === right.until_date
+    && left.manager_email === right.manager_email
+);
+
 const IterationFormEditor = ({
     initialData,
     lockedProject,
     hideProjectScope = false,
     onSuccess,
     onCancel,
+    onStateChange,
 }: IterationFormProps) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const { setSelectedIterationId } = useIterationStore();
-    const [mode, setMode] = useState<EditorMode>('single');
-    const [singleDraft, setSingleDraft] = useState<SingleDraft>(() => initialSingleDraft(initialData, lockedProject));
-    const [seriesDraft, setSeriesDraft] = useState<SeriesDraft>(() => initialSeriesDraft(lockedProject));
+    const [baseline, setBaseline] = useState<EditorBaseline>(() => (
+        {
+            mode: 'single',
+            singleDraft: initialSingleDraft(initialData, lockedProject),
+            seriesDraft: initialSeriesDraft(lockedProject),
+        }
+    ));
+    const [mode, setMode] = useState<EditorMode>(baseline.mode);
+    const [singleDraft, setSingleDraft] = useState<SingleDraft>(baseline.singleDraft);
+    const [seriesDraft, setSeriesDraft] = useState<SeriesDraft>(baseline.seriesDraft);
 
     const projectsQuery = useQuery({
         queryKey: ['projects'],
@@ -153,6 +192,11 @@ const IterationFormEditor = ({
 
     const handleSuccessfulIterations = (iterations: Iteration[]) => {
         if (iterations.length === 0) return;
+        setBaseline({
+            mode,
+            singleDraft: { ...singleDraft },
+            seriesDraft: { ...seriesDraft },
+        });
         upsertIterations(iterations);
         invalidateIterationQueries(iterations);
         setSelectedIterationId(iterations[0].id);
@@ -165,7 +209,7 @@ const IterationFormEditor = ({
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data: Partial<IterationCreate>) => iterationService.update(initialData!.id, data),
+        mutationFn: (data: IterationUpdate) => iterationService.update(initialData!.id, data),
         onSuccess: iteration => handleSuccessfulIterations([iteration]),
     });
 
@@ -212,6 +256,14 @@ const IterationFormEditor = ({
 
     const isSaving = createMutation.isPending || updateMutation.isPending || seriesMutation.isPending;
     const mutationError = createMutation.error || updateMutation.error || seriesMutation.error;
+    const isDirty = mode !== baseline.mode
+        || !singleDraftsMatch(singleDraft, baseline.singleDraft)
+        || !seriesDraftsMatch(seriesDraft, baseline.seriesDraft);
+
+    useEffect(() => {
+        onStateChange?.({ dirty: isDirty, pending: isSaving });
+    }, [isDirty, isSaving, onStateChange]);
+
     const singleValid = Boolean(
         singleDraft.name.trim()
         && singleDraft.start_date
@@ -231,13 +283,15 @@ const IterationFormEditor = ({
 
     const submitSingle = () => {
         const managerEmail = singleDraft.manager_email.trim();
-        const payload: Partial<IterationCreate> = {
+        const payload: IterationUpdate = {
             name: singleDraft.name.trim(),
-            project_id: selectedProjectId(singleDraft.project_id),
             start_date: singleDraft.start_date,
             end_date: singleDraft.end_date,
-            manager_email: managerEmail || undefined,
+            manager_email: managerEmail || (initialData?.manager_email ? null : undefined),
         };
+        if (!initialData || !hideProjectScope) {
+            payload.project_id = selectedProjectId(singleDraft.project_id);
+        }
 
         if (initialData) {
             updateMutation.mutate(payload);
@@ -305,7 +359,15 @@ const IterationFormEditor = ({
     );
 
     return (
-        <form onSubmit={handleSubmit} className="iteration-period-editor space-y-6">
+        <form
+            onSubmit={handleSubmit}
+            className="iteration-period-editor"
+            aria-busy={isSaving}
+        >
+            <fieldset
+                disabled={isSaving}
+                className="m-0 min-w-0 space-y-6 border-0 p-0"
+            >
             {!initialData && (
                 <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
                     <button
@@ -484,7 +546,10 @@ const IterationFormEditor = ({
             </CollapsibleSection>
 
             {mutationError && (
-                <div className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground">
+                <div
+                    className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground"
+                    role="alert"
+                >
                     {getApiErrorMessage(mutationError, t('iterationForm.saveFailed', 'Failed to save iteration'))}
                 </div>
             )}
@@ -506,6 +571,7 @@ const IterationFormEditor = ({
                             : t('iterations.saveIteration')}
                 </Button>
             </div>
+            </fieldset>
         </form>
     );
 };

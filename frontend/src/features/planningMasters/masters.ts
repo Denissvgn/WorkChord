@@ -160,8 +160,12 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
             : { state: 'done', summary: 'No blockers' };
 
     // schedule
-    const canBuild = out.iteration.state === 'done'
-        && out.team.state !== 'blocked' && out.work.state !== 'blocked';
+    const canBuild = [
+        out.iteration,
+        out.team,
+        out.work,
+        out.blockers,
+    ].every(step => step.state === 'done');
     out.schedule = !canBuild
         ? { state: 'blocked', missing: ['Complete earlier steps first'] }
         : !r.hasGanttSchedule
@@ -181,10 +185,7 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
 export function nextStep(status: Record<string, StepStatus>): string {
     const order = STEP_DEFS.map(s => s.id);
     for (const id of order) {
-        if (status[id].state === 'todo' || status[id].state === 'warn') return id;
-    }
-    for (const id of order) {
-        if (status[id].state === 'blocked') return id;
+        if (status[id].state !== 'done') return id;
     }
     return 'review';
 }

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { Checkbox } from '../common/Checkbox';
@@ -28,10 +28,15 @@ function parseFormula(formula: string | null | undefined): {
         if (template.match) {
             const match = formula.match(template.match);
             if (match) {
+                const parsedConstant = parseFloat(match[2] ?? match[1] ?? '');
+                const capturesField = template.id === 'divide_by_field'
+                    || template.id === 'inverse_percentage';
                 return {
                     templateId: template.id,
-                    field: match[1] || 'professionalism_coefficient',
-                    constant: parseFloat(match[2] || match[1]) || 100,
+                    field: capturesField && match[1]
+                        ? match[1]
+                        : 'professionalism_coefficient',
+                    constant: Number.isFinite(parsedConstant) ? parsedConstant : 100,
                 };
             }
         }
@@ -43,12 +48,13 @@ function parseFormula(formula: string | null | undefined): {
 export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
+    const detailsId = useId();
 
     // Parse current formula to identify template
     const parsedFormula = useMemo(() => parseFormula(modifier.formula), [modifier.formula]);
     const display = effortModifierDisplay(modifier);
-    const [selectedField, setSelectedField] = useState(parsedFormula.field);
-    const [constantValue, setConstantValue] = useState(parsedFormula.constant);
+    const selectedField = parsedFormula.field;
+    const constantValue = parsedFormula.constant;
 
     const handleToggleEnabled = (enabled: boolean) => {
         onChange({ ...modifier, enabled });
@@ -77,16 +83,23 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
         if (!template) return;
 
         if (templateId === 'custom') {
-            // Keep current formula when switching to custom
+            onChange({
+                ...modifier,
+                operation: null,
+                formula: modifier.formula || 'effort',
+            });
             return;
         }
 
-        const newFormula = template.build(selectedField, constantValue);
-        onChange({ ...modifier, formula: newFormula });
+        const templateDefault = templateId === 'inverse_percentage' ? 100 : 1;
+        const nextConstant = templateId === parsedFormula.templateId
+            ? constantValue
+            : templateDefault;
+        const newFormula = template.build(selectedField, nextConstant);
+        onChange({ ...modifier, operation: null, formula: newFormula });
     };
 
     const handleFieldChange = (field: string) => {
-        setSelectedField(field);
         const template = FORMULA_TEMPLATES.find(t => t.id === parsedFormula.templateId);
         if (template && template.id !== 'custom') {
             const newFormula = template.build(field, constantValue);
@@ -95,7 +108,6 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
     };
 
     const handleConstantChange = (value: number) => {
-        setConstantValue(value);
         const template = FORMULA_TEMPLATES.find(t => t.id === parsedFormula.templateId);
         if (template && template.id !== 'custom') {
             const newFormula = template.build(selectedField, value);
@@ -110,8 +122,9 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
     // Check if current template needs field/constant inputs
     const needsFieldInput = ['divide_by_field', 'inverse_percentage'].includes(parsedFormula.templateId);
     const needsConstantInput = ['inverse_percentage', 'multiply', 'divide_constant', 'add_buffer'].includes(parsedFormula.templateId);
+    const requiresPositiveDivisor = ['inverse_percentage', 'divide_constant'].includes(parsedFormula.templateId);
     const selectedTemplate = FORMULA_TEMPLATES.find(template => template.id === parsedFormula.templateId);
-    const constantLabelKey = parsedFormula.templateId === 'inverse_percentage'
+    const constantLabelKey = requiresPositiveDivisor
         ? 'settingsScheduling.fields.divisor'
         : parsedFormula.templateId === 'multiply'
             ? 'settingsScheduling.fields.multiplier'
@@ -124,13 +137,13 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
             className={`
                 rounded-lg border bg-surface-card transition-all duration-200
                 ${modifier.enabled
-                    ? 'border-l-4 border-l-action border-border'
-                    : 'border-l-4 border-l-border-strong border-border opacity-75'
+                    ? 'border-action'
+                    : 'border-border opacity-75'
                 }
             `}
         >
             {/* Header */}
-            <div className="flex items-center gap-4 p-4">
+            <div className="flex flex-wrap items-center gap-3 p-4 sm:flex-nowrap sm:gap-4">
                 <Checkbox
                     checked={modifier.enabled}
                     onChange={handleToggleEnabled}
@@ -138,18 +151,21 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                 />
 
                 <button
+                    type="button"
                     onClick={() => setExpanded(!expanded)}
-                    className="flex-1 flex items-center gap-2 text-left"
+                    className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    aria-expanded={expanded}
+                    aria-controls={detailsId}
                 >
                     {expanded ? (
                         <ChevronDown className="w-4 h-4 text-content-tertiary" />
                     ) : (
                         <ChevronRight className="w-4 h-4 text-content-tertiary" />
                     )}
-                    <span className="min-w-0">
+                    <span className="min-w-0 break-words">
                         <span className="font-medium text-content-primary">{display.name}</span>
                         {display.isBuiltIn && (
-                            <code className="ml-2 rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
+                            <code className="ms-2 break-all rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
                                 {display.technicalId}
                             </code>
                         )}
@@ -158,12 +174,13 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
 
                 {/* Preview */}
                 {!expanded && (
-                    <div className="text-sm text-content-secondary font-mono truncate max-w-xs">
+                    <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
                         {modifier.formula || modifier.operation || '—'}
                     </div>
                 )}
 
                 <button
+                    type="button"
                     onClick={onRemove}
                     className="p-1 text-content-tertiary hover:text-feedback-danger-foreground transition-colors"
                     title={t('settingsScheduling.aria.removeModifier')}
@@ -175,8 +192,8 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
 
             {/* Expanded Details */}
             {expanded && (
-                <div className="px-4 pb-4 pt-2 border-t border-border-subtle space-y-4 animate-in slide-in-from-top-2 duration-200">
-                    <div className="grid grid-cols-2 gap-4">
+                <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-4 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label={t('settingsScheduling.fields.id')}
                             value={modifier.id}
@@ -184,16 +201,16 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             placeholder="modifier_id"
                         />
                         <div>
-                            <label className="block text-sm font-medium text-content-primary mb-1">
+                            <label htmlFor={`${detailsId}-type`} className="mb-1 block text-sm font-medium text-content-primary">
                                 {t('settingsScheduling.fields.type')}
                             </label>
                             <select
+                                id={`${detailsId}-type`}
                                 value={modifier.operation ? '_operation_' : parsedFormula.templateId}
                                 onChange={(e) => {
                                     if (e.target.value === '_operation_') {
                                         handleOperationChange('ceil');
                                     } else {
-                                        handleOperationChange('');
                                         handleTemplateChange(e.target.value);
                                     }
                                 }}
@@ -214,10 +231,11 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                     {/* Show operation dropdown if operation type selected */}
                     {modifier.operation && (
                         <div>
-                            <label className="block text-sm font-medium text-content-primary mb-1">
+                            <label htmlFor={`${detailsId}-operation`} className="mb-1 block text-sm font-medium text-content-primary">
                                 {t('settingsScheduling.fields.roundingOperation')}
                             </label>
                             <select
+                                id={`${detailsId}-operation`}
                                 value={modifier.operation || 'ceil'}
                                 onChange={(e) => handleOperationChange(e.target.value)}
                                 className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -235,10 +253,11 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             {/* Field selector for templates that need it */}
                             {needsFieldInput && (
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">
+                                    <label htmlFor={`${detailsId}-field`} className="mb-1 block text-sm font-medium text-content-primary">
                                         {t('settingsScheduling.fields.assigneeField')}
                                     </label>
                                     <select
+                                        id={`${detailsId}-field`}
                                         value={selectedField}
                                         onChange={(e) => handleFieldChange(e.target.value)}
                                         className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -253,16 +272,20 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             {/* Constant input for templates that need it */}
                             {needsConstantInput && (
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">
+                                    <label htmlFor={`${detailsId}-constant`} className="mb-1 block text-sm font-medium text-content-primary">
                                         {t(constantLabelKey)}
                                     </label>
                                     <input
+                                        id={`${detailsId}-constant`}
                                         type="number"
                                         value={constantValue}
-                                        onChange={(e) => handleConstantChange(parseFloat(e.target.value) || 1)}
+                                        onChange={(e) => {
+                                            const nextValue = Number(e.target.value);
+                                            handleConstantChange(Number.isFinite(nextValue) ? nextValue : 0);
+                                        }}
                                         className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
                                         step="0.1"
-                                        min="0"
+                                        min={requiresPositiveDivisor ? 0.1 : 0}
                                     />
                                 </div>
                             )}
@@ -270,10 +293,11 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             {/* Custom formula input */}
                             {parsedFormula.templateId === 'custom' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">
+                                    <label htmlFor={`${detailsId}-formula`} className="mb-1 block text-sm font-medium text-content-primary">
                                         {t('settingsScheduling.fields.customFormula')}
                                     </label>
                                     <input
+                                        id={`${detailsId}-formula`}
                                         type="text"
                                         value={modifier.formula || ''}
                                         onChange={(e) => handleCustomFormulaChange(e.target.value)}
@@ -291,13 +315,13 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             {parsedFormula.templateId !== 'custom' && modifier.formula && (
                                 <div className="bg-surface-muted rounded-md p-3">
                                     <p className="text-xs text-content-secondary mb-1">{t('settingsScheduling.fields.generatedFormula')}</p>
-                                    <code className="text-sm font-mono text-content-primary">{modifier.formula}</code>
+                                    <code className="break-all font-mono text-sm text-content-primary">{modifier.formula}</code>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label={t('settingsScheduling.fields.fallback')}
                             value={modifier.fallback}
@@ -316,8 +340,8 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
 
                     {/* Contextual Help */}
                     <div className="bg-action-muted border border-action rounded-md p-3 flex gap-3 text-sm text-action-muted-foreground mt-4">
-                        <Info className="w-5 h-5 text-action-muted-foreground shrink-0 mt-0.5" />
-                        <div>
+                        <Info aria-hidden="true" className="w-5 h-5 text-action-muted-foreground shrink-0 mt-0.5" />
+                        <div className="min-w-0">
                             <p className="font-medium mb-1">{t('settingsScheduling.fields.howThisWorks')}</p>
                             <p className="mb-2">
                                 {modifier.operation

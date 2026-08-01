@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -41,6 +41,13 @@ interface TargetFormState {
     secret: string;
     clearSecret: boolean;
     headersJson: string;
+}
+
+interface TargetFormErrors {
+    name?: string;
+    url?: string;
+    subscribedEvents?: string;
+    headersJson?: string;
 }
 
 interface EventOption {
@@ -145,13 +152,20 @@ const targetToForm = (target: OutboundWebhookTarget): TargetFormState => ({
     headersJson: JSON.stringify(target.headers_json || {}, null, 2),
 });
 
+const formsMatch = (left: TargetFormState, right: TargetFormState) => (
+    JSON.stringify(left) === JSON.stringify(right)
+);
+
 export const OutboundWebhooksPanel = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const { hasAdminKey } = useAdminAccess();
     const toast = useToast();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+    const headersInputId = useId();
     const [form, setForm] = useState<TargetFormState>(emptyForm);
+    const [baselineForm, setBaselineForm] = useState<TargetFormState>(emptyForm);
+    const [formErrors, setFormErrors] = useState<TargetFormErrors>({});
     const [editingTargetId, setEditingTargetId] = useState<number | null>(null);
     const [deliveryStatus, setDeliveryStatus] = useState<OutboundWebhookDeliveryStatus | ''>('');
     const [deliveryTargetId, setDeliveryTargetId] = useState<number | ''>('');
@@ -180,6 +194,8 @@ export const OutboundWebhooksPanel = () => {
         return labels;
     }, [t]);
 
+    const hasUnsavedChanges = !formsMatch(form, baselineForm);
+
     const statusBadge = (status: OutboundWebhookDeliveryStatus) => (
         <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses[status]}`}>
             {t(`settingsWebhooks.statuses.${status}`)}
@@ -191,16 +207,19 @@ export const OutboundWebhooksPanel = () => {
         queryClient.invalidateQueries({ queryKey: ['outbound-webhook-deliveries'] });
     };
 
-    const resetForm = () => {
+    const resetFormNow = () => {
         setEditingTargetId(null);
         setForm(emptyForm);
+        setBaselineForm(emptyForm);
+        setFormErrors({});
     };
 
+    // feedback-policy: mutation pending,toast - the form is frozen and retains its draft on failure.
     const createMutation = useMutation({
         mutationFn: outboundWebhookService.createTarget,
         onSuccess: () => {
             invalidateWebhookQueries();
-            resetForm();
+            resetFormNow();
             toast.success(t('settingsWebhooks.createSuccess'));
         },
         onError: (err: unknown) => {
@@ -212,13 +231,14 @@ export const OutboundWebhooksPanel = () => {
         },
     });
 
+    // feedback-policy: mutation pending,toast - the form is frozen and retains its draft on failure.
     const updateMutation = useMutation({
         mutationFn: ({ targetId, data }: { targetId: number; data: OutboundWebhookTargetUpdate }) => (
             outboundWebhookService.updateTarget(targetId, data)
         ),
         onSuccess: () => {
             invalidateWebhookQueries();
-            resetForm();
+            resetFormNow();
             toast.success(t('settingsWebhooks.saveSuccess'));
         },
         onError: (err: unknown) => {
@@ -230,11 +250,18 @@ export const OutboundWebhooksPanel = () => {
         },
     });
 
+    // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const toggleMutation = useMutation({
         mutationFn: ({ targetId, enabled }: { targetId: number; enabled: boolean }) => (
             outboundWebhookService.updateTarget(targetId, { enabled })
         ),
-        onSuccess: invalidateWebhookQueries,
+        onSuccess: (_result, { targetId, enabled }) => {
+            invalidateWebhookQueries();
+            if (editingTargetId === targetId) {
+                setForm(current => ({ ...current, enabled }));
+                setBaselineForm(current => ({ ...current, enabled }));
+            }
+        },
         onError: (err: unknown) => {
             toast.error(getAdminAccessErrorMessage(err, {
                 missingOrInvalid: t('settings.adminAccessMissingOrInvalid'),
@@ -244,11 +271,14 @@ export const OutboundWebhooksPanel = () => {
         },
     });
 
+    // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const deleteMutation = useMutation({
         mutationFn: outboundWebhookService.deleteTarget,
-        onSuccess: () => {
+        onSuccess: (_response, targetId) => {
             invalidateWebhookQueries();
-            resetForm();
+            if (editingTargetId === targetId) {
+                resetFormNow();
+            }
             toast.success(t('settingsWebhooks.deleteSuccess'));
         },
         onError: (err: unknown) => {
@@ -260,6 +290,7 @@ export const OutboundWebhooksPanel = () => {
         },
     });
 
+    // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const testMutation = useMutation({
         mutationFn: outboundWebhookService.testTarget,
         onSuccess: (response) => {
@@ -279,6 +310,7 @@ export const OutboundWebhooksPanel = () => {
         },
     });
 
+    // feedback-policy: mutation pending,toast - retry controls lock and the active delivery is identified inline.
     const retryMutation = useMutation({
         mutationFn: outboundWebhookService.retryDelivery,
         onSuccess: (response) => {
@@ -300,6 +332,21 @@ export const OutboundWebhooksPanel = () => {
 
     const updateField = <K extends keyof TargetFormState>(field: K, value: TargetFormState[K]) => {
         setForm(prev => ({ ...prev, [field]: value }));
+        if (field === 'name' || field === 'url' || field === 'headersJson') {
+            setFormErrors(prev => ({ ...prev, [field]: undefined }));
+        }
+    };
+
+    const updateSecret = (value: string) => {
+        setForm(prev => ({ ...prev, secret: value, clearSecret: false }));
+    };
+
+    const updateClearSecret = (checked: boolean) => {
+        setForm(prev => ({
+            ...prev,
+            clearSecret: checked,
+            secret: checked ? '' : prev.secret,
+        }));
     };
 
     const toggleEvent = (eventValue: string, checked: boolean) => {
@@ -309,21 +356,52 @@ export const OutboundWebhooksPanel = () => {
                 ? Array.from(new Set([...prev.subscribedEvents, eventValue]))
                 : prev.subscribedEvents.filter(value => value !== eventValue),
         }));
+        setFormErrors(prev => ({ ...prev, subscribedEvents: undefined }));
+    };
+
+    const validateForm = (): TargetFormErrors => {
+        const errors: TargetFormErrors = {};
+        const name = form.name.trim();
+        const url = form.url.trim();
+
+        if (!name) {
+            errors.name = t('settingsWebhooks.nameRequired');
+        }
+
+        if (!url) {
+            errors.url = t('settingsWebhooks.urlRequired');
+        } else {
+            try {
+                const endpoint = new URL(url);
+                if (endpoint.protocol !== 'http:' && endpoint.protocol !== 'https:') {
+                    errors.url = t('settingsWebhooks.urlInvalid');
+                }
+            } catch {
+                errors.url = t('settingsWebhooks.urlInvalid');
+            }
+        }
+
+        if (form.subscribedEvents.length === 0) {
+            errors.subscribedEvents = t('settingsWebhooks.eventRequired');
+        }
+
+        try {
+            parseHeaders(form.headersJson, {
+                objectError: t('settingsWebhooks.headersObjectError'),
+                valueError: t('settingsWebhooks.headerValuesError'),
+            });
+        } catch (error) {
+            errors.headersJson = error instanceof Error
+                ? error.message
+                : t('settingsWebhooks.formInvalid');
+        }
+
+        return errors;
     };
 
     const payloadFromForm = (): OutboundWebhookTargetCreate | OutboundWebhookTargetUpdate => {
         const name = form.name.trim();
         const url = form.url.trim();
-        if (!name) {
-            throw new Error(t('settingsWebhooks.nameRequired'));
-        }
-        if (!url) {
-            throw new Error(t('settingsWebhooks.urlRequired'));
-        }
-        if (form.subscribedEvents.length === 0) {
-            throw new Error(t('settingsWebhooks.eventRequired'));
-        }
-
         const basePayload: OutboundWebhookTargetCreate = {
             name,
             description: form.description.trim() || null,
@@ -336,7 +414,7 @@ export const OutboundWebhooksPanel = () => {
             }),
         };
 
-        if (editingTargetId) {
+        if (editingTargetId !== null) {
             if (form.clearSecret) {
                 return { ...basePayload, secret: null };
             }
@@ -351,24 +429,52 @@ export const OutboundWebhooksPanel = () => {
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        let payload: OutboundWebhookTargetCreate | OutboundWebhookTargetUpdate;
-        try {
-            payload = payloadFromForm();
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : t('settingsWebhooks.formInvalid'));
+        if (isSaving) return;
+
+        const errors = validateForm();
+        setFormErrors(errors);
+        if (Object.keys(errors).length > 0) {
+            toast.error(t('settingsWebhooks.formInvalid'));
             return;
         }
 
-        if (editingTargetId) {
+        const payload = payloadFromForm();
+
+        if (editingTargetId !== null) {
             updateMutation.mutate({ targetId: editingTargetId, data: payload });
         } else {
             createMutation.mutate(payload as OutboundWebhookTargetCreate);
         }
     };
 
-    const handleEdit = (target: OutboundWebhookTarget) => {
+    const editTargetNow = (target: OutboundWebhookTarget) => {
+        const nextForm = targetToForm(target);
         setEditingTargetId(target.id);
-        setForm(targetToForm(target));
+        setForm(nextForm);
+        setBaselineForm(nextForm);
+        setFormErrors({});
+    };
+
+    const requestDraftTransition = (onDiscard: () => void) => {
+        if (isSaving || targetActionPending) return;
+        if (!hasUnsavedChanges) {
+            onDiscard();
+            return;
+        }
+        requestConfirmation({
+            title: t('settingsWebhooks.discardDraftTitle'),
+            description: t('settingsWebhooks.discardDraftDescription'),
+            confirmLabel: t('actions.discard'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            tone: 'warning',
+            onConfirm: onDiscard,
+        });
+    };
+
+    const handleEdit = (target: OutboundWebhookTarget) => {
+        if (editingTargetId === target.id) return;
+        requestDraftTransition(() => editTargetNow(target));
     };
 
     const handleDelete = (target: OutboundWebhookTarget) => {
@@ -383,6 +489,10 @@ export const OutboundWebhooksPanel = () => {
     };
 
     const isSaving = createMutation.isPending || updateMutation.isPending;
+    const targetActionPending = toggleMutation.isPending
+        || deleteMutation.isPending
+        || testMutation.isPending;
+    const formLocked = isSaving || targetActionPending;
 
     if (targetsLoading) {
         return (
@@ -404,22 +514,28 @@ export const OutboundWebhooksPanel = () => {
 
     return (
         <div className="max-w-7xl space-y-5">
-            {Boolean(deliveriesError) && <QueryErrorState error={deliveriesError} onRetry={() => void refetchDeliveries()} />}
-            <form onSubmit={handleSubmit} className="card space-y-5">
-                <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
+            <form onSubmit={handleSubmit} className="card space-y-5" aria-busy={formLocked} noValidate>
+                <fieldset disabled={formLocked} className="contents">
+                <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-start">
+                    <div className="flex min-w-0 items-center gap-3">
                         <div className="rounded-full bg-action p-2 text-content-emphasis">
-                            <Webhook className="h-5 w-5" />
+                            <Webhook className="h-5 w-5" aria-hidden="true" />
                         </div>
-                        <div>
-                            <h2 className="text-lg font-semibold text-content-primary">{t('settingsWebhooks.title')}</h2>
-                            <p className="text-sm text-content-secondary">
+                        <div className="min-w-0">
+                            <h2 className="break-words text-lg font-semibold text-content-primary">{t('settingsWebhooks.title')}</h2>
+                            <p className="break-words text-sm text-content-secondary">
                                 {t('settingsWebhooks.description')}
                             </p>
                         </div>
                     </div>
-                    <Button type="button" variant="outline" size="sm" onClick={resetForm}>
-                        <Plus className="mr-1 h-4 w-4" />
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => requestDraftTransition(resetFormNow)}
+                        className="sm:shrink-0"
+                    >
+                        <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
                         {t('settingsWebhooks.newTarget')}
                     </Button>
                 </div>
@@ -431,6 +547,8 @@ export const OutboundWebhooksPanel = () => {
                             value={form.name}
                             onChange={event => updateField('name', event.target.value)}
                             placeholder={t('settingsWebhooks.namePlaceholder')}
+                            error={formErrors.name}
+                            required
                         />
                     </div>
                     <div className="lg:col-span-5">
@@ -439,6 +557,13 @@ export const OutboundWebhooksPanel = () => {
                             value={form.url}
                             onChange={event => updateField('url', event.target.value)}
                             placeholder={t('settingsWebhooks.urlPlaceholder')}
+                            error={formErrors.url}
+                            type="url"
+                            inputMode="url"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            required
                         />
                     </div>
                     <div className="lg:col-span-2">
@@ -446,9 +571,10 @@ export const OutboundWebhooksPanel = () => {
                             label={t('settingsWebhooks.secret')}
                             type="password"
                             value={form.secret}
-                            onChange={event => updateField('secret', event.target.value)}
-                            placeholder={editingTargetId ? t('settingsWebhooks.leaveUnchanged') : t('settingsWebhooks.optional')}
+                            onChange={event => updateSecret(event.target.value)}
+                            placeholder={editingTargetId !== null ? t('settingsWebhooks.leaveUnchanged') : t('settingsWebhooks.optional')}
                             disabled={form.clearSecret}
+                            autoComplete="new-password"
                         />
                     </div>
                     <div className="flex items-end lg:col-span-2">
@@ -468,29 +594,38 @@ export const OutboundWebhooksPanel = () => {
                         />
                     </div>
                     <div className="lg:col-span-6">
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('settingsWebhooks.headersJson')}</label>
+                        <label htmlFor={headersInputId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsWebhooks.headersJson')}</label>
                         <textarea
+                            id={headersInputId}
                             value={form.headersJson}
                             onChange={event => updateField('headersJson', event.target.value)}
                             rows={3}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            aria-invalid={Boolean(formErrors.headersJson)}
+                            aria-describedby={formErrors.headersJson ? `${headersInputId}-error` : undefined}
+                            className="w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus aria-[invalid=true]:border-feedback-danger"
                             placeholder='{"X-Route": "workchord"}'
+                            spellCheck={false}
                         />
+                        {formErrors.headersJson && (
+                            <p id={`${headersInputId}-error`} className="field-error" role="alert">
+                                {formErrors.headersJson}
+                            </p>
+                        )}
                     </div>
-                    {editingTargetId && (
+                    {editingTargetId !== null && (
                         <div className="lg:col-span-12">
                             <Checkbox
                                 label={t('settingsWebhooks.clearStoredSecret')}
                                 checked={form.clearSecret}
-                                onChange={checked => updateField('clearSecret', checked)}
+                                onChange={updateClearSecret}
                             />
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-3">
+                <fieldset className="space-y-3">
                     <div>
-                        <h3 className="text-sm font-semibold text-content-primary">{t('settingsWebhooks.subscribedEvents')}</h3>
+                        <legend className="text-sm font-semibold text-content-primary">{t('settingsWebhooks.subscribedEvents')}</legend>
                         <p className="text-xs text-content-secondary">{t('settingsWebhooks.subscribedEventsHelp')}</p>
                     </div>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -504,26 +639,38 @@ export const OutboundWebhooksPanel = () => {
                                             label={t(option.labelKey)}
                                             checked={form.subscribedEvents.includes(option.value)}
                                             onChange={checked => toggleEvent(option.value, checked)}
+                                            aria-describedby={formErrors.subscribedEvents ? 'webhook-events-error' : undefined}
                                         />
                                     ))}
                                 </div>
                             </div>
                         ))}
                     </div>
-                </div>
+                    {formErrors.subscribedEvents && (
+                        <p id="webhook-events-error" className="field-error" role="alert">
+                            {formErrors.subscribedEvents}
+                        </p>
+                    )}
+                </fieldset>
 
-                <div className="flex justify-end gap-2">
-                    {editingTargetId && (
-                        <Button type="button" variant="ghost" size="sm" onClick={resetForm}>
-                            <X className="mr-1 h-4 w-4" />
+                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                    {editingTargetId !== null && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => requestDraftTransition(resetFormNow)}
+                        >
+                            <X className="mr-1 h-4 w-4" aria-hidden="true" />
                             {t('settingsWebhooks.cancel')}
                         </Button>
                     )}
                     <Button type="submit" size="sm" isLoading={isSaving}>
-                        <Save className="mr-1 h-4 w-4" />
-                        {editingTargetId ? t('settingsWebhooks.saveTarget') : t('settingsWebhooks.createTarget')}
+                        <Save className="mr-1 h-4 w-4" aria-hidden="true" />
+                        {editingTargetId !== null ? t('settingsWebhooks.saveTarget') : t('settingsWebhooks.createTarget')}
                     </Button>
                 </div>
+                </fieldset>
             </form>
 
             <div className="overflow-hidden rounded-lg border border-border bg-surface-card">
@@ -547,23 +694,32 @@ export const OutboundWebhooksPanel = () => {
                             {targets.map(target => (
                                 <tr key={target.id} className="align-top">
                                     <td className="px-3 py-3">
-                                        <Checkbox
-                                            checked={target.enabled}
-                                            onChange={checked => toggleMutation.mutate({ targetId: target.id, enabled: checked })}
-                                            disabled={toggleMutation.isPending}
-                                        />
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox
+                                                checked={target.enabled}
+                                                onChange={checked => toggleMutation.mutate({ targetId: target.id, enabled: checked })}
+                                                disabled={targetActionPending || isSaving}
+                                                aria-label={`${target.name}: ${t('settingsWebhooks.enabled')}`}
+                                            />
+                                            {toggleMutation.isPending && toggleMutation.variables?.targetId === target.id && (
+                                                <span className="inline-flex text-content-secondary">
+                                                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                                    <span className="sr-only">{t('common.saving')}</span>
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-3 py-3">
-                                        <div className="font-medium text-content-primary">{target.name}</div>
-                                        <div className="mt-1 max-w-lg truncate text-xs text-content-secondary">{target.url}</div>
+                                        <div className="max-w-lg break-words font-medium text-content-primary">{target.name}</div>
+                                        <div className="mt-1 max-w-lg break-all text-xs text-content-secondary">{target.url}</div>
                                         {target.description && (
-                                            <div className="mt-1 max-w-lg text-xs text-content-secondary">{target.description}</div>
+                                            <div className="mt-1 max-w-lg break-words text-xs text-content-secondary [overflow-wrap:anywhere]">{target.description}</div>
                                         )}
                                     </td>
                                     <td className="px-3 py-3">
                                         <div className="flex max-w-md flex-wrap gap-1">
                                             {target.subscribed_events_json.map(eventName => (
-                                                <span key={eventName} className="rounded bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
+                                                <span key={eventName} className="max-w-full break-all rounded bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
                                                     {knownEventLabels.get(eventName) || eventName}
                                                 </span>
                                             ))}
@@ -583,23 +739,32 @@ export const OutboundWebhooksPanel = () => {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => testMutation.mutate(target.id)}
-                                                isLoading={testMutation.isPending}
-                                                aria-label={t('settingsWebhooks.test')}
+                                                isLoading={testMutation.isPending && testMutation.variables === target.id}
+                                                disabled={targetActionPending || isSaving}
+                                                aria-label={`${t('settingsWebhooks.test')}: ${target.name}`}
                                             >
-                                                <Send className="h-3.5 w-3.5" />
+                                                <Send className="h-3.5 w-3.5" aria-hidden="true" />
                                             </Button>
-                                            <Button type="button" variant="outline" size="sm" onClick={() => handleEdit(target)} aria-label={t('actions.edit')}>
-                                                <Edit2 className="h-3.5 w-3.5" />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleEdit(target)}
+                                                disabled={targetActionPending || isSaving}
+                                                aria-label={`${t('actions.edit')}: ${target.name}`}
+                                            >
+                                                <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />
                                             </Button>
                                             <Button
                                                 type="button"
                                                 variant="danger"
                                                 size="sm"
                                                 onClick={() => handleDelete(target)}
-                                                isLoading={deleteMutation.isPending}
-                                                aria-label={t('actions.delete')}
+                                                isLoading={deleteMutation.isPending && deleteMutation.variables === target.id}
+                                                disabled={targetActionPending || isSaving}
+                                                aria-label={`${t('actions.delete')}: ${target.name}`}
                                             >
-                                                <Trash2 className="h-3.5 w-3.5" />
+                                                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                                             </Button>
                                         </div>
                                     </td>
@@ -627,7 +792,9 @@ export const OutboundWebhooksPanel = () => {
                         <select
                             value={deliveryTargetId}
                             onChange={event => setDeliveryTargetId(event.target.value ? Number(event.target.value) : '')}
-                            className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            aria-label={t('settingsWebhooks.target')}
+                            disabled={deliveriesLoading}
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus sm:flex-none"
                         >
                             <option value="">{t('settingsWebhooks.allTargets')}</option>
                             {targets.map(target => (
@@ -637,7 +804,9 @@ export const OutboundWebhooksPanel = () => {
                         <select
                             value={deliveryStatus}
                             onChange={event => setDeliveryStatus(event.target.value as OutboundWebhookDeliveryStatus | '')}
-                            className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            aria-label={t('settingsWebhooks.status')}
+                            disabled={deliveriesLoading}
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus sm:flex-none"
                         >
                             <option value="">{t('settingsWebhooks.allStatuses')}</option>
                             <option value="delivered">{t('settingsWebhooks.statuses.delivered')}</option>
@@ -646,6 +815,11 @@ export const OutboundWebhooksPanel = () => {
                         </select>
                     </div>
                 </div>
+                {deliveriesError ? (
+                    <div className="p-4">
+                        <QueryErrorState error={deliveriesError} onRetry={() => void refetchDeliveries()} />
+                    </div>
+                ) : (
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-border text-sm">
                         <thead className="bg-surface-muted text-left text-xs font-semibold uppercase text-content-secondary">
@@ -670,20 +844,20 @@ export const OutboundWebhooksPanel = () => {
                                 <tr key={delivery.id} className="align-top">
                                     <td className="px-3 py-3">{statusBadge(delivery.status)}</td>
                                     <td className="px-3 py-3">
-                                        <div className="font-medium text-content-primary">{delivery.event.event_type}</div>
-                                        <div className="text-xs text-content-secondary">
+                                        <div className="max-w-xs break-all font-medium text-content-primary">{delivery.event.event_type}</div>
+                                        <div className="max-w-xs break-all text-xs text-content-secondary">
                                             {delivery.event.entity_type}
                                             {delivery.event.entity_id ? ` #${delivery.event.entity_id}` : ''}
                                         </div>
                                     </td>
                                     <td className="px-3 py-3">
-                                        <div className="font-medium text-content-primary">{delivery.target_name || t('settingsWebhooks.deletedTarget')}</div>
-                                        <div className="max-w-xs truncate text-xs text-content-secondary">{delivery.target_url || t('settingsWebhooks.noUrlSnapshot')}</div>
+                                        <div className="max-w-xs break-words font-medium text-content-primary">{delivery.target_name || t('settingsWebhooks.deletedTarget')}</div>
+                                        <div className="max-w-xs break-all text-xs text-content-secondary">{delivery.target_url || t('settingsWebhooks.noUrlSnapshot')}</div>
                                     </td>
                                     <td className="px-3 py-3 text-content-primary">{delivery.attempt_count}</td>
                                     <td className="px-3 py-3 text-content-secondary">{formatDateTime(delivery.last_attempt_at)}</td>
                                     <td className="px-3 py-3">
-                                        <div className="max-w-md text-xs text-content-secondary">
+                                        <div className="max-w-md break-words text-xs text-content-secondary [overflow-wrap:anywhere]">
                                             {delivery.last_http_status && (
                                                 <span className="mr-2 rounded bg-surface-subtle px-1.5 py-0.5">
                                                     HTTP {delivery.last_http_status}
@@ -694,17 +868,27 @@ export const OutboundWebhooksPanel = () => {
                                     </td>
                                     <td className="px-3 py-3">
                                         <div className="flex justify-end">
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => retryMutation.mutate(delivery.id)}
-                                                disabled={delivery.status === 'delivered' || !delivery.target_id}
-                                                isLoading={retryMutation.isPending}
-                                                aria-label={t('settingsWebhooks.retry')}
-                                            >
-                                                <RefreshCw className="h-3.5 w-3.5" />
-                                            </Button>
+                                            {delivery.status === 'delivered' ? (
+                                                <span className="max-w-48 break-words text-right text-xs text-content-secondary">
+                                                    {t('settingsWebhooks.retryAlreadyDelivered')}
+                                                </span>
+                                            ) : !delivery.target_id ? (
+                                                <span className="max-w-48 break-words text-right text-xs text-content-secondary">
+                                                    {t('settingsWebhooks.retryTargetUnavailable')}
+                                                </span>
+                                            ) : (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => retryMutation.mutate(delivery.id)}
+                                                    disabled={retryMutation.isPending}
+                                                    isLoading={retryMutation.isPending && retryMutation.variables === delivery.id}
+                                                    aria-label={`${t('settingsWebhooks.retry')}: ${delivery.event.event_type}`}
+                                                >
+                                                    <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+                                                </Button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>
@@ -719,6 +903,7 @@ export const OutboundWebhooksPanel = () => {
                         </tbody>
                     </table>
                 </div>
+                )}
             </div>
             {confirmationDialog}
         </div>

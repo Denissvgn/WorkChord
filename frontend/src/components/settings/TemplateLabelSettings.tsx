@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     Archive,
@@ -219,6 +219,14 @@ const formToLabelPayload = (form: LabelFormState): LabelCreate => ({
     sort_order: form.sort_order,
 });
 
+const waitForAllUpdates = async (updates: Promise<unknown>[]) => {
+    const results = await Promise.allSettled(updates);
+    const failedUpdate = results.find(
+        (result): result is PromiseRejectedResult => result.status === 'rejected',
+    );
+    if (failedUpdate) throw failedUpdate.reason;
+};
+
 interface SortableTemplateRowProps {
     isBusy: boolean;
     template: WorkTemplate;
@@ -233,6 +241,7 @@ const SortableTemplateRow = ({ isBusy, template, onEdit, onToggleActive }: Sorta
         disabled: isBusy,
     });
     const display = templateDisplay(template);
+    const headingId = `work-template-${template.id}-heading`;
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
@@ -240,10 +249,11 @@ const SortableTemplateRow = ({ isBusy, template, onEdit, onToggleActive }: Sorta
     };
 
     return (
-        <div
+        <article
             ref={setNodeRef}
             style={style}
             className={`rounded-lg border bg-surface-card p-4 shadow-sm ${template.is_active ? 'border-border' : 'border-border opacity-70'}`}
+            aria-labelledby={headingId}
         >
             <div className="flex items-start gap-3">
                 <button
@@ -259,7 +269,7 @@ const SortableTemplateRow = ({ isBusy, template, onEdit, onToggleActive }: Sorta
                 </button>
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="font-medium text-content-primary">{display.name}</h4>
+                        <h4 id={headingId} className="font-medium text-content-primary">{display.name}</h4>
                         {!template.is_active && (
                             <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.disabled')}</span>
                         )}
@@ -279,7 +289,15 @@ const SortableTemplateRow = ({ isBusy, template, onEdit, onToggleActive }: Sorta
                     </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => onEdit(template)} disabled={isBusy} title={t('surfaces.templateLabels.editTemplate')} aria-label={t('surfaces.templateLabels.editTemplate')}>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(template)}
+                        disabled={isBusy}
+                        title={t('surfaces.templateLabels.editTemplate')}
+                        aria-label={`${t('surfaces.templateLabels.editTemplate')}: ${display.name}`}
+                    >
                         <Edit3 className="h-4 w-4" aria-hidden="true" />
                     </Button>
                     <Button
@@ -289,13 +307,13 @@ const SortableTemplateRow = ({ isBusy, template, onEdit, onToggleActive }: Sorta
                         onClick={() => onToggleActive(template)}
                         disabled={isBusy}
                         title={template.is_active ? t('surfaces.templateLabels.disableTemplate') : t('surfaces.templateLabels.enableTemplate')}
-                        aria-label={template.is_active ? t('surfaces.templateLabels.disableTemplate') : t('surfaces.templateLabels.enableTemplate')}
+                        aria-label={`${template.is_active ? t('surfaces.templateLabels.disableTemplate') : t('surfaces.templateLabels.enableTemplate')}: ${display.name}`}
                     >
                         <Power className={`h-4 w-4 ${template.is_active ? 'text-content-secondary' : 'text-feedback-success'}`} aria-hidden="true" />
                     </Button>
                 </div>
             </div>
-        </div>
+        </article>
     );
 };
 
@@ -310,20 +328,30 @@ export const TemplateLabelSettings = () => {
     const [includeArchivedLabels, setIncludeArchivedLabels] = useState(false);
     const [groupForm, setGroupForm] = useState<{ id: number | null; state: LabelGroupFormState } | null>(null);
     const [labelForm, setLabelForm] = useState<{ id: number | null; state: LabelFormState } | null>(null);
+    const sectionTabRefs = useRef<Partial<Record<ManagementSection, HTMLButtonElement | null>>>({});
+    const editorControlPrefix = useId();
+    const templateTypeId = `${editorControlPrefix}-template-type`;
+    const templateDescriptionId = `${editorControlPrefix}-template-description`;
+    const templateDefaultDescriptionId = `${editorControlPrefix}-template-default-description`;
+    const templateChecklistId = `${editorControlPrefix}-template-checklist`;
+    const templatePayloadId = `${editorControlPrefix}-template-payload`;
+    const groupDescriptionId = `${editorControlPrefix}-group-description`;
+    const labelGroupId = `${editorControlPrefix}-label-group`;
+    const labelDescriptionId = `${editorControlPrefix}-label-description`;
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
     );
 
-    const invalidateTemplates = () => {
-        queryClient.invalidateQueries({ queryKey: ['templates'] });
-    };
+    const invalidateTemplates = () => (
+        queryClient.invalidateQueries({ queryKey: ['templates'] })
+    );
 
-    const invalidateLabels = () => {
-        queryClient.invalidateQueries({ queryKey: ['label-groups'] });
-        queryClient.invalidateQueries({ queryKey: ['labels'] });
-    };
+    const invalidateLabels = () => Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['label-groups'] }),
+        queryClient.invalidateQueries({ queryKey: ['labels'] }),
+    ]);
 
     const {
         data: templates = [],
@@ -379,15 +407,15 @@ export const TemplateLabelSettings = () => {
 
     const reorderTemplatesMutation = useMutation({
         mutationFn: async (nextTemplates: WorkTemplate[]) => {
-            await Promise.all(nextTemplates.map((template, index) => (
+            await waitForAllUpdates(nextTemplates.map((template, index) => (
                 templateService.update(template.id, { sort_order: (index + 1) * 10 })
             )));
         },
         onSuccess: () => {
-            invalidateTemplates();
             toast.success(t('surfaces.templateLabels.templateOrderSaved'));
         },
-        onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
+        onError: () => toast.error(t('surfaces.templateLabels.templateOrderSaveFailed')),
+        onSettled: invalidateTemplates,
     });
 
     const saveGroupMutation = useMutation({
@@ -414,35 +442,68 @@ export const TemplateLabelSettings = () => {
         onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
     });
 
+    // feedback-policy: mutation pending,toast - the taxonomy locks while the row action is recoverable by retry.
+    const toggleGroupMutation = useMutation({
+        mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) => (
+            labelService.updateGroup(id, { is_active: isActive })
+        ),
+        onSuccess: () => {
+            invalidateLabels();
+            toast.success(t('surfaces.templateLabels.labelGroupSaved'));
+        },
+        onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
+    });
+
+    // feedback-policy: mutation pending,toast - the taxonomy locks while the row action is recoverable by retry.
+    const toggleLabelMutation = useMutation({
+        mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) => (
+            labelService.updateLabel(id, { is_active: isActive })
+        ),
+        onSuccess: () => {
+            invalidateLabels();
+            toast.success(t('surfaces.templateLabels.labelSaved'));
+        },
+        onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
+    });
+
     const reorderGroupsMutation = useMutation({
         mutationFn: async (groups: LabelGroup[]) => {
-            await Promise.all(groups.map((group, index) => (
+            await waitForAllUpdates(groups.map((group, index) => (
                 labelService.updateGroup(group.id, { sort_order: (index + 1) * 10 })
             )));
         },
         onSuccess: () => {
-            invalidateLabels();
             toast.success(t('surfaces.templateLabels.groupOrderSaved'));
         },
-        onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
+        onError: () => toast.error(t('surfaces.templateLabels.groupOrderSaveFailed')),
+        onSettled: invalidateLabels,
     });
 
     const reorderLabelsMutation = useMutation({
         mutationFn: async (labels: Label[]) => {
-            await Promise.all(labels.map((label, index) => (
+            await waitForAllUpdates(labels.map((label, index) => (
                 labelService.updateLabel(label.id, { sort_order: (index + 1) * 10 })
             )));
         },
         onSuccess: () => {
-            invalidateLabels();
             toast.success(t('surfaces.templateLabels.labelOrderSaved'));
         },
-        onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
+        onError: () => toast.error(t('surfaces.templateLabels.labelOrderSaveFailed')),
+        onSettled: invalidateLabels,
     });
 
-    const isTemplateListBusy = updateTemplateMutation.isPending || reorderTemplatesMutation.isPending;
-    const isGroupListBusy = saveGroupMutation.isPending || reorderGroupsMutation.isPending;
-    const isLabelListBusy = saveLabelMutation.isPending || reorderLabelsMutation.isPending;
+    const isTemplateListBusy = saveTemplateMutation.isPending
+        || updateTemplateMutation.isPending
+        || reorderTemplatesMutation.isPending;
+    const isLabelsBusy = saveGroupMutation.isPending
+        || toggleGroupMutation.isPending
+        || reorderGroupsMutation.isPending
+        || saveLabelMutation.isPending
+        || toggleLabelMutation.isPending
+        || reorderLabelsMutation.isPending;
+    const isGroupListBusy = isLabelsBusy;
+    const isLabelListBusy = isLabelsBusy;
+    const isAnyMutationPending = isTemplateListBusy || isLabelsBusy;
 
     const startCreateTemplate = () => {
         setTemplateForm({ id: null, state: emptyTemplateForm(activeTemplateType, nextSortOrder(visibleTemplates)) });
@@ -509,37 +570,79 @@ export const TemplateLabelSettings = () => {
         reorderLabelsMutation.mutate(arrayMove(group.labels, oldIndex, newIndex));
     };
 
+    const handleSectionKeyDown = (
+        event: React.KeyboardEvent<HTMLButtonElement>,
+        currentSection: ManagementSection,
+    ) => {
+        if (isAnyMutationPending) return;
+        let nextSection: ManagementSection | null = null;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            nextSection = currentSection === 'templates' ? 'labels' : 'templates';
+        }
+        if (event.key === 'Home') nextSection = 'templates';
+        if (event.key === 'End') nextSection = 'labels';
+        if (!nextSection) return;
+        event.preventDefault();
+        setActiveSection(nextSection);
+        sectionTabRefs.current[nextSection]?.focus();
+    };
+
     return (
         <div className="max-w-6xl space-y-6">
-            <div className="inline-flex rounded-lg border border-border bg-surface-card p-1">
+            <div
+                className="inline-flex rounded-lg border border-border bg-surface-card p-1"
+                role="tablist"
+                aria-label={t('surfaces.templateLabels.managementSections')}
+            >
                 <button
                     type="button"
+                    role="tab"
+                    id="template-labels-tab-templates"
+                    aria-selected={activeSection === 'templates'}
+                    aria-controls="template-labels-panel-templates"
+                    tabIndex={activeSection === 'templates' ? 0 : -1}
+                    ref={node => { sectionTabRefs.current.templates = node; }}
+                    onKeyDown={event => handleSectionKeyDown(event, 'templates')}
                     onClick={() => setActiveSection('templates')}
-                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${
+                    disabled={isAnyMutationPending}
+                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'templates' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
                 >
-                    <FileText className="h-4 w-4" />
+                    <FileText aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.templates')}
                 </button>
                 <button
                     type="button"
+                    role="tab"
+                    id="template-labels-tab-labels"
+                    aria-selected={activeSection === 'labels'}
+                    aria-controls="template-labels-panel-labels"
+                    tabIndex={activeSection === 'labels' ? 0 : -1}
+                    ref={node => { sectionTabRefs.current.labels = node; }}
+                    onKeyDown={event => handleSectionKeyDown(event, 'labels')}
                     onClick={() => setActiveSection('labels')}
-                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${
+                    disabled={isAnyMutationPending}
+                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'labels' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
                 >
-                    <Tags className="h-4 w-4" />
+                    <Tags aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.labels')}
                 </button>
             </div>
 
             {activeSection === 'templates' && (
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-                    <div className="card space-y-4">
+                <section
+                    id="template-labels-panel-templates"
+                    role="tabpanel"
+                    aria-labelledby="template-labels-tab-templates"
+                    className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]"
+                >
+                    <section className="card space-y-4" aria-labelledby="template-list-heading">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h3 className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.templates')}</h3>
+                                <h3 id="template-list-heading" className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.templates')}</h3>
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.manageDefaultsUsedByCreateForms')}</p>
                             </div>
                             <Button type="button" onClick={startCreateTemplate} disabled={templatesLoading || isTemplatesError || isTemplateListBusy}>
@@ -597,18 +700,19 @@ export const TemplateLabelSettings = () => {
                                 </SortableContext>
                             </DndContext>
                         )}
-                    </div>
+                    </section>
 
-                    <div className="card h-fit space-y-4">
+                    <section className="card h-fit space-y-4" aria-labelledby="template-editor-heading">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-content-primary">
+                            <h3 id="template-editor-heading" className="text-lg font-semibold text-content-primary">
                                 {templateForm?.id ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
                             </h3>
                             {templateForm && (
                                 <button
                                     type="button"
                                     onClick={() => setTemplateForm(null)}
-                                    className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary"
+                                    disabled={isTemplateListBusy}
+                                    className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
                                     aria-label={t('surfaces.templateLabels.closeTemplateForm')}
                                 >
                                     <X className="h-4 w-4" />
@@ -619,9 +723,10 @@ export const TemplateLabelSettings = () => {
                         {!templateForm ? (
                             <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.selectATemplateOrCreateANewOne')}</p>
                         ) : (
-                            <form onSubmit={saveTemplate} className="space-y-4">
+                            <form onSubmit={saveTemplate}>
+                                <fieldset disabled={isTemplateListBusy} className="min-w-0 space-y-4">
                                 {templateFormError && (
-                                    <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">{templateFormError}</div>
+                                    <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{templateFormError}</div>
                                 )}
                                 <Input
                                     label={t('surfaces.templateLabels.name')}
@@ -630,8 +735,9 @@ export const TemplateLabelSettings = () => {
                                     required
                                 />
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.type')}</label>
+                                    <label htmlFor={templateTypeId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.type')}</label>
                                     <select
+                                        id={templateTypeId}
                                         value={templateForm.state.template_type}
                                         onChange={event => updateTemplateForm('template_type', event.target.value as TemplateType)}
                                         className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -642,8 +748,9 @@ export const TemplateLabelSettings = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
+                                    <label htmlFor={templateDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
                                     <textarea
+                                        id={templateDescriptionId}
                                         value={templateForm.state.description}
                                         onChange={event => updateTemplateForm('description', event.target.value)}
                                         className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -655,8 +762,9 @@ export const TemplateLabelSettings = () => {
                                     onChange={event => updateTemplateForm('default_title', event.target.value)}
                                 />
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.defaultDescription')}</label>
+                                    <label htmlFor={templateDefaultDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.defaultDescription')}</label>
                                     <textarea
+                                        id={templateDefaultDescriptionId}
                                         value={templateForm.state.default_description}
                                         onChange={event => updateTemplateForm('default_description', event.target.value)}
                                         className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -687,8 +795,9 @@ export const TemplateLabelSettings = () => {
                                     placeholder={t('surfaces.templateLabels.addCustomDefault')}
                                 />
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.checklist')}</label>
+                                    <label htmlFor={templateChecklistId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.checklist')}</label>
                                     <textarea
+                                        id={templateChecklistId}
                                         value={templateForm.state.default_checklist}
                                         onChange={event => updateTemplateForm('default_checklist', event.target.value)}
                                         placeholder={t('surfaces.templateLabels.oneItemPerLine')}
@@ -696,8 +805,9 @@ export const TemplateLabelSettings = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.defaultPayloadJSON')}</label>
+                                    <label htmlFor={templatePayloadId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.defaultPayloadJSON')}</label>
                                     <textarea
+                                        id={templatePayloadId}
                                         value={templateForm.state.default_payload}
                                         onChange={event => updateTemplateForm('default_payload', event.target.value)}
                                         className="min-h-[112px] w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -724,18 +834,24 @@ export const TemplateLabelSettings = () => {
                                     <Save className="mr-2 h-4 w-4" />
                                     {t('surfaces.templateLabels.saveTemplate')}
                                 </Button>
+                                </fieldset>
                             </form>
                         )}
-                    </div>
-                </div>
+                    </section>
+                </section>
             )}
 
             {activeSection === 'labels' && (
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-                    <div className="card space-y-4">
+                <section
+                    id="template-labels-panel-labels"
+                    role="tabpanel"
+                    aria-labelledby="template-labels-tab-labels"
+                    className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]"
+                >
+                    <section className="card space-y-4" aria-labelledby="label-taxonomy-heading">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h3 className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.labelTaxonomy')}</h3>
+                                <h3 id="label-taxonomy-heading" className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.labelTaxonomy')}</h3>
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.manageGovernedLabelsAndArchivedRows')}</p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -744,12 +860,12 @@ export const TemplateLabelSettings = () => {
                                         type="checkbox"
                                         checked={includeArchivedLabels}
                                         onChange={event => setIncludeArchivedLabels(event.target.checked)}
-                                        disabled={labelsLoading || isLabelsError || isGroupListBusy || isLabelListBusy}
+                                        disabled={labelsLoading || isLabelsError || isLabelsBusy}
                                         className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
                                     />
                                     {t('surfaces.templateLabels.includeArchived')}
                                 </label>
-                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={labelsLoading || isLabelsError || isGroupListBusy}>
+                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={labelsLoading || isLabelsError || isLabelsBusy}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     {t('surfaces.templateLabels.newGroup')}
                                 </Button>
@@ -770,17 +886,17 @@ export const TemplateLabelSettings = () => {
                         ) : (
                             <div className="space-y-4">
                                 {labelGroups.map((group, groupIndex) => (
-                                    <div
+                                    <section
                                         key={group.id}
-                                        className={`rounded-lg border bg-surface-card p-4 shadow-sm ${group.is_active ? 'border-border' : 'border-border opacity-70'}`}
-                                        style={{ borderLeft: `4px solid ${group.color}` }}
+                                        className={`min-w-0 rounded-lg border bg-surface-card p-4 shadow-sm ${group.is_active ? 'border-border' : 'border-border opacity-70'}`}
+                                        aria-labelledby={`label-group-${group.id}-heading`}
                                     >
                                         <div className="flex flex-wrap items-start justify-between gap-3">
-                                            <div>
+                                            <div className="min-w-0">
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: group.color }} />
-                                                    <h4 className="font-medium text-content-primary">{labelGroupDisplay(group).name}</h4>
-                                                    <span className="font-mono text-xs text-content-secondary">{group.key}</span>
+                                                    <span aria-hidden="true" className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: group.color }} />
+                                                    <h4 id={`label-group-${group.id}-heading`} className="min-w-0 font-medium text-content-primary">{labelGroupDisplay(group).name}</h4>
+                                                    <span className="max-w-full break-all font-mono text-xs text-content-secondary">{group.key}</span>
                                                     {!group.is_active && (
                                                         <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.archived')}</span>
                                                     )}
@@ -800,7 +916,7 @@ export const TemplateLabelSettings = () => {
                                                     onClick={() => moveGroup(group, -1)}
                                                     disabled={groupIndex === 0 || isGroupListBusy}
                                                     title={t('surfaces.templateLabels.moveGroupUp')}
-                                                    aria-label={t('surfaces.templateLabels.moveGroupUp')}
+                                                    aria-label={`${t('surfaces.templateLabels.moveGroupUp')}: ${labelGroupDisplay(group).name}`}
                                                 >
                                                     <ChevronUp className="h-4 w-4" aria-hidden="true" />
                                                 </Button>
@@ -811,25 +927,34 @@ export const TemplateLabelSettings = () => {
                                                     onClick={() => moveGroup(group, 1)}
                                                     disabled={groupIndex === labelGroups.length - 1 || isGroupListBusy}
                                                     title={t('surfaces.templateLabels.moveGroupDown')}
-                                                    aria-label={t('surfaces.templateLabels.moveGroupDown')}
+                                                    aria-label={`${t('surfaces.templateLabels.moveGroupDown')}: ${labelGroupDisplay(group).name}`}
                                                 >
                                                     <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                                                </Button>
-                                                <Button type="button" variant="ghost" size="sm" onClick={() => setGroupForm({ id: group.id, state: groupToForm(group) })} disabled={isGroupListBusy} title={t('surfaces.templateLabels.editGroup')}>
-                                                    <Edit3 className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => saveGroupMutation.mutate({
+                                                    onClick={() => setGroupForm({ id: group.id, state: groupToForm(group) })}
+                                                    disabled={isGroupListBusy}
+                                                    title={t('surfaces.templateLabels.editGroup')}
+                                                    aria-label={`${t('surfaces.templateLabels.editGroup')}: ${labelGroupDisplay(group).name}`}
+                                                >
+                                                    <Edit3 aria-hidden="true" className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => toggleGroupMutation.mutate({
                                                         id: group.id,
-                                                        data: { is_active: !group.is_active },
+                                                        isActive: !group.is_active,
                                                     })}
                                                     disabled={isGroupListBusy}
                                                     title={group.is_active ? t('surfaces.templateLabels.archiveGroup') : t('surfaces.templateLabels.restoreGroup')}
+                                                    aria-label={`${group.is_active ? t('surfaces.templateLabels.archiveGroup') : t('surfaces.templateLabels.restoreGroup')}: ${labelGroupDisplay(group).name}`}
                                                 >
-                                                    <Archive className={`h-4 w-4 ${group.is_active ? 'text-content-secondary' : 'text-feedback-success'}`} />
+                                                    <Archive aria-hidden="true" className={`h-4 w-4 ${group.is_active ? 'text-content-secondary' : 'text-feedback-success'}`} />
                                                 </Button>
                                             </div>
                                         </div>
@@ -839,16 +964,17 @@ export const TemplateLabelSettings = () => {
                                                 <p className="rounded-md bg-surface-muted px-3 py-2 text-sm text-content-secondary">{t('surfaces.templateLabels.noLabelsInThisGroup')}</p>
                                             ) : (
                                                 group.labels.map((label, labelIndex) => (
-                                                    <div
+                                                    <article
                                                         key={label.id}
                                                         className={`flex flex-wrap items-center justify-between gap-2 rounded-md border border-border-subtle px-3 py-2 ${
                                                             label.is_active ? 'bg-surface-card' : 'bg-surface-muted opacity-70'
                                                         }`}
+                                                        aria-labelledby={`label-${label.id}-name`}
                                                     >
-                                                        <div className="flex min-w-0 items-center gap-2">
-                                                            <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: label.color }} />
-                                                            <span className="truncate font-medium text-content-primary">{labelDisplay(label).name}</span>
-                                                            <span className="font-mono text-xs text-content-secondary">{label.slug}</span>
+                                                        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                                                            <span aria-hidden="true" className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: label.color }} />
+                                                            <span id={`label-${label.id}-name`} className="min-w-0 break-words font-medium text-content-primary">{labelDisplay(label).name}</span>
+                                                            <span className="max-w-full break-all font-mono text-xs text-content-secondary">{label.slug}</span>
                                                             {!label.is_active && (
                                                                 <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.archived')}</span>
                                                             )}
@@ -861,7 +987,7 @@ export const TemplateLabelSettings = () => {
                                                                 onClick={() => moveLabel(group, label, -1)}
                                                                 disabled={labelIndex === 0 || isLabelListBusy}
                                                                 title={t('surfaces.templateLabels.moveLabelUp')}
-                                                                aria-label={t('surfaces.templateLabels.moveLabelUp')}
+                                                                aria-label={`${t('surfaces.templateLabels.moveLabelUp')}: ${labelDisplay(label).name}`}
                                                             >
                                                                 <ChevronUp className="h-4 w-4" aria-hidden="true" />
                                                             </Button>
@@ -872,28 +998,37 @@ export const TemplateLabelSettings = () => {
                                                                 onClick={() => moveLabel(group, label, 1)}
                                                                 disabled={labelIndex === group.labels.length - 1 || isLabelListBusy}
                                                                 title={t('surfaces.templateLabels.moveLabelDown')}
-                                                                aria-label={t('surfaces.templateLabels.moveLabelDown')}
+                                                                aria-label={`${t('surfaces.templateLabels.moveLabelDown')}: ${labelDisplay(label).name}`}
                                                             >
                                                                 <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                                                            </Button>
-                                                            <Button type="button" variant="ghost" size="sm" onClick={() => setLabelForm({ id: label.id, state: labelToForm(label) })} disabled={isLabelListBusy} title={t('surfaces.templateLabels.editLabel')}>
-                                                                <Edit3 className="h-4 w-4" />
                                                             </Button>
                                                             <Button
                                                                 type="button"
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                onClick={() => saveLabelMutation.mutate({
+                                                                onClick={() => setLabelForm({ id: label.id, state: labelToForm(label) })}
+                                                                disabled={isLabelListBusy}
+                                                                title={t('surfaces.templateLabels.editLabel')}
+                                                                aria-label={`${t('surfaces.templateLabels.editLabel')}: ${labelDisplay(label).name}`}
+                                                            >
+                                                                <Edit3 aria-hidden="true" className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => toggleLabelMutation.mutate({
                                                                     id: label.id,
-                                                                    data: { is_active: !label.is_active },
+                                                                    isActive: !label.is_active,
                                                                 })}
                                                                 disabled={isLabelListBusy}
                                                                 title={label.is_active ? t('surfaces.templateLabels.archiveLabel') : t('surfaces.templateLabels.restoreLabel')}
+                                                                aria-label={`${label.is_active ? t('surfaces.templateLabels.archiveLabel') : t('surfaces.templateLabels.restoreLabel')}: ${labelDisplay(label).name}`}
                                                             >
-                                                                <Archive className={`h-4 w-4 ${label.is_active ? 'text-content-secondary' : 'text-feedback-success'}`} />
+                                                                <Archive aria-hidden="true" className={`h-4 w-4 ${label.is_active ? 'text-content-secondary' : 'text-feedback-success'}`} />
                                                             </Button>
                                                         </div>
-                                                    </div>
+                                                    </article>
                                                 ))
                                             )}
                                             <Button type="button" variant="outline" size="sm" onClick={() => setLabelForm({ id: null, state: emptyLabelForm(group) })} disabled={isLabelListBusy}>
@@ -901,26 +1036,30 @@ export const TemplateLabelSettings = () => {
                                                 {t('surfaces.templateLabels.addLabel')}
                                             </Button>
                                         </div>
-                                    </div>
+                                    </section>
                                 ))}
                             </div>
                         )}
-                    </div>
+                    </section>
 
-                    <div className="card h-fit space-y-6">
+                    <section
+                        className="card h-fit space-y-6"
+                        aria-labelledby="group-editor-heading label-editor-heading"
+                    >
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-content-primary">
+                                <h3 id="group-editor-heading" className="text-lg font-semibold text-content-primary">
                                     {groupForm?.id ? t('surfaces.templateLabels.editGroup') : t('surfaces.templateLabels.groupDetails')}
                                 </h3>
                                 {groupForm && (
                                     <button
                                         type="button"
                                         onClick={() => setGroupForm(null)}
-                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary"
+                                        disabled={isLabelsBusy}
+                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
                                         aria-label={t('surfaces.templateLabels.closeGroupForm')}
                                     >
-                                        <X className="h-4 w-4" />
+                                        <X aria-hidden="true" className="h-4 w-4" />
                                     </button>
                                 )}
                             </div>
@@ -928,20 +1067,22 @@ export const TemplateLabelSettings = () => {
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.selectAGroupOrCreateANewOne')}</p>
                             ) : (
                                 <form
-                                    className="space-y-4"
                                     onSubmit={event => {
                                         event.preventDefault();
+                                        if (isLabelsBusy) return;
                                         saveGroupMutation.mutate({
                                             id: groupForm.id,
                                             data: formToGroupPayload(groupForm.state),
                                         });
                                     }}
                                 >
+                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
                                     <Input label={t('surfaces.templateLabels.key')} value={groupForm.state.key} onChange={event => updateGroupForm('key', event.target.value)} required />
                                     <Input label={t('surfaces.templateLabels.name')} value={groupForm.state.name} onChange={event => updateGroupForm('name', event.target.value)} required />
                                     <div>
-                                        <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
+                                        <label htmlFor={groupDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
                                         <textarea
+                                            id={groupDescriptionId}
                                             value={groupForm.state.description}
                                             onChange={event => updateGroupForm('description', event.target.value)}
                                             className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -975,26 +1116,28 @@ export const TemplateLabelSettings = () => {
                                         </label>
                                     </div>
                                     <Button type="submit" isLoading={saveGroupMutation.isPending}>
-                                        <Save className="mr-2 h-4 w-4" />
+                                        <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                                         {t('surfaces.templateLabels.saveGroup')}
                                     </Button>
+                                    </fieldset>
                                 </form>
                             )}
                         </div>
 
                         <div className="border-t border-border pt-6">
                             <div className="mb-4 flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-content-primary">
+                                <h3 id="label-editor-heading" className="text-lg font-semibold text-content-primary">
                                     {labelForm?.id ? t('surfaces.templateLabels.editLabel') : t('surfaces.templateLabels.labelDetails')}
                                 </h3>
                                 {labelForm && (
                                     <button
                                         type="button"
                                         onClick={() => setLabelForm(null)}
-                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary"
+                                        disabled={isLabelsBusy}
+                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
                                         aria-label={t('surfaces.templateLabels.closeLabelForm')}
                                     >
-                                        <X className="h-4 w-4" />
+                                        <X aria-hidden="true" className="h-4 w-4" />
                                     </button>
                                 )}
                             </div>
@@ -1002,18 +1145,20 @@ export const TemplateLabelSettings = () => {
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.selectALabelOrAddOneFromAGroup')}</p>
                             ) : (
                                 <form
-                                    className="space-y-4"
                                     onSubmit={event => {
                                         event.preventDefault();
+                                        if (isLabelsBusy) return;
                                         saveLabelMutation.mutate({
                                             id: labelForm.id,
                                             data: formToLabelPayload(labelForm.state),
                                         });
                                     }}
                                 >
+                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.group')}</label>
+                                        <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.group')}</label>
                                         <select
+                                            id={labelGroupId}
                                             value={labelForm.state.group_id}
                                             onChange={event => updateLabelForm('group_id', event.target.value)}
                                             className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -1027,8 +1172,9 @@ export const TemplateLabelSettings = () => {
                                     <Input label={t('surfaces.templateLabels.slug')} value={labelForm.state.slug} onChange={event => updateLabelForm('slug', event.target.value)} required />
                                     <Input label={t('surfaces.templateLabels.name')} value={labelForm.state.name} onChange={event => updateLabelForm('name', event.target.value)} required />
                                     <div>
-                                        <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
+                                        <label htmlFor={labelDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
                                         <textarea
+                                            id={labelDescriptionId}
                                             value={labelForm.state.description}
                                             onChange={event => updateLabelForm('description', event.target.value)}
                                             className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
@@ -1062,14 +1208,15 @@ export const TemplateLabelSettings = () => {
                                         </label>
                                     </div>
                                     <Button type="submit" isLoading={saveLabelMutation.isPending}>
-                                        <Save className="mr-2 h-4 w-4" />
+                                        <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                                         {t('surfaces.templateLabels.saveLabel')}
                                     </Button>
+                                    </fieldset>
                                 </form>
                             )}
                         </div>
-                    </div>
-                </div>
+                    </section>
+                </section>
             )}
         </div>
     );

@@ -5,6 +5,7 @@ import type {
     IterationSeriesCreate,
     IterationSeriesResponse,
     IterationSummary,
+    IterationUpdate,
 } from '../types/iteration';
 
 export const iterationService = {
@@ -48,7 +49,7 @@ export const iterationService = {
         return response.data;
     },
 
-    update: async (id: number, data: Partial<IterationCreate>) => {
+    update: async (id: number, data: IterationUpdate) => {
         const response = await api.put<Iteration>(`/iterations/${id}`, data);
         return response.data;
     },

@@ -77,7 +77,7 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                     <div
                         key={item.key}
                         className={`
-                            p-4 rounded-lg border transition-all cursor-pointer
+                            rounded-lg border p-4 transition-all
                             ${constraints[item.key]
                                 ? 'bg-action-muted border-action shadow-sm'
                                 : 'bg-surface-card border-border hover:border-action'
@@ -89,10 +89,11 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                                 checked={constraints[item.key]}
                                 onChange={() => toggleConstraint(item.key)}
                                 className="mt-1"
+                                aria-label={t(item.labelKey)}
                             />
-                            <div>
+                            <div className="min-w-0">
                                 <span className="font-semibold text-content-primary block mb-1">{t(item.labelKey)}</span>
-                                <p className="text-sm text-content-secondary leading-relaxed">
+                                <p className="break-words text-sm leading-relaxed text-content-secondary">
                                     {t(item.helpKey)}
                                 </p>
                             </div>
@@ -117,8 +118,9 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                             checked={!!constraints.balance_workload}
                             onChange={toggleBalanceWorkload}
                             className="mt-1"
+                            aria-label={t('settingsScheduling.constraints.balance_workload.label')}
                         />
-                        <div className="flex-1">
+                        <div className="min-w-0 flex-1">
                             <span className="font-semibold text-content-primary block mb-1">
                                 {t('settingsScheduling.constraints.balance_workload.label')}
                             </span>
@@ -127,17 +129,20 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                             </p>
 
                             {constraints.balance_workload && (
-                                <div className="mt-4 flex items-center gap-3 bg-surface-card/50 p-2 rounded border border-action w-fit">
-                                    <span className="text-sm font-medium text-content-primary">{t('settingsScheduling.fields.maxAllowableOverload')}</span>
+                                <div className="mt-4 flex w-full flex-col gap-2 rounded border border-action bg-surface-card/50 p-3 sm:w-fit sm:flex-row sm:items-center">
+                                    <span className="text-sm font-medium text-content-primary">
+                                        {t('settingsScheduling.fields.maxAllowableOverload')}
+                                    </span>
                                     <Input
                                         type="number"
                                         value={constraints.balance_workload.max_overload_percent.toString()}
                                         onChange={(e) => updateMaxOverload(e.target.value)}
-                                        className="w-24"
+                                        className="w-full sm:w-24"
                                         min={0}
                                         max={100}
+                                        aria-label={t('settingsScheduling.fields.maxAllowableOverload')}
                                     />
-                                    <span className="text-sm text-content-secondary">%</span>
+                                    <span aria-hidden="true" className="text-sm text-content-secondary">%</span>
                                 </div>
                             )}
                         </div>

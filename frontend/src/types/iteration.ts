@@ -26,6 +26,15 @@ export interface IterationCreate {
     manager_email?: string;
 }
 
+export interface IterationUpdate {
+    name?: string;
+    calendar_id?: number | null;
+    project_id?: number | null;
+    start_date?: string;
+    end_date?: string;
+    manager_email?: string | null;
+}
+
 export type IterationSeriesStop =
     | { mode: 'count'; count: number }
     | { mode: 'until_date'; until_date: string };

@@ -1,23 +1,23 @@
-import i18n from '../../i18n/i18n';
-import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
+import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, ListFilter } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, ListFilter, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { TaskEditModal } from './TaskEditModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
 import clsx from 'clsx';
-import type { GanttTask } from '../../types/gantt';
+import type { GanttTask, SchedulePreviewResponse } from '../../types/gantt';
 import { STATUS_TONE, toneSolidClassName } from '../ui/tone';
-import { QueryErrorState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { useToast } from '../feedback/toast';
 import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu, SlideOverDrawer } from '../ui';
-
-const t = i18n.t.bind(i18n);
 
 interface GanttChartProps {
     iterationId: number;
@@ -35,6 +35,20 @@ interface FlattenedTask extends GanttTask {
     depth: number;
 }
 
+interface TaskTimelineDates {
+    start: string | null;
+    end: string | null;
+}
+
+const getTaskTimelineDates = (task: GanttTask): TaskTimelineDates => ({
+    start: task.schedule_result?.scheduled_start ?? task.start_date,
+    end: task.schedule_result?.scheduled_end ?? task.end_date,
+});
+
+const hasCompleteTimelineDates = (
+    dates: TaskTimelineDates,
+): dates is { start: string; end: string } => Boolean(dates.start && dates.end);
+
 export const GanttChart = ({
     iterationId,
     startDate,
@@ -46,15 +60,34 @@ export const GanttChart = ({
     sandboxMode = false,
     onSaveSandbox,
 }: GanttChartProps) => {
-    const { i18n: activeI18n } = useTranslation();
+    const { t, i18n: activeI18n } = useTranslation();
+    const toast = useToast();
     const queryClient = useQueryClient();
     const [expandedTasks, setExpandedTasks] = useState<Set<number>>(new Set());
     const initialExpansionDone = useRef(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const chartInstructionsId = useId();
+    const [schedulePreview, setSchedulePreview] = useState<SchedulePreviewResponse | null>(null);
+    const [isRefreshingSavedSchedule, setIsRefreshingSavedSchedule] = useState(false);
+    const sourceTasks = schedulePreview?.tasks ?? tasks;
+    const focusChart = useCallback(() => {
+        window.requestAnimationFrame(() => scrollContainerRef.current?.focus());
+    }, []);
+
+    // A preview becomes stale as soon as its source changes, and it must never
+    // be mixed with an active edit sandbox (which has its own preview contract).
+    useEffect(() => {
+        setSchedulePreview(null);
+        setEditingTask(null);
+    }, [iterationId, tasks, sandboxMode]);
+
+    useEffect(() => {
+        initialExpansionDone.current = false;
+    }, [iterationId]);
 
     // Initial expansion logic
     useEffect(() => {
-        if (tasks.length > 0 && !initialExpansionDone.current) {
+        if (sourceTasks.length > 0 && !initialExpansionDone.current) {
             const allIds = new Set<number>();
             const traverse = (t: GanttTask) => {
                 if (t.children?.length) {
@@ -62,11 +95,11 @@ export const GanttChart = ({
                     t.children.forEach(traverse);
                 }
             };
-            tasks.forEach(traverse);
+            sourceTasks.forEach(traverse);
             setExpandedTasks(allIds);
             initialExpansionDone.current = true;
         }
-    }, [tasks]);
+    }, [sourceTasks]);
 
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const [hideUnassigned, setHideUnassigned] = useState(false);
@@ -76,11 +109,15 @@ export const GanttChart = ({
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned);
+    const clearFilters = () => {
+        setSelectedAssigneeId(null);
+        setHideUnassigned(false);
+    };
 
     // --- Data Preparation ---
 
     const sortedTasks = useMemo(() => {
-        if (!isSortedByDate) return tasks;
+        if (!isSortedByDate) return sourceTasks;
 
         const getTaskStart = (t: GanttTask) => t.schedule_result?.scheduled_start || t.start_date || '9999-12-31';
 
@@ -93,8 +130,8 @@ export const GanttChart = ({
             }));
         };
 
-        return sortRecursive(tasks);
-    }, [tasks, isSortedByDate]);
+        return sortRecursive(sourceTasks);
+    }, [sourceTasks, isSortedByDate]);
 
     const uniqueAssignees = useMemo(() => {
         const assigneeMap = new Map<number, { id: number; name: string }>();
@@ -104,9 +141,19 @@ export const GanttChart = ({
                 if (t.children) collectAssignees(t.children);
             });
         };
-        collectAssignees(tasks);
-        return Array.from(assigneeMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-    }, [tasks]);
+        collectAssignees(sourceTasks);
+        const collator = new Intl.Collator(activeI18n.language);
+        return Array.from(assigneeMap.values()).sort((a, b) => collator.compare(a.name, b.name));
+    }, [activeI18n.language, sourceTasks]);
+
+    useEffect(() => {
+        if (
+            selectedAssigneeId !== null
+            && !uniqueAssignees.some(assignee => assignee.id === selectedAssigneeId)
+        ) {
+            setSelectedAssigneeId(null);
+        }
+    }, [selectedAssigneeId, uniqueAssignees]);
 
     const isWeekendDay = useCallback((date: Date) => {
         const dateStr = format(date, 'yyyy-MM-dd');
@@ -145,14 +192,14 @@ export const GanttChart = ({
             return maxDate;
         };
 
-        const maxTaskEnd = findMaxEndDate(tasks);
+        const maxTaskEnd = findMaxEndDate(sourceTasks);
         if (maxTaskEnd > iterationEnd) {
             const overdueEnd = addDays(maxTaskEnd, 2);
             if (overdueEnd > end) end = overdueEnd;
         }
 
         return eachDayOfInterval({ start, end });
-    }, [startDate, endDate, tasks]);
+    }, [startDate, endDate, sourceTasks]);
 
     const visibleDays = useMemo(() => {
         if (!isCompressed) return days;
@@ -161,15 +208,17 @@ export const GanttChart = ({
         const collectLeafRanges = (taskList: GanttTask[]) => {
             taskList.forEach(task => {
                 if (!task.children || task.children.length === 0) {
-                    const taskStart = new Date(task.schedule_result?.scheduled_start || task.start_date || startDate);
-                    const taskEnd = new Date(task.schedule_result?.scheduled_end || task.end_date || addDays(taskStart, task.calculated_effort_days || task.effort_days || 1));
+                    const taskDates = getTaskTimelineDates(task);
+                    if (!hasCompleteTimelineDates(taskDates)) return;
+                    const taskStart = new Date(taskDates.start);
+                    const taskEnd = new Date(taskDates.end);
                     leafTaskRanges.push({ start: taskStart, end: taskEnd });
                 } else {
                     collectLeafRanges(task.children);
                 }
             });
         };
-        collectLeafRanges(tasks);
+        collectLeafRanges(sourceTasks);
 
         return days.filter(day => {
             const overlappingTasks = leafTaskRanges.filter(range => day >= range.start && day <= range.end);
@@ -184,7 +233,7 @@ export const GanttChart = ({
             }
             return false;
         });
-    }, [days, isCompressed, tasks, startDate]);
+    }, [days, isCompressed, sourceTasks]);
 
     // O(1) index lookup
     const visibleDaysIndexMap = useMemo(() => {
@@ -235,13 +284,64 @@ export const GanttChart = ({
         const processTask = (task: GanttTask, depth: number) => {
             if (!taskMatchesFilter(task, selectedAssigneeId, hideUnassigned)) return;
             flattened.push({ ...task, depth });
-            if (task.children && task.children.length > 0 && expandedTasks.has(task.id)) {
+            if (
+                task.children
+                && task.children.length > 0
+                && (activeFilterCount > 0 || expandedTasks.has(task.id))
+            ) {
                 task.children.forEach(child => processTask(child, depth + 1));
             }
         };
         sortedTasks.forEach(task => processTask(task, 0));
         return flattened;
-    }, [sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, taskMatchesFilter]);
+    }, [activeFilterCount, sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, taskMatchesFilter]);
+
+    const currentTaskDatesById = useMemo(() => {
+        const datesById = new Map<number, TaskTimelineDates>();
+        const collectDates = (taskList: GanttTask[]) => {
+            taskList.forEach(task => {
+                datesById.set(task.id, getTaskTimelineDates(task));
+                collectDates(task.children ?? []);
+            });
+        };
+        collectDates(tasks);
+        return datesById;
+    }, [tasks]);
+
+    const previewChangedTaskIds = useMemo(() => {
+        if (!schedulePreview) return new Set<number>();
+
+        const changed = new Set<number>();
+        const collectChangedTasks = (taskList: GanttTask[]) => {
+            taskList.forEach(task => {
+                const current = currentTaskDatesById.get(task.id);
+                const projected = getTaskTimelineDates(task);
+                if (current && (current.start !== projected.start || current.end !== projected.end)) {
+                    changed.add(task.id);
+                }
+                collectChangedTasks(task.children ?? []);
+            });
+        };
+
+        collectChangedTasks(schedulePreview.tasks);
+        return changed;
+    }, [currentTaskDatesById, schedulePreview]);
+
+    const expandableTaskIds = useMemo(() => {
+        const ids = new Set<number>();
+        const collectIds = (taskList: GanttTask[]) => {
+            taskList.forEach(task => {
+                if (task.children?.length) {
+                    ids.add(task.id);
+                    collectIds(task.children);
+                }
+            });
+        };
+        collectIds(sourceTasks);
+        return ids;
+    }, [sourceTasks]);
+    const allTaskGroupsExpanded = expandableTaskIds.size > 0
+        && [...expandableTaskIds].every(taskId => expandedTasks.has(taskId));
 
 
     // --- Virtualization ---
@@ -272,17 +372,154 @@ export const GanttChart = ({
         });
     };
 
+    // feedback-policy: mutation pending,inline - preview is non-persistent and exposes inline retry.
+    const schedulePreviewMutation = useMutation({
+        mutationFn: () => ganttService.previewSchedule(iterationId, []),
+        onSuccess: preview => {
+            setEditingTask(null);
+            setSchedulePreview(preview);
+        },
+    });
+
+    // feedback-policy: mutation pending,inline - Apply is disabled while pending and failures retain the preview for retry.
     const scheduleMutation = useMutation({
         mutationFn: () => ganttService.schedule(iterationId),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gantt', iterationId] }),
+        onSuccess: async () => {
+            setSchedulePreview(null);
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['gantt', iterationId] }),
+                queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
+            ]);
+            toast.success(t('gantt.scheduleApplied'));
+            focusChart();
+        },
     });
+
+    const beginSchedulePreview = () => {
+        if (
+            sandboxMode
+            || schedulePreview
+            || schedulePreviewMutation.isPending
+            || scheduleMutation.isPending
+            || isRefreshingSavedSchedule
+        ) return;
+        scheduleMutation.reset();
+        schedulePreviewMutation.mutate();
+    };
+
+    const applySchedulePreview = () => {
+        if (!schedulePreview || scheduleMutation.isPending) return;
+        scheduleMutation.mutate();
+    };
+
+    const returnToSavedSchedule = () => {
+        scheduleMutation.reset();
+        setSchedulePreview(null);
+        focusChart();
+    };
+
+    const refreshSavedSchedule = async () => {
+        if (isRefreshingSavedSchedule) return;
+        setIsRefreshingSavedSchedule(true);
+        setSchedulePreview(null);
+        scheduleMutation.reset();
+        try {
+            await Promise.all([
+                queryClient.refetchQueries({ queryKey: ['gantt', iterationId], type: 'active' }),
+                queryClient.refetchQueries({ queryKey: ['tasks', iterationId], type: 'active' }),
+            ]);
+        } finally {
+            setIsRefreshingSavedSchedule(false);
+            focusChart();
+        }
+    };
 
     const getTaskBaseColorClass = (task: GanttTask) => {
         return toneSolidClassName[STATUS_TONE[task.status]];
     };
 
+    const formatTaskTimelineDates = (dates: { start: string; end: string }) => ({
+        start: formatDate(dates.start, activeI18n.language),
+        end: formatDate(dates.end, activeI18n.language),
+    });
+
     const getTaskTooltip = (task: GanttTask) => {
-        return `${task.title}\n${formatDate(task.start_date)} → ${formatDate(task.end_date)}`;
+        const dates = getTaskTimelineDates(task);
+        if (!hasCompleteTimelineDates(dates)) {
+            return t('gantt.taskDatesUnavailable', { title: task.title });
+        }
+        return t('gantt.taskDateRange', {
+            title: task.title,
+            ...formatTaskTimelineDates(dates),
+        });
+    };
+
+    const getTaskAccessibleLabel = (task: GanttTask) => {
+        const dates = getTaskTimelineDates(task);
+        if (!hasCompleteTimelineDates(dates)) {
+            return t('gantt.openUnscheduledTask', { title: task.title });
+        }
+        return t('gantt.openScheduledTask', {
+            title: task.title,
+            assignee: task.assignee?.name ?? t('common.unassigned'),
+            priority: task.priority,
+            ...formatTaskTimelineDates(dates),
+        });
+    };
+
+    const getUnscheduledTaskGuidance = (task: GanttTask) => (
+        task.assignee
+            ? t('gantt.reviewTaskToSchedule')
+            : t('gantt.assignTaskToSchedule')
+    );
+
+    const getUnscheduledTaskDescription = (task: GanttTask) => t(
+        'gantt.unscheduledTaskDescription',
+        {
+            title: task.title,
+            guidance: getUnscheduledTaskGuidance(task),
+        },
+    );
+
+    const getPreviewTaskDescription = (task: GanttTask) => {
+        const projectedDates = getTaskTimelineDates(task);
+        const currentDates = currentTaskDatesById.get(task.id);
+
+        if (!hasCompleteTimelineDates(projectedDates)) {
+            return t('gantt.schedulePreviewTaskUnscheduled', { title: task.title });
+        }
+
+        const projected = formatTaskTimelineDates(projectedDates);
+        if (!currentDates || !hasCompleteTimelineDates(currentDates)) {
+            return t('gantt.schedulePreviewTaskNewDates', {
+                title: task.title,
+                ...projected,
+            });
+        }
+
+        const current = formatTaskTimelineDates(currentDates);
+        if (previewChangedTaskIds.has(task.id)) {
+            return t('gantt.schedulePreviewTaskMoved', {
+                title: task.title,
+                currentStart: current.start,
+                currentEnd: current.end,
+                projectedStart: projected.start,
+                projectedEnd: projected.end,
+            });
+        }
+
+        return t('gantt.schedulePreviewTaskUnchanged', {
+            title: task.title,
+            ...projected,
+        });
+    };
+
+    const getCalendarDayLabel = (day: Date) => {
+        const date = format(day, 'PPPP', { locale: dateFnsLocale(activeI18n.language) });
+        if (isHolidayDay(day)) return t('gantt.calendarDayHoliday', { date });
+        if (isSameDay(day, new Date())) return t('gantt.calendarDayToday', { date });
+        if (isWeekendDay(day)) return t('gantt.calendarDayWeekend', { date });
+        return date;
     };
 
     // --- Helpers for Absolute Positioning ---
@@ -355,6 +592,7 @@ export const GanttChart = ({
 
     const onMouseDown = (e: React.MouseEvent) => {
         if (!scrollContainerRef.current) return;
+        if ((e.target as HTMLElement).closest('button, a, input, select, label')) return;
         setIsDragging(true);
         setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
         setStartY(e.pageY - scrollContainerRef.current.offsetTop);
@@ -382,6 +620,9 @@ export const GanttChart = ({
     };
 
     const SIDEBAR_WIDTH = 300;
+    const isFilteredEmpty = sourceTasks.length > 0
+        && activeFilterCount > 0
+        && displayTasks.length === 0;
 
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow">
@@ -393,61 +634,68 @@ export const GanttChart = ({
                         size="sm"
                         onClick={() => setIsFiltersOpen(true)}
                         aria-expanded={isFiltersOpen}
+                        aria-label={activeFilterCount > 0
+                            ? t('surfaces.ganttChart.openFiltersWithCount', { count: activeFilterCount })
+                            : t('taskFilters.filters')}
                     >
                         <ListFilter className="mr-2 h-4 w-4" />
                         {t('taskFilters.filters')}
                         {activeFilterCount > 0 && (
-                            <span className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums">
+                            <span
+                                aria-hidden="true"
+                                className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums"
+                            >
                                 {activeFilterCount}
                             </span>
                         )}
                     </Button>
                     <OverflowMenu
-                        label={t('actions.moreActions')}
+                        label={t('surfaces.ganttChart.chartActions')}
                         items={[
-                            {
-                                label: t('surfaces.ganttChart.autoSchedule'),
+                            ...(!sandboxMode && !schedulePreview ? [{
+                                label: schedulePreviewMutation.isPending
+                                    ? t('surfaces.ganttChart.generatingSchedulePreview')
+                                    : t('surfaces.ganttChart.previewSchedule'),
                                 icon: <RefreshCw className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => scheduleMutation.mutate(),
-                                disabled: scheduleMutation.isPending,
-                            },
+                                onSelect: beginSchedulePreview,
+                                disabled: schedulePreviewMutation.isPending
+                                    || scheduleMutation.isPending
+                                    || isRefreshingSavedSchedule,
+                            }] : []),
                             {
-                                label: t(isSortedByDate ? 'surfaces.ganttChart.sortingByDate' : 'surfaces.ganttChart.sortByDate'),
+                                label: t(isSortedByDate
+                                    ? 'surfaces.ganttChart.restoreTaskOrder'
+                                    : 'surfaces.ganttChart.sortByStartDate'),
                                 icon: <Calendar className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => setIsSortedByDate(value => !value),
                             },
+                            ...(expandableTaskIds.size > 0 && activeFilterCount === 0 ? [{
+                                label: t(allTaskGroupsExpanded
+                                    ? 'surfaces.ganttChart.collapseAllTaskGroups'
+                                    : 'surfaces.ganttChart.expandAllTaskGroups'),
+                                icon: allTaskGroupsExpanded
+                                    ? <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                                    : <ChevronDown className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setExpandedTasks(
+                                    allTaskGroupsExpanded ? new Set() : new Set(expandableTaskIds),
+                                ),
+                            }] : []),
                             {
-                                label: t('surfaces.ganttChart.expandAll'),
-                                icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => {
-                                    const allIds = new Set<number>();
-                                    const traverse = (task: GanttTask) => {
-                                        if (task.children?.length) {
-                                            allIds.add(task.id);
-                                            task.children.forEach(traverse);
-                                        }
-                                    };
-                                    tasks.forEach(traverse);
-                                    setExpandedTasks(allIds);
-                                },
-                            },
-                            {
-                                label: t('surfaces.ganttChart.collapseAll'),
-                                icon: <ChevronRight className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setExpandedTasks(new Set()),
-                            },
-                            {
-                                label: t('gantt.zoomOut'),
+                                label: t('surfaces.ganttChart.zoomTimelineOut'),
                                 icon: <ZoomOut className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => setZoomLevel(value => Math.max(20, value - 10)),
+                                disabled: zoomLevel <= 20,
                             },
                             {
-                                label: t('gantt.zoomIn'),
+                                label: t('surfaces.ganttChart.zoomTimelineIn'),
                                 icon: <ZoomIn className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => setZoomLevel(value => Math.min(100, value + 10)),
+                                disabled: zoomLevel >= 100,
                             },
                             {
-                                label: t(isCompressed ? 'gantt.expandLayout' : 'gantt.compressLayout'),
+                                label: t(isCompressed
+                                    ? 'surfaces.ganttChart.showEveryDate'
+                                    : 'surfaces.ganttChart.condenseLongTaskSpans'),
                                 icon: isCompressed
                                     ? <Maximize2 className="h-4 w-4" aria-hidden="true" />
                                     : <Minimize2 className="h-4 w-4" aria-hidden="true" />,
@@ -461,46 +709,180 @@ export const GanttChart = ({
             <SlideOverDrawer
                 open={isFiltersOpen}
                 title={t('taskFilters.filters')}
+                subtitle={t('surfaces.ganttChart.filtersDescription')}
                 icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
                 onClose={() => setIsFiltersOpen(false)}
+                footer={(
+                    <Button
+                        className="w-full"
+                        type="button"
+                        variant="secondary"
+                        onClick={clearFilters}
+                        disabled={activeFilterCount === 0}
+                    >
+                        {t('surfaces.ganttChart.clearFilters')}
+                    </Button>
+                )}
             >
                 <div className="space-y-5 p-4">
                     <label className="block text-sm text-content-secondary">
-                        <span className="mb-1 block text-xs font-medium uppercase tracking-wide">{t('surfaces.ganttChart.allAssignees')}</span>
+                        <span className="mb-1 block text-xs font-medium uppercase tracking-wide">
+                            {t('surfaces.ganttChart.assignee')}
+                        </span>
                         <select
                             value={selectedAssigneeId ?? ''}
-                            onChange={event => setSelectedAssigneeId(event.target.value ? parseInt(event.target.value) : null)}
+                            onChange={event => {
+                                const nextAssigneeId = event.target.value ? parseInt(event.target.value) : null;
+                                setSelectedAssigneeId(nextAssigneeId);
+                                if (nextAssigneeId !== null) setHideUnassigned(false);
+                            }}
                             className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
                         >
                             <option value="">{t('surfaces.ganttChart.allAssignees')}</option>
                             {uniqueAssignees.map(assignee => <option key={assignee.id} value={assignee.id}>{assignee.name}</option>)}
                         </select>
                     </label>
-                    <Checkbox checked={hideUnassigned} onChange={setHideUnassigned} label={t('surfaces.ganttChart.hideUnassigned')} />
+                    <Checkbox
+                        checked={hideUnassigned}
+                        onChange={setHideUnassigned}
+                        label={t('surfaces.ganttChart.hideTasksWithoutAssignee')}
+                    />
                 </div>
             </SlideOverDrawer>
+
+            {(schedulePreviewMutation.isPending || isRefreshingSavedSchedule) && (
+                <QueryLoadingState
+                    className="m-3 shrink-0 sm:m-4"
+                    message={isRefreshingSavedSchedule
+                        ? t('gantt.refreshingSavedSchedule')
+                        : t('gantt.schedulePreviewPending')}
+                />
+            )}
+
+            {schedulePreview && (
+                <section
+                    className="m-3 shrink-0 rounded-lg border border-action bg-action-muted/50 p-4 sm:m-4"
+                    role="status"
+                    aria-live="polite"
+                >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex min-w-0 items-start gap-3">
+                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-card text-action shadow-sm">
+                                <Eye className="h-5 w-5" aria-hidden="true" />
+                            </div>
+                            <div className="min-w-0">
+                                <h2 className="font-semibold text-content-primary">
+                                    {t(scheduleMutation.isPending
+                                        ? 'gantt.scheduleApplyPending'
+                                        : 'gantt.schedulePreviewReady')}
+                                </h2>
+                                <p className="mt-1 text-sm text-content-secondary">
+                                    {t(scheduleMutation.isPending
+                                        ? 'gantt.scheduleApplyPendingBody'
+                                        : 'gantt.schedulePreviewBody')}
+                                </p>
+                                {!scheduleMutation.isPending && (
+                                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-content-secondary">
+                                        {previewChangedTaskIds.size > 0 ? (
+                                        <span>{t('gantt.schedulePreviewChangedTasks', { count: previewChangedTaskIds.size })}</span>
+                                        ) : (
+                                            <span>{t('gantt.schedulePreviewNoDateChanges')}</span>
+                                        )}
+                                        {schedulePreview.overdue_task_ids.length > 0 && (
+                                            <span>{t('gantt.schedulePreviewOverdueTasks', { count: schedulePreview.overdue_task_ids.length })}</span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 self-end sm:self-auto">
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                onClick={returnToSavedSchedule}
+                                disabled={scheduleMutation.isPending || scheduleMutation.isError}
+                            >
+                                {t('gantt.discardSchedulePreview')}
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                onClick={applySchedulePreview}
+                                isLoading={scheduleMutation.isPending}
+                                disabled={scheduleMutation.isError}
+                            >
+                                {t('gantt.applySchedulePreview')}
+                            </Button>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {schedulePreviewMutation.isError && (
+                <QueryErrorState
+                    className="m-3 shrink-0 sm:m-4"
+                    title={t('gantt.schedulePreviewFailedTitle')}
+                    message={t('gantt.schedulePreviewFailed')}
+                    retryLabel={t('gantt.retrySchedulePreview')}
+                    onRetry={beginSchedulePreview}
+                />
+            )}
 
             {scheduleMutation.isError && (
                 <QueryErrorState
                     className="m-3 shrink-0 sm:m-4"
-                    error={scheduleMutation.error}
-                    fallback={t('surfaces.ganttChart.scheduleFailed')}
-                    onRetry={() => scheduleMutation.mutate()}
+                    title={t('gantt.scheduleSaveUnconfirmedTitle')}
+                    message={t('gantt.scheduleSaveUnconfirmedBody')}
+                    retryLabel={t('gantt.refreshSavedSchedule')}
+                    onRetry={() => void refreshSavedSchedule()}
                 />
             )}
 
             {/* Main Virtualized Area */}
-            <div
-                ref={scrollContainerRef}
-                className="flex-1 overflow-auto relative select-none"
-                role="grid"
-                tabIndex={0}
-                aria-label={t('gantt.chartRegion')}
-                onMouseDown={onMouseDown}
-                onMouseLeave={stopDragging}
-                onMouseUp={stopDragging}
-                onMouseMove={onMouseMove}
-            >
+            {displayTasks.length === 0 ? (
+                <section
+                    className="flex flex-1 flex-col items-center justify-center px-6 py-12 text-center"
+                    aria-label={t('gantt.chartRegion')}
+                >
+                    {isFilteredEmpty ? (
+                        <ListFilter aria-hidden="true" className="h-7 w-7 text-content-tertiary" />
+                    ) : (
+                        <CalendarOff aria-hidden="true" className="h-7 w-7 text-content-tertiary" />
+                    )}
+                    <h2 className="mt-3 text-base font-semibold text-content-primary">
+                        {t(isFilteredEmpty ? 'gantt.noFilteredTasksTitle' : 'gantt.noTasksTitle')}
+                    </h2>
+                    <p className="mt-1 max-w-[60ch] text-sm text-content-secondary">
+                        {t(isFilteredEmpty ? 'gantt.noFilteredTasksBody' : 'gantt.noTasksBody')}
+                    </p>
+                    {isFilteredEmpty ? (
+                        <Button className="mt-4" size="sm" variant="secondary" onClick={clearFilters}>
+                            {t('surfaces.ganttChart.clearFilters')}
+                        </Button>
+                    ) : (
+                        <Link className="btn primary sm mt-4" to="/tasks?create=1">
+                            {t('gantt.addTask')}
+                        </Link>
+                    )}
+                </section>
+            ) : (
+                <div
+                    ref={scrollContainerRef}
+                    className="flex-1 overflow-auto relative select-none"
+                    role="region"
+                    tabIndex={0}
+                    aria-label={t('gantt.chartRegion')}
+                    aria-describedby={chartInstructionsId}
+                    aria-busy={schedulePreviewMutation.isPending || scheduleMutation.isPending || isRefreshingSavedSchedule}
+                    onMouseDown={onMouseDown}
+                    onMouseLeave={stopDragging}
+                    onMouseUp={stopDragging}
+                    onMouseMove={onMouseMove}
+                >
+                    <p id={chartInstructionsId} className="sr-only">
+                        {t('gantt.chartInstructions')}
+                    </p>
                 {/* 1. Header Layer (Sticky Top) */}
                 <div
                     className="sticky top-0 z-40 bg-surface-subtle border-b shadow-sm"
@@ -548,8 +930,16 @@ export const GanttChart = ({
                                         width: `${virtualColumn.size}px`
                                     }}
                                 >
-                                    <span className="font-bold">{format(day, 'd')}</span>
-                                    <span className="text-[9px]">{format(day, 'EEE', { locale: dateFnsLocale(activeI18n.language) })}</span>
+                                    <time
+                                        dateTime={format(day, 'yyyy-MM-dd')}
+                                        aria-label={getCalendarDayLabel(day)}
+                                        className="flex flex-col items-center"
+                                    >
+                                        <span aria-hidden="true" className="font-bold">{format(day, 'd')}</span>
+                                        <span aria-hidden="true" className="text-[9px]">
+                                            {format(day, 'EEE', { locale: dateFnsLocale(activeI18n.language) })}
+                                        </span>
+                                    </time>
                                 </div>
                             );
                         })}
@@ -604,8 +994,12 @@ export const GanttChart = ({
                     {/* B. Task Rows Layer */}
                     {rowVirtualizer.getVirtualItems().map(virtualRow => {
                         const task = displayTasks[virtualRow.index];
-                        const { left, width } = getTaskPosition(task);
+                        const taskDates = getTaskTimelineDates(task);
+                        const taskPosition = hasCompleteTimelineDates(taskDates)
+                            ? getTaskPosition(task)
+                            : null;
                         const isSelected = editingTask?.id === task.id;
+                        const isTaskExpanded = activeFilterCount > 0 || expandedTasks.has(task.id);
 
                         return (
                             <div
@@ -625,23 +1019,47 @@ export const GanttChart = ({
                                 >
                                     <div className="flex items-center gap-1" style={{ paddingLeft: `${task.depth * 16}px` }}>
                                         {task.children && task.children.length > 0 ? (
-                                            <button
-                                                type="button"
-                                                onClick={() => toggleExpand(task.id)}
-                                                className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                                                aria-expanded={expandedTasks.has(task.id)}
-                                                aria-label={expandedTasks.has(task.id) ? t('gantt.collapseTask', { title: task.title }) : t('gantt.expandTask', { title: task.title })}
-                                            >
-                                                {expandedTasks.has(task.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                                            </button>
+                                            activeFilterCount > 0 ? (
+                                                <span className="p-0.5 text-content-secondary" aria-hidden="true">
+                                                    <ChevronDown className="h-4 w-4" />
+                                                </span>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleExpand(task.id)}
+                                                    className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                                    aria-expanded={isTaskExpanded}
+                                                    aria-label={isTaskExpanded
+                                                        ? t('gantt.collapseTask', { title: task.title })
+                                                        : t('gantt.expandTask', { title: task.title })}
+                                                >
+                                                    {isTaskExpanded
+                                                        ? <ChevronDown className="h-4 w-4" />
+                                                        : <ChevronRight className="h-4 w-4" />}
+                                                </button>
+                                            )
                                         ) : <span className="w-5" />}
                                         <div className="font-medium truncate text-sm flex-1 text-content-primary" title={task.title}>{task.title}</div>
                                     </div>
-                                    <div className="flex items-center gap-2 pl-6 mt-1 text-[10px] text-content-tertiary">
-                                        {task.assignee?.name && <span className="truncate max-w-[100px]">{task.assignee.name}</span>}
-                                        <span className={clsx("px-1 rounded border", task.priority <= 2 ? "border-feedback-danger-border text-feedback-danger-foreground bg-feedback-danger-muted" : "border-border")}>
-                                            P{task.priority}
+                                    <div className="mt-1 flex items-center gap-1.5 pl-6 text-[10px] text-content-tertiary">
+                                        <span
+                                            className="max-w-[96px] truncate"
+                                            title={task.assignee?.name ?? t('common.unassigned')}
+                                        >
+                                            {task.assignee?.name ?? t('common.unassigned')}
                                         </span>
+                                        <span
+                                            aria-label={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
+                                            title={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
+                                            className={clsx("shrink-0 rounded border px-1", task.priority <= 2 ? "border-feedback-danger-border text-feedback-danger-foreground bg-feedback-danger-muted" : "border-border")}
+                                        >
+                                            {t('surfaces.ganttChart.priority', { priority: task.priority })}
+                                        </span>
+                                        {previewChangedTaskIds.has(task.id) && (
+                                            <span className="truncate rounded bg-action-muted px-1 text-action">
+                                                {t('gantt.previewDatesChanged')}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 
@@ -651,46 +1069,85 @@ export const GanttChart = ({
                                     {getCollapsedVacationRanges(task.assignee?.id).map((range, i) => (
                                         <div
                                             key={i}
+                                            aria-hidden="true"
                                             className="absolute top-0 bottom-0 bg-feedback-purple-muted/60 pattern-diagonal-lines"
                                             title={t('surfaces.ganttChart.vacation')}
                                             style={{ left: `${range.left}px`, width: `${range.width}px` }}
                                         />
                                     ))}
 
-                                    <button
-                                        type="button"
-                                        className={clsx(
-                                            "absolute top-3 h-6 rounded px-2 text-xs shadow-sm flex items-center cursor-pointer hover:brightness-110 active:brightness-90 transition-all z-10",
-                                            getTaskBaseColorClass(task),
-                                            task.is_delayed && "ring-2 ring-feedback-purple ring-offset-1",
-                                            task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
-                                            task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold"
-                                        )}
-                                        style={{ left: `${left}px`, width: `${width}px` }}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setEditingTask(task);
-                                        }}
-                                        title={getTaskTooltip(task)}
-                                        aria-label={t('gantt.openTask', { title: task.title })}
-                                    >
-                                        <span className="truncate font-medium drop-shadow-md">{task.title}</span>
-                                    </button>
+                                    {taskPosition ? (
+                                        <button
+                                            type="button"
+                                            className={clsx(
+                                                "absolute top-3 z-10 flex h-6 items-center rounded px-2 text-xs shadow-sm transition-all",
+                                                getTaskBaseColorClass(task),
+                                                task.is_delayed && "ring-2 ring-feedback-purple ring-offset-1",
+                                                task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
+                                                task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
+                                                previewChangedTaskIds.has(task.id) && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
+                                                schedulePreview
+                                                    ? "cursor-not-allowed opacity-80"
+                                                    : "cursor-pointer hover:brightness-110 active:brightness-90"
+                                            )}
+                                            style={{ left: `${taskPosition.left}px`, width: `${taskPosition.width}px` }}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                if (schedulePreview) return;
+                                                setEditingTask(task);
+                                            }}
+                                            aria-disabled={schedulePreview ? true : undefined}
+                                            title={schedulePreview ? getPreviewTaskDescription(task) : getTaskTooltip(task)}
+                                            aria-label={schedulePreview
+                                                ? getPreviewTaskDescription(task)
+                                                : getTaskAccessibleLabel(task)}
+                                        >
+                                            <span className="truncate font-medium drop-shadow-md">{task.title}</span>
+                                        </button>
+                                    ) : schedulePreview ? (
+                                        <div
+                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground"
+                                            role="note"
+                                            aria-label={getPreviewTaskDescription(task)}
+                                            title={getPreviewTaskDescription(task)}
+                                        >
+                                            <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                                            <span className="font-medium">{t('gantt.notScheduled')}</span>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground transition-colors hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                setEditingTask(task);
+                                            }}
+                                            aria-label={t('gantt.openUnscheduledTask', { title: task.title })}
+                                            title={getUnscheduledTaskDescription(task)}
+                                        >
+                                            <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                                            <span className="shrink-0 font-medium">{t('gantt.notScheduled')}</span>
+                                            <span aria-hidden="true" className="truncate text-content-secondary">
+                                                · {getUnscheduledTaskGuidance(task)}
+                                            </span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+                </div>
+            )}
 
-                <TaskEditModal
-                    task={editingTask}
-                    iterationId={iterationId}
-                    isOpen={!!editingTask}
-                    onClose={() => setEditingTask(null)}
-                    sandboxMode={sandboxMode}
-                    onSaveSandbox={onSaveSandbox}
-                />
-            </div>
+            <TaskEditModal
+                task={editingTask}
+                iterationId={iterationId}
+                isOpen={!!editingTask}
+                onClose={() => setEditingTask(null)}
+                sandboxMode={sandboxMode}
+                onSaveSandbox={onSaveSandbox}
+            />
         </div>
     );
 };
