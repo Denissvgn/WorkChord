@@ -80,7 +80,7 @@ export const STEP_DEFS: MasterStepDef[] = [
         primary: 'Open review',
         secondary: 'Export summary',
         expert: 'Open Schedule → Review',
-        route: '/',
+        route: '/gantt',
         secondaryRoute: '/gantt',
     },
 ];

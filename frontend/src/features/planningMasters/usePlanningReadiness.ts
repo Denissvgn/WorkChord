@@ -153,11 +153,19 @@ export const usePlanningReadiness = ({
     const ready = useMemo(() => readiness(status), [status]);
     const nextId = useMemo(() => nextStep(status), [status]);
 
-    const queryError = iterationsQuery.error
-        ?? teamQuery.error
+    const readinessError = teamQuery.error
         ?? tasksQuery.error
         ?? ganttQuery.error
         ?? (includeInbox ? inboxQuery.error : null);
+    const queryError = iterationsQuery.error ?? readinessError;
+    const isReadinessLoading = (
+        hasCurrentIteration
+        && (teamQuery.isLoading || tasksQuery.isLoading || ganttQuery.isLoading)
+    ) || (includeInbox && inboxQuery.isLoading);
+    const isReadinessFetching = (
+        hasCurrentIteration
+        && (teamQuery.isFetching || tasksQuery.isFetching || ganttQuery.isFetching)
+    ) || (includeInbox && inboxQuery.isFetching);
 
     const refetch = async () => {
         await Promise.all([
@@ -183,8 +191,14 @@ export const usePlanningReadiness = ({
         status,
         ready,
         nextId,
-        isLoading: iterationsQuery.isLoading || teamQuery.isLoading || tasksQuery.isLoading || ganttQuery.isLoading,
+        isLoading: iterationsQuery.isLoading || isReadinessLoading,
         isError: Boolean(queryError),
+        isIterationsLoading: iterationsQuery.isLoading,
+        isIterationsError: Boolean(iterationsQuery.error),
+        isIterationsFetching: iterationsQuery.isFetching,
+        isReadinessLoading,
+        isReadinessError: Boolean(readinessError),
+        isReadinessFetching,
         error: queryError,
         refetch,
     };

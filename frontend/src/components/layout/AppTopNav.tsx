@@ -1,20 +1,54 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { triageService } from '../../services/triageService';
 import { usePlanningReadiness } from '../../features/planningMasters/usePlanningReadiness';
-import { PRIMARY_NAV_ITEMS, WORKSPACES } from '../../navigation/workspaces';
+import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
+import type { WorkspaceMetadata } from '../../navigation/workspaces';
 import { warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
 import { UserSessionBadge } from '../UserSessionBadge';
+import { SidebarContent } from './AppSidebar';
 
-const TOP_NAV_PATHS = ['/', '/plan', '/tasks', '/gantt', '/team', '/triage'];
+const WorkspaceSwitchLink = ({
+    workspace,
+    active,
+    className,
+    onNavigate,
+    attention,
+}: {
+    workspace: WorkspaceMetadata;
+    active: boolean;
+    className: string;
+    onNavigate?: () => void;
+    attention?: boolean;
+}) => {
+    const { t } = useTranslation();
+    const Icon = workspace.icon;
+    const label = t(workspace.labelKey, workspace.defaultLabel);
+
+    return (
+        <Link
+            to={workspace.defaultPath}
+            className={className}
+            aria-current={active ? 'location' : undefined}
+            onClick={onNavigate}
+            onFocus={() => { void warmRouteModule(workspace.defaultPath); }}
+            onMouseEnter={() => { void warmRouteModule(workspace.defaultPath); }}
+        >
+            <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+            <span>{label}</span>
+            {attention && <span className="nb-dot" aria-hidden="true" />}
+        </Link>
+    );
+};
 
 export const AppTopNav = () => {
     const { iterations, ready } = usePlanningReadiness();
     const { t } = useTranslation();
+    const location = useLocation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
@@ -30,9 +64,20 @@ export const AppTopNav = () => {
     const pendingSteps = ready.total - ready.done;
     const isEmpty = iterations.length === 0;
     const inboxCount = triageItems.length;
-    const topItems = TOP_NAV_PATHS
-        .map(path => PRIMARY_NAV_ITEMS.find(item => item.to === path))
-        .filter((item): item is NonNullable<typeof item> => item != null);
+    const currentWorkspace = getWorkspaceForPath(location.pathname);
+    const deliveryNeedsAttention = (!isEmpty && pendingSteps > 0) || inboxCount > 0 || Boolean(triageError);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+
+        const drawerBreakpoint = window.matchMedia('(max-width: 1024px)');
+        const closeDrawerOnDesktop = (event: MediaQueryListEvent) => {
+            if (!event.matches) setMobileMenuOpen(false);
+        };
+
+        drawerBreakpoint.addEventListener('change', closeDrawerOnDesktop);
+        return () => drawerBreakpoint.removeEventListener('change', closeDrawerOnDesktop);
+    }, []);
 
     return (
         <header className="topnav" data-testid="app-navbar">
@@ -48,34 +93,16 @@ export const AppTopNav = () => {
                 <span className="brand-label" style={{ color: 'var(--ink)' }}>{t('common.appName')}</span>
             </div>
 
-            <nav className="nav-tabs" aria-label={t('nav.primaryNavigation')}>
-                {topItems.map(item => {
-                    const Icon = item.icon;
-                    const label = t(item.labelKey, item.defaultLabel);
-                    const isPlan = item.to === '/plan';
-                    const isTriage = item.to === '/triage';
-                    const badge = isPlan && !isEmpty && pendingSteps > 0
-                        ? pendingSteps
-                        : isTriage && inboxCount > 0 ? inboxCount : null;
-                    return (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.to === '/'}
-                            className="nav-tab"
-                            onFocus={() => { void warmRouteModule(item.to); }}
-                            onMouseEnter={() => { void warmRouteModule(item.to); }}
-                        >
-                            <Icon aria-hidden="true" className="h-[14px] w-[14px]" />
-                            <span className="nav-tab-label">{label}</span>
-                            {badge != null && <span className="nb-badge">{badge}</span>}
-                            {isPlan && isEmpty && <span className="nb-dot" aria-hidden="true" />}
-                            {isTriage && triageError && (
-                                <span className="nb-dot warn" role="status" aria-label={t('queryFeedback.fallback')} />
-                            )}
-                        </NavLink>
-                    );
-                })}
+            <nav className="nav-tabs workspace-switcher" aria-label={t('nav.workspaceSelector')}>
+                {WORKSPACES.map(workspace => (
+                    <WorkspaceSwitchLink
+                        key={workspace.key}
+                        workspace={workspace}
+                        active={workspace.key === currentWorkspace.key}
+                        className="nav-tab nav-workspace-tab"
+                        attention={workspace.key === 'delivery' && deliveryNeedsAttention}
+                    />
+                ))}
             </nav>
 
             <div className="nav-right">
@@ -88,6 +115,7 @@ export const AppTopNav = () => {
                     onClick={() => setMobileMenuOpen(true)}
                 >
                     <Menu aria-hidden="true" className="h-5 w-5" />
+                    <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
                 </button>
                 <UserSessionBadge />
             </div>
@@ -101,7 +129,7 @@ export const AppTopNav = () => {
                         aria-hidden="true"
                         onClick={requestClose}
                     />
-                    <nav
+                    <aside
                         id="mobile-primary-navigation"
                         ref={dialogRef}
                         className="mobile-nav-panel"
@@ -117,31 +145,23 @@ export const AppTopNav = () => {
                             </button>
                         </div>
                         <div className="mobile-nav-content">
-                            {WORKSPACES.map(workspace => (
-                                <section key={workspace.key} aria-labelledby={`mobile-nav-${workspace.key}`}>
-                                    <h2 id={`mobile-nav-${workspace.key}`} className="mobile-nav-group">
-                                        {t(workspace.labelKey, workspace.defaultLabel)}
-                                    </h2>
-                                    {workspace.items.map(item => {
-                                        const Icon = item.icon;
-                                        const label = t(item.labelKey, item.defaultLabel);
-                                        return (
-                                            <NavLink
-                                                key={item.to}
-                                                to={item.to}
-                                                end={item.to === '/'}
-                                                className="mobile-nav-item"
-                                                onClick={() => setMobileMenuOpen(false)}
-                                            >
-                                                <Icon aria-hidden="true" className="h-4 w-4" />
-                                                <span>{label}</span>
-                                            </NavLink>
-                                        );
-                                    })}
-                                </section>
-                            ))}
+                            <nav className="mobile-workspace-switcher" aria-label={t('nav.workspaceSelector')}>
+                                {WORKSPACES.map(workspace => (
+                                    <WorkspaceSwitchLink
+                                        key={workspace.key}
+                                        workspace={workspace}
+                                        active={workspace.key === currentWorkspace.key}
+                                        className="mobile-workspace-link"
+                                        onNavigate={() => setMobileMenuOpen(false)}
+                                        attention={workspace.key === 'delivery' && deliveryNeedsAttention}
+                                    />
+                                ))}
+                            </nav>
+                            <nav aria-label={t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)}>
+                                <SidebarContent onNavigate={() => setMobileMenuOpen(false)} />
+                            </nav>
                         </div>
-                    </nav>
+                    </aside>
                 </div>
             )}
         </header>

@@ -2,7 +2,7 @@ import i18n from '../../i18n/i18n';
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, ListFilter } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { TaskEditModal } from './TaskEditModal';
@@ -15,6 +15,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
+import { OverflowMenu, SlideOverDrawer } from '../ui';
 
 const t = i18n.t.bind(i18n);
 
@@ -73,6 +74,8 @@ export const GanttChart = ({
     const [isCompressed, setIsCompressed] = useState(false);
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+    const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned);
 
     // --- Data Preparation ---
 
@@ -383,56 +386,99 @@ export const GanttChart = ({
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow">
             {/* Toolbar */}
-            <div className="z-10 flex shrink-0 flex-col gap-3 border-b border-border bg-surface-card p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
-                <h2 className="text-lg font-bold sm:text-xl">{t('surfaces.ganttChart.projectSchedule')}</h2>
+            <div className="z-10 flex shrink-0 justify-end border-b border-border bg-surface-card p-3 sm:p-4">
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
-                    <select
-                        value={selectedAssigneeId ?? ''}
-                        onChange={e => setSelectedAssigneeId(e.target.value ? parseInt(e.target.value) : null)}
-                        className="min-w-44 flex-1 rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus sm:flex-none"
-                    >
-                        <option value="">{t('surfaces.ganttChart.allAssignees')}</option>
-                        {uniqueAssignees.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    </select>
-
-                    <Checkbox className="shrink-0" checked={hideUnassigned} onChange={setHideUnassigned} label={t('surfaces.ganttChart.hideUnassigned')} />
-
-                    <div className="mx-1 hidden h-6 w-px bg-surface-hover sm:block" />
-
                     <Button
-                        variant={isSortedByDate ? "primary" : "ghost"}
+                        variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
                         size="sm"
-                        onClick={() => setIsSortedByDate(!isSortedByDate)}
-                        title={t(isSortedByDate ? 'surfaces.ganttChart.sortingByDate' : 'surfaces.ganttChart.sortByDate')}
+                        onClick={() => setIsFiltersOpen(true)}
+                        aria-expanded={isFiltersOpen}
                     >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {t(isSortedByDate ? 'surfaces.ganttChart.dateOrder' : 'surfaces.ganttChart.sortDate')}
+                        <ListFilter className="mr-2 h-4 w-4" />
+                        {t('taskFilters.filters')}
+                        {activeFilterCount > 0 && (
+                            <span className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums">
+                                {activeFilterCount}
+                            </span>
+                        )}
                     </Button>
-
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => {
-                            const allIds = new Set<number>();
-                            const traverse = (t: GanttTask) => { if (t.children?.length) { allIds.add(t.id); t.children.forEach(traverse); } };
-                            tasks.forEach(traverse);
-                            setExpandedTasks(allIds);
-                        }}>{t('surfaces.ganttChart.expandAll')}</Button>
-
-                        <Button variant="ghost" size="sm" onClick={() => setExpandedTasks(new Set())}>{t('surfaces.ganttChart.collapseAll')}</Button>
-                    </div>
-
-                    <Button onClick={() => scheduleMutation.mutate()} isLoading={scheduleMutation.isPending}>
-                        <RefreshCw className="w-4 h-4 mr-2" /> {t('surfaces.ganttChart.autoSchedule')}
-                    </Button>
-
-                    <div className="flex items-center gap-1 border-l border-border pl-2 sm:ml-2">
-                        <Button variant="ghost" size="sm" aria-label={t('gantt.zoomOut')} onClick={() => setZoomLevel(p => Math.max(20, p - 10))}><ZoomOut className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="sm" aria-label={t('gantt.zoomIn')} onClick={() => setZoomLevel(p => Math.min(100, p + 10))}><ZoomIn className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="sm" aria-label={isCompressed ? t('gantt.expandLayout') : t('gantt.compressLayout')} onClick={() => setIsCompressed(p => !p)}>
-                            {isCompressed ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-                        </Button>
-                    </div>
+                    <OverflowMenu
+                        label={t('actions.moreActions')}
+                        items={[
+                            {
+                                label: t('surfaces.ganttChart.autoSchedule'),
+                                icon: <RefreshCw className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => scheduleMutation.mutate(),
+                                disabled: scheduleMutation.isPending,
+                            },
+                            {
+                                label: t(isSortedByDate ? 'surfaces.ganttChart.sortingByDate' : 'surfaces.ganttChart.sortByDate'),
+                                icon: <Calendar className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setIsSortedByDate(value => !value),
+                            },
+                            {
+                                label: t('surfaces.ganttChart.expandAll'),
+                                icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => {
+                                    const allIds = new Set<number>();
+                                    const traverse = (task: GanttTask) => {
+                                        if (task.children?.length) {
+                                            allIds.add(task.id);
+                                            task.children.forEach(traverse);
+                                        }
+                                    };
+                                    tasks.forEach(traverse);
+                                    setExpandedTasks(allIds);
+                                },
+                            },
+                            {
+                                label: t('surfaces.ganttChart.collapseAll'),
+                                icon: <ChevronRight className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setExpandedTasks(new Set()),
+                            },
+                            {
+                                label: t('gantt.zoomOut'),
+                                icon: <ZoomOut className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setZoomLevel(value => Math.max(20, value - 10)),
+                            },
+                            {
+                                label: t('gantt.zoomIn'),
+                                icon: <ZoomIn className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setZoomLevel(value => Math.min(100, value + 10)),
+                            },
+                            {
+                                label: t(isCompressed ? 'gantt.expandLayout' : 'gantt.compressLayout'),
+                                icon: isCompressed
+                                    ? <Maximize2 className="h-4 w-4" aria-hidden="true" />
+                                    : <Minimize2 className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setIsCompressed(value => !value),
+                            },
+                        ]}
+                    />
                 </div>
             </div>
+
+            <SlideOverDrawer
+                open={isFiltersOpen}
+                title={t('taskFilters.filters')}
+                icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
+                onClose={() => setIsFiltersOpen(false)}
+            >
+                <div className="space-y-5 p-4">
+                    <label className="block text-sm text-content-secondary">
+                        <span className="mb-1 block text-xs font-medium uppercase tracking-wide">{t('surfaces.ganttChart.allAssignees')}</span>
+                        <select
+                            value={selectedAssigneeId ?? ''}
+                            onChange={event => setSelectedAssigneeId(event.target.value ? parseInt(event.target.value) : null)}
+                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                        >
+                            <option value="">{t('surfaces.ganttChart.allAssignees')}</option>
+                            {uniqueAssignees.map(assignee => <option key={assignee.id} value={assignee.id}>{assignee.name}</option>)}
+                        </select>
+                    </label>
+                    <Checkbox checked={hideUnassigned} onChange={setHideUnassigned} label={t('surfaces.ganttChart.hideUnassigned')} />
+                </div>
+            </SlideOverDrawer>
 
             {scheduleMutation.isError && (
                 <QueryErrorState

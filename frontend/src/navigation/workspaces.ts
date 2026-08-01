@@ -80,22 +80,16 @@ export const WORKSPACES: WorkspaceMetadata[] = [
 
 export const PRIMARY_NAV_ITEMS = WORKSPACES.flatMap(workspace => workspace.items);
 
-export const getWorkspaceFromPath = (path: string): WorkspaceKey => {
-    if (
-        path.startsWith('/gantt') ||
-        path.startsWith('/roadmap') ||
-        path.startsWith('/iterations') ||
-        path.startsWith('/calendar')
-    ) {
-        return 'planning';
-    }
-    if (
-        path.startsWith('/team') ||
-        path.startsWith('/agent-team') ||
-        path.startsWith('/analytics') ||
-        path.startsWith('/settings')
-    ) {
-        return 'resource';
-    }
-    return 'delivery';
+export const getWorkspaceFromPath = (pathname: string): WorkspaceKey => {
+    const workspace = WORKSPACES.find(candidate => candidate.items.some(item => (
+        item.to === '/'
+            ? pathname === '/'
+            : pathname === item.to || pathname.startsWith(`${item.to}/`)
+    )));
+
+    return workspace?.key ?? 'delivery';
 };
+
+export const getWorkspaceForPath = (pathname: string): WorkspaceMetadata => (
+    WORKSPACES.find(workspace => workspace.key === getWorkspaceFromPath(pathname)) ?? WORKSPACES[0]!
+);

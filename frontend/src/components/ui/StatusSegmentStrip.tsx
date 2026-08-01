@@ -22,11 +22,11 @@ export const StatusSegmentStrip = ({
     <div className={clsx('kpi-grid', columnsClassName, className)}>
         {segments.map((segment) => (
             <div key={segment.key} className="kpi">
-                <div className="kpi-lbl" style={{ textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '10.5px', fontWeight: 600 }}>
+                <div className="kpi-lbl status-segment-label">
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: toneVar[segment.tone ?? 'gray'], display: 'inline-block' }} />
                     {segment.label}
                 </div>
-                <p className="tnum" style={{ margin: '4px 0 0', fontSize: 18, fontWeight: 600, color: 'var(--ink)' }}>{segment.value}</p>
+                <p className="tnum status-segment-value">{segment.value}</p>
             </div>
         ))}
     </div>

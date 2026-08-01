@@ -27,7 +27,7 @@ export const SectionCard = ({
             <div className="card-head">
                 {icon}
                 <div style={{ minWidth: 0, flex: 1 }}>
-                    {title && <h3 style={{ margin: 0, fontSize: '12.5px', fontWeight: 600, color: 'var(--ink)' }}>{title}</h3>}
+                    {title && <h3>{title}</h3>}
                     {description && <p className="sub" style={{ margin: '2px 0 0' }}>{description}</p>}
                 </div>
                 {count}

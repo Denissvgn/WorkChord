@@ -1,10 +1,10 @@
 import type { ReactNode, CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { localizeStatus, STEP_DEFS } from '../features/planningMasters/masters';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
 import { PageHeader, PageLayout } from '../components/ui';
+import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { formatDate } from '../utils/formatDate';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 
@@ -125,17 +125,19 @@ function MasterCard({ icon, title, desc, meta, cta, muted, onOpen }: {
 const PlanPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { selectedIterationId, currentIteration, readinessData, status: rawStatus, ready, nextId } = usePlanningReadiness({ includeInbox: true });
+    const {
+        currentIteration,
+        readinessData,
+        status: rawStatus,
+        ready,
+        nextId,
+        isLoading,
+        isError,
+        refetch,
+    } = usePlanningReadiness({ includeInbox: true });
     const status = localizeStatus(rawStatus, readinessData, t);
     const nextDef = STEP_DEFS.find(s => s.id === nextId);
-    const refreshPlanning = () => {
-        queryClient.invalidateQueries({ queryKey: ['iterations'] });
-        queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['tasks', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['gantt', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['triage'] });
-    };
+    const refreshPlanning = () => { void refetch(); };
 
     const openMaster = (id: string) => {
         if (id === 'iteration') navigate('/plan/master');
@@ -170,6 +172,22 @@ const PlanPage = () => {
             icon: <ISparkle size={16}/>, meta: t('plan.hub.beta'), cta: t('plan.hub.open'),
         },
     ];
+
+    if (isLoading) {
+        return <PageLayout variant="wide">
+            <QueryLoadingState message={t('plan.master.planningDataLoading')} />
+        </PageLayout>;
+    }
+
+    if (isError) {
+        return <PageLayout variant="wide">
+            <QueryErrorState
+                title={t('plan.master.planningDataUnavailable')}
+                message={t('plan.master.planningDataUnavailableBody')}
+                onRetry={refreshPlanning}
+            />
+        </PageLayout>;
+    }
 
     return (
         <PageLayout variant="wide">

@@ -31,7 +31,6 @@ const IArrow     = (p: IconProps) => <Svg {...p} d={<><path d="M5 12h14M13 5l7 7
 const IArrowL    = (p: IconProps) => <Svg {...p} d={<><path d="M19 12H5M11 5l-7 7 7 7"/></>}/>;
 const IChevR     = (p: IconProps) => <Svg {...p} d={<polyline points="9 6 15 12 9 18"/>}/>;
 const IOpen      = (p: IconProps) => <Svg {...p} d={<><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></>}/>;
-const IMore      = (p: IconProps) => <Svg {...p} d={<><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></>}/>;
 const ISkip      = (p: IconProps) => <Svg {...p} d={<><polyline points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></>}/>;
 const IInfo      = (p: IconProps) => <Svg {...p} d={<><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></>}/>;
 const ICalendar  = (p: IconProps) => <Svg {...p} d={<><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></>}/>;
@@ -42,10 +41,7 @@ const IGantt     = (p: IconProps) => <Svg {...p} d={<><rect x="3" y="5" width="9
 const IWarning   = (p: IconProps) => <Svg {...p} d={<><path d="M12 2L1 21h22z"/><path d="M12 9v5M12 18v.5"/></>}/>;
 const IPlus      = (p: IconProps) => <Svg {...p} d={<><path d="M12 5v14M5 12h14"/></>}/>;
 const IRefresh   = (p: IconProps) => <Svg {...p} d={<><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></>}/>;
-const IZap       = (p: IconProps) => <Svg {...p} d={<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>}/>;
-const IPlay      = (p: IconProps) => <Svg {...p} d={<polygon points="6 3 20 12 6 21 6 3"/>}/>;
 const IInbox     = (p: IconProps) => <Svg {...p} d={<><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 6h13l3.5 6v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></>}/>;
-const IDoc       = (p: IconProps) => <Svg {...p} d={<><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="14 3 14 9 20 9"/><path d="M8 13h8M8 17h5"/></>}/>;
 const ISparkle   = (p: IconProps) => <Svg {...p} d={<><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></>}/>;
 
 type TeamWorkflow = 'assign' | 'import';
@@ -95,36 +91,60 @@ function EmptyState({
     secondaryTo,
     onPrimary,
     onSecondary,
-    primaryDisabled,
-    secondaryDisabled,
 }: {
     icon: ReactNode;
     title: string;
     msg: string;
-    primary: string;
+    primary?: string;
     secondary?: string;
     primaryTo?: string;
     secondaryTo?: string;
     onPrimary?: () => void;
     onSecondary?: () => void;
-    primaryDisabled?: boolean;
-    secondaryDisabled?: boolean;
 }) {
-    const renderAction = (label: string, className: string, to?: string, onClick?: () => void, disabled?: boolean) => (
-        to
+    const renderAction = (label: string | undefined, className: string, to?: string, onClick?: () => void) => {
+        if (!label || (!to && !onClick)) return null;
+        return to
             ? <Link to={to} className={className}>{label}</Link>
-            : <button type="button" className={className} onClick={onClick} disabled={disabled}>{label}</button>
-    );
+            : <button type="button" className={className} onClick={onClick}>{label}</button>;
+    };
+    const primaryAction = renderAction(primary, 'btn primary', primaryTo, onPrimary);
+    const secondaryAction = renderAction(secondary, 'btn', secondaryTo, onSecondary);
 
     return (
         <div className="empty">
             <div className="empty-icon">{icon}</div>
             <h4>{title}</h4>
             <p>{msg}</p>
-            <div className="empty-actions">
-                {renderAction(primary, 'btn primary', primaryTo, onPrimary, primaryDisabled)}
-                {secondary && renderAction(secondary, 'btn', secondaryTo, onSecondary, secondaryDisabled)}
+            {(primaryAction || secondaryAction) && <div className="empty-actions">
+                {primaryAction}
+                {secondaryAction}
+            </div>}
+        </div>
+    );
+}
+
+function ActionGuidance({
+    icon = <IInfo size={14}/>,
+    title,
+    body,
+    action,
+    to,
+}: {
+    icon?: ReactNode;
+    title: string;
+    body: string;
+    action?: string;
+    to?: string;
+}) {
+    return (
+        <div className="action-guidance" role="note">
+            <span className="action-guidance-icon" aria-hidden="true">{icon}</span>
+            <div className="action-guidance-copy">
+                <div className="action-guidance-title">{title}</div>
+                <div className="action-guidance-body">{body}</div>
             </div>
+            {action && to && <Link to={to} className="btn sm ghost"><IOpen size={11}/>{action}</Link>}
         </div>
     );
 }
@@ -251,39 +271,47 @@ function BodyTeam({
     teamMembers,
     currentIteration,
     onStartWorkflow,
+    onOpenIteration,
 }: {
     r: PlanReadiness;
     teamMembers: unknown[];
     currentIteration: Iteration | null;
     onStartWorkflow: (workflow: TeamWorkflow) => void;
+    onOpenIteration: () => void;
 }) {
     const hasIteration = currentIteration !== null;
-    const openAssign = () => { if (hasIteration) onStartWorkflow('assign'); };
-    const openImport = () => { if (hasIteration) onStartWorkflow('import'); };
+    const openAssign = () => onStartWorkflow('assign');
+    const openImport = () => onStartWorkflow('import');
+
+    if (!hasIteration) {
+        return <EmptyState
+            icon={<ITeam size={16}/>}
+            title={tr('plan.master.createPeriodFirst')}
+            msg={tr('plan.master.teamNeedsPeriod')}
+            primary={tr('plan.master.goToPlanningPeriod')}
+            onPrimary={onOpenIteration}
+        />;
+    }
 
     if (r.teamMemberCount === 0) {
         return (
             <>
                 <div className="row" style={{gap:8}}>
-                    <button type="button" className="btn" onClick={openAssign} disabled={!hasIteration}>
+                    <button type="button" className="btn" onClick={openAssign}>
                         <IPlus size={12}/> {tr('plan.master.addPerson')}
                     </button>
-                    <button type="button" className="btn" onClick={openImport} disabled={!hasIteration}>
+                    <button type="button" className="btn" onClick={openImport}>
                         <IRefresh size={12}/> {tr('plan.master.importPrevious')}
                     </button>
                 </div>
                 <EmptyState
                     icon={<ITeam size={16}/>}
-                    title={hasIteration ? tr('plan.master.noTeamCapacity') : tr('plan.master.createPeriodFirst')}
-                    msg={hasIteration
-                        ? tr('plan.master.addPeopleBeforeSchedule')
-                        : tr('plan.master.teamNeedsPeriod')}
+                    title={tr('plan.master.noTeamCapacity')}
+                    msg={tr('plan.master.addPeopleBeforeSchedule')}
                     primary={tr('plan.master.addPeople')}
                     secondary={tr('plan.master.importPrevious')}
                     onPrimary={openAssign}
                     onSecondary={openImport}
-                    primaryDisabled={!hasIteration}
-                    secondaryDisabled={!hasIteration}
                 />
             </>
         );
@@ -293,17 +321,17 @@ function BodyTeam({
     return (
         <>
             <div className="row" style={{gap:8}}>
-                <button type="button" className="btn" onClick={openAssign} disabled={!hasIteration}>
+                <button type="button" className="btn" onClick={openAssign}>
                     <IPlus size={12}/> {tr('plan.master.addPerson')}
                 </button>
-                <button type="button" className="btn" onClick={openImport} disabled={!hasIteration}>
+                <button type="button" className="btn" onClick={openImport}>
                     <IRefresh size={12}/> {tr('plan.master.importPrevious')}
                 </button>
             </div>
             <div className="card" style={{padding:0}}>
                 <table className="table">
                     <thead>
-                        <tr><th>{tr('plan.master.person')}</th><th>{tr('plan.master.role')}</th><th style={{width:90}}>{tr('plan.master.capacity')}</th><th style={{width:200}}>{tr('plan.master.plannedLoad')}</th><th style={{width:60}} aria-label={tr('plan.master.actions')} /></tr>
+                        <tr><th>{tr('plan.master.person')}</th><th>{tr('plan.master.role')}</th><th style={{width:90}}>{tr('plan.master.capacity')}</th><th style={{width:200}}>{tr('plan.master.plannedLoad')}</th></tr>
                     </thead>
                     <tbody>
                         {members.map(p => {
@@ -336,7 +364,6 @@ function BodyTeam({
                                             </div>
                                         )}
                                     </td>
-                                    <td><button className="btn sm ghost" aria-label={tr('plan.master.personActions', { name: p.name })}><IMore size={12}/></button></td>
                                 </tr>
                             );
                         })}
@@ -349,6 +376,7 @@ function BodyTeam({
 
 function BodyWork({ r, tasks }: { r: PlanReadiness; tasks: Task[] }) {
     const [filter, setFilter] = useState<'all'|'noOwner'|'noEffort'>('all');
+    const createTaskTo = '/tasks?create=1';
     const visible = filter === 'noOwner' ? tasks.filter(t => !t.assignee)
                   : filter === 'noEffort' ? tasks.filter(t => !t.effort_days)
                   : tasks;
@@ -357,8 +385,8 @@ function BodyWork({ r, tasks }: { r: PlanReadiness; tasks: Task[] }) {
         return (
             <>
                 <div className="row" style={{justifyContent:'flex-end', gap:8}}>
-                    <button className="btn"><IInbox size={12}/> {tr('plan.master.pullFromIntake')}</button>
-                    <button className="btn primary"><IPlus size={12}/> {tr('plan.master.addTask')}</button>
+                    <Link to="/triage" className="btn"><IInbox size={12}/> {tr('plan.master.pullFromIntake')}</Link>
+                    <Link to={createTaskTo} className="btn primary"><IPlus size={12}/> {tr('plan.master.addTask')}</Link>
                 </div>
                 <EmptyState
                     icon={<ITasks size={16}/>}
@@ -366,6 +394,8 @@ function BodyWork({ r, tasks }: { r: PlanReadiness; tasks: Task[] }) {
                     msg={tr('plan.master.bringInWork')}
                     primary={tr('plan.master.addTasks')}
                     secondary={tr('plan.master.pullFromIntake')}
+                    primaryTo={createTaskTo}
+                    secondaryTo="/triage"
                 />
             </>
         );
@@ -380,15 +410,15 @@ function BodyWork({ r, tasks }: { r: PlanReadiness; tasks: Task[] }) {
                     <button aria-pressed={filter === 'noEffort'} onClick={() => setFilter('noEffort')}>{tr('plan.master.missingEffortCount', { count: r.tasksWithoutEffort })}</button>
                 </div>
                 <div className="row" style={{gap:8}}>
-                    <button className="btn"><IInbox size={12}/> {tr('plan.master.pullFromIntake')}</button>
-                    <button className="btn primary"><IPlus size={12}/> {tr('plan.master.addTask')}</button>
+                    <Link to="/triage" className="btn"><IInbox size={12}/> {tr('plan.master.pullFromIntake')}</Link>
+                    <Link to={createTaskTo} className="btn primary"><IPlus size={12}/> {tr('plan.master.addTask')}</Link>
                 </div>
             </div>
 
             <div className="card" style={{padding:0}}>
                 <table className="table">
                     <thead>
-                        <tr><th style={{width:24}} aria-label={tr('plan.master.readiness')} /><th>{tr('plan.master.task')}</th><th style={{width:150}}>{tr('plan.master.project')}</th><th style={{width:150}}>{tr('plan.master.assignee')}</th><th style={{width:90}}>{tr('plan.master.effort')}</th><th style={{width:60}} aria-label={tr('plan.master.actions')} /></tr>
+                        <tr><th style={{width:24}} aria-label={tr('plan.master.readiness')} /><th>{tr('plan.master.task')}</th><th style={{width:150}}>{tr('plan.master.project')}</th><th style={{width:150}}>{tr('plan.master.assignee')}</th><th style={{width:90}}>{tr('plan.master.effort')}</th></tr>
                     </thead>
                     <tbody>
                         {visible.slice(0,20).map(t => {
@@ -417,14 +447,13 @@ function BodyWork({ r, tasks }: { r: PlanReadiness; tasks: Task[] }) {
                                                 </span>
                                                 {t.assignee.name}
                                               </div>
-                                            : <button className="btn sm">{tr('plan.master.assign')}</button>}
+                                            : <Link to="/tasks" className="btn sm">{tr('plan.master.openTasks')}</Link>}
                                     </td>
                                     <td>
                                         {t.effort_days
                                             ? <span className="tnum">{t.effort_days}d</span>
-                                            : <button className="btn sm">{tr('plan.master.estimate')}</button>}
+                                            : <Link to="/tasks" className="btn sm">{tr('plan.master.openTasks')}</Link>}
                                     </td>
-                                    <td><button className="btn sm ghost" aria-label={tr('plan.master.taskActions', { title: t.title })}><IMore size={12}/></button></td>
                                 </tr>
                             );
                         })}
@@ -444,7 +473,7 @@ function BodyBlockers({ tasks, st }: { tasks: Task[]; st: StepStatus }) {
         );
     }
     if (st.state === 'blocked') {
-        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.addWorkFirst')} msg={tr('plan.master.blockersNeedTasks')} primary={tr('plan.master.addTasks')}/>;
+        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.addWorkFirst')} msg={tr('plan.master.blockersNeedTasks')} primary={tr('plan.master.addTasks')} primaryTo="/tasks?create=1"/>;
     }
 
     const noOwner  = tasks.filter(t => !t.assignee);
@@ -453,22 +482,25 @@ function BodyBlockers({ tasks, st }: { tasks: Task[]; st: StepStatus }) {
     return (
         <>
             <div className="row" style={{gap:8}}>
-                <button className="btn primary"><ISparkle size={12}/> {tr('plan.master.suggestFixes')}</button>
-                <button className="btn"><ISkip size={12}/> {tr('plan.master.moveNextPeriod')}</button>
+                <Link to="/tasks" className="btn primary"><ITasks size={12}/> {tr('plan.steps.blockers.primaryAction')}</Link>
             </div>
+            <ActionGuidance
+                icon={<ILock size={14}/>}
+                title={tr('plan.master.moveUnavailableTitle')}
+                body={tr('plan.master.moveUnavailableBody')}
+            />
 
             {noOwner.length > 0 && (
                 <div className="card" style={{padding:0}}>
                     <div className="card-head"><h3>{tr('plan.master.unassignedCount', { count: noOwner.length })}</h3><span className="sub">{tr('plan.master.schedulerSkipsUnassigned')}</span></div>
                     {noOwner.map(t => (
-                        <div key={t.id} className="cap-row" style={{gridTemplateColumns:'16px 1fr auto auto'}}>
+                        <div key={t.id} className="cap-row" style={{gridTemplateColumns:'16px 1fr auto'}}>
                             <IWarning size={13} style={{color:'var(--warn)'}}/>
                             <div>
                                 <div style={{fontWeight:500}}>{t.title}</div>
                                 <div className="muted" style={{fontSize:11}}>{t.effort_days ? tr('units.daysCompact', { count: t.effort_days }) : tr('plan.master.noEffort')}</div>
                             </div>
-                            <button className="btn sm">{tr('plan.master.assign')}</button>
-                            <button className="btn sm ghost" aria-label={tr('plan.master.moveTaskNextPeriod', { title: t.title })}><ISkip size={11}/></button>
+                            <Link to="/tasks" className="btn sm">{tr('plan.master.openTasks')}</Link>
                         </div>
                     ))}
                 </div>
@@ -478,14 +510,13 @@ function BodyBlockers({ tasks, st }: { tasks: Task[]; st: StepStatus }) {
                 <div className="card" style={{padding:0}}>
                     <div className="card-head"><h3>{tr('plan.master.missingEffortCount', { count: noEffort.length })}</h3><span className="sub">{tr('plan.master.schedulerNeedsEstimate')}</span></div>
                     {noEffort.map(t => (
-                        <div key={t.id} className="cap-row" style={{gridTemplateColumns:'16px 1fr auto auto'}}>
+                        <div key={t.id} className="cap-row" style={{gridTemplateColumns:'16px 1fr auto'}}>
                             <IWarning size={13} style={{color:'var(--warn)'}}/>
                             <div>
                                 <div style={{fontWeight:500}}>{t.title}</div>
                                 <div className="muted" style={{fontSize:11}}>{t.assignee?.name || tr('common.unassigned')}</div>
                             </div>
-                            <button className="btn sm">{tr('plan.master.estimate')}</button>
-                            <button className="btn sm ghost" aria-label={tr('plan.master.moveTaskNextPeriod', { title: t.title })}><ISkip size={11}/></button>
+                            <Link to="/tasks" className="btn sm">{tr('plan.master.openTasks')}</Link>
                         </div>
                     ))}
                 </div>
@@ -494,7 +525,7 @@ function BodyBlockers({ tasks, st }: { tasks: Task[]; st: StepStatus }) {
     );
 }
 
-function BodySchedule({ r, tasks, st }: { r: PlanReadiness; tasks: Task[]; st: StepStatus }) {
+function BodySchedule({ r, tasks, st, onOpenFirstIncomplete }: { r: PlanReadiness; tasks: Task[]; st: StepStatus; onOpenFirstIncomplete: () => void }) {
     const days = 14;
     const ganttTasks = tasks.slice(0, 7).map((t, i) => ({
         ...t,
@@ -503,16 +534,18 @@ function BodySchedule({ r, tasks, st }: { r: PlanReadiness; tasks: Task[]; st: S
     }));
 
     if (st.state === 'blocked') {
-        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.earlierStepsNeedAttention')} msg={tr('plan.master.schedulerPrerequisites')} primary={tr('plan.master.backFirstIncomplete')}/>;
+        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.earlierStepsNeedAttention')} msg={tr('plan.master.schedulerPrerequisites')} primary={tr('plan.master.backFirstIncomplete')} onPrimary={onOpenFirstIncomplete}/>;
     }
 
     return (
         <>
-            <div className="row" style={{gap:8}}>
-                <button className="btn accent"><IZap size={12}/> {tr('plan.master.buildSchedule')}</button>
-                <button className="btn"><IPlay size={12}/> {tr('plan.master.trySandbox')}</button>
-                <Link to="/gantt" className="btn ghost"><IOpen size={11}/> {tr('plan.master.openFullSchedule')}</Link>
-            </div>
+            <ActionGuidance
+                icon={<IGantt size={14}/>}
+                title={tr('plan.master.schedulingToolsTitle')}
+                body={tr('plan.master.schedulingToolsBody')}
+                action={tr('plan.master.openFullSchedule')}
+                to="/gantt"
+            />
 
             <div className="banner accent">
                 <ISparkle size={14}/>
@@ -572,7 +605,7 @@ function BodySchedule({ r, tasks, st }: { r: PlanReadiness; tasks: Task[]; st: S
 
 function BodyReview({ r, tasks, teamMembers }: { r: PlanReadiness; tasks: Task[]; teamMembers: unknown[] }) {
     if (!r.hasGanttSchedule) {
-        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.buildScheduleFirst')} msg={tr('plan.master.reviewNeedsSchedule')} primary={tr('plan.master.goBuildSchedule')}/>;
+        return <EmptyState icon={<ILock size={16}/>} title={tr('plan.master.buildScheduleFirst')} msg={tr('plan.master.reviewNeedsSchedule')} primary={tr('plan.master.openSchedule')} primaryTo="/gantt"/>;
     }
 
     type TM = { id: string; name: string; cap?: number; planned?: number | null; position?: string };
@@ -584,11 +617,13 @@ function BodyReview({ r, tasks, teamMembers }: { r: PlanReadiness; tasks: Task[]
 
     return (
         <>
-            <div className="row" style={{gap:8}}>
-                <button className="btn primary"><IDoc size={12}/> {tr('plan.master.shareSummary')}</button>
-                <Link to="/gantt" className="btn"><IOpen size={11}/> {tr('plan.master.openSchedule')}</Link>
-                <button className="btn ghost"><IRefresh size={11}/> {tr('plan.master.rebuildSchedule')}</button>
-            </div>
+            <ActionGuidance
+                icon={<IGantt size={14}/>}
+                title={tr('plan.master.sharingUnavailableTitle')}
+                body={tr('plan.master.sharingUnavailableBody')}
+                action={tr('plan.master.openSchedule')}
+                to="/gantt"
+            />
 
             <div className="kpi-grid">
                 <div className="kpi">
@@ -724,11 +759,12 @@ function StepBody({
                     teamMembers={teamMembers}
                     currentIteration={currentIteration}
                     onStartWorkflow={onStartTeamWorkflow}
+                    onOpenIteration={() => setActive('iteration')}
                 />
             )}
             {stepId === 'work'      && <BodyWork r={r} tasks={tasks}/>}
             {stepId === 'blockers'  && <BodyBlockers tasks={tasks} st={st}/>}
-            {stepId === 'schedule'  && <BodySchedule r={r} tasks={tasks} st={st}/>}
+            {stepId === 'schedule'  && <BodySchedule r={r} tasks={tasks} st={st} onOpenFirstIncomplete={() => setActive(nextStep(status))}/>}
             {stepId === 'review'    && <BodyReview r={r} tasks={tasks} teamMembers={teamMembers}/>}
 
             {/* Footer nav */}
@@ -750,21 +786,27 @@ function StepBody({
                     )}
                 </div>
                 <div className="row" style={{gap:8}}>
-                    {isIterationStep ? (
+                    {isIterationStep ? (st.state !== 'done' ? (
+                        <span className="muted" role="status" style={{fontSize:12}}>
+                            {tr('plan.master.completePeriodToContinue')}
+                        </span>
+                    ) : (
                         <button
                             type="button"
                             className="btn primary"
-                            disabled={st.state !== 'done'}
                             onClick={() => { if (idx < STEP_DEFS.length - 1) setActive(STEP_DEFS[idx + 1].id); }}
                         >
                             {tr('plan.master.continue')} <IArrow size={12}/>
                         </button>
-                    ) : isTeamStep ? (
+                    )) : isTeamStep ? (!hasCurrentIteration ? (
+                        <button type="button" className="btn primary" onClick={() => setActive('iteration')}>
+                            {tr('plan.master.goToPlanningPeriod')} <IArrow size={12}/>
+                        </button>
+                    ) : (
                         <>
                             <button
                                 type="button"
                                 className="btn"
-                                disabled={!hasCurrentIteration}
                                 onClick={() => startTeamWorkflow('import')}
                             >
                                 {tr(`plan.steps.${def.id}.secondaryAction`)}
@@ -772,7 +814,6 @@ function StepBody({
                             <button
                                 type="button"
                                 className="btn primary"
-                                disabled={!hasCurrentIteration}
                                 onClick={() => {
                                     if (st.state === 'done') {
                                         if (idx < STEP_DEFS.length - 1) setActive(STEP_DEFS[idx + 1].id);
@@ -784,6 +825,25 @@ function StepBody({
                                 {st.state === 'done' ? tr('plan.master.continue') : tr(`plan.steps.${def.id}.primaryAction`)} <IArrow size={12}/>
                             </button>
                         </>
+                    )) : stepId === 'work' ? (
+                        <>
+                            <Link to="/triage" className="btn">{tr(`plan.steps.${def.id}.secondaryAction`)}</Link>
+                            <Link to="/tasks?create=1" className="btn primary">
+                                {tr(`plan.steps.${def.id}.primaryAction`)} <IArrow size={12}/>
+                            </Link>
+                        </>
+                    ) : stepId === 'blockers' ? (
+                        <Link to="/tasks" className="btn primary">
+                            {tr(`plan.steps.${def.id}.primaryAction`)} <IArrow size={12}/>
+                        </Link>
+                    ) : stepId === 'schedule' ? (
+                        <Link to="/gantt" className="btn primary">
+                            {tr('plan.master.openFullSchedule')} <IArrow size={12}/>
+                        </Link>
+                    ) : stepId === 'review' ? (
+                        <Link to="/gantt" className="btn primary">
+                            {tr('plan.master.openSchedule')} <IArrow size={12}/>
+                        </Link>
                     ) : (
                         <>
                             <Link to={secondaryRoute} className="btn">{tr(`plan.steps.${def.id}.secondaryAction`)}</Link>
@@ -889,6 +949,9 @@ const PlanMasterPage = () => {
         status: rawStatus,
         ready,
         nextId: autoId,
+        isLoading,
+        isError,
+        refetch,
     } = usePlanningReadiness();
     const status = localizeStatus(rawStatus, r, t);
     const [activeId, setActiveId] = useState<string | null>(null);
@@ -904,6 +967,29 @@ const PlanMasterPage = () => {
         setTeamWorkflow(workflow);
     };
 
+    if (isLoading) {
+        return <div className="wc" style={{height:'100%', display:'grid', placeItems:'center'}}>
+            <div className="empty" role="status" aria-live="polite" aria-busy="true">
+                <div className="empty-icon"><IRefresh size={16}/></div>
+                <h4>{t('plan.master.planningDataLoading')}</h4>
+                <p>{t('plan.master.planningDataLoadingBody')}</p>
+            </div>
+        </div>;
+    }
+
+    if (isError) {
+        return <div className="wc" style={{height:'100%', display:'grid', placeItems:'center'}}>
+            <div className="empty" role="alert">
+                <div className="empty-icon"><IWarning size={16}/></div>
+                <h4>{t('plan.master.planningDataUnavailable')}</h4>
+                <p>{t('plan.master.planningDataUnavailableBody')}</p>
+                <div className="empty-actions">
+                    <button type="button" className="btn primary" onClick={() => { void refetch(); }}>{t('plan.master.retryPlanningData')}</button>
+                </div>
+            </div>
+        </div>;
+    }
+
     return (
         <div className="wc" style={{height:'100%', display:'flex', flexDirection:'column'}}>
             {/* Master header */}
@@ -914,7 +1000,7 @@ const PlanMasterPage = () => {
                 ]} />
                 <div className="between" style={{paddingBottom:12}}>
                     <div className="row" style={{gap:10, alignItems:'baseline'}}>
-                        <h1 style={{margin:0, fontSize:19, fontWeight:600, letterSpacing:'-0.012em'}}>{t('plan.hub.planIterationTitle')}</h1>
+                        <h1 className="wc-page-title">{t('plan.hub.planIterationTitle')}</h1>
                         <span className="muted" style={{fontSize:12}}>
                             {currentIteration
                                 ? `${currentIteration.name} · ${formatIterationDates(r.currentIterationStart, r.currentIterationEnd)}`
@@ -927,7 +1013,6 @@ const PlanMasterPage = () => {
                             <span style={{fontWeight:600, color:'var(--wc-ink)'}}>{ready.done}/{ready.total}</span>
                         </div>
                         <Link to={activeDef.route} className="btn sm ghost"><IOpen size={11}/> {t(`plan.steps.${activeDef.id}.expert`)}</Link>
-                        <button className="btn sm" aria-label={t('plan.master.moreActions')}><IMore size={12}/></button>
                     </div>
                 </div>
             </div>

@@ -236,7 +236,7 @@ export const SavedViewsControl = ({
     };
 
     return (
-        <div className="mb-3 rounded-lg border border-border bg-surface-card p-3">
+        <div className="space-y-3">
             {(sessionError || viewsError) && <QueryErrorState className="mb-3" error={sessionError ?? viewsError} onRetry={() => { void refetchSession(); void refetchViews(); }} />}
             <div className="flex flex-wrap items-center gap-2">
                 <select

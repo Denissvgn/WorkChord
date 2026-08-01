@@ -12,10 +12,10 @@ import { Button } from '../components/common/Button';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
-import { Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History } from 'lucide-react';
+import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
 import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
-import { PageHeader, PageLayout } from '../components/ui';
+import { OverflowMenu, PageHeader, PageLayout } from '../components/ui';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
 import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -75,7 +75,6 @@ const GanttPage = () => {
     const [restoreTarget, setRestoreTarget] = useState<IterationSnapshot | null>(null);
     const [restoreError, setRestoreError] = useState<string | null>(null);
     const latestExplainIterationRef = useRef<number | null>(null);
-    const fullscreenExitRef = useRef<HTMLButtonElement>(null);
 
     // Sandbox state
     const [sandboxMode, setSandboxMode] = useState(false);
@@ -181,6 +180,9 @@ const GanttPage = () => {
         staleTime: Infinity,
         retry: false,
     });
+    const canApplySandboxChanges = sandboxChangeCount > 0
+        && schedulePreviewQuery.isSuccess
+        && !schedulePreviewQuery.isFetching;
 
     const { sandboxedTasks, currentSimulationError } = useMemo(() => {
         if (!ganttTasks?.tasks) return { sandboxedTasks: [] as GanttTask[], currentSimulationError: null as string | null };
@@ -321,17 +323,14 @@ const GanttPage = () => {
             ariaLabel={t('gantt.fullScreenLabel')}
             className="contents"
             fullscreenClassName="bg-surface-muted"
-            initialFocusRef={fullscreenExitRef}
         >
         <PageLayout variant="workbench" className="flex h-full min-h-0 flex-col gap-4 overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
             <div className="wc-page-head shrink-0" data-testid="page-header" style={{padding:'0 4px'}}>
                 <div>
                     <div className="row" style={{gap:8, marginBottom:2}}>
-                        <h1 className="wc-page-title" style={{fontSize:18}}>{t('gantt.title')}</h1>
+                        <h1 className="wc-page-title">{t('gantt.title')}</h1>
                         {sandboxMode && <span className="pill warn"><span className="pdot"/>{t('gantt.sandboxActive')}</span>}
-                        {currentIteration && <span className="muted" style={{fontSize:12}}>{currentIteration.name}</span>}
                     </div>
-                    <div className="wc-page-sub">{t('gantt.description')}</div>
                 </div>
                 <div className="row" style={{flexWrap:'wrap', gap:6}}>
                     <IterationSelector
@@ -346,36 +345,38 @@ const GanttPage = () => {
                         }}
                     />
                     <Button
-                        variant="secondary"
-                        onClick={() => setSnapshotsOpen(true)}
-                        disabled={selectedIterationId <= 0}
-                    >
-                        <History className="mr-2 h-4 w-4" />
-                        {t('snapshots.open')}
-                    </Button>
-                    <Button
-                        variant={sandboxMode ? "primary" : "secondary"}
+                        variant={sandboxMode ? 'secondary' : 'primary'}
                         onClick={() => { if (sandboxMode) setSandboxChanges({}); setSandboxMode(!sandboxMode); }}
-                        className={clsx("justify-center transition-all duration-300", sandboxMode && "bg-feedback-warning hover:bg-feedback-warning/90 text-feedback-warning-emphasis")}
+                        className="justify-center"
                         title={t('gantt.sandboxTooltip')}
                     >
                         <FlaskConical className="w-4 h-4 mr-2"/>
                         {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
                     </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => explainMutation.mutate(selectedIterationId)}
-                        isLoading={explainMutation.isPending}
-                        disabled={!canExplainSchedule || sandboxMode}
-                        className="justify-center"
-                    >
-                        <Sparkles className="w-4 h-4 mr-2 text-feedback-purple"/>{t('gantt.explainSchedule')}
-                    </Button>
-                    <Button ref={isFullScreen ? fullscreenExitRef : undefined} variant="ghost" onClick={() => setIsFullScreen(!isFullScreen)}
-                        aria-label={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
-                        title={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')} className="shrink-0">
-                        {isFullScreen ? <Minimize2 aria-hidden="true" className="w-5 h-5"/> : <Maximize2 aria-hidden="true" className="w-5 h-5"/>}
-                    </Button>
+                    <OverflowMenu
+                        label={t('actions.moreActions')}
+                        items={[
+                            {
+                                label: t('snapshots.open'),
+                                icon: <History className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setSnapshotsOpen(true),
+                                disabled: selectedIterationId <= 0,
+                            },
+                            {
+                                label: t('gantt.explainSchedule'),
+                                icon: <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />,
+                                onSelect: () => explainMutation.mutate(selectedIterationId),
+                                disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending,
+                            },
+                            {
+                                label: isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen'),
+                                icon: isFullScreen
+                                    ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                                    : <Maximize2 className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setIsFullScreen(value => !value),
+                            },
+                        ]}
+                    />
                 </div>
             </div>
 
@@ -395,6 +396,11 @@ const GanttPage = () => {
                                     </span>
                                 ) : ` ${t('gantt.noEditsYet')}`}
                             </p>
+                            {sandboxChangeCount > 0 && !schedulePreviewQuery.isSuccess && !schedulePreviewQuery.isError && (
+                                <p className="mt-1 text-xs text-feedback-warning-foreground" role="status">
+                                    {t('gantt.simulationPending')}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center gap-2 self-end sm:self-center">
@@ -409,9 +415,12 @@ const GanttPage = () => {
                             <Undo2 className="w-4 h-4 mr-2" /> {t('gantt.discardEdits')}
                         </Button>
                         <Button
-                            onClick={() => applySandboxMutation.mutate()}
+                            onClick={() => {
+                                if (canApplySandboxChanges) applySandboxMutation.mutate();
+                            }}
                             isLoading={applySandboxMutation.isPending}
-                            disabled={Object.keys(sandboxChanges).length === 0}
+                            disabled={!canApplySandboxChanges}
+                            title={sandboxChangeCount > 0 && !canApplySandboxChanges ? t('gantt.applyPreviewRequired') : undefined}
                             className="bg-feedback-success hover:bg-feedback-success/90 text-feedback-success-emphasis ring-feedback-success"
                         >
                             <Check className="w-4 h-4 mr-2" /> {t('gantt.applyChanges')}
@@ -421,30 +430,67 @@ const GanttPage = () => {
             )}
 
             {sandboxMode && currentSimulationError && (
-                <div className="bg-feedback-danger-muted border border-feedback-danger-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0">
+                <div className="bg-feedback-danger-muted border border-feedback-danger-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0" role="alert">
                     <div className="flex items-start gap-3">
-                        <span className="text-xl shrink-0">⚠️</span>
-                        <div>
+                        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-feedback-danger-foreground" aria-hidden="true" />
+                        <div className="min-w-0">
                             <h3 className="font-semibold text-feedback-danger-foreground font-sans">{t('gantt.simulationWarning')}</h3>
                             <p className="mt-0.5 text-sm text-feedback-danger-foreground font-sans">{currentSimulationError}</p>
+                            <p className="mt-2 text-sm text-feedback-danger-foreground font-sans">{t('gantt.simulationFailedDescription')}</p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={() => { void schedulePreviewQuery.refetch(); }}
+                                    isLoading={schedulePreviewQuery.isFetching}
+                                >
+                                    <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
+                                    {t('gantt.retrySimulation')}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setSandboxChanges({})}
+                                >
+                                    <Undo2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                                    {t('gantt.discardEdits')}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
             {visibleExplanationError && (
-                <div className="bg-feedback-danger-muted border border-feedback-danger-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0">
-                    <div className="flex justify-between items-start gap-4">
-                        <div>
+                <div className="bg-feedback-danger-muted border border-feedback-danger-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0" role="alert">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
                             <h3 className="font-semibold text-feedback-danger-foreground">{t('gantt.explanationFailed')}</h3>
                             <p className="mt-1 text-sm text-feedback-danger-foreground">{visibleExplanationError}</p>
+                            <p className="mt-2 text-sm text-feedback-danger-foreground">{t('gantt.explanationUnavailableDescription')}</p>
                         </div>
-                        <button
-                            onClick={() => setExplanationError(null)}
-                            className="text-sm text-feedback-danger-foreground hover:underline"
-                        >
-                            {t('actions.close')}
-                        </button>
+                        <div className="flex shrink-0 flex-wrap gap-2">
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => explainMutation.mutate(selectedIterationId)}
+                                isLoading={explainMutation.isPending}
+                            >
+                                <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
+                                {t('gantt.retryExplanation')}
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setExplanationError(null)}
+                            >
+                                {t('gantt.continueWithoutExplanation')}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             )}

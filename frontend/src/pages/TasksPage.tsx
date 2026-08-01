@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Upload, LayoutGrid, List, Maximize2, Minimize2 } from 'lucide-react';
+import { Plus, Upload, LayoutGrid, List, ListFilter, Maximize2, Minimize2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
@@ -20,7 +20,7 @@ import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
 import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
-import { PageHeader, PageLayout } from '../components/ui';
+import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import type { SavedView } from '../types/savedView';
 import clsx from 'clsx';
 
@@ -75,7 +75,7 @@ const sortKeyFromSavedView = (view: SavedView): SortKey | null => {
 };
 
 const TasksPage = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const [isCreating, setIsCreating] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
@@ -84,8 +84,25 @@ const TasksPage = () => {
     const [selectedSavedViewId, setSelectedSavedViewId] = useState<number | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
+    const createTaskRequested = searchParams.get('create') === '1';
+    const isCreateModalOpen = isCreating || (createTaskRequested && selectedIterationId > 0);
     const { t } = useTranslation();
+    const activeFilterCount =
+        Number(filters.assigneeId !== null) +
+        Number(filters.projectId !== null) +
+        Number(filters.priority !== null) +
+        Number(filters.status !== null) +
+        Number(filters.hasDependency !== null) +
+        Number(filters.isOverdue !== null) +
+        Number(filters.agentReady !== null) +
+        Number(Boolean(filters.startDateFrom)) +
+        Number(Boolean(filters.startDateTo)) +
+        Number(Boolean(filters.endDateFrom)) +
+        Number(Boolean(filters.endDateTo)) +
+        filters.labelSlugs.length +
+        filters.labelGroupKeys.length;
 
     const { data: iterations, isLoading: iterationsLoading, error: iterationsError, refetch: refetchIterations } = useQuery({
         queryKey: ['iterations'],
@@ -101,6 +118,15 @@ const TasksPage = () => {
             }
         }
     }, [iterations, selectedIterationId, setSelectedIterationId]);
+
+    const closeTaskCreator = useCallback(() => {
+        setIsCreating(false);
+        if (!createTaskRequested) return;
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('create');
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [createTaskRequested, searchParams, setSearchParams]);
 
     const applySavedView = useCallback((view: SavedView) => {
         setFilters(filtersFromSavedView(view));
@@ -141,12 +167,57 @@ const TasksPage = () => {
                 <div className="flex-shrink-0 px-4 pt-4 pb-3">
                     <div className="wc-page-head" data-testid="page-header" style={{marginBottom:0}}>
                         <div>
-                            <h1 className="wc-page-title" style={{fontSize:18}}>{t('tasks.title')}</h1>
+                            <h1 className="wc-page-title">{t('tasks.title')}</h1>
                             <div className="wc-page-sub">{t('tasks.description')}</div>
                         </div>
                         <div className="row" style={{flexWrap:'wrap', gap:6}}>
-                        {/* View Switcher */}
-                        <div className="flex bg-surface-subtle p-1 rounded-lg mr-2">
+                        <IterationSelector
+                            onChange={() => {
+                                setFilters(defaultFilters);
+                                setSortKey('priority');
+                                setSelectedSavedViewId(null);
+                            }}
+                        />
+                        <Button
+                            variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
+                            onClick={() => setIsFiltersOpen(true)}
+                            aria-expanded={isFiltersOpen}
+                        >
+                            <ListFilter className="w-4 h-4 mr-2" />
+                            {t('taskFilters.filters')}
+                            {activeFilterCount > 0 && (
+                                <span className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums">
+                                    {activeFilterCount}
+                                </span>
+                            )}
+                        </Button>
+                        <OverflowMenu
+                            label={t('actions.moreActions')}
+                            items={[
+                                {
+                                    label: t('actions.import'),
+                                    icon: <Upload className="h-4 w-4" aria-hidden="true" />,
+                                    onSelect: () => setIsImporting(true),
+                                    disabled: selectedIterationId === 0,
+                                },
+                                {
+                                    label: t('actions.enterFullScreen'),
+                                    icon: <Maximize2 className="h-4 w-4" aria-hidden="true" />,
+                                    onSelect: () => setIsFullScreen(true),
+                                },
+                            ]}
+                        />
+                        <Button onClick={() => setIsCreating(true)} disabled={isCreating || selectedIterationId === 0}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            {t('tasks.newTask')}
+                        </Button>
+                        </div>
+                    </div>
+                </div>
+
+                {selectedIterationId > 0 && (
+                    <div className="flex-shrink-0 px-6 pb-3">
+                        <div className="flex w-fit bg-surface-subtle p-1 rounded-lg" role="group" aria-label={t('tasks.title')}>
                             <button
                                 type="button"
                                 onClick={() => setViewMode('list')}
@@ -192,60 +263,46 @@ const TasksPage = () => {
                                 </span>
                             </button>
                         </div>
-
-                        <IterationSelector
-                            onChange={() => {
-                                setFilters(defaultFilters);
-                                setSortKey('priority');
-                                setSelectedSavedViewId(null);
-                            }}
-                        />
-
-                        <div className="h-6 w-px bg-border-strong mx-2"></div>
-
-                        <Button
-                            variant="secondary"
-                            onClick={() => setIsImporting(true)}
-                            disabled={selectedIterationId === 0}
-                        >
-                            <Upload className="w-4 h-4 mr-2" />
-                            {t('actions.import')}
-                        </Button>
-
-                        <Button
-                            variant="secondary"
-                            onClick={() => setIsFullScreen(true)}
-                            title={t('actions.enterFullScreen')}
-                            aria-label={t('actions.enterFullScreen')}
-                        >
-                            <Maximize2 className="w-4 h-4" aria-hidden="true" />
-                        </Button>
-
-                        <Button onClick={() => setIsCreating(true)} disabled={isCreating || selectedIterationId === 0}>
-                            <Plus className="w-4 h-4 mr-2" />
-                            {t('tasks.newTask')}
-                        </Button>
-                        </div>
-                    </div>
-                </div>
-
-                {selectedIterationId > 0 && (
-                    <div className="flex-shrink-0 px-6 pb-4">
-                        <SavedViewsControl
-                            filters={filters}
-                            sortKey={sortKey}
-                            selectedViewId={selectedSavedViewId}
-                            requestedViewId={requestedSavedViewId}
-                            onSelectedViewIdChange={setSelectedSavedViewId}
-                            onApplyView={applySavedView}
-                        />
-                        <TaskFiltersBar
-                            iterationId={selectedIterationId}
-                            filters={filters}
-                            onFiltersChange={setFilters}
-                        />
                     </div>
                 )}
+
+                <div hidden>
+                    <SavedViewsControl
+                        filters={filters}
+                        sortKey={sortKey}
+                        selectedViewId={selectedSavedViewId}
+                        requestedViewId={requestedSavedViewId}
+                        onSelectedViewIdChange={setSelectedSavedViewId}
+                        onApplyView={applySavedView}
+                    />
+                </div>
+
+                <SlideOverDrawer
+                    open={isFiltersOpen}
+                    title={t('taskFilters.filters')}
+                    icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
+                    onClose={() => setIsFiltersOpen(false)}
+                >
+                    {selectedIterationId > 0 && (
+                        <>
+                            <TaskFiltersBar
+                                iterationId={selectedIterationId}
+                                filters={filters}
+                                onFiltersChange={setFilters}
+                            />
+                            <section className="border-t border-border px-4 py-4">
+                                <h2 className="mb-3 text-sm font-semibold text-content-primary">{t('surfaces.savedViews.savedViews')}</h2>
+                                <SavedViewsControl
+                                    filters={filters}
+                                    sortKey={sortKey}
+                                    selectedViewId={selectedSavedViewId}
+                                    onSelectedViewIdChange={setSelectedSavedViewId}
+                                    onApplyView={applySavedView}
+                                />
+                            </section>
+                        </>
+                    )}
+                </SlideOverDrawer>
 
                 {selectedIterationId > 0 && (
                     <FullscreenWorkspace
@@ -288,12 +345,12 @@ const TasksPage = () => {
                 )}
             </div>
 
-            <Modal open={isCreating} title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={() => setIsCreating(false)}>
-                {isCreating && (
+            <Modal open={isCreateModalOpen} title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}>
+                {isCreateModalOpen && (
                         <TaskForm
                             iterationId={selectedIterationId}
-                            onSuccess={() => setIsCreating(false)}
-                            onCancel={() => setIsCreating(false)}
+                            onSuccess={closeTaskCreator}
+                            onCancel={closeTaskCreator}
                         />
                 )}
             </Modal>

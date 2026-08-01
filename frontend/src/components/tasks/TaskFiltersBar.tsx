@@ -212,7 +212,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     }
 
     return (
-        <div className="bg-surface-card border border-border rounded-lg p-3 mb-4">
+        <div className="space-y-3 p-4">
             {optionsLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
             {optionError && (
                 <QueryErrorState
@@ -233,6 +233,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         assigneeId: e.target.value ? parseInt(e.target.value) : null
                     })}
+                    aria-label={t('taskFilters.assignee')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.assignee')}</option>
@@ -249,6 +250,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         status: e.target.value || null
                     })}
+                    aria-label={t('taskFilters.status')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.status')}</option>
@@ -265,6 +267,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         isOverdue: e.target.value === '' ? null : e.target.value === 'yes'
                     })}
+                    aria-label={t('taskFilters.overdue')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.overdue')}</option>
