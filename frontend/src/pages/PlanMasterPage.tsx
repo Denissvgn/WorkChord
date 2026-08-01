@@ -1180,7 +1180,9 @@ function StepBody({
                 </div>
                 <div className="step-h">
                     <div>
-                        <h2 ref={headingRef} tabIndex={-1}>{tr(`plan.steps.${def.id}.title`)}</h2>
+                        <h2 id="plan-master-active-step-heading" ref={headingRef} tabIndex={-1}>
+                            {tr(`plan.steps.${def.id}.title`)}
+                        </h2>
                         <p>{tr(`plan.steps.${def.id}.description`)}</p>
                     </div>
                 </div>
@@ -1472,6 +1474,128 @@ function ReadinessAux({ status, ready, setActive, dataCaveat }: {
                 </div>
             </div>
         </>
+    );
+}
+
+function ResponsiveReadinessSummary({ status, ready, currentStepId, setActive, dataCaveat, navigationLocked }: {
+    status: Record<string, StepStatus>;
+    ready: { done: number; total: number; pct: number };
+    currentStepId: string;
+    setActive: (id: string) => void;
+    dataCaveat?: 'refreshing' | 'stale';
+    navigationLocked: boolean;
+}) {
+    const attention = STEP_DEFS.flatMap(def => {
+        const stepState = status[def.id];
+        return stepState && (stepState.state === 'warn' || stepState.state === 'blocked')
+            ? [{ def, state: stepState }]
+            : [];
+    });
+    const firstAttention = attention[0];
+    const nextId = nextStep(status);
+    const nextDef = STEP_DEFS.find(def => def.id === nextId) ?? STEP_DEFS[0];
+    const actionId = nextDef.id;
+    const actionTargetsCurrentStep = actionId === currentStepId;
+    const message = dataCaveat === 'stale'
+        ? tr('plan.master.stalePlanningData')
+        : dataCaveat === 'refreshing'
+            ? tr('plan.master.refreshingPlanningData')
+            : firstAttention?.state.missing?.[0]
+                ?? (ready.pct === 100
+                    ? tr('plan.master.readyForReview')
+                    : tr('plan.master.nextStepNamed', { step: tr(`plan.steps.${nextDef.id}.title`) }));
+
+    return (
+        <section className="plan-master-responsive-readiness" aria-label={tr('plan.master.planReadiness')}>
+            <div className="plan-master-responsive-readiness-main">
+                <div className="plan-master-responsive-readiness-score tnum" aria-hidden="true">
+                    {ready.pct}%
+                </div>
+                <div className="plan-master-responsive-readiness-copy" aria-live="polite">
+                    <div className="between">
+                        <strong>{tr('plan.master.stepsComplete', { done: ready.done, total: ready.total })}</strong>
+                        {attention.length > 0 && (
+                            <span className="pill warn sm">
+                                <span className="pdot"/>
+                                {attention.length}
+                            </span>
+                        )}
+                    </div>
+                    <div
+                        className="plan-master-responsive-readiness-track"
+                        role="progressbar"
+                        aria-label={tr('plan.master.planReadiness')}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={ready.pct}
+                        aria-busy={dataCaveat === 'refreshing' || undefined}
+                    >
+                        <span className={ready.pct === 100 ? 'done' : ''} style={{width: `${ready.pct}%`}} />
+                    </div>
+                    <p className="plan-master-break">{message}</p>
+                </div>
+                <button
+                    type="button"
+                    className="btn sm primary"
+                    disabled={navigationLocked}
+                    onClick={() => {
+                        if (actionTargetsCurrentStep) {
+                            document.getElementById('plan-master-active-step-heading')?.focus();
+                            return;
+                        }
+                        setActive(actionId);
+                    }}
+                >
+                    {actionTargetsCurrentStep
+                        ? tr('plan.master.goToCurrentStep')
+                        : ready.pct === 100 && !firstAttention
+                        ? tr('plan.overview.openReview')
+                        : tr('plan.master.openStep')}
+                    <IChevR size={10}/>
+                </button>
+            </div>
+
+            <details className="plan-master-responsive-readiness-details">
+                <summary>
+                    <span>{tr('plan.master.viewReadinessDetails')}</span>
+                    <span className="tnum">{tr('plan.master.stepsComplete', { done: ready.done, total: ready.total })}</span>
+                </summary>
+                <div className="plan-master-responsive-readiness-list">
+                    {STEP_DEFS.map(def => {
+                        const stepState = status[def.id];
+                        if (!stepState) return null;
+                        return (
+                            <div key={def.id} className="plan-master-responsive-readiness-row">
+                                <div className="plan-master-min">
+                                    <div className="row">
+                                        <strong>{tr(`plan.steps.${def.id}.title`)}</strong>
+                                        <StepStatePill state={stepState.state}/>
+                                    </div>
+                                    <p className="plan-master-break">
+                                        {stepState.missing?.[0] ?? stepState.summary ?? tr('plan.master.notStarted')}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn sm ghost"
+                                    disabled={navigationLocked}
+                                    onClick={() => {
+                                        if (def.id === currentStepId) {
+                                            document.getElementById('plan-master-active-step-heading')?.focus();
+                                            return;
+                                        }
+                                        setActive(def.id);
+                                    }}
+                                >
+                                    {tr('plan.master.openStep')}
+                                    <IChevR size={10}/>
+                                </button>
+                            </div>
+                        );
+                    })}
+                </div>
+            </details>
+        </section>
     );
 }
 
@@ -1930,6 +2054,14 @@ const PlanMasterPage = () => {
 
                 {/* Main step body */}
                 <main className="wc-master-main">
+                    <ResponsiveReadinessSummary
+                        status={status}
+                        ready={ready}
+                        currentStepId={stepId}
+                        setActive={setActive}
+                        dataCaveat={hasRefetchError ? 'stale' : isFetching ? 'refreshing' : undefined}
+                        navigationLocked={navigationLocked}
+                    />
                     <StepBody
                         stepId={stepId}
                         status={status}

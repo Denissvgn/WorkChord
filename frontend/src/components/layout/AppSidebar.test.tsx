@@ -65,6 +65,25 @@ describe('AppSidebar', () => {
         expect(screen.queryByRole('link', { name: 'Gantt' })).not.toBeInTheDocument();
     });
 
+    it('keeps Views open when an in-flight request resolves', async () => {
+        let resolveViews!: (views: SavedView[]) => void;
+        const pendingViews = new Promise<SavedView[]>(resolve => {
+            resolveViews = resolve;
+        });
+        savedViewServiceMock.getAll.mockReturnValue(pendingViews);
+
+        const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
+        const viewsLabel = screen.getByText('Views');
+        const disclosure = viewsLabel.closest('details');
+
+        await user.click(viewsLabel);
+        expect(disclosure).toHaveAttribute('open');
+
+        resolveViews([]);
+        expect(await screen.findByText('No system views')).toBeVisible();
+        expect(disclosure).toHaveAttribute('open');
+    });
+
     it('marks only the matching saved view as current when a view query is present', async () => {
         savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => (
             Promise.resolve(view_type === 'tasks' ? [systemTaskView] : [])
@@ -82,6 +101,7 @@ describe('AppSidebar', () => {
         savedViewServiceMock.getAll.mockRejectedValue(new Error('offline'));
         const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
 
+        await user.click(screen.getByText('Views'));
         const retry = await screen.findByRole('button', { name: 'Retry saved views' });
         expect(screen.getByRole('status')).toHaveTextContent('Saved views are unavailable.');
         await user.click(retry);

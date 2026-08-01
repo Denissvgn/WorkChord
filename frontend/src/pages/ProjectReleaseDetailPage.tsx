@@ -188,18 +188,14 @@ const ProjectReleaseDetailPage = () => {
             <PageHeader
                 title={release.name}
                 subtitle={release.description}
-                eyebrow={(
-                    <div className="row wrap" style={{gap:8, marginBottom:6}}>
+                meta={(
+                    <>
                         <span className={`pill ${releaseStatusTone(release.status) === 'green' ? 'done' : releaseStatusTone(release.status) === 'blue' ? 'accent' : releaseStatusTone(release.status) === 'red' ? 'blocked' : 'opt'}`}>
                             <span className="pdot"/>{t(releaseStatusLabelKeys[release.status])}
                         </span>
-                    </div>
-                )}
-                meta={(
-                    <div className="row wrap" style={{gap:12}}>
                         <span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>{formatDate(release.target_date)}</span>
                         {release.version && <span><Tag className="inline h-3.5 w-3.5 mr-1"/>{release.version}</span>}
-                    </div>
+                    </>
                 )}
                 actions={(
                     <>

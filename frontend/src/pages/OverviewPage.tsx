@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import type { ReactNode, CSSProperties } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
@@ -15,6 +15,7 @@ import {
     CheckCircle2,
     Clock,
     FolderOpen,
+    Inbox,
     Layers,
     ListTodo,
     Plus,
@@ -34,7 +35,7 @@ import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashbo
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { TaskForm } from '../components/tasks/TaskForm';
-import { MetricGrid, PageHeader, PageLayout, SectionCard } from '../components/ui';
+import { InlineEmptyState, PageHeader, PageLayout, SectionCard } from '../components/ui';
 import type { ProjectSummary, ProjectTargetDateRisk, ProjectUpdateFreshness } from '../types/project';
 import type { MemberWorkload, TeamMember } from '../types/team';
 import type { Task, TaskStatus } from '../types/task';
@@ -54,6 +55,8 @@ type AttentionItem = {
     icon: LucideIcon;
     title: string;
     meta: string;
+    to: string;
+    actionLabel: string;
 };
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -126,7 +129,6 @@ const OverviewPage = () => {
         teamMembers,
         allTasks,
         readinessData: planR,
-        status: planStatus,
         ready: planReady,
         nextId: planNextId,
         isLoading: isPlanningLoading,
@@ -173,17 +175,9 @@ const OverviewPage = () => {
 
     const totalTasks = iterationSummary?.total_tasks ?? allTasks.length;
     const shippedTasks = iterationSummary?.completed_tasks ?? completedTasks;
-    const overdueTasks = iterationSummary?.overdue_tasks_count ?? overdueTaskList.length;
     const effortDays = iterationSummary?.total_effort_days ?? totalEffortDays;
     const progress = selectedIteration ? iterationProgress(selectedIteration) : { dayNo: 0, daysLeft: 0, percent: 0 };
     const completionPercent = totalTasks > 0 ? (shippedTasks / totalTasks) * 100 : 0;
-    const healthTone: PillTone = linkedProjectSummary?.target_date_risk === 'off_track' || overdueTasks > 0
-        ? 'red'
-        : linkedProjectSummary?.target_date_risk === 'at_risk'
-            ? 'yellow'
-            : 'green';
-
-    const planTeamCapacity = planR.teamCapacity;
 
     const teamWorkloadData: OverviewTeamMember[] = teamMembers.map(member => ({
         id: member.id,
@@ -208,15 +202,8 @@ const OverviewPage = () => {
                 icon: Clock,
                 title: t('overview.attention.overdueTitle', { count: overdueTaskList.length }),
                 meta: t('overview.attention.overdueMeta'),
-            });
-        }
-        if (unassignedTaskList.length > 0) {
-            items.push({
-                id: 'unassigned',
-                tone: 'gray',
-                icon: User,
-                title: t('overview.attention.unassignedTitle', { count: unassignedTaskList.length }),
-                meta: unassignedTaskList[0]?.title ?? t('common.unassigned'),
+                to: '/tasks',
+                actionLabel: t('overview.focus.reviewTasks'),
             });
         }
         if (linkedProjectSummary?.target_date_risk === 'at_risk' || linkedProjectSummary?.target_date_risk === 'off_track') {
@@ -226,6 +213,30 @@ const OverviewPage = () => {
                 icon: AlertTriangle,
                 title: t('overview.attention.projectRiskTitle'),
                 meta: linkedProjectSummary.target_date_risk_reason || t(`overview.riskLabels.${linkedProjectSummary.target_date_risk}`),
+                to: scopedProjectId ? `/projects/${scopedProjectId}` : '/projects',
+                actionLabel: t('overview.focus.openProject'),
+            });
+        }
+        if (unassignedTaskList.length > 0) {
+            items.push({
+                id: 'unassigned',
+                tone: 'gray',
+                icon: User,
+                title: t('overview.attention.unassignedTitle', { count: unassignedTaskList.length }),
+                meta: unassignedTaskList[0]?.title ?? t('common.unassigned'),
+                to: '/tasks',
+                actionLabel: t('overview.focus.reviewTasks'),
+            });
+        }
+        if (planR.inboxCount > 0) {
+            items.push({
+                id: 'intake',
+                tone: 'yellow',
+                icon: Inbox,
+                title: t('overview.attention.intakeTitle', { count: planR.inboxCount }),
+                meta: t('overview.attention.intakeMeta'),
+                to: '/triage',
+                actionLabel: t('overview.focus.reviewIntake'),
             });
         }
         if (linkedProjectSummary?.is_update_stale) {
@@ -235,10 +246,12 @@ const OverviewPage = () => {
                 icon: Bookmark,
                 title: t('overview.attention.projectUpdateTitle'),
                 meta: updateFreshnessText(linkedProjectSummary, t),
+                to: scopedProjectId ? `/projects/${scopedProjectId}` : '/projects',
+                actionLabel: t('overview.focus.openProject'),
             });
         }
         return items;
-    }, [linkedProjectSummary, overdueTaskList, t, unassignedTaskList]);
+    }, [linkedProjectSummary, overdueTaskList, planR.inboxCount, scopedProjectId, t, unassignedTaskList]);
 
     const description = selectedIteration
         ? scopedProject
@@ -256,63 +269,23 @@ const OverviewPage = () => {
 
     return (
         <PageLayout>
-            {isQuickCreateOpen && selectedIterationId > 0 && (
-                <div className="card card-pad" style={{maxWidth:640, margin:'0 auto', width:'100%'}}>
-                    <div className="between" style={{marginBottom:16}}>
-                        <h2 style={{fontSize:16, fontWeight:600, margin:0}}>{t('quickActions.addTask')}</h2>
-                        <button type="button" className="btn ghost sm" onClick={() => setIsQuickCreateOpen(false)} aria-label={t('actions.close')}>
-                            <X className="h-4 w-4" />
-                        </button>
-                    </div>
-                    <TaskForm
-                        iterationId={selectedIterationId}
-                        onSuccess={() => {
-                            setIsQuickCreateOpen(false);
-                            queryClient.invalidateQueries({ queryKey: ['tasks'] });
-                            queryClient.invalidateQueries({ queryKey: ['iterationSummary', selectedIterationId] });
-                            if (scopedProjectId) {
-                                queryClient.invalidateQueries({ queryKey: ['projectSummary', scopedProjectId] });
-                            }
-                            queryClient.invalidateQueries({ queryKey: ['gantt'] });
-                        }}
-                        onCancel={() => setIsQuickCreateOpen(false)}
-                    />
-                </div>
-            )}
-
             <PageHeader
                 title={t('overview.title')}
                 subtitle={description}
-                eyebrow={(
-                    <div className="row wrap" style={{gap:6, marginBottom:6}}>
-                        <span className="pill accent"><span className="pdot"/>{t('overview.deliveryHub')}</span>
-                        {selectedIteration && (
-                            <span className={`pill ${healthTone === 'green' ? 'done' : healthTone === 'yellow' ? 'warn' : healthTone === 'red' ? 'blocked' : 'opt'}`}>
-                                <span className="pdot"/>{t(`overview.iterationHealth.${healthTone}`)}
-                            </span>
-                        )}
-                        {scopedProject ? (
-                            <Link to={`/projects/${scopedProject.id}`} className="pill accent" style={{textDecoration:'none'}}>
-                                <FolderOpen className="h-3 w-3" />
-                                <span style={{maxWidth:'14rem', overflow:'hidden', textOverflow:'ellipsis'}}>{scopedProject.name}</span>
-                                <ArrowRight className="h-3 w-3" />
-                            </Link>
-                        ) : selectedIteration ? (
-                            <span className="pill opt"><span className="pdot"/>{t('overview.independentIteration')}</span>
-                        ) : null}
-                    </div>
-                )}
                 meta={selectedIteration && (
-                        <div className="row wrap" style={{gap:14}}>
-                            <span><Calendar className="inline h-3.5 w-3.5 mr-1"/>{formatDate(selectedIteration.start_date)} - {formatDate(selectedIteration.end_date)}</span>
-                            <span><Zap className="inline h-3.5 w-3.5 mr-1"/>{iterationPhase(progress.dayNo, selectedIteration.working_days, t)}</span>
-                            <span><Clock className="inline h-3.5 w-3.5 mr-1"/>{t('overview.daysLeft', { count: progress.daysLeft })}</span>
-                        </div>
-                )}
-                actions={(
-                    <button className="btn primary" onClick={() => setIsQuickCreateOpen(true)} disabled={selectedIterationId <= 0}>
-                    <Plus className="h-4 w-4"/> {t('quickActions.addTask')}
-                    </button>
+                    <>
+                        {scopedProject ? (
+                            <Link to={`/projects/${scopedProject.id}`} className="overview-project-link">
+                                <FolderOpen aria-hidden="true" className="h-3.5 w-3.5" />
+                                <span>{scopedProject.name}</span>
+                            </Link>
+                        ) : (
+                            <span>{t('overview.independentIteration')}</span>
+                        )}
+                        <span><Calendar aria-hidden="true" className="inline h-3.5 w-3.5 mr-1"/>{formatDate(selectedIteration.start_date)} - {formatDate(selectedIteration.end_date)}</span>
+                        <span><Zap aria-hidden="true" className="inline h-3.5 w-3.5 mr-1"/>{iterationPhase(progress.dayNo, selectedIteration.working_days, t)}</span>
+                        <span><Clock aria-hidden="true" className="inline h-3.5 w-3.5 mr-1"/>{t('overview.daysLeft', { count: progress.daysLeft })}</span>
+                    </>
                 )}
             />
 
@@ -337,196 +310,235 @@ const OverviewPage = () => {
             )}
 
             {showOverviewContent && (
-            <>
-            {/* Progress bar */}
-            <div>
-                <div style={{display:'flex', flexWrap:'wrap', justifyContent:'space-between', gap:8, fontSize:11.5, color:'var(--ink-3)', marginBottom:6}}>
-                    <span style={{fontWeight:500, color:'var(--ink)'}}>{t('overview.iterationProgress')}</span>
-                    <span className="tnum">
-                        {t('overview.dayOf', { day: progress.dayNo, total: selectedIteration?.working_days ?? 0 })}
-                        <span style={{margin:'0 8px', color:'var(--border-3)'}}>|</span>
-                        {t('overview.tasksShipped', { completed: shippedTasks, total: totalTasks })}
-                    </span>
-                </div>
-                <div style={{position:'relative', height:6, background:'var(--panel-3)', borderRadius:999, overflow:'hidden'}}>
-                    <div style={{position:'absolute', insetBlock:0, left:0, background:'var(--done)', width:`${completionPercent}%`}} />
-                    <div style={{position:'absolute', top:-3, bottom:-3, width:2, background:'var(--ink)', left:`${progress.percent}%`}} />
-                </div>
-            </div>
+                <>
+                    <OverviewFocusPanel
+                        attentionItems={attentionItems}
+                        planReady={planReady}
+                        planNextId={planNextId}
+                        completionPercent={completionPercent}
+                        shippedTasks={shippedTasks}
+                        totalTasks={totalTasks}
+                        progress={progress}
+                        workingDays={selectedIteration.working_days}
+                    />
 
-            <MetricGrid columns={5}>
-                <div className="kpi"><div className="kpi-lbl">{t('overview.workingDays')}</div><div className="kpi-val tnum">{selectedIteration?.working_days || 0}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('overview.teamMembers')}</div><div className="kpi-val tnum">{teamMembers.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('overview.totalEffort')}</div><div className="kpi-val tnum">{t('units.daysCompact', { count: formatNumber(effortDays) })}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('overview.tasks')}</div><div className="kpi-val tnum">{shippedTasks}/{totalTasks}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('overview.overdue')}</div><div className="kpi-val tnum">{overdueTasks}</div></div>
-            </MetricGrid>
-
-            <OverviewMasterHero
-                hasIteration={selectedIterationId > 0 && selectedIteration !== null}
-                hasWarnings={planReady.pct < 100}
-                planStatus={planStatus}
-                planReady={planReady}
-                planNextId={planNextId}
-                taskCount={allTasks.length}
-                teamCapacity={planTeamCapacity}
-                riskCount={overdueTaskList.length}
-                inboxCount={planR.inboxCount}
-            />
-
-            {!selectedIteration ? null : (
-                <div className="wc-content-rail">
                     <div className="wc-panel-stack">
-                        <OverdueTasksCard tasks={overdueTaskList} />
+                        {isQuickCreateOpen && selectedIterationId > 0 && (
+                            <section className="card card-pad overview-quick-create" aria-labelledby="overview-quick-create-title">
+                                <div className="between overview-quick-create-head">
+                                    <h2 id="overview-quick-create-title">{t('quickActions.addTask')}</h2>
+                                    <button type="button" className="btn ghost sm icon" onClick={() => setIsQuickCreateOpen(false)} aria-label={t('actions.close')}>
+                                        <X aria-hidden="true" className="h-4 w-4" />
+                                    </button>
+                                </div>
+                                <TaskForm
+                                    iterationId={selectedIterationId}
+                                    onSuccess={() => {
+                                        setIsQuickCreateOpen(false);
+                                        queryClient.invalidateQueries({ queryKey: ['tasks'] });
+                                        queryClient.invalidateQueries({ queryKey: ['iterationSummary', selectedIterationId] });
+                                        if (scopedProjectId) {
+                                            queryClient.invalidateQueries({ queryKey: ['projectSummary', scopedProjectId] });
+                                        }
+                                        queryClient.invalidateQueries({ queryKey: ['gantt'] });
+                                    }}
+                                    onCancel={() => setIsQuickCreateOpen(false)}
+                                />
+                            </section>
+                        )}
+
                         <IterationTasksCard
                             tasks={allTasks}
                             filter={taskFilter}
                             onFilter={setTaskFilter}
+                            onAddTask={() => setIsQuickCreateOpen(true)}
                             isProjectScoped={Boolean(scopedProject)}
                         />
-                        <TeamWorkloadSection members={teamWorkloadData} />
-                        <TaskDistributionSection counts={taskCounts} />
-                        <SavedViewDashboardCards iterationId={selectedIterationId} title={t('overview.savedViewSignals')} />
-                    </div>
 
-                    <aside className="wc-panel-stack sticky-rail">
-                        {scopedProject ? (
-                            <LinkedProjectCard summary={linkedProjectSummary} fallbackProjectName={scopedProject.name} iterationEffortDays={effortDays} />
-                        ) : (
-                            <IndependentScopeCard />
-                        )}
-                        <IterationPaceCard
-                            iteration={selectedIteration}
-                            progress={progress}
-                            totalEffortDays={effortDays}
-                            completedEffortDays={completedEffortDays}
-                            completedTasks={shippedTasks}
-                            totalTasks={totalTasks}
-                        />
-                        <NeedsAttentionCard items={attentionItems} />
-                    </aside>
-                </div>
-            )}
-            </>
+                        <details className="overview-details">
+                            <summary>
+                                <span>
+                                    <strong>{t('overview.focus.detailsSummary')}</strong>
+                                    <small>{t('overview.focus.detailsHint')}</small>
+                                </span>
+                                <span className="overview-details-count">
+                                    {t('overview.focus.detailsCount', {
+                                        count: 5 + (attentionItems.length > 1 ? 1 : 0),
+                                    })}
+                                </span>
+                            </summary>
+                            <div className="overview-details-grid">
+                                <div className="wc-panel-stack">
+                                    <TeamWorkloadSection members={teamWorkloadData} />
+                                    <TaskDistributionSection counts={taskCounts} />
+                                    <SavedViewDashboardCards iterationId={selectedIterationId} title={t('overview.savedViewSignals')} />
+                                </div>
+                                <div className="wc-panel-stack">
+                                    {attentionItems.length > 1 && (
+                                        <AttentionSignalsSection items={attentionItems.slice(1)} />
+                                    )}
+                                    {scopedProject ? (
+                                        <LinkedProjectCard summary={linkedProjectSummary} fallbackProjectName={scopedProject.name} iterationEffortDays={effortDays} />
+                                    ) : (
+                                        <IndependentScopeCard />
+                                    )}
+                                    <IterationPaceCard
+                                        iteration={selectedIteration}
+                                        progress={progress}
+                                        totalEffortDays={effortDays}
+                                        completedEffortDays={completedEffortDays}
+                                        completedTasks={shippedTasks}
+                                        totalTasks={totalTasks}
+                                    />
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </>
             )}
         </PageLayout>
     );
 };
 
-// ── Plan Work hero card (design's OverviewMasterHero) ────────────────────────
-const Svg = ({ d, size = 14, stroke = 1.75, ...rest }: { d: ReactNode; size?: number; stroke?: number; style?: CSSProperties }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" {...rest}>
-        {d}
-    </svg>
-);
-const ICheck = (p: { size?: number; stroke?: number }) => <Svg {...p} d={<polyline points="20 6 9 17 4 12"/>}/>;
-const IArrowPM = (p: { size?: number }) => <Svg {...p} d={<><path d="M5 12h14M13 5l7 7-7 7"/></>}/>;
-
-interface OverviewMasterHeroProps {
-    hasIteration: boolean;
-    hasWarnings: boolean;
-    planStatus: Record<string, { state: string; summary?: string; missing?: string[] }>;
+interface OverviewFocusPanelProps {
+    attentionItems: AttentionItem[];
     planReady: { done: number; total: number; pct: number };
     planNextId: string;
-    taskCount: number;
-    teamCapacity: number;
-    riskCount: number;
-    inboxCount: number;
+    completionPercent: number;
+    shippedTasks: number;
+    totalTasks: number;
+    progress: { dayNo: number; daysLeft: number; percent: number };
+    workingDays: number;
 }
 
-const OverviewMasterHero = ({
-    hasIteration, hasWarnings, planStatus, planReady, planNextId,
-    taskCount, teamCapacity, riskCount, inboxCount,
-}: OverviewMasterHeroProps) => {
-    const navigate = useNavigate();
+const OverviewFocusPanel = ({
+    attentionItems,
+    planReady,
+    planNextId,
+    completionPercent,
+    shippedTasks,
+    totalTasks,
+    progress,
+    workingDays,
+}: OverviewFocusPanelProps) => {
     const { t } = useTranslation();
-
-    const mode = !hasIteration ? 'empty' : hasWarnings ? 'partial' : 'review';
-    const nextDef = STEP_DEFS.find(s => s.id === planNextId);
-
-    const eyebrow = mode === 'empty' ? t('plan.overview.welcome')
-                  : mode === 'review' ? t('plan.overview.inFlight')
-                  : t('plan.overview.inProgress');
-
-    const title = mode === 'empty' ? t('plan.overview.startPlanning')
-                : mode === 'review' ? t('plan.overview.reviewCurrent')
-                : t('plan.overview.continueSetup');
-
-    const desc = mode === 'empty'
-        ? t('plan.overview.emptyDescription')
-        : mode === 'review'
-            ? t('plan.overview.reviewDescription')
-            : t('plan.overview.progressDescription', {
+    const topAttention = attentionItems[0];
+    const needsPlanning = planReady.pct < 100;
+    const nextDef = STEP_DEFS.find(step => step.id === planNextId);
+    const tone: PillTone = topAttention?.tone ?? (needsPlanning ? 'indigo' : 'green');
+    const FocusIcon = topAttention?.icon ?? (needsPlanning ? Target : CheckCircle2);
+    const title = topAttention?.title ?? (
+        needsPlanning ? t('overview.focus.planIncompleteTitle') : t('overview.focus.planReadyTitle')
+    );
+    const meta = topAttention?.meta ?? (
+        needsPlanning
+            ? t('overview.focus.planIncompleteMeta', {
                 done: planReady.done,
                 total: planReady.total,
-                next: nextDef ? t(`plan.steps.${nextDef.id}.title`).toLowerCase() : '…',
-            });
-
-    const ctaLabel = mode === 'empty'
-        ? t('plan.sidebar.start')
-        : mode === 'review'
-            ? t('plan.overview.openReview')
-            : t('plan.overview.resumeStep', { step: nextDef ? t(`plan.steps.${nextDef.id}.title`) : t('nav.planning') });
+                step: nextDef ? t(`plan.steps.${nextDef.id}.title`) : t('nav.planning'),
+            })
+            : t('overview.focus.planReadyMeta')
+    );
+    const actionLabel = topAttention?.actionLabel ?? (
+        needsPlanning ? t('overview.focus.continuePlanning') : t('overview.focus.reviewPlan')
+    );
+    const actionTo = topAttention?.to ?? '/plan/master';
+    const remainingAttention = Math.max(0, attentionItems.length - 1);
+    const completion = Math.max(0, Math.min(100, Math.round(completionPercent)));
 
     return (
-        <div className="hero-master">
-                <div className="hm-left">
-                    <div className="hm-eyebrow">{eyebrow}</div>
-                    <h3>{title}</h3>
-                    <div className="hm-desc">{desc}</div>
-
-                    <div className="row" style={{marginTop:4, gap:10}}>
-                        <button className="btn primary" onClick={() => navigate('/plan/master')}>
-                            {ctaLabel}<IArrowPM size={13}/>
-                        </button>
-                        <button className="btn ghost" onClick={() => navigate('/plan')}>{t('plan.overview.seeAllMasters')}</button>
+        <section className="overview-focus" aria-labelledby="overview-focus-title">
+            <div className="overview-focus-main">
+                <div className="overview-focus-heading">
+                    <span className="overview-focus-icon" style={pillBoxStyle(tone)}>
+                        <FocusIcon aria-hidden="true" className="h-5 w-5" />
+                    </span>
+                    <div>
+                        <h2 id="overview-focus-title">{title}</h2>
+                        <p>{meta}</p>
                     </div>
+                </div>
 
-                    {mode !== 'empty' && (
-                        <div style={{display:'flex', gap:6, marginTop:6}}>
-                            {STEP_DEFS.map((s, i) => {
-                                const st = planStatus[s.id]?.state;
-                                const cls = st === 'done' ? 'done' : st === 'warn' ? 'warn' : st === 'blocked' ? 'blocked' : s.id === planNextId ? 'current' : '';
-                                return (
-                                    <div key={s.id} title={t(`plan.steps.${s.id}.title`)} style={{flex:1}}>
-                                        <div className={`mini-step ${cls}`} style={{border:0, padding:'4px 0'}}>
-                                            <div className="ms-dot" style={{width:14, height:14}}>
-                                                {st === 'done' ? <ICheck size={9} stroke={3}/> : (i+1)}
-                                            </div>
-                                            <div style={{fontSize:11}}>{t(`plan.steps.${s.id}.title`).split(' ').slice(0,2).join(' ')}</div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                <div className="overview-focus-action">
+                    <Link to={actionTo} className="btn primary">
+                        {actionLabel}
+                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </Link>
+                    {remainingAttention > 0 && (
+                        <span>{t('overview.focus.moreSignals', { count: remainingAttention })}</span>
                     )}
                 </div>
-
-                <div className="hm-right">
-                    <div className="row" style={{gap:12}}>
-                        <div
-                            className={`ring ${planReady.pct === 100 ? 'done' : ''}`}
-                            style={{'--p': planReady.pct} as CSSProperties}
-                        >
-                            <span>{planReady.pct}%</span>
-                        </div>
-                        <div>
-                            <div style={{fontWeight:600, fontSize:13}}>{t('plan.master.planReadiness')}</div>
-                            <div className="muted" style={{fontSize:11.5, marginTop:2}}>
-                                {t('plan.hub.stepsComplete', { done: planReady.done, total: planReady.total })}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="divider" style={{margin:'4px 0'}}/>
-                    <div style={{display:'flex', flexDirection:'column', gap:6, fontSize:11.5}}>
-                        <div className="between"><div className="muted">{t('plan.overview.tasks')}</div><div className="tnum">{taskCount}</div></div>
-                        <div className="between"><div className="muted">{t('plan.overview.teamCapacity')}</div><div className="tnum">{teamCapacity}h</div></div>
-                        <div className="between"><div className="muted">{t('plan.overview.openRisks')}</div><div className="tnum">{riskCount || '—'}</div></div>
-                        <div className="between"><div className="muted">{t('plan.overview.intakeQueue')}</div><div className="tnum">{inboxCount}</div></div>
-                    </div>
-                </div>
             </div>
+
+            <div className="overview-focus-progress">
+                <div className="overview-focus-progress-head">
+                    <span>{t('overview.focus.deliveryProgress')}</span>
+                    <strong className="tnum">{completion}%</strong>
+                </div>
+                <div
+                    className="overview-focus-track"
+                    role="progressbar"
+                    aria-label={t('overview.focus.deliveryProgress')}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={completion}
+                >
+                    <span style={{width: `${completion}%`}} />
+                </div>
+                <dl className="overview-focus-facts">
+                    <div>
+                        <dt>{t('overview.focus.planReadiness')}</dt>
+                        <dd>{t('plan.hub.stepsComplete', { done: planReady.done, total: planReady.total })}</dd>
+                    </div>
+                    <div>
+                        <dt>{t('overview.focus.tasksShipped')}</dt>
+                        <dd>{t('overview.tasksShipped', { completed: shippedTasks, total: totalTasks })}</dd>
+                    </div>
+                    <div>
+                        <dt>{t('overview.focus.iterationDay')}</dt>
+                        <dd>{t('overview.dayOf', { day: progress.dayNo, total: workingDays })}</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+    );
+};
+
+const AttentionSignalsSection = ({ items }: { items: AttentionItem[] }) => {
+    const { t } = useTranslation();
+
+    return (
+        <SectionCard
+            icon={<AlertTriangle aria-hidden="true" className="h-5 w-5 text-feedback-warning" />}
+            title={t('overview.focus.otherSignals')}
+            count={<span className="pill warn sm">{items.length}</span>}
+        >
+            <ul className="space-y-2">
+                {items.map(item => {
+                    const Icon = item.icon;
+                    return (
+                        <li key={item.id}>
+                            <Link
+                                to={item.to}
+                                className="flex min-w-0 items-start gap-3 rounded-md px-2 py-2 hover:bg-surface-hover"
+                            >
+                                <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md" style={pillBoxStyle(item.tone)}>
+                                    <Icon aria-hidden="true" className="h-4 w-4" />
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                    <strong className="block break-words text-sm text-content-primary">{item.title}</strong>
+                                    <span className="block break-words text-xs text-content-secondary">{item.meta}</span>
+                                </span>
+                                <span className="mt-1 inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-action">
+                                    <span className="hidden md:inline">{item.actionLabel}</span>
+                                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                                </span>
+                            </Link>
+                        </li>
+                    );
+                })}
+            </ul>
+        </SectionCard>
     );
 };
 
@@ -545,47 +557,17 @@ const Pill = ({
     </span>
 );
 
-const OverdueTasksCard = ({ tasks }: { tasks: Task[] }) => {
-    const { t } = useTranslation();
-    if (tasks.length === 0) return null;
-
-    return (
-        <SectionCard
-            className="border-feedback-danger-border bg-feedback-danger-muted"
-            icon={<AlertTriangle className="h-5 w-5 text-feedback-danger" />}
-            title={<span className="text-feedback-danger-foreground">{t('overview.overdueTasks', { count: tasks.length })}</span>}
-            actions={(
-                <Link to="/tasks" className="inline-flex items-center gap-1 text-sm font-medium text-feedback-danger-foreground hover:underline">
-                    {t('overview.openTaskBoard')}
-                    <ArrowRight className="h-4 w-4" />
-                </Link>
-            )}
-        >
-            <ul className="space-y-2">
-                {tasks.slice(0, 5).map(task => (
-                    <li key={task.id} className="flex min-w-0 items-center gap-3 rounded-lg border border-feedback-danger-border bg-surface-card px-3 py-2">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-feedback-danger" />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-content-primary">{task.title}</span>
-                        <span className="shrink-0 text-xs font-semibold tabular-nums text-feedback-danger-foreground">{t('units.daysCompact', { count: formatNumber(task.effort_days || 0) })}</span>
-                    </li>
-                ))}
-                {tasks.length > 5 && (
-                    <li className="pt-1 text-center text-xs text-content-secondary">{t('overview.moreTasks', { count: tasks.length - 5 })}</li>
-                )}
-            </ul>
-        </SectionCard>
-    );
-};
-
 const IterationTasksCard = ({
     tasks,
     filter,
     onFilter,
+    onAddTask,
     isProjectScoped,
 }: {
     tasks: Task[];
     filter: TaskFilter;
     onFilter: (value: TaskFilter) => void;
+    onAddTask: () => void;
     isProjectScoped: boolean;
 }) => {
     const { t } = useTranslation();
@@ -617,10 +599,16 @@ const IterationTasksCard = ({
             icon={<ListTodo className="h-5 w-5 text-action" />}
             title={t('overview.iterationTasks')}
             actions={(
-                <Link to="/tasks" className="inline-flex items-center gap-1 text-sm font-medium text-action hover:text-action">
-                    {t('overview.openTaskBoard')}
-                    <ArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="overview-task-actions">
+                    <button type="button" className="btn ghost sm" onClick={onAddTask}>
+                        <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+                        {t('quickActions.addTask')}
+                    </button>
+                    <Link to="/tasks" className="btn ghost sm">
+                        {t('overview.openTaskBoard')}
+                        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                    </Link>
+                </div>
             )}
         >
             <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -629,6 +617,7 @@ const IterationTasksCard = ({
                         key={item.id}
                         type="button"
                         onClick={() => onFilter(item.id)}
+                        aria-pressed={filter === item.id}
                         className={clsx(
                             'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-colors',
                             filter === item.id
@@ -645,8 +634,12 @@ const IterationTasksCard = ({
             </div>
 
             {visibleTasks.length === 0 ? (
-                <InlineEmptyState action={<Button variant="outline" size="sm" onClick={() => onFilter('all')}>{t('actions.clear')}</Button>}>
-                    {t('overview.noTasksForFilter')}
+                <InlineEmptyState
+                    actions={filter === 'all'
+                        ? undefined
+                        : <Button variant="outline" size="sm" onClick={() => onFilter('all')}>{t('actions.clear')}</Button>}
+                >
+                    {filter === 'all' ? t('overview.noIterationTasks') : t('overview.noTasksForFilter')}
                 </InlineEmptyState>
             ) : (
                 <div className="space-y-4">
@@ -955,42 +948,6 @@ const IterationPaceCard = ({
     );
 };
 
-const NeedsAttentionCard = ({ items }: { items: AttentionItem[] }) => {
-    const { t } = useTranslation();
-
-    return (
-        <SectionCard
-            icon={<AlertTriangle className="h-5 w-5 text-action" />}
-            title={t('overview.needsAttention')}
-            count={<span className={clsx('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums', items.length > 0 ? 'bg-feedback-danger-muted text-feedback-danger-foreground' : 'bg-feedback-success-muted text-feedback-success-foreground')}>{items.length}</span>}
-        >
-            {items.length === 0 ? (
-                <div className="inline-flex items-center gap-1.5 text-sm font-medium text-feedback-success-foreground">
-                    <CheckCircle2 className="h-4 w-4" />
-                    {t('overview.attention.clear')}
-                </div>
-            ) : (
-                <ul className="space-y-2">
-                    {items.map(item => {
-                        const Icon = item.icon;
-                        return (
-                            <li key={item.id} className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-1.5 hover:bg-surface-hover">
-                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md" style={pillBoxStyle(item.tone)}>
-                                    <Icon className="h-4 w-4" />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                    <div className="truncate text-sm font-semibold text-content-primary">{item.title}</div>
-                                    <div className="truncate text-xs text-content-secondary">{item.meta}</div>
-                                </div>
-                            </li>
-                        );
-                    })}
-                </ul>
-            )}
-        </SectionCard>
-    );
-};
-
 const CompletionRing = ({ percent, tone }: { percent: number; tone: PillTone }) => {
     const radius = 21;
     const circumference = 2 * Math.PI * radius;
@@ -1023,19 +980,6 @@ const FactRow = ({ label, value }: { label: ReactNode; value: ReactNode }) => (
     <div className="flex items-baseline justify-between gap-3 text-sm">
         <span className="text-content-secondary">{label}</span>
         <span className="text-right font-medium tabular-nums text-content-primary">{value}</span>
-    </div>
-);
-
-const InlineEmptyState = ({
-    children,
-    action,
-}: {
-    children: ReactNode;
-    action?: ReactNode;
-}) => (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border bg-surface-muted/70 px-4 py-3">
-        <p className="text-sm text-content-secondary">{children}</p>
-        {action}
     </div>
 );
 

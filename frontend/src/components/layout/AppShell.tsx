@@ -26,10 +26,17 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     return (
         <div className="wc app">
             <DocumentMetadata />
+            <a className="skip-link" href="#workspace-main">
+                {t('nav.skipToContent')}
+            </a>
             <AppTopNav />
             <div className="workspace">
                 <AppSidebar />
-                <main className={`main${scrollLock ? ' scroll-lock' : ''}`}>
+                <main
+                    id="workspace-main"
+                    className={`main${scrollLock ? ' scroll-lock' : ''}`}
+                    tabIndex={-1}
+                >
                     <RouteErrorBoundary
                         resetKey={`${location.pathname}${location.search}`}
                         title={t('routeError.title')}

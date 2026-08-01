@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Sparkles, TriangleAlert } from 'lucide-react';
+import { Bookmark, ChevronRight, Sparkles, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { savedViewService } from '../../services/savedViewService';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
@@ -72,6 +73,108 @@ const useCurrentWorkspace = () => {
     return getWorkspaceForPath(location.pathname);
 };
 
+const SavedViewsDisclosure = ({
+    allViews,
+    hasError,
+    isFetching,
+    isLoading,
+    onNavigate,
+    onRetry,
+    pathname,
+    selectedSavedViewId,
+}: {
+    allViews: SavedView[];
+    hasError: boolean;
+    isFetching: boolean;
+    isLoading: boolean;
+    onNavigate?: () => void;
+    onRetry: () => void;
+    pathname: string;
+    selectedSavedViewId: string | null;
+}) => {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(selectedSavedViewId !== null);
+    const errorMessage = allViews.length > 0
+        ? t('nav.someSavedViewsUnavailable')
+        : t('nav.savedViewsUnavailable');
+
+    return (
+        <details
+            className="sb-views"
+            open={open}
+            onToggle={event => setOpen(event.currentTarget.open)}
+        >
+            <summary>
+                <span className="sb-views-label">
+                    <Bookmark aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
+                    <span>{t('nav.views')}</span>
+                </span>
+                <span className="sb-views-summary-state">
+                    {hasError ? (
+                        <span className="sb-views-warning">
+                            <TriangleAlert aria-hidden="true" className="h-3.5 w-3.5" />
+                            <span className="sr-only">{errorMessage}</span>
+                        </span>
+                    ) : isLoading ? (
+                        <span role="status" aria-label={t('nav.loadingSavedViews')}>…</span>
+                    ) : (
+                        <span className="sb-count">{Math.min(allViews.length, 6)}</span>
+                    )}
+                    <ChevronRight aria-hidden="true" className="sb-views-chevron h-3.5 w-3.5" />
+                </span>
+            </summary>
+            <div className="sb-views-list">
+                {allViews.slice(0, 6).map(view => {
+                    const label = savedViewDisplay(view).name;
+                    const WarningIcon = view.seed_key === 'tasks_overdue' || view.seed_key === 'projects_at_risk'
+                        ? TriangleAlert
+                        : Sparkles;
+                    return (
+                        <Link
+                            key={view.id}
+                            to={viewPath(view)}
+                            className="sb-item"
+                            aria-current={
+                                pathname === viewRoutePath(view)
+                                && selectedSavedViewId === String(view.id)
+                                    ? 'page'
+                                    : undefined
+                            }
+                            aria-label={label}
+                            title={label}
+                            onClick={onNavigate}
+                        >
+                            <WarningIcon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
+                            <span className="sb-label">{label}</span>
+                        </Link>
+                    );
+                })}
+                {isLoading && (
+                    <div className="sb-status" role="status" aria-live="polite" aria-busy="true">
+                        {t('nav.loadingSavedViews')}
+                    </div>
+                )}
+                {hasError && (
+                    <div className="sb-recovery" aria-busy={isFetching}>
+                        <p role="status" aria-live="polite">{errorMessage}</p>
+                        <button
+                            type="button"
+                            className="btn ghost sm"
+                            disabled={isFetching}
+                            onClick={onRetry}
+                        >
+                            {isFetching ? t('nav.retryingSavedViews') : t('nav.retrySavedViews')}
+                        </button>
+                    </div>
+                )}
+                {!isLoading && !hasError && allViews.length === 0 && (
+                    <div className="sb-status"><span className="sb-label">{t('nav.noSystemViews')}</span></div>
+                )}
+            </div>
+        </details>
+    );
+};
+
 export const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
     const { t } = useTranslation();
     const location = useLocation();
@@ -100,9 +203,6 @@ export const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
     });
 
     const allViews = [...savedViewGroups.tasks, ...savedViewGroups.triage, ...savedViewGroups.projects];
-    const savedViewsErrorMessage = allViews.length > 0
-        ? t('nav.someSavedViewsUnavailable')
-        : t('nav.savedViewsUnavailable');
 
     return (
         <>
@@ -124,55 +224,17 @@ export const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
             </div>
 
             {isDeliveryWorkspace && (
-                <>
-                    <div className="sb-group-lbl">{t('nav.views')}</div>
-                    {allViews.slice(0, 6).map(view => {
-                        const label = savedViewDisplay(view).name;
-                        const WarningIcon = view.seed_key === 'tasks_overdue' || view.seed_key === 'projects_at_risk'
-                            ? TriangleAlert
-                            : Sparkles;
-                        return (
-                            <Link
-                                key={view.id}
-                                to={viewPath(view)}
-                                className="sb-item"
-                                aria-current={
-                                    location.pathname === viewRoutePath(view)
-                                    && selectedSavedViewId === String(view.id)
-                                        ? 'page'
-                                        : undefined
-                                }
-                                aria-label={label}
-                                title={label}
-                                onClick={onNavigate}
-                            >
-                                <WarningIcon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
-                                <span className="sb-label">{label}</span>
-                            </Link>
-                        );
-                    })}
-                    {savedViewsLoading && (
-                        <div className="sb-status" role="status" aria-live="polite" aria-busy="true">
-                            {t('nav.loadingSavedViews')}
-                        </div>
-                    )}
-                    {savedViewsError && (
-                        <div className="sb-recovery" aria-busy={savedViewsFetching}>
-                            <p role="status" aria-live="polite">{savedViewsErrorMessage}</p>
-                            <button
-                                type="button"
-                                className="btn ghost sm"
-                                disabled={savedViewsFetching}
-                                onClick={() => { void refetchSavedViews(); }}
-                            >
-                                {savedViewsFetching ? t('nav.retryingSavedViews') : t('nav.retrySavedViews')}
-                            </button>
-                        </div>
-                    )}
-                    {!savedViewsLoading && !savedViewsError && allViews.length === 0 && (
-                        <div className="sb-status"><span className="sb-label">{t('nav.noSystemViews')}</span></div>
-                    )}
-                </>
+                <SavedViewsDisclosure
+                    key={selectedSavedViewId ?? 'saved-views'}
+                    allViews={allViews}
+                    hasError={Boolean(savedViewsError)}
+                    isFetching={savedViewsFetching}
+                    isLoading={savedViewsLoading}
+                    onNavigate={onNavigate}
+                    onRetry={() => { void refetchSavedViews(); }}
+                    pathname={location.pathname}
+                    selectedSavedViewId={selectedSavedViewId}
+                />
             )}
 
             <div className="sb-spacer" />

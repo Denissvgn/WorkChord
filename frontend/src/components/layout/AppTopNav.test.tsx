@@ -28,6 +28,9 @@ describe('AppTopNav', () => {
 
         renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
+        expect(screen.getByRole('link', { name: 'Go to WorkChord overview' }))
+            .toHaveAttribute('href', '/');
+
         const switcher = screen.getByRole('navigation', { name: 'Workspace selector' });
         expect(within(switcher).getAllByRole('link')).toHaveLength(3);
         expect(within(switcher).getByRole('link', { name: 'Timeline & Planning' }))
@@ -52,5 +55,21 @@ describe('AppTopNav', () => {
 
         await user.keyboard('{Escape}');
         expect(screen.queryByRole('dialog', { name: 'Primary navigation' })).not.toBeInTheDocument();
+    });
+
+    it('turns delivery attention into an accessible next-step destination', async () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue({
+            iterations: [{ id: 1 }],
+            ready: { total: 6, done: 4 },
+        });
+        triageServiceMock.getAll.mockResolvedValue([]);
+
+        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
+
+        const deliveryLink = await screen.findByRole('link', {
+            name: 'Delivery Hub needs attention: 2 planning steps remain. Open Plan Work.',
+        });
+        expect(deliveryLink).toHaveAttribute('href', '/plan/master');
+        expect(deliveryLink).toHaveTextContent('2');
     });
 });

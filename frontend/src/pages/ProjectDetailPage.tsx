@@ -1256,8 +1256,8 @@ const ProjectDetailPage = () => {
             <PageHeader
                 title={project.name}
                 subtitle={project.description}
-                eyebrow={(
-                    <div className="row wrap" style={{gap:6, marginBottom:6}}>
+                meta={(
+                    <>
                         <span className="pill opt"><span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}</span>
                         <span className={`pill ${healthToTone(projectHealth) === 'green' ? 'done' : healthToTone(projectHealth) === 'yellow' ? 'warn' : healthToTone(projectHealth) === 'red' ? 'blocked' : 'opt'}`}>
                             <span className="pdot"/>{t(healthLabelKeys[projectHealth])}
@@ -1267,10 +1267,6 @@ const ProjectDetailPage = () => {
                                 <span className="pdot"/>{t(updateFreshnessLabelKeys[summary.update_freshness])}{latestUpdateAge ? ` · ${latestUpdateAge.toLowerCase()}` : ''}
                             </span>
                         )}
-                    </div>
-                )}
-                meta={(
-                    <div className="row wrap" style={{gap:14}}>
                         <span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>
                             {formatDate(project.start_date)} – {formatDate(project.target_date)}
                             {typeof summary?.days_until_target === 'number' && ` · ${summary.days_until_target}d left`}
@@ -1278,7 +1274,7 @@ const ProjectDetailPage = () => {
                         <span><User className="inline h-3.5 w-3.5 mr-1"/>
                             {formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '—')}
                         </span>
-                    </div>
+                    </>
                 )}
                 actions={(
                     <>

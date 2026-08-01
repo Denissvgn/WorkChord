@@ -1,4 +1,4 @@
-import { FileQuestion, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../components/common/Button';
@@ -14,7 +14,6 @@ const NotFoundPage = () => {
             <PageHeader
                 title={t('notFound.title')}
                 subtitle={t('notFound.description')}
-                eyebrow={<FileQuestion aria-hidden="true" className="h-5 w-5 text-content-secondary" />}
             />
             <SectionCard className="mx-auto max-w-2xl" title={t('notFound.code')}>
                 <p className="text-sm text-content-secondary">{t('notFound.requestedPath')}</p>

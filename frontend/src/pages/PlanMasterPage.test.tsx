@@ -381,6 +381,21 @@ describe('PlanMasterPage hardening', () => {
         })).not.toBeInTheDocument();
     });
 
+    it('moves focus to the current step when the responsive summary targets it', async () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
+        const { user } = renderWithProviders(<PlanMasterPage />);
+
+        const currentHeading = screen.getByRole('heading', {
+            level: 2,
+            name: i18n.t('plan.steps.team.title'),
+        });
+        await user.click(screen.getByRole('button', {
+            name: i18n.t('plan.master.goToCurrentStep'),
+        }));
+
+        expect(currentHeading).toHaveFocus();
+    });
+
     it('does not fabricate a timeline when no saved schedule exists', () => {
         const unscheduledTask = taskFixture({
             start_date: null,
