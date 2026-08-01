@@ -69,6 +69,9 @@ jobs:
           backend/tests/test_agent_routing_rollout.py
           backend/tests/test_agent_routing_observability.py
           backend/tests/test_agent_routing_wave6_qualification.py
+          backend/tests/test_agent_team_setup.py
+          backend/tests/test_agent_team_setup_cli.py
+          backend/tests/test_agent_team_setup_qualification.py
       - name: Run the backend database harness
         env:
           DEPLOYMENT_ENVIRONMENT: test
@@ -197,7 +200,9 @@ jobs:
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.6.2'"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.7.0'"
+          .venv/bin/python scripts/generate_agent_team_contract.py --output /tmp/agent-team-master-v1.schema.json
+          .venv/bin/python scripts/generate_agent_team_report_contract.py --output /tmp/agent-team-setup-report-v1.schema.json
       - name: Validate the PostgreSQL qualification harness contract
         run: |
           qualification_dir="$(mktemp -d)"
@@ -215,6 +220,10 @@ jobs:
               --output "$qualification_dir/$profile-dry.json"
           done
           cp -R "$qualification_dir" /tmp/workchord-qualification-contracts
+          PYTHONPATH=backend .venv/bin/python \
+            scripts/ci/check_model_aware_routing_closeout.py \
+            --require-tracked \
+            --output /tmp/workchord-qualification-contracts/model-aware-routing-closeout.json
       - name: Validate PostgreSQL operator documentation
         run: |
           .venv/bin/python scripts/ci/check_postgresql_documentation.py

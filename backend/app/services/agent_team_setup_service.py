@@ -60,6 +60,10 @@ from app.schemas.agent_team_setup import (
     AgentTeamRuntimeAcknowledgement,
     AgentTeamRuntimeAcknowledgementResponse,
     AgentTeamRuntimeHandoff,
+    AgentTeamDispatchAvailability,
+    AgentTeamSetupReport,
+    AgentTeamSetupReportCounts,
+    AgentTeamSetupReportEvidence,
     AgentTeamSetupStep,
     AgentTeamSkillPackage,
     AgentTeamStatusResponse,
@@ -436,7 +440,9 @@ class AgentTeamSetupService:
             AgentTeamTopology.topology_key == topology_key
         )
         if options:
-            query = query.options(*options)
+            query = query.options(*options).execution_options(
+                populate_existing=True
+            )
         if for_update:
             if self.db.get_bind().dialect.name == "sqlite":
                 await self.db.execute(
@@ -632,6 +638,7 @@ class AgentTeamSetupService:
         }
         actions: list[AgentTeamPlanAction] = []
         member_specific_blockers = {
+            "required_server_feature_missing",
             "profile_reference_missing",
             "role_package_missing",
             "role_package_checksum_mismatch",
@@ -2740,6 +2747,105 @@ class AgentTeamSetupService:
             persist_state=False,
         )
 
+    async def report(
+        self,
+        actor: AgentActor,
+        *,
+        topology_key: str | None = None,
+    ) -> AgentTeamSetupReport:
+        """Return a bounded redacted report without availability overclaims."""
+
+        topology, can_mutate = await self._select_status_topology(
+            actor,
+            topology_key,
+        )
+        if topology is None:
+            status = AgentTeamStatusResponse(
+                topology_state="absent",
+                runtime_ready=False,
+                blocker_codes=("topology_not_configured",),
+                steps=self._absent_steps(),
+                can_mutate=can_mutate,
+                next_action="Validate and plan an agent-team master",
+            )
+            apply_runs: tuple[AgentTeamApplyRun, ...] = ()
+        else:
+            status = await self._status_for_topology(
+                topology,
+                can_mutate=can_mutate,
+                persist_state=False,
+            )
+            apply_runs = tuple(topology.apply_runs)
+
+        redacted_status = status.model_dump(mode="json")
+        for member in redacted_status["members"]:
+            member.pop("handoff", None)
+        redacted_status.pop("can_mutate", None)
+        redacted_status.pop("next_action", None)
+        latest_apply = max(
+            apply_runs,
+            key=lambda item: (item.created_at, item.id),
+            default=None,
+        )
+        members = status.members
+        counts = AgentTeamSetupReportCounts(
+            desired=len(members),
+            configured=sum(member.configured for member in members),
+            credential_delivered=sum(
+                member.credential_delivery_state
+                in {"delivered", "not_required"}
+                for member in members
+            ),
+            onboarding=sum(
+                member.lifecycle_state
+                == AgentTeamMemberLifecycle.ONBOARDING
+                for member in members
+            ),
+            connected=sum(
+                member.connection_state == "observed" for member in members
+            ),
+            runtime_ready=sum(member.runtime_ready for member in members),
+            blocked=sum(not member.runtime_ready for member in members),
+            disabled=sum(
+                member.lifecycle_state == AgentTeamMemberLifecycle.DISABLED
+                for member in members
+            ),
+            queued_assignments=sum(
+                member.queued_assignments or 0 for member in members
+            ),
+            accepted_assignments=sum(
+                member.accepted_assignments or 0 for member in members
+            ),
+            running_runs=sum(member.running_runs or 0 for member in members),
+        )
+        report = AgentTeamSetupReport(
+            generated_at=utc_now(),
+            topology_key=status.topology_key,
+            topology_revision=status.topology_revision,
+            manifest_digest=status.manifest_digest,
+            topology_state=status.topology_state,
+            runtime_ready=status.runtime_ready,
+            status_digest=_digest(redacted_status),
+            counts=counts,
+            evidence=AgentTeamSetupReportEvidence(
+                apply_runs=len(apply_runs),
+                action_receipts=sum(
+                    len(run.action_receipts) for run in apply_runs
+                ),
+                latest_apply_id=(
+                    latest_apply.apply_id if latest_apply is not None else None
+                ),
+                latest_apply_status=(
+                    latest_apply.status if latest_apply is not None else None
+                ),
+                pending_actions=len(status.pending_action_ids),
+            ),
+            dispatch_context=AgentTeamDispatchAvailability(),
+            blocker_codes=status.blocker_codes,
+        )
+        ensure_agent_team_secret_free(report.model_dump(mode="json"))
+        return report
+
     async def _status_for_topology(
         self,
         topology: AgentTeamTopology,
@@ -3346,11 +3452,10 @@ class AgentTeamSetupService:
         self,
         actor_id: int,
     ) -> AgentTeamMembershipBoundary | None:
-        """Return a non-disabled topology boundary for one bound actor."""
+        """Return the live, drift-aware topology boundary for one bound actor."""
 
         result = await self.db.execute(
-            select(AgentTeamTopology)
-            .options(selectinload(AgentTeamTopology.members))
+            select(AgentTeamTopology.topology_key)
             .join(
                 AgentTeamTopologyMember,
                 AgentTeamTopologyMember.topology_id
@@ -3361,9 +3466,22 @@ class AgentTeamSetupService:
                 AgentTeamTopology.state != "disabled",
             )
         )
-        topology = result.scalar_one_or_none()
+        topology_key = result.scalar_one_or_none()
+        if topology_key is None:
+            return None
+        topology = await self._topology(topology_key, load_members=True)
         if topology is None:
             return None
+        status = await self._status_for_topology(
+            topology,
+            can_mutate=False,
+            persist_state=False,
+        )
+        runtime_ready_actor_ids = frozenset(
+            member.actor_id
+            for member in status.members
+            if member.actor_id is not None and member.runtime_ready
+        )
         return AgentTeamMembershipBoundary(
             topology_id=topology.id,
             topology_key=topology.topology_key,
@@ -3375,12 +3493,7 @@ class AgentTeamSetupService:
                 if member.actor_id is not None
                 and member.lifecycle_state != "disabled"
             ),
-            runtime_ready_actor_ids=frozenset(
-                member.actor_id
-                for member in topology.members
-                if member.actor_id is not None
-                and member.lifecycle_state == "runtime_ready"
-            ),
+            runtime_ready_actor_ids=runtime_ready_actor_ids,
         )
 
     async def require_dispatch_member(

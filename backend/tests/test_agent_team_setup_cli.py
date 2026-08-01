@@ -130,3 +130,40 @@ def test_cli_refuses_unknown_or_implicitly_confirmed_actions(
                 confirm=["other-action"],
             )
         )
+
+
+def test_cli_report_exports_only_the_selected_topology(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, Any] = {}
+
+    def fake_call_api(**kwargs: Any) -> dict[str, Any]:
+        captured.update(kwargs)
+        return {
+            "schema_version": "agent-team-setup-report-v1",
+            "topology_key": "delivery-team",
+            "availability": "availability_unknown",
+        }
+
+    monkeypatch.setattr(setup_agent_team, "call_api", fake_call_api)
+    args = SimpleNamespace(
+        topology_key="delivery-team",
+        base_url="http://workchord.test/",
+        api_prefix="api",
+        admin_key="operator-key",
+        timeout=4.0,
+    )
+
+    report = setup_agent_team.run_report(args)
+
+    assert report["schema_version"] == "agent-team-setup-report-v1"
+    assert captured == {
+        "url": (
+            "http://workchord.test/api/agent/team-setup/report"
+            "?topology_key=delivery-team"
+        ),
+        "admin_key": "operator-key",
+        "method": "GET",
+        "payload": None,
+        "timeout": 4.0,
+    }

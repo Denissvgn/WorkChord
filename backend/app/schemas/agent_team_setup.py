@@ -20,10 +20,12 @@ from app.autonomy.canonical import (
 AGENT_TEAM_MASTER_SCHEMA_VERSION = "agent-team-master-v1"
 AGENT_TEAM_PLAN_SCHEMA_VERSION = "agent-team-reconciliation-plan-v1"
 AGENT_TEAM_STATUS_SCHEMA_VERSION = "agent-team-status-v1"
+AGENT_TEAM_REPORT_SCHEMA_VERSION = "agent-team-setup-report-v1"
 AGENT_TEAM_ACK_SCHEMA_VERSION = "agent-team-runtime-ack-v1"
 AGENT_TEAM_HANDOFF_SCHEMA_VERSION = "agent-team-runtime-handoff-v1"
 MAX_AGENT_TEAM_MANIFEST_BYTES = 65_536
 MAX_AGENT_TEAM_PLAN_BYTES = 131_072
+MAX_AGENT_TEAM_REPORT_BYTES = 65_536
 MAX_AGENT_TEAM_MEMBERS = 128
 MAX_AGENT_TEAM_ACTIONS = 256
 MAX_AGENT_TEAM_BLOCKERS = 64
@@ -968,3 +970,138 @@ class AgentTeamStatusResponse(AgentTeamSetupModel):
     )
     can_mutate: bool
     next_action: str | None = Field(default=None, max_length=255)
+
+
+class AgentTeamSetupReportCounts(AgentTeamSetupModel):
+    """Bounded lifecycle and current-work counts without member internals."""
+
+    desired: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    configured: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    credential_delivered: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    onboarding: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    connected: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    runtime_ready: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    blocked: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    disabled: int = Field(ge=0, le=MAX_AGENT_TEAM_MEMBERS)
+    queued_assignments: int = Field(ge=0)
+    accepted_assignments: int = Field(ge=0)
+    running_runs: int = Field(ge=0)
+
+    @model_validator(mode="after")
+    def validate_member_counts(self) -> "AgentTeamSetupReportCounts":
+        for field_name in (
+            "configured",
+            "credential_delivered",
+            "onboarding",
+            "connected",
+            "runtime_ready",
+            "blocked",
+            "disabled",
+        ):
+            if getattr(self, field_name) > self.desired:
+                raise ValueError(
+                    f"{field_name} cannot exceed the desired member count"
+                )
+        if self.runtime_ready + self.blocked != self.desired:
+            raise ValueError(
+                "runtime_ready and blocked must partition desired members"
+            )
+        return self
+
+
+class AgentTeamSetupReportEvidence(AgentTeamSetupModel):
+    """Durable reconciliation evidence summarized without action payloads."""
+
+    apply_runs: int = Field(ge=0)
+    action_receipts: int = Field(ge=0)
+    latest_apply_id: str | None = Field(
+        default=None,
+        pattern=r"^[0-9a-f]{32}$",
+    )
+    latest_apply_status: Literal[
+        "running",
+        "completed",
+        "partial",
+        "blocked",
+    ] | None = None
+    pending_actions: int = Field(ge=0, le=MAX_AGENT_TEAM_ACTIONS)
+
+
+class AgentTeamDispatchAvailability(AgentTeamSetupModel):
+    """Explicitly withhold availability claims without task-bound evidence."""
+
+    state: Literal["availability_unknown"] = "availability_unknown"
+    task_id: int | None = Field(default=None, ge=1)
+    assessment_id: int | None = Field(default=None, ge=1)
+    planning_boundary: str | None = Field(default=None, max_length=255)
+    dispatch_eligible: int | None = Field(default=None, ge=0)
+    currently_available: int | None = Field(default=None, ge=0)
+
+    @model_validator(mode="after")
+    def validate_unknown_availability(
+        self,
+    ) -> "AgentTeamDispatchAvailability":
+        if any(
+            value is not None
+            for value in (
+                self.task_id,
+                self.assessment_id,
+                self.planning_boundary,
+                self.dispatch_eligible,
+                self.currently_available,
+            )
+        ):
+            raise ValueError(
+                "availability_unknown cannot carry contextual eligibility claims"
+            )
+        return self
+
+
+class AgentTeamSetupReport(AgentTeamSetupModel):
+    """Portable redacted topology report derived only from current server state."""
+
+    schema_version: Literal["agent-team-setup-report-v1"] = (
+        AGENT_TEAM_REPORT_SCHEMA_VERSION
+    )
+    generated_at: datetime
+    topology_key: str | None = Field(default=None, pattern=STABLE_KEY_PATTERN)
+    topology_revision: int | None = Field(default=None, ge=1)
+    manifest_digest: str | None = Field(default=None, pattern=SHA256_PATTERN)
+    topology_state: Literal[
+        "absent",
+        "configured",
+        "onboarding",
+        "runtime_ready",
+        "blocked",
+        "disabled",
+    ]
+    runtime_ready: bool
+    availability: Literal["availability_unknown"] = "availability_unknown"
+    status_digest: str = Field(pattern=SHA256_PATTERN)
+    counts: AgentTeamSetupReportCounts
+    evidence: AgentTeamSetupReportEvidence
+    dispatch_context: AgentTeamDispatchAvailability = Field(
+        default_factory=AgentTeamDispatchAvailability
+    )
+    blocker_codes: tuple[str, ...] = Field(
+        default=(),
+        max_length=MAX_AGENT_TEAM_BLOCKERS,
+    )
+
+    @model_validator(mode="after")
+    def validate_bounded_secret_free_report(self) -> "AgentTeamSetupReport":
+        value = self.model_dump(mode="json")
+        ensure_agent_team_secret_free(value)
+        if len(canonical_json_bytes(value)) > MAX_AGENT_TEAM_REPORT_BYTES:
+            raise ValueError(
+                "Agent-team setup report exceeds "
+                f"{MAX_AGENT_TEAM_REPORT_BYTES} canonical bytes"
+            )
+        if self.runtime_ready != (
+            self.topology_state == "runtime_ready"
+            and self.counts.blocked == 0
+        ):
+            raise ValueError(
+                "Report runtime readiness must agree with state and counts"
+            )
+        return self

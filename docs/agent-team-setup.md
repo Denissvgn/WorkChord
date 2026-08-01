@@ -146,15 +146,23 @@ evidence.
 - Package, profile, binding, credential-delivery, acknowledgement, and
   connection drift remain separate status evidence.
 
-Export a redacted setup report from the status projection. The result contains
-logical keys, server-owned IDs, revisions, readiness evidence, queue counts,
-blockers, and external reference names, but no credential values:
+Export the bounded aggregate setup report through
+`GET /api/agent/team-setup/report` or the operator CLI. It contains the topology
+revision and digest, lifecycle and current-work counts, reconciliation receipt
+counts, blocker codes, and an explicit `availability_unknown` dispatch context.
+It contains no member handoffs, runtime endpoints, external references, or
+credential values:
 
 ```bash
 .venv/bin/python scripts/api_keys/setup_agent_team.py \
-  status --topology-key default-agent-team \
-  > /secure/operator/agent-team-status.json
+  report --topology-key default-agent-team \
+  > /secure/operator/agent-team-setup-report.json
 ```
+
+The report conforms to `agent-team-setup-report-v1`; its generated JSON Schema
+is `docs/contracts/agent-team-setup-report-v1.schema.json`. Use `status` when an
+authorized operator needs the per-member reconciliation and runtime-handoff
+view. Neither projection claims task-contextual availability.
 
 To stop dispatch without erasing history, approve the proposed disable actions
 or set the deployment routing mode to `off`. Correct the master or external

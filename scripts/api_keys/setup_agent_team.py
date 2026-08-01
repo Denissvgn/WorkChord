@@ -183,6 +183,19 @@ def run_status(args: argparse.Namespace) -> dict[str, Any]:
     )
 
 
+def run_report(args: argparse.Namespace) -> dict[str, Any]:
+    url = endpoint(args.base_url, args.api_prefix, "report")
+    if args.topology_key:
+        url += "?" + parse.urlencode({"topology_key": args.topology_key})
+    return call_api(
+        url=url,
+        admin_key=args.admin_key,
+        method="GET",
+        payload=None,
+        timeout=args.timeout,
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
@@ -237,6 +250,13 @@ def parse_args() -> argparse.Namespace:
     status = commands.add_parser("status")
     status.add_argument("--topology-key")
     status.set_defaults(handler=run_status)
+
+    report = commands.add_parser(
+        "report",
+        help="Export the bounded secret-free setup report.",
+    )
+    report.add_argument("--topology-key")
+    report.set_defaults(handler=run_report)
     return parser.parse_args()
 
 

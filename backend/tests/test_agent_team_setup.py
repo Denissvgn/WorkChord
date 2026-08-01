@@ -354,6 +354,30 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
         == (0, 0, 0)
         for member in status.members
     )
+    onboarding_report = await service.report(
+        admin,
+        topology_key=manifest.topology_key,
+    )
+    assert onboarding_report.schema_version == "agent-team-setup-report-v1"
+    assert onboarding_report.counts.desired == len(manifest.all_members)
+    assert onboarding_report.counts.configured == len(manifest.all_members)
+    assert onboarding_report.counts.credential_delivered == len(
+        manifest.all_members
+    )
+    assert onboarding_report.counts.onboarding == len(manifest.all_members)
+    assert onboarding_report.counts.connected == 0
+    assert onboarding_report.counts.runtime_ready == 0
+    assert onboarding_report.counts.blocked == len(manifest.all_members)
+    assert onboarding_report.dispatch_context.state == "availability_unknown"
+    assert onboarding_report.dispatch_context.dispatch_eligible is None
+    assert onboarding_report.evidence.apply_runs == 1
+    assert onboarding_report.evidence.action_receipts == len(
+        manifest.all_members
+    )
+    serialized_report = onboarding_report.model_dump_json()
+    assert "pmag_" not in serialized_report
+    assert "runtime://" not in serialized_report
+    assert "credential_ref" not in serialized_report
 
     actor_service = AgentService(db_session)
     for member_status in status.members:
@@ -384,6 +408,14 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
     assert ready.runtime_ready is True
     assert ready.blocker_codes == ()
     assert all(member.runtime_ready for member in ready.members)
+    ready_report = await service.report(
+        admin,
+        topology_key=manifest.topology_key,
+    )
+    assert ready_report.runtime_ready is True
+    assert ready_report.counts.runtime_ready == len(manifest.all_members)
+    assert ready_report.counts.connected == len(manifest.all_members)
+    assert ready_report.counts.blocked == 0
 
     controller_key = sink.keys[manifest.controller.actor_key]
     controller = await actor_service.authenticate(controller_key)
@@ -424,6 +456,19 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
             controller,
         )
         assert rest.json()["can_mutate"] is False
+
+        report = await client.get(
+            "/api/agent/team-setup/report",
+            headers={"X-Agent-API-Key": controller_key},
+        )
+        assert report.status_code == 200
+        assert report.headers["cache-control"] == "private, no-store"
+        assert report.json()["runtime_ready"] is True
+        assert report.json()["counts"]["runtime_ready"] == len(
+            manifest.all_members
+        )
+        assert "pmag_" not in report.text
+        assert "runtime://" not in report.text
 
         denied = await client.post(
             "/api/agent/team-setup/validate",

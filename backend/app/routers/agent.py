@@ -71,6 +71,7 @@ from app.schemas.agent_team_setup import (
     AgentTeamReconciliationPlan,
     AgentTeamRuntimeAcknowledgement,
     AgentTeamRuntimeAcknowledgementResponse,
+    AgentTeamSetupReport,
     AgentTeamStatusResponse,
     AgentTeamValidateResponse,
 )
@@ -473,6 +474,28 @@ async def get_agent_team_setup_status(
     """Return backend-derived desired, configured, and runtime readiness."""
     try:
         result = await service.status(actor, topology_key=topology_key)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "private, no-store"
+    response.headers["Pragma"] = "no-cache"
+    return result
+
+
+@router.get(
+    "/agent/team-setup/report",
+    response_model=AgentTeamSetupReport,
+)
+async def get_agent_team_setup_report(
+    response: Response,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[
+        AgentTeamSetupService, Depends(get_agent_team_setup_service)
+    ],
+    topology_key: Annotated[Optional[str], Query()] = None,
+):
+    """Export a bounded report derived from redacted authoritative status."""
+    try:
+        result = await service.report(actor, topology_key=topology_key)
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
     response.headers["Cache-Control"] = "private, no-store"
