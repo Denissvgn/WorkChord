@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -37,9 +37,15 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { QueryErrorState } from '../feedback/QueryState';
+import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
+type TaskOrderRequest = Parameters<typeof taskService.reorder>[0];
+type ReorderVariables = {
+    order: TaskOrderRequest;
+    undoOrder: TaskOrderRequest;
+};
 
 // Calculate effective effort for composite tasks (sum of children)
 const getEffectiveEffort = (task: Task): number => {
@@ -59,11 +65,25 @@ interface TaskListProps {
     filters?: TaskFilters;
     sortKey: SortKey;
     onSortKeyChange: (sortKey: SortKey) => void;
+    hasActiveFilters?: boolean;
+    activeViewName?: string;
+    onClearFilters?: () => void;
+    onCreateTask?: () => void;
 }
 
-export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: TaskListProps) => {
+export const TaskList = ({
+    iterationId,
+    filters,
+    sortKey,
+    onSortKeyChange,
+    hasActiveFilters = false,
+    activeViewName,
+    onClearFilters,
+    onCreateTask,
+}: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
+    const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -76,6 +96,12 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
     const mergeTitleRef = useRef<HTMLInputElement>(null);
     const [isBulkMode, setIsBulkMode] = useState(false);
     const [selectedBulkTaskIds, setSelectedBulkTaskIds] = useState<Set<number>>(new Set());
+    const [nowMs, setNowMs] = useState(() => Date.now());
+
+    useEffect(() => {
+        const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
+        return () => window.clearInterval(timer);
+    }, []);
 
     const { data: tasks, isLoading, error: tasksError, refetch: refetchTasks } = useQuery({
         queryKey: ['tasks', iterationId],
@@ -98,23 +124,60 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
+            toast.success(t('taskList.deleteSuccess', {
+                title: deletingTask?.title ?? t('tasks.title'),
+            }));
             setDeletingTask(null);
         },
     });
 
     const reorderMutation = useMutation({
-        mutationFn: taskService.reorder,
-        onSuccess: () => {
+        mutationFn: ({ order }: ReorderVariables) => taskService.reorder(order),
+        onSuccess: (_response, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
+            toast.success(t('taskList.reorderSaved'), {
+                dedupeKey: `task-order-${Date.now()}`,
+                durationMs: 10_000,
+                actionLabel: t('taskList.undo'),
+                onAction: async () => {
+                    try {
+                        await taskService.reorder(variables.undoOrder);
+                        await queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
+                        toast.success(t('taskList.reorderRestored'));
+                    } catch (error) {
+                        toast.error(getApiErrorMessage(error, t('taskList.reorderUndoFailed')));
+                        throw error;
+                    }
+                },
+            });
         },
     });
 
     const mergeMutation = useMutation({
         mutationFn: (data: { task_ids: number[]; parent_title: string }) =>
             taskService.mergeTasks(iterationId, data),
-        onSuccess: () => {
+        onSuccess: (parent, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
+            toast.success(t('taskList.mergeSuccess', { count: variables.task_ids.length }), {
+                dedupeKey: `task-merge-${parent.id}`,
+                durationMs: 10_000,
+                actionLabel: t('taskList.undo'),
+                onAction: async () => {
+                    try {
+                        await taskService.unmergeTask(parent.id, true);
+                        await Promise.all([
+                            queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
+                            queryClient.invalidateQueries({ queryKey: ['gantt'] }),
+                            queryClient.invalidateQueries({ queryKey: ['workload'] }),
+                        ]);
+                        toast.success(t('taskList.mergeRestored'));
+                    } catch (error) {
+                        toast.error(getApiErrorMessage(error, t('taskList.mergeUndoFailed')));
+                        throw error;
+                    }
+                },
+            });
             // Reset merge mode
             setIsMergeMode(false);
             setSelectedTaskIds(new Set());
@@ -130,6 +193,7 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
             await queryClient.refetchQueries({ queryKey: ['tasks', iterationId] });
             await queryClient.refetchQueries({ queryKey: ['gantt'] });
             await queryClient.refetchQueries({ queryKey: ['workload'] });
+            toast.success(t('taskList.unmergeSuccess'));
         },
     });
 
@@ -272,7 +336,14 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
         if (oldIndex !== -1 && newIndex !== -1) {
             const reordered = arrayMove(filteredAndSortedTasks, oldIndex, newIndex);
             const newOrderIds = reordered.map(t => t.id);
-            reorderMutation.mutate({ taskIds: newOrderIds, iterationId, parentId: null });
+            reorderMutation.mutate({
+                order: { taskIds: newOrderIds, iterationId, parentId: null },
+                undoOrder: {
+                    taskIds: filteredAndSortedTasks.map(task => task.id),
+                    iterationId,
+                    parentId: null,
+                },
+            });
         }
     };
 
@@ -287,7 +358,14 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
         if (oldIndex !== -1 && newIndex !== -1) {
             const reordered = arrayMove(parentTask.children, oldIndex, newIndex);
             const newOrderIds = reordered.map(t => t.id);
-            reorderMutation.mutate({ taskIds: newOrderIds, iterationId, parentId: parentTask.id });
+            reorderMutation.mutate({
+                order: { taskIds: newOrderIds, iterationId, parentId: parentTask.id },
+                undoOrder: {
+                    taskIds: parentTask.children.map(task => task.id),
+                    iterationId,
+                    parentId: parentTask.id,
+                },
+            });
         }
     };
 
@@ -306,6 +384,20 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                         if (reorderMutation.variables) reorderMutation.mutate(reorderMutation.variables);
                     }}
                 />
+            )}
+            {(deleteMutation.isPending
+                || reorderMutation.isPending
+                || mergeMutation.isPending
+                || unmergeMutation.isPending) && (
+                <p className="sr-only" role="status" aria-live="polite">
+                    {deleteMutation.isPending
+                        ? t('taskList.deletingTask')
+                        : reorderMutation.isPending
+                            ? t('taskList.savingOrder')
+                            : mergeMutation.isPending
+                                ? t('taskList.mergingTasks')
+                                : t('taskList.splittingTask')}
+                </p>
             )}
             {unmergeMutation.isError && (
                 <QueryErrorState
@@ -385,6 +477,7 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                     <select
                         value={sortKey}
                         onChange={e => onSortKeyChange(e.target.value as SortKey)}
+                        aria-label={t('taskList.sortTasks')}
                         className="text-sm border border-border-strong rounded-md px-2 py-1 bg-surface-card"
                     >
                         <option value="priority">{t('taskList.sortPriority')}</option>
@@ -461,6 +554,7 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                                 selectedBulkTaskIds={selectedBulkTaskIds}
                                 toggleBulkTaskSelection={toggleBulkTaskSelection}
                                 labelsBySlug={labelsBySlug}
+                                nowMs={nowMs}
                             />
                         ))}
                     </SortableContext>
@@ -488,13 +582,37 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                         selectedBulkTaskIds={selectedBulkTaskIds}
                         toggleBulkTaskSelection={toggleBulkTaskSelection}
                         labelsBySlug={labelsBySlug}
+                        nowMs={nowMs}
                     />
                 ))
             )}
 
             {filteredAndSortedTasks?.length === 0 && (
-                <div className="text-center py-12 text-content-tertiary bg-surface-muted rounded-lg border border-dashed border-border">
-                    {t('taskList.noTasks')}
+                <div className="rounded-lg border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
+                    <h3 className="text-base font-semibold text-content-primary">
+                        {tasks && tasks.length > 0
+                            ? t('taskList.noFilterMatches')
+                            : t('taskList.noTasks')}
+                    </h3>
+                    <p className="mx-auto mt-1 max-w-lg text-sm text-content-secondary">
+                        {tasks && tasks.length > 0
+                            ? activeViewName
+                                ? t('taskList.noFilterMatchesViewBody', { view: activeViewName })
+                                : t('taskList.noFilterMatchesBody')
+                            : t('taskList.noTasksBody')}
+                    </p>
+                    <div className="mt-4 flex justify-center gap-2">
+                        {tasks && tasks.length > 0 && hasActiveFilters && onClearFilters ? (
+                            <Button variant="secondary" onClick={onClearFilters}>
+                                {t('taskList.clearFilters')}
+                            </Button>
+                        ) : onCreateTask ? (
+                            <Button variant="primary" onClick={onCreateTask}>
+                                <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
+                                {t('tasks.newTask')}
+                            </Button>
+                        ) : null}
+                    </div>
                 </div>
             )}
 
@@ -628,6 +746,7 @@ interface TaskItemProps {
     selectedBulkTaskIds: Set<number>;
     toggleBulkTaskSelection: (taskId: number) => void;
     labelsBySlug: Map<string, Label>;
+    nowMs: number;
 }
 
 // Sortable wrapper for root-level tasks
@@ -682,10 +801,10 @@ const TaskItemContent = ({
     isBulkMode,
     selectedBulkTaskIds,
     toggleBulkTaskSelection,
-    labelsBySlug
+    labelsBySlug,
+    nowMs,
 }: TaskItemContentProps) => {
     const [isExpanded, setIsExpanded] = useState(true);
-    const [nowMs] = useState(() => Date.now());
     const { t } = useTranslation();
     const hasChildren = task.children && task.children.length > 0;
     const isSelectable = isBulkMode ? true : canSelectForMerge(task);
@@ -698,14 +817,25 @@ const TaskItemContent = ({
     };
 
     const priorityBadge = getPriorityBadge(task.priority);
+    const detailsCount = Number(task.is_optional)
+        + Number(task.is_deferred)
+        + Number(Boolean(task.claimed_by))
+        + Number(task.dependencies.length > 0)
+        + task.tags.length
+        + 1;
+    const statusClassName = task.status === 'planned'
+        ? 'text-status-planned'
+        : task.status === 'active'
+            ? 'text-status-active'
+            : 'text-status-resolved';
 
     return (
         <div className="group">
             <div
                 className={clsx(
                     "flex items-center gap-3 p-3 bg-surface-card border rounded-lg hover:shadow-sm transition-all relative",
-                    task.is_overdue ? "border-feedback-danger-border bg-feedback-danger-muted" : "border-border",
-                    task.is_deferred && "opacity-50 bg-surface-muted",
+                    task.is_overdue ? "border-feedback-danger-border" : "border-border",
+                    task.is_deferred && "opacity-75 bg-surface-muted",
                     isMergeMode && isSelected && "border-feedback-indigo-border bg-feedback-indigo-muted",
                     isBulkMode && isSelected && "border-action bg-action-muted"
                 )}
@@ -751,42 +881,40 @@ const TaskItemContent = ({
                     </button>
                 )}
 
-                <button
-                    type="button"
-                    aria-expanded={hasChildren ? isExpanded : undefined}
-                    aria-label={isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className={clsx("p-1 rounded hover:bg-surface-subtle", !hasChildren && "invisible")}
-                >
-                    {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                </button>
+                {hasChildren ? (
+                    <button
+                        type="button"
+                        aria-expanded={isExpanded}
+                        aria-label={isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="rounded p-1 hover:bg-surface-subtle"
+                    >
+                        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    </button>
+                ) : (
+                    <span className="h-6 w-6 shrink-0" aria-hidden="true" />
+                )}
 
-                <div className={clsx("text-content-tertiary", task.status === 'closed' ? "text-feedback-success" : "")}>
-                    {task.status === 'closed' ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                <div className={clsx("shrink-0", statusClassName)}>
+                    {task.status === 'resolved' || task.status === 'closed'
+                        ? <CheckCircle2 className="h-5 w-5" />
+                        : <Circle className="h-5 w-5" />}
+                    <span className="sr-only">
+                        {t('taskList.taskStatus', {
+                            status: t(`statuses.${task.status}`, { defaultValue: task.status }),
+                        })}
+                    </span>
                 </div>
 
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                        {/* Priority badge */}
                         <span className={clsx("text-xs font-medium px-1.5 py-0.5 rounded", priorityBadge.bg, priorityBadge.text)}>
                             {priorityBadge.label}
                         </span>
 
-                        <span className={clsx("font-medium", task.status === 'closed' && "line-through text-content-secondary")}>
+                        <span className={clsx("min-w-0 font-medium", task.status === 'closed' && "line-through text-content-secondary")}>
                             {task.title}
                         </span>
-
-                        {/* Optional/Deferred badges */}
-                        {task.is_optional && (
-                            <span className="text-xs bg-status-active-muted text-action px-2 py-0.5 rounded-full">
-                                {t('taskList.optional')}
-                            </span>
-                        )}
-                        {task.is_deferred && (
-                            <span className="text-xs bg-surface-hover text-content-secondary px-2 py-0.5 rounded-full">
-                                {t('taskList.deferred')}
-                            </span>
-                        )}
 
                         {task.is_overdue && (
                             <span className="flex items-center text-xs text-feedback-danger-foreground bg-feedback-danger-muted px-2 py-0.5 rounded-full">
@@ -794,55 +922,68 @@ const TaskItemContent = ({
                             </span>
                         )}
 
-                        {task.claimed_by && (
-                            <span className={clsx(
-                                "flex items-center text-xs px-2 py-0.5 rounded-full",
-                                task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs
-                                    ? "text-feedback-warning-foreground bg-feedback-warning-muted"
-                                    : "text-action bg-status-active-muted"
-                            )}>
-                                <Bot className="w-3 h-3 mr-1" />
-                                {task.claimed_by.display_name}
-                            </span>
-                        )}
-
-                        <TaskAgentReadinessBadge readiness={task.agent_readiness} />
-
-                        <span className="text-xs bg-surface-subtle px-2 py-0.5 rounded-full text-content-secondary">
+                        <span className="text-xs tabular-nums text-content-secondary">
                             {t('units.daysCompact', { count: getEffectiveEffort(task) })}
                         </span>
-
-                        {/* Custom tags */}
-                        {task.tags && task.tags.length > 0 && task.tags.map((tag, idx) => {
-                            const label = labelsBySlug.get(tag);
-                            return label ? (
-                                <span
-                                    key={idx}
-                                    className="text-xs px-2 py-0.5 rounded-full border"
-                                    style={{
-                                        color: label.color,
-                                        backgroundColor: `${label.color}1A`,
-                                        borderColor: `${label.color}66`,
-                                    }}
-                                >
-                                    {tag}
-                                </span>
-                            ) : (
-                                <span key={idx} className="text-xs bg-feedback-purple-muted text-feedback-purple-foreground px-2 py-0.5 rounded-full">
-                                    {tag}
-                                </span>
-                            );
-                        })}
                     </div>
-                    <div className="text-xs text-content-secondary gap-2 flex mt-1">
-                        {task.assignee && <span>{t('taskList.assignee')}: {task.assignee.name}</span>}
-                        {task.dependencies.length > 0 && (
-                            <span>
-                                {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, taskMap).join(', ')}
-                                {task.dependencies.length > 3 && ` +${task.dependencies.length - 3}`}
-                            </span>
-                        )}
+                    <div className="mt-1 text-xs text-content-secondary">
+                        {t('taskList.assignee')}: {task.assignee?.name ?? t('common.unassigned')}
                     </div>
+                    <details className="mt-2 text-xs text-content-secondary">
+                        <summary className="w-fit cursor-pointer rounded text-content-secondary hover:text-content-primary focus:outline-none focus:ring-2 focus:ring-focus">
+                            {t('taskList.detailsCount', { count: detailsCount })}
+                        </summary>
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-border-subtle pt-2">
+                            {task.is_optional && (
+                                <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-content-secondary">
+                                    {t('taskList.optional')}
+                                </span>
+                            )}
+                            {task.is_deferred && (
+                                <span className="rounded-full bg-surface-hover px-2 py-0.5 text-content-secondary">
+                                    {t('taskList.deferred')}
+                                </span>
+                            )}
+                            {task.claimed_by && (
+                                <span className={clsx(
+                                    "flex items-center rounded-full px-2 py-0.5",
+                                    task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs
+                                        ? "text-feedback-warning-foreground bg-feedback-warning-muted"
+                                        : "text-action bg-status-active-muted"
+                                )}>
+                                    <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
+                                    {task.claimed_by.display_name}
+                                </span>
+                            )}
+                            <TaskAgentReadinessBadge readiness={task.agent_readiness} />
+                            {task.dependencies.length > 0 && (
+                                <span>
+                                    {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, taskMap).join(', ')}
+                                    {task.dependencies.length > 3 && ` +${task.dependencies.length - 3}`}
+                                </span>
+                            )}
+                            {task.tags.map((tag, idx) => {
+                                const label = labelsBySlug.get(tag);
+                                return label ? (
+                                    <span
+                                        key={idx}
+                                        className="rounded-full border px-2 py-0.5"
+                                        style={{
+                                            color: label.color,
+                                            backgroundColor: `${label.color}1A`,
+                                            borderColor: `${label.color}66`,
+                                        }}
+                                    >
+                                        {tag}
+                                    </span>
+                                ) : (
+                                    <span key={idx} className="rounded-full bg-feedback-purple-muted px-2 py-0.5 text-feedback-purple-foreground">
+                                        {tag}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </details>
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -908,6 +1049,7 @@ const TaskItemContent = ({
                                         selectedBulkTaskIds={selectedBulkTaskIds}
                                         toggleBulkTaskSelection={toggleBulkTaskSelection}
                                         labelsBySlug={labelsBySlug}
+                                        nowMs={nowMs}
                                     />
                                 ))}
                             </SortableContext>
@@ -935,6 +1077,7 @@ const TaskItemContent = ({
                                 selectedBulkTaskIds={selectedBulkTaskIds}
                                 toggleBulkTaskSelection={toggleBulkTaskSelection}
                                 labelsBySlug={labelsBySlug}
+                                nowMs={nowMs}
                             />
                         ))
                     )}

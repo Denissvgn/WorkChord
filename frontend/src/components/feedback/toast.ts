@@ -8,6 +8,8 @@ export interface ToastInput {
     tone?: ToastTone;
     dedupeKey?: string;
     durationMs?: number;
+    actionLabel?: string;
+    onAction?: () => void | Promise<void>;
 }
 
 export type ToneToastOptions = Omit<ToastInput, 'message' | 'tone'>;

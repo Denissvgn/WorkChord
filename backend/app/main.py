@@ -17,7 +17,7 @@ from app.maintenance import (
 from app.observability import collect_metrics, readiness_snapshot
 from app.query_limits import CollectionLimitExceededError
 from app.runtime_telemetry import metrics
-from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
+from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
 
 settings = get_settings()
@@ -172,6 +172,7 @@ app.include_router(intake.router, prefix=settings.api_prefix, tags=["Intake"])
 app.include_router(llm.router, prefix=settings.api_prefix, tags=["LLM"])
 app.include_router(export.router, prefix=settings.api_prefix, tags=["Export"])
 app.include_router(snapshots.router, prefix=settings.api_prefix, tags=["Snapshots"])
+app.include_router(plan_shares.router, prefix=settings.api_prefix, tags=["Plan Shares"])
 app.include_router(session.router, prefix=settings.api_prefix, tags=["Session"])
 app.include_router(scheduling_rules.router, prefix=settings.api_prefix, tags=["Scheduling Rules"])
 app.include_router(email_settings.router, prefix=settings.api_prefix, tags=["Email Settings"])

@@ -13,9 +13,15 @@ const iterationStoreMock = vi.hoisted(() => ({
     selectedIterationId: 1,
     setSelectedIterationId: vi.fn(),
 }));
+const savedViewServiceMock = vi.hoisted(() => ({
+    getAll: vi.fn(),
+}));
 
 vi.mock('../services/iterationService', () => ({
     iterationService: iterationServiceMock,
+}));
+vi.mock('../services/savedViewService', () => ({
+    savedViewService: savedViewServiceMock,
 }));
 
 vi.mock('../store/iterationStore', () => ({
@@ -64,6 +70,8 @@ describe('TasksPage', () => {
         iterationServiceMock.getAll.mockResolvedValue([
             { id: 1, name: 'Iteration one', start_date: '2026-01-01', end_date: '2026-01-14' },
         ]);
+        savedViewServiceMock.getAll.mockReset();
+        savedViewServiceMock.getAll.mockResolvedValue([]);
     });
 
     it('opens the task creator from the create query and clears the intent when dismissed', async () => {
@@ -82,5 +90,33 @@ describe('TasksPage', () => {
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         expect(screen.getByTestId('location-search')).toHaveTextContent('');
+    });
+
+    it('applies a URL-selected saved view and keeps its context visible', async () => {
+        savedViewServiceMock.getAll.mockResolvedValue([{
+            id: 12,
+            name: 'Needs owners',
+            description: null,
+            seed_key: null,
+            view_type: 'tasks',
+            scope: 'shared',
+            filters_json: { assigneeId: -1 },
+            sort_json: { sortKey: 'priority' },
+            columns_json: {},
+            created_by_session_id: null,
+            schema_version: 1,
+            is_valid: true,
+            invalid_reason: null,
+            created_at: '2026-08-01T00:00:00Z',
+            updated_at: '2026-08-01T00:00:00Z',
+        }]);
+
+        renderWithProviders(<TasksPage />, {
+            initialEntries: ['/tasks?view=12'],
+        });
+
+        expect(await screen.findByText('Needs owners')).toBeVisible();
+        expect(screen.getByText('1 active filter(s)')).toBeVisible();
+        expect(savedViewServiceMock.getAll).toHaveBeenCalledWith({ view_type: 'tasks' });
     });
 });

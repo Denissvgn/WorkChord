@@ -301,6 +301,72 @@
   padding-inline: 24px;
   font-size: var(--wc-type-meta);
 }
+.wc .plan-share-completion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--thread-line);
+  border-radius: var(--wc-r-lg);
+  background: var(--thread-soft);
+}
+.wc .plan-share-completion-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: var(--wc-r-md);
+  color: var(--thread-ink);
+  background: var(--panel);
+}
+.wc .plan-share-completion-icon.done {
+  color: var(--done-ink);
+  background: var(--done-soft);
+}
+.wc .plan-share-completion-copy {
+  min-width: 0;
+}
+.wc .plan-share-completion-copy h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--wc-type-heading);
+  line-height: var(--wc-leading-ui);
+}
+.wc .plan-share-completion-copy p {
+  margin: 5px 0 0;
+  color: var(--ink-2);
+  font-size: var(--wc-type-label);
+}
+.wc .plan-share-link-field {
+  display: grid;
+  gap: 5px;
+  margin-block-start: 12px;
+  color: var(--ink-3);
+  font-size: var(--wc-type-meta);
+  font-weight: 600;
+}
+.wc .plan-share-link-field input {
+  width: 100%;
+  min-height: var(--wc-control-h);
+  border: 1px solid var(--border-2);
+  border-radius: var(--wc-r);
+  padding: 6px 9px;
+  color: var(--ink-2);
+  background: var(--panel);
+  font: inherit;
+  font-weight: 400;
+}
+.wc .plan-share-link-field input:focus {
+  outline: 2px solid rgb(var(--color-focus-ring));
+  outline-offset: 1px;
+}
+.wc .plan-share-completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
 .wc .plan-master-responsive-readiness { display: none; }
 .wc .plan-master-responsive-readiness-main {
   display: grid;
@@ -1661,15 +1727,6 @@
 @media (max-width: 1100px) {
   .wc .wc-master { grid-template-columns: 220px 1fr; }
   .wc .wc-master-aux { display: none; }
-  .wc .plan-master-responsive-readiness {
-    display: block;
-    margin-block-end: 16px;
-  }
-  .wc .plan-master-responsive-readiness-main {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 5;
-  }
   .wc .wc-content-rail { grid-template-columns: 1fr; }
   .wc .roadmap-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .wc .roadmap-filter-reset { justify-self: start; }
@@ -1746,6 +1803,22 @@
   .wc .wc-master { grid-template-columns: minmax(0, 1fr); }
   .wc .wc-master-rail { display: none; }
   .wc .wc-master-main { padding: 16px 20px 24px; }
+  .wc .plan-master-responsive-readiness {
+    display: block;
+    margin-block-end: 16px;
+  }
+  .wc .plan-master-responsive-readiness-main {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 5;
+  }
+  .wc .plan-share-completion {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .wc .plan-share-completion-actions {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
   .wc .step-body { border-block-start: 2px solid var(--thread); padding-block-start: 14px; }
   .wc .plan-master-responsive-readiness + .step-body {
     border-block-start: 0;

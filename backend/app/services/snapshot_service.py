@@ -79,6 +79,47 @@ class SnapshotService:
                 validated.append(resolved)
         return validated
 
+    async def build_snapshot_data(
+        self,
+        iteration_id: int,
+        reason: str = "auto",
+    ) -> dict | None:
+        """Build one JSON-native immutable representation of an iteration."""
+        reason = self._validate_reason(reason)
+        iteration_service = IterationService(self.db)
+        iteration = await iteration_service.get_by_id(iteration_id)
+        if not iteration:
+            return None
+
+        from app.services.task_service import TaskService
+
+        tasks = await TaskService(self.db).get_by_iteration(iteration_id)
+        team_members = await TeamService(self.db).get_by_iteration(iteration_id)
+        created_at = utc_now()
+
+        return {
+            "iteration": {
+                "id": iteration.id,
+                "name": iteration.name,
+                "start_date": iteration.start_date.isoformat(),
+                "end_date": iteration.end_date.isoformat(),
+                "calendar_id": iteration.calendar_id,
+                "project_id": iteration.project_id,
+            },
+            "team_members": [
+                self._member_to_export(member)
+                for member in team_members
+            ],
+            "tasks": [
+                self._task_to_export(task)
+                for task in tasks
+            ],
+            "snapshot_info": {
+                "created_at": created_at.isoformat(),
+                "reason": reason,
+            },
+        }
+
     async def create_snapshot(self, iteration_id: int, reason: str = "auto") -> str | None:
         """Create a snapshot of the iteration's current state.
 
@@ -89,42 +130,10 @@ class SnapshotService:
         Returns:
             Filename of created snapshot, or None if failed
         """
-        reason = self._validate_reason(reason)
-        iteration_service = IterationService(self.db)
-        iteration = await iteration_service.get_by_id(iteration_id)
-
-        if not iteration:
+        export_data = await self.build_snapshot_data(iteration_id, reason)
+        if export_data is None:
             return None
-
-        from app.services.task_service import TaskService
-        task_service = TaskService(self.db)
-        tasks = await task_service.get_by_iteration(iteration_id)
-
-        team_service = TeamService(self.db)
-        team_members = await team_service.get_by_iteration(iteration_id)
-
         created_at = utc_now()
-
-        # Build export data (compatible with import format)
-        export_data = {
-            "iteration": {
-                "name": iteration.name,
-                "start_date": iteration.start_date.isoformat(),
-                "end_date": iteration.end_date.isoformat(),
-                "calendar_id": iteration.calendar_id,
-                "project_id": iteration.project_id,
-            },
-            "team_members": [
-                self._member_to_export(m) for m in team_members
-            ],
-            "tasks": [
-                self._task_to_export(t) for t in tasks
-            ],
-            "snapshot_info": {
-                "created_at": created_at.isoformat(),
-                "reason": reason,
-            }
-        }
 
         # Ensure directory exists
         snapshot_dir = self._get_snapshot_dir(iteration_id)

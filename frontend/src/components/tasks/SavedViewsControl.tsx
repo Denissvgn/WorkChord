@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Copy, Save, Trash2 } from 'lucide-react';
@@ -25,7 +25,6 @@ interface SavedViewsControlProps {
     filters: TaskFilters;
     sortKey: SortKey;
     selectedViewId: number | null;
-    requestedViewId?: number | null;
     onSelectedViewIdChange: (viewId: number | null) => void;
     onApplyView: (view: SavedView) => void;
 }
@@ -40,7 +39,6 @@ export const SavedViewsControl = ({
     filters,
     sortKey,
     selectedViewId,
-    requestedViewId,
     onSelectedViewIdChange,
     onApplyView,
 }: SavedViewsControlProps) => {
@@ -51,7 +49,6 @@ export const SavedViewsControl = ({
     const [formScope, setFormScope] = useState<EditableScope>('personal');
     const [formError, setFormError] = useState<string | null>(null);
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
-    const appliedRequestedViewIdRef = useRef<number | null>(null);
     const formNameRef = useRef<HTMLInputElement>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
@@ -82,21 +79,6 @@ export const SavedViewsControl = ({
         sort_json: { sortKey },
         columns_json: {},
     };
-
-    useEffect(() => {
-        if (!requestedViewId || appliedRequestedViewIdRef.current === requestedViewId) {
-            return;
-        }
-
-        const view = savedViews.find(candidate => candidate.id === requestedViewId);
-        if (!view || !view.is_valid) {
-            return;
-        }
-
-        appliedRequestedViewIdRef.current = requestedViewId;
-        onSelectedViewIdChange(view.id);
-        onApplyView(view);
-    }, [requestedViewId, savedViews, onApplyView, onSelectedViewIdChange]);
 
     const createMutation = useMutation({
         mutationFn: savedViewService.create,
@@ -243,6 +225,7 @@ export const SavedViewsControl = ({
                     value={selectedViewId ?? ''}
                     onChange={event => handleViewSelect(event.target.value)}
                     disabled={isLoading}
+                    aria-label={t('surfaces.savedViews.savedViews')}
                     className="min-w-[220px] rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('surfaces.savedViews.savedViews')}</option>

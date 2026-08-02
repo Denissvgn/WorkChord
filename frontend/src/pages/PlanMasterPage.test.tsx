@@ -19,8 +19,16 @@ import planMasterSource from './PlanMasterPage.tsx?raw';
 const planningReadinessMock = vi.hoisted(() => ({
     usePlanningReadiness: vi.fn(),
 }));
+const planShareServiceMock = vi.hoisted(() => ({
+    getCurrent: vi.fn(),
+    create: vi.fn(),
+    revoke: vi.fn(),
+}));
 
 vi.mock('../features/planningMasters/usePlanningReadiness', () => planningReadinessMock);
+vi.mock('../services/planShareService', () => ({
+    planShareService: planShareServiceMock,
+}));
 
 vi.mock('../components/iteration/IterationForm', () => ({
     IterationForm: ({
@@ -276,6 +284,11 @@ const stepRail = () => screen.getByRole('navigation', {
 describe('PlanMasterPage hardening', () => {
     beforeEach(() => {
         planningReadinessMock.usePlanningReadiness.mockReset();
+        planShareServiceMock.getCurrent.mockReset();
+        planShareServiceMock.create.mockReset();
+        planShareServiceMock.revoke.mockReset();
+        planShareServiceMock.getCurrent.mockResolvedValue(null);
+        planShareServiceMock.revoke.mockResolvedValue(undefined);
     });
 
     it('has English and Russian copy for every static translation key it renders', () => {
@@ -440,6 +453,53 @@ describe('PlanMasterPage hardening', () => {
             name: new RegExp(`^${scheduledTask.title} is scheduled for`),
         })).toHaveAttribute('title', expect.stringContaining(scheduledTask.title));
         expect(within(schedule).getAllByText(scheduledTask.title)).not.toHaveLength(0);
+    });
+
+    it('creates a read-only snapshot from the review step', async () => {
+        const scheduledTask = taskFixture({
+            start_date: '2026-08-03',
+            end_date: '2026-08-05',
+        });
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
+            teamMembers: [memberOne],
+            tasks: [scheduledTask],
+            readiness: { hasGanttSchedule: true },
+        }));
+        planShareServiceMock.create.mockResolvedValue({
+            id: 8,
+            public_id: 'plan-share-token',
+            iteration_id: iterationOne.id,
+            iteration_name: iterationOne.name,
+            created_by_display: 'Guest ABC123',
+            snapshot_data: {
+                iteration: {
+                    id: iterationOne.id,
+                    name: iterationOne.name,
+                    start_date: iterationOne.start_date,
+                    end_date: iterationOne.end_date,
+                },
+                team_members: [],
+                tasks: [],
+                snapshot_info: {
+                    created_at: '2026-08-02T10:00:00Z',
+                    reason: 'plan_share',
+                },
+            },
+            created_at: '2026-08-02T10:00:00Z',
+            revoked_at: null,
+        });
+        const { user } = renderWithProviders(<PlanMasterPage />);
+
+        await user.selectOptions(stepSelect(), 'review');
+        await user.click(await screen.findByRole('button', {
+            name: i18n.t('plan.master.createShareLink'),
+        }));
+
+        expect(planShareServiceMock.create).toHaveBeenCalledWith(iterationOne.id);
+        expect(await screen.findByText(i18n.t('plan.master.planSharedTitle'))).toBeVisible();
+        expect(screen.getByDisplayValue(
+            `${window.location.origin}/plan/share/plan-share-token`,
+        )).toHaveAttribute('readonly');
     });
 
     it('treats nonpositive effort as missing work readiness', async () => {

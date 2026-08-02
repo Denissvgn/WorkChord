@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { screen } from '@testing-library/react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { useToast } from '../components/feedback/toast';
 import { renderWithProviders } from './renderWithProviders';
@@ -11,6 +12,7 @@ const ProviderProbe = () => {
     const location = useLocation();
     const { i18n } = useTranslation();
     const toast = useToast();
+    const [restored, setRestored] = useState(false);
 
     return (
         <>
@@ -24,6 +26,17 @@ const ProviderProbe = () => {
             <button type="button" onClick={() => toast.info('Harness ready', { durationMs: 0 })}>
                 Notify
             </button>
+            <button
+                type="button"
+                onClick={() => toast.success('Change saved', {
+                    actionLabel: 'Undo',
+                    durationMs: 0,
+                    onAction: () => setRestored(true),
+                })}
+            >
+                Notify with undo
+            </button>
+            <output aria-label="Undo state">{restored ? 'Restored' : 'Changed'}</output>
         </>
     );
 };
@@ -41,5 +54,10 @@ describe('renderWithProviders', () => {
 
         await user.click(screen.getByRole('button', { name: 'Notify' }));
         expect(screen.getByText('Harness ready')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Notify with undo' }));
+        await user.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(screen.getByLabelText('Undo state')).toHaveTextContent('Restored');
+        expect(screen.queryByText('Change saved')).not.toBeInTheDocument();
     });
 });

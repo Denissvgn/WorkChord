@@ -9,6 +9,7 @@ from app.database import Base
 
 if TYPE_CHECKING:
     from app.models.calendar import Calendar
+    from app.models.plan_share import PlanShare
     from app.models.project import Project
     from app.models.team_member import TeamMember
     from app.models.task import Task
@@ -45,4 +46,9 @@ class Iteration(Base):
     )
     tasks: Mapped[list["Task"]] = relationship(
         "Task", back_populates="iteration", cascade="all, delete-orphan"
+    )
+    plan_shares: Mapped[list["PlanShare"]] = relationship(
+        "PlanShare",
+        back_populates="iteration",
+        cascade="all, delete-orphan",
     )

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ReactNode, CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Copy, ExternalLink, RefreshCw, Share2, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n/i18n';
@@ -15,10 +17,13 @@ import type { PlanningQueryFeedback } from '../features/planningMasters/usePlann
 import { IterationForm } from '../components/iteration/IterationForm';
 import { TeamForm } from '../components/team/TeamForm';
 import { ImportTeamModal } from '../components/team/ImportTeamModal';
-import { SlideOverDrawer } from '../components/ui';
+import { OverflowMenu, SlideOverDrawer } from '../components/ui';
 import type { Iteration } from '../types/iteration';
 import type { Task } from '../types/task';
-import { formatDate } from '../utils/formatDate';
+import { planShareService } from '../services/planShareService';
+import type { PlanShare } from '../services/planShareService';
+import { copyText } from '../utils/copyText';
+import { formatDate, formatDateTime } from '../utils/formatDate';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
@@ -964,12 +969,28 @@ function BodyReview({
     teamMembers,
     st,
     onOpenFirstIncomplete,
+    share,
+    shareLoading,
+    shareError,
+    sharePending,
+    onRetryShare,
+    onCreateShare,
+    onCopyShare,
+    onRevokeShare,
 }: {
     r: PlanReadiness;
     tasks: Task[];
     teamMembers: PlanningTeamMember[];
     st: StepStatus;
     onOpenFirstIncomplete: () => void;
+    share: PlanShare | null;
+    shareLoading: boolean;
+    shareError: unknown;
+    sharePending: boolean;
+    onRetryShare: () => void;
+    onCreateShare: () => void;
+    onCopyShare: () => void;
+    onRevokeShare: () => void;
 }) {
     if (st.state === 'blocked' || !r.hasGanttSchedule) {
         return (
@@ -998,13 +1019,96 @@ function BodyReview({
 
     return (
         <>
-            <ActionGuidance
-                icon={<IGantt size={14}/>}
-                title={tr('plan.master.sharingUnavailableTitle')}
-                body={tr('plan.master.sharingUnavailableBody')}
-                action={tr('plan.master.openSchedule')}
-                to="/gantt"
-            />
+            {shareLoading ? (
+                <QueryLoadingState message={tr('plan.master.loadingShareLink')} />
+            ) : shareError ? (
+                <QueryErrorState
+                    error={shareError}
+                    title={tr('plan.master.shareLinkUnavailable')}
+                    fallback={tr('plan.master.shareLinkUnavailableBody')}
+                    onRetry={onRetryShare}
+                />
+            ) : share ? (
+                <section className="plan-share-completion" aria-labelledby="plan-share-completion-title">
+                    <div className="plan-share-completion-icon done" aria-hidden="true">
+                        <Share2 className="h-5 w-5" />
+                    </div>
+                    <div className="plan-share-completion-copy">
+                        <h3 id="plan-share-completion-title">{tr('plan.master.planSharedTitle')}</h3>
+                        <p>{tr('plan.master.planSharedBody', {
+                            date: formatDateTime(share.created_at, i18n.language),
+                        })}</p>
+                        <label className="plan-share-link-field">
+                            <span>{tr('plan.master.shareLinkLabel')}</span>
+                            <input
+                                readOnly
+                                value={`${window.location.origin}/plan/share/${share.public_id}`}
+                                onFocus={event => event.currentTarget.select()}
+                            />
+                        </label>
+                    </div>
+                    <div className="plan-share-completion-actions">
+                        <button
+                            type="button"
+                            className="btn primary"
+                            disabled={sharePending}
+                            onClick={onCopyShare}
+                        >
+                            <Copy aria-hidden="true" className="h-4 w-4" />
+                            {tr('plan.master.copyShareLink')}
+                        </button>
+                        <Link className="btn" to={`/plan/share/${share.public_id}`}>
+                            <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                            {tr('plan.master.openSharedPlan')}
+                        </Link>
+                        <OverflowMenu
+                            label={tr('plan.master.shareLinkActions')}
+                            items={[
+                                {
+                                    label: tr('plan.master.refreshShareSnapshot'),
+                                    icon: <RefreshCw aria-hidden="true" className="h-4 w-4" />,
+                                    onSelect: onCreateShare,
+                                    disabled: sharePending,
+                                },
+                                {
+                                    label: tr('plan.master.revokeShareLink'),
+                                    icon: <Trash2 aria-hidden="true" className="h-4 w-4" />,
+                                    onSelect: onRevokeShare,
+                                    tone: 'danger',
+                                    disabled: sharePending,
+                                },
+                            ]}
+                        />
+                    </div>
+                </section>
+            ) : (
+                <section className="plan-share-completion" aria-labelledby="plan-share-ready-title">
+                    <div className="plan-share-completion-icon" aria-hidden="true">
+                        <Share2 className="h-5 w-5" />
+                    </div>
+                    <div className="plan-share-completion-copy">
+                        <h3 id="plan-share-ready-title">{tr('plan.master.readyToShareTitle')}</h3>
+                        <p>{tr('plan.master.readyToShareBody')}</p>
+                    </div>
+                    <div className="plan-share-completion-actions">
+                        <button
+                            type="button"
+                            className="btn primary"
+                            disabled={sharePending}
+                            onClick={onCreateShare}
+                        >
+                            <Share2 aria-hidden="true" className="h-4 w-4" />
+                            {sharePending
+                                ? tr('plan.master.creatingShareLink')
+                                : tr('plan.master.createShareLink')}
+                        </button>
+                        <Link className="btn" to="/gantt">
+                            <IGantt size={14}/>
+                            {tr('plan.master.openSchedule')}
+                        </Link>
+                    </div>
+                </section>
+            )}
 
             {r.riskCount > 0 && (
                 <div className="banner warn" role="status">
@@ -1122,6 +1226,14 @@ function StepBody({
     requestIterationDraftTransition,
     stepDataState,
     navigationLocked,
+    share,
+    shareLoading,
+    shareError,
+    sharePending,
+    onRetryShare,
+    onCreateShare,
+    onCopyShare,
+    onRevokeShare,
 }: {
     stepId: string; status: Record<string, StepStatus>; r: PlanReadiness;
     tasks: Task[]; teamMembers: PlanningTeamMember[]; setActive: (id: string) => void;
@@ -1133,6 +1245,14 @@ function StepBody({
     requestIterationDraftTransition: (onDiscard: () => void, resetDraft?: boolean) => void;
     stepDataState?: StepDataState;
     navigationLocked: boolean;
+    share: PlanShare | null;
+    shareLoading: boolean;
+    shareError: unknown;
+    sharePending: boolean;
+    onRetryShare: () => void;
+    onCreateShare: () => void;
+    onCopyShare: () => void;
+    onRevokeShare: () => void;
 }) {
     const def = STEP_DEFS.find(s => s.id === stepId)!;
     const st  = status[stepId];
@@ -1254,6 +1374,14 @@ function StepBody({
                     teamMembers={teamMembers}
                     st={st}
                     onOpenFirstIncomplete={() => setActive(nextStep(status))}
+                    share={share}
+                    shareLoading={shareLoading}
+                    shareError={shareError}
+                    sharePending={sharePending}
+                    onRetryShare={onRetryShare}
+                    onCreateShare={onCreateShare}
+                    onCopyShare={onCopyShare}
+                    onRevokeShare={onRevokeShare}
                 />
             ) : null}
 
@@ -1364,7 +1492,7 @@ function StepBody({
                                 {tr('plan.master.backFirstIncomplete')} <IArrow size={12}/>
                             </button>
                         ) : (
-                            <Link to="/gantt" className="btn primary" aria-disabled={navigationLocked || undefined}>
+                            <Link to="/gantt" className="btn" aria-disabled={navigationLocked || undefined}>
                                 {tr('plan.master.openSchedule')} <IArrow size={12}/>
                             </Link>
                         )
@@ -1392,70 +1520,62 @@ function ReadinessAux({ status, ready, setActive, dataCaveat }: {
     dataCaveat?: 'refreshing' | 'stale';
 }) {
     const nextId = nextStep(status);
-    const nextDef = STEP_DEFS.find(d => d.id === nextId);
-    const attention = Object.entries(status).filter(([, st]) => st.state === 'warn' || st.state === 'blocked');
+    const nextDef = STEP_DEFS.find(def => def.id === nextId) ?? STEP_DEFS[0];
+    const firstAttention = STEP_DEFS.flatMap(def => {
+        const stepState = status[def.id];
+        return stepState && (stepState.state === 'warn' || stepState.state === 'blocked')
+            ? [{ def, state: stepState }]
+            : [];
+    })[0];
+    const actionId = firstAttention?.def.id ?? (ready.pct === 100 ? 'review' : nextDef.id);
+    const iconTone = dataCaveat === 'stale'
+        ? 'var(--warn)'
+        : firstAttention?.state.state === 'blocked'
+            ? 'var(--blocked)'
+            : firstAttention
+                ? 'var(--warn)'
+                : 'var(--done)';
+    const title = firstAttention
+        ? tr(`plan.steps.${firstAttention.def.id}.title`)
+        : ready.pct === 100
+            ? tr('plan.master.readyForReview')
+            : tr(`plan.steps.${nextDef.id}.title`);
+    const message = dataCaveat === 'stale'
+        ? tr('plan.master.stalePlanningData')
+        : dataCaveat === 'refreshing'
+            ? tr('plan.master.refreshingPlanningData')
+            : firstAttention?.state.missing?.[0]
+                ?? (ready.pct === 100
+                    ? tr('plan.master.allStepsGood')
+                    : tr('plan.master.nextStepNamed', { step: tr(`plan.steps.${nextDef.id}.title`) }));
 
     return (
-        <>
-            <div className="aux-sect">
-                <h4>{tr('plan.master.planReadiness')}</h4>
-                <div className="ready-card">
-                    <div
-                        className={`ring ${ready.pct === 100 ? 'done' : ''}`}
-                        style={{'--p': ready.pct} as CSSProperties}
-                        role="progressbar"
-                        aria-label={tr('plan.master.planReadiness')}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-valuenow={ready.pct}
-                        aria-busy={dataCaveat === 'refreshing' || undefined}
-                    >
-                        <span>{ready.pct}%</span>
-                    </div>
-                    <div className="plan-master-min">
-                        <div style={{fontWeight:600, fontSize:'var(--wc-type-label)'}}>{tr('plan.master.stepsComplete', { done: ready.done, total: ready.total })}</div>
-                        <div className="muted plan-master-break" style={{fontSize:'var(--wc-type-meta)', marginTop:2, lineHeight:1.45}}>
-                            {dataCaveat === 'stale'
-                                ? tr('plan.master.stalePlanningData')
-                                : dataCaveat === 'refreshing'
-                                    ? tr('plan.master.refreshingPlanningData')
-                                    : ready.pct === 100
-                                        ? tr('plan.master.readyForReview')
-                                        : tr('plan.master.nextStepNamed', { step: nextDef ? tr(`plan.steps.${nextDef.id}.title`) : '' })}
-                        </div>
+        <div className="aux-sect">
+            <h4>{tr('plan.master.nextAction')}</h4>
+            <div className="aux-item" aria-live="polite">
+                <div className="ai-icon" style={{color: iconTone}}>
+                    {dataCaveat === 'refreshing'
+                        ? <IRefresh size={13}/>
+                        : firstAttention?.state.state === 'blocked'
+                            ? <ILock size={13}/>
+                            : firstAttention || dataCaveat === 'stale'
+                                ? <IWarning size={13}/>
+                                : <ICheck size={13} stroke={3}/>}
+                </div>
+                <div style={{flex:1, minWidth:0}}>
+                    <div className="ai-title">{title}</div>
+                    <div className="ai-sub plan-master-break">{message}</div>
+                    <div className="ai-action">
+                        <button type="button" className="btn sm" onClick={() => setActive(actionId)}>
+                            {ready.pct === 100 && !firstAttention
+                                ? tr('plan.overview.openReview')
+                                : tr('plan.master.openStep')}
+                            <IChevR size={10}/>
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <div className="aux-sect">
-                <h4>{tr('plan.master.whatNeedsAttention')}</h4>
-                {attention.length === 0 ? (
-                    <div className="aux-item">
-                        <div className="ai-icon" style={{color:'var(--done)'}}><ICheck size={13} stroke={3}/></div>
-                        <div><div className="ai-title">{tr('plan.master.nothingFlagged')}</div><div className="ai-sub">{tr('plan.master.allStepsGood')}</div></div>
-                    </div>
-                ) : (
-                    attention.map(([id, st]) => {
-                        const def = STEP_DEFS.find(d => d.id === id)!;
-                        return (
-                            <div key={id} className="aux-item">
-                                <div className="ai-icon" style={{color: st.state === 'blocked' ? 'var(--blocked)' : 'var(--warn)'}}>
-                                    {st.state === 'blocked' ? <ILock size={13}/> : <IWarning size={13}/>}
-                                </div>
-                                <div style={{flex:1, minWidth:0}}>
-                                    <div className="ai-title">{tr(`plan.steps.${def.id}.title`)}</div>
-                                    <div className="ai-sub plan-master-break">{st.missing?.[0]}</div>
-                                    <div className="ai-action">
-                                        <button type="button" className="btn sm" onClick={() => setActive(id)}>{tr('plan.master.openStep')} <IChevR size={10}/></button>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
-
-        </>
+        </div>
     );
 }
 
@@ -1570,6 +1690,7 @@ function ResponsiveReadinessSummary({ status, ready, currentStepId, setActive, d
 const PlanMasterPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const toast = useToast();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const {
@@ -1597,6 +1718,35 @@ const PlanMasterPage = () => {
         pending: false,
     });
     const [retryPending, setRetryPending] = useState(false);
+    // feedback-policy: query loading,error,retry,empty - review renders all states and retains the saved plan on failure.
+    const shareQuery = useQuery({
+        queryKey: ['plan-share', currentIteration?.id],
+        queryFn: () => planShareService.getCurrent(currentIteration!.id),
+        enabled: Boolean(currentIteration),
+        retry: false,
+    });
+    // feedback-policy: mutation pending,inline - share actions lock and the review step exposes a recoverable failure state.
+    const createShareMutation = useMutation({
+        mutationFn: (iterationId: number) => planShareService.create(iterationId),
+        onSuccess: share => {
+            queryClient.setQueryData(['plan-share', share.iteration_id], share);
+            toast.success(t('plan.master.shareLinkCreated'), {
+                dedupeKey: `plan-share-created-${share.id}`,
+            });
+        },
+    });
+    // feedback-policy: mutation pending,inline - revocation is confirmed, locked while pending, and retryable without changing the plan.
+    const revokeShareMutation = useMutation({
+        mutationFn: ({ shareId }: { shareId: number; iterationId: number }) => (
+            planShareService.revoke(shareId)
+        ),
+        onSuccess: (_response, variables) => {
+            queryClient.setQueryData(['plan-share', variables.iterationId], null);
+            toast.success(t('plan.master.shareLinkRevoked'), {
+                dedupeKey: 'plan-share-revoked',
+            });
+        },
+    });
 
     const localizedStatus = localizeStatus(rawStatus, r, t);
     const status: Record<string, StepStatus> = { ...localizedStatus };
@@ -1643,6 +1793,49 @@ const PlanMasterPage = () => {
         : '';
     const hasRefetchError = Object.values(queryStates).some(query => query.isRefetchError);
     const navigationLocked = stepId === 'iteration' && iterationFormState.pending;
+    const currentShare = shareQuery.data ?? null;
+    const sharePending = createShareMutation.isPending || revokeShareMutation.isPending;
+
+    const createShare = useCallback(() => {
+        if (!currentIteration || sharePending) return;
+        createShareMutation.mutate(currentIteration.id);
+    }, [createShareMutation, currentIteration, sharePending]);
+
+    const copyShare = useCallback(async () => {
+        if (!currentShare) return;
+        const shareUrl = `${window.location.origin}/plan/share/${currentShare.public_id}`;
+        if (await copyText(shareUrl)) {
+            toast.success(t('plan.master.shareLinkCopied'), {
+                dedupeKey: `plan-share-copy-${currentShare.id}`,
+            });
+            return;
+        }
+        toast.error(t('plan.master.shareLinkCopyFailed'), {
+            dedupeKey: `plan-share-copy-failed-${currentShare.id}`,
+        });
+    }, [currentShare, t, toast]);
+
+    const requestShareRevoke = useCallback(() => {
+        if (!currentShare || sharePending) return;
+        requestConfirmation({
+            title: t('plan.master.revokeShareTitle'),
+            description: t('plan.master.revokeShareBody'),
+            confirmLabel: t('plan.master.revokeShareLink'),
+            cancelLabel: t('actions.cancel'),
+            closeLabel: t('actions.close'),
+            tone: 'danger',
+            onConfirm: () => revokeShareMutation.mutateAsync({
+                shareId: currentShare.id,
+                iterationId: currentShare.iteration_id,
+            }),
+        });
+    }, [
+        currentShare,
+        requestConfirmation,
+        revokeShareMutation,
+        sharePending,
+        t,
+    ]);
 
     const onIterationFormStateChange = useCallback((next: EmbeddedFormState) => {
         setIterationFormState(current => (
@@ -1995,7 +2188,7 @@ const PlanMasterPage = () => {
                 </aside>
 
                 {/* Main step body */}
-                <main className="wc-master-main">
+                <section className="wc-master-main" aria-labelledby="plan-master-active-step-heading">
                     <ResponsiveReadinessSummary
                         status={status}
                         ready={ready}
@@ -2021,8 +2214,20 @@ const PlanMasterPage = () => {
                         requestIterationDraftTransition={requestIterationDraftTransition}
                         stepDataState={stepDataState}
                         navigationLocked={navigationLocked}
+                        share={currentShare}
+                        shareLoading={shareQuery.isLoading}
+                        shareError={shareQuery.error ?? createShareMutation.error ?? revokeShareMutation.error}
+                        sharePending={sharePending}
+                        onRetryShare={() => {
+                            createShareMutation.reset();
+                            revokeShareMutation.reset();
+                            void shareQuery.refetch();
+                        }}
+                        onCreateShare={createShare}
+                        onCopyShare={() => { void copyShare(); }}
+                        onRevokeShare={requestShareRevoke}
                     />
-                </main>
+                </section>
 
                 {/* Right aux */}
                 <aside className="wc-master-aux" aria-label={t('plan.master.planReadiness')}>

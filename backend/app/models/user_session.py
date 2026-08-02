@@ -8,6 +8,7 @@ from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
 
 if TYPE_CHECKING:
+    from app.models.plan_share import PlanShare
     from app.models.project import ProjectUpdateEntry
     from app.models.saved_view import SavedView
 
@@ -40,6 +41,10 @@ class UserSession(Base):
     )
     project_updates: Mapped[list["ProjectUpdateEntry"]] = relationship(
         "ProjectUpdateEntry",
+        back_populates="created_by_session",
+    )
+    plan_shares: Mapped[list["PlanShare"]] = relationship(
+        "PlanShare",
         back_populates="created_by_session",
     )
 
