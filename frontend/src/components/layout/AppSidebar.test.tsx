@@ -42,7 +42,9 @@ describe('AppSidebar', () => {
 
         expect(screen.getByLabelText('Timeline & Planning Primary navigation')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Plan Work' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('aria-current', 'page');
+        expect(screen.getByText('Planning summary')).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Tasks' })).not.toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Team' })).not.toBeInTheDocument();
         expect(savedViewServiceMock.getAll).not.toHaveBeenCalled();
@@ -57,11 +59,11 @@ describe('AppSidebar', () => {
         expect(screen.queryByText('Planning summary')).not.toBeInTheDocument();
     });
 
-    it('keeps Delivery views and planning context inside the Delivery workspace', () => {
+    it('keeps Delivery views inside Delivery without planning context', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
 
         expect(screen.getByRole('link', { name: 'Tasks' })).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByText('Planning summary')).toBeInTheDocument();
+        expect(screen.queryByText('Planning summary')).not.toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Gantt' })).not.toBeInTheDocument();
     });
 

@@ -181,6 +181,7 @@ export const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
     const currentWorkspace = useCurrentWorkspace();
     const CurrentWorkspaceIcon = currentWorkspace.icon;
     const isDeliveryWorkspace = currentWorkspace.key === 'delivery';
+    const isPlanningWorkspace = currentWorkspace.key === 'planning';
     const selectedSavedViewId = new URLSearchParams(location.search).get('view');
     const {
         data: savedViewGroups = { tasks: [], triage: [], projects: [] },
@@ -238,7 +239,7 @@ export const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
             )}
 
             <div className="sb-spacer" />
-            {isDeliveryWorkspace && <SidebarIterationCard onNavigate={onNavigate} />}
+            {isPlanningWorkspace && <SidebarIterationCard onNavigate={onNavigate} />}
         </>
     );
 };

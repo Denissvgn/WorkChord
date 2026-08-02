@@ -43,7 +43,6 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         defaultPath: '/',
         items: [
             { to: '/', labelKey: 'nav.overview', defaultLabel: 'Overview', icon: LayoutDashboard },
-            { to: '/plan', labelKey: 'nav.planWork', defaultLabel: 'Plan Work', icon: MapPin },
             { to: '/tasks', labelKey: 'nav.tasks', defaultLabel: 'Tasks', icon: ListTodo },
             { to: '/triage', labelKey: 'nav.triage', defaultLabel: 'Triage', icon: Inbox },
             { to: '/projects', labelKey: 'nav.projects', defaultLabel: 'Projects', icon: FolderOpen },
@@ -55,8 +54,9 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         labelKey: 'nav.timelinePlanning',
         defaultLabel: 'Timeline & Planning',
         icon: GanttChartSquare,
-        defaultPath: '/gantt',
+        defaultPath: '/plan',
         items: [
+            { to: '/plan', labelKey: 'nav.planWork', defaultLabel: 'Plan Work', icon: MapPin },
             { to: '/gantt', labelKey: 'nav.gantt', defaultLabel: 'Gantt', icon: GanttChartSquare },
             { to: '/roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
             { to: '/iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },

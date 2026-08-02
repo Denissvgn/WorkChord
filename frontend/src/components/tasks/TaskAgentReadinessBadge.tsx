@@ -89,6 +89,9 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
 
     const details = (
         <div className="space-y-2 text-xs">
+            <p className="text-left text-content-secondary">
+                {t('surfaces.taskReadiness.explanation')}
+            </p>
             {readiness.blockers.length > 0 && (
                 <div>
                     <p className="font-semibold text-feedback-warning-foreground">{t('surfaces.taskReadiness.blockers')}</p>

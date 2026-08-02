@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { renderWithProviders } from '../test/renderWithProviders';
@@ -29,7 +29,9 @@ vi.mock('../store/iterationStore', () => ({
 }));
 
 vi.mock('../components/tasks/TaskList', () => ({
-    TaskList: () => <div>Task list</div>,
+    TaskList: ({ requestedMode }: { requestedMode?: string | null }) => (
+        <div>Task list{requestedMode ? ` — ${requestedMode}` : ''}</div>
+    ),
 }));
 
 vi.mock('../components/tasks/KanbanBoard/KanbanBoard', () => ({
@@ -118,5 +120,33 @@ describe('TasksPage', () => {
         expect(await screen.findByText('Needs owners')).toBeVisible();
         expect(screen.getByText('1 active filter(s)')).toBeVisible();
         expect(savedViewServiceMock.getAll).toHaveBeenCalledWith({ view_type: 'tasks' });
+    });
+
+    it('opens expert task modes from URL commands', async () => {
+        const { user } = renderWithProviders(<TasksPage />, {
+            initialEntries: ['/tasks?mode=bulk'],
+        });
+
+        expect(await screen.findByText('Task list — bulk')).toBeVisible();
+        expect(screen.queryByText('How tasks become plan-ready')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Planning help' }));
+        const guide = screen.getByRole('dialog', { name: 'How tasks become plan-ready' });
+        expect(guide).toBeVisible();
+        expect(within(guide).getByRole('heading', {
+            name: 'Required for every planned task',
+        })).toBeVisible();
+        expect(within(guide).getByRole('heading', {
+            name: 'Optional: prepare agent execution',
+        })).toBeVisible();
+    });
+
+    it('opens filters and board layout from command URLs', async () => {
+        renderWithProviders(<TasksPage />, {
+            initialEntries: ['/tasks?panel=filters&layout=board'],
+        });
+
+        expect(await screen.findByRole('button', { name: 'Board' })).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
     });
 });

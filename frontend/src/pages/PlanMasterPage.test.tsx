@@ -313,6 +313,32 @@ describe('PlanMasterPage hardening', () => {
         expect(keys.filter(key => !hasKey('ru', key))).toEqual([]);
     });
 
+    it('separates step progress from one next action, additional exceptions, and sharing', () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
+        renderWithProviders(<PlanMasterPage />);
+
+        const rail = stepRail();
+        expect(within(rail).getByRole('button', {
+            name: new RegExp(`${i18n.t('plan.steps.iteration.title')}.*${i18n.t('plan.master.done')}`, 'i'),
+        })).toBeVisible();
+        expect(rail.querySelector('.pill')).not.toBeInTheDocument();
+        expect(within(rail).queryByText(i18n.t('plan.master.needsAttention'))).not.toBeInTheDocument();
+
+        const auxiliaryRail = screen.getByRole('complementary', {
+            name: i18n.t('plan.master.planReadiness'),
+        });
+        expect(within(auxiliaryRail).getByRole('heading', {
+            name: i18n.t('plan.master.nextAction'),
+        })).toBeVisible();
+        expect(within(auxiliaryRail).getByRole('heading', {
+            name: i18n.t('plan.master.otherExceptions'),
+        })).toBeVisible();
+        expect(within(auxiliaryRail).getAllByText(i18n.t('plan.steps.blockers.title'))).toHaveLength(1);
+        expect(within(auxiliaryRail).getByRole('heading', {
+            name: i18n.t('plan.master.shareSummary'),
+        })).toBeVisible();
+    });
+
     it('keeps an iterations error full-page while a dependent query error stays inside the workspace shell', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
             currentIteration: null,

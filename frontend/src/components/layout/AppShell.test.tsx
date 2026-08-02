@@ -7,6 +7,7 @@ import { AppShell } from './AppShell';
 vi.mock('./AppTopNav', () => ({ AppTopNav: () => <header>Top navigation</header> }));
 vi.mock('./AppSidebar', () => ({ AppSidebar: () => <aside>Context navigation</aside> }));
 vi.mock('./DocumentMetadata', () => ({ DocumentMetadata: () => null }));
+vi.mock('./CommandMenu', () => ({ CommandMenu: () => null }));
 vi.mock('./RouteErrorBoundary', () => ({
     RouteErrorBoundary: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));

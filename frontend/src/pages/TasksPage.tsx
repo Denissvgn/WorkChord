@@ -20,13 +20,14 @@ import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { TaskList } from '../components/tasks/TaskList';
+import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
+import { TaskWorkflowGuide } from '../components/tasks/TaskWorkflowGuide';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
-import type { SortKey } from '../components/tasks/TaskList';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
 import { useIterationStore } from '../store/iterationStore';
@@ -101,6 +102,14 @@ const TasksPage = () => {
     const appliedRequestedViewIdRef = useRef<number | null>(null);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const createTaskRequested = searchParams.get('create') === '1';
+    const filtersRequested = searchParams.get('panel') === 'filters';
+    const fullscreenRequested = searchParams.get('fullscreen') === '1';
+    const manualSortRequested = searchParams.get('sort') === 'manual';
+    const requestedLayout = searchParams.get('layout');
+    const requestedTaskMode = searchParams.get('mode');
+    const taskMode: TaskMode | null = requestedTaskMode === 'bulk' || requestedTaskMode === 'merge'
+        ? requestedTaskMode
+        : null;
     const isCreateModalOpen = isCreating || (createTaskRequested && selectedIterationId > 0);
     const { t } = useTranslation();
     const activeFilterCount =
@@ -117,6 +126,38 @@ const TasksPage = () => {
         Number(Boolean(filters.endDateTo)) +
         filters.labelSlugs.length +
         filters.labelGroupKeys.length;
+
+    const setTaskContextParam = useCallback((key: string, value: string | null) => {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        if (value === null) nextSearchParams.delete(key);
+        else nextSearchParams.set(key, value);
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
+
+    const openFilters = useCallback(() => {
+        setIsFiltersOpen(true);
+        setTaskContextParam('panel', 'filters');
+    }, [setTaskContextParam]);
+
+    const closeFilters = useCallback(() => {
+        setIsFiltersOpen(false);
+        setTaskContextParam('panel', null);
+    }, [setTaskContextParam]);
+
+    const changeViewMode = useCallback((layout: ViewMode) => {
+        setViewMode(layout);
+        setTaskContextParam('layout', layout === 'list' ? null : layout);
+    }, [setTaskContextParam]);
+
+    const enterFullscreen = useCallback(() => {
+        setIsFullScreen(true);
+        setTaskContextParam('fullscreen', '1');
+    }, [setTaskContextParam]);
+
+    const exitFullscreen = useCallback(() => {
+        setIsFullScreen(false);
+        setTaskContextParam('fullscreen', null);
+    }, [setTaskContextParam]);
 
     const { data: iterations, isLoading: iterationsLoading, error: iterationsError, refetch: refetchIterations } = useQuery({
         queryKey: ['iterations'],
@@ -158,6 +199,26 @@ const TasksPage = () => {
             }
         }
     }, [iterations, selectedIterationId, setSelectedIterationId]);
+
+    useEffect(() => {
+        setIsFiltersOpen(filtersRequested);
+    }, [filtersRequested]);
+
+    useEffect(() => {
+        setIsFullScreen(fullscreenRequested);
+    }, [fullscreenRequested]);
+
+    useEffect(() => {
+        setViewMode(requestedLayout === 'board' ? 'board' : 'list');
+    }, [requestedLayout]);
+
+    useEffect(() => {
+        if (!manualSortRequested) return;
+        setSortKey('sort_order');
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('sort');
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [manualSortRequested, searchParams, setSearchParams]);
 
     const closeTaskCreator = useCallback(() => {
         setIsCreating(false);
@@ -263,6 +324,7 @@ const TasksPage = () => {
                                 selectSavedView(null);
                             }}
                         />
+                        <TaskWorkflowGuide />
                         <OverflowMenu
                             label={t('actions.moreActions')}
                             items={[
@@ -275,7 +337,7 @@ const TasksPage = () => {
                                 {
                                     label: t('actions.enterFullScreen'),
                                     icon: <Maximize2 className="h-4 w-4" aria-hidden="true" />,
-                                    onSelect: () => setIsFullScreen(true),
+                                    onSelect: enterFullscreen,
                                 },
                             ]}
                         />
@@ -347,7 +409,7 @@ const TasksPage = () => {
                                 <Button
                                     variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
                                     size="sm"
-                                    onClick={() => setIsFiltersOpen(true)}
+                                    onClick={openFilters}
                                     aria-expanded={isFiltersOpen}
                                 >
                                     <ListFilter className="mr-1 h-4 w-4" aria-hidden="true" />
@@ -364,7 +426,7 @@ const TasksPage = () => {
                         <div className="flex w-fit bg-surface-subtle p-1 rounded-lg" role="group" aria-label={t('tasks.title')}>
                             <button
                                 type="button"
-                                onClick={() => setViewMode('list')}
+                                onClick={() => changeViewMode('list')}
                                 aria-pressed={viewMode === 'list'}
                                 className={clsx(
                                     "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-2",
@@ -376,7 +438,7 @@ const TasksPage = () => {
                                         layoutId="view-tab"
                                         className="absolute inset-0 bg-surface-card shadow-sm rounded-md"
                                         initial={false}
-                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                                     />
                                 )}
                                 <span className="relative z-10 flex items-center gap-2">
@@ -386,7 +448,7 @@ const TasksPage = () => {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setViewMode('board')}
+                                onClick={() => changeViewMode('board')}
                                 aria-pressed={viewMode === 'board'}
                                 className={clsx(
                                     "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-2",
@@ -398,7 +460,7 @@ const TasksPage = () => {
                                         layoutId="view-tab"
                                         className="absolute inset-0 bg-surface-card shadow-sm rounded-md"
                                         initial={false}
-                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                                     />
                                 )}
                                 <span className="relative z-10 flex items-center gap-2">
@@ -414,7 +476,7 @@ const TasksPage = () => {
                     open={isFiltersOpen}
                     title={t('taskFilters.filters')}
                     icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
-                    onClose={() => setIsFiltersOpen(false)}
+                    onClose={closeFilters}
                 >
                     {selectedIterationId > 0 && (
                         <>
@@ -446,7 +508,7 @@ const TasksPage = () => {
                 {selectedIterationId > 0 && (
                     <FullscreenWorkspace
                         open={isFullScreen}
-                        onClose={() => setIsFullScreen(false)}
+                        onClose={exitFullscreen}
                         ariaLabel={t('tasks.fullScreenLabel')}
                         className="flex-1 overflow-hidden relative"
                     >
@@ -458,7 +520,7 @@ const TasksPage = () => {
                                     </h2>
                                     <p className="text-content-secondary text-sm">{t('tasks.focusMode')}</p>
                                 </div>
-                                <Button variant="ghost" onClick={() => setIsFullScreen(false)}>
+                                <Button variant="ghost" onClick={exitFullscreen}>
                                     <Minimize2 className="w-5 h-5 mr-2" /> {t('actions.exitFullScreen')}
                                 </Button>
                             </div>
@@ -476,6 +538,8 @@ const TasksPage = () => {
                                         activeViewName={selectedSavedView ? savedViewDisplay(selectedSavedView).name : undefined}
                                         onClearFilters={clearViewContext}
                                         onCreateTask={() => setIsCreating(true)}
+                                        requestedMode={taskMode}
+                                        onModeChange={mode => setTaskContextParam('mode', mode)}
                                     />
                                 </div>
                             </div>

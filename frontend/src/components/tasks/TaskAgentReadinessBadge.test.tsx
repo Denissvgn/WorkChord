@@ -35,6 +35,7 @@ describe('TaskAgentReadinessBadge', () => {
         expect(trigger).toHaveAttribute('aria-expanded', 'true');
         expect(trigger).toHaveAttribute('aria-controls', details.id);
         expect(details).toHaveAttribute('aria-live', 'polite');
+        expect(screen.getByText(/can be claimed safely now/i)).toBeVisible();
         expect(screen.getByText('Add acceptance criteria')).toBeVisible();
     });
 });

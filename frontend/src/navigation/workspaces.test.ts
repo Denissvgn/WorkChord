@@ -4,7 +4,7 @@ import { getWorkspaceForPath, getWorkspaceFromPath } from './workspaces';
 describe('workspace routing', () => {
     it.each([
         ['/', 'delivery'],
-        ['/plan/master', 'delivery'],
+        ['/plan/master', 'planning'],
         ['/projects/42/releases/7', 'delivery'],
         ['/roadmap', 'planning'],
         ['/gantt', 'planning'],

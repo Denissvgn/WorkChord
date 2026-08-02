@@ -35,6 +35,16 @@ describe('SettingsPage', () => {
         expect(within(navigation).getByRole('heading', { name: 'Integrations' })).toBeVisible();
         expect(screen.getByRole('combobox', { name: 'Settings section' })).toHaveValue('appearance');
 
+        expect(screen.queryByText('Start with a setup goal')).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Setup help' }));
+        const guide = screen.getByRole('dialog', { name: 'Start with a setup goal' });
+        const setupGoals = within(guide).getByRole('navigation', { name: 'Common setup goals' });
+        expect(within(setupGoals).getByRole('link', { name: /Configure scheduling/ }))
+            .toHaveAttribute('href', '/settings?tab=scheduling');
+        expect(within(setupGoals).getByRole('link', { name: /Connect GitHub/ }))
+            .toHaveAttribute('href', '/settings?tab=github');
+        await user.keyboard('{Escape}');
+
         const lightTheme = screen.getByRole('radio', { name: 'Light' });
         const darkTheme = screen.getByRole('radio', { name: 'Dark' });
         expect(lightTheme).toHaveAttribute('tabindex', '0');

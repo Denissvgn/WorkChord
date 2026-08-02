@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import {
     Activity,
+    ArrowRight,
     Bell,
     Bot,
     CalendarClock,
     Check,
+    CircleHelp,
     Github,
     KeyRound,
     Palette,
@@ -29,7 +31,8 @@ import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
-import { PageHeader, PageLayout } from '../components/ui';
+import { Button } from '../components/common/Button';
+import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 
 type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'admin_access' | 'runtime' | 'about';
 type SettingsGroupId = 'personal' | 'planning' | 'agents' | 'integrations' | 'system';
@@ -152,6 +155,7 @@ const parseSettingsTab = (value: string | null): SettingsTab => (
 
 const SettingsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [goalGuideOpen, setGoalGuideOpen] = useState(false);
     const rawTab = searchParams.get('tab');
     const activeTab = parseSettingsTab(rawTab);
     const activeDestination = SETTINGS_DESTINATIONS.find(destination => destination.id === activeTab) ?? SETTINGS_DESTINATIONS[0];
@@ -216,7 +220,53 @@ const SettingsPage = () => {
             <PageHeader
                 title={t('settingsPage.title')}
                 subtitle={t('settingsPage.description')}
+                actions={(
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5"
+                        aria-expanded={goalGuideOpen}
+                        aria-haspopup="dialog"
+                        onClick={() => setGoalGuideOpen(true)}
+                    >
+                        <CircleHelp aria-hidden="true" className="h-4 w-4" />
+                        {t('settingsPage.goalGuide.trigger')}
+                    </Button>
+                )}
             />
+
+            <SlideOverDrawer
+                open={goalGuideOpen}
+                title={t('settingsPage.goalGuide.title')}
+                subtitle={t('settingsPage.goalGuide.description')}
+                icon={<CircleHelp aria-hidden="true" className="h-4 w-4" />}
+                onClose={() => setGoalGuideOpen(false)}
+            >
+                <nav className="settings-goal-help" aria-label={t('settingsPage.goalGuide.navigationLabel')}>
+                    <Link to={settingsHref('scheduling')} onClick={() => setGoalGuideOpen(false)}>
+                        <span>
+                            <strong>{t('settingsPage.goalGuide.scheduleTitle')}</strong>
+                            <span>{t('settingsPage.goalGuide.scheduleBody')}</span>
+                        </span>
+                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </Link>
+                    <Link to={settingsHref('github')} onClick={() => setGoalGuideOpen(false)}>
+                        <span>
+                            <strong>{t('settingsPage.goalGuide.githubTitle')}</strong>
+                            <span>{t('settingsPage.goalGuide.githubBody')}</span>
+                        </span>
+                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </Link>
+                    <Link to={settingsHref('models_agents')} onClick={() => setGoalGuideOpen(false)}>
+                        <span>
+                            <strong>{t('settingsPage.goalGuide.agentsTitle')}</strong>
+                            <span>{t('settingsPage.goalGuide.agentsBody')}</span>
+                        </span>
+                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </Link>
+                </nav>
+            </SlideOverDrawer>
 
             <div className="settings-shell">
                 <aside className="settings-local-nav">

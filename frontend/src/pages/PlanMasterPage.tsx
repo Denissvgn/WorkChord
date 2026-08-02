@@ -159,12 +159,6 @@ const formatIterationDates = (startDate: string, endDate: string) => (
 );
 
 // ── Step state pills ─────────────────────────────────────────────────────────
-function StepPill({ state }: { state: string }) {
-    if (state === 'done')    return <span className="pill done sm"><ICheck size={9} stroke={3}/></span>;
-    if (state === 'warn')    return <span className="pill warn sm"><span className="pdot"/></span>;
-    if (state === 'blocked') return <span className="pill blocked sm"><span className="pdot"/></span>;
-    return <span className="pill opt sm"><span className="pdot"/></span>;
-}
 function StepStatePill({ state }: { state: string }) {
     if (state === 'done')    return <span className="pill done"><span className="pdot"/>{tr('plan.master.done')}</span>;
     if (state === 'warn')    return <span className="pill warn"><span className="pdot"/>{tr('plan.master.needsAttention')}</span>;
@@ -1513,20 +1507,25 @@ function StepBody({
 }
 
 // ── Right aux rail ────────────────────────────────────────────────────────────
-function ReadinessAux({ status, ready, setActive, dataCaveat }: {
+function ReadinessAux({ status, ready, setActive, dataCaveat, share, shareLoading, shareError }: {
     status: Record<string, StepStatus>;
     ready: { done: number; total: number; pct: number };
     setActive: (id: string) => void;
     dataCaveat?: 'refreshing' | 'stale';
+    share: PlanShare | null;
+    shareLoading: boolean;
+    shareError: unknown;
 }) {
     const nextId = nextStep(status);
     const nextDef = STEP_DEFS.find(def => def.id === nextId) ?? STEP_DEFS[0];
-    const firstAttention = STEP_DEFS.flatMap(def => {
+    const attention = STEP_DEFS.flatMap(def => {
         const stepState = status[def.id];
         return stepState && (stepState.state === 'warn' || stepState.state === 'blocked')
             ? [{ def, state: stepState }]
             : [];
-    })[0];
+    });
+    const firstAttention = attention[0];
+    const additionalAttention = attention.slice(1);
     const actionId = firstAttention?.def.id ?? (ready.pct === 100 ? 'review' : nextDef.id);
     const iconTone = dataCaveat === 'stale'
         ? 'var(--warn)'
@@ -1550,32 +1549,106 @@ function ReadinessAux({ status, ready, setActive, dataCaveat }: {
                     : tr('plan.master.nextStepNamed', { step: tr(`plan.steps.${nextDef.id}.title`) }));
 
     return (
-        <div className="aux-sect">
-            <h4>{tr('plan.master.nextAction')}</h4>
-            <div className="aux-item" aria-live="polite">
-                <div className="ai-icon" style={{color: iconTone}}>
-                    {dataCaveat === 'refreshing'
-                        ? <IRefresh size={13}/>
-                        : firstAttention?.state.state === 'blocked'
-                            ? <ILock size={13}/>
-                            : firstAttention || dataCaveat === 'stale'
-                                ? <IWarning size={13}/>
-                                : <ICheck size={13} stroke={3}/>}
-                </div>
-                <div style={{flex:1, minWidth:0}}>
-                    <div className="ai-title">{title}</div>
-                    <div className="ai-sub plan-master-break">{message}</div>
-                    <div className="ai-action">
-                        <button type="button" className="btn sm" onClick={() => setActive(actionId)}>
-                            {ready.pct === 100 && !firstAttention
-                                ? tr('plan.overview.openReview')
-                                : tr('plan.master.openStep')}
-                            <IChevR size={10}/>
-                        </button>
+        <>
+            <section className="aux-sect" aria-labelledby="plan-master-next-action-heading">
+                <h4 id="plan-master-next-action-heading">{tr('plan.master.nextAction')}</h4>
+                <div className="aux-item" aria-live="polite">
+                    <div className="ai-icon" style={{color: iconTone}}>
+                        {dataCaveat === 'refreshing'
+                            ? <IRefresh size={13}/>
+                            : firstAttention?.state.state === 'blocked'
+                                ? <ILock size={13}/>
+                                : firstAttention || dataCaveat === 'stale'
+                                    ? <IWarning size={13}/>
+                                    : <ICheck size={13} stroke={3}/>}
+                    </div>
+                    <div style={{flex:1, minWidth:0}}>
+                        <div className="ai-title">{title}</div>
+                        <div className="ai-sub plan-master-break">{message}</div>
+                        <div className="ai-action">
+                            <button type="button" className="btn sm" onClick={() => setActive(actionId)}>
+                                {ready.pct === 100 && !firstAttention
+                                    ? tr('plan.overview.openReview')
+                                    : tr('plan.master.openStep')}
+                                <IChevR size={10}/>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            {additionalAttention.length > 0 && (
+                <section className="aux-sect" aria-labelledby="plan-master-other-exceptions-heading">
+                    <h4 id="plan-master-other-exceptions-heading">{tr('plan.master.otherExceptions')}</h4>
+                    <div className="plan-master-aux-list">
+                        {additionalAttention.map(({ def, state }) => (
+                            <div className="aux-item" key={def.id}>
+                                <div
+                                    className="ai-icon"
+                                    style={{color: state.state === 'blocked' ? 'var(--blocked)' : 'var(--warn)'}}
+                                >
+                                    {state.state === 'blocked' ? <ILock size={13}/> : <IWarning size={13}/>}
+                                </div>
+                                <div className="plan-master-min">
+                                    <div className="ai-title">{tr(`plan.steps.${def.id}.title`)}</div>
+                                    <div className="ai-sub plan-master-break">
+                                        {state.missing?.[0] ?? state.summary ?? tr('plan.master.needsAttention')}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <section className="aux-sect" aria-labelledby="plan-master-sharing-heading">
+                <h4 id="plan-master-sharing-heading">{tr('plan.master.shareSummary')}</h4>
+                <div className="aux-item" aria-live="polite">
+                    <div
+                        className="ai-icon"
+                        style={{
+                            color: shareError
+                                ? 'var(--blocked)'
+                                : share
+                                    ? 'var(--done)'
+                                    : 'var(--ink-3)',
+                        }}
+                    >
+                        {shareLoading
+                            ? <IRefresh size={13}/>
+                            : shareError
+                                ? <IWarning size={13}/>
+                                : <Share2 aria-hidden="true" className="h-3.5 w-3.5"/>}
+                    </div>
+                    <div className="plan-master-min">
+                        <div className="ai-title">
+                            {shareLoading
+                                ? tr('plan.master.loadingShareLink')
+                                : shareError
+                                    ? tr('plan.master.shareLinkUnavailable')
+                                    : share
+                                        ? tr('plan.master.sharingActiveTitle')
+                                        : ready.pct === 100
+                                            ? tr('plan.master.sharingReadyTitle')
+                                            : tr('plan.master.sharingNeedsReviewTitle')}
+                        </div>
+                        <div className="ai-sub plan-master-break">
+                            {shareLoading
+                                ? tr('plan.master.refreshingPlanningData')
+                                : shareError
+                                    ? tr('plan.master.shareLinkUnavailableBody')
+                                    : share
+                                        ? tr('plan.master.planSharedBody', {
+                                            date: formatDateTime(share.created_at, i18n.language),
+                                        })
+                                        : ready.pct === 100
+                                            ? tr('plan.master.readyToShareSnapshot')
+                                            : tr('plan.master.sharingNeedsReviewBody')}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </>
     );
 }
 
@@ -2153,34 +2226,27 @@ const PlanMasterPage = () => {
             <div className="wc-master" style={{flex:1, minHeight:0}}>
                 {/* Left rail */}
                 <aside className="wc-master-rail" aria-label={t('plan.master.steps')}>
-                    <nav className="step-rail" aria-label={t('plan.master.steps')}>
+                    <nav className="step-rail plan-master-step-rail" aria-label={t('plan.master.steps')}>
                         {STEP_DEFS.map((def, i) => {
                             const st = status[def.id];
                             const isCurrent = def.id === stepId;
-                            const cls = `step-item ${st.state === 'done' ? 'done' : ''} ${isCurrent ? 'current' : ''} ${st.state === 'warn' ? 'warn' : ''} ${st.state === 'blocked' ? 'blocked' : ''}`;
+                            const cls = `step-item ${st.state === 'done' ? 'done' : ''} ${isCurrent ? 'current' : ''}`;
                             return (
                                 <button type="button" key={def.id} className={cls}
                                      aria-current={isCurrent ? 'step' : undefined}
                                      disabled={navigationLocked}
                                      onClick={() => setActive(def.id)}>
                                     <div className="step-num">
-                                        {st.state === 'done'              ? <ICheck size={11} stroke={3}/> :
-                                         st.state === 'blocked' && !isCurrent ? <ILock size={10}/> :
-                                         (i+1)}
+                                        {st.state === 'done' ? <ICheck size={11} stroke={3}/> : (i+1)}
                                     </div>
                                     <div>
                                         <div className="step-title">{t(`plan.steps.${def.id}.title`)}</div>
-                                        {(st.state === 'warn' || st.state === 'blocked') && (
-                                            <div className="step-sub">
-                                                {st.missing?.[0] || (
-                                                    st.state === 'warn'
-                                                        ? t('plan.master.needsAttention')
-                                                        : t('plan.master.blocked')
-                                                )}
-                                            </div>
-                                        )}
+                                        <span className="sr-only">
+                                            {st.state === 'done'
+                                                ? t('plan.master.done')
+                                                : t('plan.master.incomplete')}
+                                        </span>
                                     </div>
-                                    <StepPill state={st.state}/>
                                 </button>
                             );
                         })}
@@ -2236,6 +2302,9 @@ const PlanMasterPage = () => {
                         ready={ready}
                         setActive={setActive}
                         dataCaveat={hasRefetchError ? 'stale' : isFetching ? 'refreshing' : undefined}
+                        share={currentShare}
+                        shareLoading={shareQuery.isLoading}
+                        shareError={shareQuery.error}
                     />
                 </aside>
             </div>

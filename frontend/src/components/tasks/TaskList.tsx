@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -41,6 +41,7 @@ import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
+export type TaskMode = 'bulk' | 'merge';
 type TaskOrderRequest = Parameters<typeof taskService.reorder>[0];
 type ReorderVariables = {
     order: TaskOrderRequest;
@@ -69,6 +70,8 @@ interface TaskListProps {
     activeViewName?: string;
     onClearFilters?: () => void;
     onCreateTask?: () => void;
+    requestedMode?: TaskMode | null;
+    onModeChange?: (mode: TaskMode | null) => void;
 }
 
 export const TaskList = ({
@@ -80,6 +83,8 @@ export const TaskList = ({
     activeViewName,
     onClearFilters,
     onCreateTask,
+    requestedMode,
+    onModeChange,
 }: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
@@ -89,14 +94,23 @@ export const TaskList = ({
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
     // Merge mode state
-    const [isMergeMode, setIsMergeMode] = useState(false);
+    const [internalTaskMode, setInternalTaskMode] = useState<TaskMode | null>(null);
     const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set());
     const [showMergeModal, setShowMergeModal] = useState(false);
     const [mergeParentTitle, setMergeParentTitle] = useState('');
     const mergeTitleRef = useRef<HTMLInputElement>(null);
-    const [isBulkMode, setIsBulkMode] = useState(false);
     const [selectedBulkTaskIds, setSelectedBulkTaskIds] = useState<Set<number>>(new Set());
     const [nowMs, setNowMs] = useState(() => Date.now());
+    const activeTaskMode = requestedMode === undefined ? internalTaskMode : requestedMode;
+    const isMergeMode = activeTaskMode === 'merge';
+    const isBulkMode = activeTaskMode === 'bulk';
+
+    const setTaskMode = useCallback((mode: TaskMode | null) => {
+        setInternalTaskMode(mode);
+        if (mode !== 'merge') setSelectedTaskIds(new Set());
+        if (mode !== 'bulk') setSelectedBulkTaskIds(new Set());
+        onModeChange?.(mode);
+    }, [onModeChange]);
 
     useEffect(() => {
         const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
@@ -179,7 +193,7 @@ export const TaskList = ({
                 },
             });
             // Reset merge mode
-            setIsMergeMode(false);
+            setTaskMode(null);
             setSelectedTaskIds(new Set());
             setShowMergeModal(false);
             setMergeParentTitle('');
@@ -461,10 +475,7 @@ export const TaskList = ({
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                            setIsMergeMode(false);
-                            setIsBulkMode(false);
-                            setSelectedTaskIds(new Set());
-                            setSelectedBulkTaskIds(new Set());
+                            setTaskMode(null);
                         }}
                     >
                         {isMergeMode ? t('taskList.cancelMerge') : t('taskList.cancelBulkEdit')}
@@ -485,6 +496,11 @@ export const TaskList = ({
                         <option value="status">{t('taskList.sortStatus')}</option>
                         <option value="title">{t('taskList.sortTitle')}</option>
                     </select>
+                    {sortKey === 'sort_order' && (
+                        <span className="max-w-56 text-xs leading-snug text-content-secondary">
+                            {t('taskList.manualSortHint')}
+                        </span>
+                    )}
                 </div>
                     <OverflowMenu
                         label={t('taskList.organizeTasks')}
@@ -493,18 +509,14 @@ export const TaskList = ({
                                 label: t('taskList.mergeTasks'),
                                 icon: <Layers className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => {
-                                    setIsMergeMode(true);
-                                    setIsBulkMode(false);
-                                    setSelectedBulkTaskIds(new Set());
+                                    setTaskMode('merge');
                                 },
                             },
                             {
                                 label: t('taskList.bulkEdit'),
                                 icon: <ClipboardCheck className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => {
-                                    setIsBulkMode(true);
-                                    setIsMergeMode(false);
-                                    setSelectedTaskIds(new Set());
+                                    setTaskMode('bulk');
                                 },
                             },
                         ]}
@@ -865,6 +877,7 @@ const TaskItemContent = ({
                                 ? "border-feedback-indigo-border text-feedback-indigo focus:ring-focus"
                                 : "border-border-strong cursor-not-allowed opacity-50"
                         )}
+                        aria-label={isBulkMode ? t('taskList.selectForBulkEdit') : (isSelectable ? t('taskList.selectForMerge') : t('taskList.taskHasSubtasks'))}
                         title={isBulkMode ? t('taskList.selectForBulkEdit') : (isSelectable ? t('taskList.selectForMerge') : t('taskList.taskHasSubtasks'))}
                     />
                 )}
@@ -952,7 +965,9 @@ const TaskItemContent = ({
                                         : "text-action bg-status-active-muted"
                                 )}>
                                     <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
-                                    {task.claimed_by.display_name}
+                                    {task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs
+                                        ? t('taskList.claimExpired', { name: task.claimed_by.display_name })
+                                        : t('taskList.claimedBy', { name: task.claimed_by.display_name })}
                                 </span>
                             )}
                             <TaskAgentReadinessBadge readiness={task.agent_readiness} />

@@ -57,7 +57,7 @@ describe('AppTopNav', () => {
         expect(screen.queryByRole('dialog', { name: 'Primary navigation' })).not.toBeInTheDocument();
     });
 
-    it('turns delivery attention into an accessible next-step destination', async () => {
+    it('keeps the planning workspace stable and exposes attention as a separate recovery link', async () => {
         planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [{ id: 1 }],
             ready: { total: 6, done: 4 },
@@ -66,11 +66,15 @@ describe('AppTopNav', () => {
 
         renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
-        const deliveryLink = await screen.findByRole('link', {
-            name: 'Delivery Hub needs attention: 2 planning steps remain. Open Plan Work.',
+        const switcher = screen.getByRole('navigation', { name: 'Workspace selector' });
+        expect(within(switcher).getByRole('link', { name: 'Timeline & Planning' }))
+            .toHaveAttribute('href', '/plan');
+
+        const recoveryLink = await screen.findByRole('link', {
+            name: 'Timeline & Planning needs attention: 2 Plan Work steps remain.',
         });
-        expect(deliveryLink).toHaveAttribute('href', '/plan/master');
-        expect(deliveryLink).toHaveTextContent('2');
+        expect(recoveryLink).toHaveAttribute('href', '/plan/master');
+        expect(recoveryLink).toHaveTextContent('2');
     });
 
     it('labels unavailable planning attention and links to its recovery surface', async () => {
@@ -83,9 +87,9 @@ describe('AppTopNav', () => {
 
         renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
-        const deliveryLink = await screen.findByRole('link', {
-            name: 'Delivery Hub planning progress could not be loaded. Open Plan Work to retry.',
+        const planningLink = await screen.findByRole('link', {
+            name: 'Timeline & Planning progress could not be loaded. Open Plan Work to retry.',
         });
-        expect(deliveryLink).toHaveAttribute('href', '/plan/master');
+        expect(planningLink).toHaveAttribute('href', '/plan/master');
     });
 });

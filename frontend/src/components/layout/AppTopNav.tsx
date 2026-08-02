@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, Menu, X } from 'lucide-react';
+import { AlertTriangle, Command, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { triageService } from '../../services/triageService';
 import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
@@ -11,6 +11,7 @@ import { warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
+import { openCommandMenu } from './commandMenuEvents';
 
 interface WorkspaceAttention {
     badge: string;
@@ -22,40 +23,50 @@ interface WorkspaceAttention {
 const WorkspaceSwitchLink = ({
     workspace,
     active,
-    className,
+    variant,
     onNavigate,
     attention,
 }: {
     workspace: WorkspaceMetadata;
     active: boolean;
-    className: string;
+    variant: 'desktop' | 'mobile';
     onNavigate?: () => void;
     attention?: WorkspaceAttention;
 }) => {
     const { t } = useTranslation();
     const Icon = workspace.icon;
     const label = t(workspace.labelKey, workspace.defaultLabel);
-    const target = attention?.to ?? workspace.defaultPath;
 
     return (
-        <Link
-            to={target}
-            className={className}
-            aria-current={active ? 'location' : undefined}
-            aria-label={attention?.label ?? label}
-            title={attention?.label}
-            onClick={onNavigate}
-            onFocus={() => { void warmRouteModule(target); }}
-            onMouseEnter={() => { void warmRouteModule(target); }}
-        >
-            <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
-            <span>{label}</span>
+        <span className={variant === 'desktop' ? 'workspace-switch-item' : 'mobile-workspace-item'}>
+            <Link
+                to={workspace.defaultPath}
+                className={variant === 'desktop' ? 'nav-tab nav-workspace-tab' : 'mobile-workspace-link'}
+                aria-current={active ? 'location' : undefined}
+                aria-label={label}
+                onClick={onNavigate}
+                onFocus={() => { void warmRouteModule(workspace.defaultPath); }}
+                onMouseEnter={() => { void warmRouteModule(workspace.defaultPath); }}
+            >
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <span>{label}</span>
+            </Link>
             {attention && (
-                <span className={`nb-attention${attention.isError ? ' error' : ''}`} aria-hidden="true">
-                    {attention.isError ? <AlertTriangle className="h-3 w-3" /> : attention.badge}
-                </span>
+                <Link
+                    to={attention.to}
+                    className="workspace-attention-link"
+                    aria-label={attention.label}
+                    title={attention.label}
+                    onClick={onNavigate}
+                    onFocus={() => { void warmRouteModule(attention.to); }}
+                    onMouseEnter={() => { void warmRouteModule(attention.to); }}
+                >
+                    <span className={`nb-attention${attention.isError ? ' error' : ''}`} aria-hidden="true">
+                        {attention.isError ? <AlertTriangle className="h-3 w-3" /> : attention.badge}
+                    </span>
+                </Link>
             )}
-        </Link>
+        </span>
     );
 };
 
@@ -93,35 +104,27 @@ export const AppTopNav = () => {
             to: '/triage',
             isError: true,
         }
-        : planningAttentionUnavailable
+        : inboxCount > 0
             ? {
-                badge: '!',
-                label: t('nav.deliveryPlanningAttentionUnavailable'),
-                to: '/plan/master',
-                isError: true,
-            }
-        : inboxCount > 0 && actionablePendingSteps > 0
-            ? {
-                badge: String(inboxCount + actionablePendingSteps),
-                label: t('nav.deliveryAttentionCombined', {
-                    planning: actionablePendingSteps,
-                    inbox: inboxCount,
-                }),
+                badge: String(inboxCount),
+                label: t('nav.deliveryAttentionIntake', { count: inboxCount }),
                 to: '/triage',
             }
-            : inboxCount > 0
-                ? {
-                    badge: String(inboxCount),
-                    label: t('nav.deliveryAttentionIntake', { count: inboxCount }),
-                    to: '/triage',
-                }
-                : actionablePendingSteps > 0
-                    ? {
-                        badge: String(actionablePendingSteps),
-                        label: t('nav.deliveryAttentionPlanning', { count: actionablePendingSteps }),
-                        to: '/plan/master',
-                    }
-                    : undefined;
+            : undefined;
+    const planningAttention: WorkspaceAttention | undefined = planningAttentionUnavailable
+        ? {
+            badge: '!',
+            label: t('nav.planningAttentionUnavailable'),
+            to: '/plan/master',
+            isError: true,
+        }
+        : actionablePendingSteps > 0
+            ? {
+                badge: String(actionablePendingSteps),
+                label: t('nav.planningAttention', { count: actionablePendingSteps }),
+                to: '/plan/master',
+            }
+            : undefined;
 
     useEffect(() => {
         if (typeof window === 'undefined' || !window.matchMedia) return undefined;
@@ -162,13 +165,30 @@ export const AppTopNav = () => {
                         key={workspace.key}
                         workspace={workspace}
                         active={workspace.key === currentWorkspace.key}
-                        className="nav-tab nav-workspace-tab"
-                        attention={workspace.key === 'delivery' ? deliveryAttention : undefined}
+                        variant="desktop"
+                        attention={
+                            workspace.key === 'delivery'
+                                ? deliveryAttention
+                                : workspace.key === 'planning'
+                                    ? planningAttention
+                                    : undefined
+                        }
                     />
                 ))}
             </nav>
 
             <div className="nav-right">
+                <button
+                    type="button"
+                    className="command-menu-trigger"
+                    aria-label={t('commandMenu.trigger')}
+                    aria-keyshortcuts="Meta+K Control+K"
+                    onClick={openCommandMenu}
+                >
+                    <Command aria-hidden="true" className="h-4 w-4" />
+                    <span>{t('commandMenu.triggerLabel')}</span>
+                    <kbd>{t('commandMenu.openShortcut')}</kbd>
+                </button>
                 <button
                     type="button"
                     className="mobile-nav-trigger"
@@ -214,9 +234,15 @@ export const AppTopNav = () => {
                                         key={workspace.key}
                                         workspace={workspace}
                                         active={workspace.key === currentWorkspace.key}
-                                        className="mobile-workspace-link"
+                                        variant="mobile"
                                         onNavigate={() => setMobileMenuOpen(false)}
-                                        attention={workspace.key === 'delivery' ? deliveryAttention : undefined}
+                                        attention={
+                                            workspace.key === 'delivery'
+                                                ? deliveryAttention
+                                                : workspace.key === 'planning'
+                                                    ? planningAttention
+                                                    : undefined
+                                        }
                                     />
                                 ))}
                             </nav>

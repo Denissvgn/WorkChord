@@ -105,7 +105,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/TaskDependencySelector.tsx': '3d0c21f118a09d71',
     'src/components/tasks/TaskFiltersBar.tsx': 'baf74934c27cea16',
     'src/components/tasks/TaskForm.tsx': 'a0d0838231c99ff6',
-    'src/components/tasks/TaskList.tsx': 'a677e86ff95350d1',
+    'src/components/tasks/TaskList.tsx': 'd199692e547a4306',
     'src/components/tasks/TaskTextEditorModal.tsx': '57bf43330edb7558',
     'src/components/tasks/TaskTimelinePanel.tsx': '6cc605ad58f63789',
     'src/components/team/AssigneeRecommendationsPanel.tsx': '8450676dbd07de86',
