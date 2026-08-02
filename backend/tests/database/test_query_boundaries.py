@@ -175,6 +175,32 @@ async def test_iteration_summary_aggregates_without_loading_task_objects(
     assert not any(isinstance(value, Task) for value in db_session.identity_map.values())
 
 
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_planning_readiness_summary_stays_compact_and_leaf_aware(
+    db_session: AsyncSession,
+) -> None:
+    project_id, iteration_id = await _workspace_seed(db_session)
+    await _insert_tasks(
+        db_session,
+        iteration_id=iteration_id,
+        project_id=project_id,
+        start=0,
+        count=100,
+    )
+    db_session.expunge_all()
+
+    summary = await IterationService(db_session).get_planning_readiness_summary(
+        iteration_id,
+    )
+
+    assert summary is not None
+    assert summary.task_count == 100
+    assert summary.tasks_without_assignee == 100
+    assert summary.has_schedule is False
+    assert not any(isinstance(value, Task) for value in db_session.identity_map.values())
+
+
 async def _summary_query_count(
     factory: async_sessionmaker[AsyncSession],
     engine: AsyncEngine,

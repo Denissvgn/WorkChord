@@ -31,7 +31,7 @@ export const FullscreenWorkspace = ({
             data-fullscreen-workspace={open ? 'true' : undefined}
             className={clsx(
                 open
-                    ? 'fixed inset-0 z-50 flex h-screen w-screen flex-col overflow-hidden bg-surface-card'
+                    ? 'fullscreen-workspace fixed inset-0 z-50 flex h-screen h-dvh w-screen flex-col overflow-hidden bg-surface-card'
                     : className,
                 open && fullscreenClassName,
             )}

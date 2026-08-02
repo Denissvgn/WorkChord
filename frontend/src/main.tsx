@@ -9,6 +9,7 @@ import './styles/planning-masters.css'
 import './i18n/i18n'
 import { SystemLanguageProvider } from './i18n/SystemLanguageProvider'
 import { ToastProvider } from './components/feedback/ToastProvider'
+import { installPlanningNavigationInvalidation } from './features/planningMasters/planningNavigationInvalidation'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,8 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+installPlanningNavigationInvalidation(queryClient)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

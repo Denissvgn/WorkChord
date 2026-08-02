@@ -1,7 +1,7 @@
 import { type KeyboardEvent, useEffect, useId, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { usePlanningReadiness } from '../../features/planningMasters/usePlanningReadiness';
+import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
 
 const ChevD = () => (
     <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -28,7 +28,7 @@ export const SidebarIterationCard = ({ onNavigate }: { onNavigate?: () => void }
         isReadinessError,
         isReadinessFetching,
         refetch,
-    } = usePlanningReadiness();
+    } = usePlanningNavigationSummary();
 
     const closePickerAndRestoreFocus = () => {
         restorePickerFocusRef.current = true;

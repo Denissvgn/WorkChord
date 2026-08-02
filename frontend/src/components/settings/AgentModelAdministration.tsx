@@ -31,7 +31,7 @@ import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { formatDateTime } from '../../utils/formatDate';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
-import { Input } from '../common/Input';
+import { Input, RequiredIndicator } from '../common/Input';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { useConfirmDialog } from '../common/useConfirmDialog';
@@ -1052,14 +1052,20 @@ export const AgentModelAdministration = () => {
                         </h3>
                         <fieldset className="contents" disabled={isMutating}>
                             <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.actor')}</span>
+                                <span className="field-lbl">
+                                    {t('modelAdministration.actor')}
+                                    <RequiredIndicator />
+                                </span>
                                 <select className="input" value={bindingForm.actorId ?? ''} onChange={event => setBindingForm({ ...bindingForm, actorId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
                                     <option value="">{t('modelAdministration.selectActor')}</option>
                                     {actors.map(actor => <option key={actor.id} value={actor.id}>{actor.display_name} ({actor.role})</option>)}
                                 </select>
                             </label>
                             <label className="field">
-                                <span className="field-lbl">{t('modelAdministration.catalogEntry')}</span>
+                                <span className="field-lbl">
+                                    {t('modelAdministration.catalogEntry')}
+                                    <RequiredIndicator />
+                                </span>
                                 <select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
                                     <option value="">{t('modelAdministration.selectCatalogEntry')}</option>
                                     {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key})</option>)}

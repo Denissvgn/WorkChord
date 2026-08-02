@@ -24,7 +24,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
-import { Input } from '../components/common/Input';
+import { Input, RequiredIndicator } from '../components/common/Input';
 import { CollapsibleSection } from '../components/common/CollapsibleSection';
 import { LabelSelector } from '../components/labels/LabelSelector';
 import { RequestSourceLinksPanel } from '../components/requestSources/RequestSourceLinksPanel';
@@ -605,7 +605,10 @@ const TriageActionModal = ({
 
                         {duplicateTargetType === 'triage' ? (
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.duplicateOf')}</label>
+                                <label className="mb-1 block text-sm font-medium text-content-primary">
+                                    {t('surfaces.triagePage.duplicateOf')}
+                                    <RequiredIndicator />
+                                </label>
                                 <select
                                     value={duplicateItemId}
                                     onChange={event => setDuplicateItemId(event.target.value)}
@@ -623,7 +626,10 @@ const TriageActionModal = ({
                         ) : (
                             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.taskIteration')}</label>
+                                    <label className="mb-1 block text-sm font-medium text-content-primary">
+                                        {t('surfaces.triagePage.taskIteration')}
+                                        <RequiredIndicator />
+                                    </label>
                                     <select
                                         value={duplicateIterationId}
                                         onChange={event => {
@@ -640,7 +646,10 @@ const TriageActionModal = ({
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.task')}</label>
+                                    <label className="mb-1 block text-sm font-medium text-content-primary">
+                                        {t('surfaces.triagePage.task')}
+                                        <RequiredIndicator />
+                                    </label>
                                     <select
                                         value={duplicateTaskId}
                                         onChange={event => setDuplicateTaskId(event.target.value)}
@@ -1075,7 +1084,10 @@ const ConvertTriageSplitView = ({
                         {/* Quick Assignment Row */}
                         <div className="grid grid-cols-2 gap-4 p-4 rounded-lg border border-border bg-surface-muted/50">
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.iteration')}</label>
+                                <label className="mb-1 block text-sm font-medium text-content-primary">
+                                    {t('surfaces.triagePage.iteration')}
+                                    <RequiredIndicator />
+                                </label>
                                 <select
                                     value={iterationId}
                                     onChange={event => {

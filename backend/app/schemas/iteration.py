@@ -98,3 +98,16 @@ class IterationSummary(BaseModel):
     total_effort_days: float
     team_capacity_days: float
     overdue_tasks_count: int
+
+
+class IterationPlanningReadinessSummary(BaseModel):
+    """Compact planning inputs used by persistent navigation."""
+    iteration_id: int
+    team_member_count: int
+    team_capacity_hours: float
+    team_members_no_capacity: int
+    task_count: int
+    tasks_without_assignee: int
+    tasks_without_effort: int
+    has_schedule: bool
+    risk_count: int

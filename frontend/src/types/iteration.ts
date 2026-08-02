@@ -67,3 +67,15 @@ export interface IterationSummary {
     team_capacity_days: number;
     overdue_tasks_count: number;
 }
+
+export interface IterationPlanningReadinessSummary {
+    iteration_id: number;
+    team_member_count: number;
+    team_capacity_hours: number;
+    team_members_no_capacity: number;
+    task_count: number;
+    tasks_without_assignee: number;
+    tasks_without_effort: number;
+    has_schedule: boolean;
+    risk_count: number;
+}

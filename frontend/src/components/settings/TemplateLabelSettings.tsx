@@ -32,7 +32,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
-import { Input } from '../common/Input';
+import { Input, RequiredIndicator } from '../common/Input';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { LabelSelector } from '../labels/LabelSelector';
 import { templateService } from '../../services/templateService';
@@ -1156,9 +1156,13 @@ export const TemplateLabelSettings = () => {
                                 >
                                     <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
                                     <div>
-                                        <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.group')}</label>
+                                        <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">
+                                            {t('surfaces.templateLabels.group')}
+                                            <RequiredIndicator />
+                                        </label>
                                         <select
                                             id={labelGroupId}
+                                            aria-label={t('surfaces.templateLabels.group')}
                                             value={labelForm.state.group_id}
                                             onChange={event => updateLabelForm('group_id', event.target.value)}
                                             className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { triageService } from '../../services/triageService';
-import { usePlanningReadiness } from '../../features/planningMasters/usePlanningReadiness';
+import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
 import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
 import type { WorkspaceMetadata } from '../../navigation/workspaces';
 import { warmRouteModule } from '../../navigation/routeModules';
@@ -60,7 +60,12 @@ const WorkspaceSwitchLink = ({
 };
 
 export const AppTopNav = () => {
-    const { iterations, ready } = usePlanningReadiness();
+    const {
+        iterations,
+        ready,
+        isIterationsError,
+        isReadinessError,
+    } = usePlanningNavigationSummary();
     const { t } = useTranslation();
     const location = useLocation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -80,6 +85,7 @@ export const AppTopNav = () => {
     const inboxCount = triageItems.length;
     const currentWorkspace = getWorkspaceForPath(location.pathname);
     const actionablePendingSteps = isEmpty ? 0 : pendingSteps;
+    const planningAttentionUnavailable = isIterationsError || isReadinessError;
     const deliveryAttention: WorkspaceAttention | undefined = triageError
         ? {
             badge: '!',
@@ -87,6 +93,13 @@ export const AppTopNav = () => {
             to: '/triage',
             isError: true,
         }
+        : planningAttentionUnavailable
+            ? {
+                badge: '!',
+                label: t('nav.deliveryPlanningAttentionUnavailable'),
+                to: '/plan/master',
+                isError: true,
+            }
         : inboxCount > 0 && actionablePendingSteps > 0
             ? {
                 badge: String(inboxCount + actionablePendingSteps),

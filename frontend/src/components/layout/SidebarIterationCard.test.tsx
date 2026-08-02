@@ -4,10 +4,10 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { SidebarIterationCard } from './SidebarIterationCard';
 
 const planningReadinessMock = vi.hoisted(() => ({
-    usePlanningReadiness: vi.fn(),
+    usePlanningNavigationSummary: vi.fn(),
 }));
 
-vi.mock('../../features/planningMasters/usePlanningReadiness', () => planningReadinessMock);
+vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningReadinessMock);
 
 const planningReadiness = (overrides: Record<string, unknown> = {}) => ({
     iterations: [],
@@ -27,11 +27,11 @@ const planningReadiness = (overrides: Record<string, unknown> = {}) => ({
 
 describe('SidebarIterationCard', () => {
     beforeEach(() => {
-        planningReadinessMock.usePlanningReadiness.mockReset();
+        planningReadinessMock.usePlanningNavigationSummary.mockReset();
     });
 
     it('does not present setup as an empty state while periods are loading', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningReadiness({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             isIterationsLoading: true,
         }));
 
@@ -43,7 +43,7 @@ describe('SidebarIterationCard', () => {
 
     it('names the planning-period recovery and retries it', async () => {
         const refetch = vi.fn().mockResolvedValue(undefined);
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningReadiness({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             isIterationsError: true,
             refetch,
         }));
@@ -57,7 +57,7 @@ describe('SidebarIterationCard', () => {
 
     it('keeps the planning destination available without inventing progress after a readiness failure', async () => {
         const refetch = vi.fn().mockResolvedValue(undefined);
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningReadiness({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             iterations: [{ id: 1, name: 'Current Sprint' }],
             currentIteration: { id: 1, name: 'Current Sprint' },
             selectedIterationId: 1,
@@ -77,7 +77,7 @@ describe('SidebarIterationCard', () => {
 
     it('restores picker focus after Escape and after selecting a planning period', async () => {
         const selectIteration = vi.fn();
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningReadiness({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             iterations: [
                 { id: 1, name: 'Current Sprint' },
                 { id: 2, name: 'Next Sprint' },

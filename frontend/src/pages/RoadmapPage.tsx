@@ -369,7 +369,7 @@ const MilestoneMarker = ({
         >
             <button
             type="button"
-            className="relative h-5 w-5 rounded-sm focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2"
+            className="roadmap-marker-target relative rounded-sm focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2"
             aria-label={`${milestone.name}, ${t(milestoneStatusLabelKeys[milestone.status])}, ${formatDate(milestone.target_date)}`}
             >
                 <span className={clsx('absolute left-1/2 top-1/2 block h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 shadow-sm', markerClassName(milestone.status))} />
@@ -760,7 +760,7 @@ const RoadmapPage = () => {
             <PageHeader
                 title={t('surfaces.roadmapPage.roadmap')}
                 subtitle={t('surfaces.roadmapPage.portfolioTimelineForProjectsAndMilestoneCommitments')}
-                actions={<Link to="/projects"><button className="btn"><FolderOpen className="inline h-4 w-4"/>{t('surfaces.roadmapPage.projects')}</button></Link>}
+                actions={<Link className="btn" to="/projects"><FolderOpen className="h-4 w-4"/>{t('surfaces.roadmapPage.projects')}</Link>}
             />
 
             {hasQueryError && (
@@ -873,7 +873,7 @@ const RoadmapPage = () => {
                     icon={<FolderOpen className="h-5 w-5" />}
                     title={t('surfaces.roadmapPage.noProjectsYet')}
                     description={t('surfaces.roadmapPage.createProjectsFirstThenAddMilestonesForRoadmapMarkers')}
-                    actions={<Link to="/projects"><button className="btn">{t('surfaces.roadmapPage.openProjects')}</button></Link>}
+                    actions={<Link className="btn" to="/projects">{t('surfaces.roadmapPage.openProjects')}</Link>}
                 />
             )}
 

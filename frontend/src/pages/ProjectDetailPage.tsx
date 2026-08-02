@@ -27,6 +27,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { RequiredIndicator } from '../components/common/Input';
 import { Modal } from '../components/common/Modal';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
@@ -491,6 +492,7 @@ const MilestoneFormModal = ({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-name">
                     {t('surfaces.projectDetail.milestoneName')}
+                    <RequiredIndicator />
                     <input
                         id="milestone-name"
                         value={form.name}

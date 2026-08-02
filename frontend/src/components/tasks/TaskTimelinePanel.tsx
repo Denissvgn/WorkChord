@@ -348,7 +348,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                                 type="button"
                                                 onClick={() => handleRefreshLink(link.id!)}
                                                 disabled={refreshGitHubLinkMutation.isPending}
-                                                className="inline-flex h-6 w-6 shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-action-muted hover:text-action disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-action-muted hover:text-action disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.refreshNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.refreshGitHubStatus')}
                                             >
@@ -363,7 +363,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                                 type="button"
                                                 onClick={() => handleDeleteLink(link.id!)}
                                                 disabled={deleteLinkMutation.isPending}
-                                                className="inline-flex h-6 w-6 shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.deleteNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.deleteLink')}
                                             >

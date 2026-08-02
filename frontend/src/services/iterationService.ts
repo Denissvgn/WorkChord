@@ -2,6 +2,7 @@ import api from './api';
 import type {
     Iteration,
     IterationCreate,
+    IterationPlanningReadinessSummary,
     IterationSeriesCreate,
     IterationSeriesResponse,
     IterationSummary,
@@ -62,5 +63,12 @@ export const iterationService = {
     getSummary: async (id: number) => {
         const response = await api.get<IterationSummary>(`/iterations/${id}/summary`);
         return response.data;
-    }
+    },
+
+    getPlanningReadiness: async (id: number) => {
+        const response = await api.get<IterationPlanningReadinessSummary>(
+            `/iterations/${id}/planning-readiness`,
+        );
+        return response.data;
+    },
 };

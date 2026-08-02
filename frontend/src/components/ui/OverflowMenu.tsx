@@ -88,8 +88,7 @@ export const OverflowMenu = ({
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
-                className="btn"
-                style={{ width: 30, padding: 0, justifyContent: 'center' }}
+                className="btn icon"
             >
                 <MoreHorizontal className="h-4 w-4" />
             </button>

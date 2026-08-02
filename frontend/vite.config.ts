@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('/src/i18n/resources.ts')) return 'app-i18n'
+          if (id.includes('/src/i18n/resources.en.ts')) return 'app-i18n'
+          if (id.includes('/src/i18n/resources.ru.ts')) return 'app-i18n-ru'
           if (id.includes('commonjsHelpers')) return 'vendor-react'
           if (!id.includes('node_modules')) return undefined
           if (id.includes('@tanstack')) return 'vendor-query'

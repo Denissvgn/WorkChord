@@ -8,6 +8,7 @@ import { useToast } from '../feedback/toast';
 import { systemSettingsService } from '../../services/systemSettingsService';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
 import type { AppRuntimeSettingsUpdate, LanguageCode, RuntimeSettingSource, SystemSettings } from '../../types/systemSettings';
+import { changeAppLanguage } from '../../i18n/i18n';
 
 const sourceClass: Record<RuntimeSettingSource, string> = {
     runtime: 'bg-action-muted text-action border-action',
@@ -42,13 +43,13 @@ export const InterfaceLanguageSettings = () => {
 
     const languageMutation = useMutation({
         mutationFn: systemSettingsService.updateApp,
-        onSuccess: (app) => {
+        onSuccess: async (app) => {
             queryClient.setQueryData<SystemSettings>(['system-settings'], (current) => (
                 current ? { ...current, app } : current
             ));
             queryClient.invalidateQueries({ queryKey: ['system-settings'] });
             setLanguageDraft(null);
-            void i18n.changeLanguage(app.ui_language);
+            await changeAppLanguage(app.ui_language);
             document.documentElement.lang = app.ui_language;
             const nextT = i18n.getFixedT(app.ui_language);
             toast.success(nextT('settingsPage.interfaceLanguageSaved'));

@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.iteration import (
     IterationCreate,
+    IterationPlanningReadinessSummary,
     IterationSeriesCreate,
     IterationSeriesResponse,
     IterationUpdate,
@@ -161,5 +162,23 @@ async def get_iteration_summary(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Iteration with id {iteration_id} not found"
+        )
+    return summary
+
+
+@router.get(
+    "/iterations/{iteration_id}/planning-readiness",
+    response_model=IterationPlanningReadinessSummary,
+)
+async def get_iteration_planning_readiness(
+    iteration_id: int,
+    service: Annotated[IterationService, Depends(get_iteration_service)],
+):
+    """Get the compact aggregate used by persistent planning navigation."""
+    summary = await service.get_planning_readiness_summary(iteration_id)
+    if not summary:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Iteration with id {iteration_id} not found",
         )
     return summary

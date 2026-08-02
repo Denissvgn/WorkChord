@@ -74,7 +74,7 @@ export const SlideOverDrawer = ({
                     aria-describedby={subtitle ? subtitleId : undefined}
                     tabIndex={-1}
                     className={clsx(
-                        'relative z-10 flex h-full w-full max-w-[480px] translate-x-0 flex-col shadow-2xl transition-transform duration-200 ease-out',
+                        'wc-slide-over relative z-10 flex h-screen h-dvh w-full max-w-[480px] translate-x-0 flex-col shadow-2xl transition-transform duration-200 ease-out',
                         className,
                     )}
                     style={{ background: 'var(--panel)', borderLeft: '1px solid var(--border)' }}
@@ -100,8 +100,7 @@ export const SlideOverDrawer = ({
                             onClick={requestClose}
                             aria-label={closeLabel}
                             disabled={closeDisabled}
-                            className="btn ghost"
-                            style={{ width: 30, padding: 0, justifyContent: 'center' }}
+                            className="btn ghost icon"
                         >
                             <X aria-hidden="true" className="h-4 w-4" />
                         </button>

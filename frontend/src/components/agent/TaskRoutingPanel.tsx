@@ -42,7 +42,7 @@ import {
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
-import { Input } from '../common/Input';
+import { Input, RequiredIndicator } from '../common/Input';
 import {
     QueryEmptyState,
     QueryErrorState,
@@ -970,7 +970,10 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     </fieldset>
 
                     <label className="field">
-                        <span className="field-lbl">{t('taskRouting.rationale')}</span>
+                        <span className="field-lbl">
+                            {t('taskRouting.rationale')}
+                            <RequiredIndicator />
+                        </span>
                         <textarea
                             className="input min-h-24"
                             value={draft.rationale}
@@ -1120,7 +1123,10 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     <h4 id={`routing-dispatch-${task.id}`} className="text-sm font-semibold text-content-primary">{t('taskRouting.selectionHeading')}</h4>
                     {!selectedCandidate && <p className="text-sm text-content-secondary">{t('taskRouting.noDefaultSelection')}</p>}
                     <label className="field">
-                        <span className="field-lbl">{t('taskRouting.dispatchReason')}</span>
+                        <span className="field-lbl">
+                            {t('taskRouting.dispatchReason')}
+                            <RequiredIndicator />
+                        </span>
                         <textarea
                             className="input min-h-20"
                             value={dispatchReason}

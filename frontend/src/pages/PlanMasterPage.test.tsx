@@ -1,7 +1,8 @@
 import { screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n/i18n';
-import { resources } from '../i18n/resources';
+import { englishResources } from '../i18n/resources.en';
+import { russianResources } from '../i18n/resources.ru';
 import {
     deriveStatus,
     EMPTY_READINESS,
@@ -297,7 +298,9 @@ describe('PlanMasterPage hardening', () => {
             match => match[1],
         );
         const hasKey = (locale: 'en' | 'ru', key: string) => {
-            let value: unknown = resources[locale].translation;
+            let value: unknown = locale === 'en'
+                ? englishResources.translation
+                : russianResources.translation;
             for (const segment of key.split('.')) {
                 if (!value || typeof value !== 'object' || !(segment in value)) return false;
                 value = (value as Record<string, unknown>)[segment];

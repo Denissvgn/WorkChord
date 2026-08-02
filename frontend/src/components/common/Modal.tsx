@@ -75,8 +75,8 @@ export const Modal = ({
                     aria-describedby={hasDescription ? descriptionId : undefined}
                     tabIndex={-1}
                     className={clsx(
-                        'relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-border bg-surface-card shadow-xl',
-                        fullScreen && 'h-screen max-h-none max-w-none rounded-none border-0',
+                        'relative flex max-h-[90vh] max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-border bg-surface-card shadow-xl',
+                        fullScreen && 'wc-modal-fullscreen h-screen h-dvh max-h-none max-w-none rounded-none border-0',
                         className,
                     )}
                 >
@@ -96,7 +96,7 @@ export const Modal = ({
                             onClick={requestClose}
                             aria-label={closeLabel}
                             disabled={closeDisabled}
-                            className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-transparent p-0 text-content-secondary hover:bg-surface-subtle hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="btn ghost icon"
                         >
                             <X aria-hidden="true" className="h-4 w-4" />
                         </button>

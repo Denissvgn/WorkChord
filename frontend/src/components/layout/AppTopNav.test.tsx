@@ -4,14 +4,14 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppTopNav } from './AppTopNav';
 
 const planningReadinessMock = vi.hoisted(() => ({
-    usePlanningReadiness: vi.fn(),
+    usePlanningNavigationSummary: vi.fn(),
 }));
 
 const triageServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
-vi.mock('../../features/planningMasters/usePlanningReadiness', () => planningReadinessMock);
+vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningReadinessMock);
 vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
 vi.mock('../UserSessionBadge', () => ({ UserSessionBadge: () => null }));
 vi.mock('./AppSidebar', () => ({
@@ -20,7 +20,7 @@ vi.mock('./AppSidebar', () => ({
 
 describe('AppTopNav', () => {
     it('uses three workspace links and marks the active workspace for deep routes', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [],
             ready: { total: 0, done: 0 },
         });
@@ -38,7 +38,7 @@ describe('AppTopNav', () => {
     });
 
     it('opens a labeled navigation drawer', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [],
             ready: { total: 0, done: 0 },
         });
@@ -58,7 +58,7 @@ describe('AppTopNav', () => {
     });
 
     it('turns delivery attention into an accessible next-step destination', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue({
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [{ id: 1 }],
             ready: { total: 6, done: 4 },
         });
@@ -71,5 +71,21 @@ describe('AppTopNav', () => {
         });
         expect(deliveryLink).toHaveAttribute('href', '/plan/master');
         expect(deliveryLink).toHaveTextContent('2');
+    });
+
+    it('labels unavailable planning attention and links to its recovery surface', async () => {
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [{ id: 1 }],
+            ready: { total: 6, done: 0 },
+            isReadinessError: true,
+        });
+        triageServiceMock.getAll.mockResolvedValue([]);
+
+        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
+
+        const deliveryLink = await screen.findByRole('link', {
+            name: 'Delivery Hub planning progress could not be loaded. Open Plan Work to retry.',
+        });
+        expect(deliveryLink).toHaveAttribute('href', '/plan/master');
     });
 });
