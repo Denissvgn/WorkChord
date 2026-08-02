@@ -40,7 +40,7 @@ describe('AppSidebar', () => {
     it('shows only Planning destinations for a Planning route', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
 
-        expect(screen.getByLabelText('Timeline & Planning Primary navigation')).toBeInTheDocument();
+        expect(screen.getByLabelText('Timeline & Planning destinations')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Plan Work' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('aria-current', 'page');

@@ -10,6 +10,7 @@ import {
     CircleHelp,
     Github,
     KeyRound,
+    Keyboard,
     Palette,
     ServerCog,
     Tags,
@@ -32,7 +33,9 @@ import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { Button } from '../components/common/Button';
+import { Checkbox } from '../components/common/Checkbox';
 import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
+import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
 type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'admin_access' | 'runtime' | 'about';
 type SettingsGroupId = 'personal' | 'planning' | 'agents' | 'integrations' | 'system';
@@ -161,6 +164,10 @@ const SettingsPage = () => {
     const activeDestination = SETTINGS_DESTINATIONS.find(destination => destination.id === activeTab) ?? SETTINGS_DESTINATIONS[0];
     const ActiveIcon = activeDestination.icon;
     const { theme, setTheme } = useThemeStore();
+    const {
+        enabled: singleKeyShortcutsEnabled,
+        setEnabled: setSingleKeyShortcutsEnabled,
+    } = useSingleKeyShortcutPreference();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -360,6 +367,30 @@ const SettingsPage = () => {
                                                 );
                                             })}
                                         </div>
+                                    </div>
+                                </section>
+                                <section className="card settings-shortcut-card" aria-labelledby="settings-keyboard-shortcuts-title">
+                                    <div className="card-pad">
+                                        <header>
+                                            <span className="settings-shortcut-icon" aria-hidden="true">
+                                                <Keyboard className="h-4 w-4" />
+                                            </span>
+                                            <div>
+                                                <h3 id="settings-keyboard-shortcuts-title">
+                                                    {t('settingsPage.keyboardShortcuts.title')}
+                                                </h3>
+                                                <p>{t('settingsPage.keyboardShortcuts.intro')}</p>
+                                            </div>
+                                        </header>
+                                        <Checkbox
+                                            checked={singleKeyShortcutsEnabled}
+                                            onChange={setSingleKeyShortcutsEnabled}
+                                            label={t('commandMenu.singleKeyShortcuts.label')}
+                                            aria-describedby="settings-single-key-shortcuts-description"
+                                        />
+                                        <p id="settings-single-key-shortcuts-description" className="settings-shortcut-description">
+                                            {t('commandMenu.singleKeyShortcuts.description')}
+                                        </p>
                                     </div>
                                 </section>
                             </div>

@@ -29,6 +29,8 @@ export interface WorkspaceMetadata {
     key: WorkspaceKey;
     labelKey: string;
     defaultLabel: string;
+    descriptionKey: string;
+    defaultDescription: string;
     icon: LucideIcon;
     defaultPath: string;
     items: NavItem[];
@@ -39,6 +41,8 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         key: 'delivery',
         labelKey: 'nav.deliveryHub',
         defaultLabel: 'Delivery Hub',
+        descriptionKey: 'nav.workAreaDescriptions.delivery',
+        defaultDescription: 'Tasks, intake, projects, and delivery flow.',
         icon: ListTodo,
         defaultPath: '/',
         items: [
@@ -53,6 +57,8 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         key: 'planning',
         labelKey: 'nav.timelinePlanning',
         defaultLabel: 'Timeline & Planning',
+        descriptionKey: 'nav.workAreaDescriptions.planning',
+        defaultDescription: 'Readiness, schedules, roadmaps, periods, and calendars.',
         icon: GanttChartSquare,
         defaultPath: '/plan',
         items: [
@@ -67,6 +73,8 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         key: 'resource',
         labelKey: 'nav.resourceSettings',
         defaultLabel: 'Resource & Settings',
+        descriptionKey: 'nav.workAreaDescriptions.resource',
+        defaultDescription: 'People, analytics, agents, and system settings.',
         icon: Settings,
         defaultPath: '/team',
         items: [

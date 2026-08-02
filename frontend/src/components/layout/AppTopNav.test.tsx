@@ -31,9 +31,9 @@ describe('AppTopNav', () => {
         expect(screen.getByRole('link', { name: 'Go to WorkChord overview' }))
             .toHaveAttribute('href', '/');
 
-        const switcher = screen.getByRole('navigation', { name: 'Workspace selector' });
+        const switcher = screen.getByRole('navigation', { name: 'Work area homes' });
         expect(within(switcher).getAllByRole('link')).toHaveLength(3);
-        expect(within(switcher).getByRole('link', { name: 'Timeline & Planning' }))
+        expect(within(switcher).getByRole('link', { name: 'Open Timeline & Planning home' }))
             .toHaveAttribute('aria-current', 'location');
     });
 
@@ -49,8 +49,10 @@ describe('AppTopNav', () => {
 
         const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
         expect(within(drawer).getByText('Navigation')).toBeInTheDocument();
-        expect(within(drawer).getByRole('link', { name: 'Delivery Hub' }))
+        expect(within(drawer).getByRole('link', { name: 'Open Delivery Hub home' }))
             .toHaveAttribute('aria-current', 'location');
+        expect(within(drawer).getByText('Choose an area here; its link always opens that area’s home.'))
+            .toBeInTheDocument();
         expect(within(drawer).getByText('Contextual destinations')).toBeInTheDocument();
 
         await user.keyboard('{Escape}');
@@ -66,12 +68,12 @@ describe('AppTopNav', () => {
 
         renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
-        const switcher = screen.getByRole('navigation', { name: 'Workspace selector' });
-        expect(within(switcher).getByRole('link', { name: 'Timeline & Planning' }))
+        const switcher = screen.getByRole('navigation', { name: 'Work area homes' });
+        expect(within(switcher).getByRole('link', { name: 'Open Timeline & Planning home' }))
             .toHaveAttribute('href', '/plan');
 
         const recoveryLink = await screen.findByRole('link', {
-            name: 'Timeline & Planning needs attention: 2 Plan Work steps remain.',
+            name: 'Timeline & Planning needs attention: 2 Plan Work checkpoint(s) remain.',
         });
         expect(recoveryLink).toHaveAttribute('href', '/plan/master');
         expect(recoveryLink).toHaveTextContent('2');
@@ -88,7 +90,7 @@ describe('AppTopNav', () => {
         renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
         const planningLink = await screen.findByRole('link', {
-            name: 'Timeline & Planning progress could not be loaded. Open Plan Work to retry.',
+            name: 'Plan Work readiness could not be loaded. Open Plan Work to retry.',
         });
         expect(planningLink).toHaveAttribute('href', '/plan/master');
     });

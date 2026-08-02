@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../common/Checkbox';
 import { Modal } from '../common/Modal';
 import { OPEN_COMMAND_MENU_EVENT } from './commandMenuEvents';
+import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
 
 interface CommandAction {
     id: string;
@@ -35,17 +36,6 @@ interface CommandAction {
     ariaShortcut?: string;
     to: string;
 }
-
-const SINGLE_KEY_SHORTCUTS_STORAGE_KEY = 'workchord.command-menu.single-key-shortcuts';
-
-const getInitialSingleKeyShortcutPreference = () => {
-    if (typeof window === 'undefined') return true;
-    try {
-        return window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY) !== 'false';
-    } catch {
-        return true;
-    }
-};
 
 const isInteractiveTarget = (target: EventTarget | null) => {
     if (!(target instanceof HTMLElement)) return false;
@@ -96,9 +86,10 @@ export const CommandMenu = () => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
-    const [singleKeyShortcutsEnabled, setSingleKeyShortcutsEnabled] = useState(
-        getInitialSingleKeyShortcutPreference,
-    );
+    const {
+        enabled: singleKeyShortcutsEnabled,
+        setEnabled: setSingleKeyShortcutsEnabled,
+    } = useSingleKeyShortcutPreference();
     const taskParams = location.pathname === '/tasks'
         ? new URLSearchParams(location.search)
         : null;
@@ -243,15 +234,6 @@ export const CommandMenu = () => {
         navigate(command.to);
     };
 
-    const updateSingleKeyShortcutPreference = (enabled: boolean) => {
-        setSingleKeyShortcutsEnabled(enabled);
-        try {
-            window.localStorage.setItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY, String(enabled));
-        } catch {
-            // Keep the in-memory preference when storage is unavailable.
-        }
-    };
-
     useEffect(() => {
         const handleOpenRequest = () => setOpen(true);
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -328,7 +310,7 @@ export const CommandMenu = () => {
                 <div className="command-menu-shortcut-setting">
                     <Checkbox
                         checked={singleKeyShortcutsEnabled}
-                        onChange={updateSingleKeyShortcutPreference}
+                        onChange={setSingleKeyShortcutsEnabled}
                         label={t('commandMenu.singleKeyShortcuts.label')}
                         aria-describedby="command-menu-shortcut-description"
                     />
@@ -424,7 +406,7 @@ export const CommandMenu = () => {
                                                     <strong>{command.label}</strong>
                                                     <span>{command.description}</span>
                                                 </span>
-                                                {command.shortcut && (
+                                                {singleKeyShortcutsEnabled && command.shortcut && (
                                                     <kbd aria-hidden="true">{command.shortcut}</kbd>
                                                 )}
                                             </button>

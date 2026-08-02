@@ -36,6 +36,8 @@ const WorkspaceSwitchLink = ({
     const { t } = useTranslation();
     const Icon = workspace.icon;
     const label = t(workspace.labelKey, workspace.defaultLabel);
+    const description = t(workspace.descriptionKey, workspace.defaultDescription);
+    const homeLabel = t('nav.openWorkAreaHome', { area: label });
 
     return (
         <span className={variant === 'desktop' ? 'workspace-switch-item' : 'mobile-workspace-item'}>
@@ -43,13 +45,17 @@ const WorkspaceSwitchLink = ({
                 to={workspace.defaultPath}
                 className={variant === 'desktop' ? 'nav-tab nav-workspace-tab' : 'mobile-workspace-link'}
                 aria-current={active ? 'location' : undefined}
-                aria-label={label}
+                aria-label={homeLabel}
+                title={t('nav.workAreaHomeHint', { area: label, description })}
                 onClick={onNavigate}
                 onFocus={() => { void warmRouteModule(workspace.defaultPath); }}
                 onMouseEnter={() => { void warmRouteModule(workspace.defaultPath); }}
             >
                 <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                <span>{label}</span>
+                <span className="workspace-switch-copy">
+                    <span>{label}</span>
+                    {variant === 'mobile' && <small>{description}</small>}
+                </span>
             </Link>
             {attention && (
                 <Link
@@ -159,7 +165,7 @@ export const AppTopNav = () => {
                 <span className="brand-label">{t('common.appName')}</span>
             </Link>
 
-            <nav className="nav-tabs workspace-switcher" aria-label={t('nav.workspaceSelector')}>
+            <nav className="nav-tabs workspace-switcher" aria-label={t('nav.workAreaHomes')}>
                 {WORKSPACES.map(workspace => (
                     <WorkspaceSwitchLink
                         key={workspace.key}
@@ -228,25 +234,33 @@ export const AppTopNav = () => {
                             </button>
                         </div>
                         <div className="mobile-nav-content">
-                            <nav className="mobile-workspace-switcher" aria-label={t('nav.workspaceSelector')}>
-                                {WORKSPACES.map(workspace => (
-                                    <WorkspaceSwitchLink
-                                        key={workspace.key}
-                                        workspace={workspace}
-                                        active={workspace.key === currentWorkspace.key}
-                                        variant="mobile"
-                                        onNavigate={() => setMobileMenuOpen(false)}
-                                        attention={
-                                            workspace.key === 'delivery'
-                                                ? deliveryAttention
-                                                : workspace.key === 'planning'
-                                                    ? planningAttention
-                                                    : undefined
-                                        }
-                                    />
-                                ))}
-                            </nav>
-                            <nav aria-label={t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)}>
+                            <section className="mobile-nav-section" aria-labelledby="mobile-work-area-homes-heading">
+                                <div className="mobile-nav-section-copy">
+                                    <strong id="mobile-work-area-homes-heading">{t('nav.workAreaHomes')}</strong>
+                                    <p>{t('nav.workAreaHomesHelp')}</p>
+                                </div>
+                                <nav className="mobile-workspace-switcher" aria-label={t('nav.workAreaHomes')}>
+                                    {WORKSPACES.map(workspace => (
+                                        <WorkspaceSwitchLink
+                                            key={workspace.key}
+                                            workspace={workspace}
+                                            active={workspace.key === currentWorkspace.key}
+                                            variant="mobile"
+                                            onNavigate={() => setMobileMenuOpen(false)}
+                                            attention={
+                                                workspace.key === 'delivery'
+                                                    ? deliveryAttention
+                                                    : workspace.key === 'planning'
+                                                        ? planningAttention
+                                                        : undefined
+                                            }
+                                        />
+                                    ))}
+                                </nav>
+                            </section>
+                            <nav aria-label={t('nav.areaDestinations', {
+                                area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
+                            })}>
                                 <SidebarContent onNavigate={() => setMobileMenuOpen(false)} />
                             </nav>
                         </div>

@@ -22,13 +22,13 @@ export const TaskWorkflowGuide = () => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="gap-1.5"
+                className="task-workflow-trigger gap-1.5"
                 aria-expanded={open}
                 aria-haspopup="dialog"
                 onClick={() => setOpen(true)}
             >
                 <CircleHelp aria-hidden="true" className="h-4 w-4" />
-                {t('tasks.guide.trigger')}
+                <span>{t('tasks.guide.trigger')}</span>
             </Button>
             <SlideOverDrawer
                 open={open}

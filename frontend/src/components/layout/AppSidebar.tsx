@@ -252,7 +252,9 @@ export const AppSidebar = () => {
         <aside
             className="sidebar"
             data-testid="app-sidebar"
-            aria-label={`${t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)} ${t('nav.primaryNavigation')}`}
+            aria-label={t('nav.areaDestinations', {
+                area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
+            })}
         >
             <SidebarContent />
         </aside>

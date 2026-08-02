@@ -76,22 +76,24 @@ describe('TasksPage', () => {
         savedViewServiceMock.getAll.mockResolvedValue([]);
     });
 
-    it('opens the task creator from the create query and clears the intent when dismissed', async () => {
+    it('clears create intent while preserving a Plan Master return checkpoint', async () => {
         const { user } = renderWithProviders(
             <>
                 <TasksPage />
                 <LocationProbe />
             </>,
-            { initialEntries: ['/tasks?create=1'] },
+            { initialEntries: ['/tasks?create=1&fromPlanStep=work'] },
         );
 
         expect(await screen.findByRole('dialog')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel draft' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Return to plan' }))
+            .toHaveAttribute('href', '/plan/master?step=work');
 
         await user.click(screen.getByRole('button', { name: 'Cancel draft' }));
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-        expect(screen.getByTestId('location-search')).toHaveTextContent('');
+        expect(screen.getByTestId('location-search')).toHaveTextContent('?fromPlanStep=work');
     });
 
     it('applies a URL-selected saved view and keeps its context visible', async () => {
@@ -119,6 +121,7 @@ describe('TasksPage', () => {
 
         expect(await screen.findByText('Needs owners')).toBeVisible();
         expect(screen.getByText('1 active filter(s)')).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Clear view' })).toBeVisible();
         expect(savedViewServiceMock.getAll).toHaveBeenCalledWith({ view_type: 'tasks' });
     });
 
@@ -146,7 +149,14 @@ describe('TasksPage', () => {
             initialEntries: ['/tasks?panel=filters&layout=board'],
         });
 
-        expect(await screen.findByRole('button', { name: 'Board' })).toHaveAttribute('aria-pressed', 'true');
+        const viewContext = await screen.findByRole('region', { name: 'Task view context' });
+        expect(within(viewContext).getByRole('button', { name: 'Board' }))
+            .toHaveAttribute('aria-pressed', 'true');
+        expect(within(viewContext).getByRole('button', { name: 'Filters' })).toBeVisible();
+        expect(within(viewContext).getByRole('button', { name: 'List' })).toBeVisible();
+        const newTaskAction = screen.getByRole('button', { name: 'New Task' });
+        expect(newTaskAction.closest('.tasks-primary-slot')).not.toBeNull();
+        expect(screen.getAllByRole('button', { name: 'New Task' })).toHaveLength(1);
         expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
     });
 });

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
@@ -37,6 +37,7 @@ import type { SavedView } from '../types/savedView';
 import { savedViewService } from '../services/savedViewService';
 import { savedViewDisplay } from '../i18n/seedDisplay';
 import clsx from 'clsx';
+import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 
 type ViewMode = 'list' | 'board';
 const SORT_KEYS: SortKey[] = ['priority', 'sort_order', 'status', 'title'];
@@ -295,8 +296,13 @@ const TasksPage = () => {
                 <PageHeader
                     title={t('tasks.title')}
                     subtitle={t('tasks.noIterationsBody')}
-                    actions={<a href="/iterations" className="btn primary">{t('tasks.goToIterations')}</a>}
+                    actions={(
+                        <Link to="/iterations" className="btn primary">
+                            {t('tasks.goToIterations')}
+                        </Link>
+                    )}
                 />
+                <PlanReturnBar />
                 <div className="empty">
                     <h4>{t('tasks.noIterationsTitle')}</h4>
                     <p>{t('tasks.noIterationsBody')}</p>
@@ -306,17 +312,19 @@ const TasksPage = () => {
     }
 
     return (
-        <PageLayout variant="workbench" className="wc-workbench-flush">
+        <PageLayout variant="workbench" className="wc-workbench-flush tasks-workbench">
             {/* Main Content Area */}
-            <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
-                <div className="flex-shrink-0 px-4 pt-4 pb-3">
-                    <div className="wc-page-head" data-testid="page-header" style={{marginBottom:0}}>
-                        <div>
+            <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
+                <PlanReturnBar />
+                <div className="tasks-workbench-header-wrap flex-shrink-0 px-4 pt-4 pb-3">
+                    <div className="wc-page-head tasks-workbench-header" data-testid="page-header">
+                        <div className="tasks-workbench-heading">
                             <h1 className="wc-page-title">{t('tasks.title')}</h1>
                             <div className="wc-page-sub">{t('tasks.description')}</div>
                         </div>
-                        <div className="row" style={{flexWrap:'wrap', gap:6}}>
+                        <div className="row tasks-header-actions">
                         <IterationSelector
+                            className="tasks-iteration-selector"
                             onChange={() => {
                                 setFilters(defaultFilters);
                                 setSortKey('priority');
@@ -326,6 +334,7 @@ const TasksPage = () => {
                         />
                         <TaskWorkflowGuide />
                         <OverflowMenu
+                            className="tasks-overflow-trigger"
                             label={t('actions.moreActions')}
                             items={[
                                 {
@@ -341,26 +350,32 @@ const TasksPage = () => {
                                 },
                             ]}
                         />
-                        <Button onClick={() => setIsCreating(true)} disabled={isCreating || selectedIterationId === 0}>
-                            <Plus className="w-4 h-4 mr-2" />
-                            {t('tasks.newTask')}
-                        </Button>
+                        <div className="tasks-primary-slot">
+                            <Button
+                                className="tasks-primary-action"
+                                onClick={() => setIsCreating(true)}
+                                disabled={isCreating || selectedIterationId === 0}
+                            >
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                {t('tasks.newTask')}
+                            </Button>
+                        </div>
                         </div>
                     </div>
                 </div>
 
                 {selectedIterationId > 0 && (
-                    <div className="flex-shrink-0 space-y-3 px-6 pb-3">
+                    <div className="tasks-context-wrap flex-shrink-0 px-6 pb-3">
                         <section
                             className={clsx(
-                                'flex flex-wrap items-center justify-between gap-3 border-y px-1 py-2.5 text-sm',
+                                'tasks-view-context border-y px-1 py-2.5 text-sm',
                                 requestedSavedViewMissing || requestedSavedViewLoadFailed
                                     ? 'border-feedback-warning-border bg-feedback-warning-muted'
                                     : 'border-border-subtle',
                             )}
                             aria-label={t('tasks.viewContext')}
                         >
-                            <div className="flex min-w-0 items-center gap-2">
+                            <div className="tasks-view-context-copy flex min-w-0 items-center gap-2">
                                 {requestedSavedViewMissing || requestedSavedViewLoadFailed ? (
                                     <AlertTriangle
                                         className="h-4 w-4 shrink-0 text-feedback-warning-foreground"
@@ -399,11 +414,17 @@ const TasksPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-wrap items-center gap-2">
+                            <div className="tasks-context-actions flex flex-wrap items-center gap-2">
                                 {(activeFilterCount > 0 || selectedSavedViewId || requestedSavedViewId) && (
-                                    <Button variant="ghost" size="sm" onClick={clearViewContext}>
+                                    <Button
+                                        className="tasks-clear-view"
+                                        variant="ghost"
+                                        size="sm"
+                                        aria-label={t('tasks.clearView')}
+                                        onClick={clearViewContext}
+                                    >
                                         <X className="mr-1 h-4 w-4" aria-hidden="true" />
-                                        {t('tasks.clearView')}
+                                        <span>{t('tasks.clearView')}</span>
                                     </Button>
                                 )}
                                 <Button
@@ -421,9 +442,7 @@ const TasksPage = () => {
                                     )}
                                 </Button>
                             </div>
-                        </section>
-
-                        <div className="flex w-fit bg-surface-subtle p-1 rounded-lg" role="group" aria-label={t('tasks.title')}>
+                            <div className="tasks-view-switcher flex w-fit bg-surface-subtle p-1 rounded-lg" role="group" aria-label={t('tasks.title')}>
                             <button
                                 type="button"
                                 onClick={() => changeViewMode('list')}
@@ -468,7 +487,8 @@ const TasksPage = () => {
                                     {t('tasks.board')}
                                 </span>
                             </button>
-                        </div>
+                            </div>
+                        </section>
                     </div>
                 )}
 
@@ -510,7 +530,7 @@ const TasksPage = () => {
                         open={isFullScreen}
                         onClose={exitFullscreen}
                         ariaLabel={t('tasks.fullScreenLabel')}
-                        className="flex-1 overflow-hidden relative"
+                        className="tasks-workbench-content flex-1 overflow-hidden relative"
                     >
                         {isFullScreen && (
                             <div className="flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
@@ -528,7 +548,10 @@ const TasksPage = () => {
 
                         {viewMode === 'list' ? (
                             <div className="h-full overflow-y-auto">
-                                <div className={clsx(isFullScreen ? "p-6" : "px-6 pb-6")}>
+                                <div className={clsx(
+                                    'tasks-list-content',
+                                    isFullScreen ? 'p-6' : 'px-6 pb-6',
+                                )}>
                                     <TaskList
                                         iterationId={selectedIterationId}
                                         filters={filters}

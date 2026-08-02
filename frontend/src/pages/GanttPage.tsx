@@ -25,6 +25,7 @@ import { snapshotService } from '../services/snapshotService';
 import type { IterationSnapshot } from '../services/snapshotService';
 import { getAdminAccessErrorMessage, hasAdminApiKey } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
+import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 
 const DECISION_COUNT_LABELS = [
     { key: 'scheduled', labelKey: 'gantt.decisionCounts.scheduled' },
@@ -305,6 +306,7 @@ const GanttPage = () => {
         return (
             <PageLayout>
                 <PageHeader title={t('gantt.title')} subtitle={t('gantt.noIterationsBody')} />
+                <PlanReturnBar />
                 <div className="empty">
                     <h4>{t('gantt.noIterationsTitle')}</h4>
                     <p>{t('gantt.noIterationsBody')}</p>
@@ -325,6 +327,7 @@ const GanttPage = () => {
             fullscreenClassName="bg-surface-muted"
         >
         <PageLayout variant="workbench" className="flex h-full min-h-0 flex-col gap-4 overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
+            <PlanReturnBar />
             <div className="wc-page-head shrink-0" data-testid="page-header" style={{padding:'0 4px'}}>
                 <div>
                     <div className="row" style={{gap:8, marginBottom:2}}>

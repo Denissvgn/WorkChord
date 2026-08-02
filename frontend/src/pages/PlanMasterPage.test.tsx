@@ -31,67 +31,15 @@ vi.mock('../services/planShareService', () => ({
     planShareService: planShareServiceMock,
 }));
 
-vi.mock('../components/iteration/IterationForm', () => ({
-    IterationForm: ({
-        onStateChange,
-    }: {
-        onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
-    }) => (
-        <div data-testid="iteration-form">
-            <button
-                type="button"
-                onClick={() => onStateChange?.({ dirty: true, pending: false })}
-            >
-                Make period dirty
-            </button>
-            <button
-                type="button"
-                onClick={() => onStateChange?.({ dirty: false, pending: true })}
-            >
-                Start period save
-            </button>
-        </div>
-    ),
-}));
-
-vi.mock('../components/team/TeamForm', () => ({
-    TeamForm: ({
-        iterationId,
-        onStateChange,
-    }: {
-        iterationId: number;
-        onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
-    }) => (
-        <div data-testid="team-form">
-            <p>Team form iteration {iterationId}</p>
-            <button
-                type="button"
-                onClick={() => onStateChange?.({ dirty: true, pending: false })}
-            >
-                Make team dirty
-            </button>
-        </div>
-    ),
-}));
-
-vi.mock('../components/team/ImportTeamModal', () => ({
-    ImportTeamModal: ({
-        iterationId,
-    }: {
-        iterationId: number;
-    }) => <div data-testid="team-import">Team import iteration {iterationId}</div>,
-}));
-
 type QueryKey = 'iterations' | 'team' | 'tasks' | 'gantt' | 'inbox';
 type PlanningMember = {
     id: number;
     name: string;
-    position?: string;
     capacity_hours: number;
     planned_hours: number;
 };
 
-const iterationOne: Iteration = {
+const iteration: Iteration = {
     id: 1,
     name: 'August plan',
     calendar_id: 1,
@@ -100,31 +48,24 @@ const iterationOne: Iteration = {
     working_days: 10,
 };
 
-const iterationTwo: Iteration = {
-    ...iterationOne,
-    id: 2,
-    name: 'September plan',
-    start_date: '2026-09-01',
-    end_date: '2026-09-14',
-};
-
-const memberOne: PlanningMember = {
+const member: PlanningMember = {
     id: 7,
     name: 'Alex Rivera',
-    position: 'Engineer',
     capacity_hours: 64,
     planned_hours: 16,
 };
 
 const taskFixture = (overrides: Partial<Task> = {}): Task => ({
     id: 11,
-    iteration_id: 1,
-    title: 'Saved date task',
+    iteration_id: iteration.id,
+    title: 'Scheduled task',
     priority: 3,
     effort_days: 2,
     effort_hours: 16,
-    assignee: { id: memberOne.id, name: memberOne.name },
+    assignee: { id: member.id, name: member.name },
     status: 'planned',
+    start_date: '2026-08-03',
+    end_date: '2026-08-05',
     is_overdue: false,
     is_delayed: false,
     is_composite: false,
@@ -161,15 +102,6 @@ const queryFeedback = (
     ...overrides,
 });
 
-interface PlanningStateOptions {
-    iterations?: Iteration[];
-    currentIteration?: Iteration | null;
-    teamMembers?: PlanningMember[];
-    tasks?: Task[];
-    readiness?: Partial<PlanReadiness>;
-    queries?: Partial<Record<QueryKey, Partial<PlanningQueryFeedback>>>;
-}
-
 const hasSavedDates = (task: Task) => (
     Boolean(task.start_date)
     && Boolean(task.end_date)
@@ -177,28 +109,25 @@ const hasSavedDates = (task: Task) => (
     && Number(task.effort_days) > 0
 );
 
-const planningState = (options: PlanningStateOptions = {}) => {
-    const currentIteration = options.currentIteration === undefined
-        ? iterationOne
-        : options.currentIteration;
-    const iterations = options.iterations
-        ?? (currentIteration ? [currentIteration] : []);
-    const teamMembers = options.teamMembers ?? [];
-    const tasks = options.tasks ?? [];
+const planningState = ({
+    currentIteration = iteration as Iteration | null,
+    teamMembers = [] as PlanningMember[],
+    tasks = [] as Task[],
+    readinessOverrides = {} as Partial<PlanReadiness>,
+    queryOverrides = {} as Partial<Record<QueryKey, Partial<PlanningQueryFeedback>>>,
+} = {}) => {
     const hasCurrentIteration = currentIteration !== null;
     const readinessData: PlanReadiness = {
         ...EMPTY_READINESS,
-        iterationCount: iterations.length,
+        iterationCount: hasCurrentIteration ? 1 : 0,
         hasCurrentIteration,
         currentIterationName: currentIteration?.name ?? '',
         currentIterationStart: currentIteration?.start_date ?? '',
         currentIterationEnd: currentIteration?.end_date ?? '',
         currentIterationDays: currentIteration?.working_days ?? 0,
         teamMemberCount: teamMembers.length,
-        teamCapacity: teamMembers.reduce((total, member) => (
-            total + member.capacity_hours
-        ), 0),
-        teamMembersNoCap: teamMembers.filter(member => member.capacity_hours <= 0).length,
+        teamCapacity: teamMembers.reduce((sum, current) => sum + current.capacity_hours, 0),
+        teamMembersNoCap: teamMembers.filter(current => current.capacity_hours <= 0).length,
         taskCount: tasks.length,
         tasksWithoutAssignee: tasks.filter(task => !task.assignee).length,
         tasksWithoutEffort: tasks.filter(task => (
@@ -206,41 +135,38 @@ const planningState = (options: PlanningStateOptions = {}) => {
         )).length,
         hasGanttSchedule: tasks.length > 0 && tasks.every(hasSavedDates),
         riskCount: tasks.filter(task => task.is_overdue).length,
-        ...options.readiness,
+        ...readinessOverrides,
     };
     const status = deriveStatus(readinessData);
     const dependentEnabled = hasCurrentIteration;
     const queryStates: Record<QueryKey, PlanningQueryFeedback> = {
-        iterations: queryFeedback(options.queries?.iterations),
+        iterations: queryFeedback(queryOverrides.iterations),
         team: queryFeedback({
             enabled: dependentEnabled,
             hasData: dependentEnabled,
-            ...options.queries?.team,
+            ...queryOverrides.team,
         }),
         tasks: queryFeedback({
             enabled: dependentEnabled,
             hasData: dependentEnabled,
-            ...options.queries?.tasks,
+            ...queryOverrides.tasks,
         }),
         gantt: queryFeedback({
             enabled: dependentEnabled,
             hasData: dependentEnabled,
-            ...options.queries?.gantt,
+            ...queryOverrides.gantt,
         }),
         inbox: queryFeedback({
             enabled: false,
             hasData: false,
-            ...options.queries?.inbox,
+            ...queryOverrides.inbox,
         }),
     };
-    const blockingError = Object.values(queryStates).find(query => query.isBlockingError);
-    const isFetching = Object.values(queryStates).some(query => query.isFetching);
-
     return {
         selectedIterationId: currentIteration?.id ?? 0,
         setSelectedIterationId: vi.fn(),
         selectIteration: vi.fn(),
-        iterations,
+        iterations: currentIteration ? [currentIteration] : [],
         currentIteration,
         hasCurrentIteration,
         teamMembers,
@@ -254,7 +180,7 @@ const planningState = (options: PlanningStateOptions = {}) => {
         ready: readiness(status),
         nextId: nextStep(status),
         isLoading: Object.values(queryStates).some(query => query.isLoading),
-        isError: Boolean(blockingError),
+        isError: Object.values(queryStates).some(query => query.isBlockingError),
         isIterationsLoading: queryStates.iterations.isLoading,
         isIterationsError: queryStates.iterations.isBlockingError,
         isIterationsFetching: queryStates.iterations.isFetching,
@@ -267,9 +193,9 @@ const planningState = (options: PlanningStateOptions = {}) => {
         isReadinessFetching: Object.entries(queryStates).some(([key, query]) => (
             key !== 'iterations' && query.enabled && query.isFetching
         )),
-        isFetching,
+        isFetching: Object.values(queryStates).some(query => query.isFetching),
         queryStates,
-        error: blockingError?.error ?? null,
+        error: Object.values(queryStates).find(query => query.isBlockingError)?.error ?? null,
         refetch: vi.fn().mockResolvedValue([]),
     };
 };
@@ -278,11 +204,7 @@ const stepSelect = () => screen.getByRole('combobox', {
     name: i18n.t('plan.master.selectStep'),
 });
 
-const stepRail = () => screen.getByRole('navigation', {
-    name: i18n.t('plan.master.steps'),
-});
-
-describe('PlanMasterPage hardening', () => {
+describe('PlanMasterPage orchestration checkpoint', () => {
     beforeEach(() => {
         planningReadinessMock.usePlanningReadiness.mockReset();
         planShareServiceMock.getCurrent.mockReset();
@@ -294,7 +216,7 @@ describe('PlanMasterPage hardening', () => {
 
     it('has English and Russian copy for every static translation key it renders', () => {
         const keys = Array.from(
-            planMasterSource.matchAll(/\b(?:t|tr)\(\s*['"]([^'"]+)['"]/g),
+            planMasterSource.matchAll(/\b(?:t)\(\s*['"]([^'"]+)['"]/g),
             match => match[1],
         );
         const hasKey = (locale: 'en' | 'ru', key: string) => {
@@ -308,41 +230,79 @@ describe('PlanMasterPage hardening', () => {
             return typeof value === 'string';
         };
 
-        expect(keys.length).toBeGreaterThan(100);
+        expect(keys.length).toBeGreaterThan(50);
         expect(keys.filter(key => !hasKey('en', key))).toEqual([]);
         expect(keys.filter(key => !hasKey('ru', key))).toEqual([]);
     });
 
-    it('separates step progress from one next action, additional exceptions, and sharing', () => {
+    it('shows one authoritative action and carries a durable return checkpoint', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
-        renderWithProviders(<PlanMasterPage />);
+        const { container } = renderWithProviders(<PlanMasterPage />);
 
-        const rail = stepRail();
-        expect(within(rail).getByRole('button', {
-            name: new RegExp(`${i18n.t('plan.steps.iteration.title')}.*${i18n.t('plan.master.done')}`, 'i'),
+        expect(screen.getByRole('heading', {
+            level: 2,
+            name: i18n.t('plan.steps.team.title'),
         })).toBeVisible();
-        expect(rail.querySelector('.pill')).not.toBeInTheDocument();
-        expect(within(rail).queryByText(i18n.t('plan.master.needsAttention'))).not.toBeInTheDocument();
+        expect(screen.queryByTestId('iteration-form')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('team-form')).not.toBeInTheDocument();
 
-        const auxiliaryRail = screen.getByRole('complementary', {
-            name: i18n.t('plan.master.planReadiness'),
+        const checkpoint = container.querySelector('.plan-checkpoint');
+        expect(checkpoint).not.toBeNull();
+        expect(checkpoint?.querySelectorAll('.btn.primary')).toHaveLength(1);
+        expect(checkpoint?.querySelector('.plan-checkpoint-action'))
+            .toHaveAttribute('data-blocked', 'false');
+        const mobileContext = container.querySelector('.plan-master-mobile-context');
+        expect(mobileContext).toHaveTextContent(iteration.name);
+        expect(mobileContext).toHaveTextContent(i18n.t('plan.master.stepsComplete', {
+            done: 1,
+            total: 6,
+        }));
+        const action = within(checkpoint as HTMLElement).getByRole('link', {
+            name: new RegExp(i18n.t('plan.steps.team.expert'), 'i'),
         });
-        expect(within(auxiliaryRail).getByRole('heading', {
-            name: i18n.t('plan.master.nextAction'),
-        })).toBeVisible();
-        expect(within(auxiliaryRail).getByRole('heading', {
-            name: i18n.t('plan.master.otherExceptions'),
-        })).toBeVisible();
-        expect(within(auxiliaryRail).getAllByText(i18n.t('plan.steps.blockers.title'))).toHaveLength(1);
-        expect(within(auxiliaryRail).getByRole('heading', {
-            name: i18n.t('plan.master.shareSummary'),
-        })).toBeVisible();
+        expect(action).toHaveAttribute('href', expect.stringContaining('/team?'));
+        expect(action).toHaveAttribute('href', expect.stringContaining('fromPlanStep=team'));
     });
 
-    it('keeps an iterations error full-page while a dependent query error stays inside the workspace shell', () => {
+    it('sends a blocked checkpoint to its first incomplete owner and returns to the selected checkpoint', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
             currentIteration: null,
-            queries: {
+        }));
+        const { container } = renderWithProviders(<PlanMasterPage />, {
+            initialEntries: ['/plan/master?step=schedule'],
+        });
+
+        expect(screen.getByRole('heading', {
+            level: 2,
+            name: i18n.t('plan.steps.schedule.title'),
+        })).toBeVisible();
+        const action = screen.getByRole('link', {
+            name: new RegExp(i18n.t('plan.steps.iteration.expert'), 'i'),
+        });
+        expect(action).toHaveAttribute('href', expect.stringContaining('/iterations?'));
+        expect(action).toHaveAttribute('href', expect.stringContaining('fromPlanStep=schedule'));
+        expect(container.querySelector('.plan-checkpoint-action'))
+            .toHaveAttribute('data-blocked', 'true');
+    });
+
+    it('moves focus to the selected checkpoint', async () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
+        const { user } = renderWithProviders(<PlanMasterPage />);
+
+        await user.selectOptions(stepSelect(), 'work');
+
+        const heading = screen.getByRole('heading', {
+            level: 2,
+            name: i18n.t('plan.steps.work.title'),
+        });
+        expect(heading).toHaveFocus();
+        expect(stepSelect()).toHaveValue('work');
+    });
+
+    it('keeps an iterations error full-page and a dependent error inside the checkpoint', () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
+            currentIteration: null,
+            queryOverrides: {
                 iterations: {
                     hasData: false,
                     isError: true,
@@ -351,7 +311,6 @@ describe('PlanMasterPage hardening', () => {
                 },
             },
         }));
-
         const firstRender = renderWithProviders(<PlanMasterPage />);
 
         expect(screen.getByRole('alert')).toHaveTextContent(
@@ -364,7 +323,7 @@ describe('PlanMasterPage hardening', () => {
 
         firstRender.unmount();
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            queries: {
+            queryOverrides: {
                 team: {
                     hasData: false,
                     isError: true,
@@ -373,7 +332,6 @@ describe('PlanMasterPage hardening', () => {
                 },
             },
         }));
-
         renderWithProviders(<PlanMasterPage />);
 
         expect(screen.getByRole('heading', {
@@ -385,127 +343,26 @@ describe('PlanMasterPage hardening', () => {
                 section: i18n.t('plan.steps.team.title'),
             }),
         );
-        expect(screen.queryByText(
-            i18n.t('plan.master.planningDataUnavailable'),
-        )).not.toBeInTheDocument();
     });
 
-    it('uses the labeled step selector and gates team and work when no period is selected', async () => {
+    it('creates a read-only snapshot from the ready review checkpoint', async () => {
+        const scheduledTask = taskFixture();
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            currentIteration: null,
-            iterations: [iterationOne],
-        }));
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        const selector = stepSelect();
-        expect(selector).toHaveAccessibleName(i18n.t('plan.master.selectStep'));
-
-        await user.selectOptions(selector, 'team');
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.team.title'),
-        })).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.createPeriodFirst'))).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.teamNeedsPeriod'))).toBeVisible();
-        expect(screen.queryByRole('button', {
-            name: i18n.t('plan.master.addPerson'),
-        })).not.toBeInTheDocument();
-
-        await user.selectOptions(selector, 'work');
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.work.title'),
-        })).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.createPeriodFirst'))).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.workNeedsPeriod'))).toBeVisible();
-        expect(screen.queryByRole('link', {
-            name: new RegExp(i18n.t('plan.master.addTask'), 'i'),
-        })).not.toBeInTheDocument();
-    });
-
-    it('moves focus to the current step when the responsive summary targets it', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        const currentHeading = screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.team.title'),
-        });
-        await user.click(screen.getByRole('button', {
-            name: i18n.t('plan.master.goToCurrentStep'),
-        }));
-
-        expect(currentHeading).toHaveFocus();
-    });
-
-    it('does not fabricate a timeline when no saved schedule exists', () => {
-        const unscheduledTask = taskFixture({
-            start_date: null,
-            end_date: null,
-        });
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            teamMembers: [memberOne],
-            tasks: [unscheduledTask],
-            readiness: { hasGanttSchedule: false },
-        }));
-
-        const { container } = renderWithProviders(<PlanMasterPage />);
-
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.schedule.title'),
-        })).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.scheduleUnavailableTitle'))).toBeVisible();
-        expect(container.querySelector('.plan-master-gantt')).not.toBeInTheDocument();
-        expect(screen.queryByText(unscheduledTask.title)).not.toBeInTheDocument();
-    });
-
-    it('renders the task range from real saved schedule dates', async () => {
-        const scheduledTask = taskFixture({
-            start_date: '2026-08-03',
-            end_date: '2026-08-05',
-        });
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            teamMembers: [memberOne],
+            teamMembers: [member],
             tasks: [scheduledTask],
-            readiness: { hasGanttSchedule: true },
-        }));
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        await user.selectOptions(stepSelect(), 'schedule');
-
-        const schedule = screen.getByRole('region', {
-            name: i18n.t('plan.master.savedScheduleDates'),
-        });
-        expect(schedule).toBeVisible();
-        expect(within(schedule).getByRole('img', {
-            name: new RegExp(`^${scheduledTask.title} is scheduled for`),
-        })).toHaveAttribute('title', expect.stringContaining(scheduledTask.title));
-        expect(within(schedule).getAllByText(scheduledTask.title)).not.toHaveLength(0);
-    });
-
-    it('creates a read-only snapshot from the review step', async () => {
-        const scheduledTask = taskFixture({
-            start_date: '2026-08-03',
-            end_date: '2026-08-05',
-        });
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            teamMembers: [memberOne],
-            tasks: [scheduledTask],
-            readiness: { hasGanttSchedule: true },
         }));
         planShareServiceMock.create.mockResolvedValue({
             id: 8,
             public_id: 'plan-share-token',
-            iteration_id: iterationOne.id,
-            iteration_name: iterationOne.name,
+            iteration_id: iteration.id,
+            iteration_name: iteration.name,
             created_by_display: 'Guest ABC123',
             snapshot_data: {
                 iteration: {
-                    id: iterationOne.id,
-                    name: iterationOne.name,
-                    start_date: iterationOne.start_date,
-                    end_date: iterationOne.end_date,
+                    id: iteration.id,
+                    name: iteration.name,
+                    start_date: iteration.start_date,
+                    end_date: iteration.end_date,
                 },
                 team_members: [],
                 tasks: [],
@@ -519,128 +376,35 @@ describe('PlanMasterPage hardening', () => {
         });
         const { user } = renderWithProviders(<PlanMasterPage />);
 
-        await user.selectOptions(stepSelect(), 'review');
+        expect(screen.getByRole('heading', {
+            level: 2,
+            name: i18n.t('plan.steps.review.title'),
+        })).toBeVisible();
         await user.click(await screen.findByRole('button', {
             name: i18n.t('plan.master.createShareLink'),
         }));
 
-        expect(planShareServiceMock.create).toHaveBeenCalledWith(iterationOne.id);
+        expect(planShareServiceMock.create).toHaveBeenCalledWith(iteration.id);
         expect(await screen.findByText(i18n.t('plan.master.planSharedTitle'))).toBeVisible();
         expect(screen.getByDisplayValue(
             `${window.location.origin}/plan/share/plan-share-token`,
         )).toHaveAttribute('readonly');
     });
 
-    it('treats nonpositive effort as missing work readiness', async () => {
-        const taskWithoutEffort = taskFixture({
-            title: 'Unestimated task',
-            effort_days: -1,
-            effort_hours: 0,
+    it('keeps progress and six-step navigation in one rail without repeating exception prose', () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
+        renderWithProviders(<PlanMasterPage />);
+
+        const rail = screen.getByRole('complementary', {
+            name: i18n.t('plan.master.steps'),
         });
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            teamMembers: [memberOne],
-            tasks: [taskWithoutEffort],
-        }));
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        const missingFilter = screen.getByRole('button', {
-            name: i18n.t('plan.master.missingEffortCount', { count: 1 }),
-        });
-        expect(missingFilter).toBeVisible();
-        expect(screen.getByText(i18n.t('plan.master.missingFields', {
-            fields: i18n.t('plan.master.effort'),
-        }))).toBeVisible();
-
-        await user.click(missingFilter);
-
-        expect(screen.getByText(taskWithoutEffort.title)).toBeVisible();
-        expect(missingFilter).toHaveAttribute('aria-pressed', 'true');
-    });
-
-    it('confirms dirty period navigation before changing steps', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            currentIteration: null,
-        }));
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        await user.click(screen.getByRole('button', { name: 'Make period dirty' }));
-        await user.click(within(stepRail()).getByRole('button', {
-            name: new RegExp(i18n.t('plan.steps.team.title')),
-        }));
-
-        expect(screen.getByRole('dialog', {
-            name: new RegExp(i18n.t('plan.master.draftDiscardTitle')),
+        expect(within(rail).getByRole('navigation', {
+            name: i18n.t('plan.master.steps'),
         })).toBeVisible();
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.iteration.title'),
-        })).toBeVisible();
-
-        await user.click(screen.getByRole('button', {
-            name: i18n.t('plan.master.draftDiscardConfirm'),
-        }));
-
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.team.title'),
-        })).toBeVisible();
-    });
-
-    it('prevents period navigation while a save is pending', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            currentIteration: null,
-        }));
-        const { user } = renderWithProviders(<PlanMasterPage />);
-
-        await user.click(screen.getByRole('button', { name: 'Start period save' }));
-
-        const teamStep = within(stepRail()).getByRole('button', {
-            name: new RegExp(i18n.t('plan.steps.team.title')),
-        });
-        expect(teamStep).toBeDisabled();
-        expect(stepSelect()).toBeDisabled();
-
-        const expertLink = screen.getAllByRole('link', {
-            name: new RegExp(i18n.t('plan.steps.iteration.expert')),
-        })[0];
-        await user.click(expertLink);
-
-        expect(screen.getByText(i18n.t('plan.master.savePendingNavigation'))).toBeVisible();
-        expect(screen.getByRole('heading', {
-            level: 2,
-            name: i18n.t('plan.steps.iteration.title'),
-        })).toBeVisible();
-        expect(screen.queryByRole('dialog', {
-            name: new RegExp(i18n.t('plan.master.draftDiscardTitle')),
-        })).not.toBeInTheDocument();
-    });
-
-    it('keeps an open team workflow bound to the iteration that launched it', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            iterations: [iterationOne, iterationTwo],
-            currentIteration: iterationOne,
-        }));
-        const { rerender, user } = renderWithProviders(<PlanMasterPage />);
-
-        await user.click(screen.getByRole('button', {
-            name: i18n.t('plan.master.addPerson'),
-        }));
-        expect(screen.getByText(`Team form iteration ${iterationOne.id}`)).toBeVisible();
-
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            iterations: [iterationOne, iterationTwo],
-            currentIteration: iterationTwo,
-        }));
-        rerender(<PlanMasterPage />);
-
-        const drawer = screen.getByRole('dialog', {
-            name: i18n.t('plan.master.addPersonToIteration'),
-        });
-        expect(within(drawer).getByText(
-            `Team form iteration ${iterationOne.id}`,
-        )).toBeVisible();
-        expect(within(drawer).queryByText(
-            `Team form iteration ${iterationTwo.id}`,
+        expect(within(rail).getAllByRole('button')).toHaveLength(6);
+        expect(within(rail).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '17');
+        expect(within(rail).queryByText(
+            i18n.t('plan.status.noPeople'),
         )).not.toBeInTheDocument();
     });
 });

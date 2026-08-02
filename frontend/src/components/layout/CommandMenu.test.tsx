@@ -3,6 +3,7 @@ import { screen, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { CommandMenu } from './CommandMenu';
+import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
 
 const LocationProbe = () => {
     const location = useLocation();
@@ -35,7 +36,32 @@ describe('CommandMenu', () => {
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?view=12&mode=bulk');
     });
 
-    it('runs task shortcuts outside editable controls', async () => {
+    it('keeps single-key task shortcuts off until users opt in', async () => {
+        const { user } = renderWithProviders(
+            <>
+                <CommandMenu />
+                <LocationProbe />
+            </>,
+            { initialEntries: ['/tasks'] },
+        );
+
+        await user.keyboard('f');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks');
+
+        await user.keyboard('{Control>}k{/Control}');
+        const dialog = screen.getByRole('dialog', { name: 'Command menu' });
+        expect(within(dialog).getByRole('checkbox', {
+            name: 'Enable single-key task shortcuts',
+        })).not.toBeChecked();
+        const filterCommand = within(dialog).getByRole('option', {
+            name: /Show task filters/,
+        });
+        expect(filterCommand).not.toHaveAttribute('aria-keyshortcuts');
+        expect(filterCommand.querySelector('kbd')).not.toBeInTheDocument();
+    });
+
+    it('runs task shortcuts after an explicit stored opt-in', async () => {
+        window.localStorage.setItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY, 'true');
         const { user } = renderWithProviders(
             <>
                 <CommandMenu />
@@ -48,10 +74,11 @@ describe('CommandMenu', () => {
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?panel=filters');
     });
 
-    it('lets users disable single-key shortcuts and ignores keys from controls', async () => {
+    it('lets users opt in and still ignores keys from controls', async () => {
         const { user } = renderWithProviders(
             <>
                 <button type="button">Focused control</button>
+                <div data-testid="neutral-target">Workspace canvas</div>
                 <CommandMenu />
                 <LocationProbe />
             </>,
@@ -65,15 +92,33 @@ describe('CommandMenu', () => {
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
         const shortcutToggle = within(dialog).getByRole('checkbox', {
-            name: 'Single-key task shortcuts',
+            name: 'Enable single-key task shortcuts',
         });
-        expect(shortcutToggle).toBeChecked();
+        expect(shortcutToggle).not.toBeChecked();
         await user.click(shortcutToggle);
         await user.keyboard('{Escape}');
 
+        await user.click(screen.getByTestId('neutral-target'));
+        await user.keyboard('f');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?panel=filters');
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+    });
+
+    it('does not run opted-in shortcuts while an application dialog is open', async () => {
+        window.localStorage.setItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY, 'true');
+        const { user } = renderWithProviders(
+            <>
+                <div role="dialog" aria-modal="true" aria-label="Protected workflow">
+                    Protected workflow
+                </div>
+                <CommandMenu />
+                <LocationProbe />
+            </>,
+            { initialEntries: ['/tasks'] },
+        );
+
         await user.keyboard('f');
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks');
-        expect(window.localStorage.getItem('workchord.command-menu.single-key-shortcuts')).toBe('false');
     });
 
     it('exposes listbox navigation through the search combobox', async () => {

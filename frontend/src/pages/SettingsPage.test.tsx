@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, within } from '@testing-library/react';
 import { renderWithProviders } from '../test/renderWithProviders';
 import SettingsPage from './SettingsPage';
+import { CommandMenu } from '../components/layout/CommandMenu';
+import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../utils/singleKeyShortcutPreference';
 
 const themeStoreMock = vi.hoisted(() => ({
     setTheme: vi.fn(),
@@ -24,6 +26,11 @@ vi.mock('../components/settings/InterfaceLanguageSettings', () => ({
 }));
 
 describe('SettingsPage', () => {
+    beforeEach(() => {
+        window.localStorage.clear();
+        themeStoreMock.setTheme.mockReset();
+    });
+
     it('groups destinations and gives the theme radiogroup complete keyboard behavior', async () => {
         const { user } = renderWithProviders(<SettingsPage />, {
             initialEntries: ['/settings'],
@@ -55,5 +62,29 @@ describe('SettingsPage', () => {
 
         expect(themeStoreMock.setTheme).toHaveBeenCalledWith('dark');
         expect(darkTheme).toHaveFocus();
+    });
+
+    it('exposes an off-by-default shortcut preference and synchronizes Commands immediately', async () => {
+        const { user } = renderWithProviders(
+            <>
+                <SettingsPage />
+                <CommandMenu />
+            </>,
+            { initialEntries: ['/settings'] },
+        );
+
+        const settingsToggle = screen.getByRole('checkbox', {
+            name: 'Enable single-key task shortcuts',
+        });
+        expect(settingsToggle).not.toBeChecked();
+
+        await user.click(settingsToggle);
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+
+        await user.keyboard('{Control>}k{/Control}');
+        const commandDialog = screen.getByRole('dialog', { name: 'Command menu' });
+        expect(within(commandDialog).getByRole('checkbox', {
+            name: 'Enable single-key task shortcuts',
+        })).toBeChecked();
     });
 });

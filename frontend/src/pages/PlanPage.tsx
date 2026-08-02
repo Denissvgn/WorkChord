@@ -6,7 +6,6 @@ import { usePlanningReadiness } from '../features/planningMasters/usePlanningRea
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { formatDate } from '../utils/formatDate';
-import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 
 // ── Inline SVG icon subset matching the design's icons.jsx ──────────────────
 const Svg = ({ d, size = 14, stroke = 1.75, ...rest }: { d: ReactNode; size?: number; stroke?: number; style?: CSSProperties; className?: string }) => (
@@ -191,10 +190,6 @@ const PlanPage = () => {
 
     return (
         <PageLayout variant="wide">
-                <Breadcrumbs items={[
-                    { label: t('nav.workspace'), path: '/' },
-                    { label: t('plan.title') },
-                ]} />
                 {/* Page header */}
                 <PageHeader
                     title={t('plan.title')}
