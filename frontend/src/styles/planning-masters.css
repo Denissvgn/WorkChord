@@ -1,6 +1,4 @@
 /* Planning Masters — design system */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 /* ── Design tokens — root-level so [data-theme] overrides work ────────────── */
 :root {
   /* Bridge the legacy PM selectors to the canonical semantic theme contract. */
@@ -26,6 +24,16 @@
   --wc-thread-hover: rgb(var(--color-action-muted-hover));
   --wc-thread-line:  rgb(var(--color-action-primary) / 0.36);
   --wc-thread-on:    rgb(var(--color-action-foreground));
+
+  /* The conductor bar is the product-owned workspace layer. */
+  --wc-shell:        rgb(14 30 64);
+  --wc-shell-panel:  rgb(24 48 91);
+  --wc-shell-hover:  rgb(34 65 116);
+  --wc-shell-ink:    rgb(239 246 255);
+  --wc-shell-muted:  rgb(191 207 235);
+  --wc-shell-line:   rgb(147 197 253 / 0.28);
+  --wc-shell-thread: rgb(147 197 253);
+  --wc-shell-thread-soft: rgb(96 165 250 / 0.18);
 
   /* Legacy action aliases remain available to established workspace controls. */
   --wc-accent:       rgb(var(--color-action-primary));
@@ -70,8 +78,8 @@
   --wc-blocked-line: rgb(var(--color-feedback-danger-border));
   --wc-blocked-on:   rgb(var(--color-feedback-danger-on-solid));
 
-  --wc-font-sans:    "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --wc-font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --wc-font-sans:    var(--font-family-sans);
+  --wc-font-mono:    var(--font-family-mono);
 
   /* One operational scale: 14px for work, smaller only for supporting data. */
   --wc-type-micro:    0.6875rem; /* 11px: timeline axes and compact counters */
@@ -413,8 +421,22 @@
 .wc .divider{ height: 1px; background: var(--border); margin: 16px 0; }
 
 /* ── Typography ──────────────────────────────────────────────────────────── */
-.wc .wc-page-title  { font-size: var(--wc-type-page); font-weight: 600; letter-spacing: -0.02em; margin: 0; line-height: var(--wc-leading-tight); }
-.wc .wc-page-sub    { color: var(--ink-3); font-size: var(--wc-type-meta); margin-top: 2px; line-height: var(--wc-leading-body); }
+.wc .wc-page-title  {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--wc-type-page);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: var(--wc-leading-tight);
+}
+.wc .wc-page-sub {
+  max-inline-size: 70ch;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: var(--ink-3);
+  font-size: var(--wc-type-base);
+  line-height: var(--wc-leading-body);
+}
 .wc .wc-page-head   {
   display: flex; align-items: flex-end; justify-content: space-between;
   gap: 16px; margin-bottom: 0;
@@ -982,7 +1004,7 @@
   min-height: 84px;
 }
 .wc .kpi-lbl { font-size: var(--wc-type-meta); color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
-.wc .kpi-val { font-size: var(--wc-type-page); font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.wc .kpi-val { font-size: var(--wc-type-page); font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 .wc .kpi-val .unit { font-size: var(--wc-type-meta); color: var(--ink-3); font-weight: 500; margin-left: 4px; }
 .wc .kpi-foot { font-size: var(--wc-type-meta); color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
 
@@ -1093,6 +1115,15 @@
 .wc .step-rail {
   display: flex; flex-direction: column; gap: 2px;
   padding: 16px 10px;
+  position: relative;
+}
+.wc .step-rail::before {
+  content: "";
+  position: absolute;
+  inset-block: 28px;
+  inset-inline-start: 31px;
+  width: 1px;
+  background: var(--thread-line);
 }
 .wc .step-item {
   display: grid; grid-template-columns: 22px 1fr auto;
@@ -1101,6 +1132,8 @@
   border-radius: var(--wc-r);
   cursor: pointer;
   border: 1px solid transparent;
+  position: relative;
+  z-index: 1;
 }
 .wc .step-item:hover { background: var(--panel-3); }
 .wc .step-item[aria-current="step"] {
@@ -1231,6 +1264,32 @@
   gap: 10px; color: var(--ink-2); font-size: var(--wc-type-base);
 }
 .wc .why .why-icon { color: var(--ink-3); margin-top: 2px; }
+.wc .plan-master-why {
+  display: block;
+  padding: 0;
+}
+.wc .plan-master-why > summary {
+  display: flex;
+  min-height: var(--wc-control-h);
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--ink-2);
+  font-size: var(--wc-type-label);
+  font-weight: 600;
+}
+.wc .plan-master-why > summary::-webkit-details-marker { display: none; }
+.wc .plan-master-why > summary svg { color: var(--ink-3); }
+.wc .plan-master-why > p {
+  max-width: 65ch;
+  margin: 0;
+  padding: 0 12px 12px 34px;
+  color: var(--ink-3);
+  font-size: var(--wc-type-base);
+  line-height: var(--wc-leading-body);
+}
 
 /* ── Master landing cards ────────────────────────────────────────────────── */
 .wc .master-grid {
@@ -1897,33 +1956,34 @@
   grid-template-columns: 220px minmax(0, 1fr) auto;
   align-items: center;
   height: 52px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
+  border-bottom: 1px solid var(--wc-shell-line);
+  background: var(--wc-shell);
+  color: var(--wc-shell-ink);
   z-index: 50;
 }
 .wc .brand {
   display: flex; align-items: center; gap: 8px;
   padding: 0 16px;
   font-size: var(--wc-type-base); font-weight: 600; letter-spacing: -0.01em;
-  color: var(--ink);
+  color: var(--wc-shell-ink);
   text-decoration: none;
 }
-.wc .brand:hover { color: var(--thread-ink); }
+.wc .brand:hover { color: var(--wc-shell-thread); }
 .wc .brand-mark { width: 24px; height: 24px; flex-shrink: 0; }
 .wc .brand-mark svg { display: block; width: 24px; height: 24px; }
-.wc .brand-meta { color: var(--ink-4); font-size: var(--wc-type-meta); font-weight: 400; }
+.wc .brand-meta { color: var(--wc-shell-muted); font-size: var(--wc-type-meta); font-weight: 400; }
 .wc .nav-tabs { display: flex; min-width: 0; align-items: center; gap: 4px; padding: 0 12px; }
 .wc .nav-tab {
   appearance: none; min-height: 36px; background: transparent; border: 1px solid transparent;
   padding: 6px 10px; border-radius: var(--r);
-  color: var(--ink-2); font-size: var(--wc-type-base); font-family: var(--font-sans);
+  color: var(--wc-shell-muted); font-size: var(--wc-type-base); font-family: var(--font-sans);
   cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
   white-space: nowrap; text-decoration: none; transition: background .12s, border-color .12s, color .12s;
 }
-.wc .nav-tab:hover { background: var(--panel-3); color: var(--ink); }
+.wc .nav-tab:hover { background: var(--wc-shell-hover); color: var(--wc-shell-ink); }
 .wc .nav-tab[aria-current] {
-  background: var(--thread-soft); color: var(--thread-ink); font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--thread);
+  background: var(--wc-shell-thread-soft); color: var(--wc-shell-ink); font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--wc-shell-thread);
 }
 .wc .nb-attention {
   display: inline-flex;
@@ -1954,11 +2014,26 @@
   min-height: 40px;
   gap: 6px;
   padding: 0 10px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--wc-shell-line);
   border-radius: var(--r);
-  background: var(--panel);
-  color: var(--ink); cursor: pointer; font-family: var(--font-sans); font-size: var(--wc-type-base); font-weight: 500;
+  background: var(--wc-shell-panel);
+  color: var(--wc-shell-ink); cursor: pointer; font-family: var(--font-sans); font-size: var(--wc-type-base); font-weight: 500;
 }
+.wc .mobile-nav-trigger:hover { background: var(--wc-shell-hover); }
+.wc .session-badge {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--wc-shell-line);
+  border-radius: var(--r);
+  background: var(--wc-shell-panel);
+  color: var(--wc-shell-ink);
+  font-size: var(--wc-type-label);
+}
+.wc .session-badge strong { font-weight: 600; }
+.wc .session-badge-loading { color: var(--wc-shell-muted); }
 .wc .mobile-nav-layer { position: fixed; inset: 0; z-index: 80; }
 .wc .mobile-nav-backdrop { position: absolute; inset: 0; border: 0; background: var(--overlay, rgba(0,0,0,.4)); }
 .wc .mobile-nav-panel {

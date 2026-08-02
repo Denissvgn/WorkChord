@@ -124,7 +124,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                         )}
                         <div className="min-w-0">
                             <p className="font-medium text-content-primary text-left truncate">{criterion.label}</p>
-                            <p className="text-content-secondary text-left text-[10px] leading-snug">{criterion.reason}</p>
+                            <p className="text-content-secondary text-left text-wc-micro leading-snug">{criterion.reason}</p>
                         </div>
                     </div>
                 ))}

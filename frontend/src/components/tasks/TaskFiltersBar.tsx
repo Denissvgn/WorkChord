@@ -426,7 +426,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                                         key={group.key}
                                         type="button"
                                         onClick={() => removeLabelGroup(group.key)}
-                                        className="text-[11px] px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
+                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
                                     >
                                         {group.name} ×
                                     </button>
@@ -459,7 +459,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                                         key={label.slug}
                                         type="button"
                                         onClick={() => removeLabel(label.slug)}
-                                        className="text-[11px] px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
+                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
                                     >
                                         {label.slug} ×
                                     </button>

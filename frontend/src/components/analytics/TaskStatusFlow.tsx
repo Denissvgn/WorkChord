@@ -33,12 +33,12 @@ export const TaskStatusFlow: React.FC<TaskStatusFlowProps> = ({ logs }) => {
 
                         {/* Transition Metadata (Absolute positioned below) */}
                         <div className="absolute top-4 left-0 w-full text-center">
-                            <div className="flex items-center justify-center gap-1 text-[10px] text-content-secondary font-medium">
+                            <div className="flex items-center justify-center gap-1 text-wc-micro text-content-secondary font-medium">
                                 <span className="w-4 h-4 rounded-full bg-surface-subtle flex items-center justify-center text-xs text-content-primary">
                                     {(log.triggered_by || 'U').charAt(0).toUpperCase()}
                                 </span>
                             </div>
-                            <div className="text-[9px] text-content-tertiary mt-0.5 whitespace-nowrap">
+                            <div className="text-wc-micro text-content-tertiary mt-0.5 whitespace-nowrap">
                                 {formatDateTime(log.changed_at)}
                             </div>
                         </div>

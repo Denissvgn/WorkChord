@@ -207,7 +207,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                 <div className="flex items-center gap-2 text-sm font-medium text-content-primary">
                     <History className="w-4 h-4 text-content-secondary" />
                     {t('surfaces.taskTimeline.timeline')}
-                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-[11px] font-medium text-action">
+                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-wc-micro font-medium text-action">
                         {task.request_count ?? 0} {t('surfaces.taskTimeline.requests')}
                     </span>
                 </div>
@@ -250,7 +250,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                             {t('surfaces.taskTimeline.externalLinks')}
                         </div>
                         {linksAreFetching && (
-                            <span className="text-[11px] text-content-tertiary">{t('surfaces.taskTimeline.refreshing')}</span>
+                            <span className="text-wc-micro text-content-tertiary">{t('surfaces.taskTimeline.refreshing')}</span>
                         )}
                     </div>
 
@@ -303,17 +303,17 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                             {details || providerLabel(link.provider)}
                                         </span>
                                         {link.status && (
-                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-[10px] font-medium text-action">
+                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-wc-micro font-medium text-action">
                                                 {link.status}
                                             </span>
                                         )}
                                         {refreshError && (
-                                            <span className="shrink-0 rounded-full bg-feedback-danger-muted px-1.5 py-0.5 text-[10px] font-medium text-feedback-danger-foreground">
+                                            <span className="shrink-0 rounded-full bg-feedback-danger-muted px-1.5 py-0.5 text-wc-micro font-medium text-feedback-danger-foreground">
                                                 {t('surfaces.taskTimeline.refreshFailed')}
                                             </span>
                                         )}
                                         {link.is_legacy && (
-                                            <span className="shrink-0 rounded-full bg-feedback-warning-muted px-1.5 py-0.5 text-[10px] font-medium text-feedback-warning-foreground">
+                                            <span className="shrink-0 rounded-full bg-feedback-warning-muted px-1.5 py-0.5 text-wc-micro font-medium text-feedback-warning-foreground">
                                                 {t('surfaces.taskTimeline.legacy')}
                                             </span>
                                         )}
@@ -407,7 +407,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between gap-2">
                                         <span className="text-sm font-medium text-content-primary truncate">{title}</span>
-                                        <span className="text-[11px] text-content-secondary flex-shrink-0">
+                                        <span className="text-wc-micro text-content-secondary flex-shrink-0">
                                             {formatDateTime(item.timestamp)}
                                         </span>
                                     </div>

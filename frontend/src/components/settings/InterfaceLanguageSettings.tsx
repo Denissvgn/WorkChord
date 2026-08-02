@@ -95,10 +95,10 @@ export const InterfaceLanguageSettings = () => {
     return (
         <section className="card space-y-4">
             <div>
-                <h2 className="flex items-center gap-2 text-xl font-semibold text-content-primary">
+                <h3 className="flex items-center gap-2 text-wc-heading font-semibold text-content-primary">
                     <Globe2 className="h-5 w-5 text-feedback-success" />
                     {t('settingsPage.interfaceLanguage')}
-                </h2>
+                </h3>
                 <p className="mt-1 text-sm text-content-secondary">{t('settingsPage.interfaceLanguageDescription')}</p>
             </div>
 

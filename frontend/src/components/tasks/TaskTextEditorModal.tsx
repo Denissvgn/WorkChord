@@ -124,7 +124,6 @@ const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, o
                                 "flex-1 p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed w-full h-full",
                                 isFullScreen && "max-w-6xl mx-auto" // Center content in extremely wide screens for readability
                             )}
-                            style={{ fontFamily: '"Fira Code", "JetBrains Mono", monospace' }}
                             placeholder={t('taskTextEditor.loadingPlaceholder')}
                             spellCheck={false}
                         />

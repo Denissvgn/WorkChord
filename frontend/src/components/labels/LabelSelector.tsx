@@ -134,7 +134,7 @@ export const LabelSelector = ({
                                     <span className="text-xs">{option.slug}</span>
                                 )}
                                 {isArchived && (
-                                    <span className="rounded-full bg-surface-subtle px-1.5 py-0.5 text-[10px] font-medium text-content-secondary">
+                                    <span className="rounded-full bg-surface-subtle px-1.5 py-0.5 text-wc-micro font-medium text-content-secondary">
                                         {t('surfaces.labelSelector.archived')}
                                     </span>
                                 )}

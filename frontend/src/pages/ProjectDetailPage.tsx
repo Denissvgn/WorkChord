@@ -311,7 +311,7 @@ const MilestonesSection = ({
         <SectionCard
             icon={<Target className="h-4 w-4 text-feedback-indigo" />}
             title={t('surfaces.projectDetail.projectMilestones')}
-            count={<span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{milestones.length}</span>}
+            count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{milestones.length}</span>}
             actions={(
                 <Button size="sm" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -638,7 +638,7 @@ const ProjectReleasesSection = ({
         <SectionCard
             icon={<Package className="h-4 w-4 text-action" />}
             title={t('surfaces.projectDetail.releases')}
-            count={<span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{releases.length}</span>}
+            count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{releases.length}</span>}
             actions={(
                 <Button size="sm" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -784,7 +784,7 @@ const PostUpdateDrawer = ({
                     <div>
                         <div className="mb-1.5 flex items-baseline justify-between">
                             <label className="text-xs font-semibold text-content-primary" htmlFor="drawer-summary">{t('surfaces.projectDetail.summary')}</label>
-                            <span className="text-[11px] text-content-tertiary">{t('surfaces.projectDetail.oneLineStakeholdersWillSkim')}</span>
+                            <span className="text-wc-micro text-content-tertiary">{t('surfaces.projectDetail.oneLineStakeholdersWillSkim')}</span>
                         </div>
                         <input
                             id="drawer-summary"
@@ -1343,7 +1343,7 @@ const ProjectDetailPage = () => {
                                     <div className="mt-3 grid grid-cols-1 gap-3 text-xs md:grid-cols-4">
                                         {updateDetailFields(latestUpdate).map(field => (
                                             <div key={field.label}>
-                                                <p className="text-[10.5px] font-semibold uppercase tracking-wide text-content-tertiary">{field.label}</p>
+                                                <p className="text-wc-micro font-semibold uppercase tracking-wide text-content-tertiary">{field.label}</p>
                                                 <p className="mt-0.5 text-content-primary">{field.value}</p>
                                             </div>
                                         ))}
@@ -1456,7 +1456,7 @@ const ProjectDetailPage = () => {
                         >
                             <History className="h-4 w-4 text-content-secondary" />
                             <h2 className="text-base font-semibold tracking-tight text-content-primary">{t('surfaces.projectDetail.updateHistory')}</h2>
-                            <span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{projectUpdates.length}</span>
+                            <span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{projectUpdates.length}</span>
                             <div className="flex-1" />
                             <span className="text-xs text-content-secondary">{t('surfaces.projectDetail.newestFirst')}</span>
                             <ChevronRight className={clsx('h-4 w-4 text-content-tertiary transition-transform', historyOpen && 'rotate-90')} />

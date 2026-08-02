@@ -201,7 +201,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                             </button>
                         </div>
                         {pass.filter.all.length === 0 ? (
-                            <p className="text-sm text-content-secondary italic">{t('settingsScheduling.fields.noFilterConditions')}</p>
+                            <p className="text-sm text-content-secondary">{t('settingsScheduling.fields.noFilterConditions')}</p>
                         ) : (
                             <div className="space-y-2">
                                 {pass.filter.all.map((condition, index) => {
@@ -296,7 +296,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                             </button>
                         </div>
                         {pass.sort.length === 0 ? (
-                            <p className="text-sm text-content-secondary italic">{t('settingsScheduling.fields.noSortCriteria')}</p>
+                            <p className="text-sm text-content-secondary">{t('settingsScheduling.fields.noSortCriteria')}</p>
                         ) : (
                             <div className="space-y-2">
                                 {pass.sort.map((criterion, index) => (

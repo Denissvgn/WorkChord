@@ -377,11 +377,11 @@ export const RequestSourceLinksPanel = ({
                                                 {requestLabel(source)}
                                             </span>
                                         )}
-                                        <span className="rounded-full bg-surface-card px-2 py-0.5 text-[11px] font-medium text-content-secondary">
+                                        <span className="rounded-full bg-surface-card px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
                                             {sourceTypeLabel(source.source_type)}
                                         </span>
                                         {source.priority_hint && (
-                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-[11px] font-medium text-feedback-warning-foreground">
+                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-wc-micro font-medium text-feedback-warning-foreground">
                                                 P{source.priority_hint}
                                             </span>
                                         )}

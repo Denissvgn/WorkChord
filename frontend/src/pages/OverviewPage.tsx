@@ -626,7 +626,7 @@ const IterationTasksCard = ({
                         )}
                     >
                         <span>{item.label}</span>
-                        <span className={clsx('rounded-full px-1.5 text-[10.5px] tabular-nums', filter === item.id ? 'bg-content-emphasis/15 text-content-emphasis' : 'bg-surface-card text-content-secondary')}>
+                        <span className={clsx('rounded-full px-1.5 text-wc-micro tabular-nums', filter === item.id ? 'bg-content-emphasis/15 text-content-emphasis' : 'bg-surface-card text-content-secondary')}>
                             {item.count}
                         </span>
                     </button>
@@ -646,7 +646,7 @@ const IterationTasksCard = ({
                     {Object.entries(groups).map(([groupName, items]) => (
                         <div key={groupName}>
                             {isProjectScoped && (
-                                <div className="mb-2 flex items-center gap-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-content-secondary">
+                                <div className="mb-2 flex items-center gap-2 px-1 text-wc-micro font-semibold uppercase tracking-wide text-content-secondary">
                                     <Target className="h-3 w-3 text-content-tertiary" />
                                     <span className="truncate">{groupName}</span>
                                     <span className="tabular-nums text-content-tertiary">| {items.length}</span>
@@ -678,14 +678,14 @@ const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) =>
                 )}
             </div>
             {task.is_overdue && (
-                <span className="inline-flex h-5 shrink-0 items-center gap-1 rounded bg-feedback-danger-muted px-1.5 text-[11px] font-semibold text-feedback-danger-foreground">
+                <span className="inline-flex h-5 shrink-0 items-center gap-1 rounded bg-feedback-danger-muted px-1.5 text-wc-micro font-semibold text-feedback-danger-foreground">
                     <Clock className="h-3 w-3" />
                     {t('taskList.overdue')}
                 </span>
             )}
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-content-secondary">{t('units.daysCompact', { count: formatNumber(task.effort_days || 0) })}</span>
             {task.assignee ? (
-                <span title={task.assignee.name} className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-active-muted text-[10px] font-bold text-action">
+                <span title={task.assignee.name} className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-active-muted text-wc-micro font-bold text-action">
                     {initialsFor(task.assignee.name)}
                 </span>
             ) : (
@@ -767,12 +767,12 @@ const TeamMemberRow = ({ member }: { member: OverviewTeamMember }) => {
                 <div className="h-2 overflow-hidden rounded-full bg-surface-subtle">
                     <div className="h-full transition-all" style={{ ...dotStyle(tone), width: `${utilizationPercent}%` }} />
                 </div>
-                <div className="mt-1 flex items-center justify-between text-[11px] text-content-secondary">
+                <div className="mt-1 flex items-center justify-between text-wc-micro text-content-secondary">
                     <span className="tabular-nums">{!isLoadingWorkload && workload ? t('overview.allocatedCapacity', { allocated: formatNumber(allocated), capacity: formatNumber(capacity) }) : t('common.loading')}</span>
                     <span>{t('overview.taskCount', { count: member.taskCount })}</span>
                 </div>
             </div>
-            <span className="grid h-6 shrink-0 place-items-center rounded-md px-2 text-[11px] font-bold tabular-nums" style={pillBoxStyle(tone)}>
+            <span className="grid h-6 shrink-0 place-items-center rounded-md px-2 text-wc-micro font-bold tabular-nums" style={pillBoxStyle(tone)}>
                 {Math.round(utilizationPercent)}%
             </span>
         </li>
@@ -815,7 +815,7 @@ const TaskDistributionSection = ({ counts }: { counts: Record<TaskStatus, number
                                 <div key={segment.status} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-surface-hover">
                                     <span className="h-2 w-2 rounded-full" style={dotStyle(segment.tone)} />
                                     <div className="min-w-0">
-                                        <div className="text-[11px] font-semibold uppercase text-content-secondary">{t(`statuses.${segment.status}`)}</div>
+                                        <div className="text-wc-micro font-semibold uppercase text-content-secondary">{t(`statuses.${segment.status}`)}</div>
                                         <div className="text-sm font-semibold tabular-nums text-content-primary">{segment.count} <span className="text-xs font-normal text-content-tertiary">| {percent}%</span></div>
                                     </div>
                                 </div>
@@ -934,7 +934,7 @@ const IterationPaceCard = ({
                     <div className="absolute bottom-2 left-2 h-1 rounded-full bg-action" style={{ width: `${Math.min(100, effortPercent)}%` }} />
                     <div className="absolute bottom-1 top-1 w-px -translate-x-1/2 bg-content-primary" style={{ left: `${progress.percent}%` }} />
                 </div>
-                <div className="mt-1 flex justify-between text-[11px] tabular-nums text-content-tertiary">
+                <div className="mt-1 flex justify-between text-wc-micro tabular-nums text-content-tertiary">
                     <span>{formatDate(iteration.start_date)}</span>
                     <span>{formatDate(iteration.end_date)}</span>
                 </div>
@@ -969,7 +969,7 @@ const CompletionRing = ({ percent, tone }: { percent: number; tone: PillTone }) 
                     strokeLinecap="round"
                 />
             </svg>
-            <div className="absolute inset-0 grid place-items-center text-[11px] font-bold tabular-nums text-content-primary">
+            <div className="absolute inset-0 grid place-items-center text-wc-micro font-bold tabular-nums text-content-primary">
                 {Math.round(percent)}%
             </div>
         </div>

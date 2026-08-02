@@ -37,6 +37,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { QueryErrorState } from '../feedback/QueryState';
+import { OverflowMenu } from '../ui';
 
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
 
@@ -315,27 +316,22 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                     }}
                 />
             )}
-            {/* Sorting controls and Merge Mode button */}
-            <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant={isMergeMode ? "primary" : "secondary"}
-                        size="sm"
-                        onClick={() => {
-                            const next = !isMergeMode;
-                            setIsMergeMode(next);
-                            if (next) {
-                                setIsBulkMode(false);
-                                setSelectedBulkTaskIds(new Set());
-                            } else {
-                                setSelectedTaskIds(new Set());
-                            }
-                        }}
-                    >
-                        <Layers className="w-4 h-4 mr-1" />
-                        {isMergeMode ? t('taskList.cancelMerge') : t('taskList.mergeTasks')}
-                    </Button>
-
+            {isMergeMode || isBulkMode ? (
+                <div
+                    className="mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-action bg-action-muted px-3 py-2"
+                    role="region"
+                    aria-label={isMergeMode ? t('taskList.mergeTasks') : t('taskList.bulkEdit')}
+                >
+                    <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-content-primary">
+                            {isMergeMode ? t('taskList.mergeTasks') : t('taskList.bulkEdit')}
+                        </div>
+                        <div className="text-xs text-content-secondary" aria-live="polite">
+                            {isMergeMode
+                                ? t('taskList.mergeHint')
+                                : t('taskList.selectedTasks', { count: selectedBulkTaskIds.size })}
+                        </div>
+                    </div>
                     {isMergeMode && selectedTaskIds.size >= 2 && (
                         <Button
                             variant="primary"
@@ -348,31 +344,6 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                             {t('taskList.mergeSelected', { count: selectedTaskIds.size })}
                         </Button>
                     )}
-
-                    {isMergeMode && (
-                        <span className="text-sm text-content-secondary">
-                            {t('taskList.mergeHint')}
-                        </span>
-                    )}
-
-                    <Button
-                        variant={isBulkMode ? "primary" : "secondary"}
-                        size="sm"
-                        onClick={() => {
-                            const next = !isBulkMode;
-                            setIsBulkMode(next);
-                            if (next) {
-                                setIsMergeMode(false);
-                                setSelectedTaskIds(new Set());
-                            } else {
-                                setSelectedBulkTaskIds(new Set());
-                            }
-                        }}
-                    >
-                        <ClipboardCheck className="w-4 h-4 mr-1" />
-                        {isBulkMode ? t('taskList.cancelBulkEdit') : t('taskList.bulkEdit')}
-                    </Button>
-
                     {isBulkMode && (
                         <>
                             <Button
@@ -383,17 +354,32 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                             >
                                 {t('taskList.selectVisible')}
                             </Button>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setSelectedBulkTaskIds(new Set())}
-                            >
-                                {t('actions.clear')}
-                            </Button>
+                            {selectedBulkTaskIds.size > 0 && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setSelectedBulkTaskIds(new Set())}
+                                >
+                                    {t('actions.clear')}
+                                </Button>
+                            )}
                         </>
                     )}
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                            setIsMergeMode(false);
+                            setIsBulkMode(false);
+                            setSelectedTaskIds(new Set());
+                            setSelectedBulkTaskIds(new Set());
+                        }}
+                    >
+                        {isMergeMode ? t('taskList.cancelMerge') : t('taskList.cancelBulkEdit')}
+                    </Button>
                 </div>
-
+            ) : (
+                <div className="mb-2 flex flex-wrap items-center justify-end gap-2">
                 <div className="flex items-center gap-2">
                     <ArrowUpDown className="w-4 h-4 text-content-secondary" />
                     <select
@@ -407,7 +393,31 @@ export const TaskList = ({ iterationId, filters, sortKey, onSortKeyChange }: Tas
                         <option value="title">{t('taskList.sortTitle')}</option>
                     </select>
                 </div>
-            </div>
+                    <OverflowMenu
+                        label={t('taskList.organizeTasks')}
+                        items={[
+                            {
+                                label: t('taskList.mergeTasks'),
+                                icon: <Layers className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => {
+                                    setIsMergeMode(true);
+                                    setIsBulkMode(false);
+                                    setSelectedBulkTaskIds(new Set());
+                                },
+                            },
+                            {
+                                label: t('taskList.bulkEdit'),
+                                icon: <ClipboardCheck className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => {
+                                    setIsBulkMode(true);
+                                    setIsMergeMode(false);
+                                    setSelectedTaskIds(new Set());
+                                },
+                            },
+                        ]}
+                    />
+                </div>
+            )}
 
             {isBulkMode && selectedBulkTaskIds.size > 0 && (
                 <TaskBulkOperationsPanel
@@ -835,40 +845,32 @@ const TaskItemContent = ({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-                    {hasChildren && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onUnmerge(task.id)}
-                            disabled={isUnmergePending}
-                            title={t('taskList.unmergeTitle')}
-                            aria-label={t('taskList.unmergeTitle')}
-                            className="text-feedback-warning-foreground hover:bg-feedback-warning-muted"
-                        >
-                            <Unlink className="w-4 h-4" />
-                        </Button>
-                    )}
-                    <Button variant="ghost" size="sm" onClick={() => onAddSubtask(task.id)} aria-label={t('tasks.addSubtask')}>
-                        <Plus className="w-4 h-4" />
-                    </Button>
+                <div className="flex items-center gap-1">
                     <Button variant="ghost" size="sm" title={t('tasks.editTask')} aria-label={t('tasks.editTask')} onClick={() => onEdit(task)}>
                         <Edit className="w-4 h-4" />
                     </Button>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            onDelete(task);
-                        }}
-                        className="text-feedback-danger-foreground hover:bg-feedback-danger-muted"
-                        aria-label={t('actions.delete')}
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <OverflowMenu
+                        label={t('taskList.taskActions', { title: task.title })}
+                        items={[
+                            {
+                                label: t('tasks.addSubtask'),
+                                icon: <Plus className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAddSubtask(task.id),
+                            },
+                            ...(hasChildren ? [{
+                                label: t('taskList.unmergeTitle'),
+                                icon: <Unlink className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onUnmerge(task.id),
+                                disabled: isUnmergePending,
+                            }] : []),
+                            {
+                                label: t('actions.delete'),
+                                icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onDelete(task),
+                                tone: 'danger' as const,
+                            },
+                        ]}
+                    />
                 </div>
             </div>
 

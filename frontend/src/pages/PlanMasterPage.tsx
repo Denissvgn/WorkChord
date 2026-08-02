@@ -123,7 +123,6 @@ const IArrowL    = (p: IconProps) => <Svg {...p} d={<><path d="M19 12H5M11 5l-7 
 const IChevR     = (p: IconProps) => <Svg {...p} d={<polyline points="9 6 15 12 9 18"/>}/>;
 const IOpen      = (p: IconProps) => <Svg {...p} d={<><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></>}/>;
 const IInfo      = (p: IconProps) => <Svg {...p} d={<><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></>}/>;
-const ICalendar  = (p: IconProps) => <Svg {...p} d={<><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></>}/>;
 const IIteration = (p: IconProps) => <Svg {...p} d={<><path d="M2 12a10 10 0 0 1 17-7"/><path d="M22 12a10 10 0 0 1-17 7"/><path d="M19 2v5h-5M5 22v-5h5"/></>}/>;
 const ITeam      = (p: IconProps) => <Svg {...p} d={<><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20c.5-3.5 3-5 6-5s5.5 1.5 6 5"/><path d="M14.5 20c.3-2 1.7-3 3.5-3s3.2 1 3.5 3"/></>}/>;
 const ITasks     = (p: IconProps) => <Svg {...p} d={<><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></>}/>;
@@ -502,7 +501,7 @@ function BodyTeam({
                                             >
                                                 <i className={over ? 'over' : pct > 90 ? 'warn' : ''} style={{width:`${pct}%`}}/>
                                             </div>
-                                            <span className="tnum muted" style={{fontSize:11}}>
+                                            <span className="tnum muted" style={{fontSize:'var(--wc-type-micro)'}}>
                                                 {tr('plan.master.capacityFraction', {
                                                     planned: formatNumber(planned),
                                                     capacity: formatNumber(cap),
@@ -635,7 +634,7 @@ function BodyWork({
                                         <td>
                                             <div className="plan-master-break" style={{fontWeight:500}}>{t.title}</div>
                                             {issues.length > 0 && (
-                                                <div className="muted plan-master-break" style={{fontSize:11, marginTop:2}}>
+                                                <div className="muted plan-master-break" style={{fontSize:'var(--wc-type-micro)', marginTop:2}}>
                                                     {tr('plan.master.missingFields', { fields: issues.join(', ') })}
                                                 </div>
                                             )}
@@ -736,7 +735,7 @@ function BodyBlockers({
                             <IWarning size={13} style={{color:'var(--warn)'}}/>
                             <div className="plan-master-min">
                                 <div className="plan-master-break" style={{fontWeight:500}}>{t.title}</div>
-                                <div className="muted" style={{fontSize:11}}>
+                                <div className="muted" style={{fontSize:'var(--wc-type-micro)'}}>
                                     {isPositiveEffort(t)
                                         ? tr('units.daysCompact', { count: formatNumber(Number(t.effort_days)) })
                                         : tr('plan.master.noEffort')}
@@ -765,7 +764,7 @@ function BodyBlockers({
                             <IWarning size={13} style={{color:'var(--warn)'}}/>
                             <div className="plan-master-min">
                                 <div className="plan-master-break" style={{fontWeight:500}}>{t.title}</div>
-                                <div className="muted plan-master-break" style={{fontSize:11}}>{t.assignee?.name || tr('common.unassigned')}</div>
+                                <div className="muted plan-master-break" style={{fontSize:'var(--wc-type-micro)'}}>{t.assignee?.name || tr('common.unassigned')}</div>
                             </div>
                             <Link to="/tasks" className="btn sm">{tr('plan.master.openTasks')}</Link>
                         </div>
@@ -887,7 +886,7 @@ function BodySchedule({ r, tasks, st, onOpenFirstIncomplete }: { r: PlanReadines
                                                     style={{
                                                         padding:'8px 2px',
                                                         textAlign:'center',
-                                                        fontSize:10.5,
+                                                        fontSize:'var(--wc-type-micro)',
                                                         color:'var(--ink-4)',
                                                         background:day === 0 || day === 6 ? 'var(--panel-3)' : 'var(--panel-2)',
                                                         borderInlineEnd:'1px solid var(--border)',
@@ -940,7 +939,7 @@ function BodySchedule({ r, tasks, st, onOpenFirstIncomplete }: { r: PlanReadines
                             </div>
                         </div>
                     ) : (
-                        <div className="muted" style={{padding:'12px 0', fontSize:12}}>
+                        <div className="muted" style={{padding:'12px 0', fontSize:'var(--wc-type-meta)'}}>
                             {tr('plan.master.scheduleDatesUnavailableBody')}
                         </div>
                     )}
@@ -1014,7 +1013,7 @@ function BodyReview({
                         <div className="plan-master-break" style={{fontWeight:600}}>
                             {tr('plan.master.planningExceptionsCount', { count: r.riskCount })}
                         </div>
-                        <div className="plan-master-break" style={{fontSize:12, marginTop:2}}>
+                        <div className="plan-master-break" style={{fontSize:'var(--wc-type-meta)', marginTop:2}}>
                             {tr('plan.master.planningExceptionsBody')}
                         </div>
                     </div>
@@ -1040,7 +1039,7 @@ function BodyReview({
                 </div>
                 <div className="kpi">
                     <div className="kpi-lbl">{tr('plan.master.schedule')}</div>
-                    <div className="kpi-val" style={{fontSize:14, lineHeight:1.3}}>{tr('plan.master.savedDates')}</div>
+                    <div className="kpi-val" style={{fontSize:'var(--wc-type-base)', lineHeight:1.3}}>{tr('plan.master.savedDates')}</div>
                     <div className="kpi-foot muted">{tr('plan.master.verifyScheduleAfterChanges')}</div>
                 </div>
             </div>
@@ -1061,7 +1060,7 @@ function BodyReview({
                                 </span>
                                 <div className="plan-master-min">
                                     <div className="plan-master-break" style={{fontWeight:500}}>{p.name}</div>
-                                    <div className="muted plan-master-break" style={{fontSize:11}}>
+                                    <div className="muted plan-master-break" style={{fontSize:'var(--wc-type-micro)'}}>
                                         {p.position || ''} · {tr('plan.master.taskCount', { count: tasksByOwner.get(p.id) ?? 0 })}
                                     </div>
                                 </div>
@@ -1188,14 +1187,13 @@ function StepBody({
                 </div>
             </div>
 
-            {/* Why callout */}
-            <div className="why">
-                <div className="why-icon"><IInfo size={14}/></div>
-                <div>
-                    <div style={{color:'var(--ink)', fontWeight:500, marginBottom:2, fontSize:12.5}}>{tr('plan.master.whyThisStep')}</div>
-                    {tr(`plan.steps.${def.id}.why`)}
-                </div>
-            </div>
+            <details className="why plan-master-why">
+                <summary>
+                    <IInfo size={14}/>
+                    <span>{tr('plan.master.whyThisStep')}</span>
+                </summary>
+                <p>{tr(`plan.steps.${def.id}.why`)}</p>
+            </details>
 
             {stepDataState?.fetching && !stepContentLoading && !stepContentUnavailable && (
                 <div className="banner accent" role="status" aria-live="polite">
@@ -1280,13 +1278,13 @@ function StepBody({
                 </div>
                 <div className="row plan-master-step-footer-group" style={{gap:8}}>
                     {stepContentLoading || stepContentUnavailable ? (
-                        <span className="muted plan-master-break" role="status" style={{fontSize:12}}>
+                        <span className="muted plan-master-break" role="status" style={{fontSize:'var(--wc-type-meta)'}}>
                             {stepContentUnavailable
                                 ? tr('plan.master.sectionUnavailableTitle', { section: stepDataState?.label })
                                 : tr('plan.master.sectionLoading', { section: stepDataState?.label })}
                         </span>
                     ) : isIterationStep ? (st.state !== 'done' ? (
-                        <span className="muted" role="status" style={{fontSize:12}}>
+                        <span className="muted" role="status" style={{fontSize:'var(--wc-type-meta)'}}>
                             {tr('plan.master.completePeriodToContinue')}
                         </span>
                     ) : (
@@ -1415,8 +1413,8 @@ function ReadinessAux({ status, ready, setActive, dataCaveat }: {
                         <span>{ready.pct}%</span>
                     </div>
                     <div className="plan-master-min">
-                        <div style={{fontWeight:600, fontSize:13}}>{tr('plan.master.stepsComplete', { done: ready.done, total: ready.total })}</div>
-                        <div className="muted plan-master-break" style={{fontSize:11.5, marginTop:2, lineHeight:1.45}}>
+                        <div style={{fontWeight:600, fontSize:'var(--wc-type-label)'}}>{tr('plan.master.stepsComplete', { done: ready.done, total: ready.total })}</div>
+                        <div className="muted plan-master-break" style={{fontSize:'var(--wc-type-meta)', marginTop:2, lineHeight:1.45}}>
                             {dataCaveat === 'stale'
                                 ? tr('plan.master.stalePlanningData')
                                 : dataCaveat === 'refreshing'
@@ -1457,22 +1455,6 @@ function ReadinessAux({ status, ready, setActive, dataCaveat }: {
                 )}
             </div>
 
-            <div className="aux-sect">
-                <h4>{tr('plan.master.jumpToExpert')}</h4>
-                <div style={{display:'flex', flexDirection:'column', gap:4}}>
-                    {[
-                        {l:tr('nav.calendar'), icon:<ICalendar size={12}/>, to:'/calendar'},
-                        {l:tr('nav.iterations'), icon:<IIteration size={12}/>, to:'/iterations'},
-                        {l:tr('nav.team'), icon:<ITeam size={12}/>, to:'/team'},
-                        {l:tr('nav.tasks'), icon:<ITasks size={12}/>, to:'/tasks'},
-                        {l:tr('nav.gantt'), icon:<IGantt size={12}/>, to:'/gantt'},
-                    ].map(x => (
-                        <Link key={x.l} to={x.to} className="btn sm ghost" style={{justifyContent:'flex-start'}}>
-                            {x.icon} {x.l} <IOpen size={10} style={{marginInlineStart:'auto'}}/>
-                        </Link>
-                    ))}
-                </div>
-            </div>
         </>
     );
 }
@@ -1575,21 +1557,6 @@ function ResponsiveReadinessSummary({ status, ready, currentStepId, setActive, d
                                         {stepState.missing?.[0] ?? stepState.summary ?? tr('plan.master.notStarted')}
                                     </p>
                                 </div>
-                                <button
-                                    type="button"
-                                    className="btn sm ghost"
-                                    disabled={navigationLocked}
-                                    onClick={() => {
-                                        if (def.id === currentStepId) {
-                                            document.getElementById('plan-master-active-step-heading')?.focus();
-                                            return;
-                                        }
-                                        setActive(def.id);
-                                    }}
-                                >
-                                    {tr('plan.master.openStep')}
-                                    <IChevR size={10}/>
-                                </button>
                             </div>
                         );
                     })}
@@ -1937,27 +1904,11 @@ const PlanMasterPage = () => {
                 <div className="between plan-master-header-row">
                     <div className="row plan-master-header-title">
                         <h1 className="wc-page-title">{t('plan.hub.planIterationTitle')}</h1>
-                        <span className="muted plan-master-break" style={{fontSize:12}}>
+                        <span className="muted plan-master-break" style={{fontSize:'var(--wc-type-meta)'}}>
                             {currentIteration
                                 ? `${currentIteration.name} · ${formatIterationDates(r.currentIterationStart, r.currentIterationEnd)}`
                                 : t('plan.master.noPeriodYet')}
                         </span>
-                    </div>
-                    <div className="row plan-master-header-actions">
-                        <div className="row" style={{gap:4, fontSize:11.5, color:'var(--wc-ink-3)'}}>
-                            <span>{t('plan.master.progress')}</span>
-                            <span style={{fontWeight:600, color:'var(--wc-ink)'}}>
-                                {isFetching || hasRefetchError ? `—/${ready.total}` : `${ready.done}/${ready.total}`}
-                            </span>
-                        </div>
-                        <Link
-                            to={activeDef.route}
-                            className="btn sm ghost"
-                            aria-disabled={navigationLocked || undefined}
-                            tabIndex={navigationLocked ? -1 : undefined}
-                        >
-                            <IOpen size={11}/> {t(`plan.steps.${activeDef.id}.expert`)}
-                        </Link>
                     </div>
                 </div>
 
@@ -2009,12 +1960,6 @@ const PlanMasterPage = () => {
             <div className="wc-master" style={{flex:1, minHeight:0}}>
                 {/* Left rail */}
                 <aside className="wc-master-rail" aria-label={t('plan.master.steps')}>
-                    <div className="wc-master-rail-head">
-                        <div className="row" style={{justifyContent:'space-between'}}>
-                            <div style={{fontSize:11, fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', color:'var(--wc-ink-3)'}}>{t('plan.master.steps')}</div>
-                            <span className="pill sm">{ready.pct}%</span>
-                        </div>
-                    </div>
                     <nav className="step-rail" aria-label={t('plan.master.steps')}>
                         {STEP_DEFS.map((def, i) => {
                             const st = status[def.id];
@@ -2032,24 +1977,21 @@ const PlanMasterPage = () => {
                                     </div>
                                     <div>
                                         <div className="step-title">{t(`plan.steps.${def.id}.title`)}</div>
-                                        <div className="step-sub">
-                                            {st.state === 'done'    && (st.summary || t('plan.master.done'))}
-                                            {st.state === 'warn'    && (st.missing?.[0] || t('plan.master.needsAttention'))}
-                                            {st.state === 'blocked' && (st.missing?.[0] || t('plan.master.blocked'))}
-                                            {st.state === 'todo'    && t('plan.master.notStarted')}
-                                        </div>
+                                        {(st.state === 'warn' || st.state === 'blocked') && (
+                                            <div className="step-sub">
+                                                {st.missing?.[0] || (
+                                                    st.state === 'warn'
+                                                        ? t('plan.master.needsAttention')
+                                                        : t('plan.master.blocked')
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                     <StepPill state={st.state}/>
                                 </button>
                             );
                         })}
                     </nav>
-                    <div style={{padding:'8px 14px 16px'}}>
-                        <div className="divider"/>
-                        <div style={{fontSize:11, color:'var(--wc-ink-3)', lineHeight:1.5}}>
-                            {t('plan.master.returnAnyTime')}
-                        </div>
-                    </div>
                 </aside>
 
                 {/* Main step body */}

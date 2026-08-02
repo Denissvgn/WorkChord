@@ -1065,7 +1065,7 @@ const ConvertTriageSplitView = ({
                                             {t('surfaces.triagePage.applySuggestedDescription')}
                                         </button>
                                     </div>
-                                    <pre className="max-h-24 overflow-y-auto whitespace-pre-wrap rounded bg-surface-card p-1.5 border border-action font-mono text-[10px] text-action leading-snug">
+                                    <pre className="max-h-24 overflow-y-auto whitespace-pre-wrap rounded bg-surface-card p-1.5 border border-action font-mono text-wc-micro text-action leading-snug">
                                         {draftPreview.suggested_description}
                                     </pre>
                                 </div>

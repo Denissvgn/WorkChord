@@ -922,7 +922,7 @@ export const GanttChart = ({
                                 <div
                                     key={virtualColumn.index}
                                     className={clsx(
-                                        "absolute top-0 bottom-0 border-r border-border-subtle flex flex-col items-center justify-center text-[10px]",
+                                        "absolute top-0 bottom-0 border-r border-border-subtle flex flex-col items-center justify-center text-wc-micro",
                                         isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-action-muted text-action-muted-foreground" : "bg-surface-card text-content-secondary"
                                     )}
                                     style={{
@@ -936,7 +936,7 @@ export const GanttChart = ({
                                         className="flex flex-col items-center"
                                     >
                                         <span aria-hidden="true" className="font-bold">{format(day, 'd')}</span>
-                                        <span aria-hidden="true" className="text-[9px]">
+                                        <span aria-hidden="true" className="text-wc-micro">
                                             {format(day, 'EEE', { locale: dateFnsLocale(activeI18n.language) })}
                                         </span>
                                     </time>
@@ -1041,7 +1041,7 @@ export const GanttChart = ({
                                         ) : <span className="w-5" />}
                                         <div className="font-medium truncate text-sm flex-1 text-content-primary" title={task.title}>{task.title}</div>
                                     </div>
-                                    <div className="mt-1 flex items-center gap-1.5 pl-6 text-[10px] text-content-tertiary">
+                                    <div className="mt-1 flex items-center gap-1.5 pl-6 text-wc-micro text-content-tertiary">
                                         <span
                                             className="max-w-[96px] truncate"
                                             title={task.assignee?.name ?? t('common.unassigned')}

@@ -56,7 +56,7 @@ function PrimaryCard({ ready, status, nextId, onOpen }: {
                 <div className="row" style={{alignItems:'flex-start', gap: 14}}>
                     <div className="mc-icon">{m.icon}</div>
                     <div>
-                        <div className="mc-title" style={{fontSize: 17}}>{m.title}</div>
+                        <div className="mc-title">{m.title}</div>
                         <div className="mc-desc">{m.desc}</div>
                     </div>
                 </div>
@@ -80,10 +80,10 @@ function PrimaryCard({ ready, status, nextId, onOpen }: {
                                  (i+1)}
                             </div>
                             <div>
-                                <div style={{fontSize:11.5, fontWeight:500, color:'var(--ink)', lineHeight:1.3}}>
+                                <div style={{fontSize:'var(--wc-type-meta)', fontWeight:500, color:'var(--ink)', lineHeight:1.3}}>
                                     {t(`plan.steps.${def.id}.title`)}
                                 </div>
-                                <div className="muted" style={{fontSize:10.5, marginTop:2}}>
+                                <div className="muted" style={{fontSize:'var(--wc-type-micro)', marginTop:2}}>
                                     {st.state === 'done'    ? (st.summary || t('plan.hub.done')) :
                                      st.state === 'warn'    ? (st.missing?.[0] || t('plan.hub.needsAttention')) :
                                      st.state === 'blocked' ? t('plan.hub.locked') :
@@ -229,14 +229,14 @@ const PlanPage = () => {
                                 <span>{ready.pct}%</span>
                             </div>
                             <div>
-                                <div style={{fontWeight:600, fontSize:13.5}}>
+                                <div style={{fontWeight:600, fontSize:'var(--wc-type-base)'}}>
                                     {ready.pct === 0
                                         ? t('plan.hub.nothingSetUp')
                                         : ready.pct === 100
                                             ? t('plan.hub.planReadyShare')
                                             : t('plan.hub.stepsComplete', { done: ready.done, total: ready.total })}
                                 </div>
-                                <div className="muted" style={{fontSize:12, marginTop:2}}>
+                                <div className="muted" style={{fontSize:'var(--wc-type-meta)', marginTop:2}}>
                                     {ready.pct < 100
                                         ? <>{t('plan.hub.next')}: <b style={{color:'var(--ink)'}}>{nextDef ? t(`plan.steps.${nextDef.id}.title`) : ''}</b>
                                             {status[nextId]?.missing?.[0] && <> · {status[nextId].missing![0]}</>}
@@ -253,7 +253,7 @@ const PlanPage = () => {
                                 return (
                                     <span key={def.id} className={`pill ${cls} sm`}>
                                         <span className="pdot"/>
-                                        <span style={{fontSize:10}}>{i+1}</span>
+                                        <span style={{fontSize:'var(--wc-type-micro)'}}>{i+1}</span>
                                     </span>
                                 );
                             })}
@@ -263,7 +263,7 @@ const PlanPage = () => {
 
                 {/* Recommended heading */}
                 <div className="row" style={{marginBottom:10}}>
-                    <h3 style={{margin:0, fontSize:13, fontWeight:600, letterSpacing:'-0.005em'}}>
+                    <h3 style={{margin:0, fontSize:'var(--wc-type-label)', fontWeight:600, letterSpacing:'-0.005em'}}>
                         {ready.pct === 0 ? t('plan.hub.recommendedStart')
                           : ready.pct === 100 ? t('plan.hub.recommendedWrap')
                           : t('plan.hub.recommendedResume')}
@@ -280,7 +280,7 @@ const PlanPage = () => {
 
                 {/* Other masters */}
                 <div className="row" style={{marginTop:28, marginBottom:10}}>
-                    <h3 style={{margin:0, fontSize:13, fontWeight:600, letterSpacing:'-0.005em'}}>{t('plan.hub.otherMasters')}</h3>
+                    <h3 style={{margin:0, fontSize:'var(--wc-type-label)', fontWeight:600, letterSpacing:'-0.005em'}}>{t('plan.hub.otherMasters')}</h3>
                 </div>
                 <div className="master-grid master-grid-four">
                     {otherMasters.map(m => (
@@ -299,7 +299,7 @@ const PlanPage = () => {
 
                 {/* Expert links */}
                 <div className="divider" style={{margin:'28px 0 14px'}}/>
-                <div className="row" style={{gap:10, color:'var(--ink-3)', fontSize:12, flexWrap:'wrap'}}>
+                <div className="row" style={{gap:10, color:'var(--ink-3)', fontSize:'var(--wc-type-meta)', flexWrap:'wrap'}}>
                     <span>{t('plan.hub.preferDirect')}</span>
                     <Link to="/iterations" className="btn sm ghost"><IIteration size={12}/> {t('nav.iterations')}</Link>
                     <Link to="/team" className="btn sm ghost"><ITeam size={12}/> {t('nav.team')}</Link>

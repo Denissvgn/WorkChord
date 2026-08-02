@@ -19,9 +19,9 @@
   --color-landing-danger: oklch(56% 0.19 25);
   --color-landing-shadow: oklch(24% 0.02 258 / 0.08);
 
-  --font-landing-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-landing-body: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-landing-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-landing-display: var(--font-family-sans);
+  --font-landing-body: var(--font-family-sans);
+  --font-landing-mono: var(--font-family-mono);
 
   --space-landing-3xs: 0.125rem;
   --space-landing-2xs: 0.25rem;

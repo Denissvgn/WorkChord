@@ -412,11 +412,11 @@ export default function AgentPipelinePage() {
                                             data-testid={`task-card-${task.id}`}
                                         >
                                             <div className="flex items-start justify-between gap-2">
-                                                <span className="text-[10px] uppercase tracking-wider font-semibold text-feedback-indigo">
+                                                <span className="text-wc-micro uppercase tracking-wider font-semibold text-feedback-indigo">
                                                     {t('agentPipeline.taskNumber', { id: task.id })}
                                                 </span>
                                                 {task.priority === 1 && (
-                                                    <span className="rounded bg-feedback-danger-muted px-1 text-[9px] font-bold text-feedback-danger-foreground">
+                                                    <span className="rounded bg-feedback-danger-muted px-1 text-wc-micro font-bold text-feedback-danger-foreground">
                                                         {t('agentPipeline.urgent')}
                                                     </span>
                                                 )}
@@ -452,7 +452,7 @@ export default function AgentPipelinePage() {
                                             </div>
 
                                             {/* Footer hint */}
-                                            <div className="mt-1 flex items-center justify-between text-[10px] text-content-secondary bg-surface-card px-2 py-1 rounded">
+                                            <div className="mt-1 flex items-center justify-between text-wc-micro text-content-secondary bg-surface-card px-2 py-1 rounded">
                                                 <span className="truncate max-w-[120px]">{latestReadinessSignal}</span>
                                                 <span className="shrink-0 text-content-tertiary">{t('agentPipeline.inspect')}</span>
                                             </div>
@@ -548,11 +548,11 @@ export default function AgentPipelinePage() {
                                                         <div className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full border border-surface-card bg-border" />
 
                                                         <div className="flex items-center gap-2 text-xs font-semibold text-content-primary">
-                                                            <span className="uppercase text-[10px] bg-surface-muted px-1.5 py-0.5 rounded text-content-secondary font-mono">
+                                                            <span className="uppercase text-wc-micro bg-surface-muted px-1.5 py-0.5 rounded text-content-secondary font-mono">
                                                                 {t(`agentPipeline.timelineItemTypes.${itemLabel}`)}
                                                             </span>
                                                             <span>{t('agentPipeline.timelineEntry')}</span>
-                                                            <span className="text-[10px] text-content-tertiary ml-auto font-mono">{timestampStr}</span>
+                                                            <span className="text-wc-micro text-content-tertiary ml-auto font-mono">{timestampStr}</span>
                                                         </div>
 
                                                         <p className="text-xs text-content-secondary pl-1 font-sans">
@@ -581,7 +581,7 @@ export default function AgentPipelinePage() {
                                         <span className="font-bold text-sm tracking-wide text-terminal-primary">{t('agentPipeline.consoleTitle')}</span>
                                     </div>
                                     <span className={clsx(
-                                        "rounded-full px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider",
+                                        "rounded-full px-2 py-0.5 text-wc-micro uppercase font-bold tracking-wider",
                                         runDetail?.status === 'succeeded' ? "bg-feedback-success-muted text-feedback-success-foreground border border-feedback-success-border" :
                                         runDetail?.status === 'failed' ? "bg-feedback-danger-muted text-feedback-danger-foreground border border-feedback-danger-border" :
                                         runDetail?.status === 'running' ? "bg-feedback-info-muted text-feedback-info-foreground border border-feedback-info-border animate-pulse" :
@@ -595,7 +595,7 @@ export default function AgentPipelinePage() {
 
                                 {/* Only bounded, non-secret run metadata is rendered in this operator view. */}
                                 {runDetail && (
-                                    <div className="grid grid-cols-2 gap-2 text-[11px] p-3 rounded-lg bg-terminal-canvas border border-terminal-border text-terminal-secondary">
+                                    <div className="grid grid-cols-2 gap-2 text-wc-micro p-3 rounded-lg bg-terminal-canvas border border-terminal-border text-terminal-secondary">
                                         <div>
                                             <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.runIdentifier')}</span>
                                             <span className="text-terminal-primary font-semibold">#{activeRunId}</span>
@@ -645,7 +645,7 @@ export default function AgentPipelinePage() {
                                                 <div key={evt.id} className="flex flex-col gap-1 hover:bg-terminal-surface/50 py-1 px-1 rounded transition-colors group">
                                                     <div className="flex items-start gap-2">
                                                         <span className="text-terminal-muted select-none shrink-0 font-mono">[{time}]</span>
-                                                        <span className="text-terminal-secondary select-none shrink-0 font-semibold uppercase tracking-wider text-[10px] mt-0.5">
+                                                        <span className="text-terminal-secondary select-none shrink-0 font-semibold uppercase tracking-wider text-wc-micro mt-0.5">
                                                             {t('agentPipeline.runEvent')}
                                                         </span>
                                                         <span className="text-terminal-primary break-words flex-1 font-mono font-medium leading-relaxed font-sans">
@@ -659,7 +659,7 @@ export default function AgentPipelinePage() {
 
                                     {/* Append running cursor if active */}
                                     {runStatus === 'running' && (
-                                        <div className="flex items-center gap-1.5 text-terminal-secondary text-[11px] animate-pulse py-1 font-semibold pl-1">
+                                        <div className="flex items-center gap-1.5 text-terminal-secondary text-wc-micro animate-pulse py-1 font-semibold pl-1">
                                             <span className="h-1.5 w-1.5 rounded-full bg-terminal-primary animate-ping" />
                                             <span>{t('agentPipeline.streaming')}</span>
                                         </div>
@@ -669,7 +669,7 @@ export default function AgentPipelinePage() {
                                     {runStatus === 'failed' && (
                                         <div className="mt-4 p-3 bg-feedback-danger-muted border border-feedback-danger-border rounded-md flex items-start gap-2.5 text-feedback-danger-foreground">
                                             <AlertTriangle className="h-4.5 w-4.5 shrink-0 text-feedback-danger mt-0.5" />
-                                            <div className="flex flex-col font-mono text-[11px]">
+                                            <div className="flex flex-col font-mono text-wc-micro">
                                                 <span className="font-bold text-feedback-danger-foreground">{t('agentPipeline.outcomeFailed')}</span>
                                                 <p className="text-feedback-danger-foreground mt-1 whitespace-pre-wrap">{t('agentPipeline.failureDetailsWithheld')}</p>
                                             </div>
@@ -680,7 +680,7 @@ export default function AgentPipelinePage() {
                                     {runStatus === 'succeeded' && (
                                         <div className="mt-4 p-3 bg-feedback-success-muted border border-feedback-success-border rounded-md flex items-start gap-2.5 text-feedback-success-foreground">
                                             <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-feedback-success mt-0.5" />
-                                            <div className="flex flex-col font-mono text-[11px]">
+                                            <div className="flex flex-col font-mono text-wc-micro">
                                                 <span className="font-bold text-feedback-success-foreground">{t('agentPipeline.outcomeSuccess')}</span>
                                                 <p className="text-feedback-success-foreground mt-1 whitespace-pre-wrap">{t('agentPipeline.successDetailsWithheld')}</p>
                                             </div>

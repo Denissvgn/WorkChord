@@ -101,7 +101,7 @@ export const ProjectIterationsSection = ({
                 icon={<CalendarDays className="h-4 w-4 text-action" />}
                 title={t('projectIterations.title')}
                 description={t('projectIterations.description')}
-                count={<span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{iterations.length}</span>}
+                count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{iterations.length}</span>}
                 actions={(
                     <div className="flex flex-wrap gap-2">
                         <Button size="sm" variant="outline" onClick={() => setAttachOpen(true)}>

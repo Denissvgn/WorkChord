@@ -284,7 +284,6 @@ const SettingsPage = () => {
                                     <InterfaceLanguageSettings/>
                                 </AdminAccessGate>
                                 <section className="card">
-                                    <div className="card-head"><h3>{t('settingsPage.appearance')}</h3></div>
                                     <div className="card-pad">
                                         <p className="muted settings-theme-help">{t('settingsPage.chooseTheme')}</p>
                                         <div className="settings-theme-grid" role="radiogroup" aria-label={t('settingsPage.chooseTheme')}>

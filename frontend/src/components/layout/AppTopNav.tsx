@@ -134,9 +134,10 @@ export const AppTopNav = () => {
                 <div className="brand-mark" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="1" y="1" width="22" height="22" rx="6" fill="var(--accent)" />
-                        <rect x="6" y="7" width="11" height="2.6" rx="1.3" fill="var(--wc-accent-on)" />
-                        <rect x="6" y="11" width="7" height="2.6" rx="1.3" fill="var(--wc-accent-on)" opacity="0.78" />
-                        <rect x="6" y="15" width="9" height="2.6" rx="1.3" fill="var(--wc-accent-on)" opacity="0.56" />
+                        <path d="M6 7.5h11M6 12h7M6 16.5h9" stroke="var(--wc-accent-on)" strokeWidth="1.7" strokeLinecap="round" />
+                        <circle cx="17" cy="7.5" r="1.5" fill="var(--wc-accent-on)" />
+                        <circle cx="13" cy="12" r="1.5" fill="var(--wc-accent-on)" opacity="0.78" />
+                        <circle cx="15" cy="16.5" r="1.5" fill="var(--wc-accent-on)" opacity="0.56" />
                     </svg>
                 </div>
                 <span className="brand-label">{t('common.appName')}</span>

@@ -374,7 +374,7 @@ const MilestoneMarker = ({
             >
                 <span className={clsx('absolute left-1/2 top-1/2 block h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 shadow-sm', markerClassName(milestone.status))} />
             </button>
-            <span className="pointer-events-none absolute left-4 top-1/2 hidden max-w-[150px] -translate-y-1/2 truncate rounded bg-surface-card/90 px-1.5 py-0.5 text-[11px] font-medium text-content-primary shadow-sm ring-1 ring-border md:block">
+            <span className="pointer-events-none absolute left-4 top-1/2 hidden max-w-[150px] -translate-y-1/2 truncate rounded bg-surface-card/90 px-1.5 py-0.5 text-wc-micro font-medium text-content-primary shadow-sm ring-1 ring-border md:block">
                 {milestone.name}
             </span>
             <div className="pointer-events-none absolute left-1/2 top-7 hidden w-72 -translate-x-1/2 rounded-md border border-border bg-surface-card p-3 text-left shadow-lg group-hover:block group-focus-within:block">
@@ -383,7 +383,7 @@ const MilestoneMarker = ({
                         <p className="font-semibold text-content-primary">{milestone.name}</p>
                         <p className="mt-1 text-xs text-content-secondary">{formatDate(milestone.target_date)}</p>
                     </div>
-                    <span className={clsx('rounded-full border px-2 py-0.5 text-[11px] font-medium', statusClassName(milestone.status))}>
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-wc-micro font-medium', statusClassName(milestone.status))}>
                         {t(milestoneStatusLabelKeys[milestone.status])}
                     </span>
                 </div>
