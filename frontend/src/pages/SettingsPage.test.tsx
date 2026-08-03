@@ -106,14 +106,7 @@ describe('SettingsPage', () => {
         });
 
         expect(screen.queryByText('Start with a setup goal')).not.toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Setup help' }));
-        const guide = screen.getByRole('dialog', { name: 'Start with a setup goal' });
-        const setupGoals = within(guide).getByRole('navigation', { name: 'Common setup goals' });
-        expect(within(setupGoals).getByRole('link', { name: /Configure scheduling/ }))
-            .toHaveAttribute('href', '/settings?tab=scheduling');
-        expect(within(setupGoals).getByRole('link', { name: /Connect GitHub/ }))
-            .toHaveAttribute('href', '/settings?tab=github');
-        await user.keyboard('{Escape}');
+        expect(screen.queryByRole('button', { name: 'Setup help' })).not.toBeInTheDocument();
 
         const lightTheme = screen.getByRole('radio', { name: 'Light' });
         const darkTheme = screen.getByRole('radio', { name: 'Dark' });

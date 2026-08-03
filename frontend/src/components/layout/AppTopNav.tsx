@@ -13,6 +13,7 @@ import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
 import type { SidebarAttentionAction } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
+import { ContextHelp } from './ContextHelp';
 
 interface WorkspaceAttention {
     badge: string;
@@ -243,6 +244,7 @@ export const AppTopNav = () => {
                     <span>{t('commandMenu.triggerLabel')}</span>
                     <kbd>{t('commandMenu.openShortcut')}</kbd>
                 </button>
+                <ContextHelp />
                 <button
                     type="button"
                     className="mobile-nav-trigger"

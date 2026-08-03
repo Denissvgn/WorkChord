@@ -21,7 +21,6 @@ import { localizeStatus, STEP_DEFS } from '../features/planningMasters/masters';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { PlanningWorkflowGuide } from '../components/planning/PlanningWorkflowGuide';
 import { formatDate } from '../utils/formatDate';
 
 type LocalizedStepStatus = {
@@ -323,7 +322,6 @@ const PlanPage = () => {
                             )}
                             <ArrowRight aria-hidden="true" size={11} />
                         </Link>
-                        <PlanningWorkflowGuide surface="plan" />
                         <button
                             className="btn"
                             type="button"

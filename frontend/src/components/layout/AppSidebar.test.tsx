@@ -48,6 +48,9 @@ describe('AppSidebar', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
 
         expect(screen.getByLabelText('Timeline & Planning destinations')).toBeInTheDocument();
+        expect(screen.getByRole('navigation', {
+            name: 'Timeline & Planning destinations',
+        })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Plan Work' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('aria-current', 'page');
@@ -57,23 +60,21 @@ describe('AppSidebar', () => {
         expect(savedViewServiceMock.getAll).not.toHaveBeenCalled();
     });
 
-    it('keeps secondary workspace destinations behind More and opens it for the current route', async () => {
-        const { user, unmount } = renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
+    it('shows a lone secondary destination directly and preserves its current state', () => {
+        const roadmapRender = renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
 
-        expect(screen.getByRole('link', { name: 'Calendar' })).not.toBeVisible();
-        await user.click(screen.getByText('More'));
         expect(screen.getByRole('link', { name: 'Calendar' })).toBeVisible();
+        expect(screen.queryByText('More')).not.toBeInTheDocument();
+        roadmapRender.unmount();
 
-        unmount();
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/calendar'] });
+        const calendarRender = renderWithProviders(<AppSidebar />, { initialEntries: ['/calendar'] });
         expect(screen.getByRole('link', { name: 'Calendar' }))
             .toHaveAttribute('aria-current', 'page');
+        calendarRender.unmount();
 
-        const currentMore = screen.getByText('More').closest('details')!;
-        expect(currentMore).toHaveAttribute('open');
-        await user.click(screen.getByText('More'));
-        expect(currentMore).not.toHaveAttribute('open');
-        expect(screen.getByRole('link', { name: 'Calendar' })).not.toBeVisible();
+        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
+        expect(screen.getByRole('link', { name: 'Agent Pipeline' })).toBeVisible();
+        expect(screen.queryByText('More')).not.toBeInTheDocument();
     });
 
     it('shows only Resource & Settings destinations for a resource route', () => {

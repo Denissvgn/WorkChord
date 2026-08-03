@@ -222,6 +222,12 @@ class ProjectMilestoneResponse(BaseModel):
     updated_at: datetime
 
 
+class RoadmapMilestonePage(BaseModel):
+    """Cursor page of milestones used by the portfolio roadmap."""
+    items: list[ProjectMilestoneResponse] = Field(default_factory=list)
+    next_cursor: Optional[int] = None
+
+
 class ProjectMilestoneDeleteResponse(BaseModel):
     """Response returned after deleting a project milestone."""
     success: bool
@@ -281,6 +287,18 @@ class ProjectResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProjectPortfolioSummary(BaseModel):
+    """Compact project signals for portfolio tables."""
+    project_id: int
+    total_tasks: int = 0
+    completed_tasks: int = 0
+    total_effort_days: float = 0.0
+    remaining_effort_days: float = 0.0
+    blocked_tasks: int = 0
+    overdue_tasks: int = 0
+    target_date_risk: ProjectTargetDateRisk = ProjectTargetDateRisk.UNKNOWN
 
 
 class ProjectSummary(BaseModel):

@@ -22,7 +22,8 @@ import { Input } from '../components/common/Input';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { CalendarPeriodNavigator, InteractiveCalendar } from '../components/calendar/InteractiveCalendar';
-import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
+import { OverflowMenu } from '../components/ui';
+import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
 import { calendarService } from '../services/calendarService';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
@@ -525,7 +526,10 @@ const CalendarPage = () => {
     const queryError = calendarsError ?? iterationsError ?? teamError;
     if (queryError) {
         return (
-            <PageLayout>
+            <PlanningWorkbenchFrame
+                title={t('calendar.workCalendar')}
+                description={t('calendar.persistentDescription')}
+            >
                 <QueryErrorState
                     error={queryError}
                     onRetry={() => {
@@ -534,21 +538,27 @@ const CalendarPage = () => {
                         if (hasSelectedIteration) void refetchTeam();
                     }}
                 />
-            </PageLayout>
+            </PlanningWorkbenchFrame>
         );
     }
 
     if (isLoadingCalendars) {
         return (
-            <PageLayout>
-                <div className="banner">{t('common.loading')}</div>
-            </PageLayout>
+            <PlanningWorkbenchFrame
+                title={t('calendar.workCalendar')}
+                description={t('calendar.persistentDescription')}
+            >
+                <div className="banner muted" role="status">{t('common.loading')}</div>
+            </PlanningWorkbenchFrame>
         );
     }
 
     if (!calendar) {
         return (
-            <PageLayout>
+            <PlanningWorkbenchFrame
+                title={t('calendar.workCalendar')}
+                description={t('calendar.persistentDescription')}
+            >
                 <div className="empty">
                     <h4>{t('calendar.unavailable')}</h4>
                     <p>{t('calendar.noCalendarsBody')}</p>
@@ -586,72 +596,99 @@ const CalendarPage = () => {
                     </div>
                     {calendarError && <div className="banner warn" style={{marginTop:12}}>{calendarError}</div>}
                 </div>
-            </PageLayout>
+            </PlanningWorkbenchFrame>
         );
     }
 
     if (!draft) {
         return (
-            <PageLayout>
-                <div className="banner">{t('common.loading')}</div>
-            </PageLayout>
+            <PlanningWorkbenchFrame
+                title={t('calendar.workCalendar')}
+                description={t('calendar.persistentDescription')}
+            >
+                <div className="banner muted" role="status">{t('common.loading')}</div>
+            </PlanningWorkbenchFrame>
         );
     }
 
     return (
-        <PageLayout>
-            <PageHeader
-                title={t('calendar.workCalendar')}
-                subtitle={t('calendar.persistentDescription')}
-                actions={(
-                    <div className="row" style={{gap:8, flexWrap:'wrap'}}>
-                        {calendars.length > 1 && (
-                            <select
-                                className="input"
-                                style={{minWidth:180}}
-                                value={calendar.id}
-                                onChange={event => setSelectedCalendarId(Number(event.target.value))}
-                                aria-label={t('calendar.selectCalendar')}
-                            >
-                                {calendars.map(item => (
-                                    <option key={item.id} value={item.id}>
-                                        {item.name} ({item.year})
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                        <Button type="button" variant="secondary" onClick={startCreateCalendar}>
-                            <Plus className="w-4 h-4" />
-                            {t('calendar.newCalendar')}
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={confirmDeleteCalendar}
-                            isLoading={deleteCalendarMutation.isPending}
-                            disabled={calendars.length <= 1}
-                            title={calendars.length <= 1 ? t('calendar.deleteLastCalendarHint') : t('calendar.deleteCalendar')}
-                            aria-label={t('calendar.deleteCalendar')}
-                            className="text-feedback-danger-foreground hover:bg-feedback-danger-muted"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={saveSettings}
-                            isLoading={updateCalendarMutation.isPending}
-                        >
-                            <Save className="w-4 h-4" />
-                            {t('calendar.saveSettings')}
-                        </Button>
-                    </div>
-                )}
-            />
-
+        <PlanningWorkbenchFrame
+            title={t('calendar.workCalendar')}
+            description={t('calendar.persistentDescription')}
+            facts={[
+                {
+                    id: 'calendar',
+                    label: t('calendar.calendarName'),
+                    value: `${calendar.name} · ${calendar.year}`,
+                },
+                {
+                    id: 'working-days',
+                    label: t('calendar.workingDays'),
+                    value: yearSummary.workingDays,
+                },
+                {
+                    id: 'company-days',
+                    label: t('calendar.companyDays'),
+                    value: yearSummary.companyDays,
+                },
+                {
+                    id: 'short-days',
+                    label: t('calendar.shortDays'),
+                    value: yearSummary.shortDays,
+                },
+            ]}
+            contextControl={calendars.length > 1 ? (
+                <select
+                    className="input planning-workbench-select"
+                    value={calendar.id}
+                    onChange={event => setSelectedCalendarId(Number(event.target.value))}
+                    aria-label={t('calendar.selectCalendar')}
+                >
+                    {calendars.map(item => (
+                        <option key={item.id} value={item.id}>
+                            {item.name} ({item.year})
+                        </option>
+                    ))}
+                </select>
+            ) : undefined}
+            secondaryActions={(
+                <Button type="button" variant="secondary" onClick={startCreateCalendar}>
+                    <Plus className="h-4 w-4" />
+                    {t('calendar.newCalendar')}
+                </Button>
+            )}
+            primaryAction={(
+                <Button
+                    type="button"
+                    onClick={saveSettings}
+                    isLoading={updateCalendarMutation.isPending}
+                >
+                    <Save className="h-4 w-4" />
+                    {t('calendar.saveSettings')}
+                </Button>
+            )}
+            overflowAction={(
+                <OverflowMenu
+                    label={t('actions.moreActions')}
+                    items={[
+                        {
+                            label: calendars.length <= 1
+                                ? t('calendar.deleteLastCalendarHint')
+                                : t('calendar.deleteCalendar'),
+                            icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
+                            onSelect: confirmDeleteCalendar,
+                            disabled: calendars.length <= 1 || deleteCalendarMutation.isPending,
+                            tone: 'danger',
+                        },
+                    ]}
+                />
+            )}
+            state={(isCreatingCalendar || calendarSummary || calendarError) ? (
+                <>
             {isCreatingCalendar && (
                 <div className="card card-pad">
-                    <div className="row" style={{gap:8, flexWrap:'wrap', alignItems:'flex-end'}}>
-                        <label className="field" style={{minWidth:220}}>
+                    <div className="calendar-create-row">
+                        <label className="field calendar-create-name">
                             <span className="field-lbl">{t('calendar.calendarName')}</span>
                             <Input
                                 value={newCalendarName}
@@ -659,7 +696,7 @@ const CalendarPage = () => {
                                 placeholder={t('calendar.calendarName')}
                             />
                         </label>
-                        <label className="field" style={{minWidth:120}}>
+                        <label className="field calendar-create-year">
                             <span className="field-lbl">{t('calendar.calendarYear')}</span>
                             <Input
                                 type="number"
@@ -687,21 +724,9 @@ const CalendarPage = () => {
                     {calendarError && <div>{calendarError}</div>}
                 </div>
             )}
-
-            <MetricGrid columns={5}>
-                {[
-                    [t('calendar.totalDays'), yearSummary.totalDays],
-                    [t('calendar.workingDays'), yearSummary.workingDays],
-                    [t('calendar.weekendDaysInYear'), yearSummary.weekendDays],
-                    [t('calendar.companyDays'), yearSummary.companyDays],
-                    [t('calendar.shortDays'), yearSummary.shortDays],
-                ].map(([label, value]) => (
-                    <div key={String(label)} className="kpi">
-                        <div className="kpi-lbl">{label}</div>
-                        <div className="kpi-val tnum">{value}</div>
-                    </div>
-                ))}
-            </MetricGrid>
+                </>
+            ) : undefined}
+        >
 
             <section className="wc-content-rail">
                 <div className="card card-pad">
@@ -1055,7 +1080,7 @@ const CalendarPage = () => {
                 )}
             </section>
             {confirmationDialog}
-        </PageLayout>
+        </PlanningWorkbenchFrame>
     );
 };
 

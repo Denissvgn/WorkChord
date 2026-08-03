@@ -126,22 +126,12 @@ describe('TasksPage', () => {
     });
 
     it('opens expert task modes from URL commands', async () => {
-        const { user } = renderWithProviders(<TasksPage />, {
+        renderWithProviders(<TasksPage />, {
             initialEntries: ['/tasks?mode=bulk'],
         });
 
         expect(await screen.findByText('Task list — bulk')).toBeVisible();
-        expect(screen.queryByText('How tasks become plan-ready')).not.toBeInTheDocument();
-
-        await user.click(screen.getByRole('button', { name: 'Planning help' }));
-        const guide = screen.getByRole('dialog', { name: 'How tasks become plan-ready' });
-        expect(guide).toBeVisible();
-        expect(within(guide).getByRole('heading', {
-            name: 'Required for every planned task',
-        })).toBeVisible();
-        expect(within(guide).getByRole('heading', {
-            name: 'Optional: prepare agent execution',
-        })).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'Planning help' })).not.toBeInTheDocument();
     });
 
     it('opens filters and board layout from command URLs', async () => {

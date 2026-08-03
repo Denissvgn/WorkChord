@@ -427,7 +427,20 @@ export const SidebarContent = ({
                         onNavigate={onNavigate}
                     />
                 ))}
-                {secondaryItems.length > 0 && (
+                {secondaryItems.length === 1 && (
+                    <div className="sb-secondary-destination">
+                        <SidebarNavItem
+                            item={secondaryItems[0]!}
+                            isCurrent={isNavItemCurrent(
+                                secondaryItems[0]!,
+                                location.pathname,
+                                selectedSavedViewId,
+                            )}
+                            onNavigate={onNavigate}
+                        />
+                    </div>
+                )}
+                {secondaryItems.length > 1 && (
                     <MoreDestinationsDisclosure
                         key={`${currentWorkspace.key}:${location.pathname}`}
                         items={secondaryItems}
@@ -461,16 +474,18 @@ export const SidebarContent = ({
 export const AppSidebar = () => {
     const { t } = useTranslation();
     const currentWorkspace = useCurrentWorkspace();
+    const navigationLabel = t('nav.areaDestinations', {
+        area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
+    });
 
     return (
         <aside
             className="sidebar"
             data-testid="app-sidebar"
-            aria-label={t('nav.areaDestinations', {
-                area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
-            })}
         >
-            <SidebarContent />
+            <nav className="sidebar-navigation" aria-label={navigationLabel}>
+                <SidebarContent />
+            </nav>
         </aside>
     );
 };

@@ -15,7 +15,7 @@ import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
 import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
-import { OverflowMenu, PageHeader, PageLayout } from '../components/ui';
+import { OverflowMenu } from '../components/ui';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
 import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -25,8 +25,7 @@ import { snapshotService } from '../services/snapshotService';
 import type { IterationSnapshot } from '../services/snapshotService';
 import { getAdminAccessErrorMessage, hasAdminApiKey } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
-import { PlanReturnBar } from '../components/planning/PlanReturnBar';
-import { PlanningWorkflowGuide } from '../components/planning/PlanningWorkflowGuide';
+import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
 
 const DECISION_COUNT_LABELS = [
     { key: 'scheduled', labelKey: 'gantt.decisionCounts.scheduled' },
@@ -301,21 +300,45 @@ const GanttPage = () => {
         }
     }, [iterations, selectedIterationId, setSelectedIterationId]);
 
-    if (iterationsLoading) return <div className="p-6 text-content-secondary">{t('queryFeedback.loading')}</div>;
-    if (iterationsError) return <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground"><p>{t('queryFeedback.fallback')}</p><Button className="mt-3" variant="secondary" onClick={() => void refetchIterations()}>{t('queryFeedback.retry')}</Button></div>;
+    if (iterationsLoading) {
+        return (
+            <PlanningWorkbenchFrame
+                title={t('gantt.title')}
+                description={t('gantt.description')}
+            >
+                <div className="banner muted" role="status">{t('queryFeedback.loading')}</div>
+            </PlanningWorkbenchFrame>
+        );
+    }
+    if (iterationsError) {
+        return (
+            <PlanningWorkbenchFrame
+                title={t('gantt.title')}
+                description={t('gantt.description')}
+            >
+                <div role="alert" className="banner warn">
+                    <p>{t('queryFeedback.fallback')}</p>
+                    <Button variant="secondary" onClick={() => void refetchIterations()}>
+                        {t('queryFeedback.retry')}
+                    </Button>
+                </div>
+            </PlanningWorkbenchFrame>
+        );
+    }
     if (!iterations || iterations.length === 0) {
         return (
-            <PageLayout>
-                <PageHeader title={t('gantt.title')} subtitle={t('gantt.noIterationsBody')} />
-                <PlanReturnBar />
+            <PlanningWorkbenchFrame
+                title={t('gantt.title')}
+                description={t('gantt.description')}
+            >
                 <div className="empty">
                     <h4>{t('gantt.noIterationsTitle')}</h4>
                     <p>{t('gantt.noIterationsBody')}</p>
                     <div className="empty-actions">
-                        <a href="/iterations" className="btn primary">{t('gantt.goToIterations')}</a>
+                        <Link to="/iterations" className="btn primary">{t('gantt.goToIterations')}</Link>
                     </div>
                 </div>
-            </PageLayout>
+            </PlanningWorkbenchFrame>
         );
     }
 
@@ -327,64 +350,76 @@ const GanttPage = () => {
             className="contents"
             fullscreenClassName="bg-surface-muted"
         >
-        <PageLayout variant="workbench" className="flex h-full min-h-0 flex-col gap-4 overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
-            <PlanReturnBar />
-            <div className="wc-page-head shrink-0" data-testid="page-header" style={{padding:'0 4px'}}>
-                <div>
-                    <div className="row" style={{gap:8, marginBottom:2}}>
-                        <h1 className="wc-page-title">{t('gantt.title')}</h1>
-                        {sandboxMode && <span className="pill warn"><span className="pdot"/>{t('gantt.sandboxActive')}</span>}
-                    </div>
-                </div>
-                <div className="row" style={{flexWrap:'wrap', gap:6}}>
-                    <IterationSelector
-                        className="min-w-0 sm:min-w-60"
-                        onChange={() => {
-                            latestExplainIterationRef.current = null;
-                            setExplanation(null);
-                            setExplanationError(null);
-                            setEditingExplanationTask(null);
-                            setSandboxChanges({});
-                            setSandboxMode(false);
-                        }}
-                    />
-                    <PlanningWorkflowGuide surface="gantt" />
-                    <Button
-                        variant={sandboxMode ? 'secondary' : 'primary'}
-                        onClick={() => { if (sandboxMode) setSandboxChanges({}); setSandboxMode(!sandboxMode); }}
-                        className="justify-center"
-                        title={t('gantt.sandboxTooltip')}
-                    >
-                        <FlaskConical className="w-4 h-4 mr-2"/>
-                        {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
-                    </Button>
-                    <OverflowMenu
-                        label={t('actions.moreActions')}
-                        items={[
-                            {
-                                label: t('snapshots.open'),
-                                icon: <History className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setSnapshotsOpen(true),
-                                disabled: selectedIterationId <= 0,
-                            },
-                            {
-                                label: t('gantt.explainSchedule'),
-                                icon: <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />,
-                                onSelect: () => explainMutation.mutate(selectedIterationId),
-                                disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending,
-                            },
-                            {
-                                label: isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen'),
-                                icon: isFullScreen
-                                    ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
-                                    : <Maximize2 className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setIsFullScreen(value => !value),
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
-
+        <PlanningWorkbenchFrame
+            variant="workbench"
+            className="gantt-planning-workbench"
+            canvasClassName="gantt-planning-canvas"
+            title={(
+                <span className="planning-workbench-title-row">
+                    <span>{t('gantt.title')}</span>
+                    {sandboxMode && (
+                        <span className="pill warn">
+                            <span className="pdot" />
+                            {t('gantt.sandboxActive')}
+                        </span>
+                    )}
+                </span>
+            )}
+            description={t('gantt.description')}
+            contextControl={(
+                <IterationSelector
+                    className="min-w-0"
+                    onChange={() => {
+                        latestExplainIterationRef.current = null;
+                        setExplanation(null);
+                        setExplanationError(null);
+                        setEditingExplanationTask(null);
+                        setSandboxChanges({});
+                        setSandboxMode(false);
+                    }}
+                />
+            )}
+            primaryAction={(
+                <Button
+                    variant={sandboxMode ? 'secondary' : 'primary'}
+                    onClick={() => {
+                        if (sandboxMode) setSandboxChanges({});
+                        setSandboxMode(!sandboxMode);
+                    }}
+                    title={t('gantt.sandboxTooltip')}
+                >
+                    <FlaskConical className="h-4 w-4" />
+                    {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
+                </Button>
+            )}
+            overflowAction={(
+                <OverflowMenu
+                    label={t('actions.moreActions')}
+                    items={[
+                        {
+                            label: t('snapshots.open'),
+                            icon: <History className="h-4 w-4" aria-hidden="true" />,
+                            onSelect: () => setSnapshotsOpen(true),
+                            disabled: selectedIterationId <= 0,
+                        },
+                        {
+                            label: t('gantt.explainSchedule'),
+                            icon: <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />,
+                            onSelect: () => explainMutation.mutate(selectedIterationId),
+                            disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending,
+                        },
+                        {
+                            label: isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen'),
+                            icon: isFullScreen
+                                ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                                : <Maximize2 className="h-4 w-4" aria-hidden="true" />,
+                            onSelect: () => setIsFullScreen(value => !value),
+                        },
+                    ]}
+                />
+            )}
+            state={(sandboxMode || currentSimulationError || visibleExplanationError || visibleExplanation) ? (
+                <>
             {sandboxMode && (
                 <div className="bg-feedback-warning-muted border border-feedback-warning-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-start gap-3">
@@ -408,7 +443,7 @@ const GanttPage = () => {
                             )}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 self-end sm:self-center">
+                    <div className="planning-workbench-state-actions self-end sm:self-center">
                         <Button
                             variant="secondary"
                             onClick={() => {
@@ -587,6 +622,9 @@ const GanttPage = () => {
                     </div>
                 </div>
             )}
+                </>
+            ) : undefined}
+        >
 
             {ganttError ? (
                 <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground">
@@ -699,7 +737,7 @@ const GanttPage = () => {
                 sandboxMode={sandboxMode}
                 onSaveSandbox={handleSaveSandbox}
             />
-        </PageLayout>
+        </PlanningWorkbenchFrame>
         </FullscreenWorkspace>
     );
 };

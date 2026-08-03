@@ -122,21 +122,6 @@ describe('PlanPage mixed planning launcher', () => {
             .toHaveAttribute('href', '/plan/master');
     });
 
-    it('explains readiness and sharing on demand without adding another primary action', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
-
-        await user.click(screen.getByRole('button', { name: 'Planning help' }));
-
-        const guide = screen.getByRole('dialog', { name: 'How Plan Work fits together' });
-        expect(within(guide).getByText('Read readiness as a sequence')).toBeVisible();
-        expect(within(guide).getByText('Resolve the first blocked checkpoint')).toBeVisible();
-        expect(within(guide).getByRole('link', { name: 'Continue Plan Work' }))
-            .toHaveAttribute('href', '/plan/master');
-        expect(within(guide).queryByRole('link', { name: 'Continue Plan Work' }))
-            .not.toHaveClass('primary');
-    });
-
     it('moves inactive and beta planning jobs into direct tools', async () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
             readinessOverrides: { inboxCount: 0, riskCount: 0 },

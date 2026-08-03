@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,7 +36,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { getApiErrorMessage } from '../../utils/apiError';
-import { QueryErrorState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 
@@ -99,6 +99,7 @@ export const TaskList = ({
     const [showMergeModal, setShowMergeModal] = useState(false);
     const [mergeParentTitle, setMergeParentTitle] = useState('');
     const mergeTitleRef = useRef<HTMLInputElement>(null);
+    const mergeTitleId = useId();
     const [selectedBulkTaskIds, setSelectedBulkTaskIds] = useState<Set<number>>(new Set());
     const [nowMs, setNowMs] = useState(() => Date.now());
     const activeTaskMode = requestedMode === undefined ? internalTaskMode : requestedMode;
@@ -385,7 +386,7 @@ export const TaskList = ({
 
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
-    if (isLoading) return <div>{t('taskList.loading')}</div>;
+    if (isLoading) return <QueryLoadingState message={t('taskList.loading')} />;
     if (tasksError || labelsError || allLabelsError) return <QueryErrorState error={tasksError ?? labelsError ?? allLabelsError} onRetry={() => { void refetchTasks(); void refetchLabels(); void refetchAllLabels(); }} />;
 
     return (
@@ -688,10 +689,14 @@ export const TaskList = ({
                             {t('taskList.selectedTasks', { count: selectedTaskIds.size })}
                         </p>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-content-primary mb-1">
+                            <label
+                                className="block text-sm font-medium text-content-primary mb-1"
+                                htmlFor={mergeTitleId}
+                            >
                                 {t('taskList.parentTitleLabel')}
                             </label>
                             <input
+                                id={mergeTitleId}
                                 ref={mergeTitleRef}
                                 type="text"
                                 value={mergeParentTitle}

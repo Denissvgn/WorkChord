@@ -69,6 +69,7 @@ export const REVIEWED_HOOK_COUNTS = {
 const HOOK_KINDS = new Map([
     ['useQuery', 'query'],
     ['useQueries', 'query'],
+    ['useInfiniteQuery', 'query'],
     ['useMutation', 'mutation'],
 ]);
 
@@ -128,8 +129,8 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/PlanSharePage.tsx': '9e333df62efb5575',
     'src/pages/ProjectDetailPage.tsx': '9dab38fcac41fd04',
     'src/pages/ProjectReleaseDetailPage.tsx': '9145592c7cadb869',
-    'src/pages/ProjectsPage.tsx': '1d26151119ee4b90',
-    'src/pages/RoadmapPage.tsx': '410b83b223f23f42',
+    'src/pages/ProjectsPage.tsx': '4fd72b0f96d3e263',
+    'src/pages/RoadmapPage.tsx': '331ac878fdd72339',
     'src/pages/TasksPage.tsx': 'e914cc1d9b218201',
     'src/pages/TeamPage.tsx': '1b061fa3a8dd4c25',
     'src/pages/TriagePage.tsx': 'c0c3648f5ab135a5',

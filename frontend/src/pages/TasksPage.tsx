@@ -25,7 +25,6 @@ import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
-import { TaskWorkflowGuide } from '../components/tasks/TaskWorkflowGuide';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
@@ -332,7 +331,6 @@ const TasksPage = () => {
                                 selectSavedView(null);
                             }}
                         />
-                        <TaskWorkflowGuide />
                         <OverflowMenu
                             className="tasks-overflow-trigger"
                             label={t('actions.moreActions')}

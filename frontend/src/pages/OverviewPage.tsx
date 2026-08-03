@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { formatDate } from '../utils/formatDate';
@@ -18,11 +18,9 @@ import {
     Inbox,
     Layers,
     ListTodo,
-    Plus,
     Target,
     User,
     Users,
-    X,
     Zap,
 } from 'lucide-react';
 import { STEP_DEFS } from '../features/planningMasters/masters';
@@ -32,9 +30,7 @@ import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
 import { projectService } from '../services/projectService';
 import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashboardCards';
-import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { TaskForm } from '../components/tasks/TaskForm';
 import { InlineEmptyState, PageHeader, PageLayout, SectionCard } from '../components/ui';
 import type { ProjectSummary, ProjectTargetDateRisk, ProjectUpdateFreshness } from '../types/project';
 import type { MemberWorkload, TeamMember } from '../types/team';
@@ -42,12 +38,11 @@ import type { Task, TaskStatus } from '../types/task';
 import type { Iteration } from '../types/iteration';
 import type { PillTone } from '../components/ui/tone';
 import { wcPillClass, STATUS_TONE, toneVar, toneSoftVar } from '../components/ui/tone';
+import { selectWorkNowTasks } from '../utils/selectWorkNowTasks';
 
 type OverviewTeamMember = Pick<TeamMember, 'id' | 'name' | 'position'> & {
     taskCount: number;
 };
-
-type TaskFilter = 'all' | 'active' | 'overdue' | 'unassigned';
 
 type AttentionItem = {
     id: string;
@@ -120,9 +115,6 @@ const freshnessTone = (freshness?: ProjectUpdateFreshness | null): PillTone => {
 
 const OverviewPage = () => {
     const { t } = useTranslation();
-    const queryClient = useQueryClient();
-    const [isQuickCreateOpen, setIsQuickCreateOpen] = useState(false);
-    const [taskFilter, setTaskFilter] = useState<TaskFilter>('all');
     const {
         selectedIterationId,
         currentIteration: selectedIteration,
@@ -329,35 +321,8 @@ const OverviewPage = () => {
                     />
 
                     <div className="wc-panel-stack">
-                        {isQuickCreateOpen && selectedIterationId > 0 && (
-                            <section className="card card-pad overview-quick-create" aria-labelledby="overview-quick-create-title">
-                                <div className="between overview-quick-create-head">
-                                    <h2 id="overview-quick-create-title">{t('quickActions.addTask')}</h2>
-                                    <button type="button" className="btn ghost sm icon" onClick={() => setIsQuickCreateOpen(false)} aria-label={t('actions.close')}>
-                                        <X aria-hidden="true" className="h-4 w-4" />
-                                    </button>
-                                </div>
-                                <TaskForm
-                                    iterationId={selectedIterationId}
-                                    onSuccess={() => {
-                                        setIsQuickCreateOpen(false);
-                                        queryClient.invalidateQueries({ queryKey: ['tasks'] });
-                                        queryClient.invalidateQueries({ queryKey: ['iterationSummary', selectedIterationId] });
-                                        if (scopedProjectId) {
-                                            queryClient.invalidateQueries({ queryKey: ['projectSummary', scopedProjectId] });
-                                        }
-                                        queryClient.invalidateQueries({ queryKey: ['gantt'] });
-                                    }}
-                                    onCancel={() => setIsQuickCreateOpen(false)}
-                                />
-                            </section>
-                        )}
-
-                        <IterationTasksCard
+                        <WorkNowPreview
                             tasks={allTasks}
-                            filter={taskFilter}
-                            onFilter={setTaskFilter}
-                            onAddTask={() => setIsQuickCreateOpen(true)}
                             isProjectScoped={Boolean(scopedProject)}
                         />
 
@@ -563,107 +528,46 @@ const Pill = ({
     </span>
 );
 
-const IterationTasksCard = ({
+const WorkNowPreview = ({
     tasks,
-    filter,
-    onFilter,
-    onAddTask,
     isProjectScoped,
 }: {
     tasks: Task[];
-    filter: TaskFilter;
-    onFilter: (value: TaskFilter) => void;
-    onAddTask: () => void;
     isProjectScoped: boolean;
 }) => {
     const { t } = useTranslation();
-    const filters: Array<{ id: TaskFilter; label: string; count: number }> = [
-        { id: 'all', label: t('overview.taskFilters.all'), count: tasks.length },
-        { id: 'active', label: t('overview.taskFilters.active'), count: tasks.filter(task => task.status === 'active').length },
-        { id: 'overdue', label: t('overview.taskFilters.overdue'), count: tasks.filter(task => task.is_overdue).length },
-        { id: 'unassigned', label: t('overview.taskFilters.unassigned'), count: tasks.filter(task => !task.assignee).length },
-    ];
-
-    const visibleTasks = tasks.filter(task => {
-        if (filter === 'active') return task.status === 'active';
-        if (filter === 'overdue') return task.is_overdue;
-        if (filter === 'unassigned') return !task.assignee;
-        return true;
-    });
-
-    const groups = isProjectScoped
-        ? visibleTasks.reduce<Record<string, Task[]>>((acc, task) => {
-            const groupName = task.milestone?.name || t('overview.noMilestone');
-            acc[groupName] = acc[groupName] || [];
-            acc[groupName].push(task);
-            return acc;
-        }, {})
-        : { [t('overview.iterationTasksFlatGroup')]: visibleTasks };
+    const openTaskCount = tasks.filter(task => !doneStatuses.has(task.status)).length;
+    const visibleTasks = selectWorkNowTasks(tasks);
+    const remainingTaskCount = Math.max(0, openTaskCount - visibleTasks.length);
+    const taskBoardPath = openTaskCount === 0 ? '/tasks?create=1' : '/tasks';
 
     return (
         <SectionCard
             icon={<ListTodo className="h-5 w-5 text-action" />}
-            title={t('overview.iterationTasks')}
+            title={t('overview.workNow')}
+            description={t('overview.workNowDescription')}
             actions={(
-                <div className="overview-task-actions">
-                    <button type="button" className="btn ghost sm" onClick={onAddTask}>
-                        <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                        {t('quickActions.addTask')}
-                    </button>
-                    <Link to="/tasks" className="btn ghost sm">
-                        {t('overview.openTaskBoard')}
-                        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-                    </Link>
-                </div>
+                <Link to={taskBoardPath} className="btn ghost sm">
+                    {openTaskCount === 0 ? t('overview.addFirstTask') : t('overview.openTaskBoard')}
+                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                </Link>
             )}
         >
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-                {filters.map(item => (
-                    <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => onFilter(item.id)}
-                        aria-pressed={filter === item.id}
-                        className={clsx(
-                            'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-colors',
-                            filter === item.id
-                                ? 'bg-content-primary text-content-emphasis'
-                                : 'bg-surface-subtle text-content-primary hover:bg-surface-hover',
-                        )}
-                    >
-                        <span>{item.label}</span>
-                        <span className={clsx('rounded-full px-1.5 text-wc-micro tabular-nums', filter === item.id ? 'bg-content-emphasis/15 text-content-emphasis' : 'bg-surface-card text-content-secondary')}>
-                            {item.count}
-                        </span>
-                    </button>
-                ))}
-            </div>
-
             {visibleTasks.length === 0 ? (
-                <InlineEmptyState
-                    actions={filter === 'all'
-                        ? undefined
-                        : <Button variant="outline" size="sm" onClick={() => onFilter('all')}>{t('actions.clear')}</Button>}
-                >
-                    {filter === 'all' ? t('overview.noIterationTasks') : t('overview.noTasksForFilter')}
-                </InlineEmptyState>
+                <InlineEmptyState>{t('overview.noWorkNow')}</InlineEmptyState>
             ) : (
-                <div className="space-y-4">
-                    {Object.entries(groups).map(([groupName, items]) => (
-                        <div key={groupName}>
-                            {isProjectScoped && (
-                                <div className="mb-2 flex items-center gap-2 px-1 text-wc-micro font-semibold uppercase tracking-wide text-content-secondary">
-                                    <Target className="h-3 w-3 text-content-tertiary" />
-                                    <span className="truncate">{groupName}</span>
-                                    <span className="tabular-nums text-content-tertiary">| {items.length}</span>
-                                </div>
-                            )}
-                            <ul className="divide-y divide-border-subtle overflow-hidden rounded-lg border border-border-subtle">
-                                {items.map(task => <TaskRow key={task.id} task={task} showProject={!isProjectScoped} />)}
-                            </ul>
-                        </div>
-                    ))}
-                </div>
+                <>
+                    <ul className="divide-y divide-border-subtle overflow-hidden rounded-lg border border-border-subtle">
+                        {visibleTasks.map(task => (
+                            <TaskRow key={task.id} task={task} showProject={!isProjectScoped} />
+                        ))}
+                    </ul>
+                    {remainingTaskCount > 0 && (
+                        <p className="overview-work-now-summary">
+                            {t('overview.workNowRemaining', { count: remainingTaskCount })}
+                        </p>
+                    )}
+                </>
             )}
         </SectionCard>
     );

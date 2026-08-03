@@ -67,6 +67,10 @@ import {
     StickyRail,
 } from '../components/ui';
 import { STATUS_TONE } from '../components/ui/tone';
+import {
+    projectStatusBadgeClassName,
+    projectStatusPillClassName,
+} from '../components/projects/projectStatusStyles';
 
 const t = i18n.t.bind(i18n);
 
@@ -112,27 +116,6 @@ const releaseStatusLabelKeys: Record<ReleaseStatus, string> = {
     building: 'surfaces.projectDetail.releaseStatuses.building',
     shipped: 'surfaces.projectDetail.releaseStatuses.shipped',
     canceled: 'surfaces.projectDetail.releaseStatuses.canceled',
-};
-
-const badgeClassName = (value: string) => {
-    switch (value) {
-        case 'active':
-        case 'on_track':
-            return 'bg-action-muted text-action border-action';
-        case 'completed':
-        case 'closed':
-            return 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border';
-        case 'paused':
-        case 'at_risk':
-            return 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border';
-        case 'canceled':
-        case 'off_track':
-            return 'bg-feedback-danger-muted text-feedback-danger-foreground border-feedback-danger-border';
-        case 'proposed':
-            return 'bg-feedback-purple-muted text-feedback-purple-foreground border-feedback-purple-border';
-        default:
-            return 'bg-surface-muted text-content-primary border-border';
-    }
 };
 
 const releaseBadgeClassName = (status: ReleaseStatus | string) => {
@@ -348,7 +331,7 @@ const MilestonesSection = ({
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <h3 className="font-semibold text-content-primary">{milestone.name}</h3>
-                                            <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', badgeClassName(milestone.status))}>
+                                            <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(milestone.status))}>
                                                 {t(milestoneStatusLabelKeys[milestone.status])}
                                             </span>
                                             <span className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-xs text-content-secondary">
@@ -953,7 +936,7 @@ const ProjectDetailPage = () => {
     const invalidateProjectMilestones = () => {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
         queryClient.invalidateQueries({ queryKey: ['project', numericProjectId] });
-        queryClient.invalidateQueries({ queryKey: ['projectMilestones', numericProjectId] });
+        queryClient.invalidateQueries({ queryKey: ['projectMilestones'] });
         queryClient.invalidateQueries({ queryKey: ['projectSummary', numericProjectId] });
         queryClient.invalidateQueries({ queryKey: ['projectTasks', numericProjectId] });
         queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -1260,7 +1243,9 @@ const ProjectDetailPage = () => {
                 subtitle={project.description}
                 meta={(
                     <>
-                        <span className="pill opt"><span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}</span>
+                        <span className={`pill ${projectStatusPillClassName(projectStatus)}`}>
+                            <span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}
+                        </span>
                         <span className={`pill ${healthToTone(projectHealth) === 'green' ? 'done' : healthToTone(projectHealth) === 'yellow' ? 'warn' : healthToTone(projectHealth) === 'red' ? 'blocked' : 'opt'}`}>
                             <span className="pdot"/>{t(healthLabelKeys[projectHealth])}
                         </span>

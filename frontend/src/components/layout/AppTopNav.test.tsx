@@ -13,7 +13,10 @@ const triageServiceMock = vi.hoisted(() => ({
 
 vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningReadinessMock);
 vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
-vi.mock('../../navigation/routeModules', () => ({ warmRouteModule: vi.fn() }));
+vi.mock('../../navigation/routeModules', async importOriginal => ({
+    ...await importOriginal<typeof import('../../navigation/routeModules')>(),
+    warmRouteModule: vi.fn(),
+}));
 vi.mock('../UserSessionBadge', () => ({ UserSessionBadge: () => null }));
 vi.mock('./AppSidebar', () => ({
     SidebarContent: ({
@@ -55,6 +58,7 @@ describe('AppTopNav', () => {
         expect(within(switcher).getAllByRole('link')).toHaveLength(3);
         expect(within(switcher).getByRole('link', { name: 'Open Timeline & Planning home' }))
             .toHaveAttribute('aria-current', 'location');
+        expect(screen.getByRole('button', { name: 'Open help for Roadmap' })).toBeVisible();
     });
 
     it('opens a labeled navigation drawer', async () => {

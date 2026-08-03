@@ -45,28 +45,26 @@ export const OverflowMenu = ({
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-        const firstEnabledItem = menuItemRefs.current.find(item => item && !item.disabled);
-        firstEnabledItem?.focus();
+        menuItemRefs.current.find(Boolean)?.focus();
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [open]);
 
     const handleMenuItemKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
-        const enabledIndexes = items.reduce<number[]>((indexes, item, itemIndex) => {
-            if (!item.disabled) indexes.push(itemIndex);
-            return indexes;
-        }, []);
-        const currentPosition = enabledIndexes.indexOf(index);
+        const navigableIndexes = items.map((_, itemIndex) => itemIndex);
+        const currentPosition = navigableIndexes.indexOf(index);
         if (currentPosition < 0) return;
 
         let nextIndex: number | null = null;
         if (event.key === 'ArrowDown') {
-            nextIndex = enabledIndexes[(currentPosition + 1) % enabledIndexes.length];
+            nextIndex = navigableIndexes[(currentPosition + 1) % navigableIndexes.length];
         } else if (event.key === 'ArrowUp') {
-            nextIndex = enabledIndexes[(currentPosition - 1 + enabledIndexes.length) % enabledIndexes.length];
+            nextIndex = navigableIndexes[
+                (currentPosition - 1 + navigableIndexes.length) % navigableIndexes.length
+            ];
         } else if (event.key === 'Home') {
-            nextIndex = enabledIndexes[0];
+            nextIndex = navigableIndexes[0];
         } else if (event.key === 'End') {
-            nextIndex = enabledIndexes[enabledIndexes.length - 1];
+            nextIndex = navigableIndexes[navigableIndexes.length - 1];
         } else if (event.key === 'Tab') {
             closeMenu(false);
             return;
@@ -110,10 +108,11 @@ export const OverflowMenu = ({
                                 ref={node => { menuItemRefs.current[index] = node; }}
                                 role="menuitem"
                                 type="button"
-                                disabled={item.disabled}
+                                aria-disabled={item.disabled || undefined}
                                 className="ofm-item"
                                 style={item.tone === 'danger' ? { color: 'var(--blocked)' } : undefined}
                                 onClick={() => {
+                                    if (item.disabled) return;
                                     closeMenu();
                                     item.onSelect();
                                 }}

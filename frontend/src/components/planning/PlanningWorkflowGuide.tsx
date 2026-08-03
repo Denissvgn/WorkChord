@@ -23,9 +23,16 @@ type GuideItem = {
     body: string;
 };
 
-export const PlanningWorkflowGuide = ({ surface }: { surface: PlanningSurface }) => {
+export const PlanningWorkflowHelpContent = ({
+    surface,
+    showAction = true,
+    onNavigate,
+}: {
+    surface: PlanningSurface;
+    showAction?: boolean;
+    onNavigate?: () => void;
+}) => {
     const { t } = useTranslation();
-    const [open, setOpen] = useState(false);
     const translationPrefix = `${surface}.help`;
     const items: GuideItem[] = surface === 'plan'
         ? [
@@ -63,6 +70,40 @@ export const PlanningWorkflowGuide = ({ surface }: { surface: PlanningSurface })
             },
         ];
     const destination = surface === 'plan' ? '/plan/master' : '/plan';
+
+    return (
+        <div className="planning-workflow-help">
+            <ul>
+                {items.map(({ icon: Icon, title, body }) => (
+                    <li key={title}>
+                        <span className="planning-workflow-help-icon">
+                            <Icon aria-hidden="true" className="h-4 w-4" />
+                        </span>
+                        <span>
+                            <strong>{title}</strong>
+                            <span>{body}</span>
+                        </span>
+                    </li>
+                ))}
+            </ul>
+            {showAction && (
+                <Link
+                    to={destination}
+                    className="btn secondary sm"
+                    onClick={onNavigate}
+                >
+                    {t(`${translationPrefix}.action`)}
+                    <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
+                </Link>
+            )}
+        </div>
+    );
+};
+
+export const PlanningWorkflowGuide = ({ surface }: { surface: PlanningSurface }) => {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+    const translationPrefix = `${surface}.help`;
     const closeForNavigation = () => {
         setOpen(false);
         if (typeof window === 'undefined') return;
@@ -93,29 +134,10 @@ export const PlanningWorkflowGuide = ({ surface }: { surface: PlanningSurface })
                 onClose={() => setOpen(false)}
                 className="planning-workflow-drawer"
             >
-                <div className="planning-workflow-help">
-                    <ul>
-                        {items.map(({ icon: Icon, title, body }) => (
-                            <li key={title}>
-                                <span className="planning-workflow-help-icon">
-                                    <Icon aria-hidden="true" className="h-4 w-4" />
-                                </span>
-                                <span>
-                                    <strong>{title}</strong>
-                                    <span>{body}</span>
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    <Link
-                        to={destination}
-                        className="btn secondary sm"
-                        onClick={closeForNavigation}
-                    >
-                        {t(`${translationPrefix}.action`)}
-                        <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-                    </Link>
-                </div>
+                <PlanningWorkflowHelpContent
+                    surface={surface}
+                    onNavigate={closeForNavigation}
+                />
             </SlideOverDrawer>
         </>
     );

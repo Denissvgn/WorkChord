@@ -9,7 +9,6 @@ import {
     CalendarClock,
     Check,
     ChevronDown,
-    CircleHelp,
     Github,
     KeyRound,
     Keyboard,
@@ -36,9 +35,8 @@ import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
-import { Button } from '../components/common/Button';
 import { Checkbox } from '../components/common/Checkbox';
-import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
+import { PageHeader, PageLayout } from '../components/ui';
 import { useAdminAccess } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
@@ -194,7 +192,6 @@ const parseSettingsTab = (value: string | null): SettingsPageTab => (
 
 const SettingsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [goalGuideOpen, setGoalGuideOpen] = useState(false);
     const [destinationSearch, setDestinationSearch] = useState('');
     const rawTab = searchParams.get('tab');
     const activeTab = parseSettingsTab(rawTab);
@@ -311,53 +308,7 @@ const SettingsPage = () => {
             <PageHeader
                 title={t('settingsPage.title')}
                 subtitle={t('settingsPage.description')}
-                actions={activeTab !== 'overview' ? (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1.5"
-                        aria-expanded={goalGuideOpen}
-                        aria-haspopup="dialog"
-                        onClick={() => setGoalGuideOpen(true)}
-                    >
-                        <CircleHelp aria-hidden="true" className="h-4 w-4" />
-                        {t('settingsPage.goalGuide.trigger')}
-                    </Button>
-                ) : undefined}
             />
-
-            <SlideOverDrawer
-                open={goalGuideOpen}
-                title={t('settingsPage.goalGuide.title')}
-                subtitle={t('settingsPage.goalGuide.description')}
-                icon={<CircleHelp aria-hidden="true" className="h-4 w-4" />}
-                onClose={() => setGoalGuideOpen(false)}
-            >
-                <nav className="settings-goal-help" aria-label={t('settingsPage.goalGuide.navigationLabel')}>
-                    <Link to={settingsHref('scheduling')} onClick={() => setGoalGuideOpen(false)}>
-                        <span>
-                            <strong>{t('settingsPage.goalGuide.scheduleTitle')}</strong>
-                            <span>{t('settingsPage.goalGuide.scheduleBody')}</span>
-                        </span>
-                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                    </Link>
-                    <Link to={settingsHref('github')} onClick={() => setGoalGuideOpen(false)}>
-                        <span>
-                            <strong>{t('settingsPage.goalGuide.githubTitle')}</strong>
-                            <span>{t('settingsPage.goalGuide.githubBody')}</span>
-                        </span>
-                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                    </Link>
-                    <Link to={settingsHref('models_agents')} onClick={() => setGoalGuideOpen(false)}>
-                        <span>
-                            <strong>{t('settingsPage.goalGuide.agentsTitle')}</strong>
-                            <span>{t('settingsPage.goalGuide.agentsBody')}</span>
-                        </span>
-                        <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                    </Link>
-                </nav>
-            </SlideOverDrawer>
 
             <div className="settings-shell">
                 <aside className="settings-local-nav">

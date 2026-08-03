@@ -32,6 +32,7 @@ from app.schemas.project import (
     ProjectMilestoneSummary,
     ProjectMilestoneTaskGroup,
     ProjectMilestoneUpdate,
+    ProjectPortfolioSummary,
     ProjectSummary,
     STALE_PROJECT_UPDATE_DAYS,
     ProjectTargetDateRisk,
@@ -388,6 +389,136 @@ class ProjectService:
             )
         return projects
 
+    async def list_portfolio_summaries(self) -> list[ProjectPortfolioSummary]:
+        """Return compact project signals with one aggregate query for the portfolio."""
+        projects = list(
+            (
+                await self.db.execute(
+                    select(Project)
+                    .order_by(
+                        Project.sort_order.asc(),
+                        Project.target_date.asc().nulls_last(),
+                        Project.id.asc(),
+                    )
+                    .limit(MAX_PROJECT_LIST_ITEMS + 1)
+                )
+            ).scalars()
+        )
+        if len(projects) > MAX_PROJECT_LIST_ITEMS:
+            raise CollectionLimitExceededError(
+                "project portfolio summary list",
+                MAX_PROJECT_LIST_ITEMS,
+            )
+        if not projects:
+            return []
+
+        project_ids = [project.id for project in projects]
+        dependency_task = aliased(Task)
+        done_statuses = (TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value)
+        remaining_statuses = (TaskStatus.PLANNED.value, TaskStatus.ACTIVE.value)
+        blocked = exists(
+            select(TaskDependency.task_id)
+            .join(
+                dependency_task,
+                dependency_task.id == TaskDependency.depends_on_id,
+            )
+            .where(
+                TaskDependency.task_id == Task.id,
+                dependency_task.status.not_in(done_statuses),
+            )
+        )
+
+        rows = (
+            await self.db.execute(
+                select(
+                    Task.project_id.label("project_id"),
+                    func.count(Task.id).label("total_tasks"),
+                    func.coalesce(
+                        func.sum(case((Task.status.in_(done_statuses), 1), else_=0)),
+                        0,
+                    ).label("completed_tasks"),
+                    func.coalesce(func.sum(Task.effort_days), 0.0).label(
+                        "total_effort_days"
+                    ),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (Task.status.in_(remaining_statuses), Task.effort_days),
+                                else_=0.0,
+                            )
+                        ),
+                        0.0,
+                    ).label("remaining_effort_days"),
+                    func.coalesce(
+                        func.sum(case((blocked, 1), else_=0)),
+                        0,
+                    ).label("blocked_tasks"),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (
+                                    Project.target_date.is_not(None)
+                                    & Task.end_date.is_not(None)
+                                    & (Task.end_date > Project.target_date),
+                                    1,
+                                ),
+                                else_=0,
+                            )
+                        ),
+                        0,
+                    ).label("overdue_tasks"),
+                    func.min(Task.start_date).label("task_start_date"),
+                    func.max(Task.end_date).label("task_end_date"),
+                )
+                .join(Project, Project.id == Task.project_id)
+                .where(Task.project_id.in_(project_ids))
+                .group_by(Task.project_id)
+            )
+        ).all()
+        aggregates_by_project = {int(row.project_id): row for row in rows}
+
+        summaries: list[ProjectPortfolioSummary] = []
+        for project in projects:
+            row = aggregates_by_project.get(project.id)
+            total_tasks = int(row.total_tasks) if row is not None else 0
+            completed_tasks = int(row.completed_tasks) if row is not None else 0
+            total_effort_days = float(row.total_effort_days) if row is not None else 0.0
+            remaining_effort_days = (
+                float(row.remaining_effort_days) if row is not None else 0.0
+            )
+            blocked_tasks = int(row.blocked_tasks) if row is not None else 0
+            overdue_tasks = int(row.overdue_tasks) if row is not None else 0
+            task_start_date = row.task_start_date if row is not None else None
+            task_end_date = row.task_end_date if row is not None else None
+            completion_percent = self._calculate_completion_percent(
+                total_tasks,
+                completed_tasks,
+            )
+            target_date_risk, _, _, _ = self._calculate_target_date_risk(
+                project=project,
+                total_tasks=total_tasks,
+                completed_tasks=completed_tasks,
+                completion_percent=completion_percent,
+                blocked_tasks=blocked_tasks,
+                overdue_tasks=overdue_tasks,
+                remaining_effort_days=remaining_effort_days,
+                task_start_date=task_start_date,
+                task_end_date=task_end_date,
+            )
+            summaries.append(
+                ProjectPortfolioSummary(
+                    project_id=project.id,
+                    total_tasks=total_tasks,
+                    completed_tasks=completed_tasks,
+                    total_effort_days=total_effort_days,
+                    remaining_effort_days=remaining_effort_days,
+                    blocked_tasks=blocked_tasks,
+                    overdue_tasks=overdue_tasks,
+                    target_date_risk=target_date_risk,
+                )
+            )
+        return summaries
+
     async def get_by_id(self, project_id: int) -> Optional[Project]:
         """Get project by ID."""
         result = await self.db.execute(
@@ -613,6 +744,30 @@ class ProjectService:
                 MAX_BOUNDED_LIST_ITEMS,
             )
         return milestones
+
+    async def list_portfolio_milestones(
+        self,
+        *,
+        after_id: Optional[int],
+        limit: int,
+    ) -> tuple[list[ProjectMilestone], Optional[int]]:
+        """Return one stable cursor page of milestones across the portfolio."""
+        query = select(ProjectMilestone)
+        if after_id is not None:
+            query = query.where(ProjectMilestone.id > after_id)
+        milestones = list(
+            (
+                await self.db.execute(
+                    query
+                    .order_by(ProjectMilestone.id.asc())
+                    .limit(limit + 1)
+                )
+            ).scalars()
+        )
+        has_more = len(milestones) > limit
+        page = milestones[:limit]
+        next_cursor = page[-1].id if has_more and page else None
+        return page, next_cursor
 
     async def get_milestone_for_project(
         self,

@@ -134,6 +134,11 @@ export interface ProjectMilestone {
     updated_at: string;
 }
 
+export interface RoadmapMilestonePage {
+    items: ProjectMilestone[];
+    next_cursor: number | null;
+}
+
 export interface ProjectMilestoneCreateRequest {
     name: string;
     description?: string | null;
@@ -177,6 +182,17 @@ export interface ProjectMilestoneTaskGroup {
     status_counts: Record<string, number>;
     total_effort_days: number;
     remaining_effort_days: number;
+}
+
+export interface ProjectPortfolioSummary {
+    project_id: number;
+    total_tasks: number;
+    completed_tasks: number;
+    total_effort_days: number;
+    remaining_effort_days: number;
+    blocked_tasks: number;
+    overdue_tasks: number;
+    target_date_risk: ProjectTargetDateRisk;
 }
 
 export interface ProjectSummary {

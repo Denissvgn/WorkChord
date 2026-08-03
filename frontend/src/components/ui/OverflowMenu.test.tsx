@@ -28,4 +28,32 @@ describe('OverflowMenu', () => {
         expect(trigger).toHaveFocus();
         expect(firstAction).not.toHaveBeenCalled();
     });
+
+    it('keeps an unavailable action focusable so its recovery label can be read', async () => {
+        const unavailableAction = vi.fn();
+        const { user } = renderWithProviders(
+            <OverflowMenu
+                label="Calendar actions"
+                items={[
+                    {
+                        label: 'Create another calendar before deleting this one',
+                        onSelect: unavailableAction,
+                        disabled: true,
+                    },
+                ]}
+            />,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Calendar actions' }));
+
+        const menuItem = screen.getByRole('menuitem', {
+            name: 'Create another calendar before deleting this one',
+        });
+        expect(menuItem).toHaveFocus();
+        expect(menuItem).toHaveAttribute('aria-disabled', 'true');
+
+        await user.click(menuItem);
+        expect(unavailableAction).not.toHaveBeenCalled();
+        expect(screen.getByRole('menu')).toBeVisible();
+    });
 });

@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     addDays,
@@ -13,13 +13,17 @@ import {
 } from 'date-fns';
 import {
     FolderOpen,
+    ListFilter,
     Map as MapIcon,
     RotateCcw,
+    X,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
-import { QueryErrorState } from '../components/feedback/QueryState';
-import { FormGrid, InlineEmptyState, InlineField, MetricGrid, PageHeader, PageLayout } from '../components/ui';
+import { QueryErrorState, QueryStaleState } from '../components/feedback/QueryState';
+import { FormGrid, InlineEmptyState, InlineField, SlideOverDrawer } from '../components/ui';
+import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
+import { projectStatusBadgeClassName } from '../components/projects/projectStatusStyles';
 import { projectService } from '../services/projectService';
 import { formatPortfolioOwnerLabel } from '../utils/teamMemberLabels';
 import { formatDate } from '../utils/formatDate';
@@ -65,6 +69,12 @@ type RoadmapGroup = {
     rows: RoadmapRow[];
 };
 
+type RoadmapFilterDescriptor = {
+    id: 'status' | 'health' | 'owner' | 'initiative' | 'dates';
+    label: string;
+    remove: () => void;
+};
+
 const t = i18n.t.bind(i18n);
 
 const projectStatusLabelKeys: Record<ProjectStatus, string> = {
@@ -90,23 +100,6 @@ const milestoneStatusLabelKeys: Record<ProjectMilestoneStatus, string> = {
     canceled: 'surfaces.roadmapPage.milestoneCanceled',
 };
 
-const statusClassName = (status: ProjectStatus | ProjectMilestoneStatus) => {
-    switch (status) {
-        case 'active':
-            return 'border-action bg-action-muted text-action';
-        case 'completed':
-            return 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground';
-        case 'paused':
-            return 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground';
-        case 'canceled':
-            return 'border-feedback-danger-border bg-feedback-danger-muted text-feedback-danger-foreground';
-        case 'proposed':
-            return 'border-feedback-purple-border bg-feedback-purple-muted text-feedback-purple-foreground';
-        default:
-            return 'border-border bg-surface-muted text-content-primary';
-    }
-};
-
 const healthClassName = (health: ProjectHealth) => {
     switch (health) {
         case 'on_track':
@@ -129,20 +122,20 @@ const barClassName = (health: ProjectHealth) => {
         case 'off_track':
             return 'bg-feedback-danger';
         default:
-            return 'bg-action';
+            return 'bg-status-planned';
     }
 };
 
 const markerClassName = (status: ProjectMilestoneStatus) => {
     switch (status) {
         case 'active':
-            return 'border-action bg-action';
+            return 'border-status-active bg-status-active';
         case 'completed':
-            return 'border-feedback-success bg-feedback-success';
+            return 'border-status-resolved bg-status-resolved';
         case 'canceled':
-            return 'border-feedback-danger bg-feedback-danger';
+            return 'border-status-closed bg-status-closed';
         default:
-            return 'border-border-strong bg-surface-card';
+            return 'border-status-planned bg-status-planned';
     }
 };
 
@@ -264,7 +257,11 @@ const buildRoadmapRows = (projects: Project[], milestonesByProject: Map<number, 
                 const date = parseDate(milestone.target_date);
                 return date ? { milestone, date } : null;
             })
-            .filter((marker): marker is RoadmapMarker => Boolean(marker));
+            .filter((marker): marker is RoadmapMarker => Boolean(marker))
+            .sort((a, b) => (
+                compareAsc(a.date, b.date)
+                || compareMilestones(a.milestone, b.milestone)
+            ));
 
         const projectStart = parseDate(project.start_date);
         const projectTarget = parseDate(project.target_date);
@@ -361,29 +358,51 @@ const MilestoneMarker = ({
     position: number;
 }) => {
     const { milestone } = marker;
+    const detailsId = useId();
+    const [expanded, setExpanded] = useState(false);
 
     return (
         <div
             className="group absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${position}%` }}
+            onBlur={event => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setExpanded(false);
+                }
+            }}
         >
             <button
-            type="button"
-            className="roadmap-marker-target relative rounded-sm focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2"
-            aria-label={`${milestone.name}, ${t(milestoneStatusLabelKeys[milestone.status])}, ${formatDate(milestone.target_date)}`}
+                type="button"
+                className="roadmap-marker-target relative rounded-sm focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2"
+                aria-label={`${milestone.name}, ${t(milestoneStatusLabelKeys[milestone.status])}, ${formatDate(milestone.target_date)}`}
+                aria-controls={detailsId}
+                aria-expanded={expanded}
+                onClick={() => setExpanded(value => !value)}
+                onKeyDown={event => {
+                    if (event.key === 'Escape') {
+                        event.stopPropagation();
+                        setExpanded(false);
+                    }
+                }}
             >
                 <span className={clsx('absolute left-1/2 top-1/2 block h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 shadow-sm', markerClassName(milestone.status))} />
             </button>
             <span className="pointer-events-none absolute left-4 top-1/2 hidden max-w-[150px] -translate-y-1/2 truncate rounded bg-surface-card/90 px-1.5 py-0.5 text-wc-micro font-medium text-content-primary shadow-sm ring-1 ring-border md:block">
                 {milestone.name}
             </span>
-            <div className="pointer-events-none absolute left-1/2 top-7 hidden w-72 -translate-x-1/2 rounded-md border border-border bg-surface-card p-3 text-left shadow-lg group-hover:block group-focus-within:block">
+            <div
+                id={detailsId}
+                className={clsx(
+                    'pointer-events-none absolute left-1/2 top-7 w-72 -translate-x-1/2 rounded-md border border-border bg-surface-card p-3 text-left shadow-lg',
+                    expanded ? 'block' : 'hidden group-hover:block',
+                )}
+            >
                 <div className="flex items-start justify-between gap-3">
                     <div>
                         <p className="font-semibold text-content-primary">{milestone.name}</p>
                         <p className="mt-1 text-xs text-content-secondary">{formatDate(milestone.target_date)}</p>
                     </div>
-                    <span className={clsx('rounded-full border px-2 py-0.5 text-wc-micro font-medium', statusClassName(milestone.status))}>
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-wc-micro font-medium', projectStatusBadgeClassName(milestone.status))}>
                         {t(milestoneStatusLabelKeys[milestone.status])}
                     </span>
                 </div>
@@ -405,11 +424,12 @@ const MilestoneMarker = ({
     );
 };
 
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- The horizontal timeline must be keyboard-scrollable. */
 const RoadmapTimeline = ({
-    rows,
+    groups,
     range,
 }: {
-    rows: RoadmapRow[];
+    groups: RoadmapGroup[];
     range: DateRange;
 }) => {
     const { i18n: activeI18n } = useTranslation();
@@ -431,12 +451,20 @@ const RoadmapTimeline = ({
     );
 
     return (
-        <div className="overflow-x-auto rounded-lg border border-border bg-surface-card">
-            <div style={{ width: timelineWidth + 280 }}>
-                <div className="grid border-b border-border bg-surface-muted" style={{ gridTemplateColumns: '280px 1fr' }}>
-                    <div className="border-r border-border px-4 py-3">
+        <div
+            aria-label={t('surfaces.roadmapPage.timelineScrollLabel')}
+            className="roadmap-timeline-scroll overflow-x-auto rounded-lg border border-border bg-surface-card"
+            role="region"
+            tabIndex={0}
+        >
+            <div style={{ width: `calc(${timelineWidth}px + var(--roadmap-project-rail-width))` }}>
+                <div
+                    className="grid border-b border-border bg-surface-muted"
+                    style={{ gridTemplateColumns: 'var(--roadmap-project-rail-width) 1fr' }}
+                >
+                    <div className="roadmap-project-rail is-header border-r border-border px-4 py-3">
                         <p className="text-xs font-semibold uppercase text-content-secondary">{t('surfaces.roadmapPage.project')}</p>
-                        <p className="mt-1 text-sm text-content-secondary">
+                        <p className="roadmap-timeline-range mt-1 text-sm text-content-secondary">
                             {formatDate(normalizedRange.start)} {t('surfaces.roadmapPage.toText')} {formatDate(normalizedRange.end)}
                         </p>
                     </div>
@@ -455,72 +483,136 @@ const RoadmapTimeline = ({
                     </div>
                 </div>
 
-                <div className="divide-y divide-border-subtle">
-                    {rows.map(row => {
-                        const start = row.startDate ?? normalizedRange.start;
-                        const end = row.endDate ?? start;
-                        const startPosition = positionForDate(start);
-                        const endPosition = positionForDate(end);
-                        const width = Math.max(0, endPosition - startPosition);
+                <div className="relative">
+                    <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-y-0 right-0"
+                        style={{ left: 'var(--roadmap-project-rail-width)' }}
+                    >
+                        {months.map(month => (
+                            <div
+                                key={`grid-${month.toISOString()}`}
+                                className="absolute top-0 h-full border-l border-border-subtle"
+                                style={{ left: `${positionForDate(month)}%` }}
+                            />
+                        ))}
+                    </div>
+                    <div className="relative">
+                        {groups.map(group => {
+                        const initiative = group.initiative;
+                        const groupHeadingId = `roadmap-timeline-${group.key}`;
 
                         return (
-                            <div
-                                key={row.project.id}
-                                className="grid min-h-[88px] hover:bg-surface-muted"
-                                style={{ gridTemplateColumns: '280px 1fr' }}
-                            >
-                                <div className="border-r border-border px-4 py-4">
-                                    <Link
-                                        to={`/projects/${row.project.id}`}
-                                        className="font-medium text-content-primary hover:text-action"
-                                    >
-                                        {row.project.name}
-                                    </Link>
-                                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                                        <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', statusClassName(row.project.status))}>
-                                            {t(projectStatusLabelKeys[row.project.status])}
-                                        </span>
-                                        <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(row.project.health))}>
-                                            {t(projectHealthLabelKeys[row.project.health])}
+                            <section key={group.key} aria-labelledby={groupHeadingId}>
+                                <div
+                                    className="roadmap-timeline-group grid border-b border-border"
+                                    style={{ gridTemplateColumns: 'var(--roadmap-project-rail-width) 1fr' }}
+                                >
+                                    <div className="roadmap-project-rail is-group border-r border-border px-4 py-3">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <h3 id={groupHeadingId} className="font-semibold text-content-primary">
+                                                {initiative ? initiative.name : t('surfaces.roadmapPage.unassigned')}
+                                            </h3>
+                                            {initiative ? (
+                                                <span className={clsx('rounded-full border px-2 py-0.5 text-wc-micro font-medium', healthClassName(initiative.health))}>
+                                                    {t(projectHealthLabelKeys[initiative.health])}
+                                                </span>
+                                            ) : (
+                                                <span className="rounded-full border border-border bg-surface-card px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
+                                                    {t('surfaces.roadmapPage.noInitiative')}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="roadmap-timeline-group-meta mt-1 truncate text-xs text-content-secondary">
+                                            {initiative
+                                                ? `${formatPortfolioOwnerLabel(initiative.owner_profile, initiative.owner, initiative.owner_id, t('surfaces.roadmapPage.unassignedOwner'))} · ${t('surfaces.roadmapPage.target')} ${formatDate(initiative.target_date)}`
+                                                : t('surfaces.roadmapPage.projectsWithoutAnInitiativeAssignment')}
+                                        </p>
+                                    </div>
+                                    <div className="roadmap-timeline-group-track relative flex items-center px-4">
+                                        <span className="relative rounded-full border border-border bg-surface-card px-2 py-0.5 text-xs font-medium text-content-secondary">
+                                            {t('surfaces.roadmapPage.projectCount', { count: group.rows.length })}
                                         </span>
                                     </div>
-                                    <p className="mt-2 text-xs text-content-secondary">
-                                        {row.spanSource === 'project' && t('surfaces.roadmapPage.projectDates')}
-                                        {row.spanSource === 'single-project-date' && t('surfaces.roadmapPage.singleProjectDate')}
-                                        {row.spanSource === 'milestones' && t('surfaces.roadmapPage.milestoneDerivedRange')}
-                                    </p>
                                 </div>
-                                <div className="relative min-h-[88px] px-6">
-                                    {months.map(month => (
-                                        <div
-                                            key={`${row.project.id}-${month.toISOString()}`}
-                                            className="absolute top-0 h-full border-l border-border-subtle"
-                                            style={{ left: `${positionForDate(month)}%` }}
-                                        />
-                                    ))}
-                                    <div
-                                        className={clsx('absolute top-9 h-3 rounded-full shadow-sm', barClassName(row.project.health))}
-                                        style={{
-                                            left: `${startPosition}%`,
-                                            width: `max(18px, ${width}%)`,
-                                        }}
-                                    />
-                                    {row.markers.map(marker => (
-                                        <MilestoneMarker
-                                            key={marker.milestone.id}
-                                            marker={marker}
-                                            position={positionForDate(marker.date)}
-                                        />
-                                    ))}
+
+                                <div className="divide-y divide-border-subtle">
+                                    {group.rows.map(row => {
+                                        const start = row.startDate ?? normalizedRange.start;
+                                        const end = row.endDate ?? start;
+                                        const startPosition = positionForDate(start);
+                                        const endPosition = positionForDate(end);
+                                        const width = Math.max(0, endPosition - startPosition);
+
+                                        return (
+                                            <div
+                                                key={row.project.id}
+                                                className="roadmap-timeline-row grid min-h-[88px] hover:bg-surface-muted"
+                                                style={{ gridTemplateColumns: 'var(--roadmap-project-rail-width) 1fr' }}
+                                            >
+                                                <div className="roadmap-project-rail border-r border-border px-4 py-4">
+                                                    <Link
+                                                        to={`/projects/${row.project.id}`}
+                                                        className="font-medium text-content-primary hover:text-action"
+                                                    >
+                                                        {row.project.name}
+                                                    </Link>
+                                                    <p className="sr-only">
+                                                        {t('surfaces.roadmapPage.scheduledSpan', {
+                                                            start: formatDate(formatInputDate(start)),
+                                                            end: formatDate(formatInputDate(end)),
+                                                        })}
+                                                    </p>
+                                                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                                                        <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(row.project.status))}>
+                                                            {t(projectStatusLabelKeys[row.project.status])}
+                                                        </span>
+                                                        <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(row.project.health))}>
+                                                            {t(projectHealthLabelKeys[row.project.health])}
+                                                        </span>
+                                                    </div>
+                                                    <p className="roadmap-project-span-source mt-2 text-xs text-content-secondary">
+                                                        {row.spanSource === 'project' && t('surfaces.roadmapPage.projectDates')}
+                                                        {row.spanSource === 'single-project-date' && t('surfaces.roadmapPage.singleProjectDate')}
+                                                        {row.spanSource === 'milestones' && t('surfaces.roadmapPage.milestoneDerivedRange')}
+                                                    </p>
+                                                </div>
+                                                <div className="relative min-h-[88px] px-6">
+                                                    <div
+                                                        aria-hidden="true"
+                                                        className={clsx('absolute top-9 h-3 rounded-full shadow-sm', barClassName(row.project.health))}
+                                                        style={{
+                                                            left: `${startPosition}%`,
+                                                            width: `max(18px, ${width}%)`,
+                                                        }}
+                                                    />
+                                                    {row.markers
+                                                        .filter(marker => (
+                                                            compareAsc(marker.date, normalizedRange.start) >= 0
+                                                            && compareAsc(marker.date, normalizedRange.end) <= 0
+                                                        ))
+                                                        .map(marker => (
+                                                            <MilestoneMarker
+                                                                key={marker.milestone.id}
+                                                                marker={marker}
+                                                                position={positionForDate(marker.date)}
+                                                            />
+                                                        ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            </div>
+                            </section>
                         );
-                    })}
+                        })}
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
+/* eslint-enable jsx-a11y/no-noninteractive-tabindex */
 
 const RoadmapGroupHeader = ({ group }: { group: RoadmapGroup }) => {
     const initiative = group.initiative;
@@ -615,12 +707,7 @@ const TimelineGroups = ({ groups, range }: { groups: RoadmapGroup[]; range: Date
                     </p>
                 </div>
             </div>
-            {groups.map(group => (
-                <div key={group.key} className="space-y-3">
-                    <RoadmapGroupHeader group={group} />
-                    <RoadmapTimeline rows={group.rows} range={range} />
-                </div>
-            ))}
+            <RoadmapTimeline groups={groups} range={range} />
         </section>
     );
 };
@@ -633,6 +720,7 @@ const RoadmapPage = () => {
     const [initiativeFilter, setInitiativeFilter] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [filtersOpen, setFiltersOpen] = useState(false);
 
     const {
         data: projects = [],
@@ -656,21 +744,46 @@ const RoadmapPage = () => {
         queryFn: projectService.getInitiatives,
     });
 
-    const milestoneQueries = useQueries({
-        queries: projects.map(project => ({
-            queryKey: ['projectMilestones', project.id],
-            queryFn: () => projectService.getMilestones(project.id),
-            staleTime: 30000,
-        })),
+    const {
+        data: milestonePages,
+        error: milestonesError,
+        fetchNextPage,
+        hasNextPage,
+        isFetchNextPageError,
+        isFetchingNextPage,
+        isLoading: isMilestonesLoading,
+        refetch: refetchMilestones,
+    } = useInfiniteQuery({
+        queryKey: ['projectMilestones', 'portfolio'],
+        queryFn: ({ pageParam }) => projectService.getRoadmapMilestones(pageParam),
+        initialPageParam: null as number | null,
+        getNextPageParam: lastPage => lastPage.next_cursor ?? undefined,
+        staleTime: 30000,
     });
 
+    useEffect(() => {
+        if (hasNextPage && !isFetchingNextPage && !isFetchNextPageError) {
+            void fetchNextPage();
+        }
+    }, [fetchNextPage, hasNextPage, isFetchNextPageError, isFetchingNextPage]);
+
+    const portfolioMilestones = useMemo(
+        () => milestonePages?.pages.flatMap(page => page.items) ?? [],
+        [milestonePages],
+    );
     const milestonesByProject = useMemo(() => {
         const map = new Map<number, ProjectMilestone[]>();
-        projects.forEach((project, index) => {
-            map.set(project.id, milestoneQueries[index]?.data ?? []);
+        projects.forEach(project => {
+            map.set(project.id, []);
+        });
+        portfolioMilestones.forEach(milestone => {
+            map.get(milestone.project_id)?.push(milestone);
+        });
+        map.forEach(projectMilestones => {
+            projectMilestones.sort(compareMilestones);
         });
         return map;
-    }, [projects, milestoneQueries]);
+    }, [portfolioMilestones, projects]);
 
     const rows = useMemo(() => buildRoadmapRows(projects, milestonesByProject), [projects, milestonesByProject]);
     const initiativesById = useMemo(() => {
@@ -725,15 +838,91 @@ const RoadmapPage = () => {
         const end = parseDate(dateTo) ?? defaultRange.end;
         return compareAsc(start, end) <= 0 ? { start, end } : { start: end, end: start };
     }, [dateFrom, dateTo, defaultRange]);
+    const activeFilterDescriptors = useMemo<RoadmapFilterDescriptor[]>(() => {
+        const descriptors: RoadmapFilterDescriptor[] = [];
+        if (statusFilter) {
+            descriptors.push({
+                id: 'status',
+                label: t('surfaces.roadmapPage.statusFilterValue', {
+                    value: t(projectStatusLabelKeys[statusFilter]),
+                }),
+                remove: () => setStatusFilter(''),
+            });
+        }
+        if (healthFilter) {
+            descriptors.push({
+                id: 'health',
+                label: t('surfaces.roadmapPage.healthFilterValue', {
+                    value: t(projectHealthLabelKeys[healthFilter]),
+                }),
+                remove: () => setHealthFilter(''),
+            });
+        }
+        if (ownerFilter) {
+            const ownerLabel = ownerFilter === 'unassigned'
+                ? t('surfaces.roadmapPage.unassigned')
+                : ownerOptions.owners.find(owner => owner.id === ownerFilter)?.label ?? ownerFilter;
+            descriptors.push({
+                id: 'owner',
+                label: t('surfaces.roadmapPage.ownerFilterValue', { value: ownerLabel }),
+                remove: () => setOwnerFilter(''),
+            });
+        }
+        if (initiativeFilter) {
+            const initiativeLabel = initiativeFilter === 'unassigned'
+                ? t('surfaces.roadmapPage.unassigned')
+                : initiatives.find(initiative => initiative.id === Number(initiativeFilter))?.name ?? initiativeFilter;
+            descriptors.push({
+                id: 'initiative',
+                label: t('surfaces.roadmapPage.initiativeFilterValue', { value: initiativeLabel }),
+                remove: () => setInitiativeFilter(''),
+            });
+        }
+        if (dateFrom || dateTo) {
+            descriptors.push({
+                id: 'dates',
+                label: t('surfaces.roadmapPage.dateFilterValue', {
+                    start: formatDate(effectiveRange.start),
+                    end: formatDate(effectiveRange.end),
+                }),
+                remove: () => {
+                    setDateFrom('');
+                    setDateTo('');
+                },
+            });
+        }
+        return descriptors;
+    }, [
+        dateFrom,
+        dateTo,
+        effectiveRange,
+        healthFilter,
+        initiativeFilter,
+        initiatives,
+        ownerFilter,
+        ownerOptions.owners,
+        statusFilter,
+        t,
+    ]);
 
     const datedRows = useMemo(
         () => metadataFilteredRows.filter(row => !row.isUnscheduled && rangeOverlaps(row, effectiveRange)),
         [metadataFilteredRows, effectiveRange],
     );
+    const hasMilestoneDataError = Boolean(milestonesError || isFetchNextPageError);
+    const milestoneDataComplete = Boolean(milestonePages)
+        && !hasNextPage
+        && !isFetchingNextPage
+        && !hasMilestoneDataError;
     const unscheduledRows = useMemo(
-        () => metadataFilteredRows.filter(row => row.isUnscheduled),
-        [metadataFilteredRows],
+        () => milestoneDataComplete
+            ? metadataFilteredRows.filter(row => row.isUnscheduled)
+            : [],
+        [metadataFilteredRows, milestoneDataComplete],
     );
+    const schedulePendingCount = milestoneDataComplete
+        ? 0
+        : metadataFilteredRows.filter(row => row.isUnscheduled).length;
     const datedGroups = useMemo(
         () => buildRoadmapGroups(datedRows, initiativesById),
         [datedRows, initiativesById],
@@ -743,152 +932,332 @@ const RoadmapPage = () => {
         [unscheduledRows, initiativesById],
     );
 
-    const isMilestonesLoading = milestoneQueries.some(query => query.isLoading);
-    const failedMilestoneQueries = milestoneQueries.filter(query => query.isError);
-    const isLoading = isProjectsLoading || isMilestonesLoading || isInitiativesLoading;
-    const hasQueryError = isProjectsError || isInitiativesError || failedMilestoneQueries.length > 0;
-    const totalMilestones = rows.reduce((total, row) => total + row.milestones.length, 0);
-    const visibleRowsCount = datedRows.length + unscheduledRows.length;
+    const isLoading = isProjectsLoading || isInitiativesLoading;
+    const hasQueryError = isProjectsError || isInitiativesError;
+    const totalMilestones = portfolioMilestones.length;
+    const visibleRowsCount = metadataFilteredRows.length;
+    const milestoneFactValue = milestoneDataComplete
+        ? totalMilestones
+        : hasMilestoneDataError && totalMilestones === 0
+            ? t('surfaces.roadmapPage.unavailable')
+            : t('surfaces.roadmapPage.loadedMilestones', { count: totalMilestones });
+    const activeFilterCount = activeFilterDescriptors.length;
+    const visibleFilterDescriptors = activeFilterDescriptors.slice(0, 3);
+    const hiddenFilterCount = Math.max(0, activeFilterCount - visibleFilterDescriptors.length);
+    const noRowsMatchFilters = metadataFilteredRows.length === 0
+        || (milestoneDataComplete && datedRows.length + unscheduledRows.length === 0);
+    const noLoadedRowsMatchDateWindow = !milestoneDataComplete
+        && metadataFilteredRows.length > 0
+        && Boolean(dateFrom || dateTo)
+        && datedRows.length === 0;
 
     const resetDateRange = () => {
-        setDateFrom(formatInputDate(defaultRange.start));
-        setDateTo(formatInputDate(defaultRange.end));
+        setDateFrom('');
+        setDateTo('');
+    };
+
+    const clearRoadmapFilters = () => {
+        setStatusFilter('');
+        setHealthFilter('');
+        setOwnerFilter('');
+        setInitiativeFilter('');
+        resetDateRange();
     };
 
     return (
-        <PageLayout className="roadmap-page">
-            <PageHeader
+        <>
+            <PlanningWorkbenchFrame
+                className="roadmap-page"
+                variant="wide"
                 title={t('surfaces.roadmapPage.roadmap')}
-                subtitle={t('surfaces.roadmapPage.portfolioTimelineForProjectsAndMilestoneCommitments')}
-                actions={<Link className="btn" to="/projects"><FolderOpen className="h-4 w-4"/>{t('surfaces.roadmapPage.projects')}</Link>}
-            />
-
-            {hasQueryError && (
-                <QueryErrorState
-                    error={projectsError ?? initiativesError ?? failedMilestoneQueries[0]?.error}
-                    title={failedMilestoneQueries.length > 0 ? t('surfaces.roadmapPage.milestones') : undefined}
-                    onRetry={() => {
-                        void refetchProjects();
-                        void refetchInitiatives();
-                        milestoneQueries.forEach(query => { void query.refetch(); });
-                    }}
-                />
-            )}
-
-            <MetricGrid columns={3}>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.roadmapPage.visibleProjects')}</div><div className="kpi-val tnum">{visibleRowsCount}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.roadmapPage.milestones')}</div><div className="kpi-val tnum">{totalMilestones}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.roadmapPage.timelineWindow')}</div><div className="kpi-val" style={{fontSize:13}}>{formatDate(effectiveRange.start)} – {formatDate(effectiveRange.end)}</div></div>
-            </MetricGrid>
-
-            <div className="card">
-                <div className="card-head"><h3>{t('surfaces.roadmapPage.filters')}</h3></div>
-                <div className="card-pad">
-                    <FormGrid className="roadmap-filter-grid">
-                        <InlineField label={t('surfaces.roadmapPage.status')}>
-                            <select
-                                value={statusFilter}
-                                onChange={event => setStatusFilter(event.target.value as ProjectStatus | '')}
-                                className="input"
+                description={t('surfaces.roadmapPage.portfolioTimelineForProjectsAndMilestoneCommitments')}
+                facts={!isLoading && !hasQueryError ? [
+                    {
+                        id: 'visible-projects',
+                        label: t('surfaces.roadmapPage.visibleProjects'),
+                        value: visibleRowsCount,
+                    },
+                    {
+                        id: 'milestones',
+                        label: t('surfaces.roadmapPage.milestones'),
+                        value: milestoneFactValue,
+                    },
+                    {
+                        id: 'timeline-window',
+                        label: t('surfaces.roadmapPage.timelineWindow'),
+                        value: `${formatDate(effectiveRange.start)} – ${formatDate(effectiveRange.end)}`,
+                    },
+                ] : []}
+                secondaryActions={(
+                    <>
+                        {!isLoading && !hasQueryError && projects.length > 0 && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                aria-expanded={filtersOpen}
+                                aria-haspopup="dialog"
+                                aria-label={activeFilterCount > 0
+                                    ? t('surfaces.roadmapPage.filtersActive', { count: activeFilterCount })
+                                    : t('surfaces.roadmapPage.filters')}
+                                onClick={() => setFiltersOpen(true)}
                             >
-                                <option value="">{t('surfaces.roadmapPage.allStatuses')}</option>
-                                {Object.entries(projectStatusLabelKeys).map(([value, labelKey]) => (
-                                    <option key={value} value={value}>{t(labelKey)}</option>
-                                ))}
-                            </select>
-                        </InlineField>
-                        <InlineField label={t('surfaces.roadmapPage.health')}>
-                            <select
-                                value={healthFilter}
-                                onChange={event => setHealthFilter(event.target.value as ProjectHealth | '')}
-                                className="input"
-                            >
-                                <option value="">{t('surfaces.roadmapPage.allHealth')}</option>
-                                {Object.entries(projectHealthLabelKeys).map(([value, labelKey]) => (
-                                    <option key={value} value={value}>{t(labelKey)}</option>
-                                ))}
-                            </select>
-                        </InlineField>
-                        <InlineField label={t('surfaces.roadmapPage.owner')}>
-                            <select
-                                value={ownerFilter}
-                                onChange={event => setOwnerFilter(event.target.value)}
-                                className="input"
-                            >
-                                <option value="">{t('surfaces.roadmapPage.allOwners')}</option>
-                                {ownerOptions.hasUnassigned && <option value="unassigned">{t('surfaces.roadmapPage.unassigned')}</option>}
-                                {ownerOptions.owners.map(owner => (
-                                    <option key={owner.id} value={owner.id}>{owner.label}</option>
-                                ))}
-                            </select>
-                        </InlineField>
-                        <InlineField label={t('surfaces.roadmapPage.initiative')}>
-                            <select
-                                value={initiativeFilter}
-                                onChange={event => setInitiativeFilter(event.target.value)}
-                                className="input"
-                            >
-                                <option value="">{t('surfaces.roadmapPage.allInitiatives')}</option>
-                                <option value="unassigned">{t('surfaces.roadmapPage.unassigned')}</option>
-                                {initiatives.map(initiative => (
-                                    <option key={initiative.id} value={initiative.id}>
-                                        {initiative.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </InlineField>
-                        <InlineField label={t('surfaces.roadmapPage.from')}>
-                            <input
-                                type="date"
-                                value={dateFrom || formatInputDate(defaultRange.start)}
-                                onChange={event => setDateFrom(event.target.value)}
-                                className="input"
+                                <ListFilter aria-hidden="true" className="h-4 w-4" />
+                                <span>{t('surfaces.roadmapPage.filters')}</span>
+                                {activeFilterCount > 0 && (
+                                    <span aria-hidden="true" className="roadmap-filter-trigger-count">
+                                        {activeFilterCount}
+                                    </span>
+                                )}
+                            </Button>
+                        )}
+                        <Link className="btn" to="/projects">
+                            <FolderOpen aria-hidden="true" className="h-4 w-4" />
+                            {t('surfaces.roadmapPage.projects')}
+                        </Link>
+                    </>
+                )}
+                state={(hasQueryError || isLoading) ? (
+                    <>
+                        {hasQueryError && (
+                            <QueryErrorState
+                                error={projectsError ?? initiativesError}
+                                onRetry={() => {
+                                    void refetchProjects();
+                                    void refetchInitiatives();
+                                }}
                             />
-                        </InlineField>
-                        <InlineField label={t('surfaces.roadmapPage.to')}>
-                            <input
-                                type="date"
-                                value={dateTo || formatInputDate(defaultRange.end)}
-                                onChange={event => setDateTo(event.target.value)}
-                                className="input"
+                        )}
+                        {isLoading && !hasQueryError && (
+                            <div className="banner muted" role="status">
+                                {t('surfaces.roadmapPage.loadingRoadmap')}
+                            </div>
+                        )}
+                    </>
+                ) : undefined}
+            >
+                {!isLoading && !hasQueryError && (
+                    <>
+                        {(isMilestonesLoading || isFetchingNextPage) && projects.length > 0 && (
+                            <div className="banner muted" role="status">
+                                {t('surfaces.roadmapPage.loadingMilestoneMarkers')}
+                            </div>
+                        )}
+                        {hasMilestoneDataError && projects.length > 0 && (
+                            <QueryStaleState
+                                message={totalMilestones > 0
+                                    ? t('surfaces.roadmapPage.milestoneMarkersIncomplete', {
+                                        count: totalMilestones,
+                                    })
+                                    : t('surfaces.roadmapPage.milestoneMarkersUnavailable', {
+                                        count: schedulePendingCount,
+                                    })}
+                                onRetry={() => {
+                                    if (isFetchNextPageError && hasNextPage) {
+                                        void fetchNextPage();
+                                        return;
+                                    }
+                                    void refetchMilestones();
+                                }}
                             />
-                        </InlineField>
-                        <Button type="button" variant="outline" onClick={resetDateRange} className="roadmap-filter-reset">
-                            <RotateCcw className="h-4 w-4" />
-                            {t('surfaces.roadmapPage.reset')}
-                        </Button>
-                    </FormGrid>
-                    <p className="field-hint roadmap-filter-hint">
-                        {t('surfaces.roadmapPage.derivedRange')}: {formatDate(defaultRange.start)} {t('surfaces.roadmapPage.toText')} {formatDate(defaultRange.end)}
-                    </p>
+                        )}
+                        {activeFilterCount > 0 && projects.length > 0 && (
+                            <div
+                                aria-label={t('surfaces.roadmapPage.activeFilters')}
+                                className="roadmap-active-filters"
+                                role="group"
+                            >
+                                <span className="roadmap-active-filters-label">
+                                    {t('surfaces.roadmapPage.activeFilters')}
+                                </span>
+                                <div className="roadmap-active-filter-list">
+                                    {visibleFilterDescriptors.map(filter => (
+                                        <button
+                                            key={filter.id}
+                                            aria-label={t('surfaces.roadmapPage.removeFilter', {
+                                                filter: filter.label,
+                                            })}
+                                            className="roadmap-active-filter-chip"
+                                            onClick={filter.remove}
+                                            type="button"
+                                        >
+                                            <span>{filter.label}</span>
+                                            <X aria-hidden="true" className="h-3.5 w-3.5" />
+                                        </button>
+                                    ))}
+                                    {hiddenFilterCount > 0 && (
+                                        <button
+                                            aria-label={t('surfaces.roadmapPage.openRemainingFilters', {
+                                                count: hiddenFilterCount,
+                                            })}
+                                            className="roadmap-active-filter-more"
+                                            onClick={() => setFiltersOpen(true)}
+                                            type="button"
+                                        >
+                                            {t('surfaces.roadmapPage.moreFilters', {
+                                                count: hiddenFilterCount,
+                                            })}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        {projects.length === 0 && (
+                            <InlineEmptyState
+                                icon={<FolderOpen className="h-5 w-5" />}
+                                title={t('surfaces.roadmapPage.noProjectsYet')}
+                                description={t('surfaces.roadmapPage.createProjectsFirstThenAddMilestonesForRoadmapMarkers')}
+                                actions={<Link className="btn" to="/projects">{t('surfaces.roadmapPage.openProjects')}</Link>}
+                            />
+                        )}
+
+                        {projects.length > 0 && noRowsMatchFilters && (
+                            <InlineEmptyState
+                                icon={<MapIcon className="h-5 w-5" />}
+                                title={t('surfaces.roadmapPage.noRoadmapRowsMatchTheFilters')}
+                                description={t('surfaces.roadmapPage.adjustStatusHealthOwnerOrDateRangeToBringRowsBackIntoView')}
+                                actions={activeFilterCount > 0 ? (
+                                    <Button type="button" onClick={clearRoadmapFilters}>
+                                        {t('surfaces.roadmapPage.clearFilters')}
+                                    </Button>
+                                ) : undefined}
+                            />
+                        )}
+
+                        {projects.length > 0 && noLoadedRowsMatchDateWindow && (
+                            <InlineEmptyState
+                                icon={<MapIcon className="h-5 w-5" />}
+                                title={t('surfaces.roadmapPage.noLoadedRowsMatchDateWindow')}
+                                description={t('surfaces.roadmapPage.loadedRowsIncomplete')}
+                                actions={(
+                                    <Button type="button" onClick={resetDateRange}>
+                                        {t('surfaces.roadmapPage.useDerivedRange')}
+                                    </Button>
+                                )}
+                            />
+                        )}
+
+                        <TimelineGroups groups={datedGroups} range={effectiveRange} />
+                        <UnscheduledProjects groups={unscheduledGroups} />
+                    </>
+                )}
+            </PlanningWorkbenchFrame>
+
+            <SlideOverDrawer
+                open={filtersOpen && !isLoading && !hasQueryError && projects.length > 0}
+                title={t('surfaces.roadmapPage.filters')}
+                subtitle={t('surfaces.roadmapPage.filtersDescription')}
+                icon={<ListFilter aria-hidden="true" className="h-4 w-4" />}
+                onClose={() => setFiltersOpen(false)}
+                footer={(
+                    <Button
+                        className="w-full"
+                        type="button"
+                        variant="secondary"
+                        onClick={clearRoadmapFilters}
+                        disabled={activeFilterCount === 0}
+                    >
+                        {t('surfaces.roadmapPage.clearFilters')}
+                    </Button>
+                )}
+            >
+                <div className="roadmap-filter-drawer-content">
+                    <fieldset className="roadmap-filter-section">
+                        <legend>{t('surfaces.roadmapPage.projectAttributes')}</legend>
+                        <FormGrid className="roadmap-filter-drawer-grid">
+                            <InlineField label={t('surfaces.roadmapPage.status')}>
+                                <select
+                                    value={statusFilter}
+                                    onChange={event => setStatusFilter(event.target.value as ProjectStatus | '')}
+                                    className="input"
+                                >
+                                    <option value="">{t('surfaces.roadmapPage.allStatuses')}</option>
+                                    {Object.entries(projectStatusLabelKeys).map(([value, labelKey]) => (
+                                        <option key={value} value={value}>{t(labelKey)}</option>
+                                    ))}
+                                </select>
+                            </InlineField>
+                            <InlineField label={t('surfaces.roadmapPage.health')}>
+                                <select
+                                    value={healthFilter}
+                                    onChange={event => setHealthFilter(event.target.value as ProjectHealth | '')}
+                                    className="input"
+                                >
+                                    <option value="">{t('surfaces.roadmapPage.allHealth')}</option>
+                                    {Object.entries(projectHealthLabelKeys).map(([value, labelKey]) => (
+                                        <option key={value} value={value}>{t(labelKey)}</option>
+                                    ))}
+                                </select>
+                            </InlineField>
+                            <InlineField label={t('surfaces.roadmapPage.owner')}>
+                                <select
+                                    value={ownerFilter}
+                                    onChange={event => setOwnerFilter(event.target.value)}
+                                    className="input"
+                                >
+                                    <option value="">{t('surfaces.roadmapPage.allOwners')}</option>
+                                    {ownerOptions.hasUnassigned && <option value="unassigned">{t('surfaces.roadmapPage.unassigned')}</option>}
+                                    {ownerOptions.owners.map(owner => (
+                                        <option key={owner.id} value={owner.id}>{owner.label}</option>
+                                    ))}
+                                </select>
+                            </InlineField>
+                            <InlineField label={t('surfaces.roadmapPage.initiative')}>
+                                <select
+                                    value={initiativeFilter}
+                                    onChange={event => setInitiativeFilter(event.target.value)}
+                                    className="input"
+                                >
+                                    <option value="">{t('surfaces.roadmapPage.allInitiatives')}</option>
+                                    <option value="unassigned">{t('surfaces.roadmapPage.unassigned')}</option>
+                                    {initiatives.map(initiative => (
+                                        <option key={initiative.id} value={initiative.id}>
+                                            {initiative.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </InlineField>
+                        </FormGrid>
+                    </fieldset>
+
+                    <fieldset className="roadmap-filter-section">
+                        <legend>{t('surfaces.roadmapPage.dateWindow')}</legend>
+                        <FormGrid className="roadmap-filter-drawer-grid">
+                            <InlineField label={t('surfaces.roadmapPage.from')}>
+                                <input
+                                    type="date"
+                                    value={dateFrom || formatInputDate(defaultRange.start)}
+                                    onChange={event => setDateFrom(event.target.value)}
+                                    className="input"
+                                />
+                            </InlineField>
+                            <InlineField label={t('surfaces.roadmapPage.to')}>
+                                <input
+                                    type="date"
+                                    value={dateTo || formatInputDate(defaultRange.end)}
+                                    onChange={event => setDateTo(event.target.value)}
+                                    className="input"
+                                />
+                            </InlineField>
+                        </FormGrid>
+                        <div className="roadmap-filter-date-reset">
+                            <p className="field-hint">
+                                {t('surfaces.roadmapPage.derivedRange')}: {formatDate(defaultRange.start)} {t('surfaces.roadmapPage.toText')} {formatDate(defaultRange.end)}
+                            </p>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={resetDateRange}
+                                disabled={!dateFrom && !dateTo}
+                            >
+                                <RotateCcw aria-hidden="true" className="h-4 w-4" />
+                                {t('surfaces.roadmapPage.useDerivedRange')}
+                            </Button>
+                        </div>
+                    </fieldset>
                 </div>
-            </div>
-
-            {isLoading && (
-                <div className="banner muted" style={{justifyContent:'center'}}>{t('surfaces.roadmapPage.loadingRoadmap')}</div>
-            )}
-
-            {!isLoading && !hasQueryError && projects.length === 0 && (
-                <InlineEmptyState
-                    icon={<FolderOpen className="h-5 w-5" />}
-                    title={t('surfaces.roadmapPage.noProjectsYet')}
-                    description={t('surfaces.roadmapPage.createProjectsFirstThenAddMilestonesForRoadmapMarkers')}
-                    actions={<Link className="btn" to="/projects">{t('surfaces.roadmapPage.openProjects')}</Link>}
-                />
-            )}
-
-            {!isLoading && !hasQueryError && projects.length > 0 && visibleRowsCount === 0 && (
-                <InlineEmptyState
-                    icon={<MapIcon className="h-5 w-5" />}
-                    title={t('surfaces.roadmapPage.noRoadmapRowsMatchTheFilters')}
-                    description={t('surfaces.roadmapPage.adjustStatusHealthOwnerOrDateRangeToBringRowsBackIntoView')}
-                />
-            )}
-
-            {!isLoading && !hasQueryError && <TimelineGroups groups={datedGroups} range={effectiveRange} />}
-
-            {!isLoading && !hasQueryError && <UnscheduledProjects groups={unscheduledGroups} />}
-        </PageLayout>
+            </SlideOverDrawer>
+        </>
     );
 };
 
