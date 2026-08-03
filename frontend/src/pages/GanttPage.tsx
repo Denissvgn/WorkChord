@@ -26,6 +26,7 @@ import type { IterationSnapshot } from '../services/snapshotService';
 import { getAdminAccessErrorMessage, hasAdminApiKey } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
+import { PlanningWorkflowGuide } from '../components/planning/PlanningWorkflowGuide';
 
 const DECISION_COUNT_LABELS = [
     { key: 'scheduled', labelKey: 'gantt.decisionCounts.scheduled' },
@@ -347,6 +348,7 @@ const GanttPage = () => {
                             setSandboxMode(false);
                         }}
                     />
+                    <PlanningWorkflowGuide surface="gantt" />
                     <Button
                         variant={sandboxMode ? 'secondary' : 'primary'}
                         onClick={() => { if (sandboxMode) setSandboxChanges({}); setSandboxMode(!sandboxMode); }}
@@ -672,7 +674,7 @@ const GanttPage = () => {
                 {!hasAdminApiKey() && (
                     <div className="mt-4 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                         <p>{t('snapshots.adminRequired')}</p>
-                        <Link className="mt-2 inline-block font-medium underline" to="/settings">{t('snapshots.goToSettings')}</Link>
+                        <Link className="mt-2 inline-block font-medium underline" to="/settings?tab=admin_access">{t('snapshots.goToSettings')}</Link>
                     </div>
                 )}
             </Modal>

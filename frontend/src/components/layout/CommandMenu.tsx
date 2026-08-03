@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -25,17 +25,55 @@ import { Checkbox } from '../common/Checkbox';
 import { Modal } from '../common/Modal';
 import { OPEN_COMMAND_MENU_EVENT } from './commandMenuEvents';
 import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
+import { getWorkspaceForPath } from '../../navigation/workspaces';
+
+type CommandGroup = 'tasks' | 'current' | 'navigate' | 'suggested';
 
 interface CommandAction {
     id: string;
-    group: 'tasks' | 'navigate';
+    group: CommandGroup;
     label: string;
     description: string;
+    keywords?: string[];
     icon: LucideIcon;
     shortcut?: string;
     ariaShortcut?: string;
     to: string;
 }
+
+const TASKS_FIRST_GROUPS = ['tasks', 'current', 'navigate'] as const satisfies readonly CommandGroup[];
+const CURRENT_FIRST_GROUPS = ['current', 'navigate', 'tasks'] as const satisfies readonly CommandGroup[];
+const COMPACT_GROUPS = ['current', 'suggested'] as const satisfies readonly CommandGroup[];
+const MAX_COMPACT_SUGGESTIONS = 3;
+const MAX_RECENT_COMMANDS = 3;
+
+export const RECENT_COMMANDS_STORAGE_KEY = 'workchord.command-menu.recent';
+
+const WORKSPACE_SUGGESTION_IDS: Record<
+    ReturnType<typeof getWorkspaceForPath>['key'],
+    readonly string[]
+> = {
+    delivery: ['new-task', 'task-filters', 'plan-work', 'gantt'],
+    planning: ['gantt', 'tasks', 'team', 'settings'],
+    resource: ['settings', 'team', 'tasks', 'gantt', 'plan-work'],
+};
+
+const readRecentCommandIds = () => {
+    if (typeof window === 'undefined') return [];
+    try {
+        const parsed = JSON.parse(window.localStorage.getItem(RECENT_COMMANDS_STORAGE_KEY) ?? '[]');
+        return Array.isArray(parsed)
+            ? [...new Set(parsed.filter((value): value is string => typeof value === 'string'))]
+                .slice(0, MAX_RECENT_COMMANDS)
+            : [];
+    } catch {
+        return [];
+    }
+};
+
+const isTasksWorkspacePath = (pathname: string) => (
+    pathname === '/tasks' || pathname.startsWith('/tasks/')
+);
 
 const isInteractiveTarget = (target: EventTarget | null) => {
     if (!(target instanceof HTMLElement)) return false;
@@ -64,7 +102,7 @@ const withTaskCommand = (
     key: string,
     value: string | null,
 ) => {
-    const params = location.pathname === '/tasks'
+    const params = isTasksWorkspacePath(location.pathname)
         ? new URLSearchParams(location.search)
         : new URLSearchParams();
     if (key !== 'layout') {
@@ -86,15 +124,19 @@ export const CommandMenu = () => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
+    const [showAllCommands, setShowAllCommands] = useState(false);
+    const [recentCommandIds, setRecentCommandIds] = useState<string[]>(readRecentCommandIds);
     const {
         enabled: singleKeyShortcutsEnabled,
         setEnabled: setSingleKeyShortcutsEnabled,
     } = useSingleKeyShortcutPreference();
-    const taskParams = location.pathname === '/tasks'
+    const inTasksWorkspace = isTasksWorkspacePath(location.pathname);
+    const taskParams = inTasksWorkspace
         ? new URLSearchParams(location.search)
         : null;
     const isBoardView = taskParams?.get('layout') === 'board';
     const isTaskFullscreen = taskParams?.get('fullscreen') === '1';
+    const currentWorkspace = getWorkspaceForPath(location.pathname);
 
     const commands = useMemo<CommandAction[]>(() => [
         {
@@ -177,7 +219,7 @@ export const CommandMenu = () => {
             label: t('commandMenu.commands.planWork.label'),
             description: t('commandMenu.commands.planWork.description'),
             icon: MapPin,
-            to: '/plan/master',
+            to: '/plan',
         },
         {
             id: 'tasks',
@@ -213,33 +255,180 @@ export const CommandMenu = () => {
         },
     ], [isBoardView, isTaskFullscreen, location, t]);
 
+    const contextualCommands = useMemo<CommandAction[]>(() => {
+        const isWorkspaceHome = location.pathname === currentWorkspace.defaultPath;
+        const promotedCommandId = isWorkspaceHome
+            ? {
+                delivery: 'tasks',
+                planning: null,
+                resource: 'settings',
+            }[currentWorkspace.key]
+            : null;
+        const promotedCommand = promotedCommandId
+            ? commands.find(command => command.id === promotedCommandId)
+            : undefined;
+        const homeCommand = commands.find(command => (
+            command.group === 'navigate'
+            && command.to === currentWorkspace.defaultPath
+        ));
+
+        const currentWorkspaceAction: CommandAction = promotedCommand
+            ? {
+                ...promotedCommand,
+                id: 'current-workspace-action',
+                group: 'current',
+            }
+            : isWorkspaceHome && currentWorkspace.key === 'planning'
+                ? {
+                    id: 'current-workspace-action',
+                    group: 'current',
+                    label: t('commandMenu.commands.continuePlanWork.label'),
+                    description: t('commandMenu.commands.continuePlanWork.description'),
+                    keywords: homeCommand
+                        ? [homeCommand.label, homeCommand.description]
+                        : undefined,
+                    icon: MapPin,
+                    to: '/plan/master',
+                }
+                : {
+                    id: 'current-workspace-action',
+                    group: 'current',
+                    label: t('nav.openWorkAreaHome', {
+                        area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
+                    }),
+                    description: t(
+                        currentWorkspace.descriptionKey,
+                        currentWorkspace.defaultDescription,
+                    ),
+                    keywords: homeCommand
+                        ? [homeCommand.label, homeCommand.description]
+                        : undefined,
+                    icon: currentWorkspace.icon,
+                    to: currentWorkspace.defaultPath,
+                };
+        const suppressPlanLauncher = isWorkspaceHome && currentWorkspace.key === 'planning';
+
+        return [
+            currentWorkspaceAction,
+            ...commands.filter(command => (
+                command.to !== currentWorkspaceAction.to
+                && !(suppressPlanLauncher && command.id === 'plan-work')
+            )),
+        ];
+    }, [commands, currentWorkspace, location.pathname, t]);
+
+    const groupOrder = inTasksWorkspace
+        ? TASKS_FIRST_GROUPS
+        : CURRENT_FIRST_GROUPS;
+    const orderedCommands = useMemo(() => (
+        groupOrder.flatMap(group => contextualCommands.filter(command => command.group === group))
+    ), [contextualCommands, groupOrder]);
+
+    const compactCommands = useMemo<CommandAction[]>(() => {
+        const currentAction = contextualCommands.find(command => command.group === 'current');
+        if (!currentAction) return [];
+
+        const commandById = new Map(contextualCommands.map(command => [command.id, command]));
+        const suggestions: CommandAction[] = [];
+        const seenIds = new Set([currentAction.id]);
+        const seenTargets = new Set([currentAction.to]);
+        const currentLocation = `${location.pathname}${location.search}`;
+        const addSuggestion = (command: CommandAction | undefined) => {
+            if (
+                !command
+                || command.group === 'current'
+                || command.to === currentLocation
+                || seenIds.has(command.id)
+                || seenTargets.has(command.to)
+                || suggestions.length >= MAX_COMPACT_SUGGESTIONS
+            ) return;
+
+            seenIds.add(command.id);
+            seenTargets.add(command.to);
+            suggestions.push({ ...command, group: 'suggested' });
+        };
+
+        recentCommandIds.forEach(id => addSuggestion(commandById.get(id)));
+        WORKSPACE_SUGGESTION_IDS[currentWorkspace.key]
+            .forEach(id => addSuggestion(commandById.get(id)));
+        orderedCommands.forEach(command => addSuggestion(command));
+
+        return [currentAction, ...suggestions];
+    }, [
+        contextualCommands,
+        currentWorkspace.key,
+        location.pathname,
+        location.search,
+        orderedCommands,
+        recentCommandIds,
+    ]);
+
+    const hasSearchQuery = query.trim().length > 0;
+    const isCompactView = !hasSearchQuery && !showAllCommands;
+    const visibleGroupOrder: readonly CommandGroup[] = isCompactView
+        ? COMPACT_GROUPS
+        : groupOrder;
     const filteredCommands = useMemo(() => {
         const normalizedQuery = query.trim().toLocaleLowerCase();
-        if (!normalizedQuery) return commands;
-        return commands.filter(command => (
-            `${command.label} ${command.description}`
+        if (!normalizedQuery) return showAllCommands ? orderedCommands : compactCommands;
+        return orderedCommands.filter(command => (
+            `${command.label} ${command.description} ${command.keywords?.join(' ') ?? ''}`
                 .toLocaleLowerCase()
                 .includes(normalizedQuery)
         ));
-    }, [commands, query]);
+    }, [compactCommands, orderedCommands, query, showAllCommands]);
+
+    useEffect(() => {
+        if (!open) return;
+        const activeCommand = filteredCommands[activeIndex];
+        if (!activeCommand) return;
+
+        document
+            .getElementById(`workchord-command-option-${activeCommand.id}`)
+            ?.scrollIntoView?.({ block: 'nearest' });
+    }, [activeIndex, filteredCommands, open]);
 
     const closeMenu = () => {
         setOpen(false);
         setQuery('');
         setActiveIndex(0);
+        setShowAllCommands(false);
     };
 
+    const rememberCommand = useCallback((commandId: string) => {
+        if (commandId === 'current-workspace-action') return;
+        setRecentCommandIds(current => {
+            const next = [commandId, ...current.filter(id => id !== commandId)]
+                .slice(0, MAX_RECENT_COMMANDS);
+            try {
+                window.localStorage.setItem(RECENT_COMMANDS_STORAGE_KEY, JSON.stringify(next));
+            } catch {
+                // The command still runs when browser storage is unavailable.
+            }
+            return next;
+        });
+    }, []);
+
     const runCommand = (command: CommandAction) => {
+        rememberCommand(command.id);
         closeMenu();
         navigate(command.to);
     };
 
     useEffect(() => {
-        const handleOpenRequest = () => setOpen(true);
+        const handleOpenRequest = () => {
+            setQuery('');
+            setActiveIndex(0);
+            setShowAllCommands(false);
+            setOpen(true);
+        };
         const handleKeyDown = (event: KeyboardEvent) => {
             if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'k') {
                 event.preventDefault();
-                setOpen(current => !current);
+                setQuery('');
+                setActiveIndex(0);
+                setShowAllCommands(false);
+                setOpen(!open);
                 return;
             }
             if (
@@ -247,7 +436,7 @@ export const CommandMenu = () => {
                 || !singleKeyShortcutsEnabled
                 || event.defaultPrevented
                 || event.repeat
-                || location.pathname !== '/tasks'
+                || !inTasksWorkspace
                 || isInteractiveTarget(event.target)
                 || document.querySelector('[role="dialog"][aria-modal="true"]')
                 || event.metaKey
@@ -261,6 +450,7 @@ export const CommandMenu = () => {
             const command = commands.find(item => item.shortcut === shortcut);
             if (!command) return;
             event.preventDefault();
+            rememberCommand(command.id);
             navigate(command.to);
         };
 
@@ -270,7 +460,14 @@ export const CommandMenu = () => {
             window.removeEventListener(OPEN_COMMAND_MENU_EVENT, handleOpenRequest);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [commands, location.pathname, navigate, open, singleKeyShortcutsEnabled]);
+    }, [
+        commands,
+        inTasksWorkspace,
+        navigate,
+        open,
+        rememberCommand,
+        singleKeyShortcutsEnabled,
+    ]);
 
     const handleSearchKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'ArrowDown') {
@@ -350,6 +547,28 @@ export const CommandMenu = () => {
                 <kbd>{t('commandMenu.closeShortcut')}</kbd>
             </div>
 
+            {!hasSearchQuery && (
+                <div className="command-menu-view-mode">
+                    <p>
+                        {showAllCommands
+                            ? t('commandMenu.allCommandsHint', { count: orderedCommands.length })
+                            : t('commandMenu.suggestedCommandsHint')}
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setShowAllCommands(value => !value);
+                            setActiveIndex(0);
+                            searchInputRef.current?.focus();
+                        }}
+                    >
+                        {showAllCommands
+                            ? t('commandMenu.showSuggestedCommands')
+                            : t('commandMenu.showAllCommands')}
+                    </button>
+                </div>
+            )}
+
             <div
                 id="workchord-command-results"
                 className="command-menu-results"
@@ -362,7 +581,7 @@ export const CommandMenu = () => {
                         <p>{t('commandMenu.noResults')}</p>
                     </div>
                 ) : (
-                    (['tasks', 'navigate'] as const).map(group => {
+                    visibleGroupOrder.map(group => {
                         const groupedCommands = filteredCommands
                             .map((command, index) => ({ command, index }))
                             .filter(item => item.command.group === group);

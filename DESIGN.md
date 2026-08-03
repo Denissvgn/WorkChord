@@ -112,7 +112,7 @@ The interface favors explicit state, compact controls, and visible recovery over
 - One persistent work object and one primary action per page.
 - Structural borders and low ambient depth instead of decorative elevation.
 - Canonical record-status colors that never borrow the action color.
-- Contextual side navigation and a labeled workspace drawer below 1024px.
+- Contextual side navigation and a labeled workspace drawer at 1180px and below.
 
 ## Colors
 
@@ -172,7 +172,7 @@ The palette combines cool paper neutrals with a deliberately scarce cobalt plann
 
 The desktop shell uses a 52px conductor bar, a 220px contextual sidebar, and a fluid main workspace. Standard pages cap at 1240px with 32px horizontal and 24px vertical gutters; data-heavy workbenches can reach 1440px or take the full available height. Repeated page sections use a 20px vertical rhythm, while component internals generally follow 4px, 8px, 12px, 16px, and 20px grouping intervals.
 
-Master-detail workspaces may use a 260px rail, fluid central canvas, and 320px inspector when space permits. At 1024px and below, the persistent sidebar becomes a labeled drawer while the workspace taxonomy remains unchanged. At 520px, page gutters reduce to 16px, multi-column forms and KPI grids become one column, secondary details collapse, and primary actions stretch when that improves reach. Coarse-pointer controls provide at least 44px touch targets, and full-screen layers use dynamic viewport units plus safe-area insets.
+Master-detail workspaces may use a 260px rail, fluid central canvas, and 320px inspector when space permits. At 1180px and below, the persistent sidebar becomes a labeled drawer while the workspace taxonomy remains unchanged. At 520px, page gutters reduce to 16px, multi-column forms and KPI grids become one column, secondary details collapse, and primary actions stretch when that improves reach. Coarse-pointer controls provide at least 44px touch targets, and full-screen layers use dynamic viewport units plus safe-area insets.
 
 **The Persistent Object Rule.** Each page keeps one work object visually dominant; secondary controls belong in Filters, disclosures, or overflow.
 
@@ -224,7 +224,7 @@ WorkChord uses gently compact corners: 4px for tags and tight internal geometry,
 
 ### Navigation
 
-The conductor bar is a true workspace switcher; its active item uses a soft cobalt surface and a 2px bottom planning thread. The sidebar contains only destinations relevant to the current workspace. At 1024px and below, both workspace switching and contextual destinations move into a labeled, focus-managed drawer.
+The conductor bar is a true workspace switcher; its active item uses a soft cobalt surface and a 2px bottom planning thread. The sidebar contains only destinations relevant to the current workspace. At 1180px and below, both workspace switching and contextual destinations move into a labeled, focus-managed drawer.
 
 ### Planning Readiness
 

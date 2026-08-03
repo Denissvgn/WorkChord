@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Command, Menu, X } from 'lucide-react';
@@ -11,12 +11,12 @@ import { warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
+import type { SidebarAttentionAction } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 
 interface WorkspaceAttention {
     badge: string;
     label: string;
-    to: string;
     isError?: boolean;
 }
 
@@ -38,6 +38,9 @@ const WorkspaceSwitchLink = ({
     const label = t(workspace.labelKey, workspace.defaultLabel);
     const description = t(workspace.descriptionKey, workspace.defaultDescription);
     const homeLabel = t('nav.openWorkAreaHome', { area: label });
+    const attentionDescriptionId = attention
+        ? `workspace-${variant}-${workspace.key}-attention`
+        : undefined;
 
     return (
         <span className={variant === 'desktop' ? 'workspace-switch-item' : 'mobile-workspace-item'}>
@@ -46,6 +49,7 @@ const WorkspaceSwitchLink = ({
                 className={variant === 'desktop' ? 'nav-tab nav-workspace-tab' : 'mobile-workspace-link'}
                 aria-current={active ? 'location' : undefined}
                 aria-label={homeLabel}
+                aria-describedby={attentionDescriptionId}
                 title={t('nav.workAreaHomeHint', { area: label, description })}
                 onClick={onNavigate}
                 onFocus={() => { void warmRouteModule(workspace.defaultPath); }}
@@ -54,24 +58,35 @@ const WorkspaceSwitchLink = ({
                 <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
                 <span className="workspace-switch-copy">
                     <span>{label}</span>
-                    {variant === 'mobile' && <small>{description}</small>}
+                    {variant === 'mobile' && (
+                        <>
+                            <small>{description}</small>
+                            {attention && (
+                                <small
+                                    id={attentionDescriptionId}
+                                    className={`mobile-workspace-attention-copy${attention.isError ? ' error' : ''}`}
+                                >
+                                    {attention.label}
+                                </small>
+                            )}
+                        </>
+                    )}
                 </span>
-            </Link>
-            {attention && (
-                <Link
-                    to={attention.to}
-                    className="workspace-attention-link"
-                    aria-label={attention.label}
-                    title={attention.label}
-                    onClick={onNavigate}
-                    onFocus={() => { void warmRouteModule(attention.to); }}
-                    onMouseEnter={() => { void warmRouteModule(attention.to); }}
-                >
-                    <span className={`nb-attention${attention.isError ? ' error' : ''}`} aria-hidden="true">
+                {attention && (
+                    <span
+                        className={`workspace-attention-status${attention.isError ? ' error' : ''}`}
+                        aria-hidden="true"
+                        title={attention.label}
+                    >
                         {attention.isError ? <AlertTriangle className="h-3 w-3" /> : attention.badge}
                     </span>
-                </Link>
-            )}
+                )}
+                {attention && variant === 'desktop' && (
+                    <span id={attentionDescriptionId} className="sr-only">
+                        {attention.label}
+                    </span>
+                )}
+            </Link>
         </span>
     );
 };
@@ -81,11 +96,13 @@ export const AppTopNav = () => {
         iterations,
         ready,
         isIterationsError,
+        isReadinessLoading,
         isReadinessError,
     } = usePlanningNavigationSummary();
     const { t } = useTranslation();
     const location = useLocation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const pendingWorkspaceFocusRef = useRef<WorkspaceMetadata['key'] | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
         onClose: () => setMobileMenuOpen(false),
@@ -107,35 +124,51 @@ export const AppTopNav = () => {
         ? {
             badge: '!',
             label: t('nav.deliveryAttentionUnavailable'),
-            to: '/triage',
             isError: true,
         }
         : inboxCount > 0
             ? {
                 badge: String(inboxCount),
                 label: t('nav.deliveryAttentionIntake', { count: inboxCount }),
-                to: '/triage',
             }
             : undefined;
-    const planningAttention: WorkspaceAttention | undefined = planningAttentionUnavailable
-        ? {
-            badge: '!',
-            label: t('nav.planningAttentionUnavailable'),
-            to: '/plan/master',
-            isError: true,
-        }
-        : actionablePendingSteps > 0
+    const planningAttention: WorkspaceAttention | undefined = isReadinessLoading
+        ? undefined
+        : planningAttentionUnavailable
             ? {
-                badge: String(actionablePendingSteps),
-                label: t('nav.planningAttention', { count: actionablePendingSteps }),
+                badge: '!',
+                label: t('nav.planningAttentionUnavailable'),
+                isError: true,
+            }
+            : actionablePendingSteps > 0
+                ? {
+                    badge: String(actionablePendingSteps),
+                    label: t('nav.planningAttention', { count: actionablePendingSteps }),
+                }
+                : undefined;
+    const compactAttentionAction: SidebarAttentionAction | undefined = currentWorkspace.key === 'delivery'
+        && deliveryAttention
+        ? {
+            to: '/triage',
+            label: deliveryAttention.isError
+                ? t('nav.deliveryAttentionRetryAction')
+                : t('nav.deliveryAttentionAction', { count: inboxCount }),
+            isError: deliveryAttention.isError,
+        }
+        : currentWorkspace.key === 'planning' && planningAttention
+            ? {
                 to: '/plan/master',
+                label: planningAttention.isError
+                    ? t('nav.planningAttentionRetryAction')
+                    : t('nav.planningAttentionAction', { count: actionablePendingSteps }),
+                isError: planningAttention.isError,
             }
             : undefined;
 
     useEffect(() => {
         if (typeof window === 'undefined' || !window.matchMedia) return undefined;
 
-        const drawerBreakpoint = window.matchMedia('(max-width: 1024px)');
+        const drawerBreakpoint = window.matchMedia('(max-width: 1180px)');
         const closeDrawerOnDesktop = (event: MediaQueryListEvent) => {
             if (!event.matches) setMobileMenuOpen(false);
         };
@@ -143,6 +176,21 @@ export const AppTopNav = () => {
         drawerBreakpoint.addEventListener('change', closeDrawerOnDesktop);
         return () => drawerBreakpoint.removeEventListener('change', closeDrawerOnDesktop);
     }, []);
+
+    useEffect(() => {
+        if (
+            !mobileMenuOpen
+            || pendingWorkspaceFocusRef.current !== currentWorkspace.key
+        ) return;
+
+        pendingWorkspaceFocusRef.current = null;
+        const focusTarget = dialogRef.current?.querySelector<HTMLElement>(
+            '[data-sidebar-attention-action]',
+        ) ?? dialogRef.current?.querySelector<HTMLElement>(
+            '[data-sidebar-context-heading]',
+        );
+        focusTarget?.focus();
+    }, [currentWorkspace.key, dialogRef, mobileMenuOpen]);
 
     return (
         <header className="topnav" data-testid="app-navbar">
@@ -246,7 +294,13 @@ export const AppTopNav = () => {
                                             workspace={workspace}
                                             active={workspace.key === currentWorkspace.key}
                                             variant="mobile"
-                                            onNavigate={() => setMobileMenuOpen(false)}
+                                            onNavigate={() => {
+                                                if (workspace.key === currentWorkspace.key) {
+                                                    setMobileMenuOpen(false);
+                                                    return;
+                                                }
+                                                pendingWorkspaceFocusRef.current = workspace.key;
+                                            }}
                                             attention={
                                                 workspace.key === 'delivery'
                                                     ? deliveryAttention
@@ -261,7 +315,10 @@ export const AppTopNav = () => {
                             <nav aria-label={t('nav.areaDestinations', {
                                 area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
                             })}>
-                                <SidebarContent onNavigate={() => setMobileMenuOpen(false)} />
+                                <SidebarContent
+                                    attentionAction={compactAttentionAction}
+                                    onNavigate={() => setMobileMenuOpen(false)}
+                                />
                             </nav>
                         </div>
                     </aside>

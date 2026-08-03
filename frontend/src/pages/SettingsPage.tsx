@@ -1,18 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import {
     Activity,
+    AlertTriangle,
     ArrowRight,
     Bell,
     Bot,
     CalendarClock,
     Check,
+    ChevronDown,
     CircleHelp,
     Github,
     KeyRound,
     Keyboard,
     Palette,
+    Search,
     ServerCog,
+    Settings2,
     Tags,
     Webhook,
 } from 'lucide-react';
@@ -35,9 +39,11 @@ import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { Button } from '../components/common/Button';
 import { Checkbox } from '../components/common/Checkbox';
 import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
+import { useAdminAccess } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
 type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'admin_access' | 'runtime' | 'about';
+type SettingsPageTab = 'overview' | SettingsTab;
 type SettingsGroupId = 'personal' | 'planning' | 'agents' | 'integrations' | 'system';
 
 interface SettingsDestination {
@@ -46,6 +52,11 @@ interface SettingsDestination {
     descriptionKey: string;
     icon: LucideIcon;
 }
+
+type SettingsDestinationHeader = Pick<
+    SettingsDestination,
+    'labelKey' | 'descriptionKey' | 'icon'
+>;
 
 interface SettingsGroup {
     id: SettingsGroupId;
@@ -147,28 +158,87 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
 ];
 
 const SETTINGS_DESTINATIONS = SETTINGS_GROUPS.flatMap(group => group.items);
+const MAX_RECENT_SETTINGS = 3;
+export const RECENT_SETTINGS_STORAGE_KEY = 'workchord.settings.recent';
+
+const readRecentSettings = (): SettingsTab[] => {
+    if (typeof window === 'undefined') return [];
+    try {
+        const parsed = JSON.parse(window.localStorage.getItem(RECENT_SETTINGS_STORAGE_KEY) ?? '[]');
+        if (!Array.isArray(parsed)) return [];
+        const valid = parsed.filter((value): value is SettingsTab => (
+            typeof value === 'string' && SETTINGS_DESTINATIONS.some(destination => destination.id === value)
+        ));
+        return [...new Set(valid)].slice(0, MAX_RECENT_SETTINGS);
+    } catch {
+        return [];
+    }
+};
+
+const writeRecentSettings = (tabs: SettingsTab[]) => {
+    if (typeof window === 'undefined') return;
+    try {
+        window.localStorage.setItem(RECENT_SETTINGS_STORAGE_KEY, JSON.stringify(tabs));
+    } catch {
+        // Recents are an enhancement; Settings remains fully usable if storage is unavailable.
+    }
+};
 
 const isSettingsTab = (value: string | null): value is SettingsTab => (
     SETTINGS_DESTINATIONS.some(destination => destination.id === value)
 );
 
-const parseSettingsTab = (value: string | null): SettingsTab => (
-    isSettingsTab(value) ? value : 'appearance'
+const parseSettingsTab = (value: string | null): SettingsPageTab => (
+    isSettingsTab(value) ? value : 'overview'
 );
 
 const SettingsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [goalGuideOpen, setGoalGuideOpen] = useState(false);
+    const [destinationSearch, setDestinationSearch] = useState('');
     const rawTab = searchParams.get('tab');
     const activeTab = parseSettingsTab(rawTab);
-    const activeDestination = SETTINGS_DESTINATIONS.find(destination => destination.id === activeTab) ?? SETTINGS_DESTINATIONS[0];
+    const activeDestination: SettingsDestinationHeader = activeTab === 'overview'
+        ? {
+            labelKey: 'settingsPage.overview',
+            descriptionKey: 'settingsPage.overviewDescription',
+            icon: Settings2,
+        }
+        : SETTINGS_DESTINATIONS.find(destination => destination.id === activeTab) ?? SETTINGS_DESTINATIONS[0];
     const ActiveIcon = activeDestination.icon;
     const { theme, setTheme } = useThemeStore();
+    const { hasAdminKey } = useAdminAccess();
     const {
         enabled: singleKeyShortcutsEnabled,
         setEnabled: setSingleKeyShortcutsEnabled,
     } = useSingleKeyShortcutPreference();
     const { t } = useTranslation();
+    const recentTabs = useMemo(() => {
+        const storedTabs = readRecentSettings();
+        if (activeTab === 'overview') return storedTabs;
+        return [activeTab, ...storedTabs.filter(tab => tab !== activeTab)]
+            .slice(0, MAX_RECENT_SETTINGS);
+    }, [activeTab]);
+    const normalizedSearch = destinationSearch.trim().toLocaleLowerCase();
+    const filteredGroups = useMemo(() => SETTINGS_GROUPS
+        .map(group => ({
+            ...group,
+            items: group.items.filter(destination => (
+                [
+                    t(destination.labelKey),
+                    t(destination.descriptionKey),
+                    t(group.labelKey),
+                ].some(value => value.toLocaleLowerCase().includes(normalizedSearch))
+            )),
+        }))
+        .filter(group => group.items.length > 0), [normalizedSearch, t]);
+    const filteredDestinationCount = filteredGroups.reduce(
+        (count, group) => count + group.items.length,
+        0,
+    );
+    const recentDestinations = recentTabs
+        .map(tab => SETTINGS_DESTINATIONS.find(destination => destination.id === tab))
+        .filter((destination): destination is SettingsDestination => Boolean(destination));
 
     useEffect(() => {
         if (rawTab === null || isSettingsTab(rawTab)) return;
@@ -177,19 +247,33 @@ const SettingsPage = () => {
         setSearchParams(nextParams, { replace: true });
     }, [rawTab, searchParams, setSearchParams]);
 
-    const settingsHref = (tab: SettingsTab) => {
+    useEffect(() => {
+        if (activeTab === 'overview') return;
+        writeRecentSettings(recentTabs);
+    }, [activeTab, recentTabs]);
+
+    const settingsHref = (tab: SettingsPageTab) => {
         const nextParams = new URLSearchParams(searchParams);
-        if (tab === 'appearance') nextParams.delete('tab');
+        if (tab === 'overview') nextParams.delete('tab');
         else nextParams.set('tab', tab);
         const query = nextParams.toString();
         return query ? `/settings?${query}` : '/settings';
     };
 
-    const activateTab = (tab: SettingsTab) => {
-        const nextParams = new URLSearchParams(searchParams);
-        if (tab === 'appearance') nextParams.delete('tab');
-        else nextParams.set('tab', tab);
-        setSearchParams(nextParams);
+    const renderDestinationLink = (destination: SettingsDestination) => {
+        const Icon = destination.icon;
+        const active = destination.id === activeTab;
+        return (
+            <Link
+                key={destination.id}
+                to={settingsHref(destination.id)}
+                className="settings-nav-item"
+                aria-current={active ? 'page' : undefined}
+            >
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <span>{t(destination.labelKey)}</span>
+            </Link>
+        );
     };
 
     const adminRecovery = (
@@ -227,7 +311,7 @@ const SettingsPage = () => {
             <PageHeader
                 title={t('settingsPage.title')}
                 subtitle={t('settingsPage.description')}
-                actions={(
+                actions={activeTab !== 'overview' ? (
                     <Button
                         type="button"
                         variant="ghost"
@@ -240,7 +324,7 @@ const SettingsPage = () => {
                         <CircleHelp aria-hidden="true" className="h-4 w-4" />
                         {t('settingsPage.goalGuide.trigger')}
                     </Button>
-                )}
+                ) : undefined}
             />
 
             <SlideOverDrawer
@@ -278,50 +362,83 @@ const SettingsPage = () => {
             <div className="settings-shell">
                 <aside className="settings-local-nav">
                     <nav aria-label={t('settingsPage.navigationLabel')}>
-                        {SETTINGS_GROUPS.map(group => (
-                            <section key={group.id} className="settings-nav-group" aria-labelledby={`settings-group-${group.id}`}>
-                                <h2 id={`settings-group-${group.id}`}>{t(group.labelKey)}</h2>
-                                <ul>
-                                    {group.items.map(destination => {
-                                        const Icon = destination.icon;
-                                        const active = destination.id === activeTab;
-                                        return (
-                                            <li key={destination.id}>
-                                                <Link
-                                                    to={settingsHref(destination.id)}
-                                                    className="settings-nav-item"
-                                                    aria-current={active ? 'page' : undefined}
-                                                >
-                                                    <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                                                    <span>{t(destination.labelKey)}</span>
-                                                </Link>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </section>
-                        ))}
+                        <Link
+                            to={settingsHref('overview')}
+                            className="settings-nav-item settings-overview-link"
+                            aria-current={activeTab === 'overview' ? 'page' : undefined}
+                        >
+                            <Settings2 aria-hidden="true" className="h-4 w-4 shrink-0" />
+                            <span>{t('settingsPage.overview')}</span>
+                        </Link>
+
+                        <label className="settings-nav-search">
+                            <span className="sr-only">{t('settingsPage.catalog.searchLabel')}</span>
+                            <Search aria-hidden="true" className="h-4 w-4" />
+                            <input
+                                type="search"
+                                value={destinationSearch}
+                                onChange={event => setDestinationSearch(event.target.value)}
+                                placeholder={t('settingsPage.catalog.searchPlaceholder')}
+                                aria-label={t('settingsPage.catalog.searchLabel')}
+                            />
+                        </label>
+
+                        {normalizedSearch ? (
+                            <div className="settings-search-results">
+                                <p className="settings-nav-status" role="status">
+                                    {t('settingsPage.catalog.results', { count: filteredDestinationCount })}
+                                </p>
+                                {filteredDestinationCount === 0 ? (
+                                    <p className="settings-nav-empty">{t('settingsPage.catalog.noResults')}</p>
+                                ) : filteredGroups.map(group => (
+                                    <section
+                                        key={group.id}
+                                        className="settings-nav-group"
+                                        aria-labelledby={`settings-search-group-${group.id}`}
+                                    >
+                                        <h2 id={`settings-search-group-${group.id}`}>{t(group.labelKey)}</h2>
+                                        <div className="settings-nav-list">
+                                            {group.items.map(renderDestinationLink)}
+                                        </div>
+                                    </section>
+                                ))}
+                            </div>
+                        ) : (
+                            <>
+                                <section className="settings-nav-group" aria-labelledby="settings-recent-title">
+                                    <h2 id="settings-recent-title">{t('settingsPage.catalog.recent')}</h2>
+                                    {recentDestinations.length > 0 ? (
+                                        <div className="settings-nav-list">
+                                            {recentDestinations.map(renderDestinationLink)}
+                                        </div>
+                                    ) : (
+                                        <p className="settings-nav-empty">{t('settingsPage.catalog.recentEmpty')}</p>
+                                    )}
+                                </section>
+                                <details className="settings-catalog">
+                                    <summary>
+                                        <span>{t('settingsPage.catalog.browseAll')}</span>
+                                        <ChevronDown aria-hidden="true" className="h-4 w-4" />
+                                    </summary>
+                                    <div className="settings-catalog-groups">
+                                        {SETTINGS_GROUPS.map(group => (
+                                            <section
+                                                key={group.id}
+                                                className="settings-nav-group"
+                                                aria-labelledby={`settings-group-${group.id}`}
+                                            >
+                                                <h2 id={`settings-group-${group.id}`}>{t(group.labelKey)}</h2>
+                                                <div className="settings-nav-list">
+                                                    {group.items.map(renderDestinationLink)}
+                                                </div>
+                                            </section>
+                                        ))}
+                                    </div>
+                                </details>
+                            </>
+                        )}
                     </nav>
                 </aside>
-
-                <label className="settings-mobile-nav">
-                    <span>{t('settingsPage.sectionLabel')}</span>
-                    <select
-                        className="input"
-                        value={activeTab}
-                        onChange={event => activateTab(event.target.value as SettingsTab)}
-                    >
-                        {SETTINGS_GROUPS.map(group => (
-                            <optgroup key={group.id} label={t(group.labelKey)}>
-                                {group.items.map(destination => (
-                                    <option key={destination.id} value={destination.id}>
-                                        {t(destination.labelKey)}
-                                    </option>
-                                ))}
-                            </optgroup>
-                        ))}
-                    </select>
-                </label>
 
                 <section className="settings-content" aria-labelledby="settings-destination-title">
                     <header className="settings-destination-header">
@@ -335,6 +452,65 @@ const SettingsPage = () => {
                     </header>
 
                     <div className="settings-panel-body">
+                        {activeTab === 'overview' && (
+                            <div className="settings-overview">
+                                {!hasAdminKey && (
+                                    <section
+                                        className="settings-overview-section"
+                                        aria-labelledby="settings-current-warnings-title"
+                                    >
+                                        <header>
+                                            <h3 id="settings-current-warnings-title">
+                                                {t('settingsPage.overviewContent.currentWarnings')}
+                                            </h3>
+                                            <p>{t('settingsPage.overviewContent.currentWarningsDescription')}</p>
+                                        </header>
+                                        <div className="settings-overview-status warning" role="status">
+                                            <AlertTriangle aria-hidden="true" className="h-5 w-5" />
+                                            <div>
+                                                <strong>{t('settingsPage.overviewContent.adminLockedTitle')}</strong>
+                                                <span>{t('settingsPage.overviewContent.adminLockedBody')}</span>
+                                                <Link to={settingsHref('admin_access')}>
+                                                    {t('settingsPage.openAdminAccess')}
+                                                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </section>
+                                )}
+
+                                <section
+                                    className="settings-overview-section"
+                                    aria-labelledby="settings-common-jobs-title"
+                                >
+                                    <header>
+                                        <h3 id="settings-common-jobs-title">
+                                            {t('settingsPage.overviewContent.commonJobs')}
+                                        </h3>
+                                        <p>{t('settingsPage.overviewContent.commonJobsDescription')}</p>
+                                    </header>
+                                    <nav
+                                        className="settings-common-jobs"
+                                        aria-label={t('settingsPage.overviewContent.commonJobs')}
+                                    >
+                                        {(['appearance', 'scheduling', 'github'] as const).map(tab => {
+                                            const destination = SETTINGS_DESTINATIONS.find(item => item.id === tab)!;
+                                            const Icon = destination.icon;
+                                            return (
+                                                <Link key={tab} to={settingsHref(tab)}>
+                                                    <Icon aria-hidden="true" className="h-4 w-4" />
+                                                    <span>
+                                                        <strong>{t(`settingsPage.overviewContent.${tab}Title`)}</strong>
+                                                        <span>{t(`settingsPage.overviewContent.${tab}Body`)}</span>
+                                                    </span>
+                                                    <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                                                </Link>
+                                            );
+                                        })}
+                                    </nav>
+                                </section>
+                            </div>
+                        )}
                         {activeTab === 'appearance' && (
                             <div className="settings-panel-narrow wc-panel-stack">
                                 <AdminAccessGate showPanel={false} recovery={adminRecovery}>

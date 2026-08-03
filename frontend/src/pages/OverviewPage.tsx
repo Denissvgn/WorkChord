@@ -306,6 +306,12 @@ const OverviewPage = () => {
                 <div className="empty">
                     <h4>{t('overview.noIterationTitle')}</h4>
                     <p>{t('overview.noIterationBody')}</p>
+                    <div className="empty-actions">
+                        <Link className="btn primary" to="/plan">
+                            <Calendar aria-hidden="true" className="h-4 w-4" />
+                            {t('overview.setUpPlanningPeriod')}
+                        </Link>
+                    </div>
                 </div>
             )}
 
@@ -670,27 +676,46 @@ const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) =>
 
     return (
         <li className="flex min-w-0 items-center gap-3 px-3 py-2.5 hover:bg-surface-hover">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={dotStyle(tone)} title={status} />
             <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium text-content-primary">{task.title}</div>
-                {showProject && task.project && (
-                    <div className="mt-0.5 truncate text-xs text-content-secondary">{task.project.name}</div>
-                )}
+                <div className="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-content-secondary">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 font-medium">
+                        <span
+                            aria-hidden="true"
+                            className="h-1.5 w-1.5 shrink-0 rounded-full"
+                            style={dotStyle(tone)}
+                        />
+                        <span>{status}</span>
+                    </span>
+                    {showProject && task.project && (
+                        <span className="truncate">{task.project.name}</span>
+                    )}
+                </div>
             </div>
             {task.is_overdue && (
                 <span className="inline-flex h-5 shrink-0 items-center gap-1 rounded bg-feedback-danger-muted px-1.5 text-wc-micro font-semibold text-feedback-danger-foreground">
-                    <Clock className="h-3 w-3" />
+                    <Clock aria-hidden="true" className="h-3 w-3" />
                     {t('taskList.overdue')}
                 </span>
             )}
             <span className="w-10 shrink-0 text-right text-xs tabular-nums text-content-secondary">{t('units.daysCompact', { count: formatNumber(task.effort_days || 0) })}</span>
             {task.assignee ? (
-                <span title={task.assignee.name} className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-active-muted text-wc-micro font-bold text-action">
-                    {initialsFor(task.assignee.name)}
+                <span
+                    title={task.assignee.name}
+                    role="img"
+                    aria-label={task.assignee.name}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-active-muted text-wc-micro font-bold text-action"
+                >
+                    <span aria-hidden="true">{initialsFor(task.assignee.name)}</span>
                 </span>
             ) : (
-                <span title={t('common.unassigned')} className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-dashed border-border-strong bg-surface-card text-content-tertiary">
-                    <User className="h-3.5 w-3.5" />
+                <span
+                    title={t('common.unassigned')}
+                    role="img"
+                    aria-label={t('common.unassigned')}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-dashed border-border-strong bg-surface-card text-content-tertiary"
+                >
+                    <User aria-hidden="true" className="h-3.5 w-3.5" />
                 </span>
             )}
         </li>

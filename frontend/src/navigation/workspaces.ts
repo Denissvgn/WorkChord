@@ -23,6 +23,7 @@ export interface NavItem {
     labelKey: string;
     defaultLabel: string;
     icon: LucideIcon;
+    secondary?: boolean;
 }
 
 export interface WorkspaceMetadata {
@@ -50,7 +51,7 @@ export const WORKSPACES: WorkspaceMetadata[] = [
             { to: '/tasks', labelKey: 'nav.tasks', defaultLabel: 'Tasks', icon: ListTodo },
             { to: '/triage', labelKey: 'nav.triage', defaultLabel: 'Triage', icon: Inbox },
             { to: '/projects', labelKey: 'nav.projects', defaultLabel: 'Projects', icon: FolderOpen },
-            { to: '/agent-pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent Pipeline', icon: Bot },
+            { to: '/agent-pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent Pipeline', icon: Bot, secondary: true },
         ]
     },
     {
@@ -66,7 +67,7 @@ export const WORKSPACES: WorkspaceMetadata[] = [
             { to: '/gantt', labelKey: 'nav.gantt', defaultLabel: 'Gantt', icon: GanttChartSquare },
             { to: '/roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
             { to: '/iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },
-            { to: '/calendar', labelKey: 'nav.calendar', defaultLabel: 'Calendar', icon: Calendar },
+            { to: '/calendar', labelKey: 'nav.calendar', defaultLabel: 'Calendar', icon: Calendar, secondary: true },
         ]
     },
     {

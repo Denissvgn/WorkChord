@@ -92,6 +92,19 @@ describe('GanttPage hardening', () => {
         taskServiceMock.batchUpdate.mockReset();
     });
 
+    it('explains saved schedules and temporary sandbox edits on demand', async () => {
+        const { user } = renderWithProviders(<GanttPage />);
+
+        await screen.findByText('Gantt chart');
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.help.trigger') }));
+
+        const guide = screen.getByRole('dialog', { name: i18n.t('gantt.help.title') });
+        expect(within(guide).getByText(i18n.t('gantt.help.savedTitle'))).toBeVisible();
+        expect(within(guide).getByText(i18n.t('gantt.help.sandboxTitle'))).toBeVisible();
+        expect(within(guide).getByRole('link', { name: i18n.t('gantt.help.action') }))
+            .toHaveAttribute('href', '/plan');
+    });
+
     it('keeps failed sandbox previews recoverable and prevents applying unvalidated edits', async () => {
         ganttServiceMock.previewSchedule.mockRejectedValue(new Error('Preview unavailable'));
         const { user } = renderWithProviders(<GanttPage />);

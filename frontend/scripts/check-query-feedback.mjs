@@ -115,7 +115,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/team/TeamProfileManager.tsx': '88f5f85cc3e96ef1',
     'src/components/team/VacationManager.tsx': 'c59125d77b1edefe',
     'src/i18n/SystemLanguageProvider.tsx': '52087c287c3e9315',
-    'src/components/layout/AppSidebar.tsx': '419d9221a9503edf',
+    'src/components/layout/AppSidebar.tsx': '9b6e6b003295400b',
     'src/components/layout/AppTopNav.tsx': '78ebdb449b4d7743',
     'src/features/planningMasters/usePlanningNavigationSummary.ts': 'a3c7904176ba9f46',
     'src/features/planningMasters/usePlanningReadiness.ts': '83544c1613ceb53d',
