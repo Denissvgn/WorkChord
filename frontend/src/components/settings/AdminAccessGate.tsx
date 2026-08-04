@@ -8,13 +8,23 @@ interface AdminAccessGateProps {
     children: ReactNode;
     showPanel?: boolean;
     recovery?: ReactNode;
+    accessGranted?: boolean;
+    headingLevel?: 2 | 3;
 }
 
-export const AdminAccessGate = ({ children, showPanel = true, recovery }: AdminAccessGateProps) => {
+export const AdminAccessGate = ({
+    children,
+    showPanel = true,
+    recovery,
+    accessGranted,
+    headingLevel = 3,
+}: AdminAccessGateProps) => {
     const { t } = useTranslation();
     const { hasAdminKey } = useAdminAccess();
+    const hasAccess = accessGranted ?? hasAdminKey;
+    const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
-    if (hasAdminKey) {
+    if (hasAccess) {
         return <>{children}</>;
     }
 
@@ -26,9 +36,9 @@ export const AdminAccessGate = ({ children, showPanel = true, recovery }: AdminA
                         <LockKeyhole aria-hidden="true" className="h-4 w-4" />
                     </div>
                     <div className="admin-access-gate-copy">
-                        <h3>
+                        <Heading>
                             {t('settings.adminAccessProtectedTitle')}
-                        </h3>
+                        </Heading>
                         <p>
                             {t('settings.adminAccessProtectedDescription')}
                         </p>
@@ -36,7 +46,7 @@ export const AdminAccessGate = ({ children, showPanel = true, recovery }: AdminA
                     </div>
                 </div>
             </div>
-            {showPanel && <AdminAccessPanel />}
+            {showPanel && <AdminAccessPanel headingLevel={headingLevel} />}
         </div>
     );
 };

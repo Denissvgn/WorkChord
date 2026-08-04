@@ -79,7 +79,10 @@ function PlanningReadinessLauncher({
         ? t('plan.hub.nothingSetUp')
         : ready.pct === 100
             ? t('plan.hub.planReadyShare')
-            : t('plan.hub.stepsComplete', { done: ready.done, total: ready.total });
+            : t('plan.hub.checkpointProgress', {
+                done: ready.done,
+                total: ready.total,
+            });
 
     const localizedState = (stepId: string) => {
         const stepStatus = status[stepId];
@@ -117,6 +120,9 @@ function PlanningReadinessLauncher({
 
             <div className="plan-hub-readiness">
                 <div className="plan-hub-readiness-copy">
+                    <span className="plan-status-scope">
+                        {t('plan.hub.planningReadiness')}
+                    </span>
                     <strong>{readinessSummary}</strong>
                     <span>
                         {ready.pct < 100 && nextStep ? (
@@ -130,10 +136,10 @@ function PlanningReadinessLauncher({
                 <div
                     className="plan-hub-progress"
                     role="progressbar"
-                    aria-label={t('plan.hub.readinessProgress', { percent: ready.pct })}
+                    aria-label={t('plan.hub.readinessProgress')}
                     aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={ready.pct}
+                    aria-valuemax={ready.total}
+                    aria-valuenow={ready.done}
                     aria-valuetext={readinessSummary}
                 >
                     <span style={{ transform: `scaleX(${ready.pct / 100})` }} />

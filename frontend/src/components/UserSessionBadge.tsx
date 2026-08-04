@@ -34,14 +34,17 @@ export const UserSessionBadge = () => {
 
     if (!session) return null;
 
+    const compactCode = session.public_id.slice(-6).toUpperCase();
+
     return (
         <div
             className="session-badge"
-            title={t('session.guestDiagnostic', { code: session.public_id })}
+            aria-label={t('session.identityLabel', { code: compactCode })}
+            title={t('session.identityDescription', { code: session.public_id })}
         >
             <User className="h-4 w-4" aria-hidden="true" />
             <strong>
-                {t('session.guestLabel', { code: session.public_id.slice(-6).toUpperCase() })}
+                {t('session.guestLabel', { code: compactCode })}
             </strong>
         </div>
     );

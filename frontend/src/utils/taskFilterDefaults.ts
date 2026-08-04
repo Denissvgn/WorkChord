@@ -1,6 +1,7 @@
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 
 export const defaultFilters: TaskFilters = {
+    planningIssue: null,
     assigneeId: null,
     projectId: null,
     priority: null,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Bookmark, ChevronRight, ListFilter, Search, Sparkles, TriangleAlert } from 'lucide-react';
@@ -65,13 +65,16 @@ const isNavItemCurrent = (
 const SidebarNavItem = ({
     item,
     isCurrent,
+    attention,
     onNavigate,
 }: {
     item: NavItem;
     isCurrent: boolean;
+    attention?: SidebarAttentionAction;
     onNavigate?: () => void;
 }) => {
     const { t } = useTranslation();
+    const attentionDescriptionId = useId();
     const label = t(item.labelKey, item.defaultLabel);
     const Icon = item.icon;
     return (
@@ -79,12 +82,31 @@ const SidebarNavItem = ({
             to={item.to}
             className="sb-item"
             aria-current={isCurrent ? 'page' : undefined}
+            aria-describedby={attention ? attentionDescriptionId : undefined}
             aria-label={label}
-            title={label}
+            data-sidebar-attention-action={attention ? true : undefined}
+            title={attention ? `${label} — ${attention.label}` : label}
             onClick={onNavigate}
         >
             <Icon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
             <span className="sb-label">{label}</span>
+            {attention && (
+                <>
+                    <span id={attentionDescriptionId} className="sr-only">
+                        {attention.label}
+                    </span>
+                    <span
+                        aria-hidden="true"
+                        className={`sb-item-attention${attention.isError ? ' error' : ''}`}
+                    >
+                        {attention.isError ? (
+                            <TriangleAlert className="h-3.5 w-3.5" />
+                        ) : (
+                            <span className="sb-item-attention-dot" />
+                        )}
+                    </span>
+                </>
+            )}
         </Link>
     );
 };
@@ -392,6 +414,10 @@ export const SidebarContent = ({
     const allViews = [...savedViewGroups.tasks, ...savedViewGroups.triage, ...savedViewGroups.projects];
     const coreItems = currentWorkspace.items.filter(item => !item.secondary);
     const secondaryItems = currentWorkspace.items.filter(item => item.secondary);
+    const attentionDestination = attentionAction
+        ? coreItems.find(item => item.to === attentionAction.to)
+        : undefined;
+    const standaloneAttentionAction = attentionDestination ? undefined : attentionAction;
 
     return (
         <>
@@ -404,19 +430,19 @@ export const SidebarContent = ({
                     <CurrentWorkspaceIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                     <span>{t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)}</span>
                 </div>
-                {attentionAction && (
+                {standaloneAttentionAction && (
                     <Link
-                        to={attentionAction.to}
-                        className={`sb-item sb-attention-action${attentionAction.isError ? ' error' : ''}`}
+                        to={standaloneAttentionAction.to}
+                        className={`sb-item sb-attention-action${standaloneAttentionAction.isError ? ' error' : ''}`}
                         data-sidebar-attention-action
                         onClick={onNavigate}
                     >
-                        {attentionAction.isError ? (
+                        {standaloneAttentionAction.isError ? (
                             <TriangleAlert aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
                         ) : (
                             <ArrowRight aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
                         )}
-                        <span className="sb-label">{attentionAction.label}</span>
+                        <span className="sb-label">{standaloneAttentionAction.label}</span>
                     </Link>
                 )}
                 {coreItems.map(item => (
@@ -424,6 +450,7 @@ export const SidebarContent = ({
                         key={item.to}
                         item={item}
                         isCurrent={isNavItemCurrent(item, location.pathname, selectedSavedViewId)}
+                        attention={item.to === attentionDestination?.to ? attentionAction : undefined}
                         onNavigate={onNavigate}
                     />
                 ))}
@@ -474,14 +501,16 @@ export const SidebarContent = ({
 export const AppSidebar = () => {
     const { t } = useTranslation();
     const currentWorkspace = useCurrentWorkspace();
+    const workspaceLabel = t(currentWorkspace.labelKey, currentWorkspace.defaultLabel);
     const navigationLabel = t('nav.areaDestinations', {
-        area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
+        area: workspaceLabel,
     });
 
     return (
         <aside
             className="sidebar"
             data-testid="app-sidebar"
+            aria-label={workspaceLabel}
         >
             <nav className="sidebar-navigation" aria-label={navigationLabel}>
                 <SidebarContent />

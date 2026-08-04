@@ -12,6 +12,7 @@ import {
     Minimize2,
     Plus,
     Upload,
+    Waypoints,
     X,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,6 +24,7 @@ import { TaskList } from '../components/tasks/TaskList';
 import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
 import { TaskForm } from '../components/tasks/TaskForm';
+import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
@@ -37,9 +39,46 @@ import { savedViewService } from '../services/savedViewService';
 import { savedViewDisplay } from '../i18n/seedDisplay';
 import clsx from 'clsx';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
+import { OverviewTaskReturnBar } from '../components/overview/OverviewTaskReturnBar';
+import { taskService } from '../services/taskService';
+import {
+    OVERVIEW_TASK_ORIGIN,
+    OVERVIEW_TASK_ORIGIN_PARAM,
+    OVERVIEW_TASK_PARAM,
+    OVERVIEW_TASK_RETURN_PARAM,
+    OVERVIEW_TASK_THREAD_PARAM,
+    overviewTaskThreadSource,
+    positiveTaskId,
+} from '../features/overview/overviewTaskThread';
+import {
+    PLANNING_ITERATION_PARAM,
+    PLANNING_TASK_ISSUE_PARAM,
+    parsePlanningIterationId,
+    parsePlanningTaskIssue,
+} from '../features/planningMasters/planningTaskIssues';
+import type {
+    PlanningTaskIssue,
+} from '../features/planningMasters/planningTaskIssues';
 
 type ViewMode = 'list' | 'board';
 const SORT_KEYS: SortKey[] = ['priority', 'sort_order', 'status', 'title'];
+const PLANNING_ISSUE_COPY_KEYS: Record<
+    PlanningTaskIssue,
+    { title: string; body: string }
+> = {
+    unassigned: {
+        title: 'tasks.planningIssueUnassignedTitle',
+        body: 'tasks.planningIssueUnassignedBody',
+    },
+    'missing-effort': {
+        title: 'tasks.planningIssueMissingEffortTitle',
+        body: 'tasks.planningIssueMissingEffortBody',
+    },
+    any: {
+        title: 'tasks.planningIssueAnyTitle',
+        body: 'tasks.planningIssueAnyBody',
+    },
+};
 
 const stringListFromValue = (value: unknown) => (
     Array.isArray(value) && value.every(item => typeof item === 'string') ? value : []
@@ -65,6 +104,7 @@ const filtersFromSavedView = (view: SavedView): TaskFilters => {
     const raw = view.filters_json;
     return {
         ...defaultFilters,
+        planningIssue: parsePlanningTaskIssue(raw.planningIssue),
         assigneeId: nullableNumberFromValue(raw.assigneeId),
         projectId: nullableNumberFromValue(raw.projectId),
         priority: nullableNumberFromValue(raw.priority),
@@ -100,6 +140,19 @@ const TasksPage = () => {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const appliedRequestedViewIdRef = useRef<number | null>(null);
+    const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
+    const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
+    const returnTaskId = positiveTaskId(
+        searchParams.get(OVERVIEW_TASK_RETURN_PARAM),
+    ) ?? requestedTaskId;
+    const taskThreadSource = overviewTaskThreadSource(
+        searchParams.get(OVERVIEW_TASK_THREAD_PARAM),
+    );
+    const isFromOverview = (
+        searchParams.get(OVERVIEW_TASK_ORIGIN_PARAM) === OVERVIEW_TASK_ORIGIN
+    );
+    const focusedTaskContextId = requestedTaskId
+        ?? (isFromOverview ? returnTaskId : null);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const createTaskRequested = searchParams.get('create') === '1';
     const filtersRequested = searchParams.get('panel') === 'filters';
@@ -107,12 +160,20 @@ const TasksPage = () => {
     const manualSortRequested = searchParams.get('sort') === 'manual';
     const requestedLayout = searchParams.get('layout');
     const requestedTaskMode = searchParams.get('mode');
+    const rawPlanningIssue = searchParams.get(PLANNING_TASK_ISSUE_PARAM);
+    const requestedPlanningIssue = parsePlanningTaskIssue(rawPlanningIssue);
+    const rawPlanningIterationId = searchParams.get(PLANNING_ITERATION_PARAM);
+    const requestedPlanningIterationId = parsePlanningIterationId(
+        rawPlanningIterationId,
+    );
     const taskMode: TaskMode | null = requestedTaskMode === 'bulk' || requestedTaskMode === 'merge'
         ? requestedTaskMode
         : null;
-    const isCreateModalOpen = isCreating || (createTaskRequested && selectedIterationId > 0);
+    const isCreateModalOpen = requestedTaskId === null
+        && (isCreating || (createTaskRequested && selectedIterationId > 0));
     const { t } = useTranslation();
     const activeFilterCount =
+        Number(filters.planningIssue !== null) +
         Number(filters.assigneeId !== null) +
         Number(filters.projectId !== null) +
         Number(filters.priority !== null) +
@@ -126,6 +187,9 @@ const TasksPage = () => {
         Number(Boolean(filters.endDateTo)) +
         filters.labelSlugs.length +
         filters.labelGroupKeys.length;
+    const planningIssueCopy = filters.planningIssue
+        ? PLANNING_ISSUE_COPY_KEYS[filters.planningIssue]
+        : null;
 
     const setTaskContextParam = useCallback((key: string, value: string | null) => {
         const nextSearchParams = new URLSearchParams(searchParams);
@@ -163,6 +227,13 @@ const TasksPage = () => {
         queryKey: ['iterations'],
         queryFn: iterationService.getAll,
     });
+    // feedback-policy: query loading,error,retry,empty - URL context stays
+    // explicit while the task drawer owns loading, retry, and empty handling.
+    const focusedTaskQuery = useQuery({
+        queryKey: ['task', focusedTaskContextId],
+        queryFn: () => taskService.getById(focusedTaskContextId as number),
+        enabled: focusedTaskContextId !== null,
+    });
     // feedback-policy: query loading,error,retry,empty - URL context stays explicit; the drawer owns retry and empty management.
     const {
         data: savedViews = [],
@@ -191,14 +262,97 @@ const TasksPage = () => {
     );
 
     useEffect(() => {
-        if (iterations && iterations.length > 0) {
-            // Reset to first iteration if selected iteration doesn't exist
-            const iterationExists = iterations.some(i => i.id === selectedIterationId);
-            if (selectedIterationId === 0 || !iterationExists) {
-                setSelectedIterationId(iterations[0].id);
+        if (!iterations || iterations.length === 0) return;
+
+        if (rawPlanningIterationId !== null) {
+            const requestedIterationExists = (
+                requestedPlanningIterationId !== null
+                && iterations.some(iteration => (
+                    iteration.id === requestedPlanningIterationId
+                ))
+            );
+            if (requestedIterationExists) {
+                if (selectedIterationId !== requestedPlanningIterationId) {
+                    setSelectedIterationId(requestedPlanningIterationId);
+                }
+                return;
             }
+
+            const nextSearchParams = new URLSearchParams(searchParams);
+            nextSearchParams.delete(PLANNING_ITERATION_PARAM);
+            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+            setSearchParams(nextSearchParams, { replace: true });
         }
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
+
+        const iterationExists = iterations.some(i => i.id === selectedIterationId);
+        if (selectedIterationId === 0 || !iterationExists) {
+            setSelectedIterationId(iterations[0].id);
+        }
+    }, [
+        iterations,
+        rawPlanningIterationId,
+        requestedPlanningIterationId,
+        searchParams,
+        selectedIterationId,
+        setSearchParams,
+        setSelectedIterationId,
+    ]);
+
+    useEffect(() => {
+        if (rawPlanningIssue !== null && requestedPlanningIssue === null) {
+            const nextSearchParams = new URLSearchParams(searchParams);
+            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+            setSearchParams(nextSearchParams, { replace: true });
+            return;
+        }
+
+        if (requestedPlanningIssue) {
+            if (requestedSavedViewId) {
+                const nextSearchParams = new URLSearchParams(searchParams);
+                nextSearchParams.delete('view');
+                setSearchParams(nextSearchParams, { replace: true });
+            }
+            appliedRequestedViewIdRef.current = null;
+            setSelectedSavedViewId(null);
+            setFilters(current => (
+                current.planningIssue === requestedPlanningIssue
+                    ? current
+                    : { ...current, planningIssue: requestedPlanningIssue }
+            ));
+            return;
+        }
+
+        if (!requestedSavedViewId) {
+            setFilters(current => (
+                current.planningIssue === null
+                    ? current
+                    : { ...current, planningIssue: null }
+            ));
+        }
+    }, [
+        rawPlanningIssue,
+        requestedPlanningIssue,
+        requestedSavedViewId,
+        searchParams,
+        setSearchParams,
+    ]);
+
+    useEffect(() => {
+        const focusedTask = focusedTaskQuery.data;
+        if (
+            !focusedTask
+            || focusedTask.iteration_id === selectedIterationId
+            || !iterations?.some(iteration => iteration.id === focusedTask.iteration_id)
+        ) {
+            return;
+        }
+        setSelectedIterationId(focusedTask.iteration_id);
+    }, [
+        focusedTaskQuery.data,
+        iterations,
+        selectedIterationId,
+        setSelectedIterationId,
+    ]);
 
     useEffect(() => {
         setIsFiltersOpen(filtersRequested);
@@ -229,6 +383,13 @@ const TasksPage = () => {
         setSearchParams(nextSearchParams, { replace: true });
     }, [createTaskRequested, searchParams, setSearchParams]);
 
+    const closeFocusedTask = useCallback(() => {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete(OVERVIEW_TASK_PARAM);
+        nextSearchParams.delete(OVERVIEW_TASK_THREAD_PARAM);
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
+
     const applySavedView = useCallback((view: SavedView) => {
         setFilters(filtersFromSavedView(view));
         const savedSortKey = sortKeyFromSavedView(view);
@@ -242,6 +403,7 @@ const TasksPage = () => {
         const nextSearchParams = new URLSearchParams(searchParams);
         if (viewId) {
             nextSearchParams.set('view', String(viewId));
+            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
         } else {
             nextSearchParams.delete('view');
         }
@@ -252,8 +414,46 @@ const TasksPage = () => {
         setFilters(defaultFilters);
         setSortKey('priority');
         appliedRequestedViewIdRef.current = null;
-        selectSavedView(null);
-    }, [selectSavedView]);
+        setSelectedSavedViewId(null);
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('view');
+        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
+
+    const changeFilters = useCallback((nextFilters: TaskFilters) => {
+        const planningIssueChanged = (
+            nextFilters.planningIssue !== filters.planningIssue
+        );
+        setFilters(nextFilters);
+        if (!planningIssueChanged) return;
+
+        appliedRequestedViewIdRef.current = null;
+        setSelectedSavedViewId(null);
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('view');
+        if (nextFilters.planningIssue) {
+            nextSearchParams.set(
+                PLANNING_TASK_ISSUE_PARAM,
+                nextFilters.planningIssue,
+            );
+        } else {
+            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+        }
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [filters.planningIssue, searchParams, setSearchParams]);
+
+    const clearIterationViewContext = useCallback(() => {
+        setFilters(defaultFilters);
+        setSortKey('priority');
+        appliedRequestedViewIdRef.current = null;
+        setSelectedSavedViewId(null);
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('view');
+        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+        nextSearchParams.delete(PLANNING_ITERATION_PARAM);
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
 
     useEffect(() => {
         if (!requestedSavedViewId) {
@@ -315,6 +515,12 @@ const TasksPage = () => {
             {/* Main Content Area */}
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
                 <PlanReturnBar />
+                <OverviewTaskReturnBar
+                    active={isFromOverview}
+                    taskId={returnTaskId}
+                    taskTitle={focusedTaskQuery.data?.title}
+                    returnActionRef={overviewReturnActionRef}
+                />
                 <div className="tasks-workbench-header-wrap flex-shrink-0 px-4 pt-4 pb-3">
                     <div className="wc-page-head tasks-workbench-header" data-testid="page-header">
                         <div className="tasks-workbench-heading">
@@ -324,12 +530,7 @@ const TasksPage = () => {
                         <div className="row tasks-header-actions">
                         <IterationSelector
                             className="tasks-iteration-selector"
-                            onChange={() => {
-                                setFilters(defaultFilters);
-                                setSortKey('priority');
-                                appliedRequestedViewIdRef.current = null;
-                                selectSavedView(null);
-                            }}
+                            onChange={clearIterationViewContext}
                         />
                         <OverflowMenu
                             className="tasks-overflow-trigger"
@@ -395,9 +596,11 @@ const TasksPage = () => {
                                                     ? t('tasks.loadingSavedView')
                                             : selectedSavedView
                                                 ? savedViewDisplay(selectedSavedView).name
-                                                : activeFilterCount > 0
-                                                    ? t('tasks.customView')
-                                                    : t('tasks.allTasks')}
+                                                : planningIssueCopy
+                                                    ? t(planningIssueCopy.title)
+                                                    : activeFilterCount > 0
+                                                        ? t('tasks.customView')
+                                                        : t('tasks.allTasks')}
                                     </div>
                                     <div className="text-xs text-content-secondary">
                                         {requestedSavedViewLoadFailed
@@ -406,9 +609,11 @@ const TasksPage = () => {
                                                 ? t('tasks.savedViewUnavailableBody')
                                                 : requestedSavedViewId && savedViewsLoading
                                                     ? t('tasks.loadingSavedViewBody')
-                                            : activeFilterCount > 0
-                                                ? t('tasks.activeFilterCount', { count: activeFilterCount })
-                                                : t('tasks.noActiveFilters')}
+                                            : !selectedSavedView && planningIssueCopy
+                                                ? t(planningIssueCopy.body)
+                                                : activeFilterCount > 0
+                                                    ? t('tasks.activeFilterCount', { count: activeFilterCount })
+                                                    : t('tasks.noActiveFilters')}
                                     </div>
                                 </div>
                             </div>
@@ -491,7 +696,7 @@ const TasksPage = () => {
                 )}
 
                 <SlideOverDrawer
-                    open={isFiltersOpen}
+                    open={isFiltersOpen && requestedTaskId === null}
                     title={t('taskFilters.filters')}
                     icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
                     onClose={closeFilters}
@@ -501,7 +706,7 @@ const TasksPage = () => {
                             <TaskFiltersBar
                                 iterationId={selectedIterationId}
                                 filters={filters}
-                                onFiltersChange={setFilters}
+                                onFiltersChange={changeFilters}
                             />
                             <section className="border-t border-border px-4 py-4">
                                 <h2 className="mb-3 text-sm font-semibold text-content-primary">{t('surfaces.savedViews.savedViews')}</h2>
@@ -522,6 +727,34 @@ const TasksPage = () => {
                         </>
                     )}
                 </SlideOverDrawer>
+
+                <TaskEditorDrawer
+                    taskId={requestedTaskId}
+                    open={requestedTaskId !== null}
+                    onClose={closeFocusedTask}
+                    title={task => task?.title ?? (
+                        isFromOverview && requestedTaskId !== null
+                            ? t('taskEditor.taskCode', { id: requestedTaskId })
+                            : t('taskEditor.editTask')
+                    )}
+                    subtitle={isFromOverview
+                        ? t(
+                            taskThreadSource === 'attention'
+                                ? 'overview.thread.drawerAttention'
+                                : 'overview.thread.drawerWorkNow',
+                        )
+                        : undefined}
+                    icon={isFromOverview
+                        ? <Waypoints aria-hidden="true" className="h-4 w-4" />
+                        : undefined}
+                    className={clsx(
+                        'max-w-2xl',
+                        isFromOverview && 'overview-task-drawer',
+                    )}
+                    restoreFocusRef={isFromOverview
+                        ? overviewReturnActionRef
+                        : undefined}
+                />
 
                 {selectedIterationId > 0 && (
                     <FullscreenWorkspace
@@ -556,7 +789,11 @@ const TasksPage = () => {
                                         sortKey={sortKey}
                                         onSortKeyChange={setSortKey}
                                         hasActiveFilters={activeFilterCount > 0}
-                                        activeViewName={selectedSavedView ? savedViewDisplay(selectedSavedView).name : undefined}
+                                        activeViewName={selectedSavedView
+                                            ? savedViewDisplay(selectedSavedView).name
+                                            : planningIssueCopy
+                                                ? t(planningIssueCopy.title)
+                                                : undefined}
                                         onClearFilters={clearViewContext}
                                         onCreateTask={() => setIsCreating(true)}
                                         requestedMode={taskMode}

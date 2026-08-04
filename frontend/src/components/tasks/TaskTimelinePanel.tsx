@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useState, type FormEvent } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bot, CircleDot, GitBranch, History, Link as LinkIcon, Plus, RefreshCw, Trash2, X } from 'lucide-react';
@@ -160,8 +160,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
         ? new Date(task.claim_expires_at).getTime() < nowMs
         : false;
 
-    const handleGitHubLinkSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleGitHubLink = () => {
         const trimmedUrl = githubUrl.trim();
 
         if (!trimmedUrl) {
@@ -175,6 +174,14 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
         }
 
         createGitHubLinkMutation.mutate(trimmedUrl);
+    };
+
+    const handleGitHubLinkKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+
+        event.preventDefault();
+        if (createGitHubLinkMutation.isPending || !githubUrl.trim()) return;
+        handleGitHubLink();
     };
 
     const handleDeleteLink = (linkId: number) => {
@@ -254,10 +261,11 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                         )}
                     </div>
 
-                    <form onSubmit={handleGitHubLinkSubmit} className="mb-3 flex flex-col gap-2 sm:flex-row">
+                    <div className="mb-3 flex flex-col gap-2 sm:flex-row">
                         <input
                             type="text"
                             value={githubUrl}
+                            onKeyDown={handleGitHubLinkKeyDown}
                             onChange={event => {
                                 setGithubUrl(event.target.value);
                                 if (linkError) setLinkError(null);
@@ -266,14 +274,15 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                             className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-1.5 text-xs text-content-primary shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                         />
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleGitHubLink}
                             disabled={createGitHubLinkMutation.isPending || !githubUrl.trim()}
                             className="inline-flex items-center justify-center gap-1 rounded-md bg-action px-3 py-1.5 text-xs font-medium text-content-emphasis transition hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Plus className="h-3.5 w-3.5" />
                             {t('surfaces.taskTimeline.link')}
                         </button>
-                    </form>
+                    </div>
 
                     {linkError && (
                         <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">

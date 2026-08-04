@@ -38,6 +38,7 @@ export const useConfirmDialog = () => {
 
     return {
         requestConfirmation: setRequest,
+        confirmationOpen: request !== null,
         confirmationDialog: (
             <ConfirmDialog
                 open={request !== null}

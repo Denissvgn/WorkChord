@@ -1,5 +1,6 @@
 """Service for saved view persistence and filter payload compatibility."""
 from datetime import date
+from math import isfinite
 from typing import Any, Optional, Sequence
 
 from sqlalchemy import Select, or_, select
@@ -36,6 +37,7 @@ TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "hasDependency": None,
     "isOverdue": None,
     "agentReady": None,
+    "planningIssue": None,
     "startDateFrom": "",
     "startDateTo": "",
     "endDateFrom": "",
@@ -44,6 +46,7 @@ TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "labelGroupKeys": [],
 }
 TASK_STATUS_VALUES = {"planned", "active", "resolved", "closed"}
+TASK_PLANNING_ISSUE_VALUES = {"unassigned", "missing-effort", "any"}
 TASK_SORT_VALUES = {"priority", "sort_order", "status", "title"}
 
 PROJECT_FILTER_DEFAULTS: dict[str, Any] = {
@@ -274,6 +277,20 @@ class SavedViewService:
                 normalized["isOverdue"] = self._normalize_nullable_bool(filters["isOverdue"], "isOverdue")
             if "agentReady" in filters:
                 normalized["agentReady"] = self._normalize_nullable_bool(filters["agentReady"], "agentReady")
+            if "planningIssue" in filters:
+                planning_issue = filters["planningIssue"]
+                if planning_issue is None:
+                    normalized["planningIssue"] = None
+                elif (
+                    isinstance(planning_issue, str)
+                    and planning_issue in TASK_PLANNING_ISSUE_VALUES
+                ):
+                    normalized["planningIssue"] = planning_issue
+                else:
+                    allowed = ", ".join(sorted(TASK_PLANNING_ISSUE_VALUES))
+                    raise ValueError(
+                        f"planningIssue must be one of {allowed}, or null"
+                    )
 
             for field_name in ("startDateFrom", "startDateTo", "endDateFrom", "endDateTo"):
                 if field_name in filters:
@@ -535,12 +552,43 @@ class SavedViewService:
     def _task_date_value(self, value: Any) -> str:
         return value.isoformat() if hasattr(value, "isoformat") else str(value)
 
+    def _task_matches_planning_issue(
+        self,
+        task: Any,
+        planning_issue: Optional[str],
+    ) -> bool:
+        if planning_issue is None:
+            return True
+        if task.is_deferred or task.is_composite or task.children:
+            return False
+
+        effort_days = task.effort_days
+        missing_effort = (
+            isinstance(effort_days, bool)
+            or not isinstance(effort_days, (int, float))
+            or not isfinite(effort_days)
+            or effort_days <= 0
+        )
+        unassigned = task.assignee is None
+
+        if planning_issue == "unassigned":
+            return unassigned
+        if planning_issue == "missing-effort":
+            return missing_effort
+        return unassigned or missing_effort
+
     def _task_matches_filters(
         self,
         task: Any,
         filters: dict[str, Any],
         label_group_slugs: dict[str, set[str]],
     ) -> bool:
+        if not self._task_matches_planning_issue(
+            task,
+            filters.get("planningIssue"),
+        ):
+            return False
+
         assignee_id = filters.get("assigneeId")
         if assignee_id is not None:
             is_unassigned_filter = assignee_id == -1

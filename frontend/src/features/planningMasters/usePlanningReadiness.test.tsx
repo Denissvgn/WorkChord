@@ -305,6 +305,7 @@ describe('usePlanningReadiness query contract', () => {
         });
 
         await waitFor(() => expect(result.current.isLoading).toBe(false));
+        const confirmedAt = result.current.queryStates.team.dataUpdatedAt;
         serviceMocks.getTeam.mockRejectedValueOnce(new Error('refresh failed'));
 
         await act(async () => {
@@ -315,6 +316,7 @@ describe('usePlanningReadiness query contract', () => {
             expect(result.current.queryStates.team.isRefetchError).toBe(true);
         });
         expect(result.current.queryStates.team.isBlockingError).toBe(false);
+        expect(result.current.queryStates.team.dataUpdatedAt).toBe(confirmedAt);
         expect(result.current.isError).toBe(false);
         expect(result.current.isReadinessError).toBe(false);
         expect(result.current.teamMembers).toHaveLength(1);

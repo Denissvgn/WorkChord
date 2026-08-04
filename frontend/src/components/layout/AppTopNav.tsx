@@ -21,6 +21,8 @@ interface WorkspaceAttention {
     isError?: boolean;
 }
 
+const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
+
 const WorkspaceSwitchLink = ({
     workspace,
     active,
@@ -104,9 +106,11 @@ export const AppTopNav = () => {
     const location = useLocation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const pendingWorkspaceFocusRef = useRef<WorkspaceMetadata['key'] | null>(null);
+    const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
         onClose: () => setMobileMenuOpen(false),
+        restoreFocusRef: mobileNavRestoreFocusRef,
     });
 
     const { data: triageItems = [], error: triageError } = useQuery({
@@ -171,7 +175,15 @@ export const AppTopNav = () => {
 
         const drawerBreakpoint = window.matchMedia('(max-width: 1180px)');
         const closeDrawerOnDesktop = (event: MediaQueryListEvent) => {
-            if (!event.matches) setMobileMenuOpen(false);
+            if (event.matches) return;
+            setMobileMenuOpen(wasOpen => {
+                if (wasOpen) {
+                    mobileNavRestoreFocusRef.current = document.querySelector<HTMLElement>(
+                        '.nav-workspace-tab[aria-current]',
+                    ) ?? document.querySelector<HTMLElement>('.brand');
+                }
+                return false;
+            });
         };
 
         drawerBreakpoint.addEventListener('change', closeDrawerOnDesktop);
@@ -192,6 +204,16 @@ export const AppTopNav = () => {
         );
         focusTarget?.focus();
     }, [currentWorkspace.key, dialogRef, mobileMenuOpen]);
+
+    const closeForNavigation = () => {
+        mobileNavRestoreFocusRef.current = document.getElementById('workspace-main');
+        setMobileMenuOpen(false);
+    };
+
+    const openMobileMenu = () => {
+        mobileNavRestoreFocusRef.current = null;
+        setMobileMenuOpen(true);
+    };
 
     return (
         <header className="topnav" data-testid="app-navbar">
@@ -251,7 +273,7 @@ export const AppTopNav = () => {
                     aria-label={t('nav.openMenu')}
                     aria-expanded={mobileMenuOpen}
                     aria-controls="mobile-primary-navigation"
-                    onClick={() => setMobileMenuOpen(true)}
+                    onClick={openMobileMenu}
                 >
                     <Menu aria-hidden="true" className="h-5 w-5" />
                     <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
@@ -274,19 +296,19 @@ export const AppTopNav = () => {
                         className="mobile-nav-panel"
                         role="dialog"
                         aria-modal="true"
-                        aria-label={t('nav.primaryNavigation')}
+                        aria-labelledby={MOBILE_NAV_TITLE_ID}
                         tabIndex={-1}
                     >
                         <div className="mobile-nav-head">
-                            <strong>{t('nav.navigationMenu')}</strong>
-                            <button type="button" className="btn ghost" aria-label={t('actions.close')} onClick={requestClose}>
+                            <h2 id={MOBILE_NAV_TITLE_ID}>{t('nav.primaryNavigation')}</h2>
+                            <button type="button" className="btn ghost icon" aria-label={t('actions.close')} onClick={requestClose}>
                                 <X aria-hidden="true" className="h-4 w-4" />
                             </button>
                         </div>
                         <div className="mobile-nav-content">
                             <section className="mobile-nav-section" aria-labelledby="mobile-work-area-homes-heading">
                                 <div className="mobile-nav-section-copy">
-                                    <strong id="mobile-work-area-homes-heading">{t('nav.workAreaHomes')}</strong>
+                                    <h3 id="mobile-work-area-homes-heading">{t('nav.workAreaHomes')}</h3>
                                     <p>{t('nav.workAreaHomesHelp')}</p>
                                 </div>
                                 <nav className="mobile-workspace-switcher" aria-label={t('nav.workAreaHomes')}>
@@ -298,7 +320,7 @@ export const AppTopNav = () => {
                                             variant="mobile"
                                             onNavigate={() => {
                                                 if (workspace.key === currentWorkspace.key) {
-                                                    setMobileMenuOpen(false);
+                                                    closeForNavigation();
                                                     return;
                                                 }
                                                 pendingWorkspaceFocusRef.current = workspace.key;
@@ -319,7 +341,7 @@ export const AppTopNav = () => {
                             })}>
                                 <SidebarContent
                                     attentionAction={compactAttentionAction}
-                                    onNavigate={() => setMobileMenuOpen(false)}
+                                    onNavigate={closeForNavigation}
                                 />
                             </nav>
                         </div>

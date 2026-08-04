@@ -12,6 +12,10 @@ import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
 import { deriveStatus, nextStep, readiness } from './masters';
 import type { PlanReadiness } from './masters';
+import {
+    hasPositivePlanningEffort,
+    isPlanningLeafTask,
+} from './planningTaskIssues';
 
 type PlanningReadinessOptions = {
     includeInbox?: boolean;
@@ -30,6 +34,7 @@ export type PlanningTeamMember = TeamMember & {
 export type PlanningQueryFeedback = {
     enabled: boolean;
     hasData: boolean;
+    dataUpdatedAt: number;
     isLoading: boolean;
     isFetching: boolean;
     isError: boolean;
@@ -41,6 +46,7 @@ export type PlanningQueryFeedback = {
 
 type QueryFeedbackSource = {
     data: unknown;
+    dataUpdatedAt: number;
     error: unknown;
     isLoading: boolean;
     isFetching: boolean;
@@ -56,6 +62,7 @@ const queryFeedback = (
     return {
         enabled,
         hasData,
+        dataUpdatedAt: query.dataUpdatedAt,
         isLoading: query.isLoading,
         isFetching: query.isFetching,
         isError: query.isError,
@@ -76,14 +83,10 @@ export const flattenTasks = (list: Task[] = []): Task[] => {
 };
 
 export const planningLeafTasks = (list: Task[] = []): Task[] => (
-    flattenTasks(list).filter(task => (
-        !task.is_deferred
-        && !task.is_composite
-        && !task.children?.length
-    ))
+    flattenTasks(list).filter(isPlanningLeafTask)
 );
 
-const finitePositive = (value: number) => Number.isFinite(value) && value > 0;
+const finitePositive = hasPositivePlanningEffort;
 
 const parseIsoDay = (value: string): number | null => {
     if (!ISO_DATE.test(value)) return null;

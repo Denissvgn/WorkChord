@@ -174,12 +174,12 @@ describe('AgentModelAdministration', () => {
             level: 2,
             name: 'Model and actor evidence',
         })).toBeInTheDocument();
-        expect(screen.getByText('PM reader · read only')).toBeInTheDocument();
+        expect(screen.getByText('Actor scope: planning:read · read only')).toBeInTheDocument();
         expect(screen.getByText('Configured routing mode')).toBeInTheDocument();
         expect(screen.getByText('Effective routing mode')).toBeInTheDocument();
         expect(screen.getAllByText('Enforced')).toHaveLength(2);
-        expect(screen.getByText('Topology readiness')).toBeInTheDocument();
-        expect(screen.getByText('Ready')).toBeInTheDocument();
+        expect(screen.getByText('Routing topology eligibility')).toBeInTheDocument();
+        expect(screen.getByText('Eligible')).toBeInTheDocument();
 
         expect(screen.getByRole('heading', { name: 'Exact actor roster' })).toBeInTheDocument();
         expect(screen.getAllByRole('heading', { name: 'Worker Alpha' })).toHaveLength(2);
@@ -203,7 +203,7 @@ describe('AgentModelAdministration', () => {
 
         renderWithProviders(<AgentModelAdministration />);
 
-        expect(await screen.findByText('Administrator · changes enabled')).toBeInTheDocument();
+        expect(await screen.findByText('Actor scope: admin · changes enabled')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Audited change controls' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Change rationale' })).toBeRequired();
         expect(screen.getByRole('heading', { name: 'Create catalog entry' })).toBeInTheDocument();
@@ -291,7 +291,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        expect(await screen.findByText('Administrator · changes enabled')).toBeInTheDocument();
+        expect(await screen.findByText('Actor scope: admin · changes enabled')).toBeInTheDocument();
         const enableCatalog = screen.getByRole('button', {
             name: 'Enable model catalog entry Dormant Code',
         });
@@ -372,7 +372,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        await screen.findByText('Administrator · changes enabled');
+        await screen.findByText('Actor scope: admin · changes enabled');
         await user.type(
             screen.getByRole('textbox', { name: 'Change rationale' }),
             'Update the configured alias.',
@@ -436,7 +436,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        await screen.findByText('Administrator · changes enabled');
+        await screen.findByText('Actor scope: admin · changes enabled');
         await user.type(
             screen.getByRole('textbox', { name: 'Change rationale' }),
             'Update the binding policy.',

@@ -1,3 +1,6 @@
+import type { PlanningStepId } from './planningReturn';
+import type { PlanningTaskIssue } from './planningTaskIssues';
+
 // Step definitions and status derivation — mirrors the design's data.jsx model
 
 export type StepState = 'done' | 'warn' | 'blocked' | 'todo';
@@ -106,6 +109,25 @@ export interface PlanReadiness {
     inboxCount: number;
 }
 
+export type PlanningRecoveryKind =
+    | 'create-period'
+    | 'add-team'
+    | 'repair-capacity'
+    | 'add-work'
+    | 'repair-assignee'
+    | 'repair-effort'
+    | 'build-schedule'
+    | 'review-plan';
+
+export interface PlanningRecoveryAction {
+    kind: PlanningRecoveryKind;
+    ownerStep: PlanningStepId;
+    route: string;
+    count?: number;
+    planningIssue?: PlanningTaskIssue;
+    query?: Record<string, string>;
+}
+
 export const EMPTY_READINESS: PlanReadiness = {
     iterationCount: 0, hasCurrentIteration: false,
     currentIterationName: '', currentIterationStart: '', currentIterationEnd: '',
@@ -141,22 +163,17 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
     // work
     out.work = r.taskCount === 0
         ? { state: out.iteration.state === 'done' ? 'todo' : 'blocked', missing: ['No tasks for this iteration'] }
-        : (r.tasksWithoutAssignee > 0 || r.tasksWithoutEffort > 0)
-            ? {
-                state: 'warn',
-                missing: [
-                    r.tasksWithoutAssignee > 0 ? `${r.tasksWithoutAssignee} unassigned` : null,
-                    r.tasksWithoutEffort > 0   ? `${r.tasksWithoutEffort} missing effort` : null,
-                ].filter(Boolean) as string[],
-              }
-            : { state: 'done', summary: `${r.taskCount} tasks · all ready` };
+        : { state: 'done', summary: `${r.taskCount} tasks added` };
 
     // blockers
-    const blockerCount = (r.tasksWithoutAssignee > 0 ? 1 : 0) + (r.tasksWithoutEffort > 0 ? 1 : 0);
+    const blockerDetails = [
+        r.tasksWithoutAssignee > 0 ? `${r.tasksWithoutAssignee} unassigned` : null,
+        r.tasksWithoutEffort > 0 ? `${r.tasksWithoutEffort} missing effort` : null,
+    ].filter(Boolean) as string[];
     out.blockers = r.taskCount === 0
         ? { state: 'blocked', missing: ['Add work first'] }
-        : blockerCount > 0
-            ? { state: 'warn', missing: [`${blockerCount} blocker${blockerCount === 1 ? '' : 's'} to clear`] }
+        : blockerDetails.length > 0
+            ? { state: 'warn', missing: blockerDetails }
             : { state: 'done', summary: 'No blockers' };
 
     // schedule
@@ -181,6 +198,128 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
 
     return out;
 }
+
+const rankedTaskRecovery = (
+    r: PlanReadiness,
+): PlanningRecoveryAction | null => {
+    const candidates = ([
+        {
+            kind: 'repair-assignee',
+            ownerStep: 'blockers',
+            route: '/tasks',
+            count: r.tasksWithoutAssignee,
+            planningIssue: 'unassigned',
+        },
+        {
+            kind: 'repair-effort',
+            ownerStep: 'blockers',
+            route: '/tasks',
+            count: r.tasksWithoutEffort,
+            planningIssue: 'missing-effort',
+        },
+    ] satisfies PlanningRecoveryAction[]).filter(
+        candidate => (candidate.count ?? 0) > 0,
+    );
+
+    candidates.sort((left, right) => {
+        const countDifference = (right.count ?? 0) - (left.count ?? 0);
+        if (countDifference !== 0) return countDifference;
+        return left.kind === 'repair-assignee' ? -1 : 1;
+    });
+    return candidates[0] ?? null;
+};
+
+/**
+ * Resolve the single workspace action owned by a selected checkpoint.
+ *
+ * Prerequisites are checked in stage order. Simultaneous task exceptions are
+ * ranked by affected-task count, with assignment first on an exact tie.
+ */
+export const derivePlanningRecovery = (
+    selectedStepId: PlanningStepId,
+    r: PlanReadiness,
+): PlanningRecoveryAction => {
+    const createPeriod: PlanningRecoveryAction = {
+        kind: 'create-period',
+        ownerStep: 'iteration',
+        route: '/iterations',
+    };
+    if (selectedStepId === 'iteration' || !r.hasCurrentIteration) {
+        return createPeriod;
+    }
+
+    if (selectedStepId === 'team') {
+        return r.teamMemberCount === 0
+            ? { kind: 'add-team', ownerStep: 'team', route: '/team' }
+            : {
+                kind: r.teamMembersNoCap > 0 ? 'repair-capacity' : 'add-team',
+                ownerStep: 'team',
+                route: '/team',
+                ...(r.teamMembersNoCap > 0 ? { count: r.teamMembersNoCap } : {}),
+            };
+    }
+
+    if (selectedStepId === 'work') {
+        return {
+            kind: 'add-work',
+            ownerStep: 'work',
+            route: '/tasks',
+            ...(r.taskCount === 0 ? { query: { create: '1' } } : {}),
+        };
+    }
+
+    if (selectedStepId === 'blockers') {
+        if (r.taskCount === 0) {
+            return {
+                kind: 'add-work',
+                ownerStep: 'work',
+                route: '/tasks',
+                query: { create: '1' },
+            };
+        }
+        return rankedTaskRecovery(r) ?? {
+            kind: 'add-work',
+            ownerStep: 'blockers',
+            route: '/tasks',
+        };
+    }
+
+    if (r.teamMemberCount === 0) {
+        return { kind: 'add-team', ownerStep: 'team', route: '/team' };
+    }
+    if (r.teamMembersNoCap > 0) {
+        return {
+            kind: 'repair-capacity',
+            ownerStep: 'team',
+            route: '/team',
+            count: r.teamMembersNoCap,
+        };
+    }
+    if (r.taskCount === 0) {
+        return {
+            kind: 'add-work',
+            ownerStep: 'work',
+            route: '/tasks',
+            query: { create: '1' },
+        };
+    }
+
+    const taskRecovery = rankedTaskRecovery(r);
+    if (taskRecovery) return taskRecovery;
+
+    if (!r.hasGanttSchedule || selectedStepId === 'schedule') {
+        return {
+            kind: 'build-schedule',
+            ownerStep: 'schedule',
+            route: '/gantt',
+        };
+    }
+    return {
+        kind: 'review-plan',
+        ownerStep: 'review',
+        route: '/gantt',
+    };
+};
 
 export function nextStep(status: Record<string, StepStatus>): string {
     const order = STEP_DEFS.map(s => s.id);
@@ -232,23 +371,27 @@ export function localizeStatus(
             summary = current.state === 'done'
                 ? translate('plan.status.workReady', { count: r.taskCount })
                 : undefined;
-            missing = current.state === 'done' ? undefined : [
-                ...(r.taskCount === 0 ? [translate('plan.status.noTasks')] : []),
-                ...(r.tasksWithoutAssignee > 0
-                    ? [translate('plan.status.unassignedTasks', { count: r.tasksWithoutAssignee })]
-                    : []),
-                ...(r.tasksWithoutEffort > 0
-                    ? [translate('plan.status.tasksWithoutEffort', { count: r.tasksWithoutEffort })]
-                    : []),
-            ];
+            missing = current.state === 'done'
+                ? undefined
+                : [translate('plan.status.noTasks')];
         } else if (definition.id === 'blockers') {
-            const blockerCount = (r.tasksWithoutAssignee > 0 ? 1 : 0) + (r.tasksWithoutEffort > 0 ? 1 : 0);
             summary = current.state === 'done' ? translate('plan.status.noBlockers') : undefined;
             missing = current.state === 'done'
                 ? undefined
-                : [r.taskCount === 0
-                    ? translate('plan.status.addWorkFirst')
-                    : translate('plan.status.blockersToClear', { count: blockerCount })];
+                : r.taskCount === 0
+                    ? [translate('plan.status.addWorkFirst')]
+                    : [
+                        ...(r.tasksWithoutAssignee > 0
+                            ? [translate('plan.status.unassignedTasks', {
+                                count: r.tasksWithoutAssignee,
+                            })]
+                            : []),
+                        ...(r.tasksWithoutEffort > 0
+                            ? [translate('plan.status.tasksWithoutEffort', {
+                                count: r.tasksWithoutEffort,
+                            })]
+                            : []),
+                    ];
         } else if (definition.id === 'schedule') {
             summary = current.state === 'done' ? translate('plan.status.scheduleBuilt') : undefined;
             missing = current.state === 'done'

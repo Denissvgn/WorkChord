@@ -19,6 +19,7 @@ vi.mock('../features/planningMasters/usePlanningReadiness', () => planningReadin
 const queryState = (overrides: Record<string, unknown> = {}) => ({
     enabled: true,
     hasData: true,
+    dataUpdatedAt: Date.parse('2026-08-03T12:00:00Z'),
     isLoading: false,
     isFetching: false,
     isError: false,
@@ -90,17 +91,21 @@ describe('PlanPage mixed planning launcher', () => {
         const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
         const progress = screen.getByRole('progressbar', {
-            name: `Plan readiness: ${state.ready.pct}%`,
+            name: 'Plan readiness progress',
         });
         expect(progress).toHaveAttribute('aria-valuemin', '0');
-        expect(progress).toHaveAttribute('aria-valuemax', '100');
-        expect(progress).toHaveAttribute('aria-valuenow', String(state.ready.pct));
+        expect(progress).toHaveAttribute('aria-valuemax', String(state.ready.total));
+        expect(progress).toHaveAttribute('aria-valuenow', String(state.ready.done));
         expect(screen.getAllByRole('progressbar')).toHaveLength(1);
+        expect(screen.getByText('Plan readiness')).toBeVisible();
 
         const primaryAction = screen.getByRole('link', { name: 'Resume plan' });
         expect(primaryAction).toHaveAttribute('href', '/plan/master');
 
-        await user.click(screen.getByText(`${state.ready.done} of ${state.ready.total} checkpoints complete`));
+        await user.click(screen.getByText(
+            `${state.ready.done} of ${state.ready.total} checkpoints complete`,
+            { selector: '.plan-hub-checkpoints > summary span' },
+        ));
 
         const checkpointList = screen.getByRole('list', { name: 'Planning checkpoints' });
         expect(within(checkpointList).getAllByRole('listitem')).toHaveLength(6);
@@ -117,7 +122,9 @@ describe('PlanPage mixed planning launcher', () => {
         }));
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        expect(screen.getByText('Plan is ready - share with the team')).toBeVisible();
+        expect(screen.getByText(
+            'Planning checkpoints complete — review before sharing',
+        )).toBeVisible();
         expect(screen.getByRole('link', { name: 'Review & share' }))
             .toHaveAttribute('href', '/plan/master');
     });

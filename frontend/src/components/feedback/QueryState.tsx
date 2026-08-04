@@ -1,4 +1,5 @@
 import { AlertTriangle, Inbox, LoaderCircle, RefreshCw } from 'lucide-react';
+import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
@@ -14,8 +15,11 @@ interface QueryLoadingStateProps extends SharedStateProps {
 interface QueryErrorStateProps extends SharedStateProps {
     error?: unknown;
     fallback?: string;
+    headingLevel?: 2 | 3;
+    isRetrying?: boolean;
     message?: string;
     onRetry?: () => void;
+    retryButtonRef?: Ref<HTMLButtonElement>;
     retryLabel?: string;
     title?: string;
 }
@@ -48,8 +52,11 @@ export const QueryLoadingState = ({ message, className = '' }: QueryLoadingState
 export const QueryErrorState = ({
     error,
     fallback,
+    headingLevel,
+    isRetrying = false,
     message,
     onRetry,
+    retryButtonRef,
     retryLabel,
     title,
     className = '',
@@ -57,6 +64,7 @@ export const QueryErrorState = ({
     const { t } = useTranslation();
     const safeFallback = fallback ?? t('queryFeedback.fallback');
     const detail = message ?? getApiErrorMessage(error, safeFallback);
+    const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
     return (
         <div
@@ -66,11 +74,26 @@ export const QueryErrorState = ({
             <div className="flex items-start gap-3">
                 <AlertTriangle aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-feedback-danger" />
                 <div className="min-w-0 flex-1">
-                    <p className="font-semibold">{title ?? t('queryFeedback.title')}</p>
+                    {headingLevel ? (
+                        <Heading className="m-0 text-base font-semibold">
+                            {title ?? t('queryFeedback.title')}
+                        </Heading>
+                    ) : (
+                        <p className="font-semibold">{title ?? t('queryFeedback.title')}</p>
+                    )}
                     <p className="mt-1 break-words text-sm text-content-secondary">{detail}</p>
                     {onRetry && (
-                        <Button className="mt-3" onClick={onRetry} size="sm" variant="secondary">
-                            <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
+                        <Button
+                            ref={retryButtonRef}
+                            className="mt-3"
+                            isLoading={isRetrying}
+                            onClick={onRetry}
+                            size="sm"
+                            variant="secondary"
+                        >
+                            {!isRetrying && (
+                                <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
+                            )}
                             {retryLabel ?? t('queryFeedback.retry')}
                         </Button>
                     )}

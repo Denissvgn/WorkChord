@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppTopNav } from './AppTopNav';
 
@@ -37,6 +37,10 @@ vi.mock('./AppSidebar', () => ({
                     {attentionAction.label}
                 </button>
             )}
+            <details>
+                <summary>Views</summary>
+                <a href="/tasks?view=1">Hidden saved view</a>
+            </details>
         </div>
     ),
 }));
@@ -69,18 +73,94 @@ describe('AppTopNav', () => {
         triageServiceMock.getAll.mockResolvedValue([]);
 
         const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
-        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+        const trigger = screen.getByRole('button', { name: 'Open navigation menu' });
+        await user.click(trigger);
 
         const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        expect(within(drawer).getByText('Navigation')).toBeInTheDocument();
+        expect(within(drawer).getByRole('heading', {
+            level: 2,
+            name: 'Primary navigation',
+        })).toBeVisible();
+        expect(within(drawer).getByRole('heading', {
+            level: 3,
+            name: 'Work area homes',
+        })).toBeVisible();
         expect(within(drawer).getByRole('link', { name: 'Open Delivery Hub home' }))
             .toHaveAttribute('aria-current', 'location');
         expect(within(drawer).getByText('Choose an area here; its link always opens that area’s home.'))
             .toBeInTheDocument();
         expect(within(drawer).getByText('Contextual destinations')).toBeInTheDocument();
+        expect(within(drawer).getByRole('button', { name: 'Close' }))
+            .toHaveClass('icon');
 
         await user.keyboard('{Escape}');
         expect(screen.queryByRole('dialog', { name: 'Primary navigation' })).not.toBeInTheDocument();
+        expect(trigger).toHaveAttribute('aria-expanded', 'false');
+        expect(trigger).toHaveFocus();
+    });
+
+    it('moves focus into the committed workspace after drawer navigation', async () => {
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [],
+            ready: { total: 0, done: 0 },
+        });
+        triageServiceMock.getAll.mockResolvedValue([]);
+
+        const { user } = renderWithProviders(
+            <>
+                <AppTopNav />
+                <main id="workspace-main" tabIndex={-1}>Workspace</main>
+            </>,
+            { initialEntries: ['/tasks'] },
+        );
+        const trigger = screen.getByRole('button', { name: 'Open navigation menu' });
+        await user.click(trigger);
+
+        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+        await user.click(within(drawer).getByRole('link', {
+            name: 'Open Delivery Hub home',
+        }));
+
+        expect(screen.queryByRole('dialog', { name: 'Primary navigation' }))
+            .not.toBeInTheDocument();
+        await waitFor(() => expect(screen.getByRole('main')).toHaveFocus());
+        expect(trigger).not.toHaveFocus();
+    });
+
+    it('cycles through native disclosures without tabbing into collapsed content', async () => {
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [],
+            ready: { total: 0, done: 0 },
+        });
+        triageServiceMock.getAll.mockResolvedValue([]);
+
+        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
+        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+
+        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+        const closeButton = within(drawer).getByRole('button', { name: 'Close' });
+        const viewsLabel = within(drawer).getByText('Views');
+        const viewsSummary = viewsLabel.closest('summary');
+        const savedView = within(drawer).getByRole('link', {
+            name: 'Hidden saved view',
+            hidden: true,
+        });
+
+        expect(closeButton).toHaveFocus();
+        expect(viewsSummary).not.toBeNull();
+
+        await user.tab({ shift: true });
+        expect(viewsSummary).toHaveFocus();
+        expect(savedView).not.toHaveFocus();
+
+        await user.tab();
+        expect(closeButton).toHaveFocus();
+
+        await user.click(viewsSummary as HTMLElement);
+        expect(viewsSummary?.closest('details')).toHaveAttribute('open');
+        closeButton.focus();
+        await user.tab({ shift: true });
+        expect(savedView).toHaveFocus();
     });
 
     it('keeps the planning workspace stable and describes attention without another tab stop', () => {
@@ -98,7 +178,7 @@ describe('AppTopNav', () => {
         });
         expect(planningHome).toHaveAttribute('href', '/plan');
         expect(planningHome).toHaveAccessibleDescription(
-            'Timeline & Planning needs attention: 2 Plan Work checkpoint(s) remain.',
+            'Timeline & Planning needs attention: 2 Plan Work checkpoints remain.',
         );
         expect(planningHome).toHaveTextContent('2');
         expect(within(switcher).getAllByRole('link')).toHaveLength(3);

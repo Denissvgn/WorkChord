@@ -42,8 +42,8 @@ describe('SettingsPage', () => {
         expect(screen.getByRole('heading', { name: 'Overview' })).toBeVisible();
         expect(within(navigation).getByRole('link', { name: 'Overview' }))
             .toHaveAttribute('aria-current', 'page');
-        expect(screen.getByText('Protected settings are locked')).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Open admin access' }))
+        expect(screen.getByText('Protected settings need session authority')).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Open session authority' }))
             .toHaveAttribute('href', '/settings?tab=admin_access');
         expect(screen.getByRole('navigation', { name: 'Common settings jobs' }))
             .toBeVisible();

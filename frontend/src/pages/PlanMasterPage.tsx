@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     ArrowRight,
@@ -17,6 +17,7 @@ import {
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+    derivePlanningRecovery,
     localizeStatus,
     readiness as calculateReadiness,
     STEP_DEFS,
@@ -37,11 +38,20 @@ import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { useToast } from '../components/feedback/toast';
+import { MasterProgress } from '../components/ui/MasterProgress';
 import {
     isPlanningStepId,
     withPlanMasterReturn,
 } from '../features/planningMasters/planningReturn';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
+import {
+    PLANNING_ITERATION_PARAM,
+    planningIssueTasksHref,
+} from '../features/planningMasters/planningTaskIssues';
+import type {
+    PlanningTaskIssue,
+} from '../features/planningMasters/planningTaskIssues';
+import { captureFocusOrigin, focusOwnedTarget } from '../utils/focusLifecycle';
 
 type StepDataState = {
     loading: boolean;
@@ -55,7 +65,25 @@ type EvidenceItem = {
     label: string;
     value: string;
     exception?: boolean;
+    href?: string;
+    actionLabel?: string;
 };
+
+type RecoveryFocusTarget = 'iterations' | 'stale' | 'step';
+type ShareFocusTarget = 'ready' | 'retry' | 'shared';
+
+interface RecoveryFocusIntent {
+    origin: HTMLElement | null;
+    stepId?: string;
+    target: RecoveryFocusTarget;
+    token: number;
+}
+
+interface ShareFocusIntent {
+    origin: HTMLElement | null;
+    target: ShareFocusTarget;
+    token: number;
+}
 
 const STEP_ICONS: Record<string, ReactNode> = {
     iteration: <CalendarRange aria-hidden="true" />,
@@ -64,6 +92,27 @@ const STEP_ICONS: Record<string, ReactNode> = {
     blockers: <ShieldAlert aria-hidden="true" />,
     schedule: <GanttChartSquare aria-hidden="true" />,
     review: <Share2 aria-hidden="true" />,
+};
+
+const STEP_STATE_LABEL_KEYS: Record<StepStatus['state'], string> = {
+    done: 'plan.master.done',
+    warn: 'plan.master.needsAttention',
+    blocked: 'plan.master.blocked',
+    todo: 'plan.master.notStarted',
+};
+
+type StepPresentationState = StepStatus['state'] | 'loading' | 'unavailable';
+
+const STEP_PRESENTATION_LABEL_KEYS: Record<StepPresentationState, string> = {
+    ...STEP_STATE_LABEL_KEYS,
+    loading: 'plan.master.loadingStatus',
+    unavailable: 'plan.master.unavailableStatus',
+};
+
+const stepPresentationTone = (state: StepPresentationState) => {
+    if (state === 'loading') return 'todo';
+    if (state === 'unavailable') return 'blocked';
+    return state;
 };
 
 const stepQueryStates = (
@@ -78,19 +127,57 @@ const stepQueryStates = (
     return [];
 };
 
-const StepStatePill = ({ state }: { state: StepStatus['state'] }) => {
+const presentationStateForStep = (
+    stepId: string,
+    state: StepStatus['state'],
+    queryStates: ReturnType<typeof usePlanningReadiness>['queryStates'],
+): StepPresentationState => {
+    const relevantQueries = stepQueryStates(stepId, queryStates);
+    if (relevantQueries.some(query => query.enabled && query.isBlockingError)) {
+        return 'unavailable';
+    }
+    if (relevantQueries.some(query => (
+        query.enabled && query.isLoading && !query.hasData
+    ))) {
+        return 'loading';
+    }
+    return state;
+};
+
+const StepStatePill = ({ state }: { state: StepPresentationState }) => {
     const { t } = useTranslation();
-    const labels: Record<StepStatus['state'], string> = {
-        done: t('plan.master.done'),
-        warn: t('plan.master.needsAttention'),
-        blocked: t('plan.master.blocked'),
-        todo: t('plan.master.notStarted'),
-    };
+    const tone = stepPresentationTone(state);
     return (
-        <span className={`pill ${state === 'todo' ? 'opt' : state}`}>
+        <span className={`pill ${tone === 'todo' ? 'opt' : tone}`}>
             <span className="pdot" />
-            {labels[state]}
+            {t(STEP_PRESENTATION_LABEL_KEYS[state])}
         </span>
+    );
+};
+
+const PlanMasterFullState = ({
+    children,
+    headingRef,
+}: {
+    children: ReactNode;
+    headingRef: RefObject<HTMLHeadingElement | null>;
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <div className="wc plan-master-full-state">
+            <header className="plan-master-full-state-header">
+                <h1
+                    ref={headingRef}
+                    className="wc-page-title wc-master-focus-heading"
+                    tabIndex={-1}
+                >
+                    {t('plan.hub.planIterationTitle')}
+                </h1>
+                <p className="wc-page-sub">{t('plan.master.checkpointPageDescription')}</p>
+            </header>
+            {children}
+        </div>
     );
 };
 
@@ -99,7 +186,32 @@ const getStepEvidence = (
     readiness: PlanReadiness,
     t: ReturnType<typeof useTranslation>['t'],
     language: string,
+    iterationId: number,
 ): EvidenceItem[] => {
+    const planningIssueEvidence = ({
+        issue,
+        label,
+        count,
+        actionKey,
+    }: {
+        issue: PlanningTaskIssue;
+        label: string;
+        count: number;
+        actionKey: string;
+    }): EvidenceItem => ({
+        label,
+        value: String(count),
+        exception: count > 0,
+        ...(count > 0 ? {
+            href: planningIssueTasksHref({
+                issue,
+                iterationId,
+                returnStepId: stepId as PlanningStepId,
+            }),
+            actionLabel: t(actionKey, { count }),
+        } : {}),
+    });
+
     if (stepId === 'iteration') {
         return [
             {
@@ -148,38 +260,45 @@ const getStepEvidence = (
                 value: String(readiness.taskCount),
                 exception: readiness.taskCount === 0,
             },
-            {
-                label: t('plan.master.unassigned'),
-                value: String(readiness.tasksWithoutAssignee),
-                exception: readiness.tasksWithoutAssignee > 0,
-            },
-            {
-                label: t('plan.master.missingEffort'),
-                value: String(readiness.tasksWithoutEffort),
-                exception: readiness.tasksWithoutEffort > 0,
-            },
         ];
     }
     if (stepId === 'blockers') {
         return [
-            {
+            planningIssueEvidence({
+                issue: 'unassigned',
                 label: t('plan.master.unassigned'),
-                value: String(readiness.tasksWithoutAssignee),
-                exception: readiness.tasksWithoutAssignee > 0,
-            },
-            {
+                count: readiness.tasksWithoutAssignee,
+                actionKey: 'plan.master.openUnassignedTasks',
+            }),
+            planningIssueEvidence({
+                issue: 'missing-effort',
                 label: t('plan.master.missingEffort'),
-                value: String(readiness.tasksWithoutEffort),
-                exception: readiness.tasksWithoutEffort > 0,
-            },
+                count: readiness.tasksWithoutEffort,
+                actionKey: 'plan.master.openMissingEffortTasks',
+            }),
             {
                 label: t('plan.master.tasksInPeriod'),
                 value: String(readiness.taskCount),
             },
         ];
     }
+    const downstreamTaskExceptions = [
+        planningIssueEvidence({
+            issue: 'unassigned',
+            label: t('plan.master.unassigned'),
+            count: readiness.tasksWithoutAssignee,
+            actionKey: 'plan.master.openUnassignedTasks',
+        }),
+        planningIssueEvidence({
+            issue: 'missing-effort',
+            label: t('plan.master.missingEffort'),
+            count: readiness.tasksWithoutEffort,
+            actionKey: 'plan.master.openMissingEffortTasks',
+        }),
+    ].filter(item => item.exception);
     if (stepId === 'schedule') {
         return [
+            ...downstreamTaskExceptions,
             {
                 label: t('plan.master.savedSchedule'),
                 value: readiness.hasGanttSchedule
@@ -199,6 +318,7 @@ const getStepEvidence = (
         ];
     }
     return [
+        ...downstreamTaskExceptions,
         {
             label: t('plan.master.savedSchedule'),
             value: readiness.hasGanttSchedule
@@ -223,6 +343,10 @@ const ShareCheckpoint = ({
     loading,
     error,
     pending,
+    retrying,
+    readyHeadingRef,
+    retryButtonRef,
+    sharedHeadingRef,
     onRetry,
     onCreate,
     onCopy,
@@ -233,6 +357,10 @@ const ShareCheckpoint = ({
     loading: boolean;
     error: unknown;
     pending: boolean;
+    retrying: boolean;
+    readyHeadingRef: RefObject<HTMLHeadingElement | null>;
+    retryButtonRef: RefObject<HTMLButtonElement | null>;
+    sharedHeadingRef: RefObject<HTMLHeadingElement | null>;
     onRetry: () => void;
     onCreate: () => void;
     onCopy: () => void;
@@ -249,7 +377,10 @@ const ShareCheckpoint = ({
                 error={error}
                 title={t('plan.master.shareLinkUnavailable')}
                 fallback={t('plan.master.shareLinkUnavailableBody')}
-                onRetry={pending ? undefined : onRetry}
+                headingLevel={3}
+                isRetrying={retrying}
+                onRetry={onRetry}
+                retryButtonRef={retryButtonRef}
             />
         );
     }
@@ -257,7 +388,14 @@ const ShareCheckpoint = ({
         return (
             <section className="plan-checkpoint-share" aria-labelledby="plan-share-heading">
                 <div>
-                    <h3 id="plan-share-heading">{t('plan.master.readyToShareTitle')}</h3>
+                    <h3
+                        id="plan-share-heading"
+                        ref={readyHeadingRef}
+                        className="wc-master-focus-heading"
+                        tabIndex={-1}
+                    >
+                        {t('plan.master.readyToShareTitle')}
+                    </h3>
                     <p>{t('plan.master.readyToShareBody')}</p>
                 </div>
                 <button type="button" className="btn" disabled={pending} onClick={onCreate}>
@@ -274,7 +412,14 @@ const ShareCheckpoint = ({
     return (
         <section className="plan-checkpoint-share active" aria-labelledby="plan-share-heading">
             <div className="plan-checkpoint-share-copy">
-                <h3 id="plan-share-heading">{t('plan.master.planSharedTitle')}</h3>
+                <h3
+                    id="plan-share-heading"
+                    ref={sharedHeadingRef}
+                    className="wc-master-focus-heading"
+                    tabIndex={-1}
+                >
+                    {t('plan.master.planSharedTitle')}
+                </h3>
                 <p>
                     {t('plan.master.planSharedBody', {
                         date: formatDateTime(share.created_at, i18n.language),
@@ -308,13 +453,19 @@ const ShareCheckpoint = ({
 
 const StepCheckpoint = ({
     stepId,
+    headingRef,
     status,
     readiness,
+    iterationId,
     dataState,
     share,
     shareLoading,
     shareError,
     sharePending,
+    shareRetrying,
+    shareReadyHeadingRef,
+    shareRetryButtonRef,
+    shareSharedHeadingRef,
     onRetryShare,
     onCreateShare,
     onCopyShare,
@@ -322,13 +473,19 @@ const StepCheckpoint = ({
     onRevokeShare,
 }: {
     stepId: string;
+    headingRef: RefObject<HTMLHeadingElement | null>;
     status: Record<string, StepStatus>;
     readiness: PlanReadiness;
+    iterationId: number;
     dataState?: StepDataState;
     share: PlanShare | null;
     shareLoading: boolean;
     shareError: unknown;
     sharePending: boolean;
+    shareRetrying: boolean;
+    shareReadyHeadingRef: RefObject<HTMLHeadingElement | null>;
+    shareRetryButtonRef: RefObject<HTMLButtonElement | null>;
+    shareSharedHeadingRef: RefObject<HTMLHeadingElement | null>;
     onRetryShare: () => void;
     onCreateShare: () => void;
     onCopyShare: () => void;
@@ -338,15 +495,35 @@ const StepCheckpoint = ({
     const { t, i18n } = useTranslation();
     const definition = STEP_DEFS.find(step => step.id === stepId) ?? STEP_DEFS[0]!;
     const stepStatus = status[definition.id];
-    const firstIncompleteId = nextStep(status);
-    const actionStep = stepStatus.state === 'blocked'
-        ? STEP_DEFS.find(step => step.id === firstIncompleteId) ?? definition
-        : definition;
-    const actionHref = withPlanMasterReturn(
-        actionStep.route,
+    const recovery = derivePlanningRecovery(
         definition.id as PlanningStepId,
+        readiness,
     );
-    const evidence = getStepEvidence(definition.id, readiness, t, i18n.language);
+    const actionStep = STEP_DEFS.find(step => step.id === recovery.ownerStep)
+        ?? definition;
+    const actionHref = recovery.planningIssue
+        ? planningIssueTasksHref({
+            issue: recovery.planningIssue,
+            iterationId,
+            returnStepId: definition.id as PlanningStepId,
+        })
+        : withPlanMasterReturn(
+            recovery.route,
+            definition.id as PlanningStepId,
+            {
+                ...recovery.query,
+                ...(recovery.route === '/tasks' && iterationId > 0
+                    ? { [PLANNING_ITERATION_PARAM]: String(iterationId) }
+                    : {}),
+            },
+        );
+    const evidence = getStepEvidence(
+        definition.id,
+        readiness,
+        t,
+        i18n.language,
+        iterationId,
+    );
     const exceptionEvidence = evidence.filter(item => item.exception);
     const visibleEvidence = exceptionEvidence.length > 0
         ? [
@@ -354,18 +531,37 @@ const StepCheckpoint = ({
             ...evidence.filter(item => !item.exception).slice(0, 1),
         ]
         : evidence.slice(0, 2);
-    const headingRef = useRef<HTMLHeadingElement>(null);
-    const previousStepRef = useRef(stepId);
-
-    useEffect(() => {
-        if (previousStepRef.current !== stepId) {
-            headingRef.current?.focus();
-            previousStepRef.current = stepId;
-        }
-    }, [stepId]);
-
     const unavailable = Boolean(dataState?.error);
     const loading = Boolean(dataState?.loading && !dataState.error);
+    const presentationState: StepPresentationState = unavailable
+        ? 'unavailable'
+        : loading
+            ? 'loading'
+            : stepStatus.state;
+    const assignAction = t('plan.master.assignTasks', {
+        count: readiness.tasksWithoutAssignee,
+    });
+    const estimateAction = t('plan.master.estimateTasks', {
+        count: readiness.tasksWithoutEffort,
+    });
+    const taskRecoverySummary = (
+        readiness.tasksWithoutAssignee > 0
+        && readiness.tasksWithoutEffort > 0
+    )
+        ? t('plan.master.taskRecoveryBoth', {
+            assign: assignAction,
+            estimate: estimateAction,
+        })
+        : readiness.tasksWithoutAssignee > 0
+            ? t('plan.master.taskRecoveryUnassigned', { action: assignAction })
+            : readiness.tasksWithoutEffort > 0
+                ? t('plan.master.taskRecoveryEffort', { action: estimateAction })
+                : null;
+    const actionLabel = recovery.kind === 'repair-assignee'
+        ? assignAction
+        : recovery.kind === 'repair-effort'
+            ? estimateAction
+            : t(`plan.steps.${actionStep.id}.expert`);
     return (
         <article className="plan-checkpoint">
             <header className="plan-checkpoint-header">
@@ -376,11 +572,12 @@ const StepCheckpoint = ({
                             <h2
                                 id="plan-master-active-step-heading"
                                 ref={headingRef}
+                                className="wc-master-focus-heading"
                                 tabIndex={-1}
                             >
                                 {t(`plan.steps.${definition.id}.title`)}
                             </h2>
-                            <StepStatePill state={stepStatus.state} />
+                            <StepStatePill state={presentationState} />
                         </div>
                         <p>{t(`plan.steps.${definition.id}.description`)}</p>
                     </div>
@@ -407,9 +604,9 @@ const StepCheckpoint = ({
                     fallback={t('plan.master.sectionUnavailableBody', {
                         section: dataState?.label,
                     })}
-                    onRetry={dataState?.fetching
-                        ? undefined
-                        : () => { void dataState?.retry(); }}
+                    headingLevel={3}
+                    isRetrying={dataState?.fetching}
+                    onRetry={() => { void dataState?.retry(); }}
                 />
             ) : (
                 <>
@@ -424,7 +621,18 @@ const StepCheckpoint = ({
                             {visibleEvidence.map(item => (
                                 <div key={item.label} className={item.exception ? 'exception' : ''}>
                                     <dt>{item.label}</dt>
-                                    <dd>{item.value}</dd>
+                                    <dd>
+                                        {item.href ? (
+                                            <Link
+                                                className="plan-evidence-link"
+                                                to={item.href}
+                                                aria-label={item.actionLabel}
+                                            >
+                                                <span>{item.value}</span>
+                                                <ArrowRight aria-hidden="true" size={13} />
+                                            </Link>
+                                        ) : item.value}
+                                    </dd>
                                 </div>
                             ))}
                         </dl>
@@ -433,16 +641,24 @@ const StepCheckpoint = ({
                     <section
                         className="plan-checkpoint-action"
                         data-blocked={stepStatus.state === 'blocked'}
+                        aria-labelledby="plan-checkpoint-next-action-heading"
                     >
-                        <p>
-                            {stepStatus.state === 'blocked'
-                                ? t('plan.master.resolveFirst', {
-                                    step: t(`plan.steps.${actionStep.id}.title`),
-                                })
-                                : t('plan.master.authoritativeWorkspaceBody')}
-                        </p>
+                        <div>
+                            <h3 id="plan-checkpoint-next-action-heading">
+                                {t('plan.master.nextAction')}
+                            </h3>
+                            <p>
+                                {recovery.planningIssue && taskRecoverySummary
+                                    ? taskRecoverySummary
+                                    : stepStatus.state === 'blocked'
+                                    ? t('plan.master.resolveFirst', {
+                                        step: t(`plan.steps.${actionStep.id}.title`),
+                                    })
+                                    : t('plan.master.authoritativeWorkspaceBody')}
+                            </p>
+                        </div>
                         <Link className="btn primary" to={actionHref}>
-                            {t(`plan.steps.${actionStep.id}.expert`)}
+                            {actionLabel}
                             <ArrowRight aria-hidden="true" size={14} />
                         </Link>
                     </section>
@@ -453,6 +669,10 @@ const StepCheckpoint = ({
                             loading={shareLoading}
                             error={shareError}
                             pending={sharePending}
+                            retrying={shareRetrying}
+                            readyHeadingRef={shareReadyHeadingRef}
+                            retryButtonRef={shareRetryButtonRef}
+                            sharedHeadingRef={shareSharedHeadingRef}
                             onRetry={onRetryShare}
                             onCreate={onCreateShare}
                             onCopy={onCopyShare}
@@ -471,7 +691,11 @@ const PlanMasterPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const queryClient = useQueryClient();
     const toast = useToast();
-    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+    const {
+        requestConfirmation,
+        confirmationDialog,
+        confirmationOpen,
+    } = useConfirmDialog();
     const {
         currentIteration,
         readinessData,
@@ -481,6 +705,45 @@ const PlanMasterPage = () => {
         refetch,
     } = usePlanningReadiness();
     const [retryPending, setRetryPending] = useState(false);
+    const [recoveryFocusVersion, setRecoveryFocusVersion] = useState(0);
+    const [shareFocusVersion, setShareFocusVersion] = useState(0);
+    const railRef = useRef<HTMLElement>(null);
+    const mobileStepSelectRef = useRef<HTMLSelectElement>(null);
+    const activeStepButtonRef = useRef<HTMLButtonElement>(null);
+    const activeStepHeadingRef = useRef<HTMLHeadingElement>(null);
+    const pageTitleRef = useRef<HTMLHeadingElement>(null);
+    const pendingStepFocus = useRef<{
+        origin: HTMLElement | null;
+        stepId: string;
+    } | null>(null);
+    const recoveryFocusSequence = useRef(0);
+    const pendingRecoveryFocus = useRef<RecoveryFocusIntent | null>(null);
+    const recoveryInFlight = useRef(false);
+    const shareFocusSequence = useRef(0);
+    const pendingShareFocus = useRef<ShareFocusIntent | null>(null);
+    const shareCommandInFlight = useRef(false);
+    const shareRetryInFlight = useRef(false);
+    const shareReadyHeadingRef = useRef<HTMLHeadingElement>(null);
+    const shareRetryButtonRef = useRef<HTMLButtonElement>(null);
+    const shareSharedHeadingRef = useRef<HTMLHeadingElement>(null);
+
+    useEffect(() => {
+        if (typeof window.matchMedia !== 'function') return undefined;
+        const mobileLayout = window.matchMedia('(max-width: 768px)');
+        const preserveStepFocus = (event: MediaQueryListEvent) => {
+            const activeElement = document.activeElement;
+            if (event.matches && railRef.current?.contains(activeElement)) {
+                mobileStepSelectRef.current?.focus();
+            } else if (
+                !event.matches
+                && activeElement === mobileStepSelectRef.current
+            ) {
+                activeStepButtonRef.current?.focus();
+            }
+        };
+        mobileLayout.addEventListener('change', preserveStepFocus);
+        return () => mobileLayout.removeEventListener('change', preserveStepFocus);
+    }, []);
 
     const shareQuery = useQuery({
         queryKey: ['plan-share', currentIteration?.id],
@@ -488,17 +751,70 @@ const PlanMasterPage = () => {
         enabled: Boolean(currentIteration),
         retry: false,
     });
+
+    const beginShareFocus = useCallback((
+        target: ShareFocusTarget,
+        origin = captureFocusOrigin(),
+    ) => {
+        const token = shareFocusSequence.current + 1;
+        shareFocusSequence.current = token;
+        pendingShareFocus.current = { origin, target, token };
+        return token;
+    }, []);
+
+    const settleShareFocus = useCallback((token: number, target: ShareFocusTarget) => {
+        if (pendingShareFocus.current?.token !== token) return;
+        pendingShareFocus.current = {
+            ...pendingShareFocus.current,
+            target,
+        };
+        setShareFocusVersion(current => current + 1);
+    }, []);
+
+    const cancelShareFocus = useCallback((token: number) => {
+        if (pendingShareFocus.current?.token === token) {
+            pendingShareFocus.current = null;
+        }
+    }, []);
+
     const createShareMutation = useMutation({
-        mutationFn: (iterationId: number) => planShareService.create(iterationId),
-        onSuccess: share => {
+        mutationFn: ({
+            iterationId,
+        }: {
+            command: 'create' | 'refresh';
+            focusToken: number;
+            iterationId: number;
+        }) => planShareService.create(iterationId),
+        onSuccess: (share, variables) => {
             queryClient.setQueryData(['plan-share', share.iteration_id], share);
-            toast.success(t('plan.master.shareLinkCreated'), {
-                dedupeKey: `plan-share-created-${share.id}`,
+            toast.success(t(
+                variables.command === 'refresh'
+                    ? 'plan.master.shareLinkRefreshed'
+                    : 'plan.master.shareLinkCreated',
+            ), {
+                dedupeKey: `plan-share-${variables.command}-${share.id}`,
             });
+            if (variables.command === 'create') {
+                settleShareFocus(variables.focusToken, 'shared');
+            } else {
+                cancelShareFocus(variables.focusToken);
+            }
+        },
+        onError: (_error, variables) => {
+            settleShareFocus(variables.focusToken, 'retry');
+        },
+        onSettled: () => {
+            shareCommandInFlight.current = false;
         },
     });
     const revokeShareMutation = useMutation({
-        mutationFn: ({ shareId }: { shareId: number; iterationId: number }) => (
+        mutationFn: ({
+            shareId,
+        }: {
+            focusToken: number;
+            iterationId: number;
+            shareId: number;
+        }) => (
             planShareService.revoke(shareId)
         ),
         onSuccess: (_response, variables) => {
@@ -506,6 +822,13 @@ const PlanMasterPage = () => {
             toast.success(t('plan.master.shareLinkRevoked'), {
                 dedupeKey: 'plan-share-revoked',
             });
+            settleShareFocus(variables.focusToken, 'ready');
+        },
+        onError: (_error, variables) => {
+            settleShareFocus(variables.focusToken, 'retry');
+        },
+        onSettled: () => {
+            shareCommandInFlight.current = false;
         },
     });
 
@@ -551,18 +874,60 @@ const PlanMasterPage = () => {
     const hasRefetchError = Object.values(queryStates).some(query => query.isRefetchError);
     const currentShare = shareQuery.data ?? null;
     const sharePending = createShareMutation.isPending || revokeShareMutation.isPending;
+    const shareRetrying = shareQuery.isFetching && !shareQuery.isLoading;
     const shareError = shareQuery.error
         ?? createShareMutation.error
         ?? revokeShareMutation.error;
 
-    const setActiveStep = useCallback((nextStepId: string) => {
+    useEffect(() => {
+        const intent = pendingStepFocus.current;
+        if (!intent || intent.stepId !== stepId) return;
+
+        focusOwnedTarget(intent.origin, activeStepHeadingRef.current);
+        pendingStepFocus.current = null;
+    }, [stepId]);
+
+    useEffect(() => {
+        const intent = pendingShareFocus.current;
+        if (!intent || confirmationOpen) return;
+
+        const target = intent.target === 'ready'
+            ? shareReadyHeadingRef.current
+            : intent.target === 'shared'
+                ? shareSharedHeadingRef.current
+                : shareRetryButtonRef.current;
+        focusOwnedTarget(
+            intent.origin,
+            target ?? activeStepHeadingRef.current ?? pageTitleRef.current,
+        );
+        pendingShareFocus.current = null;
+    }, [confirmationOpen, currentShare, shareError, shareFocusVersion]);
+
+    const setActiveStep = useCallback((
+        nextStepId: string,
+        origin = captureFocusOrigin(),
+    ) => {
+        if (nextStepId === stepId) return;
+        pendingStepFocus.current = { origin, stepId: nextStepId };
         const nextParams = new URLSearchParams(searchParams);
         nextParams.set('step', nextStepId);
         setSearchParams(nextParams, { replace: true });
-    }, [searchParams, setSearchParams]);
+    }, [searchParams, setSearchParams, stepId]);
 
-    const retryQueries = useCallback(async (queries?: PlanningQueryFeedback[]) => {
-        if (retryPending) return;
+    const retryQueries = useCallback(async (
+        queries: PlanningQueryFeedback[] | undefined,
+        target: RecoveryFocusTarget,
+    ) => {
+        if (retryPending || recoveryInFlight.current) return;
+        const token = recoveryFocusSequence.current + 1;
+        recoveryFocusSequence.current = token;
+        pendingRecoveryFocus.current = {
+            origin: captureFocusOrigin(),
+            stepId: target === 'iterations' ? undefined : stepId,
+            target,
+            token,
+        };
+        recoveryInFlight.current = true;
         setRetryPending(true);
         try {
             if (queries) {
@@ -573,9 +938,11 @@ const PlanMasterPage = () => {
                 await refetch();
             }
         } finally {
+            recoveryInFlight.current = false;
             setRetryPending(false);
+            setRecoveryFocusVersion(current => current + 1);
         }
-    }, [refetch, retryPending]);
+    }, [refetch, retryPending, stepId]);
 
     const relevantQueries = stepQueryStates(stepId, queryStates);
     const blockingStepQuery = relevantQueries.find(query => (
@@ -586,22 +953,90 @@ const PlanMasterPage = () => {
             loading: relevantQueries.some(query => (
                 query.enabled && query.isLoading && !query.hasData
             )),
-            fetching: relevantQueries.some(query => query.enabled && query.isFetching),
+            fetching: retryPending || relevantQueries.some(query => (
+                query.enabled && query.isFetching
+            )),
             error: blockingStepQuery?.error ?? null,
-            retry: () => retryQueries(relevantQueries),
+            retry: () => retryQueries(relevantQueries, 'step'),
             label: t(`plan.steps.${activeDefinition.id}.title`),
         }
         : undefined;
 
+    useEffect(() => {
+        const intent = pendingRecoveryFocus.current;
+        if (!intent || retryPending) return;
+
+        const recovered = intent.target === 'iterations'
+            ? !queryStates.iterations.isBlockingError
+            : intent.target === 'stale'
+                ? !hasRefetchError
+                : !blockingStepQuery;
+        const target = recovered
+            ? intent.target === 'iterations'
+                ? pageTitleRef.current
+                : activeStepHeadingRef.current
+            : intent.origin;
+
+        focusOwnedTarget(intent.origin, target);
+        pendingRecoveryFocus.current = null;
+    }, [
+        blockingStepQuery,
+        hasRefetchError,
+        queryStates.iterations.isBlockingError,
+        recoveryFocusVersion,
+        retryPending,
+        stepId,
+    ]);
+
     const createShare = useCallback(() => {
-        if (!currentIteration || sharePending) return;
-        createShareMutation.mutate(currentIteration.id);
-    }, [createShareMutation, currentIteration, sharePending]);
+        if (!currentIteration || sharePending || shareCommandInFlight.current) return;
+        shareCommandInFlight.current = true;
+        const focusToken = beginShareFocus('shared');
+        createShareMutation.mutate({
+            command: 'create',
+            focusToken,
+            iterationId: currentIteration.id,
+        });
+    }, [beginShareFocus, createShareMutation, currentIteration, sharePending]);
 
     const refreshShare = useCallback(() => {
-        if (!currentIteration || sharePending) return;
-        createShareMutation.mutate(currentIteration.id);
-    }, [createShareMutation, currentIteration, sharePending]);
+        if (!currentIteration || sharePending || shareCommandInFlight.current) return;
+        shareCommandInFlight.current = true;
+        const focusToken = beginShareFocus('shared');
+        createShareMutation.mutate({
+            command: 'refresh',
+            focusToken,
+            iterationId: currentIteration.id,
+        });
+    }, [beginShareFocus, createShareMutation, currentIteration, sharePending]);
+
+    const retryShare = useCallback(async () => {
+        if (shareRetrying || shareRetryInFlight.current) return;
+        shareRetryInFlight.current = true;
+        const focusToken = beginShareFocus(currentShare ? 'shared' : 'ready');
+        try {
+            const result = await shareQuery.refetch();
+            if (result.isError) {
+                settleShareFocus(focusToken, 'retry');
+                return;
+            }
+            createShareMutation.reset();
+            revokeShareMutation.reset();
+            settleShareFocus(focusToken, result.data ? 'shared' : 'ready');
+        } catch {
+            settleShareFocus(focusToken, 'retry');
+        } finally {
+            shareRetryInFlight.current = false;
+        }
+    }, [
+        beginShareFocus,
+        createShareMutation,
+        currentShare,
+        revokeShareMutation,
+        settleShareFocus,
+        shareQuery,
+        shareRetrying,
+    ]);
 
     const copyShare = useCallback(async () => {
         if (!currentShare) return;
@@ -618,7 +1053,7 @@ const PlanMasterPage = () => {
     }, [currentShare, t, toast]);
 
     const requestShareRevoke = useCallback(() => {
-        if (!currentShare || sharePending) return;
+        if (!currentShare || sharePending || shareCommandInFlight.current) return;
         requestConfirmation({
             title: t('plan.master.revokeShareTitle'),
             description: t('plan.master.revokeShareBody'),
@@ -626,12 +1061,19 @@ const PlanMasterPage = () => {
             cancelLabel: t('actions.cancel'),
             closeLabel: t('actions.close'),
             tone: 'danger',
-            onConfirm: () => revokeShareMutation.mutateAsync({
-                shareId: currentShare.id,
-                iterationId: currentShare.iteration_id,
-            }),
+            onConfirm: () => {
+                if (shareCommandInFlight.current) return Promise.resolve();
+                shareCommandInFlight.current = true;
+                const focusToken = beginShareFocus('ready');
+                return revokeShareMutation.mutateAsync({
+                    focusToken,
+                    shareId: currentShare.id,
+                    iterationId: currentShare.iteration_id,
+                });
+            },
         });
     }, [
+        beginShareFocus,
         currentShare,
         requestConfirmation,
         revokeShareMutation,
@@ -641,23 +1083,25 @@ const PlanMasterPage = () => {
 
     if (queryStates.iterations.isLoading && !queryStates.iterations.hasData) {
         return (
-            <div className="wc plan-master-full-state">
+            <PlanMasterFullState headingRef={pageTitleRef}>
                 <QueryLoadingState message={t('plan.master.planningDataLoading')} />
-            </div>
+            </PlanMasterFullState>
         );
     }
 
     if (queryStates.iterations.isBlockingError) {
         return (
-            <div className="wc plan-master-full-state">
+            <PlanMasterFullState headingRef={pageTitleRef}>
                 <QueryErrorState
                     error={queryStates.iterations.error}
                     title={t('plan.master.planningDataUnavailable')}
                     fallback={t('plan.master.planningDataUnavailableBody')}
-                    onRetry={retryPending ? undefined : () => { void retryQueries(); }}
+                    headingLevel={2}
+                    isRetrying={retryPending}
+                    onRetry={() => { void retryQueries(undefined, 'iterations'); }}
                 />
                 {confirmationDialog}
-            </div>
+            </PlanMasterFullState>
         );
     }
 
@@ -672,7 +1116,13 @@ const PlanMasterPage = () => {
                 </div>
                 <div className="plan-master-title-row">
                     <div>
-                        <h1 className="wc-page-title">{t('plan.hub.planIterationTitle')}</h1>
+                        <h1
+                            ref={pageTitleRef}
+                            className="wc-page-title wc-master-focus-heading"
+                            tabIndex={-1}
+                        >
+                            {t('plan.hub.planIterationTitle')}
+                        </h1>
                         <p className="wc-page-sub">{t('plan.master.checkpointPageDescription')}</p>
                     </div>
                     <p className="plan-master-period">
@@ -681,35 +1131,72 @@ const PlanMasterPage = () => {
                             : t('plan.master.noPeriodYet')}
                     </p>
                 </div>
-                <div className="plan-master-mobile-context">
+                <section
+                    className="plan-master-mobile-context"
+                    aria-labelledby="plan-master-mobile-readiness-heading"
+                >
+                    <h2
+                        id="plan-master-mobile-readiness-heading"
+                        className="plan-master-mobile-context-title"
+                    >
+                        {t('plan.master.planReadiness')}
+                    </h2>
                     <div className="plan-master-mobile-context-row">
                         <span>
                             {currentIteration
                                 ? currentIteration.name
                                 : t('plan.master.noPeriodYet')}
                         </span>
-                        <span className="tnum">
-                            {t('plan.master.stepsComplete', {
+                        <span className="tnum" aria-hidden="true">
+                            {t('plan.master.checkpointsComplete', {
                                 done: ready.done,
                                 total: ready.total,
                             })}
                         </span>
                     </div>
+                    <MasterProgress
+                        className="plan-master-mobile-progress"
+                        completed={ready.done}
+                        label={t('plan.master.summaryProgress')}
+                        total={ready.total}
+                        valueText={t('plan.master.checkpointsComplete', {
+                            done: ready.done,
+                            total: ready.total,
+                        })}
+                    />
                     <label className="plan-master-mobile-step-select">
-                        <span>{t('plan.master.selectStep')}</span>
+                        <span>{t('plan.master.selectCheckpoint')}</span>
                         <select
+                            ref={mobileStepSelectRef}
                             className="input"
                             value={stepId}
-                            onChange={event => setActiveStep(event.target.value)}
+                            onChange={event => setActiveStep(
+                                event.target.value,
+                                event.currentTarget,
+                            )}
                         >
-                            {STEP_DEFS.map((definition, index) => (
-                                <option key={definition.id} value={definition.id}>
-                                    {index + 1}. {t(`plan.steps.${definition.id}.title`)}
-                                </option>
-                            ))}
+                            {STEP_DEFS.map((definition, index) => {
+                                const stepStatus = status[definition.id];
+                                const presentationState = presentationStateForStep(
+                                    definition.id,
+                                    stepStatus.state,
+                                    queryStates,
+                                );
+                                return (
+                                    <option key={definition.id} value={definition.id}>
+                                        {t('plan.master.checkpointOption', {
+                                            checkpoint: t(`plan.steps.${definition.id}.title`),
+                                            index: index + 1,
+                                            state: t(
+                                                STEP_PRESENTATION_LABEL_KEYS[presentationState],
+                                            ),
+                                        })}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </label>
-                </div>
+                </section>
             </header>
 
             {hasRefetchError && (
@@ -720,7 +1207,7 @@ const PlanMasterPage = () => {
                         type="button"
                         className="btn sm"
                         disabled={retryPending}
-                        onClick={() => { void retryQueries(); }}
+                        onClick={() => { void retryQueries(undefined, 'stale'); }}
                     >
                         <RefreshCw aria-hidden="true" size={12} />
                         {retryPending
@@ -731,71 +1218,98 @@ const PlanMasterPage = () => {
             )}
 
             <div className="wc-master plan-master-shell">
-                <aside className="wc-master-rail" aria-label={t('plan.master.steps')}>
-                    <div className="plan-master-rail-summary">
-                        <div>
-                            <strong>{t('plan.master.stepsComplete', {
+                <aside
+                    ref={railRef}
+                    className="wc-master-rail"
+                    aria-labelledby="plan-master-readiness-heading"
+                >
+                    <header className="wc-master-rail-head">
+                        <h2
+                            id="plan-master-readiness-heading"
+                            className="wc-master-rail-title"
+                        >
+                            {t('plan.master.planReadiness')}
+                        </h2>
+                        <p className="wc-master-rail-progress-text" aria-hidden="true">
+                            {t('plan.master.checkpointsComplete', {
                                 done: ready.done,
                                 total: ready.total,
-                            })}</strong>
-                            <span className="tnum">{ready.pct}%</span>
-                        </div>
-                        <div
-                            className="plan-readiness-progress"
-                            role="progressbar"
-                            aria-label={t('plan.master.progress')}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-valuenow={ready.pct}
-                        >
-                            <span style={{ width: `${ready.pct}%` }} />
-                        </div>
-                    </div>
-                    <nav className="step-rail plan-master-step-rail" aria-label={t('plan.master.steps')}>
-                        {STEP_DEFS.map((definition, index) => {
-                            const stepStatus = status[definition.id];
-                            const isCurrent = definition.id === stepId;
-                            return (
-                                <button
-                                    type="button"
-                                    key={definition.id}
-                                    className={`step-item${stepStatus.state === 'done' ? ' done' : ''}${isCurrent ? ' current' : ''}`}
-                                    aria-current={isCurrent ? 'step' : undefined}
-                                    onClick={() => setActiveStep(definition.id)}
-                                >
-                                    <span className="step-num">
-                                        {stepStatus.state === 'done'
-                                            ? <Check aria-hidden="true" size={11} strokeWidth={3} />
-                                            : index + 1}
-                                    </span>
-                                    <span className="step-title">
-                                        {t(`plan.steps.${definition.id}.title`)}
-                                    </span>
-                                    <span className="sr-only">
-                                        {stepStatus.state === 'done'
-                                            ? t('plan.master.done')
-                                            : t('plan.master.incomplete')}
-                                    </span>
-                                </button>
-                            );
-                        })}
+                            })}
+                        </p>
+                        <MasterProgress
+                            completed={ready.done}
+                            label={t('plan.master.railProgress')}
+                            total={ready.total}
+                            valueText={t('plan.master.checkpointsComplete', {
+                                done: ready.done,
+                                total: ready.total,
+                            })}
+                        />
+                    </header>
+                    <nav aria-label={t('plan.master.checkpoints')}>
+                        <ol className="step-rail plan-master-step-rail">
+                            {STEP_DEFS.map((definition, index) => {
+                                const stepStatus = status[definition.id];
+                                const presentationState = presentationStateForStep(
+                                    definition.id,
+                                    stepStatus.state,
+                                    queryStates,
+                                );
+                                const tone = stepPresentationTone(presentationState);
+                                const isCurrent = definition.id === stepId;
+                                return (
+                                    <li key={definition.id}>
+                                        <button
+                                            ref={isCurrent ? activeStepButtonRef : undefined}
+                                            type="button"
+                                            className={`step-item ${tone}${isCurrent ? ' current' : ''}`}
+                                            aria-current={isCurrent ? 'step' : undefined}
+                                            onClick={event => setActiveStep(
+                                                definition.id,
+                                                event.currentTarget,
+                                            )}
+                                        >
+                                            <span className="step-num">
+                                                {tone === 'done'
+                                                    ? <Check aria-hidden="true" size={11} strokeWidth={3} />
+                                                    : index + 1}
+                                            </span>
+                                            <span className="step-title">
+                                                {t(`plan.steps.${definition.id}.title`)}
+                                            </span>
+                                            <span className="sr-only">
+                                                {t(
+                                                    STEP_PRESENTATION_LABEL_KEYS[
+                                                        presentationState
+                                                    ],
+                                                )}
+                                            </span>
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ol>
                     </nav>
                 </aside>
 
                 <section className="wc-master-main" aria-labelledby="plan-master-active-step-heading">
                     <StepCheckpoint
                         stepId={stepId}
+                        headingRef={activeStepHeadingRef}
                         status={status}
                         readiness={readinessData}
+                        iterationId={currentIteration?.id ?? 0}
                         dataState={stepDataState}
                         share={currentShare}
                         shareLoading={shareQuery.isLoading}
                         shareError={shareError}
                         sharePending={sharePending}
+                        shareRetrying={shareRetrying}
+                        shareReadyHeadingRef={shareReadyHeadingRef}
+                        shareRetryButtonRef={shareRetryButtonRef}
+                        shareSharedHeadingRef={shareSharedHeadingRef}
                         onRetryShare={() => {
-                            createShareMutation.reset();
-                            revokeShareMutation.reset();
-                            void shareQuery.refetch();
+                            void retryShare();
                         }}
                         onCreateShare={createShare}
                         onCopyShare={() => { void copyShare(); }}

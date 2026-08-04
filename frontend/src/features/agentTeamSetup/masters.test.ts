@@ -32,8 +32,8 @@ describe('agent team setup master state', () => {
         expect(stepProgress(serverSteps)).toEqual({
             done: 1,
             total: 7,
-            percent: 14,
         });
+        expect(stepProgress(undefined)).toBeNull();
     });
 
     it('rejects secret-bearing fields and credential-shaped values before upload', () => {

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +18,21 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     const { theme } = useThemeStore();
     const location = useLocation();
     const { t } = useTranslation();
+    const workspaceMainRef = useRef<HTMLElement>(null);
+    const previousPathnameRef = useRef(location.pathname);
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
+
+    useEffect(() => {
+        const previousPathname = previousPathnameRef.current;
+        previousPathnameRef.current = location.pathname;
+
+        if (previousPathname !== location.pathname) {
+            workspaceMainRef.current?.focus();
+        }
+    }, [location.pathname]);
 
     const scrollLock = SCROLL_LOCK_PATHS.some(p => location.pathname.startsWith(p));
 
@@ -37,6 +48,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                 <div className="workspace">
                     <AppSidebar />
                     <main
+                        ref={workspaceMainRef}
                         id="workspace-main"
                         className={`main${scrollLock ? ' scroll-lock' : ''}`}
                         tabIndex={-1}

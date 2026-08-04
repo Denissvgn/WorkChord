@@ -132,7 +132,7 @@ describe('AgentAccessPanel', () => {
         expect(agentAccessStorageMock.setAgentApiKey).toHaveBeenCalledWith('replacement-key');
         await waitFor(() => {
             expect(screen.queryByText('Old Admin')).not.toBeInTheDocument();
-            expect(screen.getByRole('status')).toHaveTextContent('Checking actor access');
+            expect(screen.getByRole('status')).toHaveTextContent('Verifying session authority');
             otherPrincipalQueries.forEach(queryKey => {
                 expect(queryClient.getQueryData([...queryKey])).toBeUndefined();
             });
@@ -163,7 +163,7 @@ describe('AgentAccessPanel', () => {
             'The replacement key is invalid.',
         );
         expect(screen.queryByText('Old Admin')).not.toBeInTheDocument();
-        expect(screen.getByRole('status')).toHaveTextContent('Actor access failed');
+        expect(screen.getByRole('status')).toHaveTextContent('Session authority denied');
         expect(screen.getByRole('status')).toHaveClass('border-feedback-danger-border');
         expect(screen.getByRole('status')).not.toHaveClass('border-feedback-success-border');
     });

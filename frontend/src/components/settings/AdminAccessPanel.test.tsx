@@ -34,6 +34,7 @@ const PROTECTED_QUERY_PREFIXES = [
     'routing-preview',
     'agent-assignments',
     'agent-pipeline',
+    'agent-team-setup',
     'task-timeline',
     'agent-run-detail',
 ] as const;
@@ -47,7 +48,18 @@ describe('AdminAccessPanel', () => {
     it('purges protected caches before refreshing with a replacement key', async () => {
         const queryClient = createTestQueryClient();
         const removeQueries = vi.spyOn(queryClient, 'removeQueries');
+        const invalidateQueries = vi.spyOn(queryClient, 'invalidateQueries');
         const { user } = renderWithProviders(<AdminAccessPanel />, { queryClient });
+
+        expect(screen.getByRole('status')).toHaveTextContent(
+            i18n.t('settings.adminAccessConfigured'),
+        );
+        expect(screen.getByRole('status')).toHaveClass(
+            'border-feedback-info-border',
+        );
+        expect(screen.getByRole('status')).not.toHaveClass(
+            'border-feedback-success-border',
+        );
 
         await user.type(
             screen.getByLabelText(i18n.t('settings.adminAccessField')),
@@ -62,6 +74,9 @@ describe('AdminAccessPanel', () => {
         );
         PROTECTED_QUERY_PREFIXES.forEach(queryKey => {
             expect(removeQueries).toHaveBeenCalledWith({
+                queryKey: [queryKey],
+            });
+            expect(invalidateQueries).toHaveBeenCalledWith({
                 queryKey: [queryKey],
             });
         });

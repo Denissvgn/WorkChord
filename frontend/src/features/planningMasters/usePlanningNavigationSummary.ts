@@ -74,7 +74,11 @@ export const usePlanningNavigationSummary = () => {
         isIterationsError: iterationsQuery.isError && iterationsQuery.data === undefined,
         isIterationsFetching: iterationsQuery.isFetching,
         isReadinessLoading: hasCurrentIteration && summaryQuery.isLoading,
-        isReadinessError: hasCurrentIteration && summaryQuery.isError,
+        isReadinessError: (
+            hasCurrentIteration
+            && summaryQuery.isError
+            && summaryQuery.data === undefined
+        ),
         isReadinessFetching: hasCurrentIteration && summaryQuery.isFetching,
         refetch,
     };

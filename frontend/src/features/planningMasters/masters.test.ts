@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { deriveStatus, EMPTY_READINESS, nextStep } from './masters';
+import {
+    derivePlanningRecovery,
+    deriveStatus,
+    EMPTY_READINESS,
+    nextStep,
+} from './masters';
 import type { PlanReadiness } from './masters';
 
 const readinessFixture = (
@@ -60,5 +65,55 @@ describe('planning master readiness status', () => {
         }));
 
         expect(nextStep(status)).toBe('team');
+    });
+
+    it('keeps task existence in Work and moves readiness exceptions to Blockers', () => {
+        const status = deriveStatus(readinessFixture({
+            tasksWithoutAssignee: 2,
+            tasksWithoutEffort: 1,
+        }));
+
+        expect(status.work).toMatchObject({
+            state: 'done',
+            summary: '1 tasks added',
+        });
+        expect(status.blockers).toMatchObject({
+            state: 'warn',
+            missing: ['2 unassigned', '1 missing effort'],
+        });
+        expect(nextStep(status)).toBe('blockers');
+    });
+
+    it('ranks task recovery by affected count with an assignee-first tie-break', () => {
+        expect(derivePlanningRecovery('schedule', readinessFixture({
+            tasksWithoutAssignee: 2,
+            tasksWithoutEffort: 4,
+        }))).toMatchObject({
+            kind: 'repair-effort',
+            ownerStep: 'blockers',
+            count: 4,
+            planningIssue: 'missing-effort',
+        });
+
+        expect(derivePlanningRecovery('review', readinessFixture({
+            tasksWithoutAssignee: 3,
+            tasksWithoutEffort: 3,
+        }))).toMatchObject({
+            kind: 'repair-assignee',
+            ownerStep: 'blockers',
+            count: 3,
+            planningIssue: 'unassigned',
+        });
+    });
+
+    it('keeps stage precedence ahead of task exception severity', () => {
+        expect(derivePlanningRecovery('schedule', readinessFixture({
+            teamMemberCount: 0,
+            teamCapacity: 0,
+            tasksWithoutAssignee: 20,
+        }))).toMatchObject({
+            kind: 'add-team',
+            ownerStep: 'team',
+        });
     });
 });

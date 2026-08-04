@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppSidebar, SidebarContent } from './AppSidebar';
 import type { SavedView } from '../../types/savedView';
@@ -47,8 +47,12 @@ describe('AppSidebar', () => {
     it('shows only Planning destinations for a Planning route', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
 
+        const sidebar = screen.getByRole('complementary', {
+            name: 'Timeline & Planning',
+        });
+        expect(screen.getAllByRole('complementary')).toHaveLength(1);
         expect(screen.getByLabelText('Timeline & Planning destinations')).toBeInTheDocument();
-        expect(screen.getByRole('navigation', {
+        expect(within(sidebar).getByRole('navigation', {
             name: 'Timeline & Planning destinations',
         })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
@@ -80,6 +84,12 @@ describe('AppSidebar', () => {
     it('shows only Resource & Settings destinations for a resource route', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
 
+        const sidebar = screen.getByRole('complementary', {
+            name: 'Resource & Settings',
+        });
+        expect(within(sidebar).getByRole('navigation', {
+            name: 'Resource & Settings destinations',
+        })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Team' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page');
         expect(screen.queryByRole('link', { name: 'Gantt' })).not.toBeInTheDocument();
@@ -99,6 +109,25 @@ describe('AppSidebar', () => {
 
         expect(screen.getByRole('link', { name: 'Continue Plan Work (2 remaining)' }))
             .toHaveAttribute('href', '/plan/master');
+    });
+
+    it('folds matching Delivery attention into the canonical Triage destination', () => {
+        renderWithProviders(
+            <SidebarContent
+                attentionAction={{
+                    to: '/triage',
+                    label: 'Intake status unavailable',
+                    isError: true,
+                }}
+            />,
+            { initialEntries: ['/'] },
+        );
+
+        const triageLinks = screen.getAllByRole('link')
+            .filter(link => link.getAttribute('href') === '/triage');
+
+        expect(triageLinks).toHaveLength(1);
+        expect(triageLinks[0]).toHaveAccessibleDescription('Intake status unavailable');
     });
 
     it('keeps Delivery views inside Delivery without planning context', () => {
