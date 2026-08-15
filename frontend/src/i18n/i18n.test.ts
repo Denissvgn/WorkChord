@@ -249,4 +249,63 @@ describe('lazy language resources', () => {
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 5 }))
             .toBe('Осталось 5 действий согласования.');
     });
+
+    it('ensures exhaustive parity and placeholder match across all keys in Russian catalog', () => {
+        const flatten = (obj: Record<string, unknown>, prefix = ''): Record<string, string> => {
+            const res: Record<string, string> = {};
+            for (const [k, v] of Object.entries(obj)) {
+                const nextKey = prefix ? `${prefix}.${k}` : k;
+                if (v && typeof v === 'object' && !Array.isArray(v)) {
+                    Object.assign(res, flatten(v as Record<string, unknown>, nextKey));
+                } else if (typeof v === 'string') {
+                    res[nextKey] = v;
+                }
+            }
+            return res;
+        };
+
+        const en = flatten(englishResources.translation as Record<string, unknown>);
+        const ru = flatten(russianResources.translation as Record<string, unknown>);
+
+        const ruBaseKeys = new Set<string>();
+        for (const k of Object.keys(ru)) {
+            ruBaseKeys.add(k.replace(/_(zero|one|two|few|many|other)$/, ''));
+        }
+
+        const missingInRu: string[] = [];
+        for (const k of Object.keys(en)) {
+            const baseKey = k.replace(/_(zero|one|two|few|many|other)$/, '');
+            if (!ru[k] && !ruBaseKeys.has(baseKey)) {
+                missingInRu.push(k);
+            }
+        }
+        expect(missingInRu, 'Keys present in English but missing in Russian').toEqual([]);
+
+        const enBaseKeys = new Set<string>();
+        for (const k of Object.keys(en)) {
+            enBaseKeys.add(k.replace(/_(zero|one|two|few|many|other)$/, ''));
+        }
+
+        const missingInEn: string[] = [];
+        for (const k of Object.keys(ru)) {
+            const baseKey = k.replace(/_(zero|one|two|few|many|other)$/, '');
+            if (!en[k] && !enBaseKeys.has(baseKey)) {
+                missingInEn.push(k);
+            }
+        }
+        expect(missingInEn, 'Keys present in Russian but missing in English').toEqual([]);
+
+        const placeholderMismatches: Array<{ key: string; enPh: string[]; ruPh: string[] }> = [];
+        for (const [k, valEn] of Object.entries(en)) {
+            const valRu = ru[k] || ru[`${k}_other`] || ru[`${k}_one`];
+            if (!valRu) continue;
+            const enPh = placeholders(valEn);
+            const ruPh = placeholders(valRu);
+            if (enPh.join(',') !== ruPh.join(',')) {
+                placeholderMismatches.push({ key: k, enPh, ruPh });
+            }
+        }
+        expect(placeholderMismatches, 'Interpolation placeholder mismatches').toEqual([]);
+    });
 });
+

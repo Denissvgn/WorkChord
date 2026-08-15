@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { renderWithProviders } from '../test/renderWithProviders';
@@ -178,10 +178,16 @@ describe('selectWorkNowTasks', () => {
 
 describe('Overview partial-data resilience', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-08-03T12:00:00Z'));
         planningReadinessMock.usePlanningReadiness.mockReset();
         serviceMocks.getIterationSummary.mockReset();
         serviceMocks.getIterationSummary.mockResolvedValue(iterationSummary);
         serviceMocks.getProjectSummary.mockReset();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('announces the initial loading state without adding inactive controls to the tab order', async () => {
