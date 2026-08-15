@@ -10,9 +10,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
+    ({
+        className,
+        variant = 'primary',
+        size = 'md',
+        isLoading = false,
+        disabled,
+        children,
+        'aria-busy': ariaBusy,
+        ...props
+    }, ref) => {
         return (
             <button
+                {...props}
                 ref={ref}
                 className={clsx(
                     'btn',
@@ -30,14 +40,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         'btn-outline': variant === 'outline',
                         sm: size === 'sm',
                         lg: size === 'lg',
-                        'opacity-70 cursor-not-allowed': isLoading || props.disabled,
+                        'opacity-70 cursor-not-allowed': isLoading || disabled,
                     },
                     className
                 )}
-                disabled={isLoading || props.disabled}
-                {...props}
+                disabled={isLoading || disabled}
+                aria-busy={isLoading ? true : ariaBusy}
             >
-                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isLoading && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
                 {children}
             </button>
         );

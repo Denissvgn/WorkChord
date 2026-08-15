@@ -3,50 +3,50 @@ import type { TaskStatus } from '../../types/task';
 export type PillTone = 'gray' | 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'indigo';
 
 // ── Planning-masters design-system mappings ──────────────────────────────────
-// The WorkChord system has 5 semantic pill variants: default(opt) / accent / done / warn / blocked.
-// Map the legacy 7-tone palette onto them.
+// The WorkChord system distinguishes durable record state from action and feedback.
+// Map the legacy 7-tone palette onto those canonical visual roles.
 
 /** WorkChord `.pill` modifier class for a tone (used as `pill ${wcPillClass[tone]}`). */
 export const wcPillClass: Record<PillTone, string> = {
-    gray: 'opt',
-    blue: 'accent',
-    green: 'done',
+    gray: 'planned',
+    blue: 'active',
+    green: 'resolved',
     yellow: 'warn',
     red: 'blocked',
-    purple: 'accent',
+    purple: 'closed',
     indigo: 'accent',
 };
 
 /** CSS variable carrying the tone's primary colour (for dots, bars, rings). */
 export const toneVar: Record<PillTone, string> = {
-    gray: 'var(--ink-4)',
-    blue: 'var(--accent)',
-    green: 'var(--done)',
+    gray: 'var(--wc-status-planned)',
+    blue: 'var(--wc-status-active)',
+    green: 'var(--wc-status-resolved)',
     yellow: 'var(--warn)',
     red: 'var(--blocked)',
-    purple: 'var(--accent)',
+    purple: 'var(--wc-status-closed)',
     indigo: 'var(--accent)',
 };
 
 /** CSS variable for the tone's soft background tint. */
 export const toneSoftVar: Record<PillTone, string> = {
-    gray: 'var(--panel-2)',
-    blue: 'var(--accent-soft)',
-    green: 'var(--done-soft)',
+    gray: 'var(--wc-status-planned-soft)',
+    blue: 'var(--wc-status-active-soft)',
+    green: 'var(--wc-status-resolved-soft)',
     yellow: 'var(--warn-soft)',
     red: 'var(--blocked-soft)',
-    purple: 'var(--accent-soft)',
+    purple: 'var(--wc-status-closed-soft)',
     indigo: 'var(--accent-soft)',
 };
 
 /** CSS variable for the tone's border/line colour. */
 export const toneLineVar: Record<PillTone, string> = {
-    gray: 'var(--border-2)',
-    blue: 'var(--accent-line)',
-    green: 'var(--done-line)',
+    gray: 'var(--wc-status-planned-line)',
+    blue: 'var(--wc-status-active-line)',
+    green: 'var(--wc-status-resolved-line)',
     yellow: 'var(--warn-line)',
     red: 'var(--blocked-line)',
-    purple: 'var(--accent-line)',
+    purple: 'var(--wc-status-closed-line)',
     indigo: 'var(--accent-line)',
 };
 

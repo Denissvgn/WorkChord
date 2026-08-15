@@ -37,10 +37,11 @@ export const stepsById = (
 
 export const stepProgress = (
     steps: AgentTeamSetupStep[] | undefined,
-): { done: number; total: number; percent: number } => {
+): { done: number; total: number } | null => {
+    if (!steps) return null;
     const total = AGENT_TEAM_STEP_IDS.length;
-    const done = (steps ?? []).filter(step => step.state === 'done').length;
-    return { done, total, percent: Math.round((done / total) * 100) };
+    const done = steps.filter(step => step.state === 'done').length;
+    return { done, total };
 };
 
 export const stateTone = (

@@ -27,6 +27,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { RequiredIndicator } from '../components/common/Input';
 import { Modal } from '../components/common/Modal';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
@@ -66,6 +67,10 @@ import {
     StickyRail,
 } from '../components/ui';
 import { STATUS_TONE } from '../components/ui/tone';
+import {
+    projectStatusBadgeClassName,
+    projectStatusPillClassName,
+} from '../components/projects/projectStatusStyles';
 
 const t = i18n.t.bind(i18n);
 
@@ -111,27 +116,6 @@ const releaseStatusLabelKeys: Record<ReleaseStatus, string> = {
     building: 'surfaces.projectDetail.releaseStatuses.building',
     shipped: 'surfaces.projectDetail.releaseStatuses.shipped',
     canceled: 'surfaces.projectDetail.releaseStatuses.canceled',
-};
-
-const badgeClassName = (value: string) => {
-    switch (value) {
-        case 'active':
-        case 'on_track':
-            return 'bg-action-muted text-action border-action';
-        case 'completed':
-        case 'closed':
-            return 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border';
-        case 'paused':
-        case 'at_risk':
-            return 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border';
-        case 'canceled':
-        case 'off_track':
-            return 'bg-feedback-danger-muted text-feedback-danger-foreground border-feedback-danger-border';
-        case 'proposed':
-            return 'bg-feedback-purple-muted text-feedback-purple-foreground border-feedback-purple-border';
-        default:
-            return 'bg-surface-muted text-content-primary border-border';
-    }
 };
 
 const releaseBadgeClassName = (status: ReleaseStatus | string) => {
@@ -311,7 +295,7 @@ const MilestonesSection = ({
         <SectionCard
             icon={<Target className="h-4 w-4 text-feedback-indigo" />}
             title={t('surfaces.projectDetail.projectMilestones')}
-            count={<span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{milestones.length}</span>}
+            count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{milestones.length}</span>}
             actions={(
                 <Button size="sm" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -347,7 +331,7 @@ const MilestonesSection = ({
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <h3 className="font-semibold text-content-primary">{milestone.name}</h3>
-                                            <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', badgeClassName(milestone.status))}>
+                                            <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(milestone.status))}>
                                                 {t(milestoneStatusLabelKeys[milestone.status])}
                                             </span>
                                             <span className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-xs text-content-secondary">
@@ -491,6 +475,7 @@ const MilestoneFormModal = ({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-name">
                     {t('surfaces.projectDetail.milestoneName')}
+                    <RequiredIndicator />
                     <input
                         id="milestone-name"
                         value={form.name}
@@ -638,7 +623,7 @@ const ProjectReleasesSection = ({
         <SectionCard
             icon={<Package className="h-4 w-4 text-action" />}
             title={t('surfaces.projectDetail.releases')}
-            count={<span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{releases.length}</span>}
+            count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{releases.length}</span>}
             actions={(
                 <Button size="sm" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -784,7 +769,7 @@ const PostUpdateDrawer = ({
                     <div>
                         <div className="mb-1.5 flex items-baseline justify-between">
                             <label className="text-xs font-semibold text-content-primary" htmlFor="drawer-summary">{t('surfaces.projectDetail.summary')}</label>
-                            <span className="text-[11px] text-content-tertiary">{t('surfaces.projectDetail.oneLineStakeholdersWillSkim')}</span>
+                            <span className="text-wc-micro text-content-tertiary">{t('surfaces.projectDetail.oneLineStakeholdersWillSkim')}</span>
                         </div>
                         <input
                             id="drawer-summary"
@@ -951,7 +936,7 @@ const ProjectDetailPage = () => {
     const invalidateProjectMilestones = () => {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
         queryClient.invalidateQueries({ queryKey: ['project', numericProjectId] });
-        queryClient.invalidateQueries({ queryKey: ['projectMilestones', numericProjectId] });
+        queryClient.invalidateQueries({ queryKey: ['projectMilestones'] });
         queryClient.invalidateQueries({ queryKey: ['projectSummary', numericProjectId] });
         queryClient.invalidateQueries({ queryKey: ['projectTasks', numericProjectId] });
         queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -1256,9 +1241,11 @@ const ProjectDetailPage = () => {
             <PageHeader
                 title={project.name}
                 subtitle={project.description}
-                eyebrow={(
-                    <div className="row wrap" style={{gap:6, marginBottom:6}}>
-                        <span className="pill opt"><span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}</span>
+                meta={(
+                    <>
+                        <span className={`pill ${projectStatusPillClassName(projectStatus)}`}>
+                            <span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}
+                        </span>
                         <span className={`pill ${healthToTone(projectHealth) === 'green' ? 'done' : healthToTone(projectHealth) === 'yellow' ? 'warn' : healthToTone(projectHealth) === 'red' ? 'blocked' : 'opt'}`}>
                             <span className="pdot"/>{t(healthLabelKeys[projectHealth])}
                         </span>
@@ -1267,10 +1254,6 @@ const ProjectDetailPage = () => {
                                 <span className="pdot"/>{t(updateFreshnessLabelKeys[summary.update_freshness])}{latestUpdateAge ? ` · ${latestUpdateAge.toLowerCase()}` : ''}
                             </span>
                         )}
-                    </div>
-                )}
-                meta={(
-                    <div className="row wrap" style={{gap:14}}>
                         <span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>
                             {formatDate(project.start_date)} – {formatDate(project.target_date)}
                             {typeof summary?.days_until_target === 'number' && ` · ${summary.days_until_target}d left`}
@@ -1278,7 +1261,7 @@ const ProjectDetailPage = () => {
                         <span><User className="inline h-3.5 w-3.5 mr-1"/>
                             {formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '—')}
                         </span>
-                    </div>
+                    </>
                 )}
                 actions={(
                     <>
@@ -1347,7 +1330,7 @@ const ProjectDetailPage = () => {
                                     <div className="mt-3 grid grid-cols-1 gap-3 text-xs md:grid-cols-4">
                                         {updateDetailFields(latestUpdate).map(field => (
                                             <div key={field.label}>
-                                                <p className="text-[10.5px] font-semibold uppercase tracking-wide text-content-tertiary">{field.label}</p>
+                                                <p className="text-wc-micro font-semibold uppercase tracking-wide text-content-tertiary">{field.label}</p>
                                                 <p className="mt-0.5 text-content-primary">{field.value}</p>
                                             </div>
                                         ))}
@@ -1460,7 +1443,7 @@ const ProjectDetailPage = () => {
                         >
                             <History className="h-4 w-4 text-content-secondary" />
                             <h2 className="text-base font-semibold tracking-tight text-content-primary">{t('surfaces.projectDetail.updateHistory')}</h2>
-                            <span className="rounded-full bg-surface-subtle px-1.5 text-[11px] font-bold tabular-nums text-content-secondary">{projectUpdates.length}</span>
+                            <span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{projectUpdates.length}</span>
                             <div className="flex-1" />
                             <span className="text-xs text-content-secondary">{t('surfaces.projectDetail.newestFirst')}</span>
                             <ChevronRight className={clsx('h-4 w-4 text-content-tertiary transition-transform', historyOpen && 'rotate-90')} />

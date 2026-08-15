@@ -2,9 +2,11 @@ import api from './api';
 import type {
     Iteration,
     IterationCreate,
+    IterationPlanningReadinessSummary,
     IterationSeriesCreate,
     IterationSeriesResponse,
     IterationSummary,
+    IterationUpdate,
 } from '../types/iteration';
 
 export const iterationService = {
@@ -48,7 +50,7 @@ export const iterationService = {
         return response.data;
     },
 
-    update: async (id: number, data: Partial<IterationCreate>) => {
+    update: async (id: number, data: IterationUpdate) => {
         const response = await api.put<Iteration>(`/iterations/${id}`, data);
         return response.data;
     },
@@ -61,5 +63,12 @@ export const iterationService = {
     getSummary: async (id: number) => {
         const response = await api.get<IterationSummary>(`/iterations/${id}/summary`);
         return response.data;
-    }
+    },
+
+    getPlanningReadiness: async (id: number) => {
+        const response = await api.get<IterationPlanningReadinessSummary>(
+            `/iterations/${id}/planning-readiness`,
+        );
+        return response.data;
+    },
 };

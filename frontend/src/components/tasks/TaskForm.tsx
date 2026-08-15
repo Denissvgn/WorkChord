@@ -374,7 +374,7 @@ export const TaskForm = ({
         ?? templatesError;
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="task-form space-y-6">
             {optionQueryError && (
                 <QueryErrorState
                     error={optionQueryError}
@@ -469,7 +469,7 @@ export const TaskForm = ({
             </div>
 
             {/* Priority + Assignee */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Input
                     type="number"
                     label={t('surfaces.taskForm.priority')}
@@ -721,7 +721,7 @@ export const TaskForm = ({
                 </div>
 
                 {/* Effort Days + Hours */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Input
                         type="number"
                         label={t('surfaces.taskForm.effortDays')}
@@ -757,7 +757,7 @@ export const TaskForm = ({
                 </div>
 
                 {/* Date constraints */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.minStartDate')}</label>
                         <input
@@ -816,8 +816,8 @@ export const TaskForm = ({
                 </div>
 
                 {/* Task flags */}
-                <div className="grid grid-cols-2 gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
                         <input
                             type="checkbox"
                             checked={formData.is_optional}
@@ -826,7 +826,7 @@ export const TaskForm = ({
                         />
                         <span className="text-sm font-medium text-content-primary">{t('surfaces.taskForm.optionalTask')}</span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
                         <input
                             type="checkbox"
                             checked={formData.is_deferred}
@@ -863,11 +863,12 @@ export const TaskForm = ({
             )}
 
             {/* === ACTION BUTTONS === */}
-            <div className="flex items-center justify-between gap-2 pt-4 border-t">
+            <div className="flex flex-col items-stretch gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                 {canSendToTriage ? (
                     <Button
                         type="button"
                         variant="secondary"
+                        className="w-full sm:w-auto"
                         onClick={handleSendToTriage}
                         isLoading={createTriageMutation.isPending}
                         disabled={createMutation.isPending || updateMutation.isPending}
@@ -878,12 +879,18 @@ export const TaskForm = ({
                 ) : (
                     <div />
                 )}
-                <div className="flex justify-end gap-2">
-                    <Button type="button" variant="ghost" onClick={handleCancel}>
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="w-full sm:w-auto"
+                        onClick={handleCancel}
+                    >
                         {t('surfaces.taskForm.cancel')}
                     </Button>
                     <Button
                         type="submit"
+                        className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
                         disabled={createTriageMutation.isPending}
                     >

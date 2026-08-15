@@ -8,6 +8,7 @@ import type { Iteration } from '../types/iteration';
 import { PageHeader, PageLayout } from '../components/ui';
 import { useToast } from '../components/feedback/toast';
 import { getApiErrorMessage } from '../utils/apiError';
+import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 
 const IterationsPage = () => {
     const [isCreating, setIsCreating] = useState(false);
@@ -47,6 +48,7 @@ const IterationsPage = () => {
                     </>
                 )}
             />
+            <PlanReturnBar />
 
             {isCreating || editingIteration ? (
                 <div className="card card-pad" style={{maxWidth:640}}>

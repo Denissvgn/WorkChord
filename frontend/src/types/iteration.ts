@@ -26,6 +26,15 @@ export interface IterationCreate {
     manager_email?: string;
 }
 
+export interface IterationUpdate {
+    name?: string;
+    calendar_id?: number | null;
+    project_id?: number | null;
+    start_date?: string;
+    end_date?: string;
+    manager_email?: string | null;
+}
+
 export type IterationSeriesStop =
     | { mode: 'count'; count: number }
     | { mode: 'until_date'; until_date: string };
@@ -57,4 +66,16 @@ export interface IterationSummary {
     total_effort_days: number;
     team_capacity_days: number;
     overdue_tasks_count: number;
+}
+
+export interface IterationPlanningReadinessSummary {
+    iteration_id: number;
+    team_member_count: number;
+    team_capacity_hours: number;
+    team_members_no_capacity: number;
+    task_count: number;
+    tasks_without_assignee: number;
+    tasks_without_effort: number;
+    has_schedule: boolean;
+    risk_count: number;
 }

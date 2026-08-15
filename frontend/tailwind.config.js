@@ -96,8 +96,18 @@ export default {
                 },
             },
             fontFamily: {
-                sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
-                mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                sans: ['var(--font-family-sans)'],
+                mono: ['var(--font-family-mono)'],
+            },
+            fontSize: {
+                'wc-micro': ['var(--wc-type-micro)', { lineHeight: 'var(--wc-leading-ui)' }],
+                'wc-meta': ['var(--wc-type-meta)', { lineHeight: 'var(--wc-leading-body)' }],
+                'wc-label': ['var(--wc-type-label)', { lineHeight: 'var(--wc-leading-ui)' }],
+                'wc-base': ['var(--wc-type-base)', { lineHeight: 'var(--wc-leading-body)' }],
+                'wc-heading': ['var(--wc-type-heading)', { lineHeight: 'var(--wc-leading-ui)' }],
+                'wc-section': ['var(--wc-type-section)', { lineHeight: 'var(--wc-leading-tight)' }],
+                'wc-step': ['var(--wc-type-step)', { lineHeight: 'var(--wc-leading-tight)' }],
+                'wc-page': ['var(--wc-type-page)', { lineHeight: 'var(--wc-leading-tight)' }],
             },
             borderRadius: {
                 sm: 'var(--radius-sm)',

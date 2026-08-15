@@ -17,12 +17,15 @@ from app.schemas.project import (
     ProjectMilestoneDeleteResponse,
     ProjectMilestoneResponse,
     ProjectMilestoneUpdate,
+    ProjectPortfolioSummary,
     ProjectResponse,
     ProjectSummary,
     ProjectUpdate,
     ProjectUpdateEntryCreate,
     ProjectUpdateEntryResponse,
+    RoadmapMilestonePage,
 )
+from app.query_limits import MAX_BOUNDED_LIST_ITEMS
 from app.schemas.release import (
     ReleaseCreateRequest,
     ReleaseResponse,
@@ -86,6 +89,31 @@ async def list_projects(
 ):
     """List all projects."""
     return await service.list_projects()
+
+
+@router.get(
+    "/projects/portfolio-summaries",
+    response_model=list[ProjectPortfolioSummary],
+)
+async def list_project_portfolio_summaries(
+    service: Annotated[ProjectService, Depends(get_project_service)],
+):
+    """List compact project signals without one request per portfolio row."""
+    return await service.list_portfolio_summaries()
+
+
+@router.get("/roadmap/milestones", response_model=RoadmapMilestonePage)
+async def list_roadmap_milestones(
+    service: Annotated[ProjectService, Depends(get_project_service)],
+    after_id: Annotated[int | None, Query(ge=0)] = None,
+    limit: Annotated[int, Query(ge=1, le=MAX_BOUNDED_LIST_ITEMS)] = MAX_BOUNDED_LIST_ITEMS,
+):
+    """List a bounded cursor page of portfolio milestone markers."""
+    milestones, next_cursor = await service.list_portfolio_milestones(
+        after_id=after_id,
+        limit=limit,
+    )
+    return RoadmapMilestonePage(items=milestones, next_cursor=next_cursor)
 
 
 @router.get("/initiatives", response_model=list[InitiativeResponse])

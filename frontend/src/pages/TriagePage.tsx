@@ -1,6 +1,6 @@
 import i18n from '../i18n/i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { FormEvent, MouseEvent, ReactNode } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
-import { Input } from '../components/common/Input';
+import { Input, RequiredIndicator } from '../components/common/Input';
 import { CollapsibleSection } from '../components/common/CollapsibleSection';
 import { LabelSelector } from '../components/labels/LabelSelector';
 import { RequestSourceLinksPanel } from '../components/requestSources/RequestSourceLinksPanel';
@@ -54,7 +54,7 @@ import type { Task } from '../types/task';
 import type { WorkTemplate } from '../types/template';
 import type { TeamMember } from '../types/team';
 import { templateDisplay } from '../i18n/seedDisplay';
-import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
+import { OverflowMenu, PageHeader, PageLayout } from '../components/ui';
 import type {
     TriageActionRequest,
     TriageClassificationSuggestion,
@@ -605,7 +605,10 @@ const TriageActionModal = ({
 
                         {duplicateTargetType === 'triage' ? (
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.duplicateOf')}</label>
+                                <label className="mb-1 block text-sm font-medium text-content-primary">
+                                    {t('surfaces.triagePage.duplicateOf')}
+                                    <RequiredIndicator />
+                                </label>
                                 <select
                                     value={duplicateItemId}
                                     onChange={event => setDuplicateItemId(event.target.value)}
@@ -623,7 +626,10 @@ const TriageActionModal = ({
                         ) : (
                             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.taskIteration')}</label>
+                                    <label className="mb-1 block text-sm font-medium text-content-primary">
+                                        {t('surfaces.triagePage.taskIteration')}
+                                        <RequiredIndicator />
+                                    </label>
                                     <select
                                         value={duplicateIterationId}
                                         onChange={event => {
@@ -640,7 +646,10 @@ const TriageActionModal = ({
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.task')}</label>
+                                    <label className="mb-1 block text-sm font-medium text-content-primary">
+                                        {t('surfaces.triagePage.task')}
+                                        <RequiredIndicator />
+                                    </label>
                                     <select
                                         value={duplicateTaskId}
                                         onChange={event => setDuplicateTaskId(event.target.value)}
@@ -1065,7 +1074,7 @@ const ConvertTriageSplitView = ({
                                             {t('surfaces.triagePage.applySuggestedDescription')}
                                         </button>
                                     </div>
-                                    <pre className="max-h-24 overflow-y-auto whitespace-pre-wrap rounded bg-surface-card p-1.5 border border-action font-mono text-[10px] text-action leading-snug">
+                                    <pre className="max-h-24 overflow-y-auto whitespace-pre-wrap rounded bg-surface-card p-1.5 border border-action font-mono text-wc-micro text-action leading-snug">
                                         {draftPreview.suggested_description}
                                     </pre>
                                 </div>
@@ -1075,7 +1084,10 @@ const ConvertTriageSplitView = ({
                         {/* Quick Assignment Row */}
                         <div className="grid grid-cols-2 gap-4 p-4 rounded-lg border border-border bg-surface-muted/50">
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.iteration')}</label>
+                                <label className="mb-1 block text-sm font-medium text-content-primary">
+                                    {t('surfaces.triagePage.iteration')}
+                                    <RequiredIndicator />
+                                </label>
                                 <select
                                     value={iterationId}
                                     onChange={event => {
@@ -1305,22 +1317,6 @@ const TriageDetailPanel = ({
                     <StatusPill status={item.status} />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="secondary" onClick={() => onAction('accept', item)}>
-                        <CheckCircle2 className="mr-1 h-4 w-4" />
-                        {t('surfaces.triagePage.accept')}
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => onAction('snooze', item)}>
-                        <Clock3 className="mr-1 h-4 w-4" />
-                        {t('surfaces.triagePage.snooze')}
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => onAction('duplicate', item)}>
-                        <CopyCheck className="mr-1 h-4 w-4" />
-                        {t('surfaces.triagePage.duplicate')}
-                    </Button>
-                    <Button size="sm" variant="danger" onClick={() => onAction('decline', item)}>
-                        <XCircle className="mr-1 h-4 w-4" />
-                        {t('surfaces.triagePage.decline')}
-                    </Button>
                     <Button
                         size="sm"
                         onClick={() => onConvert(item)}
@@ -1330,6 +1326,31 @@ const TriageDetailPanel = ({
                         <Send className="mr-1 h-4 w-4" />
                         {t('surfaces.triagePage.convert')}
                     </Button>
+                    <Button size="sm" variant="secondary" onClick={() => onAction('accept', item)}>
+                        <CheckCircle2 className="mr-1 h-4 w-4" />
+                        {t('surfaces.triagePage.accept')}
+                    </Button>
+                    <OverflowMenu
+                        label={t('actions.moreActions')}
+                        items={[
+                            {
+                                label: t('surfaces.triagePage.snooze'),
+                                icon: <Clock3 className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAction('snooze', item),
+                            },
+                            {
+                                label: t('surfaces.triagePage.duplicate'),
+                                icon: <CopyCheck className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAction('duplicate', item),
+                            },
+                            {
+                                label: t('surfaces.triagePage.decline'),
+                                icon: <XCircle className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAction('decline', item),
+                                tone: 'danger',
+                            },
+                        ]}
+                    />
                 </div>
             </div>
 
@@ -1680,10 +1701,7 @@ interface TriageRowProps {
     isSelected: boolean;
     projectsById: Record<number, string>;
     iterationsById: Record<number, string>;
-    canConvert: boolean;
     onSelect: (id: number) => void;
-    onAction: (action: TriageLifecycleAction, item: TriageItem) => void;
-    onConvert: (item: TriageItem) => void;
 }
 
 const TriageRow = ({
@@ -1691,29 +1709,23 @@ const TriageRow = ({
     isSelected,
     projectsById,
     iterationsById,
-    canConvert,
     onSelect,
-    onAction,
-    onConvert,
 }: TriageRowProps) => {
-    const handleActionClick = (event: MouseEvent, action: TriageLifecycleAction) => {
-        event.stopPropagation();
-        onAction(action, item);
-    };
-
-    const handleConvertClick = (event: MouseEvent) => {
-        event.stopPropagation();
-        onConvert(item);
-    };
-    const convertDisabled = item.status === 'converted' || !canConvert;
-
     return (
         <tr
             className={clsx(
                 'cursor-pointer border-b border-border-subtle hover:bg-surface-muted',
                 isSelected && 'bg-action-muted/70 hover:bg-action-muted'
             )}
+            tabIndex={0}
+            aria-selected={isSelected}
             onClick={() => onSelect(item.id)}
+            onKeyDown={event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelect(item.id);
+                }
+            }}
         >
             <td className="px-4 py-3">
                 <div className="flex min-w-0 flex-col gap-1">
@@ -1756,32 +1768,6 @@ const TriageRow = ({
                     {item.iteration_hint_id ? iterationsById[item.iteration_hint_id] || `#${item.iteration_hint_id}` : ''}
                 </div>
             </td>
-            <td className="px-4 py-3 text-right">
-                <div className="flex justify-end gap-1">
-                    <Button size="sm" variant="ghost" onClick={event => handleActionClick(event, 'accept')} title={t('surfaces.triagePage.accept')} aria-label={t('surfaces.triagePage.accept')}>
-                        <CheckCircle2 className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={event => handleActionClick(event, 'snooze')} title={t('surfaces.triagePage.snooze')} aria-label={t('surfaces.triagePage.snooze')}>
-                        <Clock3 className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={event => handleActionClick(event, 'duplicate')} title={t('surfaces.triagePage.duplicate')} aria-label={t('surfaces.triagePage.duplicate')}>
-                        <CopyCheck className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={event => handleActionClick(event, 'decline')} title={t('surfaces.triagePage.decline')} aria-label={t('surfaces.triagePage.decline')}>
-                        <XCircle className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={handleConvertClick}
-                        title={canConvert ? t('surfaces.triagePage.convert') : t('surfaces.triagePage.convertDisabledTooltip')}
-                        disabled={convertDisabled}
-                        aria-label={t('surfaces.triagePage.convertToTask')}
-                    >
-                        <Send className="h-4 w-4" />
-                    </Button>
-                </div>
-            </td>
         </tr>
     );
 };
@@ -1806,6 +1792,7 @@ const TriagePage = () => {
     const [sourceFilter, setSourceFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState<TriageItemStatus | ''>('');
     const [activeOnly, setActiveOnly] = useState(true);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [actionState, setActionState] = useState<{
@@ -1895,14 +1882,15 @@ const TriagePage = () => {
     const effectiveSelectedId = selectedItem?.id ?? null;
     const sources = useMemo(() => Array.from(new Set(allTriageItems.map(item => item.source).filter((source): source is string => Boolean(source)))).sort(), [allTriageItems]);
 
-    const counts = useMemo(() => {
-        return {
-            listed: triageItems.length,
-            total: allTriageItems.length,
-            new: allTriageItems.filter(item => item.status === 'new').length,
-            snoozedDue: allTriageItems.filter(isDueSnoozed).length,
-        };
-    }, [allTriageItems, triageItems.length]);
+    const dueSnoozedCount = useMemo(
+        () => allTriageItems.filter(isDueSnoozed).length,
+        [allTriageItems],
+    );
+    const activeFilterCount =
+        Number(Boolean(search.trim())) +
+        Number(Boolean(sourceFilter)) +
+        Number(Boolean(statusFilter)) +
+        Number(!activeOnly);
 
     const invalidateTriageQueries = () => {
         queryClient.invalidateQueries({ queryKey: ['triage'] });
@@ -2069,17 +2057,23 @@ const TriagePage = () => {
                 title={t('surfaces.triagePage.triageIntake')}
                 subtitle={t('surfaces.triagePage.reviewRawIntakeAndConvertAcceptedWorkIntoPlannedTasks')}
                 actions={(
-                    <button className="btn primary" onClick={() => { createMutation.reset(); setIsCreating(true); }}>
-                    + {t('surfaces.triagePage.newIntake')}
-                    </button>
+                    <OverflowMenu
+                        label={t('actions.moreActions')}
+                        items={[{
+                            label: t('surfaces.triagePage.newIntake'),
+                            icon: <Plus className="h-4 w-4" aria-hidden="true" />,
+                            onSelect: () => { createMutation.reset(); setIsCreating(true); },
+                        }]}
+                    />
                 )}
             />
-            <MetricGrid className="shrink-0">
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.triagePage.listed')}</div><div className="kpi-val tnum">{counts.listed}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.triagePage.totalIntake')}</div><div className="kpi-val tnum">{counts.total}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.triagePage.new')}</div><div className="kpi-val tnum">{counts.new}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.triagePage.dueSnoozed')}</div><div className="kpi-val tnum">{counts.snoozedDue}</div></div>
-            </MetricGrid>
+
+            {dueSnoozedCount > 0 && (
+                <div className="flex shrink-0 items-center gap-3 rounded-lg border border-feedback-warning-border bg-feedback-warning-muted px-4 py-3 text-sm text-feedback-warning-foreground">
+                    <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span className="font-medium tabular-nums">{dueSnoozedCount} {t('surfaces.triagePage.dueSnoozed')}</span>
+                </div>
+            )}
 
             {/* Conversion success banner */}
             {conversionResult && (
@@ -2109,7 +2103,7 @@ const TriagePage = () => {
             )}
 
             <div className="wc-toolbar">
-                <div className="wc-form-grid" style={{flex:1}}>
+                <div className="flex flex-wrap items-center gap-2" style={{flex:1}}>
                     <div className="relative">
                         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
                         <Input
@@ -2122,68 +2116,95 @@ const TriagePage = () => {
                             className="pl-9"
                         />
                     </div>
-                    <select
-                        value={statusFilter}
-                        onChange={event => {
-                            clearRequestedViewParam();
-                            setStatusFilter(event.target.value as TriageItemStatus | '');
-                        }}
-                        className="input"
-                    >
-                        <option value="">{t('surfaces.triagePage.allStatuses')}</option>
-                        {statusOptions.map(status => (
-                            <option key={status} value={status}>{t(statusLabelKeys[status])}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={sourceFilter}
-                        onChange={event => {
-                            clearRequestedViewParam();
-                            setSourceFilter(event.target.value);
-                        }}
-                        className="input"
-                    >
-                        <option value="">{t('surfaces.triagePage.allSources')}</option>
-                        {sources.map(source => (
-                            <option key={source} value={source}>{source}</option>
-                        ))}
-                    </select>
-                    <div className="seg">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                clearRequestedViewParam();
-                                setActiveOnly(true);
-                            }}
-                            aria-pressed={activeOnly}
-                        >
-                            {t('surfaces.triagePage.active')}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                clearRequestedViewParam();
-                                setActiveOnly(false);
-                            }}
-                            aria-pressed={!activeOnly}
-                        >
-                            {t('surfaces.triagePage.all')}
-                        </button>
-                    </div>
                     <Button
                         variant="outline"
-                        onClick={() => {
-                            clearRequestedViewParam();
-                            setSearch('');
-                            setSourceFilter('');
-                            setStatusFilter('');
-                            setActiveOnly(true);
-                        }}
+                        onClick={() => setIsFiltersOpen(value => !value)}
+                        aria-expanded={isFiltersOpen}
                     >
                         <ListFilter className="mr-2 h-4 w-4" />
-                        {t('surfaces.triagePage.reset')}
+                        {t('taskFilters.filters')}
+                        {activeFilterCount > 0 && (
+                            <span className="ml-1 rounded-full bg-surface-muted px-1.5 py-0.5 text-xs tabular-nums">
+                                {activeFilterCount}
+                            </span>
+                        )}
                     </Button>
+                    {activeFilterCount > 0 && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => {
+                                clearRequestedViewParam();
+                                setSearch('');
+                                setSourceFilter('');
+                                setStatusFilter('');
+                                setActiveOnly(true);
+                            }}
+                        >
+                            {t('surfaces.triagePage.reset')}
+                        </Button>
+                    )}
                 </div>
+                {isFiltersOpen && (
+                    <div className="mt-3 grid gap-3 border-t border-border-subtle pt-3 sm:grid-cols-3">
+                        <label className="block text-sm text-content-secondary">
+                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide">{t('surfaces.triagePage.status')}</span>
+                            <select
+                                value={statusFilter}
+                                onChange={event => {
+                                    clearRequestedViewParam();
+                                    setStatusFilter(event.target.value as TriageItemStatus | '');
+                                }}
+                                className="input w-full"
+                            >
+                                <option value="">{t('surfaces.triagePage.allStatuses')}</option>
+                                {statusOptions.map(status => (
+                                    <option key={status} value={status}>{t(statusLabelKeys[status])}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="block text-sm text-content-secondary">
+                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide">{t('surfaces.triagePage.source')}</span>
+                            <select
+                                value={sourceFilter}
+                                onChange={event => {
+                                    clearRequestedViewParam();
+                                    setSourceFilter(event.target.value);
+                                }}
+                                className="input w-full"
+                            >
+                                <option value="">{t('surfaces.triagePage.allSources')}</option>
+                                {sources.map(source => (
+                                    <option key={source} value={source}>{source}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <div>
+                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.status')}</span>
+                            <div className="seg">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        clearRequestedViewParam();
+                                        setActiveOnly(true);
+                                    }}
+                                    aria-pressed={activeOnly}
+                                >
+                                    {t('surfaces.triagePage.active')}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        clearRequestedViewParam();
+                                        setActiveOnly(false);
+                                    }}
+                                    aria-pressed={!activeOnly}
+                                >
+                                    {t('surfaces.triagePage.all')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {activeSavedView && (
                     <div className="mt-3 inline-flex items-center rounded-full bg-action-muted px-3 py-1 text-xs font-medium text-action">
                         Saved view: {activeSavedView.name}
@@ -2229,7 +2250,7 @@ const TriagePage = () => {
                         </div>
                     ) : (
                         <div className="h-full overflow-auto">
-                            <table className="min-w-[980px] w-full">
+                            <table className="min-w-[760px] w-full">
                                 <thead className="sticky top-0 z-10 border-b border-border bg-surface-muted text-left text-xs font-semibold uppercase tracking-wide text-content-secondary">
                                     <tr>
                                         <th className="px-4 py-3">{t('surfaces.triagePage.item')}</th>
@@ -2237,7 +2258,6 @@ const TriagePage = () => {
                                         <th className="px-4 py-3">{t('surfaces.triagePage.priority')}</th>
                                         <th className="px-4 py-3">{t('surfaces.triagePage.labels')}</th>
                                         <th className="px-4 py-3">{t('surfaces.triagePage.hints')}</th>
-                                        <th className="px-4 py-3 text-right">{t('surfaces.triagePage.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2248,10 +2268,7 @@ const TriagePage = () => {
                                             isSelected={item.id === effectiveSelectedId}
                                             projectsById={projectsById}
                                             iterationsById={iterationsById}
-                                            canConvert={hasPlannableIterations}
                                             onSelect={setSelectedId}
-                                            onAction={openAction}
-                                            onConvert={openConvert}
                                         />
                                     ))}
                                 </tbody>

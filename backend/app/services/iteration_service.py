@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Optional, Sequence
 
-from sqlalchemy import case, func, or_, select
+from sqlalchemy import and_, case, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import aliased, selectinload
 
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectMilestone
@@ -19,6 +19,7 @@ from app.query_limits import (
 )
 from app.schemas.iteration import (
     IterationCreate,
+    IterationPlanningReadinessSummary,
     IterationProjectSummary,
     IterationResponse,
     IterationSeriesCreate,
@@ -496,6 +497,138 @@ class IterationService:
             total_effort_days=total_effort_days,
             team_capacity_days=team_capacity,
             overdue_tasks_count=overdue_count,
+        )
+
+    async def get_planning_readiness_summary(
+        self,
+        iteration_id: int,
+    ) -> IterationPlanningReadinessSummary | None:
+        """Return bounded aggregate planning inputs without loading task graphs."""
+        iteration = await self.get_by_id(iteration_id)
+        if not iteration:
+            return None
+
+        working_days = CalendarService(self.db).calculate_working_days(
+            iteration.calendar,
+            iteration.start_date,
+            iteration.end_date,
+        ).working_days
+
+        child_task = aliased(Task)
+        is_planning_leaf = and_(
+            Task.iteration_id == iteration_id,
+            Task.is_deferred.is_(False),
+            ~exists(select(child_task.id).where(child_task.parent_id == Task.id)),
+        )
+        task_row = (
+            await self.db.execute(
+                select(
+                    func.count(Task.id),
+                    func.coalesce(
+                        func.sum(case((Task.assignee_id.is_(None), 1), else_=0)),
+                        0,
+                    ),
+                    func.coalesce(
+                        func.sum(case((Task.effort_days <= 0, 1), else_=0)),
+                        0,
+                    ),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (
+                                    or_(
+                                        Task.effort_days <= 0,
+                                        Task.start_date.is_(None),
+                                        Task.end_date.is_(None),
+                                        Task.start_date > Task.end_date,
+                                    ),
+                                    1,
+                                ),
+                                else_=0,
+                            )
+                        ),
+                        0,
+                    ),
+                    func.coalesce(
+                        func.sum(
+                            case(
+                                (
+                                    or_(
+                                        Task.end_date > iteration.end_date,
+                                        and_(
+                                            Task.status == TaskStatusModel.PLANNED.value,
+                                            Task.start_date < date.today(),
+                                        ),
+                                        Task.start_date < Task.min_start_date,
+                                        Task.end_date > Task.max_end_date,
+                                    ),
+                                    1,
+                                ),
+                                else_=0,
+                            )
+                        ),
+                        0,
+                    ),
+                ).where(is_planning_leaf)
+            )
+        ).one()
+        task_count = int(task_row[0])
+        unscheduled_count = int(task_row[3])
+
+        capacity_days = (
+            working_days
+            * (TeamMember.availability_percent / 100.0)
+            * (1.0 - TeamMember.operational_utilization / 100.0)
+            * TeamMember.professionalism_coefficient
+        )
+        team_row = (
+            await self.db.execute(
+                select(
+                    func.count(TeamMember.id),
+                    func.coalesce(func.sum(capacity_days), 0.0),
+                    func.coalesce(
+                        func.sum(case((capacity_days <= 0, 1), else_=0)),
+                        0,
+                    ),
+                ).where(TeamMember.iteration_id == iteration_id)
+            )
+        ).one()
+
+        planned_hours = (
+            select(
+                Task.assignee_id.label("assignee_id"),
+                func.sum(Task.effort_days * 8.0).label("planned_hours"),
+            )
+            .where(is_planning_leaf, Task.assignee_id.is_not(None))
+            .group_by(Task.assignee_id)
+            .subquery()
+        )
+        overloaded_count = int(
+            (
+                await self.db.execute(
+                    select(func.count(TeamMember.id))
+                    .join(
+                        planned_hours,
+                        planned_hours.c.assignee_id == TeamMember.id,
+                    )
+                    .where(
+                        TeamMember.iteration_id == iteration_id,
+                        planned_hours.c.planned_hours > capacity_days * 8.0,
+                    )
+                )
+            ).scalar_one()
+        )
+
+        return IterationPlanningReadinessSummary(
+            iteration_id=iteration_id,
+            team_member_count=int(team_row[0]),
+            team_capacity_hours=round(float(team_row[1]) * 8.0, 2),
+            team_members_no_capacity=int(team_row[2]),
+            task_count=task_count,
+            tasks_without_assignee=int(task_row[1]),
+            tasks_without_effort=int(task_row[2]),
+            has_schedule=task_count > 0 and unscheduled_count == 0,
+            risk_count=int(task_row[4]) + overloaded_count,
         )
 
     async def _calculate_team_capacity(self, iteration: Iteration) -> float:

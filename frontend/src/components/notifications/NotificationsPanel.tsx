@@ -101,7 +101,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                                     </div>
                                     <div className="text-xs text-content-tertiary flex justify-between items-center">
                                         <span>{formatDateTime(log.changed_at, i18n.language)}</span>
-                                        <span className="italic">{log.triggered_by === 'auto' ? t('notifications.auto') : t('notifications.user')}</span>
+                                        <span>{log.triggered_by === 'auto' ? t('notifications.auto') : t('notifications.user')}</span>
                                     </div>
                                     {log.reason && (
                                         <div className="mt-1 text-xs text-content-secondary bg-surface-muted p-1.5 rounded">
@@ -137,7 +137,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                                         {task.assignee ? (
                                             <div className="mb-1">{t('notifications.assigneeShort')} {task.assignee.name}</div>
                                         ) : (
-                                            <div className="mb-1 italic">{t('common.unassigned')}</div>
+                                            <div className="mb-1">{t('common.unassigned')}</div>
                                         )}
                                         <div>
                                             {t('notifications.start')} {formatDate(task.start_date, i18n.language)}

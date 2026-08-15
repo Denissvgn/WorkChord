@@ -38,6 +38,7 @@ from app.models.outbound_webhook import (
     OutboundWebhookEvent,
     OutboundWebhookTarget,
 )
+from app.models.plan_share import PlanShare
 from app.models.project import (
     Initiative,
     Project,
@@ -97,6 +98,7 @@ __all__ = [
     "OutboundWebhookDeliveryStatus",
     "OutboundWebhookEvent",
     "OutboundWebhookTarget",
+    "PlanShare",
     "Initiative",
     "Project",
     "ProjectHealth",

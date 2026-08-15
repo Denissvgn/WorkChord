@@ -25,8 +25,8 @@ export const UserSessionBadge = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-content-secondary rounded-lg text-sm text-content-emphasis">
-                <Loader2 className="w-4 h-4 animate-spin" />
+            <div className="session-badge session-badge-loading" role="status">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 <span>{t('common.loading')}</span>
             </div>
         );
@@ -34,15 +34,18 @@ export const UserSessionBadge = () => {
 
     if (!session) return null;
 
+    const compactCode = session.public_id.slice(-6).toUpperCase();
+
     return (
         <div
-            className="flex items-center gap-2 px-4 py-2 bg-action hover:bg-action-hover rounded-lg text-sm text-content-emphasis shadow-md transition-colors cursor-default"
-            title={t('session.guestDiagnostic', { code: session.public_id })}
+            className="session-badge"
+            aria-label={t('session.identityLabel', { code: compactCode })}
+            title={t('session.identityDescription', { code: session.public_id })}
         >
-            <User className="w-4 h-4" />
-            <span className="font-semibold">
-                {t('session.guestLabel', { code: session.public_id.slice(-6).toUpperCase() })}
-            </span>
+            <User className="h-4 w-4" aria-hidden="true" />
+            <strong>
+                {t('session.guestLabel', { code: compactCode })}
+            </strong>
         </div>
     );
 };

@@ -14,6 +14,8 @@ interface ToastRecord extends Required<Pick<ToastInput, 'message' | 'tone' | 'du
     id: number;
     key: string;
     title?: string;
+    actionLabel?: string;
+    onAction?: () => void | Promise<void>;
 }
 
 let nextToastId = 1;
@@ -39,12 +41,24 @@ const iconClasses: Record<ToastTone, string> = {
 const ToastItem = ({ toast, dismiss }: { toast: ToastRecord; dismiss: (id: number) => void }) => {
     const { t } = useTranslation();
     const Icon = toastIcons[toast.tone];
+    const [actionPending, setActionPending] = useState(false);
 
     useEffect(() => {
-        if (toast.durationMs <= 0) return undefined;
+        if (toast.durationMs <= 0 || actionPending) return undefined;
         const timeout = window.setTimeout(() => dismiss(toast.id), toast.durationMs);
         return () => window.clearTimeout(timeout);
-    }, [dismiss, toast.durationMs, toast.id]);
+    }, [actionPending, dismiss, toast.durationMs, toast.id]);
+
+    const runAction = async () => {
+        if (!toast.onAction || actionPending) return;
+        setActionPending(true);
+        try {
+            await toast.onAction();
+            dismiss(toast.id);
+        } catch {
+            setActionPending(false);
+        }
+    };
 
     return (
         <div
@@ -56,6 +70,17 @@ const ToastItem = ({ toast, dismiss }: { toast: ToastRecord; dismiss: (id: numbe
             <div className="min-w-0 flex-1">
                 {toast.title && <p className="font-semibold">{toast.title}</p>}
                 <p className="break-words text-sm text-content-secondary">{toast.message}</p>
+                {toast.actionLabel && toast.onAction && (
+                    <Button
+                        className="mt-2"
+                        disabled={actionPending}
+                        onClick={() => { void runAction(); }}
+                        size="sm"
+                        variant="secondary"
+                    >
+                        {toast.actionLabel}
+                    </Button>
+                )}
             </div>
             <Button
                 aria-label={t('feedback.dismiss')}
@@ -91,6 +116,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 title: input.title,
                 tone,
                 durationMs: input.durationMs ?? 5000,
+                actionLabel: input.actionLabel,
+                onAction: input.onAction,
             }];
         });
         return id;

@@ -10,8 +10,10 @@ import { TaskTextEditorModal } from './TaskTextEditorModal';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import type { PlanningTaskIssue } from '../../features/planningMasters/planningTaskIssues';
 
 export interface TaskFilters {
+    planningIssue: PlanningTaskIssue | null;
     assigneeId: number | null;
     projectId: number | null;
     priority: number | null;
@@ -112,8 +114,14 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
         resolved: t('taskFilters.statusResolved'),
         closed: t('taskFilters.statusClosed'),
     };
+    const planningIssueDisplay: Record<PlanningTaskIssue, string> = {
+        any: t('taskFilters.planningIssueAny'),
+        unassigned: t('taskFilters.planningIssueUnassigned'),
+        'missing-effort': t('taskFilters.planningIssueMissingEffort'),
+    };
 
     const hasActiveFilters =
+        filters.planningIssue !== null ||
         filters.assigneeId !== null ||
         filters.projectId !== null ||
         filters.priority !== null ||
@@ -130,7 +138,12 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
     // Check if only quick filters are active (no advanced filters)
     const hasOnlyQuickFilters =
-        (filters.assigneeId !== null || filters.status !== null || filters.isOverdue !== null) &&
+        (
+            filters.planningIssue !== null
+            || filters.assigneeId !== null
+            || filters.status !== null
+            || filters.isOverdue !== null
+        ) &&
         !filters.projectId &&
         !filters.priority &&
         filters.hasDependency === null &&
@@ -147,6 +160,10 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     };
 
     // Badge removal handlers
+    const removePlanningIssueFilter = () => onFiltersChange({
+        ...filters,
+        planningIssue: null,
+    });
     const removeAssigneeFilter = () => onFiltersChange({ ...filters, assigneeId: null });
     const removeStatusFilter = () => onFiltersChange({ ...filters, status: null });
     const removeOverdueFilter = () => onFiltersChange({ ...filters, isOverdue: null });
@@ -188,6 +205,13 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     // Build active badges list
     const activeBadges: { label: string; value: string; onRemove: () => void }[] = [];
 
+    if (filters.planningIssue) {
+        activeBadges.push({
+            label: t('taskFilters.planningReadiness'),
+            value: planningIssueDisplay[filters.planningIssue],
+            onRemove: removePlanningIssueFilter,
+        });
+    }
     if (assigneeName) {
         activeBadges.push({ label: t('taskFilters.assignee'), value: assigneeName, onRemove: removeAssigneeFilter });
     }
@@ -212,7 +236,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     }
 
     return (
-        <div className="bg-surface-card border border-border rounded-lg p-3 mb-4">
+        <div className="space-y-3 p-4">
             {optionsLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
             {optionError && (
                 <QueryErrorState
@@ -226,6 +250,23 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
             <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-xs font-semibold text-content-secondary uppercase tracking-wide">{t('taskFilters.quickFilters')}</span>
 
+                <select
+                    value={filters.planningIssue ?? ''}
+                    onChange={event => onFiltersChange({
+                        ...filters,
+                        planningIssue: (
+                            event.target.value as PlanningTaskIssue
+                        ) || null,
+                    })}
+                    aria-label={t('taskFilters.planningReadiness')}
+                    className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
+                >
+                    <option value="">{t('taskFilters.planningReadiness')}</option>
+                    <option value="any">{t('taskFilters.planningIssueAny')}</option>
+                    <option value="unassigned">{t('taskFilters.planningIssueUnassigned')}</option>
+                    <option value="missing-effort">{t('taskFilters.planningIssueMissingEffort')}</option>
+                </select>
+
                 {/* Assignee */}
                 <select
                     value={filters.assigneeId ?? ''}
@@ -233,6 +274,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         assigneeId: e.target.value ? parseInt(e.target.value) : null
                     })}
+                    aria-label={t('taskFilters.assignee')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.assignee')}</option>
@@ -249,6 +291,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         status: e.target.value || null
                     })}
+                    aria-label={t('taskFilters.status')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.status')}</option>
@@ -265,6 +308,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                         ...filters,
                         isOverdue: e.target.value === '' ? null : e.target.value === 'yes'
                     })}
+                    aria-label={t('taskFilters.overdue')}
                     className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('taskFilters.overdue')}</option>
@@ -423,7 +467,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                                         key={group.key}
                                         type="button"
                                         onClick={() => removeLabelGroup(group.key)}
-                                        className="text-[11px] px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
+                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
                                     >
                                         {group.name} ×
                                     </button>
@@ -456,7 +500,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                                         key={label.slug}
                                         type="button"
                                         onClick={() => removeLabel(label.slug)}
-                                        className="text-[11px] px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
+                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
                                     >
                                         {label.slug} ×
                                     </button>

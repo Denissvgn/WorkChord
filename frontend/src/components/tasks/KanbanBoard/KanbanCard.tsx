@@ -88,7 +88,7 @@ export const KanbanCard = ({ task }: KanbanCardProps) => {
                     <div className="flex items-center gap-2">
                         {task.assignee ? (
                             <div className="flex items-center gap-1.5 bg-surface-muted px-2 py-1 rounded-md">
-                                <span className="w-4 h-4 rounded-full bg-feedback-indigo-muted text-feedback-indigo-foreground flex items-center justify-center text-[10px] font-bold">
+                                <span className="w-4 h-4 rounded-full bg-feedback-indigo-muted text-feedback-indigo-foreground flex items-center justify-center text-wc-micro font-bold">
                                     {task.assignee.name.charAt(0)}
                                 </span>
                                 <span className="max-w-[80px] truncate">{task.assignee.name}</span>

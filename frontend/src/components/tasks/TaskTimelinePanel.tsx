@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useState, type FormEvent } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bot, CircleDot, GitBranch, History, Link as LinkIcon, Plus, RefreshCw, Trash2, X } from 'lucide-react';
@@ -160,8 +160,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
         ? new Date(task.claim_expires_at).getTime() < nowMs
         : false;
 
-    const handleGitHubLinkSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleGitHubLink = () => {
         const trimmedUrl = githubUrl.trim();
 
         if (!trimmedUrl) {
@@ -175,6 +174,14 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
         }
 
         createGitHubLinkMutation.mutate(trimmedUrl);
+    };
+
+    const handleGitHubLinkKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+
+        event.preventDefault();
+        if (createGitHubLinkMutation.isPending || !githubUrl.trim()) return;
+        handleGitHubLink();
     };
 
     const handleDeleteLink = (linkId: number) => {
@@ -207,7 +214,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                 <div className="flex items-center gap-2 text-sm font-medium text-content-primary">
                     <History className="w-4 h-4 text-content-secondary" />
                     {t('surfaces.taskTimeline.timeline')}
-                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-[11px] font-medium text-action">
+                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-wc-micro font-medium text-action">
                         {task.request_count ?? 0} {t('surfaces.taskTimeline.requests')}
                     </span>
                 </div>
@@ -250,14 +257,15 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                             {t('surfaces.taskTimeline.externalLinks')}
                         </div>
                         {linksAreFetching && (
-                            <span className="text-[11px] text-content-tertiary">{t('surfaces.taskTimeline.refreshing')}</span>
+                            <span className="text-wc-micro text-content-tertiary">{t('surfaces.taskTimeline.refreshing')}</span>
                         )}
                     </div>
 
-                    <form onSubmit={handleGitHubLinkSubmit} className="mb-3 flex flex-col gap-2 sm:flex-row">
+                    <div className="mb-3 flex flex-col gap-2 sm:flex-row">
                         <input
                             type="text"
                             value={githubUrl}
+                            onKeyDown={handleGitHubLinkKeyDown}
                             onChange={event => {
                                 setGithubUrl(event.target.value);
                                 if (linkError) setLinkError(null);
@@ -266,14 +274,15 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                             className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-1.5 text-xs text-content-primary shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                         />
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleGitHubLink}
                             disabled={createGitHubLinkMutation.isPending || !githubUrl.trim()}
                             className="inline-flex items-center justify-center gap-1 rounded-md bg-action px-3 py-1.5 text-xs font-medium text-content-emphasis transition hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Plus className="h-3.5 w-3.5" />
                             {t('surfaces.taskTimeline.link')}
                         </button>
-                    </form>
+                    </div>
 
                     {linkError && (
                         <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">
@@ -303,17 +312,17 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                             {details || providerLabel(link.provider)}
                                         </span>
                                         {link.status && (
-                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-[10px] font-medium text-action">
+                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-wc-micro font-medium text-action">
                                                 {link.status}
                                             </span>
                                         )}
                                         {refreshError && (
-                                            <span className="shrink-0 rounded-full bg-feedback-danger-muted px-1.5 py-0.5 text-[10px] font-medium text-feedback-danger-foreground">
+                                            <span className="shrink-0 rounded-full bg-feedback-danger-muted px-1.5 py-0.5 text-wc-micro font-medium text-feedback-danger-foreground">
                                                 {t('surfaces.taskTimeline.refreshFailed')}
                                             </span>
                                         )}
                                         {link.is_legacy && (
-                                            <span className="shrink-0 rounded-full bg-feedback-warning-muted px-1.5 py-0.5 text-[10px] font-medium text-feedback-warning-foreground">
+                                            <span className="shrink-0 rounded-full bg-feedback-warning-muted px-1.5 py-0.5 text-wc-micro font-medium text-feedback-warning-foreground">
                                                 {t('surfaces.taskTimeline.legacy')}
                                             </span>
                                         )}
@@ -348,7 +357,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                                 type="button"
                                                 onClick={() => handleRefreshLink(link.id!)}
                                                 disabled={refreshGitHubLinkMutation.isPending}
-                                                className="inline-flex h-6 w-6 shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-action-muted hover:text-action disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-action-muted hover:text-action disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.refreshNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.refreshGitHubStatus')}
                                             >
@@ -363,7 +372,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                                 type="button"
                                                 onClick={() => handleDeleteLink(link.id!)}
                                                 disabled={deleteLinkMutation.isPending}
-                                                className="inline-flex h-6 w-6 shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.deleteNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.deleteLink')}
                                             >
@@ -407,7 +416,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between gap-2">
                                         <span className="text-sm font-medium text-content-primary truncate">{title}</span>
-                                        <span className="text-[11px] text-content-secondary flex-shrink-0">
+                                        <span className="text-wc-micro text-content-secondary flex-shrink-0">
                                             {formatDateTime(item.timestamp)}
                                         </span>
                                     </div>

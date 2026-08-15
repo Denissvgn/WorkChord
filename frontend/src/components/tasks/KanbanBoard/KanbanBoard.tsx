@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
     DndContext,
     closestCorners,
@@ -24,6 +25,8 @@ import { KanbanCard } from './KanbanCard';
 import { createPortal } from 'react-dom';
 import { STATUS_TONE } from '../../ui/tone';
 import { QueryErrorState, QueryLoadingState } from '../../feedback/QueryState';
+import { Button } from '../../common/Button';
+import { Modal } from '../../common/Modal';
 
 interface KanbanBoardProps {
     iterationId: number;
@@ -51,10 +54,20 @@ type BoardTaskUpdate = Pick<TaskUpdate, 'assignee_id'> & {
     status?: TaskStatus;
 };
 
+type OwnershipSelection = {
+    task: Task;
+    updates: BoardTaskUpdate;
+    targetColumn: ColumnId;
+};
+
 export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [activeId, setActiveId] = useState<number | null>(null);
+    const [ownershipSelection, setOwnershipSelection] = useState<OwnershipSelection | null>(null);
+    const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
+    const assigneeSelectId = useId();
+    const assigneeSelectRef = useRef<HTMLSelectElement>(null);
 
     // Data Fetching
     const tasksQuery = useQuery({
@@ -75,6 +88,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const team = useMemo(() => teamQuery.data ?? [], [teamQuery.data]);
     const labelGroups = useMemo(() => labelsQuery.data ?? [], [labelsQuery.data]);
 
+    // feedback-policy: mutation pending,inline - drag is locked while saving and selection failures stay recoverable.
     const updateTaskMutation = useMutation({
         mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
             const { status, ...fieldUpdates } = updates;
@@ -102,8 +116,34 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
+            queryClient.invalidateQueries({ queryKey: ['workload'] });
         },
     });
+
+    const closeOwnershipSelection = () => {
+        if (updateTaskMutation.isPending) return;
+        setOwnershipSelection(null);
+        setSelectedAssigneeId(null);
+        updateTaskMutation.reset();
+    };
+
+    const confirmOwnershipSelection = async () => {
+        if (!ownershipSelection || selectedAssigneeId === null || updateTaskMutation.isPending) return;
+
+        try {
+            await updateTaskMutation.mutateAsync({
+                task: ownershipSelection.task,
+                updates: {
+                    ...ownershipSelection.updates,
+                    assignee_id: selectedAssigneeId,
+                },
+            });
+            setOwnershipSelection(null);
+            setSelectedAssigneeId(null);
+        } catch {
+            // The mutation's visible recovery state keeps the selection open.
+        }
+    };
 
     // Filtering & Grouping
     const filteredTasks = useMemo(() => {
@@ -158,7 +198,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     );
 
     const handleDragStart = (event: DragStartEvent) => {
-        if (updateTaskMutation.isPending) return;
+        if (updateTaskMutation.isPending || ownershipSelection) return;
         setActiveId(event.active.id as number);
     };
 
@@ -221,19 +261,22 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
             updates.assignee_id = null; // Forced unassign
         } else if (targetColumn === 'planned-assigned') {
             updates.status = 'planned';
-            if (!task.assignee) {
-                // Auto-assign to first member if empty
-                updates.assignee_id = team.length > 0 ? team[0].id : null;
-            }
         } else if (targetColumn === 'active') {
             updates.status = 'active';
-            if (!task.assignee) {
-                updates.assignee_id = team.length > 0 ? team[0].id : null;
-            }
         } else if (targetColumn === 'resolved') {
             updates.status = 'resolved';
         } else if (targetColumn === 'closed') {
             updates.status = 'closed';
+        }
+
+        const ownershipWouldChange = !task.assignee
+            && (targetColumn === 'planned-assigned' || targetColumn === 'active');
+
+        if (ownershipWouldChange) {
+            updateTaskMutation.reset();
+            setSelectedAssigneeId(null);
+            setOwnershipSelection({ task, updates, targetColumn });
+            return;
         }
 
         // Apply update if changed
@@ -265,6 +308,9 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     if (tasksQuery.isLoading || teamQuery.isLoading || labelsQuery.isLoading) return <QueryLoadingState />;
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;
+    const ownershipColumnTitle = ownershipSelection
+        ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'inProgress'}`)
+        : '';
 
     return (
         <DndContext
@@ -272,6 +318,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
             collisionDetection={closestCorners}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragCancel={() => setActiveId(null)}
         >
             <div className="space-y-3" aria-busy={updateTaskMutation.isPending}>
                 {updateTaskMutation.isError && (
@@ -304,6 +351,83 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                 </DragOverlay>,
                 document.body
             )}
+
+            <Modal
+                open={Boolean(ownershipSelection)}
+                title={team.length > 0
+                    ? t('surfaces.kanbanBoard.chooseAssignee')
+                    : t('surfaces.kanbanBoard.noAssigneeAvailable')}
+                description={ownershipSelection
+                    ? team.length > 0
+                        ? t('surfaces.kanbanBoard.chooseAssigneeDescription', {
+                            title: ownershipSelection.task.title,
+                            column: ownershipColumnTitle,
+                        })
+                        : t('surfaces.kanbanBoard.noAssigneeAvailableDescription', {
+                            title: ownershipSelection.task.title,
+                        })
+                    : ''}
+                onClose={closeOwnershipSelection}
+                closeLabel={t('actions.close')}
+                closeDisabled={updateTaskMutation.isPending}
+                initialFocusRef={team.length > 0 ? assigneeSelectRef : undefined}
+                footer={(
+                    <div className="flex flex-wrap justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            disabled={updateTaskMutation.isPending}
+                            onClick={closeOwnershipSelection}
+                        >
+                            {t('actions.cancel')}
+                        </Button>
+                        {team.length > 0 ? (
+                            <Button
+                                type="button"
+                                isLoading={updateTaskMutation.isPending}
+                                disabled={selectedAssigneeId === null}
+                                onClick={() => { void confirmOwnershipSelection(); }}
+                            >
+                                {t('surfaces.kanbanBoard.assignAndMove')}
+                            </Button>
+                        ) : (
+                            <Link
+                                to={`/team?action=assign&iterationId=${iterationId}`}
+                                className="btn primary"
+                                onClick={closeOwnershipSelection}
+                            >
+                                {t('surfaces.kanbanBoard.addTeamMember')}
+                            </Link>
+                        )}
+                    </div>
+                )}
+            >
+                {ownershipSelection && team.length > 0 ? (
+                    <div className="space-y-4">
+                        <label className="block text-sm font-medium text-content-primary" htmlFor={assigneeSelectId}>
+                            {t('surfaces.kanbanBoard.assignee')}
+                        </label>
+                        <select
+                            ref={assigneeSelectRef}
+                            id={assigneeSelectId}
+                            value={selectedAssigneeId ?? ''}
+                            onChange={event => setSelectedAssigneeId(event.target.value ? Number(event.target.value) : null)}
+                            disabled={updateTaskMutation.isPending}
+                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-base text-content-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-focus disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            <option value="">{t('surfaces.kanbanBoard.chooseAssigneePlaceholder')}</option>
+                            {team.map(member => (
+                                <option key={member.id} value={member.id}>{member.name}</option>
+                            ))}
+                        </select>
+                        {updateTaskMutation.isError && (
+                            <p role="alert" className="text-sm text-feedback-danger-foreground">
+                                {t('surfaces.kanbanBoard.assignmentMoveFailed')}
+                            </p>
+                        )}
+                    </div>
+                ) : undefined}
+            </Modal>
         </DndContext>
     );
 };

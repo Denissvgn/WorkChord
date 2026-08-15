@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Save } from 'lucide-react';
@@ -16,14 +16,16 @@ interface TeamFormProps {
     initialProfile?: TeamMemberProfile;
     onSuccess: () => void;
     onCancel: () => void;
+    onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
 }
 
-export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, onCancel }: TeamFormProps) => {
-    const { t } = useTranslation();
-    const queryClient = useQueryClient();
-    const [error, setError] = useState<string | null>(null);
-    const [formData, setFormData] = useState<TeamMemberCreate>(
-        initialData ? {
+const initialFormData = (
+    defaultRole: string,
+    initialData?: TeamMember,
+    initialProfile?: TeamMemberProfile,
+): TeamMemberCreate => {
+    if (initialData) {
+        return {
             name: initialData.profile?.display_name ?? initialData.name,
             position: initialData.position,
             email: initialData.profile?.email || initialData.email || '',
@@ -31,23 +33,60 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
             availability_percent: initialData.availability_percent,
             professionalism_coefficient: initialData.professionalism_coefficient,
             operational_utilization: initialData.operational_utilization,
-        } : initialProfile ? {
+        };
+    }
+
+    if (initialProfile) {
+        return {
             name: initialProfile.display_name,
-            position: initialProfile.headline || t('teamCapacity.defaultRole'),
+            position: initialProfile.headline || defaultRole,
             email: initialProfile.email || '',
             profile_id: initialProfile.id,
             availability_percent: 100,
             professionalism_coefficient: 1.0,
             operational_utilization: 20,
-        } : {
-            name: '',
-            position: t('teamCapacity.defaultRole'),
-            email: '',
-            profile_id: null,
-            availability_percent: 100,
-            professionalism_coefficient: 1.0,
-            operational_utilization: 20,
-        }
+        };
+    }
+
+    return {
+        name: '',
+        position: defaultRole,
+        email: '',
+        profile_id: null,
+        availability_percent: 100,
+        professionalism_coefficient: 1.0,
+        operational_utilization: 20,
+    };
+};
+
+const formsMatch = (left: TeamMemberCreate, right: TeamMemberCreate) => (
+    left.name === right.name
+    && left.position === right.position
+    && (left.email ?? '') === (right.email ?? '')
+    && (left.profile_id ?? null) === (right.profile_id ?? null)
+    && Object.is(left.availability_percent, right.availability_percent)
+    && Object.is(left.professionalism_coefficient, right.professionalism_coefficient)
+    && Object.is(left.operational_utilization, right.operational_utilization)
+);
+
+export const TeamForm = ({
+    iterationId,
+    initialData,
+    initialProfile,
+    onSuccess,
+    onCancel,
+    onStateChange,
+}: TeamFormProps) => {
+    const { t } = useTranslation();
+    const queryClient = useQueryClient();
+    const profileSelectId = useId();
+    const profileHelpId = useId();
+    const [error, setError] = useState<string | null>(null);
+    const [baselineFormData] = useState<TeamMemberCreate>(() => (
+        initialFormData(t('teamCapacity.defaultRole'), initialData, initialProfile)
+    ));
+    const [formData, setFormData] = useState<TeamMemberCreate>(
+        baselineFormData,
     );
 
     const profilesQuery = useQuery({
@@ -89,8 +128,16 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
         }
     });
 
+    const isPending = createMutation.isPending || updateMutation.isPending;
+    const isDirty = !formsMatch(formData, baselineFormData);
+
+    useEffect(() => {
+        onStateChange?.({ dirty: isDirty, pending: isPending });
+    }, [isDirty, isPending, onStateChange]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (isPending) return;
         setError(null);
         const payload = selectedProfile
             ? {
@@ -99,7 +146,7 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
                 email: selectedProfile.email || '',
                 profile_id: selectedProfile.id,
             }
-            : formData;
+            : { ...formData };
         if (initialData) {
             updateMutation.mutate(payload);
         } else {
@@ -108,7 +155,9 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
     };
 
     const handleProfileChange = (profileId: number | null) => {
+        if (isPending) return;
         const profile = profiles.find(candidate => candidate.id === profileId) ?? null;
+        setError(null);
         setFormData(prev => ({
             ...prev,
             profile_id: profileId,
@@ -120,123 +169,155 @@ export const TeamForm = ({ iterationId, initialData, initialProfile, onSuccess, 
         }));
     };
 
+    const updateForm = (patch: Partial<TeamMemberCreate>) => {
+        if (isPending) return;
+        setError(null);
+        setFormData(current => ({ ...current, ...patch }));
+    };
+
+    const handleCancel = () => {
+        if (isPending) return;
+        onCancel();
+    };
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
             {profilesQuery.isLoading && <QueryLoadingState />}
             {profilesQuery.isError && (
                 <QueryErrorState
                     error={profilesQuery.error}
-                    fallback={t('queryFeedback.optionLoadFailed')}
-                    onRetry={() => void profilesQuery.refetch()}
+                    fallback={t(
+                        'teamCapacity.profileLoadFailedManual',
+                        'Existing profiles could not be loaded. Retry, or enter person details manually below.',
+                    )}
+                    onRetry={isPending ? undefined : () => void profilesQuery.refetch()}
                 />
             )}
-            {error && (
-                <div className="bg-feedback-danger-muted text-feedback-danger-foreground p-3 rounded-md text-sm">
-                    {error}
-                </div>
-            )}
 
-            <div className="rounded-md border border-action bg-action-muted p-3 text-sm text-action">
-                {t('teamCapacity.intro')}
-            </div>
+            <form onSubmit={handleSubmit} aria-busy={isPending} className="space-y-6">
+                <fieldset disabled={isPending} className="min-w-0 space-y-6 border-0 p-0">
+                    {error && (
+                        <div
+                            className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground"
+                            role="alert"
+                        >
+                            {error}
+                        </div>
+                    )}
 
-            <div>
-                <label className="block text-sm font-medium text-content-primary mb-1">{t('teamCapacity.globalProfile')}</label>
-                <select
-                    aria-label={t('teamCapacity.globalProfile')}
-                    value={formData.profile_id ?? ''}
-                    onChange={event => handleProfileChange(event.target.value ? Number(event.target.value) : null)}
-                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('teamCapacity.selectProfile')}</option>
-                    {profiles.map(profile => (
-                        <option key={profile.id} value={profile.id}>
-                            {profile.display_name}
-                            {profile.headline ? ` - ${profile.headline}` : ''}
-                        </option>
-                    ))}
-                </select>
-                <p className="mt-1 text-xs text-content-secondary">
-                    {t('teamCapacity.profileHelp')}
-                </p>
-                {!isLoadingProfiles && profiles.length === 0 && !initialData && (
-                    <p className="mt-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-3 py-2 text-xs text-feedback-warning-foreground">
-                        {t('teamCapacity.noProfilesCreateFromDetails')}
-                    </p>
-                )}
-            </div>
+                    <div className="rounded-md border border-action bg-action-muted p-3 text-sm text-action">
+                        {t('teamCapacity.intro')}
+                    </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <Input
-                    label={t('teamCapacity.person')}
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    disabled={hasLinkedProfile}
-                    required
-                />
-                <Input
-                    label={t('teamCapacity.iterationRole')}
-                    value={formData.position}
-                    onChange={e => setFormData({ ...formData, position: e.target.value })}
-                    required
-                />
-            </div>
+                    <div>
+                        <label
+                            className="mb-1 block text-sm font-medium text-content-primary"
+                            htmlFor={profileSelectId}
+                        >
+                            {t('teamCapacity.globalProfile')}
+                        </label>
+                        <select
+                            id={profileSelectId}
+                            aria-describedby={profileHelpId}
+                            value={formData.profile_id ?? ''}
+                            onChange={event => handleProfileChange(event.target.value ? Number(event.target.value) : null)}
+                            disabled={isPending || isLoadingProfiles || profilesQuery.isError}
+                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                        >
+                            <option value="">{t('teamCapacity.selectProfile')}</option>
+                            {profiles.map(profile => (
+                                <option key={profile.id} value={profile.id}>
+                                    {profile.display_name}
+                                    {profile.headline ? ` - ${profile.headline}` : ''}
+                                </option>
+                            ))}
+                        </select>
+                        <p id={profileHelpId} className="mt-1 text-xs text-content-secondary">
+                            {t('teamCapacity.profileHelp')}
+                        </p>
+                        {profilesQuery.isSuccess && profiles.length === 0 && !initialData && (
+                            <p className="mt-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-3 py-2 text-xs text-feedback-warning-foreground">
+                                {t('teamCapacity.noProfilesCreateFromDetails')}
+                            </p>
+                        )}
+                    </div>
 
-            <Input
-                type="email"
-                label={t('teamCapacity.profileEmail')}
-                value={formData.email || ''}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
-                placeholder={t('teamCapacity.emailPlaceholder')}
-                disabled={hasLinkedProfile}
-            />
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Input
+                            label={t('teamCapacity.person')}
+                            value={formData.name}
+                            onChange={event => updateForm({ name: event.target.value })}
+                            disabled={hasLinkedProfile || isPending}
+                            maxLength={255}
+                            required
+                        />
+                        <Input
+                            label={t('teamCapacity.iterationRole')}
+                            value={formData.position}
+                            onChange={event => updateForm({ position: event.target.value })}
+                            maxLength={255}
+                            required
+                        />
+                    </div>
 
-            {/* Collapsible: Workload Settings */}
-            <CollapsibleSection title={t('teamForm.iterationCapacity')} defaultOpen={initialData?.availability_percent !== 100 || initialData?.professionalism_coefficient !== 1 || initialData?.operational_utilization !== 20}>
-                <div className="grid grid-cols-3 gap-4">
                     <Input
-                        type="number"
-                        label={t('teamCapacity.availability')}
-                        min="0"
-                        max="100"
-                        value={formData.availability_percent}
-                        onChange={e => setFormData({ ...formData, availability_percent: parseFloat(e.target.value) })}
-                        required
+                        type="email"
+                        label={t('teamCapacity.profileEmail')}
+                        value={formData.email || ''}
+                        onChange={event => updateForm({ email: event.target.value })}
+                        placeholder={t('teamCapacity.emailPlaceholder')}
+                        disabled={hasLinkedProfile || isPending}
+                        maxLength={255}
                     />
-                    <Input
-                        type="number"
-                        label={t('teamCapacity.professionalismCoefficient')}
-                        step="0.1"
-                        min="0.1"
-                        value={formData.professionalism_coefficient}
-                        onChange={e => setFormData({ ...formData, professionalism_coefficient: parseFloat(e.target.value) })}
-                        required
-                    />
-                    <Input
-                        type="number"
-                        label={t('teamCapacity.utilization')}
-                        min="0"
-                        max="100"
-                        value={formData.operational_utilization}
-                        onChange={e => setFormData({ ...formData, operational_utilization: parseFloat(e.target.value) })}
-                        required
-                    />
-                </div>
-            </CollapsibleSection>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button type="button" variant="ghost" onClick={onCancel}>
-                    {t('actions.cancel')}
-                </Button>
-                <Button
-                    type="submit"
-                    isLoading={createMutation.isPending || updateMutation.isPending}
-                    disabled={profilesQuery.isLoading || profilesQuery.isError}
-                >
-                    <Save className="w-4 h-4 mr-2" />
-                    {initialData ? t('teamCapacity.updateAssignment') : t('teamCapacity.addToIteration')}
-                </Button>
-            </div>
-        </form>
+                    <CollapsibleSection title={t('teamForm.iterationCapacity')} defaultOpen={initialData?.availability_percent !== 100 || initialData?.professionalism_coefficient !== 1 || initialData?.operational_utilization !== 20}>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <Input
+                                type="number"
+                                label={t('teamCapacity.availability')}
+                                min="0"
+                                max="100"
+                                value={formData.availability_percent}
+                                onChange={event => updateForm({ availability_percent: parseFloat(event.target.value) })}
+                                required
+                            />
+                            <Input
+                                type="number"
+                                label={t('teamCapacity.professionalismCoefficient')}
+                                step="0.1"
+                                min="0.5"
+                                max="5"
+                                value={formData.professionalism_coefficient}
+                                onChange={event => updateForm({ professionalism_coefficient: parseFloat(event.target.value) })}
+                                required
+                            />
+                            <Input
+                                type="number"
+                                label={t('teamCapacity.utilization')}
+                                min="0"
+                                max="100"
+                                value={formData.operational_utilization}
+                                onChange={event => updateForm({ operational_utilization: parseFloat(event.target.value) })}
+                                required
+                            />
+                        </div>
+                    </CollapsibleSection>
+
+                    <div className="flex justify-end gap-2 border-t pt-4">
+                        <Button type="button" variant="ghost" onClick={handleCancel} disabled={isPending}>
+                            {t('actions.cancel')}
+                        </Button>
+                        <Button
+                            type="submit"
+                            isLoading={isPending}
+                            disabled={isPending}
+                        >
+                            <Save aria-hidden="true" className="mr-2 h-4 w-4" />
+                            {initialData ? t('teamCapacity.updateAssignment') : t('teamCapacity.addToIteration')}
+                        </Button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     );
 };

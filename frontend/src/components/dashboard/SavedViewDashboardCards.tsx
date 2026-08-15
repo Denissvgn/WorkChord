@@ -42,11 +42,11 @@ const DashboardCardContent = ({ card }: { card: SavedViewDashboardCard }) => {
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium', viewTypeTone[card.view_type])}>
+                        <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-wc-micro font-medium', viewTypeTone[card.view_type])}>
                             <Icon className="mr-1 h-3 w-3" />
                             {t(viewTypeLabelKeys[card.view_type])}
                         </span>
-                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-[11px] font-medium text-content-secondary">
+                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
                             {t('surfaces.savedViewDashboard.system')}
                         </span>
                     </div>
@@ -59,7 +59,7 @@ const DashboardCardContent = ({ card }: { card: SavedViewDashboardCard }) => {
                     {!display.description && <div className="mt-1 min-h-[2rem]" />}
                 </div>
                 <div className="shrink-0 text-right">
-                    <div className="text-3xl font-bold text-content-primary">{card.count}</div>
+                    <div className="text-wc-page font-semibold tabular-nums text-content-primary">{card.count}</div>
                 </div>
             </div>
             <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs font-medium">

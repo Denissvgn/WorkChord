@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { systemSettingsService } from '../services/systemSettingsService';
 import { useAdminAccess } from '../hooks/useAdminAccess';
+import { changeAppLanguage } from './i18n';
 
 interface SystemLanguageProviderProps {
     children: ReactNode;
@@ -29,7 +30,7 @@ export const SystemLanguageProvider = ({ children }: SystemLanguageProviderProps
         const language = data?.app?.ui_language;
         if (language) {
             if (i18n.language !== language) {
-                void i18n.changeLanguage(language);
+                void changeAppLanguage(language);
             }
         }
     }, [data?.app?.ui_language, i18n]);

@@ -1,6 +1,7 @@
 import type { Task } from '../types/task';
 import type { LabelGroup } from '../types/label';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
+import { taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
 
 const taskHasAnyTag = (task: Task, selectedTags: Set<string>) => {
     if (selectedTags.size === 0) return true;
@@ -23,6 +24,13 @@ export const taskMatchesFilters = (
     labelGroups: LabelGroup[] = [],
 ): boolean => {
     if (!filters) return true;
+
+    if (
+        filters.planningIssue !== null
+        && !taskMatchesPlanningIssue(task, filters.planningIssue)
+    ) {
+        return false;
+    }
 
     // Check assignee
     if (filters.assigneeId !== null) {

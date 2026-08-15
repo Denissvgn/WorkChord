@@ -1,294 +1,434 @@
-import type { ReactNode, CSSProperties } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+    ArrowRight,
+    CalendarRange,
+    Check,
+    ChevronDown,
+    GanttChartSquare,
+    Inbox,
+    Layers,
+    ListTodo,
+    LockKeyhole,
+    RefreshCw,
+    Sparkles,
+    TriangleAlert,
+    Users,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { localizeStatus, STEP_DEFS } from '../features/planningMasters/masters';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
 import { PageHeader, PageLayout } from '../components/ui';
+import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { formatDate } from '../utils/formatDate';
-import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 
-// ── Inline SVG icon subset matching the design's icons.jsx ──────────────────
-const Svg = ({ d, size = 14, stroke = 1.75, ...rest }: { d: ReactNode; size?: number; stroke?: number; style?: CSSProperties; className?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" {...rest}>
-        {d}
-    </svg>
+type LocalizedStepStatus = {
+    state: string;
+    summary?: string;
+    missing?: string[];
+};
+
+type PlanningJob = {
+    id: string;
+    title: string;
+    description: string;
+    icon: LucideIcon;
+    meta: string;
+    to: string;
+};
+
+type RefreshStatus = 'idle' | 'success' | 'error';
+
+const stepClassName = (state: string, isNext: boolean) => {
+    if (state === 'done') return 'done';
+    if (state === 'warn') return 'warn';
+    if (state === 'blocked') return 'blocked';
+    return isNext ? 'current' : '';
+};
+
+const refetchResultFailed = (value: unknown) => (
+    typeof value === 'object'
+    && value !== null
+    && 'isError' in value
+    && Boolean((value as { isError?: boolean }).isError)
 );
-const IIteration = (p: { size?: number }) => <Svg {...p} d={<><path d="M2 12a10 10 0 0 1 17-7"/><path d="M22 12a10 10 0 0 1-17 7"/><path d="M19 2v5h-5M5 22v-5h5"/></>}/>;
-const ILayers    = (p: { size?: number }) => <Svg {...p} d={<><polygon points="12 2 22 8 12 14 2 8 12 2"/><polyline points="2 12 12 18 22 12"/><polyline points="2 16 12 22 22 16"/></>}/>;
-const IInbox     = (p: { size?: number }) => <Svg {...p} d={<><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 6h13l3.5 6v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></>}/>;
-const IWarning   = (p: { size?: number }) => <Svg {...p} d={<><path d="M12 2L1 21h22z"/><path d="M12 9v5M12 18v.5"/></>}/>;
-const ISparkle   = (p: { size?: number }) => <Svg {...p} d={<><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></>}/>;
-const ITeam      = (p: { size?: number }) => <Svg {...p} d={<><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20c.5-3.5 3-5 6-5s5.5 1.5 6 5"/><path d="M14.5 20c.3-2 1.7-3 3.5-3s3.2 1 3.5 3"/></>}/>;
-const ITasks     = (p: { size?: number }) => <Svg {...p} d={<><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></>}/>;
-const IGantt     = (p: { size?: number }) => <Svg {...p} d={<><rect x="3" y="5" width="9" height="3" rx="1"/><rect x="7" y="11" width="11" height="3" rx="1"/><rect x="5" y="17" width="7" height="3" rx="1"/></>}/>;
-const IArrow     = (p: { size?: number }) => <Svg {...p} d={<><path d="M5 12h14M13 5l7 7-7 7"/></>}/>;
-const IChevR     = (p: { size?: number }) => <Svg {...p} d={<polyline points="9 6 15 12 9 18"/>}/>;
-const IChevD     = (p: { size?: number }) => <Svg {...p} d={<polyline points="6 9 12 15 18 9"/>}/>;
-const ICheck     = (p: { size?: number; stroke?: number }) => <Svg {...p} d={<polyline points="20 6 9 17 4 12"/>}/>;
-const ILock      = (p: { size?: number }) => <Svg {...p} d={<><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></>}/>;
-const IRefresh   = (p: { size?: number }) => <Svg {...p} d={<><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></>}/>;
 
-// ── Step state → CSS class ────────────────────────────────────────────────────
-const stepCls = (state: string, isNext: boolean) =>
-    state === 'done' ? 'done' : state === 'warn' ? 'warn' : state === 'blocked' ? 'blocked' : isNext ? 'current' : '';
-
-// ── Primary master card (hero with mini-step grid) ────────────────────────────
-function PrimaryCard({ ready, status, nextId, onOpen }: {
+function PlanningReadinessLauncher({
+    ready,
+    status,
+    nextId,
+}: {
     ready: { done: number; total: number; pct: number };
-    status: Record<string, { state: string; summary?: string; missing?: string[] }>;
+    status: Record<string, LocalizedStepStatus>;
     nextId: string;
-    onOpen: () => void;
 }) {
     const { t } = useTranslation();
-    const m = {
-        icon: <IIteration size={16}/>,
-        title: t('plan.hub.planIterationTitle'),
-        desc: t('plan.hub.planIterationDescription'),
-        cta: ready.done === 0 ? t('plan.hub.start') : ready.done === ready.total ? t('plan.hub.review') : t('plan.hub.resume'),
+    const nextStep = STEP_DEFS.find(step => step.id === nextId);
+    const action = ready.done === 0
+        ? t('plan.hub.start')
+        : ready.done === ready.total
+            ? t('plan.hub.review')
+            : t('plan.hub.resume');
+    const recommendation = ready.done === 0
+        ? t('plan.hub.recommendedStart')
+        : ready.done === ready.total
+            ? t('plan.hub.recommendedWrap')
+            : t('plan.hub.recommendedResume');
+    const readinessSummary = ready.pct === 0
+        ? t('plan.hub.nothingSetUp')
+        : ready.pct === 100
+            ? t('plan.hub.planReadyShare')
+            : t('plan.hub.checkpointProgress', {
+                done: ready.done,
+                total: ready.total,
+            });
+
+    const localizedState = (stepId: string) => {
+        const stepStatus = status[stepId];
+        if (stepStatus.state === 'done') return stepStatus.summary || t('plan.hub.done');
+        if (stepStatus.state === 'warn') {
+            return stepStatus.missing?.[0] || t('plan.hub.needsAttention');
+        }
+        if (stepStatus.state === 'blocked') return t('plan.hub.locked');
+        if (stepId === nextId) return t('plan.hub.nextStep');
+        return t('plan.hub.notStarted');
     };
-    const nextDef = STEP_DEFS.find(s => s.id === nextId);
 
     return (
-        <div className="mcard primary">
-            <div className="between" style={{alignItems:'flex-start'}}>
-                <div className="row" style={{alignItems:'flex-start', gap: 14}}>
-                    <div className="mc-icon">{m.icon}</div>
+        <section className="mcard primary plan-hub-primary" aria-labelledby="plan-hub-primary-title">
+            <div className="plan-hub-primary-header">
+                <div className="plan-hub-primary-copy">
+                    <div className="mc-icon">
+                        <CalendarRange aria-hidden="true" size={17} />
+                    </div>
                     <div>
-                        <div className="mc-title" style={{fontSize: 17}}>{m.title}</div>
-                        <div className="mc-desc">{m.desc}</div>
+                        <div className="plan-hub-primary-title-row">
+                            <h2 id="plan-hub-primary-title" className="mc-title">
+                                {t('plan.hub.planIterationTitle')}
+                            </h2>
+                            <span className="pill current sm">{recommendation}</span>
+                        </div>
+                        <p className="mc-desc">{t('plan.hub.planIterationDescription')}</p>
                     </div>
                 </div>
-                <button className="btn primary lg" onClick={(e) => { e.stopPropagation(); onOpen(); }}>
-                    {m.cta}{nextId !== 'review' && nextDef && <> — {t(`plan.steps.${nextDef.id}.title`).toLowerCase()}</>}
-                    <IArrow size={13}/>
-                </button>
+                <Link className="btn primary lg plan-hub-primary-action" to="/plan/master">
+                    {action}
+                    <ArrowRight aria-hidden="true" size={14} />
+                </Link>
             </div>
 
-            <div style={{display:'grid', gridTemplateColumns:`repeat(${STEP_DEFS.length}, 1fr)`, gap: 8, marginTop: 10}}>
-                {STEP_DEFS.map((def, i) => {
-                    const st = status[def.id];
-                    const cls = stepCls(st.state, def.id === nextId);
-                    return (
-                        <div key={def.id} className={`mini-step ${cls}`}
-                             style={{border:0, padding:'10px 12px', background:'var(--panel-2)',
-                                    borderRadius: 8, display:'grid', gridTemplateColumns:'22px 1fr', gap: 8, alignItems:'flex-start'}}>
-                            <div className="ms-dot" style={{width:22, height:22}}>
-                                {st.state === 'done'    ? <ICheck size={11} stroke={3}/> :
-                                 st.state === 'blocked' ? <ILock size={10}/> :
-                                 (i+1)}
-                            </div>
-                            <div>
-                                <div style={{fontSize:11.5, fontWeight:500, color:'var(--ink)', lineHeight:1.3}}>
-                                    {t(`plan.steps.${def.id}.title`)}
-                                </div>
-                                <div className="muted" style={{fontSize:10.5, marginTop:2}}>
-                                    {st.state === 'done'    ? (st.summary || t('plan.hub.done')) :
-                                     st.state === 'warn'    ? (st.missing?.[0] || t('plan.hub.needsAttention')) :
-                                     st.state === 'blocked' ? t('plan.hub.locked') :
-                                     def.id === nextId       ? t('plan.hub.nextStep') : t('plan.hub.notStarted')}
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
+            <div className="plan-hub-readiness">
+                <div className="plan-hub-readiness-copy">
+                    <span className="plan-status-scope">
+                        {t('plan.hub.planningReadiness')}
+                    </span>
+                    <strong>{readinessSummary}</strong>
+                    <span>
+                        {ready.pct < 100 && nextStep ? (
+                            <>
+                                {t('plan.hub.next')}: {t(`plan.steps.${nextStep.id}.title`)}
+                                {status[nextId]?.missing?.[0] && <> · {status[nextId].missing?.[0]}</>}
+                            </>
+                        ) : t('plan.hub.noActiveRisks')}
+                    </span>
+                </div>
+                <div
+                    className="plan-hub-progress"
+                    role="progressbar"
+                    aria-label={t('plan.hub.readinessProgress')}
+                    aria-valuemin={0}
+                    aria-valuemax={ready.total}
+                    aria-valuenow={ready.done}
+                    aria-valuetext={readinessSummary}
+                >
+                    <span style={{ transform: `scaleX(${ready.pct / 100})` }} />
+                </div>
             </div>
-        </div>
+
+            <details className="plan-hub-checkpoints">
+                <summary>
+                    <span>
+                        {t('plan.hub.checkpointProgress', {
+                            done: ready.done,
+                            total: ready.total,
+                        })}
+                    </span>
+                    <ChevronDown aria-hidden="true" size={15} />
+                </summary>
+                <ol
+                    className="plan-hub-checkpoint-grid"
+                    aria-label={t('plan.hub.checkpointList')}
+                >
+                    {STEP_DEFS.map((step, index) => {
+                        const stepStatus = status[step.id];
+                        const isNext = step.id === nextId;
+                        return (
+                            <li
+                                key={step.id}
+                                className={`mini-step ${stepClassName(stepStatus.state, isNext)}`}
+                                aria-current={isNext ? 'step' : undefined}
+                            >
+                                <span className="ms-dot" aria-hidden="true">
+                                    {stepStatus.state === 'done' ? (
+                                        <Check size={11} strokeWidth={3} />
+                                    ) : stepStatus.state === 'blocked' ? (
+                                        <LockKeyhole size={10} />
+                                    ) : index + 1}
+                                </span>
+                                <span className="plan-hub-checkpoint-copy">
+                                    <strong>{t(`plan.steps.${step.id}.title`)}</strong>
+                                    <span>{localizedState(step.id)}</span>
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ol>
+            </details>
+        </section>
     );
 }
 
-// ── Secondary master card ──────────────────────────────────────────────────────
-function MasterCard({ icon, title, desc, meta, cta, muted, onOpen }: {
-    icon: ReactNode; title: string; desc: string;
-    meta: string; cta: string; muted?: boolean; onOpen: () => void;
-}) {
+function PlanningJobLink({ job }: { job: PlanningJob }) {
+    const { t } = useTranslation();
+    const Icon = job.icon;
+
     return (
-        <div className={`mcard ${muted ? 'disabled' : ''}`}>
-            <div className="row" style={{justifyContent:'space-between'}}>
-                <div className="mc-icon">{icon}</div>
-                {muted && <span className="pill opt sm">{meta}</span>}
-            </div>
-            <div>
-                <div className="mc-title">{title}</div>
-                <div className="mc-desc">{desc}</div>
-            </div>
-            <div className="mc-foot">
-                <div className="mc-meta">{!muted && meta}</div>
-                <button className="btn sm" type="button" onClick={onOpen} disabled={muted}>{cta} <IChevR size={11}/></button>
-            </div>
-        </div>
+        <Link
+            className="plan-hub-job"
+            to={job.to}
+            aria-labelledby={`plan-hub-job-${job.id}-title`}
+            aria-describedby={`plan-hub-job-${job.id}-description plan-hub-job-${job.id}-meta`}
+        >
+            <span className="mc-icon" aria-hidden="true">
+                <Icon size={16} />
+            </span>
+            <span className="plan-hub-job-copy">
+                <strong id={`plan-hub-job-${job.id}-title`}>{job.title}</strong>
+                <span id={`plan-hub-job-${job.id}-description`}>{job.description}</span>
+                <small id={`plan-hub-job-${job.id}-meta`}>{job.meta}</small>
+            </span>
+            <span className="plan-hub-job-action" aria-hidden="true">
+                {t('plan.hub.open')}
+                <ArrowRight size={12} />
+            </span>
+        </Link>
     );
 }
 
-// ── Main page ──────────────────────────────────────────────────────────────────
 const PlanPage = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { selectedIterationId, currentIteration, readinessData, status: rawStatus, ready, nextId } = usePlanningReadiness({ includeInbox: true });
+    const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>('idle');
+    const {
+        currentIteration,
+        readinessData,
+        status: rawStatus,
+        ready,
+        nextId,
+        isFetching,
+        queryStates,
+        refetch,
+    } = usePlanningReadiness({ includeInbox: true });
     const status = localizeStatus(rawStatus, readinessData, t);
-    const nextDef = STEP_DEFS.find(s => s.id === nextId);
-    const refreshPlanning = () => {
-        queryClient.invalidateQueries({ queryKey: ['iterations'] });
-        queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['tasks', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['gantt', selectedIterationId] });
-        queryClient.invalidateQueries({ queryKey: ['triage'] });
+
+    const enabledCoreQueries = [
+        queryStates.team,
+        queryStates.tasks,
+        queryStates.gantt,
+    ].filter(query => query.enabled);
+    const isCoreLoading = queryStates.iterations.isLoading
+        || enabledCoreQueries.some(query => query.isLoading);
+    const coreError = queryStates.iterations.isBlockingError
+        ? queryStates.iterations.error
+        : enabledCoreQueries.find(query => query.isBlockingError)?.error;
+
+    const refreshPlanning = async () => {
+        if (isFetching) return;
+        setRefreshStatus('idle');
+        try {
+            const results = await refetch();
+            const failed = results.some(result => (
+                result.status === 'rejected'
+                || (result.status === 'fulfilled' && refetchResultFailed(result.value))
+            ));
+            setRefreshStatus(failed ? 'error' : 'success');
+        } catch {
+            setRefreshStatus('error');
+        }
     };
 
-    const openMaster = (id: string) => {
-        if (id === 'iteration') navigate('/plan/master');
-        else if (id === 'project') navigate('/projects');
-        else if (id === 'intake')  navigate('/triage');
-        else if (id === 'replan')  navigate('/gantt');
-        else if (id === 'agent')   navigate('/agent-pipeline');
-    };
+    const intakeMeta = queryStates.inbox.isLoading
+        ? t('plan.hub.intakeStatusLoading')
+        : queryStates.inbox.isError
+            ? t('plan.hub.intakeStatusUnavailable')
+            : t('plan.hub.inQueue', { count: readinessData.inboxCount || 0 });
 
-    const otherMasters = [
-        {
-            id: 'project', title: t('plan.masters.planProject.title'),
-            desc: t('plan.masters.planProject.description'),
-            icon: <ILayers size={16}/>, meta: t('plan.hub.acrossIterations'), cta: t('plan.hub.open'),
-        },
-        {
-            id: 'intake', title: t('plan.masters.processIntake.title'),
-            desc: t('plan.masters.processIntake.description'),
-            icon: <IInbox size={16}/>, meta: t('plan.hub.inQueue', { count: readinessData.inboxCount || 0 }), cta: t('plan.hub.open'),
-        },
-        {
-            id: 'replan', title: t('plan.masters.replanAtRisk.title'),
-            desc: t('plan.masters.replanAtRisk.description'),
-            icon: <IWarning size={16}/>,
-            meta: readinessData.riskCount > 0 ? t('plan.hub.activeSignals', { count: readinessData.riskCount }) : t('plan.hub.noActiveSignals'),
-            cta: t('plan.hub.open'),
-            muted: readinessData.riskCount === 0,
-        },
-        {
-            id: 'agent', title: t('plan.masters.agentReady.title'),
-            desc: t('plan.masters.agentReady.description'),
-            icon: <ISparkle size={16}/>, meta: t('plan.hub.beta'), cta: t('plan.hub.open'),
-        },
+    const planningJobs: PlanningJob[] = [
+        ...(readinessData.inboxCount > 0 || queryStates.inbox.isError ? [{
+            id: 'intake',
+            title: t('plan.masters.processIntake.title'),
+            description: t('plan.masters.processIntake.description'),
+            icon: Inbox,
+            meta: intakeMeta,
+            to: '/triage',
+        }] : []),
+        ...(readinessData.riskCount > 0 ? [{
+            id: 'replan',
+            title: t('plan.masters.replanAtRisk.title'),
+            description: t('plan.masters.replanAtRisk.description'),
+            icon: TriangleAlert,
+            meta: t('plan.hub.activeSignals', { count: readinessData.riskCount }),
+            to: '/gantt',
+        }] : []),
     ];
+
+    if (isCoreLoading) {
+        return (
+            <PageLayout variant="wide">
+                <QueryLoadingState message={t('plan.master.planningDataLoading')} />
+            </PageLayout>
+        );
+    }
+
+    if (coreError) {
+        return (
+            <PageLayout variant="wide">
+                <QueryErrorState
+                    title={t('plan.master.planningDataUnavailable')}
+                    message={t('plan.master.planningDataUnavailableBody')}
+                    onRetry={refreshPlanning}
+                />
+            </PageLayout>
+        );
+    }
 
     return (
         <PageLayout variant="wide">
-                <Breadcrumbs items={[
-                    { label: t('nav.workspace'), path: '/' },
-                    { label: t('plan.title') },
-                ]} />
-                {/* Page header */}
-                <PageHeader
-                    title={t('plan.title')}
-                    subtitle={t('plan.hub.subtitle')}
-                    actions={(
+            <PageHeader
+                title={t('plan.title')}
+                subtitle={t('plan.hub.subtitle')}
+                actions={(
                     <>
-                        <button className="iter-pick" onClick={() => navigate('/plan/master')}>
-                            <IIteration size={13}/>
-                            <span style={{fontWeight:500}}>
+                        <Link
+                            className="iter-pick"
+                            to="/plan/master"
+                            aria-label={t('plan.hub.openPeriodSetup', {
+                                period: currentIteration?.name || t('plan.hub.pickPeriod'),
+                            })}
+                        >
+                            <CalendarRange aria-hidden="true" size={13} />
+                            <span className="plan-hub-period-name">
                                 {currentIteration?.name || t('plan.hub.pickPeriod')}
                             </span>
                             {currentIteration && (
                                 <span className="iter-dates">
-                                    · {formatDate(readinessData.currentIterationStart)}–{formatDate(readinessData.currentIterationEnd)}
+                                    · {formatDate(readinessData.currentIterationStart)}
+                                    –{formatDate(readinessData.currentIterationEnd)}
                                 </span>
                             )}
-                            <IChevD size={11}/>
+                            <ArrowRight aria-hidden="true" size={11} />
+                        </Link>
+                        <button
+                            className="btn"
+                            type="button"
+                            onClick={() => { void refreshPlanning(); }}
+                            disabled={isFetching}
+                            aria-busy={isFetching}
+                        >
+                            <RefreshCw
+                                aria-hidden="true"
+                                className={isFetching ? 'animate-spin' : undefined}
+                                size={12}
+                            />
+                            {isFetching ? t('actions.refreshing') : t('plan.hub.refresh')}
                         </button>
-                        <button className="btn" onClick={refreshPlanning}><IRefresh size={12}/> {t('plan.hub.refresh')}</button>
-                    </>
-                    )}
-                />
-
-                {/* Readiness summary strip */}
-                <div className="card" style={{padding:14, marginBottom:16}}>
-                    <div className="between">
-                        <div className="row" style={{gap:14}}>
-                            <div
-                                className={`ring sm ${ready.pct === 100 ? 'done' : ''}`}
-                                style={{'--p': ready.pct} as CSSProperties}
+                        {refreshStatus !== 'idle' && (
+                            <span
+                                className={`plan-hub-refresh-status ${refreshStatus}`}
+                                role={refreshStatus === 'error' ? 'alert' : 'status'}
                             >
-                                <span>{ready.pct}%</span>
-                            </div>
-                            <div>
-                                <div style={{fontWeight:600, fontSize:13.5}}>
-                                    {ready.pct === 0
-                                        ? t('plan.hub.nothingSetUp')
-                                        : ready.pct === 100
-                                            ? t('plan.hub.planReadyShare')
-                                            : t('plan.hub.stepsComplete', { done: ready.done, total: ready.total })}
-                                </div>
-                                <div className="muted" style={{fontSize:12, marginTop:2}}>
-                                    {ready.pct < 100
-                                        ? <>{t('plan.hub.next')}: <b style={{color:'var(--ink)'}}>{nextDef ? t(`plan.steps.${nextDef.id}.title`) : ''}</b>
-                                            {status[nextId]?.missing?.[0] && <> · {status[nextId].missing![0]}</>}
-                                           </>
-                                        : t('plan.hub.noActiveRisks')}
-                                </div>
-                            </div>
-                        </div>
+                                {refreshStatus === 'error'
+                                    ? t('plan.hub.refreshFailed')
+                                    : t('plan.hub.refreshSucceeded')}
+                            </span>
+                        )}
+                    </>
+                )}
+            />
 
-                        <div className="row" style={{gap:6}}>
-                            {STEP_DEFS.map((def, i) => {
-                                const state = status[def.id].state;
-                                const cls = state === 'done' ? 'done' : state === 'warn' ? 'warn' : state === 'blocked' ? 'blocked' : 'opt';
-                                return (
-                                    <span key={def.id} className={`pill ${cls} sm`}>
-                                        <span className="pdot"/>
-                                        <span style={{fontSize:10}}>{i+1}</span>
-                                    </span>
-                                );
-                            })}
-                        </div>
+            <PlanningReadinessLauncher
+                ready={ready}
+                status={status}
+                nextId={nextId}
+            />
+
+            {planningJobs.length > 0 && (
+                <section className="plan-hub-jobs" aria-labelledby="plan-hub-jobs-title">
+                    <div className="plan-hub-section-heading">
+                        <h2 id="plan-hub-jobs-title">{t('plan.hub.attentionJobs')}</h2>
+                        <p>{t('plan.hub.attentionJobsDescription')}</p>
                     </div>
-                </div>
+                    <div className="plan-hub-job-list">
+                        {planningJobs.map(job => <PlanningJobLink key={job.id} job={job} />)}
+                    </div>
+                </section>
+            )}
 
-                {/* Recommended heading */}
-                <div className="row" style={{marginBottom:10}}>
-                    <h3 style={{margin:0, fontSize:13, fontWeight:600, letterSpacing:'-0.005em'}}>
-                        {ready.pct === 0 ? t('plan.hub.recommendedStart')
-                          : ready.pct === 100 ? t('plan.hub.recommendedWrap')
-                          : t('plan.hub.recommendedResume')}
-                    </h3>
-                </div>
-
-                {/* Primary card */}
-                <PrimaryCard
-                    ready={ready}
-                    status={status}
-                    nextId={nextId}
-                    onOpen={() => openMaster('iteration')}
-                />
-
-                {/* Other masters */}
-                <div className="row" style={{marginTop:28, marginBottom:10}}>
-                    <h3 style={{margin:0, fontSize:13, fontWeight:600, letterSpacing:'-0.005em'}}>{t('plan.hub.otherMasters')}</h3>
-                </div>
-                <div className="master-grid master-grid-four">
-                    {otherMasters.map(m => (
-                        <MasterCard
-                            key={m.id}
-                            icon={m.icon}
-                            title={m.title}
-                            desc={m.desc}
-                            meta={m.meta}
-                            cta={m.cta}
-                            muted={(m as { muted?: boolean }).muted}
-                            onOpen={() => openMaster(m.id)}
-                        />
-                    ))}
-                </div>
-
-                {/* Expert links */}
-                <div className="divider" style={{margin:'28px 0 14px'}}/>
-                <div className="row" style={{gap:10, color:'var(--ink-3)', fontSize:12, flexWrap:'wrap'}}>
-                    <span>{t('plan.hub.preferDirect')}</span>
-                    <Link to="/iterations" className="btn sm ghost"><IIteration size={12}/> {t('nav.iterations')}</Link>
-                    <Link to="/team" className="btn sm ghost"><ITeam size={12}/> {t('nav.team')}</Link>
-                    <Link to="/tasks" className="btn sm ghost"><ITasks size={12}/> {t('nav.tasks')}</Link>
-                    <Link to="/gantt" className="btn sm ghost"><IGantt size={12}/> {t('nav.gantt')}</Link>
-                </div>
-            </PageLayout>
+            <details className="plan-hub-direct-tools">
+                <summary>
+                    <span>
+                        <strong>{t('plan.hub.directTools')}</strong>
+                        <small>{t('plan.hub.directToolsDescription')}</small>
+                    </span>
+                    <ChevronDown aria-hidden="true" size={15} />
+                </summary>
+                <nav className="plan-hub-direct-tool-groups" aria-label={t('plan.hub.directTools')}>
+                    <section className="plan-hub-direct-tool-group">
+                        <h3>{t('plan.hub.directToolGroups.shape')}</h3>
+                        <div className="plan-hub-direct-tool-list">
+                            <Link to="/projects" className="btn sm ghost">
+                                <Layers aria-hidden="true" size={12} />
+                                {t('plan.masters.planProject.title')}
+                            </Link>
+                            <Link to="/triage" className="btn sm ghost">
+                                <Inbox aria-hidden="true" size={12} />
+                                {t('nav.triage')}
+                            </Link>
+                            <Link to="/tasks" className="btn sm ghost">
+                                <ListTodo aria-hidden="true" size={12} />
+                                {t('nav.tasks')}
+                            </Link>
+                        </div>
+                    </section>
+                    <section className="plan-hub-direct-tool-group">
+                        <h3>{t('plan.hub.directToolGroups.schedule')}</h3>
+                        <div className="plan-hub-direct-tool-list">
+                            <Link to="/iterations" className="btn sm ghost">
+                                <CalendarRange aria-hidden="true" size={12} />
+                                {t('nav.iterations')}
+                            </Link>
+                            <Link to="/team" className="btn sm ghost">
+                                <Users aria-hidden="true" size={12} />
+                                {t('nav.team')}
+                            </Link>
+                            <Link to="/gantt" className="btn sm ghost">
+                                <GanttChartSquare aria-hidden="true" size={12} />
+                                {t('nav.gantt')}
+                            </Link>
+                        </div>
+                    </section>
+                    <section className="plan-hub-direct-tool-group">
+                        <h3>{t('plan.hub.directToolGroups.automation')}</h3>
+                        <div className="plan-hub-direct-tool-list">
+                            <Link to="/agent-pipeline" className="btn sm ghost">
+                                <Sparkles aria-hidden="true" size={12} />
+                                {t('plan.masters.agentReady.title')}
+                            </Link>
+                        </div>
+                    </section>
+                </nav>
+            </details>
+        </PageLayout>
     );
 };
 

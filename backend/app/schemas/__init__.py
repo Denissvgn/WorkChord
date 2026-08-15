@@ -28,14 +28,14 @@ from app.schemas.outbound_webhook import (
 )
 from app.schemas.project import (
     InitiativeCreate, InitiativeResponse, InitiativeUpdate,
-    ProjectCreate, ProjectUpdate, ProjectResponse, ProjectSummary,
+    ProjectCreate, ProjectUpdate, ProjectResponse, ProjectPortfolioSummary, ProjectSummary,
     ProjectInitiativeSummary,
     ProjectStatus, ProjectHealth, ProjectTargetDateRisk,
     ProjectUpdateEntryCreate, ProjectUpdateEntryResponse, ProjectUpdateFreshness,
     ProjectMilestoneCreate, ProjectMilestoneCreateRequest,
     ProjectMilestoneDeleteResponse, ProjectMilestoneResponse,
     ProjectMilestoneStatus, ProjectMilestoneSummary, ProjectMilestoneTaskGroup,
-    ProjectMilestoneUpdate
+    ProjectMilestoneUpdate, RoadmapMilestonePage
 )
 from app.schemas.saved_view import (
     SavedViewCreate, SavedViewCreateRequest, SavedViewDashboardCardResponse,
@@ -129,14 +129,14 @@ __all__ = [
     "OutboundWebhookTargetResponse", "OutboundWebhookTargetUpdate",
     # Project
     "InitiativeCreate", "InitiativeResponse", "InitiativeUpdate",
-    "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectSummary",
+    "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectPortfolioSummary", "ProjectSummary",
     "ProjectInitiativeSummary",
     "ProjectStatus", "ProjectHealth", "ProjectTargetDateRisk",
     "ProjectUpdateEntryCreate", "ProjectUpdateEntryResponse", "ProjectUpdateFreshness",
     "ProjectMilestoneCreate", "ProjectMilestoneCreateRequest",
     "ProjectMilestoneDeleteResponse", "ProjectMilestoneResponse",
     "ProjectMilestoneStatus", "ProjectMilestoneSummary", "ProjectMilestoneTaskGroup",
-    "ProjectMilestoneUpdate",
+    "ProjectMilestoneUpdate", "RoadmapMilestonePage",
     # Saved view
     "SavedViewCreate", "SavedViewCreateRequest", "SavedViewDashboardCardResponse",
     "SavedViewDuplicateRequest", "SavedViewResponse", "SavedViewScope",

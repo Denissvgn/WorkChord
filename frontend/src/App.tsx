@@ -10,6 +10,7 @@ const OverviewPage = lazy(routeModuleLoaders.overview);
 const LandingPage = lazy(routeModuleLoaders.landing);
 const PlanPage = lazy(routeModuleLoaders.plan);
 const PlanMasterPage = lazy(routeModuleLoaders.planMaster);
+const PlanSharePage = lazy(routeModuleLoaders.planShare);
 const CalendarPage = lazy(routeModuleLoaders.calendar);
 const IterationsPage = lazy(routeModuleLoaders.iterations);
 const TeamPage = lazy(routeModuleLoaders.team);
@@ -46,6 +47,7 @@ const WorkspaceRoutes = () => (
     <Route path="/" element={<OverviewPage />} />
     <Route path="/plan" element={<PlanPage />} />
     <Route path="/plan/master" element={<PlanMasterPage />} />
+    <Route path="/plan/share/:publicId" element={<PlanSharePage />} />
     <Route path="/calendar" element={<CalendarPage />} />
     <Route path="/iterations" element={<IterationsPage />} />
     <Route path="/team" element={<TeamPage />} />

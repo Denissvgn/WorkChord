@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router-dom';
 import { AlertTriangle, Bot, CheckCircle2, XCircle } from 'lucide-react';
@@ -17,6 +17,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
     const [isOpen, setIsOpen] = useState(false);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+    const panelId = useId();
     const [panelPosition, setPanelPosition] = useState({ left: 0, top: 0 });
 
     const location = useLocation();
@@ -88,6 +89,9 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
 
     const details = (
         <div className="space-y-2 text-xs">
+            <p className="text-left text-content-secondary">
+                {t('surfaces.taskReadiness.explanation')}
+            </p>
             {readiness.blockers.length > 0 && (
                 <div>
                     <p className="font-semibold text-feedback-warning-foreground">{t('surfaces.taskReadiness.blockers')}</p>
@@ -124,7 +128,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                         )}
                         <div className="min-w-0">
                             <p className="font-medium text-content-primary text-left truncate">{criterion.label}</p>
-                            <p className="text-content-secondary text-left text-[10px] leading-snug">{criterion.reason}</p>
+                            <p className="text-content-secondary text-left text-wc-micro leading-snug">{criterion.reason}</p>
                         </div>
                     </div>
                 ))}
@@ -155,6 +159,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                     setIsOpen(!isOpen);
                 }}
                 aria-expanded={isOpen}
+                aria-controls={isOpen ? panelId : undefined}
                 className={clsx('flex items-center rounded-full border px-2 py-0.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1', badgeClassName)}
             >
                 <Icon className="mr-1 h-3 w-3" />
@@ -162,7 +167,11 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
             </button>
             {isOpen && typeof document !== 'undefined' && createPortal(
                 <div
+                    id={panelId}
                     ref={panelRef}
+                    role="region"
+                    aria-label={t('surfaces.taskReadiness.detailsLabel', { status: label })}
+                    aria-live="polite"
                     className="fixed w-80 rounded-md border border-border bg-surface-card p-3 shadow-lg z-[100] animate-in fade-in slide-in-from-top-1 text-left"
                     style={{ left: panelPosition.left, top: panelPosition.top }}
                 >

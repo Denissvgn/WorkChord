@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { CheckCircle, KeyRound, ShieldCheck, Trash2 } from 'lucide-react';
+import { KeyRound, ShieldCheck, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -22,16 +22,22 @@ const protectedQueryKeys = [
     ['routing-preview'],
     ['agent-assignments'],
     ['agent-pipeline'],
+    ['agent-team-setup'],
     ['task-timeline'],
     ['agent-run-detail'],
 ] as const;
 
-export const AdminAccessPanel = () => {
+export const AdminAccessPanel = ({
+    headingLevel = 2,
+}: {
+    headingLevel?: 2 | 3;
+}) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const { hasAdminKey } = useAdminAccess();
     const [draftKey, setDraftKey] = useState('');
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
     const refreshProtectedQueries = () => {
         protectedQueryKeys.forEach(queryKey => {
@@ -70,20 +76,25 @@ export const AdminAccessPanel = () => {
         <section className="card max-w-3xl space-y-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                    <h2 className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+                    <Heading
+                        className={`flex items-center gap-2 font-semibold text-content-primary ${
+                            headingLevel === 3 ? 'text-base' : 'text-lg'
+                        }`}
+                    >
                         <ShieldCheck className="h-5 w-5 text-action" />
                         {t('settings.adminAccessTitle')}
-                    </h2>
+                    </Heading>
                     <p className="mt-1 text-sm text-content-secondary">{t('settings.adminAccessDescription')}</p>
                 </div>
                 <div
                     className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
                         hasAdminKey
-                            ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
+                            ? 'border-feedback-info-border bg-feedback-info-muted text-feedback-info-foreground'
                             : 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground'
                     }`}
+                    role="status"
                 >
-                    <CheckCircle className="h-3.5 w-3.5" />
+                    <KeyRound aria-hidden="true" className="h-3.5 w-3.5" />
                     {hasAdminKey ? t('settings.adminAccessConfigured') : t('settings.adminAccessNotConfigured')}
                 </div>
             </div>
@@ -95,6 +106,7 @@ export const AdminAccessPanel = () => {
                             ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
                             : 'border-feedback-danger-border bg-feedback-danger-muted text-feedback-danger-foreground'
                     }`}
+                    role={message.type === 'error' ? 'alert' : 'status'}
                 >
                     {message.text}
                 </div>

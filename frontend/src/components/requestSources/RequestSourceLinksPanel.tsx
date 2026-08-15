@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, Link2, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import clsx from 'clsx';
@@ -154,8 +154,7 @@ export const RequestSourceLinksPanel = ({
         },
     });
 
-    const handleCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleCreate = () => {
         const titleValue = nullableTrim(newTitle) || nullableTrim(newUrl);
         if (!titleValue) {
             setError(t('surfaces.requestSourceLinks.titleOrUrlRequired'));
@@ -174,6 +173,24 @@ export const RequestSourceLinksPanel = ({
                 priority_hint: Number.isFinite(parsedPriority) ? parsedPriority : null,
             },
         });
+    };
+
+    const handleCreateKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (
+            event.key !== 'Enter'
+            || event.nativeEvent.isComposing
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        if (
+            createLinkMutation.isPending
+            || (!newTitle.trim() && !newUrl.trim())
+        ) {
+            return;
+        }
+        handleCreate();
     };
 
     return (
@@ -223,11 +240,12 @@ export const RequestSourceLinksPanel = ({
                 </div>
             )}
 
-            <form onSubmit={handleCreateSubmit} className="space-y-2">
+            <div className="space-y-2">
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr_auto]">
                     <input
                         type="text"
                         value={newTitle}
+                        onKeyDown={handleCreateKeyDown}
                         onChange={event => setNewTitle(event.target.value)}
                         placeholder={t('surfaces.requestSourceLinks.requestTitle')}
                         className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
@@ -235,12 +253,14 @@ export const RequestSourceLinksPanel = ({
                     <input
                         type="url"
                         value={newUrl}
+                        onKeyDown={handleCreateKeyDown}
                         onChange={event => setNewUrl(event.target.value)}
                         placeholder={t('surfaces.requestSourceLinks.requestURL')}
                         className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     />
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleCreate}
                         disabled={createLinkMutation.isPending || (!newTitle.trim() && !newUrl.trim())}
                         className="inline-flex items-center justify-center gap-1 rounded-md bg-action px-3 py-2 text-sm font-medium text-content-emphasis hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
                     >
@@ -266,6 +286,7 @@ export const RequestSourceLinksPanel = ({
                     <input
                         type="text"
                         value={sourceName}
+                        onKeyDown={handleCreateKeyDown}
                         onChange={event => setSourceName(event.target.value)}
                         placeholder={t('surfaces.requestSourceLinks.sourceName')}
                         className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
@@ -275,12 +296,13 @@ export const RequestSourceLinksPanel = ({
                         min={1}
                         max={10}
                         value={priorityHint}
+                        onKeyDown={handleCreateKeyDown}
                         onChange={event => setPriorityHint(event.target.value)}
                         placeholder={t('surfaces.requestSourceLinks.priority')}
                         className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     />
                 </div>
-            </form>
+            </div>
 
             <div className="mt-4 space-y-2">
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_150px]">
@@ -377,11 +399,11 @@ export const RequestSourceLinksPanel = ({
                                                 {requestLabel(source)}
                                             </span>
                                         )}
-                                        <span className="rounded-full bg-surface-card px-2 py-0.5 text-[11px] font-medium text-content-secondary">
+                                        <span className="rounded-full bg-surface-card px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
                                             {sourceTypeLabel(source.source_type)}
                                         </span>
                                         {source.priority_hint && (
-                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-[11px] font-medium text-feedback-warning-foreground">
+                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-wc-micro font-medium text-feedback-warning-foreground">
                                                 P{source.priority_hint}
                                             </span>
                                         )}

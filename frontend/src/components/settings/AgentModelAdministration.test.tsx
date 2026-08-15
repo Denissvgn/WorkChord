@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
     AgentActor,
@@ -174,12 +174,12 @@ describe('AgentModelAdministration', () => {
             level: 2,
             name: 'Model and actor evidence',
         })).toBeInTheDocument();
-        expect(screen.getByText('PM reader · read only')).toBeInTheDocument();
+        expect(screen.getByText('Actor scope: planning:read · read only')).toBeInTheDocument();
         expect(screen.getByText('Configured routing mode')).toBeInTheDocument();
         expect(screen.getByText('Effective routing mode')).toBeInTheDocument();
         expect(screen.getAllByText('Enforced')).toHaveLength(2);
-        expect(screen.getByText('Topology readiness')).toBeInTheDocument();
-        expect(screen.getByText('Ready')).toBeInTheDocument();
+        expect(screen.getByText('Routing topology eligibility')).toBeInTheDocument();
+        expect(screen.getByText('Eligible')).toBeInTheDocument();
 
         expect(screen.getByRole('heading', { name: 'Exact actor roster' })).toBeInTheDocument();
         expect(screen.getAllByRole('heading', { name: 'Worker Alpha' })).toHaveLength(2);
@@ -203,7 +203,7 @@ describe('AgentModelAdministration', () => {
 
         renderWithProviders(<AgentModelAdministration />);
 
-        expect(await screen.findByText('Administrator · changes enabled')).toBeInTheDocument();
+        expect(await screen.findByText('Actor scope: admin · changes enabled')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Audited change controls' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Change rationale' })).toBeRequired();
         expect(screen.getByRole('heading', { name: 'Create catalog entry' })).toBeInTheDocument();
@@ -291,7 +291,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        expect(await screen.findByText('Administrator · changes enabled')).toBeInTheDocument();
+        expect(await screen.findByText('Actor scope: admin · changes enabled')).toBeInTheDocument();
         const enableCatalog = screen.getByRole('button', {
             name: 'Enable model catalog entry Dormant Code',
         });
@@ -310,6 +310,10 @@ describe('AgentModelAdministration', () => {
         });
         await user.click(reconcile);
         await user.click(enableCatalog);
+        const catalogDialog = await screen.findByRole('dialog', {
+            name: 'Enable model catalog entry',
+        });
+        await user.click(within(catalogDialog).getByRole('button', { name: 'Enable' }));
 
         await waitFor(() => {
             expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(
@@ -330,6 +334,10 @@ describe('AgentModelAdministration', () => {
         await user.click(screen.getByRole('button', {
             name: 'Enable binding for Worker Alpha using Dormant Code',
         }));
+        const bindingDialog = await screen.findByRole('dialog', {
+            name: 'Enable model binding',
+        });
+        await user.click(within(bindingDialog).getByRole('button', { name: 'Enable' }));
         await waitFor(() => {
             expect(agentServiceMock.updateModelBinding).toHaveBeenCalledWith(
                 disabledBinding.id,
@@ -345,7 +353,7 @@ describe('AgentModelAdministration', () => {
         });
     });
 
-    it('closes a stale catalog editor before refreshing conflict evidence', async () => {
+    it('preserves a stale catalog draft until overwrite is explicitly prepared', async () => {
         agentServiceMock.getCapabilities.mockResolvedValue(
             capabilitiesFixture(['admin']),
         );
@@ -364,7 +372,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        await screen.findByText('Administrator · changes enabled');
+        await screen.findByText('Actor scope: admin · changes enabled');
         await user.type(
             screen.getByRole('textbox', { name: 'Change rationale' }),
             'Update the configured alias.',
@@ -373,17 +381,43 @@ describe('AgentModelAdministration', () => {
             name: 'Edit model catalog entry Balanced Code',
         }));
         expect(screen.getByRole('heading', { name: 'Edit catalog entry' })).toBeInTheDocument();
+        const alias = screen.getByRole('textbox', { name: 'Configured model alias' });
+        await user.clear(alias);
+        await user.type(alias, 'Balanced Code v2');
 
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         expect(await screen.findByRole('alert')).toHaveTextContent(
             'model_catalog revision is stale',
         );
-        expect(screen.getByRole('heading', { name: 'Create catalog entry' })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: 'Stable catalog key' })).toHaveValue('');
+        expect(screen.getByRole('heading', { name: 'Edit catalog entry' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Stable catalog key' })).toHaveValue('balanced-code');
+        expect(alias).toHaveValue('Balanced Code v2');
+        expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenLastCalledWith(
+            11,
+            expect.objectContaining({ expected_revision: 3 }),
+            expect.any(Object),
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Prepare overwrite' }));
+        const overwriteDialog = await screen.findByRole('dialog', {
+            name: 'Prepare this draft to overwrite the latest state?',
+        });
+        await user.click(within(overwriteDialog).getByRole('button', { name: 'Prepare overwrite' }));
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => {
+            expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenLastCalledWith(
+                11,
+                expect.objectContaining({
+                    expected_revision: 4,
+                    configured_model_alias: 'Balanced Code v2',
+                }),
+                expect.any(Object),
+            );
+        });
     });
 
-    it('closes a stale binding editor before refreshing conflict evidence', async () => {
+    it('preserves a stale binding draft until overwrite is explicitly prepared', async () => {
         agentServiceMock.getCapabilities.mockResolvedValue(
             capabilitiesFixture(['admin']),
         );
@@ -402,7 +436,7 @@ describe('AgentModelAdministration', () => {
 
         const { user } = renderWithProviders(<AgentModelAdministration />);
 
-        await screen.findByText('Administrator · changes enabled');
+        await screen.findByText('Actor scope: admin · changes enabled');
         await user.type(
             screen.getByRole('textbox', { name: 'Change rationale' }),
             'Update the binding policy.',
@@ -411,13 +445,39 @@ describe('AgentModelAdministration', () => {
             name: 'Edit binding for Worker Alpha using Balanced Code',
         }));
         expect(screen.getByRole('heading', { name: 'Edit model binding' })).toBeInTheDocument();
+        const tools = screen.getByRole('textbox', { name: 'Tools' });
+        await user.clear(tools);
+        await user.type(tools, 'code-edit, shell');
 
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         expect(await screen.findByRole('alert')).toHaveTextContent(
             'model_binding revision is stale',
         );
-        expect(screen.getByRole('heading', { name: 'Create model binding' })).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: 'Actor' })).toHaveValue('');
+        expect(screen.getByRole('heading', { name: 'Edit model binding' })).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'Actor' })).toHaveValue('2');
+        expect(tools).toHaveValue('code-edit, shell');
+        expect(agentServiceMock.updateModelBinding).toHaveBeenLastCalledWith(
+            21,
+            expect.objectContaining({ expected_revision: 4 }),
+            expect.any(Object),
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Prepare overwrite' }));
+        const overwriteDialog = await screen.findByRole('dialog', {
+            name: 'Prepare this draft to overwrite the latest state?',
+        });
+        await user.click(within(overwriteDialog).getByRole('button', { name: 'Prepare overwrite' }));
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => {
+            expect(agentServiceMock.updateModelBinding).toHaveBeenLastCalledWith(
+                21,
+                expect.objectContaining({
+                    expected_revision: 5,
+                    tool_tags: ['code-edit', 'shell'],
+                }),
+                expect.any(Object),
+            );
+        });
     });
 });

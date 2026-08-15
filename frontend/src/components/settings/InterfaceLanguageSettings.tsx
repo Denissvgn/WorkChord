@@ -8,6 +8,7 @@ import { useToast } from '../feedback/toast';
 import { systemSettingsService } from '../../services/systemSettingsService';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
 import type { AppRuntimeSettingsUpdate, LanguageCode, RuntimeSettingSource, SystemSettings } from '../../types/systemSettings';
+import { changeAppLanguage } from '../../i18n/i18n';
 
 const sourceClass: Record<RuntimeSettingSource, string> = {
     runtime: 'bg-action-muted text-action border-action',
@@ -42,13 +43,13 @@ export const InterfaceLanguageSettings = () => {
 
     const languageMutation = useMutation({
         mutationFn: systemSettingsService.updateApp,
-        onSuccess: (app) => {
+        onSuccess: async (app) => {
             queryClient.setQueryData<SystemSettings>(['system-settings'], (current) => (
                 current ? { ...current, app } : current
             ));
             queryClient.invalidateQueries({ queryKey: ['system-settings'] });
             setLanguageDraft(null);
-            void i18n.changeLanguage(app.ui_language);
+            await changeAppLanguage(app.ui_language);
             document.documentElement.lang = app.ui_language;
             const nextT = i18n.getFixedT(app.ui_language);
             toast.success(nextT('settingsPage.interfaceLanguageSaved'));
@@ -95,10 +96,10 @@ export const InterfaceLanguageSettings = () => {
     return (
         <section className="card space-y-4">
             <div>
-                <h2 className="flex items-center gap-2 text-xl font-semibold text-content-primary">
+                <h3 className="flex items-center gap-2 text-wc-heading font-semibold text-content-primary">
                     <Globe2 className="h-5 w-5 text-feedback-success" />
                     {t('settingsPage.interfaceLanguage')}
-                </h2>
+                </h3>
                 <p className="mt-1 text-sm text-content-secondary">{t('settingsPage.interfaceLanguageDescription')}</p>
             </div>
 

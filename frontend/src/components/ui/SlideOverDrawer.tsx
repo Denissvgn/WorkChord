@@ -2,8 +2,8 @@ import { useId } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 import { X } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
 import { useDialogLayer } from '../common/dialogLayer';
 
 export const SlideOverDrawer = ({
@@ -17,6 +17,7 @@ export const SlideOverDrawer = ({
     ariaLabel,
     className,
     initialFocusRef,
+    restoreFocusRef,
     closeOnBackdropClick = true,
     closeDisabled = false,
     closeLabel: closeLabelProp,
@@ -31,6 +32,7 @@ export const SlideOverDrawer = ({
     ariaLabel?: string;
     className?: string;
     initialFocusRef?: RefObject<HTMLElement | null>;
+    restoreFocusRef?: RefObject<HTMLElement | null>;
     closeOnBackdropClick?: boolean;
     closeDisabled?: boolean;
     closeLabel?: string;
@@ -42,6 +44,7 @@ export const SlideOverDrawer = ({
         open,
         onClose,
         initialFocusRef,
+        restoreFocusRef,
         closeDisabled,
     });
 
@@ -51,7 +54,7 @@ export const SlideOverDrawer = ({
 
     return createPortal(
         <div className="wc contents">
-            <div className="fixed inset-0 z-50 flex justify-end">
+            <div className="wc-slide-over-layer fixed inset-0 z-50 flex justify-end">
                 {closeOnBackdropClick ? (
                     <button
                         type="button"
@@ -60,10 +63,13 @@ export const SlideOverDrawer = ({
                         aria-hidden="true"
                         disabled={closeDisabled}
                         onClick={requestClose}
-                        className="absolute inset-0 cursor-default bg-overlay/35 backdrop-blur-[1px]"
+                        className="wc-slide-over-backdrop absolute inset-0 cursor-default bg-overlay/35 backdrop-blur-[1px]"
                     />
                 ) : (
-                    <div data-dialog-backdrop className="absolute inset-0 bg-overlay/35 backdrop-blur-[1px]" />
+                    <div
+                        data-dialog-backdrop
+                        className="wc-slide-over-backdrop absolute inset-0 bg-overlay/35 backdrop-blur-[1px]"
+                    />
                 )}
                 <aside
                     ref={dialogRef}
@@ -73,14 +79,14 @@ export const SlideOverDrawer = ({
                     aria-labelledby={ariaLabel ? undefined : titleId}
                     aria-describedby={subtitle ? subtitleId : undefined}
                     tabIndex={-1}
-                    className={clsx(
-                        'relative z-10 flex h-full w-full max-w-[480px] translate-x-0 flex-col shadow-2xl transition-transform duration-200 ease-out',
+                    className={twMerge(
+                        'wc-slide-over relative z-10 flex h-screen h-dvh w-full max-w-[480px] flex-col',
                         className,
                     )}
-                    style={{ background: 'var(--panel)', borderLeft: '1px solid var(--border)' }}
+                    style={{ background: 'var(--panel)', borderInlineStart: '1px solid var(--border)' }}
                 >
                     <header
-                        className="flex h-14 items-center gap-3 px-5"
+                        className="flex min-h-14 items-center gap-3 px-5 py-3"
                         style={{ borderBottom: '1px solid var(--border)' }}
                     >
                         {icon && (
@@ -92,7 +98,13 @@ export const SlideOverDrawer = ({
                             </span>
                         )}
                         <div className="min-w-0 flex-1">
-                            <h3 id={titleId} className="truncate text-sm font-semibold tracking-tight" style={{ color: 'var(--ink)' }}>{title}</h3>
+                            <h2
+                                id={titleId}
+                                className="wc-slide-over-title text-base font-semibold tracking-tight"
+                                style={{ color: 'var(--ink)' }}
+                            >
+                                {title}
+                            </h2>
                             {subtitle && <p id={subtitleId} className="truncate text-xs" style={{ color: 'var(--ink-3)' }}>{subtitle}</p>}
                         </div>
                         <button
@@ -100,8 +112,7 @@ export const SlideOverDrawer = ({
                             onClick={requestClose}
                             aria-label={closeLabel}
                             disabled={closeDisabled}
-                            className="btn ghost"
-                            style={{ width: 30, padding: 0, justifyContent: 'center' }}
+                            className="btn ghost icon"
                         >
                             <X aria-hidden="true" className="h-4 w-4" />
                         </button>

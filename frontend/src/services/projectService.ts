@@ -11,10 +11,12 @@ import type {
     ProjectMilestoneCreateRequest,
     ProjectMilestoneDeleteResponse,
     ProjectMilestoneUpdateRequest,
+    ProjectPortfolioSummary,
     ProjectSummary,
     ProjectUpdate,
     ProjectUpdateEntry,
     ProjectUpdateEntryCreate,
+    RoadmapMilestonePage,
 } from '../types/project';
 
 export const projectService = {
@@ -81,8 +83,23 @@ export const projectService = {
         return response.data;
     },
 
+    getPortfolioSummaries: async () => {
+        const response = await api.get<ProjectPortfolioSummary[]>('/projects/portfolio-summaries');
+        return response.data;
+    },
+
     getMilestones: async (id: number) => {
         const response = await api.get<ProjectMilestone[]>(`/projects/${id}/milestones`);
+        return response.data;
+    },
+
+    getRoadmapMilestones: async (afterId: number | null, limit = 500) => {
+        const response = await api.get<RoadmapMilestonePage>('/roadmap/milestones', {
+            params: {
+                after_id: afterId ?? undefined,
+                limit,
+            },
+        });
         return response.data;
     },
 

@@ -12,6 +12,7 @@ import { teamService } from '../services/teamService';
 import { useIterationStore } from '../store/iterationStore';
 import { PageHeader, PageLayout } from '../components/ui';
 import type { TeamMember, TeamMemberProfile } from '../types/team';
+import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 
 type TeamPageAction = 'assign' | 'import';
 
@@ -155,6 +156,7 @@ const TeamPage = () => {
                     </>
                 )}
             />
+            <PlanReturnBar />
 
             {isLoadingIterations && (
                 <div className="banner">{t('teamPage.loadingCapacity')}</div>

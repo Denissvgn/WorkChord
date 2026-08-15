@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trash2, ChevronDown, ChevronRight, GripVertical, Plus, X, ArrowUp, ArrowDown, Info } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
@@ -11,13 +11,15 @@ import { schedulingPassDisplay } from '../../i18n/schedulingDisplay';
 
 interface Props {
     pass: SchedulingPass;
+    sortableId: string;
     onChange: (pass: SchedulingPass) => void;
     onRemove: () => void;
 }
 
-export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
+export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Props) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
+    const detailsId = useId();
     const display = schedulingPassDisplay(pass);
 
     // Sortable hook for drag-n-drop
@@ -28,7 +30,7 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
         transform,
         transition,
         isDragging,
-    } = useSortable({ id: pass.id });
+    } = useSortable({ id: sortableId });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -106,21 +108,22 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
             className={`
                 rounded-lg border bg-surface-card transition-all duration-200
                 ${pass.enabled
-                    ? 'border-l-4 border-l-action border-border'
-                    : 'border-l-4 border-l-border-strong border-border opacity-75'
+                    ? 'border-action'
+                    : 'border-border opacity-75'
                 }
                 ${isDragging ? 'shadow-lg' : ''}
             `}
         >
             {/* Header */}
-            <div className="flex items-center gap-4 p-4">
+            <div className="flex flex-wrap items-start gap-3 p-4 sm:flex-nowrap sm:items-center sm:gap-4">
                 <button
+                    type="button"
                     {...attributes}
                     {...listeners}
                     className="touch-none p-1 -m-1 cursor-grab active:cursor-grabbing"
                     aria-label={t('settingsScheduling.aria.dragToReorder')}
                 >
-                    <GripVertical className="w-4 h-4 text-content-tertiary hover:text-content-secondary" />
+                    <GripVertical className="w-4 h-4 text-content-tertiary hover:text-content-secondary" aria-hidden="true" />
                 </button>
 
                 <Checkbox
@@ -130,30 +133,34 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                 />
 
                 <button
+                    type="button"
                     onClick={() => setExpanded(!expanded)}
-                    className="flex-1 text-left"
+                    className="min-w-0 flex-1 text-left"
+                    aria-expanded={expanded}
+                    aria-controls={detailsId}
                 >
                     <div className="flex items-center gap-2">
                         {expanded ? (
-                            <ChevronDown className="w-4 h-4 text-content-tertiary" />
+                            <ChevronDown className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
                         ) : (
-                            <ChevronRight className="w-4 h-4 text-content-tertiary" />
+                            <ChevronRight className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
                         )}
-                        <span className="min-w-0">
+                        <span className="min-w-0 break-words">
                             <span className="font-medium text-content-primary">{display.name}</span>
                             {display.isBuiltIn && (
-                                <code className="ml-2 rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
+                                <code className="ms-2 break-all rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
                                     {display.technicalId}
                                 </code>
                             )}
                         </span>
                     </div>
                     {display.description && (
-                        <p className="text-sm text-content-secondary mt-0.5 ml-6">{display.description}</p>
+                        <p className="ms-6 mt-0.5 break-words text-sm text-content-secondary">{display.description}</p>
                     )}
                 </button>
 
                 <button
+                    type="button"
                     onClick={onRemove}
                     className="p-1 text-content-tertiary hover:text-feedback-danger-foreground transition-colors"
                     title={t('settingsScheduling.aria.removePass')}
@@ -165,9 +172,9 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
 
             {/* Expanded Details */}
             {expanded && (
-                <div className="px-4 pb-4 pt-2 border-t border-border-subtle space-y-6 animate-in slide-in-from-top-2 duration-200">
+                <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-6 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
                     {/* Basic Info */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label={t('settingsScheduling.fields.id')}
                             value={pass.id}
@@ -182,18 +189,19 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
 
                     {/* Filter Conditions */}
                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-medium text-content-primary">{t('settingsScheduling.fields.filterConditions')}</h4>
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                            <h4 className="min-w-0 break-words text-sm font-medium text-content-primary">{t('settingsScheduling.fields.filterConditions')}</h4>
                             <button
+                                type="button"
                                 onClick={addCondition}
                                 className="text-sm text-action hover:text-action flex items-center gap-1"
                             >
-                                <Plus className="w-3 h-3" />
+                                <Plus className="w-3 h-3" aria-hidden="true" />
                                 {t('settingsScheduling.actions.add')}
                             </button>
                         </div>
                         {pass.filter.all.length === 0 ? (
-                            <p className="text-sm text-content-secondary italic">{t('settingsScheduling.fields.noFilterConditions')}</p>
+                            <p className="text-sm text-content-secondary">{t('settingsScheduling.fields.noFilterConditions')}</p>
                         ) : (
                             <div className="space-y-2">
                                 {pass.filter.all.map((condition, index) => {
@@ -208,13 +216,14 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                                     };
 
                                     return (
-                                        <div key={index} className="flex items-center gap-2">
-                                            <span className="text-sm text-content-tertiary w-6">{index + 1}.</span>
+                                        <div key={index} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 md:flex">
+                                            <span className="w-6 text-sm text-content-tertiary" aria-hidden="true">{index + 1}.</span>
                                             {/* Field dropdown */}
                                             <select
                                                 value={field}
                                                 onChange={(e) => handlePartChange(e.target.value, operator, value)}
-                                                className="flex-1 px-3 py-1.5 text-sm border border-border-strong rounded focus:outline-none focus:ring-1 focus:ring-focus"
+                                                className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                                aria-label={t('settingsScheduling.aria.conditionField', { index: index + 1 })}
                                             >
                                                 {FILTER_FIELDS.map(f => (
                                                     <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
@@ -224,7 +233,8 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                                             <select
                                                 value={operator}
                                                 onChange={(e) => handlePartChange(field, e.target.value, value)}
-                                                className="w-24 px-2 py-1.5 text-sm border border-border-strong rounded focus:outline-none focus:ring-1 focus:ring-focus"
+                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-24"
+                                                aria-label={t('settingsScheduling.aria.conditionOperator', { index: index + 1 })}
                                             >
                                                 {OPERATORS.map(op => (
                                                     <option key={op.value} value={op.value}>{t(op.labelKey)}</option>
@@ -238,7 +248,8 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                                                         handlePartChange(field, operator, e.target.value);
                                                     }
                                                 }}
-                                                className="w-28 px-2 py-1.5 text-sm border border-border-strong rounded focus:outline-none focus:ring-1 focus:ring-focus"
+                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-28"
+                                                aria-label={t('settingsScheduling.aria.conditionValue', { index: index + 1 })}
                                             >
                                                 {FILTER_VALUES.map(v => (
                                                     <option key={v.value} value={v.value}>{t(v.labelKey)}</option>
@@ -251,13 +262,15 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                                                     type="text"
                                                     value={value}
                                                     onChange={(e) => handlePartChange(field, operator, e.target.value)}
-                                                    className="w-24 px-2 py-1.5 text-sm font-mono bg-surface-muted border border-border-strong rounded focus:outline-none focus:ring-1 focus:ring-focus"
+                                                    className="col-start-2 w-full rounded border border-border-strong bg-surface-muted px-2 py-1.5 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-24"
                                                     placeholder={t('settingsScheduling.fields.value')}
+                                                    aria-label={t('settingsScheduling.aria.customConditionValue', { index: index + 1 })}
                                                 />
                                             )}
                                             <button
+                                                type="button"
                                                 onClick={() => removeCondition(index)}
-                                                className="p-1 text-content-tertiary hover:text-feedback-danger-foreground"
+                                                className="col-start-2 justify-self-end p-1 text-content-tertiary hover:text-feedback-danger-foreground"
                                                 aria-label={t('settingsScheduling.aria.removeCondition')}
                                             >
                                                 <X className="w-4 h-4" aria-hidden="true" />
@@ -271,36 +284,39 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
 
                     {/* Sort Criteria */}
                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-medium text-content-primary">{t('settingsScheduling.fields.sortCriteria')}</h4>
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                            <h4 className="min-w-0 break-words text-sm font-medium text-content-primary">{t('settingsScheduling.fields.sortCriteria')}</h4>
                             <button
+                                type="button"
                                 onClick={addSortCriterion}
                                 className="text-sm text-action hover:text-action flex items-center gap-1"
                             >
-                                <Plus className="w-3 h-3" />
+                                <Plus className="w-3 h-3" aria-hidden="true" />
                                 {t('settingsScheduling.actions.add')}
                             </button>
                         </div>
                         {pass.sort.length === 0 ? (
-                            <p className="text-sm text-content-secondary italic">{t('settingsScheduling.fields.noSortCriteria')}</p>
+                            <p className="text-sm text-content-secondary">{t('settingsScheduling.fields.noSortCriteria')}</p>
                         ) : (
                             <div className="space-y-2">
                                 {pass.sort.map((criterion, index) => (
-                                    <div key={index} className="flex items-center gap-2">
-                                        <span className="text-sm text-content-tertiary w-6">{index + 1}.</span>
+                                    <div key={index} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 md:flex">
+                                        <span className="w-6 text-sm text-content-tertiary" aria-hidden="true">{index + 1}.</span>
                                         <select
                                             value={criterion.field}
                                             onChange={(e) => updateSortCriterion(index, { ...criterion, field: e.target.value })}
-                                            className="flex-1 px-3 py-1.5 text-sm border border-border-strong rounded focus:outline-none focus:ring-1 focus:ring-focus"
+                                            className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                            aria-label={t('settingsScheduling.aria.sortField', { index: index + 1 })}
                                         >
                                             {TASK_FIELDS.map(f => (
                                                 <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
                                             ))}
                                         </select>
                                         <button
+                                            type="button"
                                             onClick={() => toggleSortOrder(index)}
                                             className={`
-                                                flex items-center gap-1 px-2 py-1.5 text-sm rounded border
+                                                col-start-2 flex items-center justify-center gap-1 rounded border px-2 py-1.5 text-sm md:col-auto
                                                 ${criterion.order === 'asc'
                                                     ? 'bg-action-muted border-action text-action'
                                                     : 'bg-feedback-warning-muted border-feedback-warning-border text-feedback-warning-foreground'
@@ -309,15 +325,16 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
                                             title={t(`settingsScheduling.options.sortOrder.${criterion.order}`)}
                                         >
                                             {criterion.order === 'asc' ? (
-                                                <ArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="w-3 h-3" aria-hidden="true" />
                                             ) : (
-                                                <ArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="w-3 h-3" aria-hidden="true" />
                                             )}
-                                            {criterion.order}
+                                            {t(`settingsScheduling.options.sortOrder.${criterion.order}`)}
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={() => removeSortCriterion(index)}
-                                            className="p-1 text-content-tertiary hover:text-feedback-danger-foreground"
+                                            className="col-start-2 justify-self-end p-1 text-content-tertiary hover:text-feedback-danger-foreground"
                                             aria-label={t('settingsScheduling.aria.removeSortCriterion')}
                                         >
                                             <X className="w-4 h-4" aria-hidden="true" />
@@ -330,8 +347,8 @@ export const SchedulingPassCard = ({ pass, onChange, onRemove }: Props) => {
 
                     {/* Contextual Help */}
                     <div className="bg-action-muted border border-action rounded-md p-3 flex gap-3 text-sm text-action-muted-foreground mt-6">
-                        <Info className="w-5 h-5 text-action-muted-foreground shrink-0 mt-0.5" />
-                        <div>
+                        <Info aria-hidden="true" className="w-5 h-5 text-action-muted-foreground shrink-0 mt-0.5" />
+                        <div className="min-w-0">
                             <p className="font-medium mb-1">{t('settingsScheduling.fields.configurationGuide')}</p>
                             <ul className="list-disc list-inside space-y-1 text-xs">
                                 <li><strong>{t('settingsScheduling.fields.filter')}</strong> {t('settingsScheduling.help.passes.filter')}</li>

@@ -24,16 +24,14 @@ export const PageLayout = ({ children, variant = 'default', className, testId }:
 type PageHeaderProps = {
     title: ReactNode;
     subtitle?: ReactNode;
-    eyebrow?: ReactNode;
     meta?: ReactNode;
     actions?: ReactNode;
     className?: string;
 };
 
-export const PageHeader = ({ title, subtitle, eyebrow, meta, actions, className }: PageHeaderProps) => (
+export const PageHeader = ({ title, subtitle, meta, actions, className }: PageHeaderProps) => (
     <div className={clsx('wc-page-head', className)} data-testid="page-header">
         <div className="wc-page-copy">
-            {eyebrow}
             <h1 className="wc-page-title">{title}</h1>
             {subtitle && <div className="wc-page-sub">{subtitle}</div>}
             {meta && <div className="wc-page-meta">{meta}</div>}

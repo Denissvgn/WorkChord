@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
 import clsx from 'clsx';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -23,36 +23,78 @@ export const OverflowMenu = ({
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const menuItemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const menuId = useId();
     const accessibleLabel = label ?? t('actions.moreActions');
+
+    const closeMenu = (restoreFocus = true) => {
+        setOpen(false);
+        if (restoreFocus) {
+            triggerRef.current?.focus();
+        }
+    };
 
     useEffect(() => {
         if (!open) return;
-        const handleKeyDown = (event: KeyboardEvent) => {
+        const handleKeyDown = (event: globalThis.KeyboardEvent) => {
             if (event.key === 'Escape') {
+                event.preventDefault();
                 setOpen(false);
+                triggerRef.current?.focus();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
+        menuItemRefs.current.find(Boolean)?.focus();
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [open]);
+
+    const handleMenuItemKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+        const navigableIndexes = items.map((_, itemIndex) => itemIndex);
+        const currentPosition = navigableIndexes.indexOf(index);
+        if (currentPosition < 0) return;
+
+        let nextIndex: number | null = null;
+        if (event.key === 'ArrowDown') {
+            nextIndex = navigableIndexes[(currentPosition + 1) % navigableIndexes.length];
+        } else if (event.key === 'ArrowUp') {
+            nextIndex = navigableIndexes[
+                (currentPosition - 1 + navigableIndexes.length) % navigableIndexes.length
+            ];
+        } else if (event.key === 'Home') {
+            nextIndex = navigableIndexes[0];
+        } else if (event.key === 'End') {
+            nextIndex = navigableIndexes[navigableIndexes.length - 1];
+        } else if (event.key === 'Tab') {
+            closeMenu(false);
+            return;
+        } else {
+            return;
+        }
+
+        event.preventDefault();
+        menuItemRefs.current[nextIndex]?.focus();
+    };
 
     return (
         <div className={clsx('relative', className)}>
             <button
+                ref={triggerRef}
                 type="button"
-                onClick={() => setOpen(value => !value)}
+                onClick={() => open ? closeMenu() : setOpen(true)}
                 aria-label={accessibleLabel}
                 aria-haspopup="menu"
                 aria-expanded={open}
-                className="btn"
-                style={{ width: 30, padding: 0, justifyContent: 'center' }}
+                aria-controls={open ? menuId : undefined}
+                className="btn icon"
             >
                 <MoreHorizontal className="h-4 w-4" />
             </button>
             {open && (
                 <>
-                    <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => setOpen(false)} aria-hidden />
+                    <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => closeMenu()} aria-hidden />
                     <div
+                        id={menuId}
                         role="menu"
                         style={{
                             position: 'absolute', right: 0, top: '100%', zIndex: 20, marginTop: 4, width: 208,
@@ -63,15 +105,18 @@ export const OverflowMenu = ({
                         {items.map((item, index) => (
                             <button
                                 key={index}
+                                ref={node => { menuItemRefs.current[index] = node; }}
                                 role="menuitem"
                                 type="button"
-                                disabled={item.disabled}
+                                aria-disabled={item.disabled || undefined}
                                 className="ofm-item"
                                 style={item.tone === 'danger' ? { color: 'var(--blocked)' } : undefined}
                                 onClick={() => {
-                                    setOpen(false);
+                                    if (item.disabled) return;
+                                    closeMenu();
                                     item.onSelect();
                                 }}
+                                onKeyDown={event => handleMenuItemKeyDown(event, index)}
                             >
                                 {item.icon}
                                 <span>{item.label}</span>
