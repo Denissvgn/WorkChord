@@ -1,0 +1,32 @@
+# DndContextMockProps
+
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx:28`
+**Kind:** Class
+**Bases:** —
+**Module:** [KanbanBoard.test](../modules/KanbanBoard.test.md)
+
+## Description
+
+_Auto-generated from `DndContextMockProps` in `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx`._
+
+## Attributes
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | *required* | — |
+| `onDragEnd` | `(event: unknown) => void` | *required* | — |
+
+## Methods
+
+*No public methods. Inherits from base classes.*
+
+## Relationships
+
+<!-- Auto-generated relationship summary. Do not edit by hand. -->
+*No generated relationships detected.*
+
+### Summary
+
+| Module | Methods | Attributes |
+|---|---:|---|
+| [KanbanBoard.test](../modules/KanbanBoard.test.md) | 0 | `children`, `onDragEnd` |

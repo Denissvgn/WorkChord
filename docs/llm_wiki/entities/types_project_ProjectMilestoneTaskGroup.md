@@ -1,0 +1,52 @@
+# ProjectMilestoneTaskGroup
+
+**Location:** `frontend/src/types/project.ts:175`
+**Kind:** Class
+**Bases:** —
+**Module:** [types_project](../modules/types_project.md)
+
+## Description
+
+_Auto-generated from `ProjectMilestoneTaskGroup` in `frontend/src/types/project.ts`._
+
+## Attributes
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `milestone_id` | `number \| null` | *required* | — |
+| `milestone` | `ProjectMilestoneSummary \| null` | *required* | — |
+| `name` | `string` | *required* | — |
+| `task_count` | `number` | *required* | — |
+| `completed_tasks` | `number` | *required* | — |
+| `completion_percent` | `number` | *required* | — |
+| `status_counts` | `Record<string, number>` | *required* | — |
+| `total_effort_days` | `number` | *required* | — |
+| `remaining_effort_days` | `number` | *required* | — |
+
+## Methods
+
+*No public methods. Inherits from base classes.*
+
+## Relationships
+
+<!-- Auto-generated relationship summary. Do not edit by hand. -->
+```mermaid
+flowchart LR
+    n0["ProjectMilestoneTaskGroup (frontend/src/types/project.ts)"]
+    n1["frontend/src/pages/ProjectDetailPage.tsx"]
+    n1 --> n0
+    click n0 "../modules/types_project.md"
+    click n1 "../modules/ProjectDetailPage.md"
+```
+
+### Summary
+
+| Module | Methods | Attributes |
+|---|---:|---|
+| [types_project](../modules/types_project.md) | 0 | `completed_tasks`, `completion_percent`, `milestone`, `milestone_id`, `name`, `remaining_effort_days`, `status_counts`, `task_count`, `total_effort_days` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |

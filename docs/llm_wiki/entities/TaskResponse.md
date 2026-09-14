@@ -1,0 +1,143 @@
+# TaskResponse
+
+**Location:** `backend/app/schemas/task.py:172`
+**Kind:** Pydantic model
+**Bases:** `BaseModel`
+**Module:** [schemas_task](../modules/schemas_task.md)
+
+## Description
+
+Schema for task response.
+
+## Model Configuration
+
+| Setting | Value | Source |
+|---------|-------|--------|
+| `from_attributes` | `True` | config_class |
+
+## Attributes
+
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `id` | `int` | `id` | Yes | No | — | — | — | — |
+| `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
+| `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
+| `milestone_id` | `Optional[int]` | `milestone_id` | No | Yes | `None` | — | — | — |
+| `parent_id` | `Optional[int]` | `parent_id` | Yes | Yes | — | — | — | — |
+| `title` | `str` | `title` | Yes | No | — | — | — | — |
+| `description` | `Optional[str]` | `description` | Yes | Yes | — | — | — | — |
+| `priority` | `int` | `priority` | Yes | No | — | — | — | — |
+| `effort_days` | `float` | `effort_days` | Yes | No | — | — | — | — |
+| `effort_hours` | `float` | `effort_hours` | Yes | No | — | — | — | — |
+| `project` | `Optional[TaskProject]` | `project` | No | Yes | `None` | — | — | — |
+| `milestone` | `Optional[TaskMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
+| `assignee` | `Optional[TaskAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
+| `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `start_date` | `Optional[date]` | `start_date` | Yes | Yes | — | — | — | — |
+| `end_date` | `Optional[date]` | `end_date` | Yes | Yes | — | — | — | — |
+| `actual_start_date` | `Optional[date]` | `actual_start_date` | No | Yes | `None` | — | — | — |
+| `actual_end_date` | `Optional[date]` | `actual_end_date` | No | Yes | `None` | — | — | — |
+| `min_start_date` | `Optional[date]` | `min_start_date` | No | Yes | `None` | — | — | — |
+| `max_end_date` | `Optional[date]` | `max_end_date` | No | Yes | `None` | — | — | — |
+| `is_overdue` | `bool` | `is_overdue` | No | No | `False` | — | — | — |
+| `is_delayed` | `bool` | `is_delayed` | No | No | `False` | — | — | — |
+| `is_composite` | `bool` | `is_composite` | No | No | `False` | — | — | — |
+| `is_optional` | `bool` | `is_optional` | No | No | `False` | — | — | — |
+| `is_deferred` | `bool` | `is_deferred` | No | No | `False` | — | — | — |
+| `is_outside_constraints` | `bool` | `is_outside_constraints` | No | No | `False` | — | — | — |
+| `tags` | `list[str]` | `tags` | No | No | `[]` | — | — | — |
+| `sort_order` | `int` | `sort_order` | No | No | `0` | — | — | — |
+| `external_key` | `Optional[str]` | `external_key` | No | Yes | `None` | — | — | — |
+| `source` | `Optional[str]` | `source` | No | Yes | `None` | — | — | — |
+| `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | — | — | — |
+| `external_links` | `list[ExternalLinkResponse]` | `external_links` | No | No | factory: `list` | — | — | — |
+| `request_count` | `int` | `request_count` | No | No | `0` | — | — | — |
+| `agent_readiness` | `TaskAgentReadiness` | `agent_readiness` | No | No | factory: `TaskAgentReadiness` | — | — | — |
+| `version` | `int` | `version` | No | No | `1` | — | — | — |
+| `claimed_by` | `Optional[TaskClaimedBy]` | `claimed_by` | No | Yes | `None` | — | — | — |
+| `claim_expires_at` | `Optional[datetime]` | `claim_expires_at` | No | Yes | `None` | — | — | — |
+| `updated_at` | `Optional[datetime]` | `updated_at` | No | Yes | `None` | — | — | — |
+| `children` | `list['TaskResponse']` | `children` | No | No | `[]` | — | — | — |
+| `dependencies` | `list[int]` | `dependencies` | No | No | `[]` | — | — | — |
+
+## Methods
+
+*No public methods. Inherits from base classes.*
+
+## Relationships
+
+<!-- Auto-generated relationship summary. Do not edit by hand. -->
+```mermaid
+flowchart LR
+    n0["TaskResponse (backend/app/schemas/task.py)"]
+    n1["BaseModel"]
+    n2["create_agent_task (backend/app/routers/agent.py)"]
+    n3["list_ready_tasks (backend/app/routers/agent.py)"]
+    n4["patch_agent_task (backend/app/routers/agent.py)"]
+    n5["release_task_claim (backend/app/routers/agent.py)"]
+    n6["get_project_tasks (backend/app/routers/projects.py)"]
+    n7["apply_batch_update_items (backend/app/routers/tasks.py)"]
+    n8["create_subtask (backend/app/routers/tasks.py)"]
+    n9["create_task (backend/app/routers/tasks.py)"]
+    n10["get_overdue_tasks (backend/app/routers/tasks.py)"]
+    n11["get_subtasks (backend/app/routers/tasks.py)"]
+    n12["get_task (backend/app/routers/tasks.py)"]
+    n13["get_tasks (backend/app/routers/tasks.py)"]
+    n0 --> n1
+    n2 --> n0
+    n3 --> n0
+    n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
+    n13 --> n0
+    click n0 "../modules/schemas_task.md"
+    click n2 "../modules/routers_agent.md"
+    click n3 "../modules/routers_agent.md"
+    click n4 "../modules/routers_agent.md"
+    click n5 "../modules/routers_agent.md"
+    click n6 "../modules/projects.md"
+    click n7 "../modules/tasks.md"
+    click n8 "../modules/tasks.md"
+    click n9 "../modules/tasks.md"
+    click n10 "../modules/tasks.md"
+    click n11 "../modules/tasks.md"
+    click n12 "../modules/tasks.md"
+    click n13 "../modules/tasks.md"
+```
+
+### Summary
+
+| Module | Methods | Attributes |
+|---|---:|---|
+| [schemas_task](../modules/schemas_task.md) | 0 | `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `children`, `claim_expires_at`, `claimed_by`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date` |
+
+### Structure
+
+| Kind | Entity | Module |
+|---|---|---|
+| Base | `BaseModel` | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `create_agent_task` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `list_ready_tasks` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `patch_agent_task` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `release_task_claim` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `get_project_tasks` | type_reference | [projects](../modules/projects.md) | — |
+| `apply_batch_update_items` | type_reference | [tasks](../modules/tasks.md) | — |
+| `create_subtask` | type_reference | [tasks](../modules/tasks.md) | — |
+| `create_task` | type_reference | [tasks](../modules/tasks.md) | — |
+| `get_overdue_tasks` | type_reference | [tasks](../modules/tasks.md) | — |
+| `get_subtasks` | type_reference | [tasks](../modules/tasks.md) | — |
+| `get_task` | type_reference | [tasks](../modules/tasks.md) | — |
+| `get_tasks` | type_reference | [tasks](../modules/tasks.md) | — |
+
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

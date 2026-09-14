@@ -1,0 +1,2459 @@
+# LLM Wiki Index
+
+This page is an exhaustive reference inventory of the selected source. Task-oriented guides are not yet available.
+
+## Surface Overview
+
+| Surface | Count | Start here |
+|---|---:|---|
+| Entities | 1321 | [Open section](#entities) |
+| Modules | 567 | [Open section](#modules) |
+| Workflows | 79 | [Open section](#workflows) |
+| Guides | 0 | No pages |
+| Entry-point flows | 434 | [Open section](#entry-point-flows) |
+| Infrastructure | 7 | [Open section](#infrastructure) |
+| HTTP API contracts | 0 | No pages |
+| Dependency architecture | 2 | [Open section](#dependency-architecture) |
+| Log | 1 | [Open log](log.md) |
+
+## Entities
+
+- [AccessibleNameViolation](entities/AccessibleNameViolation.md)
+- [ActionLease](entities/ActionLease.md)
+- [ActionLeasePolicy](entities/ActionLeasePolicy.md)
+- [ActionLeaseRequest](entities/ActionLeaseRequest.md)
+- [ActionMutationInput](entities/ActionMutationInput.md)
+- [ActivitySnapshot](entities/ActivitySnapshot.md)
+- [AdminAccessErrorMessages](entities/AdminAccessErrorMessages.md)
+- [AdminAccessGateProps](entities/AdminAccessGateProps.md)
+- [AgentActorCreate](entities/AgentActorCreate.md)
+- [AgentActorCreatedResponse](entities/AgentActorCreatedResponse.md)
+- [AgentActorModelBindingCreate](entities/AgentActorModelBindingCreate.md)
+- [AgentActorResponse](entities/AgentActorResponse.md)
+- [AgentActorRole](entities/AgentActorRole.md)
+- [AgentActorUpdate](entities/AgentActorUpdate.md)
+- [AgentAssignmentListParams](entities/AgentAssignmentListParams.md)
+- [AgentAutonomyTopology](entities/AgentAutonomyTopology.md)
+- [AgentAutonomyTopologyMember](entities/AgentAutonomyTopologyMember.md)
+- [AgentCapabilities](entities/AgentCapabilities.md)
+- [AgentCapabilitiesResponse](entities/AgentCapabilitiesResponse.md)
+- [AgentCollectionPageMetadata](entities/AgentCollectionPageMetadata.md)
+- [AgentCommandMetadata](entities/AgentCommandMetadata.md)
+- [AgentConflictError](entities/AgentConflictError.md)
+- [AgentDependencyContext](entities/AgentDependencyContext.md)
+- [AgentDiscoveryTriageCreate](entities/AgentDiscoveryTriageCreate.md)
+- [AgentDiscoveryTriageResponse](entities/AgentDiscoveryTriageResponse.md)
+- [AgentIdempotencyRecord](entities/AgentIdempotencyRecord.md)
+- [AgentModelBindingFields](entities/AgentModelBindingFields.md)
+- [AgentModelBindingListParams](entities/AgentModelBindingListParams.md)
+- [AgentModelBindingResponse](entities/AgentModelBindingResponse.md)
+- [AgentModelBindingStatus](entities/AgentModelBindingStatus.md)
+- [AgentModelCatalogFields](entities/AgentModelCatalogFields.md)
+- [AgentModelCatalogResponse](entities/AgentModelCatalogResponse.md)
+- [AgentModelCatalogService](entities/AgentModelCatalogService.md)
+- [AgentModelConflictError](entities/AgentModelConflictError.md)
+- [AgentModelMatchBasis](entities/AgentModelMatchBasis.md)
+- [AgentModelTrustState](entities/AgentModelTrustState.md)
+- [AgentObservationJob](entities/AgentObservationJob.md)
+- [AgentPaginationMetadata](entities/AgentPaginationMetadata.md)
+- [AgentPermissionError](entities/AgentPermissionError.md)
+- [AgentPipeline](entities/AgentPipeline.md)
+- [AgentPipelineResponse](entities/AgentPipelineResponse.md)
+- [AgentPlanningCommandContext](entities/AgentPlanningCommandContext.md)
+- [AgentPlanningReceipt](entities/AgentPlanningReceipt.md)
+- [AgentPlanningService](entities/AgentPlanningService.md)
+- [AgentPreflightReport](entities/AgentPreflightReport.md)
+- [AgentProfileCatalogService](entities/AgentProfileCatalogService.md)
+- [AgentProfileSkillCatalogItem](entities/AgentProfileSkillCatalogItem.md)
+- [AgentProjectUpdateCreate](entities/AgentProjectUpdateCreate.md)
+- [AgentProjectUpdateResponse](entities/AgentProjectUpdateResponse.md)
+- [AgentRecoveryItem](entities/AgentRecoveryItem.md)
+- [AgentRecoveryListResponse](entities/AgentRecoveryListResponse.md)
+- [AgentRecoveryRequeue](entities/AgentRecoveryRequeue.md)
+- [AgentRecoveryRequeueResponse](entities/AgentRecoveryRequeueResponse.md)
+- [AgentReviewQueueResponse](entities/AgentReviewQueueResponse.md)
+- [AgentReviewVerdict](entities/AgentReviewVerdict.md)
+- [AgentReviewVerdictResponse](entities/AgentReviewVerdictResponse.md)
+- [AgentRoutingConflictError](entities/AgentRoutingConflictError.md)
+- [AgentRoutingRolloutError](entities/AgentRoutingRolloutError.md)
+- [AgentRoutingRolloutMode](entities/AgentRoutingRolloutMode.md)
+- [AgentRoutingRolloutService](entities/AgentRoutingRolloutService.md)
+- [AgentRoutingRolloutStatus](entities/AgentRoutingRolloutStatus.md)
+- [AgentRoutingRolloutStatusResponse](entities/AgentRoutingRolloutStatusResponse.md)
+- [AgentRoutingService](entities/AgentRoutingService.md)
+- [AgentRoutingTopologyReadiness](entities/AgentRoutingTopologyReadiness.md)
+- [AgentRoutingTopologyReadinessResponse](entities/AgentRoutingTopologyReadinessResponse.md)
+- [AgentRoutingTopologyReadinessSource](entities/AgentRoutingTopologyReadinessSource.md)
+- [AgentRoutingTopologyReadinessStatus](entities/AgentRoutingTopologyReadinessStatus.md)
+- [AgentRunCreate](entities/AgentRunCreate.md)
+- [AgentRunDetailResponse](entities/AgentRunDetailResponse.md)
+- [AgentRunEventCreate](entities/AgentRunEventCreate.md)
+- [AgentRunEventResponse](entities/AgentRunEventResponse.md)
+- [AgentRunFinish](entities/AgentRunFinish.md)
+- [AgentRunResponse](entities/AgentRunResponse.md)
+- [AgentScheduleCommand](entities/AgentScheduleCommand.md)
+- [AgentScheduleResult](entities/AgentScheduleResult.md)
+- [AgentScheduleTaskState](entities/AgentScheduleTaskState.md)
+- [AgentService](entities/AgentService.md)
+- [AgentSkillBundleService](entities/AgentSkillBundleService.md)
+- [AgentTaskAssignmentCreate](entities/AgentTaskAssignmentCreate.md)
+- [AgentTaskAssignmentResponse](entities/AgentTaskAssignmentResponse.md)
+- [AgentTaskAssignmentUpdate](entities/AgentTaskAssignmentUpdate.md)
+- [AgentTaskContextResponse](entities/AgentTaskContextResponse.md)
+- [AgentTaskCreate](entities/AgentTaskCreate.md)
+- [AgentTaskPatch](entities/AgentTaskPatch.md)
+- [AgentTeamActionReceiptStatus](entities/AgentTeamActionReceiptStatus.md)
+- [AgentTeamActionStatus](entities/AgentTeamActionStatus.md)
+- [AgentTeamApplyRequest](entities/AgentTeamApplyRequest.md)
+- [AgentTeamApplyRun](entities/AgentTeamApplyRun.md)
+- [AgentTeamCredentialSink](entities/AgentTeamCredentialSink.md)
+- [AgentTeamCurrentMember](entities/AgentTeamCurrentMember.md)
+- [AgentTeamCurrentSnapshot](entities/AgentTeamCurrentSnapshot.md)
+- [AgentTeamDispatchAvailability](entities/AgentTeamDispatchAvailability.md)
+- [AgentTeamLifecycle](entities/AgentTeamLifecycle.md)
+- [AgentTeamManagedObject](entities/AgentTeamManagedObject.md)
+- [AgentTeamManifestRequest](entities/AgentTeamManifestRequest.md)
+- [AgentTeamMasterContract](entities/AgentTeamMasterContract.md)
+- [AgentTeamMemberLifecycle](entities/AgentTeamMemberLifecycle.md)
+- [AgentTeamMembershipBoundary](entities/AgentTeamMembershipBoundary.md)
+- [AgentTeamPlan](entities/AgentTeamPlan.md)
+- [AgentTeamPlanRequest](entities/AgentTeamPlanRequest.md)
+- [AgentTeamReadinessPolicy](entities/AgentTeamReadinessPolicy.md)
+- [AgentTeamRole](entities/AgentTeamRole.md)
+- [AgentTeamRuntimeAcknowledgement](entities/AgentTeamRuntimeAcknowledgement.md)
+- [AgentTeamRuntimeAcknowledgementResponse](entities/AgentTeamRuntimeAcknowledgementResponse.md)
+- [AgentTeamSetupConflictError](entities/AgentTeamSetupConflictError.md)
+- [AgentTeamSetupModel](entities/AgentTeamSetupModel.md)
+- [AgentTeamSetupReport](entities/AgentTeamSetupReport.md)
+- [AgentTeamSetupReportCounts](entities/AgentTeamSetupReportCounts.md)
+- [AgentTeamSetupReportEvidence](entities/AgentTeamSetupReportEvidence.md)
+- [AgentTeamSetupService](entities/AgentTeamSetupService.md)
+- [AgentTeamStatus](entities/AgentTeamStatus.md)
+- [AgentTeamStatusResponse](entities/AgentTeamStatusResponse.md)
+- [AgentTeamStatusScopes](entities/AgentTeamStatusScopes.md)
+- [AgentTeamStepDefinition](entities/AgentTeamStepDefinition.md)
+- [AgentTeamStepId](entities/AgentTeamStepId.md)
+- [AgentTeamStepScope](entities/AgentTeamStepScope.md)
+- [AgentTeamStepState](entities/AgentTeamStepState.md)
+- [AgentTeamTopology](entities/AgentTeamTopology.md)
+- [AgentTeamTopologyMember](entities/AgentTeamTopologyMember.md)
+- [AgentTeamValidateResponse](entities/AgentTeamValidateResponse.md)
+- [AgentTeamValidation](entities/AgentTeamValidation.md)
+- [AgentVerificationEvent](entities/AgentVerificationEvent.md)
+- [AgentVerificationRequirement](entities/AgentVerificationRequirement.md)
+- [AgentWorkBegin](entities/AgentWorkBegin.md)
+- [AgentWorkBeginResponse](entities/AgentWorkBeginResponse.md)
+- [AgentWorkDecisionResponse](entities/AgentWorkDecisionResponse.md)
+- [AgentWorkItem](entities/AgentWorkItem.md)
+- [AgentWorkPackage](entities/AgentWorkPackage.md)
+- [AgentWorkPackageCreate](entities/AgentWorkPackageCreate.md)
+- [AgentWorkPackageResponse](entities/AgentWorkPackageResponse.md)
+- [AgentWorkPaginationMetadata](entities/AgentWorkPaginationMetadata.md)
+- [AgentWorkRenew](entities/AgentWorkRenew.md)
+- [AgentWorkService](entities/AgentWorkService.md)
+- [AgentWorkSubmit](entities/AgentWorkSubmit.md)
+- [AgentWorkTerminal](entities/AgentWorkTerminal.md)
+- [AgentWorkTerminalResponse](entities/AgentWorkTerminalResponse.md)
+- [ApiErrorKind](entities/ApiErrorKind.md)
+- [ApiErrorShape](entities/ApiErrorShape.md)
+- [ApiFieldError](entities/ApiFieldError.md)
+- [AppForm](entities/AppForm.md)
+- [AppRuntimeSettings](entities/AppRuntimeSettings.md)
+- [AppRuntimeSettingsResponse](entities/AppRuntimeSettingsResponse.md)
+- [ApplicationAcceptance](entities/ApplicationAcceptance.md)
+- [AssessmentDraft](entities/AssessmentDraft.md)
+- [AssigneeRecommendation](entities/AssigneeRecommendation.md)
+- [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
+- [AssigneeRecommendationService](entities/AssigneeRecommendationService.md)
+- [AssigneeRecommendationsPanelProps](entities/AssigneeRecommendationsPanelProps.md)
+- [AssignmentIntent](entities/AssignmentIntent.md)
+- [AsyncBarrier](entities/AsyncBarrier.md)
+- [Attempt](entities/Attempt.md)
+- [AttemptEventType](entities/AttemptEventType.md)
+- [AttemptLedger](entities/AttemptLedger.md)
+- [AttemptLedgerBackend](entities/AttemptLedgerBackend.md)
+- [AttemptLedgerConflict](entities/AttemptLedgerConflict.md)
+- [AttemptLedgerRecord](entities/AttemptLedgerRecord.md)
+- [AttemptLedgerSnapshot](entities/AttemptLedgerSnapshot.md)
+- [AttentionItem](entities/AttentionItem.md)
+- [AttentionKind](entities/AttentionKind.md)
+- [AttentionSeverity](entities/AttentionSeverity.md)
+- [AutonomousDagContract](entities/AutonomousDagContract.md)
+- [AutonomousEvidence](entities/AutonomousEvidence.md)
+- [AutonomyCharter](entities/AutonomyCharter.md)
+- [AutonomySchema](entities/AutonomySchema.md)
+- [AutonomyState](entities/AutonomyState.md)
+- [AutonomyWorkPackageService](entities/AutonomyWorkPackageService.md)
+- [AvailabilityState](entities/AvailabilityState.md)
+- [BM25Similarity](entities/BM25Similarity.md)
+- [BackendBuildIdentity](entities/BackendBuildIdentity.md)
+- [BalanceWorkload](entities/BalanceWorkload.md)
+- [BalanceWorkloadSchema](entities/BalanceWorkloadSchema.md)
+- [Base](entities/Base.md)
+- [BindingForm](entities/BindingForm.md)
+- [BlockedServerAcceptance](entities/BlockedServerAcceptance.md)
+- [BoardTaskUpdate](entities/BoardTaskUpdate.md)
+- [BootstrapActionManifest](entities/BootstrapActionManifest.md)
+- [BootstrapActionSlot](entities/BootstrapActionSlot.md)
+- [BreadcrumbItem](entities/BreadcrumbItem.md)
+- [BreadcrumbsProps](entities/BreadcrumbsProps.md)
+- [BuildIdentity](entities/BuildIdentity.md)
+- [ButtonProps](entities/ButtonProps.md)
+- [CachedRelease](entities/CachedRelease.md)
+- [CalendarDraft](entities/CalendarDraft.md)
+- [CalendarImportRequest](entities/CalendarImportRequest.md)
+- [CalendarPeriodNavigatorProps](entities/CalendarPeriodNavigatorProps.md)
+- [CalendarResponse](entities/CalendarResponse.md)
+- [CalendarService](entities/CalendarService.md)
+- [CallableTrustResolver](entities/CallableTrustResolver.md)
+- [Candidate](entities/Candidate.md)
+- [CapacityClaimBoundary](entities/CapacityClaimBoundary.md)
+- [CapacityException](entities/CapacityException.md)
+- [CapturingCredentialSink](entities/CapturingCredentialSink.md)
+- [CasAcceptance](entities/CasAcceptance.md)
+- [CatalogEntry](entities/CatalogEntry.md)
+- [CatalogForm](entities/CatalogForm.md)
+- [ChangeType](entities/ChangeType.md)
+- [CharterVerificationError](entities/CharterVerificationError.md)
+- [CharterVerificationReceipt](entities/CharterVerificationReceipt.md)
+- [CharterVerifier](entities/CharterVerifier.md)
+- [CheckboxProps](entities/CheckboxProps.md)
+- [CircularDependencyException](entities/CircularDependencyException.md)
+- [ClassificationPanelProps](entities/ClassificationPanelProps.md)
+- [CloseoutContractError](entities/CloseoutContractError.md)
+- [CloseoutDecision](entities/CloseoutDecision.md)
+- [CloseoutEvidenceError](entities/CloseoutEvidenceError.md)
+- [CollapsibleSectionProps](entities/CollapsibleSectionProps.md)
+- [CollectionLimitExceededError](entities/CollectionLimitExceededError.md)
+- [CollectorBinding](entities/CollectorBinding.md)
+- [ColumnId](entities/ColumnId.md)
+- [CommandAction](entities/CommandAction.md)
+- [CommandGroup](entities/CommandGroup.md)
+- [CompleteMetricWindow](entities/CompleteMetricWindow.md)
+- [ConfirmDialogProps](entities/ConfirmDialogProps.md)
+- [ConfirmDialogTone](entities/ConfirmDialogTone.md)
+- [ConfirmationRequest](entities/ConfirmationRequest.md)
+- [ConflictResolution](entities/ConflictResolution.md)
+- [ConstraintsPanel_Props](entities/ConstraintsPanel_Props.md)
+- [ConstraintsSchema](entities/ConstraintsSchema.md)
+- [ContextTier](entities/ContextTier.md)
+- [ContractBundleError](entities/ContractBundleError.md)
+- [ContractMachineMember](entities/ContractMachineMember.md)
+- [ContractSourceInput](entities/ContractSourceInput.md)
+- [ContractTrace](entities/ContractTrace.md)
+- [ControlledFileReader](entities/ControlledFileReader.md)
+- [ConvertMutationInput](entities/ConvertMutationInput.md)
+- [ConvertTriageModalProps](entities/ConvertTriageModalProps.md)
+- [CorrelatedProviderAction](entities/CorrelatedProviderAction.md)
+- [CostTier](entities/CostTier.md)
+- [CreateTriageModalProps](entities/CreateTriageModalProps.md)
+- [CredentialDeliveryError](entities/CredentialDeliveryError.md)
+- [CurrentTopologyMember](entities/CurrentTopologyMember.md)
+- [CurrentTopologySnapshot](entities/CurrentTopologySnapshot.md)
+- [CutoverEvidenceError](entities/CutoverEvidenceError.md)
+- [DagController](entities/DagController.md)
+- [DagJournalEntry](entities/DagJournalEntry.md)
+- [DagJournalSnapshot](entities/DagJournalSnapshot.md)
+- [DagNodeSpec](entities/DagNodeSpec.md)
+- [DagNodeState](entities/DagNodeState.md)
+- [DagStateConflict](entities/DagStateConflict.md)
+- [DatabaseConfiguration](entities/DatabaseConfiguration.md)
+- [DatabaseConfigurationError](entities/DatabaseConfigurationError.md)
+- [DatabaseConflictError](entities/DatabaseConflictError.md)
+- [DatabaseFailureKind](entities/DatabaseFailureKind.md)
+- [DatabaseMigrationGate](entities/DatabaseMigrationGate.md)
+- [DatabaseRetryPolicy](entities/DatabaseRetryPolicy.md)
+- [DatabaseState](entities/DatabaseState.md)
+- [DatabaseStatus](entities/DatabaseStatus.md)
+- [DatabaseUnavailableError](entities/DatabaseUnavailableError.md)
+- [DateChipProps](entities/DateChipProps.md)
+- [DateInput](entities/DateInput.md)
+- [DateListProps](entities/DateListProps.md)
+- [DateRange](entities/DateRange.md)
+- [DetachedSignatureEnvelope](entities/DetachedSignatureEnvelope.md)
+- [DialogLayerOptions](entities/DialogLayerOptions.md)
+- [DifficultyAxis](entities/DifficultyAxis.md)
+- [DifficultyBand](entities/DifficultyBand.md)
+- [DifficultyScore](entities/DifficultyScore.md)
+- [DirectQueryFeedback](entities/DirectQueryFeedback.md)
+- [DndContextMockProps](entities/DndContextMockProps.md)
+- [DocumentationContractError](entities/DocumentationContractError.md)
+- [DrawerCopy](entities/DrawerCopy.md)
+- [DuplicateActionDefaults](entities/DuplicateActionDefaults.md)
+- [DuplicateSuggestionGroupProps](entities/DuplicateSuggestionGroupProps.md)
+- [DuplicateSuggestionsPanelProps](entities/DuplicateSuggestionsPanelProps.md)
+- [EditableEffortModifier](entities/EditableEffortModifier.md)
+- [EditableSchedulingPass](entities/EditableSchedulingPass.md)
+- [EditableSchedulingRules](entities/EditableSchedulingRules.md)
+- [EditableScope](entities/EditableScope.md)
+- [EditorBaseline](entities/EditorBaseline.md)
+- [EditorMode](entities/EditorMode.md)
+- [EffortModifierCard_Props](entities/EffortModifierCard_Props.md)
+- [EffortModifierSchema](entities/EffortModifierSchema.md)
+- [EmailSettingsResponse](entities/EmailSettingsResponse.md)
+- [EmailSettingsService](entities/EmailSettingsService.md)
+- [EmailValidationErrors](entities/EmailValidationErrors.md)
+- [ErrorDetail](entities/ErrorDetail.md)
+- [ErrorResponse](entities/ErrorResponse.md)
+- [EventOption](entities/EventOption.md)
+- [EvidenceItem](entities/EvidenceItem.md)
+- [EvidenceResolutionError](entities/EvidenceResolutionError.md)
+- [EvidenceResolver](entities/EvidenceResolver.md)
+- [ExactResourceBinding](entities/ExactResourceBinding.md)
+- [ExecutionBudget](entities/ExecutionBudget.md)
+- [ExecutionWindow](entities/ExecutionWindow.md)
+- [ExplainScheduleDetailLevel](entities/ExplainScheduleDetailLevel.md)
+- [ExternalDagJournal](entities/ExternalDagJournal.md)
+- [ExternalLinkConflictError](entities/ExternalLinkConflictError.md)
+- [ExternalLinkFields](entities/ExternalLinkFields.md)
+- [ExternalLinkResponse](entities/ExternalLinkResponse.md)
+- [ExternalLinkService](entities/ExternalLinkService.md)
+- [ExternalLinkValidationError](entities/ExternalLinkValidationError.md)
+- [FailingOnceCredentialSink](entities/FailingOnceCredentialSink.md)
+- [FailingSession](entities/FailingSession.md)
+- [FailingSessionContext](entities/FailingSessionContext.md)
+- [FailureInjector](entities/FailureInjector.md)
+- [FakeRemoteSigner](entities/FakeRemoteSigner.md)
+- [FakeRevocationResolver](entities/FakeRevocationResolver.md)
+- [FakeTrustResolver](entities/FakeTrustResolver.md)
+- [FilesystemAgentTeamCredentialSink](entities/FilesystemAgentTeamCredentialSink.md)
+- [FilterConfig](entities/FilterConfig.md)
+- [FilterConfigSchema](entities/FilterConfigSchema.md)
+- [FormErrors](entities/FormErrors.md)
+- [FormMode](entities/FormMode.md)
+- [FormalizeDraftRequest](entities/FormalizeDraftRequest.md)
+- [FormalizeRequest](entities/FormalizeRequest.md)
+- [FormalizeResponse](entities/FormalizeResponse.md)
+- [FrontendLabelService](entities/FrontendLabelService.md)
+- [FrontendSavedViewService](entities/FrontendSavedViewService.md)
+- [FrontendTemplateService](entities/FrontendTemplateService.md)
+- [FrontendTriageService](entities/FrontendTriageService.md)
+- [FrozenClock](entities/FrozenClock.md)
+- [GanttAssignee](entities/GanttAssignee.md)
+- [GanttChartProps](entities/GanttChartProps.md)
+- [GanttChart_FlattenedTask](entities/GanttChart_FlattenedTask.md)
+- [GanttMilestone](entities/GanttMilestone.md)
+- [GateStatusAmendment](entities/GateStatusAmendment.md)
+- [GitHubAutomationFromStatus](entities/GitHubAutomationFromStatus.md)
+- [GitHubForm](entities/GitHubForm.md)
+- [GitHubRuntimeSettings](entities/GitHubRuntimeSettings.md)
+- [GitHubRuntimeSettingsResponse](entities/GitHubRuntimeSettingsResponse.md)
+- [GitHubStatusAutomationRuleBase](entities/GitHubStatusAutomationRuleBase.md)
+- [GitHubStatusAutomationRuleResponse](entities/GitHubStatusAutomationRuleResponse.md)
+- [GitHubStatusAutomationService](entities/GitHubStatusAutomationService.md)
+- [GitHubStatusService](entities/GitHubStatusService.md)
+- [GitHubWebhookConfigurationError](entities/GitHubWebhookConfigurationError.md)
+- [GitHubWebhookPayloadError](entities/GitHubWebhookPayloadError.md)
+- [GitHubWebhookResponse](entities/GitHubWebhookResponse.md)
+- [GitHubWebhookService](entities/GitHubWebhookService.md)
+- [GitHubWebhookSignatureError](entities/GitHubWebhookSignatureError.md)
+- [GuideItem](entities/GuideItem.md)
+- [HandoffEvidenceReference](entities/HandoffEvidenceReference.md)
+- [HandoffVerification](entities/HandoffVerification.md)
+- [HealthCheckResult](entities/HealthCheckResult.md)
+- [HelpContentProvider](entities/HelpContentProvider.md)
+- [HelpRelatedLink](entities/HelpRelatedLink.md)
+- [HistoryGroup](entities/HistoryGroup.md)
+- [HolidayImportRequest](entities/HolidayImportRequest.md)
+- [ImmutableAutonomyEventError](entities/ImmutableAutonomyEventError.md)
+- [ImmutableContractArchive](entities/ImmutableContractArchive.md)
+- [ImmutableInputBinding](entities/ImmutableInputBinding.md)
+- [ImmutableRoutingAssessmentError](entities/ImmutableRoutingAssessmentError.md)
+- [ImportTasksModalProps](entities/ImportTasksModalProps.md)
+- [ImportTeamModalProps](entities/ImportTeamModalProps.md)
+- [ImproveDescriptionRequest](entities/ImproveDescriptionRequest.md)
+- [ImproveDescriptionResponse](entities/ImproveDescriptionResponse.md)
+- [IncrementalScheduler](entities/IncrementalScheduler.md)
+- [InitiativeFormProps](entities/InitiativeFormProps.md)
+- [InitiativeFormState](entities/InitiativeFormState.md)
+- [InitiativeGroupInfo](entities/InitiativeGroupInfo.md)
+- [InitiativeResponse](entities/InitiativeResponse.md)
+- [InputProps](entities/InputProps.md)
+- [InteractiveCalendarProps](entities/InteractiveCalendarProps.md)
+- [IterationEditorState](entities/IterationEditorState.md)
+- [IterationFormProps](entities/IterationFormProps.md)
+- [IterationListProps](entities/IterationListProps.md)
+- [IterationProject](entities/IterationProject.md)
+- [IterationProjectSummary](entities/IterationProjectSummary.md)
+- [IterationResponse](entities/IterationResponse.md)
+- [IterationSelectorProps](entities/IterationSelectorProps.md)
+- [IterationSeriesItem](entities/IterationSeriesItem.md)
+- [IterationService](entities/IterationService.md)
+- [IterationSnapshot](entities/IterationSnapshot.md)
+- [IterationStore](entities/IterationStore.md)
+- [JsonObject](entities/JsonObject.md)
+- [JsonPrimitive](entities/JsonPrimitive.md)
+- [JsonValue](entities/JsonValue.md)
+- [KanbanBoardProps](entities/KanbanBoardProps.md)
+- [KanbanCardProps](entities/KanbanCardProps.md)
+- [KanbanColumnProps](entities/KanbanColumnProps.md)
+- [LLMCallResult](entities/LLMCallResult.md)
+- [LLMForm](entities/LLMForm.md)
+- [LLMRuntimeSettings](entities/LLMRuntimeSettings.md)
+- [LLMRuntimeSettingsResponse](entities/LLMRuntimeSettingsResponse.md)
+- [LLMService](entities/LLMService.md)
+- [LabelConflictError](entities/LabelConflictError.md)
+- [LabelFormState](entities/LabelFormState.md)
+- [LabelGroupFormState](entities/LabelGroupFormState.md)
+- [LabelGroupListParams](entities/LabelGroupListParams.md)
+- [LabelGroupResponse](entities/LabelGroupResponse.md)
+- [LabelListParams](entities/LabelListParams.md)
+- [LabelOption](entities/LabelOption.md)
+- [LabelResponse](entities/LabelResponse.md)
+- [LabelSelectorProps](entities/LabelSelectorProps.md)
+- [LabelService](entities/LabelService.md)
+- [LanguageResolution](entities/LanguageResolution.md)
+- [LatencyTier](entities/LatencyTier.md)
+- [LegacySQLiteFactory](entities/LegacySQLiteFactory.md)
+- [LoadedRelease](entities/LoadedRelease.md)
+- [LocalizedStepStatus](entities/LocalizedStepStatus.md)
+- [LockedAcceptanceObject](entities/LockedAcceptanceObject.md)
+- [MCPAgentKeyMiddleware](entities/MCPAgentKeyMiddleware.md)
+- [MCPAuthError](entities/MCPAuthError.md)
+- [MCPExactPathAlias](entities/MCPExactPathAlias.md)
+- [MCPHostValidationMiddleware](entities/MCPHostValidationMiddleware.md)
+- [MaintenanceModeError](entities/MaintenanceModeError.md)
+- [ManagementSection](entities/ManagementSection.md)
+- [ManifestError](entities/ManifestError.md)
+- [ManualPublicationHandoff](entities/ManualPublicationHandoff.md)
+- [MappedModelFactory](entities/MappedModelFactory.md)
+- [MasterProgressProps](entities/MasterProgressProps.md)
+- [MasterStepDef](entities/MasterStepDef.md)
+- [MemberSchedule](entities/MemberSchedule.md)
+- [MemoryAttemptBackend](entities/MemoryAttemptBackend.md)
+- [MemoryDagJournal](entities/MemoryDagJournal.md)
+- [MemoryWormStore](entities/MemoryWormStore.md)
+- [MessageResponse](entities/MessageResponse.md)
+- [MetricRegistry](entities/MetricRegistry.md)
+- [MetricSample](entities/MetricSample.md)
+- [MigrationDataError](entities/MigrationDataError.md)
+- [MigrationPolicy](entities/MigrationPolicy.md)
+- [MilestoneEditorState](entities/MilestoneEditorState.md)
+- [MilestoneFormState](entities/MilestoneFormState.md)
+- [ModalFrameProps](entities/ModalFrameProps.md)
+- [ModalProps](entities/ModalProps.md)
+- [ModelAwareAgentWorkBegin](entities/ModelAwareAgentWorkBegin.md)
+- [ModelAwareRoutingMode](entities/ModelAwareRoutingMode.md)
+- [ModelAwareRoutingStatus](entities/ModelAwareRoutingStatus.md)
+- [ModelAwareRoutingTopologyReadiness](entities/ModelAwareRoutingTopologyReadiness.md)
+- [ModelAwareRoutingTopologySource](entities/ModelAwareRoutingTopologySource.md)
+- [ModelAwareRoutingTopologyStatus](entities/ModelAwareRoutingTopologyStatus.md)
+- [ModelBindingContract](entities/ModelBindingContract.md)
+- [ModelContextTier](entities/ModelContextTier.md)
+- [ModelCostTier](entities/ModelCostTier.md)
+- [ModelLatencyTier](entities/ModelLatencyTier.md)
+- [ModelReasoningTier](entities/ModelReasoningTier.md)
+- [MutationResult](entities/MutationResult.md)
+- [NavItem](entities/NavItem.md)
+- [NormalizedApiError](entities/NormalizedApiError.md)
+- [NotFoundException](entities/NotFoundException.md)
+- [NotificationService](entities/NotificationService.md)
+- [NotificationsPanelProps](entities/NotificationsPanelProps.md)
+- [ObjectStoreAcceptance](entities/ObjectStoreAcceptance.md)
+- [OpenBaoTransitClient](entities/OpenBaoTransitClient.md)
+- [OperationBuilder](entities/OperationBuilder.md)
+- [OutboundDeliveryAttemptError](entities/OutboundDeliveryAttemptError.md)
+- [OutboundDeliveryChannel](entities/OutboundDeliveryChannel.md)
+- [OutboundWebhookDeliveryListParams](entities/OutboundWebhookDeliveryListParams.md)
+- [OutboundWebhookDeliveryResponse](entities/OutboundWebhookDeliveryResponse.md)
+- [OutboundWebhookEventResponse](entities/OutboundWebhookEventResponse.md)
+- [OutboundWebhookNotFoundError](entities/OutboundWebhookNotFoundError.md)
+- [OutboundWebhookService](entities/OutboundWebhookService.md)
+- [OutboundWebhookTargetBase](entities/OutboundWebhookTargetBase.md)
+- [OutboundWebhookTargetResponse](entities/OutboundWebhookTargetResponse.md)
+- [OutboundWebhookValidationError](entities/OutboundWebhookValidationError.md)
+- [OverflowMenuItem](entities/OverflowMenuItem.md)
+- [OverviewDataSource](entities/OverviewDataSource.md)
+- [OverviewDeliverySnapshotProps](entities/OverviewDeliverySnapshotProps.md)
+- [OverviewFocusPanelProps](entities/OverviewFocusPanelProps.md)
+- [OverviewLocationState](entities/OverviewLocationState.md)
+- [OverviewTaskThreadSource](entities/OverviewTaskThreadSource.md)
+- [OwnershipSelection](entities/OwnershipSelection.md)
+- [PageHeaderProps](entities/PageHeaderProps.md)
+- [PageLayoutProps](entities/PageLayoutProps.md)
+- [ParsedGitHubLink](entities/ParsedGitHubLink.md)
+- [ParsedTask](entities/ParsedTask.md)
+- [ParsedTeamMember](entities/ParsedTeamMember.md)
+- [PersistedState](entities/PersistedState.md)
+- [PersistedTaskRoutingAssessmentFields](entities/PersistedTaskRoutingAssessmentFields.md)
+- [PillTone](entities/PillTone.md)
+- [PlanReadiness](entities/PlanReadiness.md)
+- [PlanShareResponse](entities/PlanShareResponse.md)
+- [PlanShareService](entities/PlanShareService.md)
+- [PlanShareSnapshot](entities/PlanShareSnapshot.md)
+- [PlanShareTask](entities/PlanShareTask.md)
+- [PlanShareTeamMember](entities/PlanShareTeamMember.md)
+- [PlanningJob](entities/PlanningJob.md)
+- [PlanningMember](entities/PlanningMember.md)
+- [PlanningQueryFeedback](entities/PlanningQueryFeedback.md)
+- [PlanningReadinessOptions](entities/PlanningReadinessOptions.md)
+- [PlanningRecoveryAction](entities/PlanningRecoveryAction.md)
+- [PlanningRecoveryKind](entities/PlanningRecoveryKind.md)
+- [PlanningStepId](entities/PlanningStepId.md)
+- [PlanningSurface](entities/PlanningSurface.md)
+- [PlanningTaskIssue](entities/PlanningTaskIssue.md)
+- [PlanningTeamMember](entities/PlanningTeamMember.md)
+- [PlanningWorkbenchFact](entities/PlanningWorkbenchFact.md)
+- [PlanningWorkbenchFrameProps](entities/PlanningWorkbenchFrameProps.md)
+- [PositiveRevision](entities/PositiveRevision.md)
+- [PostgreSQLContractBundle](entities/PostgreSQLContractBundle.md)
+- [PostgreSQLContractManifest](entities/PostgreSQLContractManifest.md)
+- [PostgresTestDatabase](entities/PostgresTestDatabase.md)
+- [PostgresTestDatabaseManager](entities/PostgresTestDatabaseManager.md)
+- [PreflightPredicateResult](entities/PreflightPredicateResult.md)
+- [ProgramDecision](entities/ProgramDecision.md)
+- [ProjectFormProps](entities/ProjectFormProps.md)
+- [ProjectIterationsSectionProps](entities/ProjectIterationsSectionProps.md)
+- [ProjectMilestoneCreate](entities/ProjectMilestoneCreate.md)
+- [ProjectMilestoneResponse](entities/ProjectMilestoneResponse.md)
+- [ProjectMilestoneUpdate](entities/ProjectMilestoneUpdate.md)
+- [ProjectMilestoneUpdateRequest](entities/ProjectMilestoneUpdateRequest.md)
+- [ProjectOwner](entities/ProjectOwner.md)
+- [ProjectProfileOwner](entities/ProjectProfileOwner.md)
+- [ProjectRecordStatus](entities/ProjectRecordStatus.md)
+- [ProjectResponse](entities/ProjectResponse.md)
+- [ProjectService](entities/ProjectService.md)
+- [ProjectTask](entities/ProjectTask.md)
+- [ProjectTaskTreeProps](entities/ProjectTaskTreeProps.md)
+- [ProjectUpdateEntryResponse](entities/ProjectUpdateEntryResponse.md)
+- [ProjectUpdateErrorStore](entities/ProjectUpdateErrorStore.md)
+- [ProjectUpdateFormState](entities/ProjectUpdateFormState.md)
+- [ProjectUpdateFormStore](entities/ProjectUpdateFormStore.md)
+- [ProviderActionRequest](entities/ProviderActionRequest.md)
+- [ProviderAuditObservation](entities/ProviderAuditObservation.md)
+- [ProviderMutationAdapter](entities/ProviderMutationAdapter.md)
+- [ProviderMutationReceipt](entities/ProviderMutationReceipt.md)
+- [ProviderSessionDouble](entities/ProviderSessionDouble.md)
+- [ProviderSourceCollector](entities/ProviderSourceCollector.md)
+- [PublicTrustAnchor](entities/PublicTrustAnchor.md)
+- [PublicTrustResolver](entities/PublicTrustResolver.md)
+- [QualificationInputError](entities/QualificationInputError.md)
+- [QueryEmptyStateProps](entities/QueryEmptyStateProps.md)
+- [QueryErrorStateProps](entities/QueryErrorStateProps.md)
+- [QueryFeedbackSource](entities/QueryFeedbackSource.md)
+- [QueryKey](entities/QueryKey.md)
+- [QueryLoadingStateProps](entities/QueryLoadingStateProps.md)
+- [QueryStaleStateProps](entities/QueryStaleStateProps.md)
+- [RankableAttention](entities/RankableAttention.md)
+- [RateLimitWindow](entities/RateLimitWindow.md)
+- [ReadyTopology](entities/ReadyTopology.md)
+- [ReasonCodeRule](entities/ReasonCodeRule.md)
+- [ReasoningTier](entities/ReasoningTier.md)
+- [RecommendationContext](entities/RecommendationContext.md)
+- [ReconciliationClass](entities/ReconciliationClass.md)
+- [Recorder](entities/Recorder.md)
+- [RecoveryFocusIntent](entities/RecoveryFocusIntent.md)
+- [RecoveryFocusTarget](entities/RecoveryFocusTarget.md)
+- [RedactionClass](entities/RedactionClass.md)
+- [RefreshStatus](entities/RefreshStatus.md)
+- [ReleaseCreate](entities/ReleaseCreate.md)
+- [ReleaseFormProps](entities/ReleaseFormProps.md)
+- [ReleaseFormState](entities/ReleaseFormState.md)
+- [ReleaseForm_FlattenedTask](entities/ReleaseForm_FlattenedTask.md)
+- [ReleaseLimits](entities/ReleaseLimits.md)
+- [ReleaseResponse](entities/ReleaseResponse.md)
+- [ReleaseService](entities/ReleaseService.md)
+- [ReleaseUpdate](entities/ReleaseUpdate.md)
+- [RemoteSigner](entities/RemoteSigner.md)
+- [RenderWithProvidersOptions](entities/RenderWithProvidersOptions.md)
+- [ReorderVariables](entities/ReorderVariables.md)
+- [ReplicaMembershipObservation](entities/ReplicaMembershipObservation.md)
+- [RequestSourceConflictError](entities/RequestSourceConflictError.md)
+- [RequestSourceLinkCreateRequest](entities/RequestSourceLinkCreateRequest.md)
+- [RequestSourceLinkResponse](entities/RequestSourceLinkResponse.md)
+- [RequestSourceLinkWithSource](entities/RequestSourceLinkWithSource.md)
+- [RequestSourceLinkWithSourceResponse](entities/RequestSourceLinkWithSourceResponse.md)
+- [RequestSourceLinksPanelProps](entities/RequestSourceLinksPanelProps.md)
+- [RequestSourceNotFoundError](entities/RequestSourceNotFoundError.md)
+- [RequestSourceResponse](entities/RequestSourceResponse.md)
+- [RequestSourceService](entities/RequestSourceService.md)
+- [RequestSourceTargetNotFoundError](entities/RequestSourceTargetNotFoundError.md)
+- [RequestSourceUpdate](entities/RequestSourceUpdate.md)
+- [RequestSourceValidationError](entities/RequestSourceValidationError.md)
+- [RescheduleResult](entities/RescheduleResult.md)
+- [ResolvedHandoffFact](entities/ResolvedHandoffFact.md)
+- [ResolvedStatusEvidence](entities/ResolvedStatusEvidence.md)
+- [ResolvedVerifierLease](entities/ResolvedVerifierLease.md)
+- [RetentionState](entities/RetentionState.md)
+- [ReviewMode](entities/ReviewMode.md)
+- [RevocationObservation](entities/RevocationObservation.md)
+- [RevocationResolver](entities/RevocationResolver.md)
+- [RoadmapFilterDescriptor](entities/RoadmapFilterDescriptor.md)
+- [RoadmapGroup](entities/RoadmapGroup.md)
+- [RoadmapMarker](entities/RoadmapMarker.md)
+- [RoadmapRow](entities/RoadmapRow.md)
+- [RolePackageContract](entities/RolePackageContract.md)
+- [RouteErrorBoundary](entities/RouteErrorBoundary.md)
+- [RouteErrorBoundaryProps](entities/RouteErrorBoundaryProps.md)
+- [RouteErrorBoundaryState](entities/RouteErrorBoundaryState.md)
+- [RouteMetadata](entities/RouteMetadata.md)
+- [RouteModuleKey](entities/RouteModuleKey.md)
+- [RoutingCandidateComparisonProps](entities/RoutingCandidateComparisonProps.md)
+- [RoutingCandidateSummary](entities/RoutingCandidateSummary.md)
+- [RoutingContractModel](entities/RoutingContractModel.md)
+- [RoutingDecisionSnapshot](entities/RoutingDecisionSnapshot.md)
+- [RoutingDigest](entities/RoutingDigest.md)
+- [RoutingEligibilityDecision](entities/RoutingEligibilityDecision.md)
+- [RoutingExclusionSummary](entities/RoutingExclusionSummary.md)
+- [RoutingKey](entities/RoutingKey.md)
+- [RoutingModelEnvelopeDecision](entities/RoutingModelEnvelopeDecision.md)
+- [RoutingOperationalEvent](entities/RoutingOperationalEvent.md)
+- [RoutingProfileEvidence](entities/RoutingProfileEvidence.md)
+- [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
+- [RoutingSkillDecision](entities/RoutingSkillDecision.md)
+- [RoutingTrustLineage](entities/RoutingTrustLineage.md)
+- [RuntimeActivity](entities/RuntimeActivity.md)
+- [RuntimeBoundaryMiddleware](entities/RuntimeBoundaryMiddleware.md)
+- [RuntimeContract](entities/RuntimeContract.md)
+- [RuntimeErrors](entities/RuntimeErrors.md)
+- [RuntimeReadinessState](entities/RuntimeReadinessState.md)
+- [RuntimeSecretField](entities/RuntimeSecretField.md)
+- [RuntimeSection](entities/RuntimeSection.md)
+- [RuntimeSettingField](entities/RuntimeSettingField.md)
+- [RuntimeSettingsEncryptionError](entities/RuntimeSettingsEncryptionError.md)
+- [RuntimeSettingsError](entities/RuntimeSettingsError.md)
+- [RuntimeSettingsService](entities/RuntimeSettingsService.md)
+- [S3ObjectLockClient](entities/S3ObjectLockClient.md)
+- [SafeFormatDict](entities/SafeFormatDict.md)
+- [SavedViewCreateRequest](entities/SavedViewCreateRequest.md)
+- [SavedViewDashboardCard](entities/SavedViewDashboardCard.md)
+- [SavedViewDashboardCardResponse](entities/SavedViewDashboardCardResponse.md)
+- [SavedViewDashboardCardsProps](entities/SavedViewDashboardCardsProps.md)
+- [SavedViewDuplicate](entities/SavedViewDuplicate.md)
+- [SavedViewDuplicateRequest](entities/SavedViewDuplicateRequest.md)
+- [SavedViewListParams](entities/SavedViewListParams.md)
+- [SavedViewPermissionError](entities/SavedViewPermissionError.md)
+- [SavedViewResponse](entities/SavedViewResponse.md)
+- [SavedViewService](entities/SavedViewService.md)
+- [SavedViewUpdateRequest](entities/SavedViewUpdateRequest.md)
+- [SavedViewValidationError](entities/SavedViewValidationError.md)
+- [SavedViewsControlProps](entities/SavedViewsControlProps.md)
+- [ScalarResult](entities/ScalarResult.md)
+- [ScenarioBase](entities/ScenarioBase.md)
+- [ScheduleExplanationDetailsProps](entities/ScheduleExplanationDetailsProps.md)
+- [SchedulePreviewComplete](entities/SchedulePreviewComplete.md)
+- [SchedulePreviewRequest](entities/SchedulePreviewRequest.md)
+- [SchedulerService](entities/SchedulerService.md)
+- [SchedulingPassCard_Props](entities/SchedulingPassCard_Props.md)
+- [SchedulingPassSchema](entities/SchedulingPassSchema.md)
+- [SchedulingRulesSchema](entities/SchedulingRulesSchema.md)
+- [SchedulingRulesService](entities/SchedulingRulesService.md)
+- [ScopeRequirement](entities/ScopeRequirement.md)
+- [SecretMaterialError](entities/SecretMaterialError.md)
+- [SectionId](entities/SectionId.md)
+- [SeriesDraft](entities/SeriesDraft.md)
+- [ServerAcceptanceCandidate](entities/ServerAcceptanceCandidate.md)
+- [ServerAcceptanceConfig](entities/ServerAcceptanceConfig.md)
+- [ServerAcceptanceError](entities/ServerAcceptanceError.md)
+- [ServerAcceptanceReceipt](entities/ServerAcceptanceReceipt.md)
+- [SessionAuthorityState](entities/SessionAuthorityState.md)
+- [SessionDouble](entities/SessionDouble.md)
+- [SettingDefinition](entities/SettingDefinition.md)
+- [Settings](entities/Settings.md)
+- [SettingsDestination](entities/SettingsDestination.md)
+- [SettingsDestinationHeader](entities/SettingsDestinationHeader.md)
+- [SettingsGoalTab](entities/SettingsGoalTab.md)
+- [SettingsGroup](entities/SettingsGroup.md)
+- [SettingsGroupId](entities/SettingsGroupId.md)
+- [SettingsPageTab](entities/SettingsPageTab.md)
+- [SettingsRowIdentity](entities/SettingsRowIdentity.md)
+- [SettingsTab](entities/SettingsTab.md)
+- [ShareFocusIntent](entities/ShareFocusIntent.md)
+- [ShareFocusTarget](entities/ShareFocusTarget.md)
+- [SharedStateProps](entities/SharedStateProps.md)
+- [SidebarAttentionAction](entities/SidebarAttentionAction.md)
+- [SignatureVerificationError](entities/SignatureVerificationError.md)
+- [SignedActionLease](entities/SignedActionLease.md)
+- [SignedAgentPreflightReport](entities/SignedAgentPreflightReport.md)
+- [SignedAutonomousEvidence](entities/SignedAutonomousEvidence.md)
+- [SignedAutonomyCharter](entities/SignedAutonomyCharter.md)
+- [SignedBootstrapActionManifest](entities/SignedBootstrapActionManifest.md)
+- [SignedCharterVerificationReceipt](entities/SignedCharterVerificationReceipt.md)
+- [SignedCloseoutDecision](entities/SignedCloseoutDecision.md)
+- [SignedHandoffVerification](entities/SignedHandoffVerification.md)
+- [SimilarityDocument](entities/SimilarityDocument.md)
+- [SimilarityScore](entities/SimilarityScore.md)
+- [SingleDraft](entities/SingleDraft.md)
+- [SkillBundleArchiveRecord](entities/SkillBundleArchiveRecord.md)
+- [SkillBundleArtifactError](entities/SkillBundleArtifactError.md)
+- [SkillBundleCatalogEntry](entities/SkillBundleCatalogEntry.md)
+- [SkillBundleCatalogResponse](entities/SkillBundleCatalogResponse.md)
+- [SkillBundleDiscoveryResponse](entities/SkillBundleDiscoveryResponse.md)
+- [SkillBundleFileRecord](entities/SkillBundleFileRecord.md)
+- [SkillBundleManifestResponse](entities/SkillBundleManifestResponse.md)
+- [SkillBundleNotFoundError](entities/SkillBundleNotFoundError.md)
+- [SkillBundlePayload](entities/SkillBundlePayload.md)
+- [SkillBundleReleaseArtifact](entities/SkillBundleReleaseArtifact.md)
+- [SkillBundleReleaseIndex](entities/SkillBundleReleaseIndex.md)
+- [SkillLevel](entities/SkillLevel.md)
+- [SkillPackError](entities/SkillPackError.md)
+- [SnapshotPathError](entities/SnapshotPathError.md)
+- [SnapshotRestoreRequest](entities/SnapshotRestoreRequest.md)
+- [SnapshotService](entities/SnapshotService.md)
+- [SortCriterionSchema](entities/SortCriterionSchema.md)
+- [SortKey](entities/SortKey.md)
+- [SortableTaskItemProps](entities/SortableTaskItemProps.md)
+- [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
+- [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
+- [SqlStateFailure](entities/SqlStateFailure.md)
+- [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
+- [StatusChangeControlProps](entities/StatusChangeControlProps.md)
+- [StatusEvidenceReference](entities/StatusEvidenceReference.md)
+- [StatusRule](entities/StatusRule.md)
+- [StatusRulesContract](entities/StatusRulesContract.md)
+- [StatusSegment](entities/StatusSegment.md)
+- [StatusTone](entities/StatusTone.md)
+- [StepDataState](entities/StepDataState.md)
+- [StepPresentationState](entities/StepPresentationState.md)
+- [StepState](entities/StepState.md)
+- [StepStatus](entities/StepStatus.md)
+- [StopMode](entities/StopMode.md)
+- [StrictBundleModel](entities/StrictBundleModel.md)
+- [StrictContractModel](entities/StrictContractModel.md)
+- [SupportedLanguage](entities/SupportedLanguage.md)
+- [SystemLanguageProviderProps](entities/SystemLanguageProviderProps.md)
+- [SystemSetting](entities/SystemSetting.md)
+- [SystemSettings](entities/SystemSettings.md)
+- [SystemSettingsResponse](entities/SystemSettingsResponse.md)
+- [Tab](entities/Tab.md)
+- [TargetFormErrors](entities/TargetFormErrors.md)
+- [TargetFormState](entities/TargetFormState.md)
+- [TaskAgentReadinessBadgeProps](entities/TaskAgentReadinessBadgeProps.md)
+- [TaskBulkOperationService](entities/TaskBulkOperationService.md)
+- [TaskBulkOperationsPanelProps](entities/TaskBulkOperationsPanelProps.md)
+- [TaskChange](entities/TaskChange.md)
+- [TaskClaimRequest](entities/TaskClaimRequest.md)
+- [TaskClaimResponse](entities/TaskClaimResponse.md)
+- [TaskConflictMetadata](entities/TaskConflictMetadata.md)
+- [TaskContextVersionConflictError](entities/TaskContextVersionConflictError.md)
+- [TaskDependency](entities/TaskDependency.md)
+- [TaskDependencyCreate](entities/TaskDependencyCreate.md)
+- [TaskDependencySelectorProps](entities/TaskDependencySelectorProps.md)
+- [TaskDifficultyBand](entities/TaskDifficultyBand.md)
+- [TaskDifficultyScore](entities/TaskDifficultyScore.md)
+- [TaskEditModalContentProps](entities/TaskEditModalContentProps.md)
+- [TaskEditModalProps](entities/TaskEditModalProps.md)
+- [TaskEditorAvailability](entities/TaskEditorAvailability.md)
+- [TaskEditorDefaultsContext](entities/TaskEditorDefaultsContext.md)
+- [TaskEditorFieldDefinition](entities/TaskEditorFieldDefinition.md)
+- [TaskEditorSection](entities/TaskEditorSection.md)
+- [TaskEditorServerError](entities/TaskEditorServerError.md)
+- [TaskEditorValidationCode](entities/TaskEditorValidationCode.md)
+- [TaskEditorValidationIssue](entities/TaskEditorValidationIssue.md)
+- [TaskEditorValues](entities/TaskEditorValues.md)
+- [TaskEvent](entities/TaskEvent.md)
+- [TaskEventCreate](entities/TaskEventCreate.md)
+- [TaskEventResponse](entities/TaskEventResponse.md)
+- [TaskExternalLinkCreate](entities/TaskExternalLinkCreate.md)
+- [TaskFilters](entities/TaskFilters.md)
+- [TaskFiltersBarProps](entities/TaskFiltersBarProps.md)
+- [TaskFormProps](entities/TaskFormProps.md)
+- [TaskFormalizeResponse](entities/TaskFormalizeResponse.md)
+- [TaskImportService](entities/TaskImportService.md)
+- [TaskImportTriageItemResponse](entities/TaskImportTriageItemResponse.md)
+- [TaskImproveDescriptionResponse](entities/TaskImproveDescriptionResponse.md)
+- [TaskItemContentProps](entities/TaskItemContentProps.md)
+- [TaskItemProps](entities/TaskItemProps.md)
+- [TaskListOption](entities/TaskListOption.md)
+- [TaskListProps](entities/TaskListProps.md)
+- [TaskMerge](entities/TaskMerge.md)
+- [TaskMergeRequest](entities/TaskMergeRequest.md)
+- [TaskMode](entities/TaskMode.md)
+- [TaskOrderRequest](entities/TaskOrderRequest.md)
+- [TaskReorder](entities/TaskReorder.md)
+- [TaskResponse](entities/TaskResponse.md)
+- [TaskReviewMode](entities/TaskReviewMode.md)
+- [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
+- [TaskRoutingAssessmentFields](entities/TaskRoutingAssessmentFields.md)
+- [TaskRoutingAssessmentHistory](entities/TaskRoutingAssessmentHistory.md)
+- [TaskRoutingAssessmentListResponse](entities/TaskRoutingAssessmentListResponse.md)
+- [TaskRoutingAssessmentResponse](entities/TaskRoutingAssessmentResponse.md)
+- [TaskRoutingPanelProps](entities/TaskRoutingPanelProps.md)
+- [TaskService](entities/TaskService.md)
+- [TaskSkillLevel](entities/TaskSkillLevel.md)
+- [TaskStatusAmendment](entities/TaskStatusAmendment.md)
+- [TaskStatusChange](entities/TaskStatusChange.md)
+- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
+- [TaskStatusLogResponse](entities/TaskStatusLogResponse.md)
+- [TaskStatusService](entities/TaskStatusService.md)
+- [TaskTextEditorBodyProps](entities/TaskTextEditorBodyProps.md)
+- [TaskTextEditorModalProps](entities/TaskTextEditorModalProps.md)
+- [TaskTimelineDates](entities/TaskTimelineDates.md)
+- [TaskTimelinePanelProps](entities/TaskTimelinePanelProps.md)
+- [TaskTreeIntegrityError](entities/TaskTreeIntegrityError.md)
+- [TaskUnmerge](entities/TaskUnmerge.md)
+- [TaskVersionConflictDetail](entities/TaskVersionConflictDetail.md)
+- [TaskVersionConflictError](entities/TaskVersionConflictError.md)
+- [TeamFormProps](entities/TeamFormProps.md)
+- [TeamImportRequest](entities/TeamImportRequest.md)
+- [TeamImportResponse](entities/TeamImportResponse.md)
+- [TeamListProps](entities/TeamListProps.md)
+- [TeamMemberAssignmentMode](entities/TeamMemberAssignmentMode.md)
+- [TeamMemberLabelSource](entities/TeamMemberLabelSource.md)
+- [TeamMemberOption](entities/TeamMemberOption.md)
+- [TeamMemberOptionResponse](entities/TeamMemberOptionResponse.md)
+- [TeamMemberProfileKind](entities/TeamMemberProfileKind.md)
+- [TeamMemberProfileLabelSource](entities/TeamMemberProfileLabelSource.md)
+- [TeamMemberProfileResponse](entities/TeamMemberProfileResponse.md)
+- [TeamMemberProfileSkillResponse](entities/TeamMemberProfileSkillResponse.md)
+- [TeamMemberResponse](entities/TeamMemberResponse.md)
+- [TeamMemberUpdate](entities/TeamMemberUpdate.md)
+- [TeamPageAction](entities/TeamPageAction.md)
+- [TeamProfileManagerProps](entities/TeamProfileManagerProps.md)
+- [TeamService](entities/TeamService.md)
+- [TemplateFormState](entities/TemplateFormState.md)
+- [TemplateListParams](entities/TemplateListParams.md)
+- [TemplateSeedBaseline](entities/TemplateSeedBaseline.md)
+- [TemplateService](entities/TemplateService.md)
+- [Theme](entities/Theme.md)
+- [ThemeState](entities/ThemeState.md)
+- [ToastApi](entities/ToastApi.md)
+- [ToastInput](entities/ToastInput.md)
+- [ToastRecord](entities/ToastRecord.md)
+- [ToastTone](entities/ToastTone.md)
+- [ToneToastOptions](entities/ToneToastOptions.md)
+- [TopologyConfigurationState](entities/TopologyConfigurationState.md)
+- [TopologyLifecycleState](entities/TopologyLifecycleState.md)
+- [TopologyMemberContract](entities/TopologyMemberContract.md)
+- [TopologyPlanAction](entities/TopologyPlanAction.md)
+- [TransitSignerAcceptance](entities/TransitSignerAcceptance.md)
+- [Translate](entities/Translate.md)
+- [TriageActionModalProps](entities/TriageActionModalProps.md)
+- [TriageClassificationDraft](entities/TriageClassificationDraft.md)
+- [TriageClassificationSuggestionResponse](entities/TriageClassificationSuggestionResponse.md)
+- [TriageConflictError](entities/TriageConflictError.md)
+- [TriageDetailPanelProps](entities/TriageDetailPanelProps.md)
+- [TriageDraftNotFoundError](entities/TriageDraftNotFoundError.md)
+- [TriageItemResponse](entities/TriageItemResponse.md)
+- [TriageLifecycleAction](entities/TriageLifecycleAction.md)
+- [TriageListParams](entities/TriageListParams.md)
+- [TriageRowProps](entities/TriageRowProps.md)
+- [TriageService](entities/TriageService.md)
+- [TrustedKeyBinding](entities/TrustedKeyBinding.md)
+- [URLPolicyError](entities/URLPolicyError.md)
+- [UTCDateTime](entities/UTCDateTime.md)
+- [UnknownRecord](entities/UnknownRecord.md)
+- [UnsafeDatabaseTarget](entities/UnsafeDatabaseTarget.md)
+- [UnsupportedAgentTeamMasterVersion](entities/UnsupportedAgentTeamMasterVersion.md)
+- [UpgradeError](entities/UpgradeError.md)
+- [VacationImportRequest](entities/VacationImportRequest.md)
+- [VacationManagerProps](entities/VacationManagerProps.md)
+- [VacationResponse](entities/VacationResponse.md)
+- [VacationRow](entities/VacationRow.md)
+- [VacationUpdate](entities/VacationUpdate.md)
+- [ValidationException](entities/ValidationException.md)
+- [ValkeyCasClient](entities/ValkeyCasClient.md)
+- [VerificationBeginRequest](entities/VerificationBeginRequest.md)
+- [VerificationClaimRequest](entities/VerificationClaimRequest.md)
+- [VerificationCriterionResult](entities/VerificationCriterionResult.md)
+- [VerificationRenewRequest](entities/VerificationRenewRequest.md)
+- [VerificationRequirementContract](entities/VerificationRequirementContract.md)
+- [VerificationRequirementCreate](entities/VerificationRequirementCreate.md)
+- [VerificationRequirementResponse](entities/VerificationRequirementResponse.md)
+- [VerificationRequirementState](entities/VerificationRequirementState.md)
+- [VerificationSubmitRequest](entities/VerificationSubmitRequest.md)
+- [VerificationTransitionResponse](entities/VerificationTransitionResponse.md)
+- [VerifiedPreflightArtifact](entities/VerifiedPreflightArtifact.md)
+- [ViewMode](entities/ViewMode.md)
+- [VirtualClient](entities/VirtualClient.md)
+- [VisibleHealthState](entities/VisibleHealthState.md)
+- [WebIntakeConfigurationError](entities/WebIntakeConfigurationError.md)
+- [WebIntakeForm](entities/WebIntakeForm.md)
+- [WebIntakeRateLimitError](entities/WebIntakeRateLimitError.md)
+- [WebIntakeRateLimitInfo](entities/WebIntakeRateLimitInfo.md)
+- [WebIntakeRateLimiter](entities/WebIntakeRateLimiter.md)
+- [WebIntakeRequest](entities/WebIntakeRequest.md)
+- [WebIntakeRuntimeSettings](entities/WebIntakeRuntimeSettings.md)
+- [WebIntakeRuntimeSettingsResponse](entities/WebIntakeRuntimeSettingsResponse.md)
+- [WebIntakeService](entities/WebIntakeService.md)
+- [WebIntakeUnauthorizedError](entities/WebIntakeUnauthorizedError.md)
+- [WorkChordException](entities/WorkChordException.md)
+- [WorkPackageContract](entities/WorkPackageContract.md)
+- [WorkTemplateResponse](entities/WorkTemplateResponse.md)
+- [WorkflowFocusIntent](entities/WorkflowFocusIntent.md)
+- [WorkflowFocusTarget](entities/WorkflowFocusTarget.md)
+- [WorkingDaysRequest](entities/WorkingDaysRequest.md)
+- [WorkspaceAttention](entities/WorkspaceAttention.md)
+- [WorkspaceKey](entities/WorkspaceKey.md)
+- [WorkspaceMetadata](entities/WorkspaceMetadata.md)
+- [WormObjectStore](entities/WormObjectStore.md)
+- [agent_routing_AgentModelBindingCreate](entities/agent_routing_AgentModelBindingCreate.md)
+- [agent_routing_AgentModelBindingDisable](entities/agent_routing_AgentModelBindingDisable.md)
+- [agent_routing_AgentModelBindingUpdate](entities/agent_routing_AgentModelBindingUpdate.md)
+- [agent_routing_AgentModelCatalogCreate](entities/agent_routing_AgentModelCatalogCreate.md)
+- [agent_routing_AgentModelCatalogDisable](entities/agent_routing_AgentModelCatalogDisable.md)
+- [agent_routing_AgentModelCatalogUpdate](entities/agent_routing_AgentModelCatalogUpdate.md)
+- [agent_routing_AgentModelMutationReceipt](entities/agent_routing_AgentModelMutationReceipt.md)
+- [agent_routing_AgentRoutingCandidate](entities/agent_routing_AgentRoutingCandidate.md)
+- [agent_routing_AgentRoutingExclusion](entities/agent_routing_AgentRoutingExclusion.md)
+- [agent_routing_AgentRoutingPreviewCreate](entities/agent_routing_AgentRoutingPreviewCreate.md)
+- [agent_routing_AgentRoutingPreviewResponse](entities/agent_routing_AgentRoutingPreviewResponse.md)
+- [agent_routing_RequiredModelEnvelope](entities/agent_routing_RequiredModelEnvelope.md)
+- [agent_routing_TaskDifficultyAxes](entities/agent_routing_TaskDifficultyAxes.md)
+- [agent_routing_TaskRoutingAssessmentCommand](entities/agent_routing_TaskRoutingAssessmentCommand.md)
+- [agent_routing_TaskRoutingAssessmentMutationReceipt](entities/agent_routing_TaskRoutingAssessmentMutationReceipt.md)
+- [agent_routing_TaskRoutingAssessmentState](entities/agent_routing_TaskRoutingAssessmentState.md)
+- [agent_routing_policy_AssessmentReasonCode](entities/agent_routing_policy_AssessmentReasonCode.md)
+- [agent_routing_policy_RoutingBlockerCode](entities/agent_routing_policy_RoutingBlockerCode.md)
+- [agent_team_setup_AgentTeamActionReceipt](entities/agent_team_setup_AgentTeamActionReceipt.md)
+- [agent_team_setup_AgentTeamApplyResponse](entities/agent_team_setup_AgentTeamApplyResponse.md)
+- [agent_team_setup_AgentTeamMaster](entities/agent_team_setup_AgentTeamMaster.md)
+- [agent_team_setup_AgentTeamMemberSpec](entities/agent_team_setup_AgentTeamMemberSpec.md)
+- [agent_team_setup_AgentTeamMemberStatus](entities/agent_team_setup_AgentTeamMemberStatus.md)
+- [agent_team_setup_AgentTeamPlanAction](entities/agent_team_setup_AgentTeamPlanAction.md)
+- [agent_team_setup_AgentTeamReconciliationClass](entities/agent_team_setup_AgentTeamReconciliationClass.md)
+- [agent_team_setup_AgentTeamReconciliationPlan](entities/agent_team_setup_AgentTeamReconciliationPlan.md)
+- [agent_team_setup_AgentTeamRuntimeHandoff](entities/agent_team_setup_AgentTeamRuntimeHandoff.md)
+- [agent_team_setup_AgentTeamSetupStep](entities/agent_team_setup_AgentTeamSetupStep.md)
+- [agent_team_setup_AgentTeamSkillPackage](entities/agent_team_setup_AgentTeamSkillPackage.md)
+- [emailSettings_EmailSettings](entities/emailSettings_EmailSettings.md)
+- [emailSettings_EmailSettingsUpdate](entities/emailSettings_EmailSettingsUpdate.md)
+- [emailSettings_TestEmailRequest](entities/emailSettings_TestEmailRequest.md)
+- [emailSettings_TestEmailResponse](entities/emailSettings_TestEmailResponse.md)
+- [email_settings_service_EmailSettings](entities/email_settings_service_EmailSettings.md)
+- [language_service_AILanguageMode](entities/language_service_AILanguageMode.md)
+- [language_service_LanguageCode](entities/language_service_LanguageCode.md)
+- [modelRouting_AssessmentReasonCode](entities/modelRouting_AssessmentReasonCode.md)
+- [models_agent_AgentActor](entities/models_agent_AgentActor.md)
+- [models_agent_AgentModelBinding](entities/models_agent_AgentModelBinding.md)
+- [models_agent_AgentModelCatalogEntry](entities/models_agent_AgentModelCatalogEntry.md)
+- [models_agent_AgentRun](entities/models_agent_AgentRun.md)
+- [models_agent_AgentRunEvent](entities/models_agent_AgentRunEvent.md)
+- [models_agent_AgentTaskAssignment](entities/models_agent_AgentTaskAssignment.md)
+- [models_agent_AgentTeamActionReceipt](entities/models_agent_AgentTeamActionReceipt.md)
+- [models_agent_TaskRoutingAssessment](entities/models_agent_TaskRoutingAssessment.md)
+- [models_calendar_Calendar](entities/models_calendar_Calendar.md)
+- [models_external_link_ExternalLink](entities/models_external_link_ExternalLink.md)
+- [models_external_link_ExternalLinkEntityType](entities/models_external_link_ExternalLinkEntityType.md)
+- [models_external_link_ExternalLinkProvider](entities/models_external_link_ExternalLinkProvider.md)
+- [models_github_GitHubStatusAutomationRule](entities/models_github_GitHubStatusAutomationRule.md)
+- [models_iteration_Iteration](entities/models_iteration_Iteration.md)
+- [models_label_Label](entities/models_label_Label.md)
+- [models_label_LabelGroup](entities/models_label_LabelGroup.md)
+- [models_outbound_webhook_OutboundWebhookDelivery](entities/models_outbound_webhook_OutboundWebhookDelivery.md)
+- [models_outbound_webhook_OutboundWebhookDeliveryStatus](entities/models_outbound_webhook_OutboundWebhookDeliveryStatus.md)
+- [models_outbound_webhook_OutboundWebhookEvent](entities/models_outbound_webhook_OutboundWebhookEvent.md)
+- [models_outbound_webhook_OutboundWebhookTarget](entities/models_outbound_webhook_OutboundWebhookTarget.md)
+- [models_plan_share_PlanShare](entities/models_plan_share_PlanShare.md)
+- [models_project_Initiative](entities/models_project_Initiative.md)
+- [models_project_Project](entities/models_project_Project.md)
+- [models_project_ProjectHealth](entities/models_project_ProjectHealth.md)
+- [models_project_ProjectMilestone](entities/models_project_ProjectMilestone.md)
+- [models_project_ProjectMilestoneStatus](entities/models_project_ProjectMilestoneStatus.md)
+- [models_project_ProjectStatus](entities/models_project_ProjectStatus.md)
+- [models_project_ProjectUpdateEntry](entities/models_project_ProjectUpdateEntry.md)
+- [models_release_Release](entities/models_release_Release.md)
+- [models_release_ReleaseStatus](entities/models_release_ReleaseStatus.md)
+- [models_request_source_RequestSource](entities/models_request_source_RequestSource.md)
+- [models_request_source_RequestSourceLink](entities/models_request_source_RequestSourceLink.md)
+- [models_request_source_RequestSourceType](entities/models_request_source_RequestSourceType.md)
+- [models_saved_view_SavedView](entities/models_saved_view_SavedView.md)
+- [models_saved_view_SavedViewScope](entities/models_saved_view_SavedViewScope.md)
+- [models_saved_view_SavedViewType](entities/models_saved_view_SavedViewType.md)
+- [models_task_Task](entities/models_task_Task.md)
+- [models_task_TaskStatus](entities/models_task_TaskStatus.md)
+- [models_template_TemplateType](entities/models_template_TemplateType.md)
+- [models_template_WorkTemplate](entities/models_template_WorkTemplate.md)
+- [models_triage_TriageClassificationSuggestion](entities/models_triage_TriageClassificationSuggestion.md)
+- [models_triage_TriageItem](entities/models_triage_TriageItem.md)
+- [models_triage_TriageItemStatus](entities/models_triage_TriageItemStatus.md)
+- [outboundWebhook_OutboundWebhookDelivery](entities/outboundWebhook_OutboundWebhookDelivery.md)
+- [outboundWebhook_OutboundWebhookDeliveryStatus](entities/outboundWebhook_OutboundWebhookDeliveryStatus.md)
+- [outboundWebhook_OutboundWebhookEvent](entities/outboundWebhook_OutboundWebhookEvent.md)
+- [outboundWebhook_OutboundWebhookRetryResponse](entities/outboundWebhook_OutboundWebhookRetryResponse.md)
+- [outboundWebhook_OutboundWebhookTarget](entities/outboundWebhook_OutboundWebhookTarget.md)
+- [outboundWebhook_OutboundWebhookTargetCreate](entities/outboundWebhook_OutboundWebhookTargetCreate.md)
+- [outboundWebhook_OutboundWebhookTargetUpdate](entities/outboundWebhook_OutboundWebhookTargetUpdate.md)
+- [planShareService_PlanShare](entities/planShareService_PlanShare.md)
+- [requestSource_RequestSource](entities/requestSource_RequestSource.md)
+- [requestSource_RequestSourceCreate](entities/requestSource_RequestSourceCreate.md)
+- [requestSource_RequestSourceLink](entities/requestSource_RequestSourceLink.md)
+- [requestSource_RequestSourceLinkCreate](entities/requestSource_RequestSourceLinkCreate.md)
+- [requestSource_RequestSourceTargetType](entities/requestSource_RequestSourceTargetType.md)
+- [requestSource_RequestSourceType](entities/requestSource_RequestSourceType.md)
+- [savedView_SavedView](entities/savedView_SavedView.md)
+- [savedView_SavedViewCreate](entities/savedView_SavedViewCreate.md)
+- [savedView_SavedViewScope](entities/savedView_SavedViewScope.md)
+- [savedView_SavedViewType](entities/savedView_SavedViewType.md)
+- [savedView_SavedViewUpdate](entities/savedView_SavedViewUpdate.md)
+- [schedulingRules_Constraints](entities/schedulingRules_Constraints.md)
+- [schedulingRules_EffortModifier](entities/schedulingRules_EffortModifier.md)
+- [schedulingRules_SchedulingPass](entities/schedulingRules_SchedulingPass.md)
+- [schedulingRules_SchedulingRules](entities/schedulingRules_SchedulingRules.md)
+- [schedulingRules_SchedulingRulesResponse](entities/schedulingRules_SchedulingRulesResponse.md)
+- [schedulingRules_SortCriterion](entities/schedulingRules_SortCriterion.md)
+- [scheduling_rules_service_Constraints](entities/scheduling_rules_service_Constraints.md)
+- [scheduling_rules_service_EffortModifier](entities/scheduling_rules_service_EffortModifier.md)
+- [scheduling_rules_service_SchedulingPass](entities/scheduling_rules_service_SchedulingPass.md)
+- [scheduling_rules_service_SchedulingRules](entities/scheduling_rules_service_SchedulingRules.md)
+- [scheduling_rules_service_SortCriterion](entities/scheduling_rules_service_SortCriterion.md)
+- [schemas_agent_AgentActorRosterItem](entities/schemas_agent_AgentActorRosterItem.md)
+- [schemas_agent_AgentActorRosterProfile](entities/schemas_agent_AgentActorRosterProfile.md)
+- [schemas_agent_AgentActorRosterProfileSkill](entities/schemas_agent_AgentActorRosterProfileSkill.md)
+- [schemas_agent_AgentAssignmentPurpose](entities/schemas_agent_AgentAssignmentPurpose.md)
+- [schemas_agent_AgentAssignmentQueueClass](entities/schemas_agent_AgentAssignmentQueueClass.md)
+- [schemas_agent_AgentAssignmentState](entities/schemas_agent_AgentAssignmentState.md)
+- [schemas_agent_ModelAwareAgentTaskAssignmentCreate](entities/schemas_agent_ModelAwareAgentTaskAssignmentCreate.md)
+- [schemas_agent_ModelAwareAgentTaskAssignmentUpdate](entities/schemas_agent_ModelAwareAgentTaskAssignmentUpdate.md)
+- [schemas_agent_TaskTimelineItem](entities/schemas_agent_TaskTimelineItem.md)
+- [schemas_agent_TaskTimelineResponse](entities/schemas_agent_TaskTimelineResponse.md)
+- [schemas_calendar_CalendarCreate](entities/schemas_calendar_CalendarCreate.md)
+- [schemas_calendar_CalendarImportError](entities/schemas_calendar_CalendarImportError.md)
+- [schemas_calendar_CalendarImportResponse](entities/schemas_calendar_CalendarImportResponse.md)
+- [schemas_calendar_CalendarUpdate](entities/schemas_calendar_CalendarUpdate.md)
+- [schemas_calendar_WorkingDaysResponse](entities/schemas_calendar_WorkingDaysResponse.md)
+- [schemas_email_settings_EmailSettingsUpdate](entities/schemas_email_settings_EmailSettingsUpdate.md)
+- [schemas_email_settings_TestEmailRequest](entities/schemas_email_settings_TestEmailRequest.md)
+- [schemas_email_settings_TestEmailResponse](entities/schemas_email_settings_TestEmailResponse.md)
+- [schemas_external_link_ExternalLinkCreate](entities/schemas_external_link_ExternalLinkCreate.md)
+- [schemas_external_link_ExternalLinkEntityType](entities/schemas_external_link_ExternalLinkEntityType.md)
+- [schemas_external_link_ExternalLinkProvider](entities/schemas_external_link_ExternalLinkProvider.md)
+- [schemas_external_link_ExternalLinkUpdate](entities/schemas_external_link_ExternalLinkUpdate.md)
+- [schemas_external_link_GitHubExternalLinkCreate](entities/schemas_external_link_GitHubExternalLinkCreate.md)
+- [schemas_gantt_GanttResponse](entities/schemas_gantt_GanttResponse.md)
+- [schemas_gantt_GanttTask](entities/schemas_gantt_GanttTask.md)
+- [schemas_gantt_SchedulePreviewResponse](entities/schemas_gantt_SchedulePreviewResponse.md)
+- [schemas_gantt_ScheduleResult](entities/schemas_gantt_ScheduleResult.md)
+- [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
+- [schemas_gantt_WorkloadIssue](entities/schemas_gantt_WorkloadIssue.md)
+- [schemas_github_GitHubAutomationEventType](entities/schemas_github_GitHubAutomationEventType.md)
+- [schemas_github_GitHubAutomationOutcome](entities/schemas_github_GitHubAutomationOutcome.md)
+- [schemas_github_GitHubAutomationTargetStatus](entities/schemas_github_GitHubAutomationTargetStatus.md)
+- [schemas_github_GitHubStatusAutomationResult](entities/schemas_github_GitHubStatusAutomationResult.md)
+- [schemas_github_GitHubStatusAutomationRuleCreate](entities/schemas_github_GitHubStatusAutomationRuleCreate.md)
+- [schemas_github_GitHubStatusAutomationRuleUpdate](entities/schemas_github_GitHubStatusAutomationRuleUpdate.md)
+- [schemas_iteration_IterationCreate](entities/schemas_iteration_IterationCreate.md)
+- [schemas_iteration_IterationPlanningReadinessSummary](entities/schemas_iteration_IterationPlanningReadinessSummary.md)
+- [schemas_iteration_IterationSeriesCreate](entities/schemas_iteration_IterationSeriesCreate.md)
+- [schemas_iteration_IterationSeriesResponse](entities/schemas_iteration_IterationSeriesResponse.md)
+- [schemas_iteration_IterationSeriesStop](entities/schemas_iteration_IterationSeriesStop.md)
+- [schemas_iteration_IterationSummary](entities/schemas_iteration_IterationSummary.md)
+- [schemas_iteration_IterationUpdate](entities/schemas_iteration_IterationUpdate.md)
+- [schemas_label_LabelCreate](entities/schemas_label_LabelCreate.md)
+- [schemas_label_LabelGroupBrief](entities/schemas_label_LabelGroupBrief.md)
+- [schemas_label_LabelGroupCreate](entities/schemas_label_LabelGroupCreate.md)
+- [schemas_label_LabelGroupUpdate](entities/schemas_label_LabelGroupUpdate.md)
+- [schemas_label_LabelUpdate](entities/schemas_label_LabelUpdate.md)
+- [schemas_llm_ExplainScheduleRequest](entities/schemas_llm_ExplainScheduleRequest.md)
+- [schemas_llm_ExplainScheduleResponse](entities/schemas_llm_ExplainScheduleResponse.md)
+- [schemas_llm_GroundedAISuggestionResponse](entities/schemas_llm_GroundedAISuggestionResponse.md)
+- [schemas_llm_GroundedFact](entities/schemas_llm_GroundedFact.md)
+- [schemas_llm_ScheduleDecisionExplanation](entities/schemas_llm_ScheduleDecisionExplanation.md)
+- [schemas_llm_SuggestedSubtask](entities/schemas_llm_SuggestedSubtask.md)
+- [schemas_llm_TaskAISuggestRequest](entities/schemas_llm_TaskAISuggestRequest.md)
+- [schemas_llm_WorkloadAnalysis](entities/schemas_llm_WorkloadAnalysis.md)
+- [schemas_outbound_webhook_OutboundWebhookDeliveryStatus](entities/schemas_outbound_webhook_OutboundWebhookDeliveryStatus.md)
+- [schemas_outbound_webhook_OutboundWebhookRetryResponse](entities/schemas_outbound_webhook_OutboundWebhookRetryResponse.md)
+- [schemas_outbound_webhook_OutboundWebhookTargetCreate](entities/schemas_outbound_webhook_OutboundWebhookTargetCreate.md)
+- [schemas_outbound_webhook_OutboundWebhookTargetUpdate](entities/schemas_outbound_webhook_OutboundWebhookTargetUpdate.md)
+- [schemas_project_InitiativeCreate](entities/schemas_project_InitiativeCreate.md)
+- [schemas_project_InitiativeUpdate](entities/schemas_project_InitiativeUpdate.md)
+- [schemas_project_ProjectCreate](entities/schemas_project_ProjectCreate.md)
+- [schemas_project_ProjectHealth](entities/schemas_project_ProjectHealth.md)
+- [schemas_project_ProjectInitiativeSummary](entities/schemas_project_ProjectInitiativeSummary.md)
+- [schemas_project_ProjectMilestoneCreateRequest](entities/schemas_project_ProjectMilestoneCreateRequest.md)
+- [schemas_project_ProjectMilestoneDeleteResponse](entities/schemas_project_ProjectMilestoneDeleteResponse.md)
+- [schemas_project_ProjectMilestoneStatus](entities/schemas_project_ProjectMilestoneStatus.md)
+- [schemas_project_ProjectMilestoneSummary](entities/schemas_project_ProjectMilestoneSummary.md)
+- [schemas_project_ProjectMilestoneTaskGroup](entities/schemas_project_ProjectMilestoneTaskGroup.md)
+- [schemas_project_ProjectPortfolioSummary](entities/schemas_project_ProjectPortfolioSummary.md)
+- [schemas_project_ProjectStatus](entities/schemas_project_ProjectStatus.md)
+- [schemas_project_ProjectSummary](entities/schemas_project_ProjectSummary.md)
+- [schemas_project_ProjectTargetDateRisk](entities/schemas_project_ProjectTargetDateRisk.md)
+- [schemas_project_ProjectUpdate](entities/schemas_project_ProjectUpdate.md)
+- [schemas_project_ProjectUpdateEntryCreate](entities/schemas_project_ProjectUpdateEntryCreate.md)
+- [schemas_project_ProjectUpdateFreshness](entities/schemas_project_ProjectUpdateFreshness.md)
+- [schemas_project_RoadmapMilestonePage](entities/schemas_project_RoadmapMilestonePage.md)
+- [schemas_release_ReleaseCreateRequest](entities/schemas_release_ReleaseCreateRequest.md)
+- [schemas_release_ReleaseStatus](entities/schemas_release_ReleaseStatus.md)
+- [schemas_release_ReleaseTaskSummary](entities/schemas_release_ReleaseTaskSummary.md)
+- [schemas_release_ReleaseUpdateRequest](entities/schemas_release_ReleaseUpdateRequest.md)
+- [schemas_request_source_RequestSourceCreate](entities/schemas_request_source_RequestSourceCreate.md)
+- [schemas_request_source_RequestSourceLinkCreate](entities/schemas_request_source_RequestSourceLinkCreate.md)
+- [schemas_request_source_RequestSourceTargetType](entities/schemas_request_source_RequestSourceTargetType.md)
+- [schemas_request_source_RequestSourceType](entities/schemas_request_source_RequestSourceType.md)
+- [schemas_saved_view_SavedViewCreate](entities/schemas_saved_view_SavedViewCreate.md)
+- [schemas_saved_view_SavedViewScope](entities/schemas_saved_view_SavedViewScope.md)
+- [schemas_saved_view_SavedViewType](entities/schemas_saved_view_SavedViewType.md)
+- [schemas_saved_view_SavedViewUpdate](entities/schemas_saved_view_SavedViewUpdate.md)
+- [schemas_scheduling_rules_SchedulingRulesResponse](entities/schemas_scheduling_rules_SchedulingRulesResponse.md)
+- [schemas_session_UserSession](entities/schemas_session_UserSession.md)
+- [schemas_system_settings_AILanguageMode](entities/schemas_system_settings_AILanguageMode.md)
+- [schemas_system_settings_AppRuntimeSettingsUpdate](entities/schemas_system_settings_AppRuntimeSettingsUpdate.md)
+- [schemas_system_settings_GitHubRuntimeSettingsUpdate](entities/schemas_system_settings_GitHubRuntimeSettingsUpdate.md)
+- [schemas_system_settings_LLMProvider](entities/schemas_system_settings_LLMProvider.md)
+- [schemas_system_settings_LLMRuntimeSettingsUpdate](entities/schemas_system_settings_LLMRuntimeSettingsUpdate.md)
+- [schemas_system_settings_LanguageCode](entities/schemas_system_settings_LanguageCode.md)
+- [schemas_system_settings_RestartRequiredSetting](entities/schemas_system_settings_RestartRequiredSetting.md)
+- [schemas_system_settings_RuntimeSettingSource](entities/schemas_system_settings_RuntimeSettingSource.md)
+- [schemas_system_settings_WebIntakeRuntimeSettingsUpdate](entities/schemas_system_settings_WebIntakeRuntimeSettingsUpdate.md)
+- [schemas_task_CascadeUpdateInfo](entities/schemas_task_CascadeUpdateInfo.md)
+- [schemas_task_TaskAgentReadiness](entities/schemas_task_TaskAgentReadiness.md)
+- [schemas_task_TaskAgentReadinessCriterion](entities/schemas_task_TaskAgentReadinessCriterion.md)
+- [schemas_task_TaskAssignee](entities/schemas_task_TaskAssignee.md)
+- [schemas_task_TaskBatchUpdateItem](entities/schemas_task_TaskBatchUpdateItem.md)
+- [schemas_task_TaskBatchUpdateRequest](entities/schemas_task_TaskBatchUpdateRequest.md)
+- [schemas_task_TaskBatchUpdateResponse](entities/schemas_task_TaskBatchUpdateResponse.md)
+- [schemas_task_TaskBatchUpdateResponseItem](entities/schemas_task_TaskBatchUpdateResponseItem.md)
+- [schemas_task_TaskBulkAction](entities/schemas_task_TaskBulkAction.md)
+- [schemas_task_TaskBulkOperationRequest](entities/schemas_task_TaskBulkOperationRequest.md)
+- [schemas_task_TaskBulkOperationResponse](entities/schemas_task_TaskBulkOperationResponse.md)
+- [schemas_task_TaskBulkOperationResult](entities/schemas_task_TaskBulkOperationResult.md)
+- [schemas_task_TaskBulkOutcome](entities/schemas_task_TaskBulkOutcome.md)
+- [schemas_task_TaskClaimedBy](entities/schemas_task_TaskClaimedBy.md)
+- [schemas_task_TaskCreate](entities/schemas_task_TaskCreate.md)
+- [schemas_task_TaskImportDestination](entities/schemas_task_TaskImportDestination.md)
+- [schemas_task_TaskMilestone](entities/schemas_task_TaskMilestone.md)
+- [schemas_task_TaskMoveRequest](entities/schemas_task_TaskMoveRequest.md)
+- [schemas_task_TaskProject](entities/schemas_task_TaskProject.md)
+- [schemas_task_TaskStatus](entities/schemas_task_TaskStatus.md)
+- [schemas_task_TaskStatusChangeResponse](entities/schemas_task_TaskStatusChangeResponse.md)
+- [schemas_task_TaskStatusStats](entities/schemas_task_TaskStatusStats.md)
+- [schemas_task_TaskUpdate](entities/schemas_task_TaskUpdate.md)
+- [schemas_task_TasksImportRequest](entities/schemas_task_TasksImportRequest.md)
+- [schemas_task_TasksImportResponse](entities/schemas_task_TasksImportResponse.md)
+- [schemas_team_MemberCapacity](entities/schemas_team_MemberCapacity.md)
+- [schemas_team_MemberWorkload](entities/schemas_team_MemberWorkload.md)
+- [schemas_team_TeamMemberCreate](entities/schemas_team_TeamMemberCreate.md)
+- [schemas_team_TeamMemberProfileCompact](entities/schemas_team_TeamMemberProfileCompact.md)
+- [schemas_team_TeamMemberProfileCreate](entities/schemas_team_TeamMemberProfileCreate.md)
+- [schemas_team_TeamMemberProfileSkillCreate](entities/schemas_team_TeamMemberProfileSkillCreate.md)
+- [schemas_team_TeamMemberProfileSkillUpdate](entities/schemas_team_TeamMemberProfileSkillUpdate.md)
+- [schemas_team_TeamMemberProfileUpdate](entities/schemas_team_TeamMemberProfileUpdate.md)
+- [schemas_team_VacationCreate](entities/schemas_team_VacationCreate.md)
+- [schemas_team_VacationImportError](entities/schemas_team_VacationImportError.md)
+- [schemas_team_VacationImportResponse](entities/schemas_team_VacationImportResponse.md)
+- [schemas_template_TemplateType](entities/schemas_template_TemplateType.md)
+- [schemas_template_WorkTemplateCreate](entities/schemas_template_WorkTemplateCreate.md)
+- [schemas_template_WorkTemplateUpdate](entities/schemas_template_WorkTemplateUpdate.md)
+- [schemas_triage_TriageActionRequest](entities/schemas_triage_TriageActionRequest.md)
+- [schemas_triage_TriageConvertToTaskRequest](entities/schemas_triage_TriageConvertToTaskRequest.md)
+- [schemas_triage_TriageConvertToTaskResponse](entities/schemas_triage_TriageConvertToTaskResponse.md)
+- [schemas_triage_TriageDuplicateRequest](entities/schemas_triage_TriageDuplicateRequest.md)
+- [schemas_triage_TriageDuplicateSuggestion](entities/schemas_triage_TriageDuplicateSuggestion.md)
+- [schemas_triage_TriageDuplicateSuggestionsResponse](entities/schemas_triage_TriageDuplicateSuggestionsResponse.md)
+- [schemas_triage_TriageItemCreate](entities/schemas_triage_TriageItemCreate.md)
+- [schemas_triage_TriageItemStatus](entities/schemas_triage_TriageItemStatus.md)
+- [schemas_triage_TriageItemUpdate](entities/schemas_triage_TriageItemUpdate.md)
+- [schemas_triage_TriageSnoozeRequest](entities/schemas_triage_TriageSnoozeRequest.md)
+- [schemas_triage_TriageTaskDraftRequest](entities/schemas_triage_TriageTaskDraftRequest.md)
+- [schemas_triage_TriageTaskDraftResponse](entities/schemas_triage_TriageTaskDraftResponse.md)
+- [sessionService_UserSession](entities/sessionService_UserSession.md)
+- [snapshotService_SnapshotRestoreResponse](entities/snapshotService_SnapshotRestoreResponse.md)
+- [snapshot_SnapshotRestoreResponse](entities/snapshot_SnapshotRestoreResponse.md)
+- [systemSettings_AILanguageMode](entities/systemSettings_AILanguageMode.md)
+- [systemSettings_AppRuntimeSettingsUpdate](entities/systemSettings_AppRuntimeSettingsUpdate.md)
+- [systemSettings_GitHubRuntimeSettingsUpdate](entities/systemSettings_GitHubRuntimeSettingsUpdate.md)
+- [systemSettings_LLMProvider](entities/systemSettings_LLMProvider.md)
+- [systemSettings_LLMRuntimeSettingsUpdate](entities/systemSettings_LLMRuntimeSettingsUpdate.md)
+- [systemSettings_LanguageCode](entities/systemSettings_LanguageCode.md)
+- [systemSettings_RestartRequiredSetting](entities/systemSettings_RestartRequiredSetting.md)
+- [systemSettings_RuntimeSettingSource](entities/systemSettings_RuntimeSettingSource.md)
+- [systemSettings_WebIntakeRuntimeSettingsUpdate](entities/systemSettings_WebIntakeRuntimeSettingsUpdate.md)
+- [system_settings_service_RuntimeSettingSource](entities/system_settings_service_RuntimeSettingSource.md)
+- [task_status_log_TaskStatusLog](entities/task_status_log_TaskStatusLog.md)
+- [team_member_TeamMember](entities/team_member_TeamMember.md)
+- [team_member_TeamMemberProfile](entities/team_member_TeamMemberProfile.md)
+- [team_member_TeamMemberProfileSkill](entities/team_member_TeamMemberProfileSkill.md)
+- [team_member_Vacation](entities/team_member_Vacation.md)
+- [topology_AgentTeamReconciliationPlan](entities/topology_AgentTeamReconciliationPlan.md)
+- [types_agent_AgentActor](entities/types_agent_AgentActor.md)
+- [types_agent_AgentActorRosterItem](entities/types_agent_AgentActorRosterItem.md)
+- [types_agent_AgentActorRosterProfile](entities/types_agent_AgentActorRosterProfile.md)
+- [types_agent_AgentActorRosterProfileSkill](entities/types_agent_AgentActorRosterProfileSkill.md)
+- [types_agent_AgentAssignmentPurpose](entities/types_agent_AgentAssignmentPurpose.md)
+- [types_agent_AgentAssignmentQueueClass](entities/types_agent_AgentAssignmentQueueClass.md)
+- [types_agent_AgentAssignmentState](entities/types_agent_AgentAssignmentState.md)
+- [types_agent_AgentModelBinding](entities/types_agent_AgentModelBinding.md)
+- [types_agent_AgentModelBindingCreate](entities/types_agent_AgentModelBindingCreate.md)
+- [types_agent_AgentModelBindingDisable](entities/types_agent_AgentModelBindingDisable.md)
+- [types_agent_AgentModelBindingUpdate](entities/types_agent_AgentModelBindingUpdate.md)
+- [types_agent_AgentModelCatalogCreate](entities/types_agent_AgentModelCatalogCreate.md)
+- [types_agent_AgentModelCatalogDisable](entities/types_agent_AgentModelCatalogDisable.md)
+- [types_agent_AgentModelCatalogEntry](entities/types_agent_AgentModelCatalogEntry.md)
+- [types_agent_AgentModelCatalogUpdate](entities/types_agent_AgentModelCatalogUpdate.md)
+- [types_agent_AgentModelMutationReceipt](entities/types_agent_AgentModelMutationReceipt.md)
+- [types_agent_AgentRoutingCandidate](entities/types_agent_AgentRoutingCandidate.md)
+- [types_agent_AgentRoutingExclusion](entities/types_agent_AgentRoutingExclusion.md)
+- [types_agent_AgentRoutingPreviewCreate](entities/types_agent_AgentRoutingPreviewCreate.md)
+- [types_agent_AgentRoutingPreviewResponse](entities/types_agent_AgentRoutingPreviewResponse.md)
+- [types_agent_AgentRun](entities/types_agent_AgentRun.md)
+- [types_agent_AgentRunEvent](entities/types_agent_AgentRunEvent.md)
+- [types_agent_AgentTaskAssignment](entities/types_agent_AgentTaskAssignment.md)
+- [types_agent_AgentTeamActionReceipt](entities/types_agent_AgentTeamActionReceipt.md)
+- [types_agent_AgentTeamApplyResponse](entities/types_agent_AgentTeamApplyResponse.md)
+- [types_agent_AgentTeamMaster](entities/types_agent_AgentTeamMaster.md)
+- [types_agent_AgentTeamMemberSpec](entities/types_agent_AgentTeamMemberSpec.md)
+- [types_agent_AgentTeamMemberStatus](entities/types_agent_AgentTeamMemberStatus.md)
+- [types_agent_AgentTeamPlanAction](entities/types_agent_AgentTeamPlanAction.md)
+- [types_agent_AgentTeamReconciliationClass](entities/types_agent_AgentTeamReconciliationClass.md)
+- [types_agent_AgentTeamRuntimeHandoff](entities/types_agent_AgentTeamRuntimeHandoff.md)
+- [types_agent_AgentTeamSetupStep](entities/types_agent_AgentTeamSetupStep.md)
+- [types_agent_AgentTeamSkillPackage](entities/types_agent_AgentTeamSkillPackage.md)
+- [types_agent_AssessmentReasonCode](entities/types_agent_AssessmentReasonCode.md)
+- [types_agent_ModelAwareAgentTaskAssignmentCreate](entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md)
+- [types_agent_ModelAwareAgentTaskAssignmentUpdate](entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md)
+- [types_agent_RequiredModelEnvelope](entities/types_agent_RequiredModelEnvelope.md)
+- [types_agent_RoutingBlockerCode](entities/types_agent_RoutingBlockerCode.md)
+- [types_agent_TaskDifficultyAxes](entities/types_agent_TaskDifficultyAxes.md)
+- [types_agent_TaskRoutingAssessment](entities/types_agent_TaskRoutingAssessment.md)
+- [types_agent_TaskRoutingAssessmentCommand](entities/types_agent_TaskRoutingAssessmentCommand.md)
+- [types_agent_TaskRoutingAssessmentMutationReceipt](entities/types_agent_TaskRoutingAssessmentMutationReceipt.md)
+- [types_agent_TaskRoutingAssessmentState](entities/types_agent_TaskRoutingAssessmentState.md)
+- [types_agent_TaskTimelineItem](entities/types_agent_TaskTimelineItem.md)
+- [types_agent_TaskTimelineResponse](entities/types_agent_TaskTimelineResponse.md)
+- [types_calendar_Calendar](entities/types_calendar_Calendar.md)
+- [types_calendar_CalendarCreate](entities/types_calendar_CalendarCreate.md)
+- [types_calendar_CalendarImportError](entities/types_calendar_CalendarImportError.md)
+- [types_calendar_CalendarImportResponse](entities/types_calendar_CalendarImportResponse.md)
+- [types_calendar_CalendarUpdate](entities/types_calendar_CalendarUpdate.md)
+- [types_calendar_WorkingDaysResponse](entities/types_calendar_WorkingDaysResponse.md)
+- [types_gantt_ExplainScheduleRequest](entities/types_gantt_ExplainScheduleRequest.md)
+- [types_gantt_ExplainScheduleResponse](entities/types_gantt_ExplainScheduleResponse.md)
+- [types_gantt_GanttResponse](entities/types_gantt_GanttResponse.md)
+- [types_gantt_GanttTask](entities/types_gantt_GanttTask.md)
+- [types_gantt_ScheduleDecisionExplanation](entities/types_gantt_ScheduleDecisionExplanation.md)
+- [types_gantt_SchedulePreviewResponse](entities/types_gantt_SchedulePreviewResponse.md)
+- [types_gantt_ScheduleResult](entities/types_gantt_ScheduleResult.md)
+- [types_gantt_SchedulingDecision](entities/types_gantt_SchedulingDecision.md)
+- [types_gantt_WorkloadAnalysis](entities/types_gantt_WorkloadAnalysis.md)
+- [types_gantt_WorkloadIssue](entities/types_gantt_WorkloadIssue.md)
+- [types_github_GitHubAutomationEventType](entities/types_github_GitHubAutomationEventType.md)
+- [types_github_GitHubAutomationOutcome](entities/types_github_GitHubAutomationOutcome.md)
+- [types_github_GitHubAutomationTargetStatus](entities/types_github_GitHubAutomationTargetStatus.md)
+- [types_github_GitHubStatusAutomationResult](entities/types_github_GitHubStatusAutomationResult.md)
+- [types_github_GitHubStatusAutomationRule](entities/types_github_GitHubStatusAutomationRule.md)
+- [types_github_GitHubStatusAutomationRuleCreate](entities/types_github_GitHubStatusAutomationRuleCreate.md)
+- [types_github_GitHubStatusAutomationRuleUpdate](entities/types_github_GitHubStatusAutomationRuleUpdate.md)
+- [types_iteration_Iteration](entities/types_iteration_Iteration.md)
+- [types_iteration_IterationCreate](entities/types_iteration_IterationCreate.md)
+- [types_iteration_IterationPlanningReadinessSummary](entities/types_iteration_IterationPlanningReadinessSummary.md)
+- [types_iteration_IterationSeriesCreate](entities/types_iteration_IterationSeriesCreate.md)
+- [types_iteration_IterationSeriesResponse](entities/types_iteration_IterationSeriesResponse.md)
+- [types_iteration_IterationSeriesStop](entities/types_iteration_IterationSeriesStop.md)
+- [types_iteration_IterationSummary](entities/types_iteration_IterationSummary.md)
+- [types_iteration_IterationUpdate](entities/types_iteration_IterationUpdate.md)
+- [types_label_Label](entities/types_label_Label.md)
+- [types_label_LabelCreate](entities/types_label_LabelCreate.md)
+- [types_label_LabelGroup](entities/types_label_LabelGroup.md)
+- [types_label_LabelGroupBrief](entities/types_label_LabelGroupBrief.md)
+- [types_label_LabelGroupCreate](entities/types_label_LabelGroupCreate.md)
+- [types_label_LabelGroupUpdate](entities/types_label_LabelGroupUpdate.md)
+- [types_label_LabelUpdate](entities/types_label_LabelUpdate.md)
+- [types_project_Initiative](entities/types_project_Initiative.md)
+- [types_project_InitiativeCreate](entities/types_project_InitiativeCreate.md)
+- [types_project_InitiativeUpdate](entities/types_project_InitiativeUpdate.md)
+- [types_project_Project](entities/types_project_Project.md)
+- [types_project_ProjectCreate](entities/types_project_ProjectCreate.md)
+- [types_project_ProjectHealth](entities/types_project_ProjectHealth.md)
+- [types_project_ProjectInitiativeSummary](entities/types_project_ProjectInitiativeSummary.md)
+- [types_project_ProjectMilestone](entities/types_project_ProjectMilestone.md)
+- [types_project_ProjectMilestoneCreateRequest](entities/types_project_ProjectMilestoneCreateRequest.md)
+- [types_project_ProjectMilestoneDeleteResponse](entities/types_project_ProjectMilestoneDeleteResponse.md)
+- [types_project_ProjectMilestoneStatus](entities/types_project_ProjectMilestoneStatus.md)
+- [types_project_ProjectMilestoneSummary](entities/types_project_ProjectMilestoneSummary.md)
+- [types_project_ProjectMilestoneTaskGroup](entities/types_project_ProjectMilestoneTaskGroup.md)
+- [types_project_ProjectPortfolioSummary](entities/types_project_ProjectPortfolioSummary.md)
+- [types_project_ProjectStatus](entities/types_project_ProjectStatus.md)
+- [types_project_ProjectSummary](entities/types_project_ProjectSummary.md)
+- [types_project_ProjectTargetDateRisk](entities/types_project_ProjectTargetDateRisk.md)
+- [types_project_ProjectUpdate](entities/types_project_ProjectUpdate.md)
+- [types_project_ProjectUpdateEntry](entities/types_project_ProjectUpdateEntry.md)
+- [types_project_ProjectUpdateEntryCreate](entities/types_project_ProjectUpdateEntryCreate.md)
+- [types_project_ProjectUpdateFreshness](entities/types_project_ProjectUpdateFreshness.md)
+- [types_project_RoadmapMilestonePage](entities/types_project_RoadmapMilestonePage.md)
+- [types_release_Release](entities/types_release_Release.md)
+- [types_release_ReleaseCreateRequest](entities/types_release_ReleaseCreateRequest.md)
+- [types_release_ReleaseStatus](entities/types_release_ReleaseStatus.md)
+- [types_release_ReleaseTaskSummary](entities/types_release_ReleaseTaskSummary.md)
+- [types_release_ReleaseUpdateRequest](entities/types_release_ReleaseUpdateRequest.md)
+- [types_task_CascadeUpdateInfo](entities/types_task_CascadeUpdateInfo.md)
+- [types_task_ExternalLink](entities/types_task_ExternalLink.md)
+- [types_task_ExternalLinkCreate](entities/types_task_ExternalLinkCreate.md)
+- [types_task_ExternalLinkProvider](entities/types_task_ExternalLinkProvider.md)
+- [types_task_ExternalLinkUpdate](entities/types_task_ExternalLinkUpdate.md)
+- [types_task_GitHubExternalLinkCreate](entities/types_task_GitHubExternalLinkCreate.md)
+- [types_task_GroundedAISuggestionResponse](entities/types_task_GroundedAISuggestionResponse.md)
+- [types_task_GroundedFact](entities/types_task_GroundedFact.md)
+- [types_task_SuggestedSubtask](entities/types_task_SuggestedSubtask.md)
+- [types_task_Task](entities/types_task_Task.md)
+- [types_task_TaskAISuggestRequest](entities/types_task_TaskAISuggestRequest.md)
+- [types_task_TaskAgentReadiness](entities/types_task_TaskAgentReadiness.md)
+- [types_task_TaskAgentReadinessCriterion](entities/types_task_TaskAgentReadinessCriterion.md)
+- [types_task_TaskAssignee](entities/types_task_TaskAssignee.md)
+- [types_task_TaskBatchUpdateItem](entities/types_task_TaskBatchUpdateItem.md)
+- [types_task_TaskBatchUpdateRequest](entities/types_task_TaskBatchUpdateRequest.md)
+- [types_task_TaskBatchUpdateResponse](entities/types_task_TaskBatchUpdateResponse.md)
+- [types_task_TaskBatchUpdateResponseItem](entities/types_task_TaskBatchUpdateResponseItem.md)
+- [types_task_TaskBulkAction](entities/types_task_TaskBulkAction.md)
+- [types_task_TaskBulkOperationRequest](entities/types_task_TaskBulkOperationRequest.md)
+- [types_task_TaskBulkOperationResponse](entities/types_task_TaskBulkOperationResponse.md)
+- [types_task_TaskBulkOperationResult](entities/types_task_TaskBulkOperationResult.md)
+- [types_task_TaskBulkOutcome](entities/types_task_TaskBulkOutcome.md)
+- [types_task_TaskClaimedBy](entities/types_task_TaskClaimedBy.md)
+- [types_task_TaskCreate](entities/types_task_TaskCreate.md)
+- [types_task_TaskImportDestination](entities/types_task_TaskImportDestination.md)
+- [types_task_TaskMilestone](entities/types_task_TaskMilestone.md)
+- [types_task_TaskMoveRequest](entities/types_task_TaskMoveRequest.md)
+- [types_task_TaskProject](entities/types_task_TaskProject.md)
+- [types_task_TaskStatus](entities/types_task_TaskStatus.md)
+- [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
+- [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
+- [types_task_TaskStatusStats](entities/types_task_TaskStatusStats.md)
+- [types_task_TaskTimelineItem](entities/types_task_TaskTimelineItem.md)
+- [types_task_TaskTimelineResponse](entities/types_task_TaskTimelineResponse.md)
+- [types_task_TaskUpdate](entities/types_task_TaskUpdate.md)
+- [types_task_TasksImportRequest](entities/types_task_TasksImportRequest.md)
+- [types_task_TasksImportResponse](entities/types_task_TasksImportResponse.md)
+- [types_team_MemberCapacity](entities/types_team_MemberCapacity.md)
+- [types_team_MemberWorkload](entities/types_team_MemberWorkload.md)
+- [types_team_TeamMember](entities/types_team_TeamMember.md)
+- [types_team_TeamMemberCreate](entities/types_team_TeamMemberCreate.md)
+- [types_team_TeamMemberProfile](entities/types_team_TeamMemberProfile.md)
+- [types_team_TeamMemberProfileCompact](entities/types_team_TeamMemberProfileCompact.md)
+- [types_team_TeamMemberProfileCreate](entities/types_team_TeamMemberProfileCreate.md)
+- [types_team_TeamMemberProfileSkill](entities/types_team_TeamMemberProfileSkill.md)
+- [types_team_TeamMemberProfileSkillCreate](entities/types_team_TeamMemberProfileSkillCreate.md)
+- [types_team_TeamMemberProfileSkillUpdate](entities/types_team_TeamMemberProfileSkillUpdate.md)
+- [types_team_TeamMemberProfileUpdate](entities/types_team_TeamMemberProfileUpdate.md)
+- [types_team_Vacation](entities/types_team_Vacation.md)
+- [types_team_VacationCreate](entities/types_team_VacationCreate.md)
+- [types_team_VacationImportError](entities/types_team_VacationImportError.md)
+- [types_team_VacationImportResponse](entities/types_team_VacationImportResponse.md)
+- [types_template_TemplateType](entities/types_template_TemplateType.md)
+- [types_template_WorkTemplate](entities/types_template_WorkTemplate.md)
+- [types_template_WorkTemplateCreate](entities/types_template_WorkTemplateCreate.md)
+- [types_template_WorkTemplateUpdate](entities/types_template_WorkTemplateUpdate.md)
+- [types_triage_TriageActionRequest](entities/types_triage_TriageActionRequest.md)
+- [types_triage_TriageClassificationSuggestion](entities/types_triage_TriageClassificationSuggestion.md)
+- [types_triage_TriageConvertToTaskRequest](entities/types_triage_TriageConvertToTaskRequest.md)
+- [types_triage_TriageConvertToTaskResponse](entities/types_triage_TriageConvertToTaskResponse.md)
+- [types_triage_TriageDuplicateRequest](entities/types_triage_TriageDuplicateRequest.md)
+- [types_triage_TriageDuplicateSuggestion](entities/types_triage_TriageDuplicateSuggestion.md)
+- [types_triage_TriageDuplicateSuggestionsResponse](entities/types_triage_TriageDuplicateSuggestionsResponse.md)
+- [types_triage_TriageItem](entities/types_triage_TriageItem.md)
+- [types_triage_TriageItemCreate](entities/types_triage_TriageItemCreate.md)
+- [types_triage_TriageItemStatus](entities/types_triage_TriageItemStatus.md)
+- [types_triage_TriageItemUpdate](entities/types_triage_TriageItemUpdate.md)
+- [types_triage_TriageSnoozeRequest](entities/types_triage_TriageSnoozeRequest.md)
+- [types_triage_TriageTaskDraftRequest](entities/types_triage_TriageTaskDraftRequest.md)
+- [types_triage_TriageTaskDraftResponse](entities/types_triage_TriageTaskDraftResponse.md)
+- [user_session_UserSession](entities/user_session_UserSession.md)
+
+## Modules
+
+- [0001_wave0_probe](modules/0001_wave0_probe.md) - Create the Wave 0 PostgreSQL lifecycle probe.
+- [20260506_0000_legacy_core_baseline](modules/20260506_0000_legacy_core_baseline.md) - Baseline for pre-backlog core planning schema.
+- [20260507_0001_agentic_tracing](modules/20260507_0001_agentic_tracing.md) - add agentic task source and tracing tables
+- [20260507_0002_create_projects](modules/20260507_0002_create_projects.md) - create projects table
+- [20260507_0003_link_tasks_projects](modules/20260507_0003_link_tasks_projects.md) - link tasks to projects
+- [20260508_0004_create_triage_items](modules/20260508_0004_create_triage_items.md) - create triage items table
+- [20260508_0005_create_work_templates](modules/20260508_0005_create_work_templates.md) - create work templates table
+- [20260508_0006_add_work_template_seed_key](modules/20260508_0006_add_work_template_seed_key.md) - add work template seed key
+- [20260509_0007_create_label_groups](modules/20260509_0007_create_label_groups.md) - create label groups
+- [20260509_0008_create_saved_views](modules/20260509_0008_create_saved_views.md) - create saved views
+- [20260509_0009_add_saved_view_seed_key](modules/20260509_0009_add_saved_view_seed_key.md) - add saved view seed key
+- [20260509_0010_create_project_updates](modules/20260509_0010_create_project_updates.md) - create project updates
+- [20260509_0011_create_project_milestones](modules/20260509_0011_create_project_milestones.md) - create project milestones
+- [20260509_0012_link_tasks_milestones](modules/20260509_0012_link_tasks_milestones.md) - link tasks to project milestones
+- [20260509_0013_create_initiatives](modules/20260509_0013_create_initiatives.md) - create initiatives
+- [20260509_0014_create_external_links](modules/20260509_0014_create_external_links.md) - create external links
+- [20260509_0015_create_github_status_automation_rules](modules/20260509_0015_create_github_status_automation_rules.md) - create github status automation rules
+- [20260509_0016_create_releases](modules/20260509_0016_create_releases.md) - create releases
+- [20260509_0017_create_request_sources](modules/20260509_0017_create_request_sources.md) - Create request sources.
+- [20260509_0018_create_triage_classification_suggestions](modules/20260509_0018_create_triage_classification_suggestions.md) - Create triage classification suggestions.
+- [20260509_0019_create_outbound_webhooks](modules/20260509_0019_create_outbound_webhooks.md) - Create outbound webhook targets and delivery logs.
+- [20260509_0020_add_triage_metadata_json](modules/20260509_0020_add_triage_metadata_json.md) - Add metadata JSON to triage items.
+- [20260510_0021_create_team_member_profiles](modules/20260510_0021_create_team_member_profiles.md) - Create team member capability profiles.
+- [20260510_0022_create_system_settings](modules/20260510_0022_create_system_settings.md) - Create runtime system settings.
+- [20260510_0023_create_user_sessions](modules/20260510_0023_create_user_sessions.md) - Create user sessions table.
+- [20260515_0024_move_portfolio_ownership_to_profiles](modules/20260515_0024_move_portfolio_ownership_to_profiles.md) - Move portfolio ownership to team member profiles.
+- [20260516_0025_add_project_scope_to_iterations](modules/20260516_0025_add_project_scope_to_iterations.md) - Add optional project scope to iterations.
+- [20260709_0026_add_opaque_browser_sessions](modules/20260709_0026_add_opaque_browser_sessions.md) - Replace IP ownership with opaque browser-session tokens.
+- [20260709_0027_add_durable_outbound_delivery_queue](modules/20260709_0027_add_durable_outbound_delivery_queue.md) - Add durable multi-channel outbound delivery queue metadata.
+- [20260711_0028_add_agent_skill_control_plane](modules/20260711_0028_add_agent_skill_control_plane.md) - Add actor assignments, fenced work, and durable idempotency.
+- [20260718_0029_add_agent_model_catalog](modules/20260718_0029_add_agent_model_catalog.md) - Add provider-neutral model catalog and actor bindings.
+- [20260718_0030_add_task_routing_assessments](modules/20260718_0030_add_task_routing_assessments.md) - Add task assessments and assignment/run model linkage.
+- [20260718_0031_align_postgresql_types](modules/20260718_0031_align_postgresql_types.md) - Align UTC timestamps, legacy nullability, and PostgreSQL sequences.
+- [20260718_0032_add_database_migration_gate](modules/20260718_0032_add_database_migration_gate.md) - add target-owned database migration gate
+- [20260719_0033_add_autonomy_control_plane](modules/20260719_0033_add_autonomy_control_plane.md) - add autonomous topology and verification projections
+- [20260727_0034_add_agent_run_model_trust](modules/20260727_0034_add_agent_run_model_trust.md) - Add explicit configured-versus-observed model trust evidence.
+- [20260728_0035_add_agent_team_setup](modules/20260728_0035_add_agent_team_setup.md) - Add operator-owned agent-team setup and onboarding state.
+- [20260802_0036_add_plan_shares](modules/20260802_0036_add_plan_shares.md) - Add immutable, revocable plan shares.
+- [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
+- [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
+- [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
+- [AgentAccessPanel](modules/AgentAccessPanel.md) - `frontend/src/components/settings/AgentAccessPanel.tsx`
+- [AgentAccessPanel.test](modules/AgentAccessPanel.test.md) - `frontend/src/components/settings/AgentAccessPanel.test.tsx`
+- [AgentModelAdministration](modules/AgentModelAdministration.md) - `frontend/src/components/settings/AgentModelAdministration.tsx`
+- [AgentModelAdministration.test](modules/AgentModelAdministration.test.md) - `frontend/src/components/settings/AgentModelAdministration.test.tsx`
+- [AgentPipelinePage](modules/AgentPipelinePage.md) - `frontend/src/pages/AgentPipelinePage.tsx`
+- [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) - `frontend/src/pages/AgentPipelinePage.test.tsx`
+- [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) - `frontend/src/pages/AgentTeamSetupMasterPage.tsx`
+- [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) - `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`
+- [AnalyticsPage](modules/AnalyticsPage.md) - `frontend/src/pages/AnalyticsPage.tsx`
+- [App](modules/App.md) - `frontend/src/App.tsx`
+- [AppShell](modules/AppShell.md) - `frontend/src/components/layout/AppShell.tsx`
+- [AppShell.test](modules/AppShell.test.md) - `frontend/src/components/layout/AppShell.test.tsx`
+- [AppSidebar](modules/AppSidebar.md) - `frontend/src/components/layout/AppSidebar.tsx`
+- [AppSidebar.test](modules/AppSidebar.test.md) - `frontend/src/components/layout/AppSidebar.test.tsx`
+- [AppTopNav](modules/AppTopNav.md) - `frontend/src/components/layout/AppTopNav.tsx`
+- [AppTopNav.test](modules/AppTopNav.test.md) - `frontend/src/components/layout/AppTopNav.test.tsx`
+- [AssigneeRecommendationsPanel](modules/AssigneeRecommendationsPanel.md) - `frontend/src/components/team/AssigneeRecommendationsPanel.tsx`
+- [Breadcrumbs](modules/Breadcrumbs.md) - `frontend/src/components/layout/Breadcrumbs.tsx`
+- [Button](modules/Button.md) - `frontend/src/components/common/Button.tsx`
+- [Button.test](modules/Button.test.md) - `frontend/src/components/common/Button.test.tsx`
+- [CalendarPage](modules/CalendarPage.md) - `frontend/src/pages/CalendarPage.tsx`
+- [Checkbox](modules/Checkbox.md) - `frontend/src/components/common/Checkbox.tsx`
+- [CollapsibleSection](modules/CollapsibleSection.md) - `frontend/src/components/common/CollapsibleSection.tsx`
+- [CommandMenu](modules/CommandMenu.md) - `frontend/src/components/layout/CommandMenu.tsx`
+- [CommandMenu.test](modules/CommandMenu.test.md) - `frontend/src/components/layout/CommandMenu.test.tsx`
+- [ConfirmDialog](modules/ConfirmDialog.md) - `frontend/src/components/common/ConfirmDialog.tsx`
+- [ConstraintsPanel](modules/ConstraintsPanel.md) - `frontend/src/components/settings/ConstraintsPanel.tsx`
+- [ContextHelp](modules/ContextHelp.md) - `frontend/src/components/layout/ContextHelp.tsx`
+- [ContextHelp.test](modules/ContextHelp.test.md) - `frontend/src/components/layout/ContextHelp.test.tsx`
+- [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
+- [EffortModifierCard](modules/EffortModifierCard.md) - `frontend/src/components/settings/EffortModifierCard.tsx`
+- [EffortModifierCard.test](modules/EffortModifierCard.test.md) - `frontend/src/components/settings/EffortModifierCard.test.tsx`
+- [EmailSettingsPanel](modules/EmailSettingsPanel.md) - `frontend/src/components/settings/EmailSettingsPanel.tsx`
+- [EmailSettingsPanel.test](modules/EmailSettingsPanel.test.md) - `frontend/src/components/settings/EmailSettingsPanel.test.tsx`
+- [FullscreenWorkspace](modules/FullscreenWorkspace.md) - `frontend/src/components/common/FullscreenWorkspace.tsx`
+- [GanttChart](modules/GanttChart.md) - `frontend/src/components/gantt/GanttChart.tsx`
+- [GanttChart.test](modules/GanttChart.test.md) - `frontend/src/components/gantt/GanttChart.test.tsx`
+- [GanttPage](modules/GanttPage.md) - `frontend/src/pages/GanttPage.tsx`
+- [GanttPage.test](modules/GanttPage.test.md) - `frontend/src/pages/GanttPage.test.tsx`
+- [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) - `frontend/src/components/settings/GitHubSettingsPanel.tsx`
+- [GitHubSettingsPanel.test](modules/GitHubSettingsPanel.test.md) - `frontend/src/components/settings/GitHubSettingsPanel.test.tsx`
+- [ImportTasksModal](modules/ImportTasksModal.md) - `frontend/src/components/tasks/ImportTasksModal.tsx`
+- [ImportTeamModal](modules/ImportTeamModal.md) - `frontend/src/components/team/ImportTeamModal.tsx`
+- [ImportTeamModal.test](modules/ImportTeamModal.test.md) - `frontend/src/components/team/ImportTeamModal.test.tsx`
+- [InitiativeForm](modules/InitiativeForm.md) - `frontend/src/components/projects/InitiativeForm.tsx`
+- [InlineEmptyState](modules/InlineEmptyState.md) - `frontend/src/components/ui/InlineEmptyState.tsx`
+- [Input](modules/Input.md) - `frontend/src/components/common/Input.tsx`
+- [Input.test](modules/Input.test.md) - `frontend/src/components/common/Input.test.tsx`
+- [InteractiveCalendar](modules/InteractiveCalendar.md) - `frontend/src/components/calendar/InteractiveCalendar.tsx`
+- [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) - `frontend/src/components/settings/InterfaceLanguageSettings.tsx`
+- [IterationForm](modules/IterationForm.md) - `frontend/src/components/iteration/IterationForm.tsx`
+- [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
+- [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
+- [IterationSelector](modules/IterationSelector.md) - `frontend/src/components/iteration/IterationSelector.tsx`
+- [IterationsPage](modules/IterationsPage.md) - `frontend/src/pages/IterationsPage.tsx`
+- [KanbanBoard](modules/KanbanBoard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
+- [KanbanBoard.test](modules/KanbanBoard.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx`
+- [KanbanCard](modules/KanbanCard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`
+- [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
+- [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
+- [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
+- [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
+- [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
+- [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
+- [NotFoundPage](modules/NotFoundPage.md) - `frontend/src/pages/NotFoundPage.tsx`
+- [NotificationsPanel](modules/NotificationsPanel.md) - `frontend/src/components/notifications/NotificationsPanel.tsx`
+- [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) - `frontend/src/components/settings/OutboundWebhooksPanel.tsx`
+- [OutboundWebhooksPanel.test](modules/OutboundWebhooksPanel.test.md) - `frontend/src/components/settings/OutboundWebhooksPanel.test.tsx`
+- [OverflowMenu](modules/OverflowMenu.md) - `frontend/src/components/ui/OverflowMenu.tsx`
+- [OverflowMenu.test](modules/OverflowMenu.test.md) - `frontend/src/components/ui/OverflowMenu.test.tsx`
+- [OverviewPage](modules/OverviewPage.md) - `frontend/src/pages/OverviewPage.tsx`
+- [OverviewPage.test](modules/OverviewPage.test.md) - `frontend/src/pages/OverviewPage.test.tsx`
+- [OverviewTaskReturnBar](modules/OverviewTaskReturnBar.md) - `frontend/src/components/overview/OverviewTaskReturnBar.tsx`
+- [PageLayout](modules/PageLayout.md) - `frontend/src/components/ui/PageLayout.tsx`
+- [Pill](modules/Pill.md) - `frontend/src/components/ui/Pill.tsx`
+- [PlanMasterPage](modules/PlanMasterPage.md) - `frontend/src/pages/PlanMasterPage.tsx`
+- [PlanMasterPage.test](modules/PlanMasterPage.test.md) - `frontend/src/pages/PlanMasterPage.test.tsx`
+- [PlanPage](modules/PlanPage.md) - `frontend/src/pages/PlanPage.tsx`
+- [PlanPage.test](modules/PlanPage.test.md) - `frontend/src/pages/PlanPage.test.tsx`
+- [PlanReturnBar](modules/PlanReturnBar.md) - `frontend/src/components/planning/PlanReturnBar.tsx`
+- [PlanReturnBar.test](modules/PlanReturnBar.test.md) - `frontend/src/components/planning/PlanReturnBar.test.tsx`
+- [PlanSharePage](modules/PlanSharePage.md) - `frontend/src/pages/PlanSharePage.tsx`
+- [PlanSharePage.test](modules/PlanSharePage.test.md) - `frontend/src/pages/PlanSharePage.test.tsx`
+- [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) - `frontend/src/components/planning/PlanningWorkbenchFrame.tsx`
+- [PlanningWorkbenchFrame.test](modules/PlanningWorkbenchFrame.test.md) - `frontend/src/components/planning/PlanningWorkbenchFrame.test.tsx`
+- [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) - `frontend/src/components/planning/PlanningWorkflowGuide.tsx`
+- [PlanningWorkflowGuide.test](modules/PlanningWorkflowGuide.test.md) - `frontend/src/components/planning/PlanningWorkflowGuide.test.tsx`
+- [ProjectDetailPage](modules/ProjectDetailPage.md) - `frontend/src/pages/ProjectDetailPage.tsx`
+- [ProjectForm](modules/ProjectForm.md) - `frontend/src/components/projects/ProjectForm.tsx`
+- [ProjectIterationsSection](modules/ProjectIterationsSection.md) - `frontend/src/components/projects/ProjectIterationsSection.tsx`
+- [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) - `frontend/src/pages/ProjectReleaseDetailPage.tsx`
+- [ProjectTaskTree](modules/ProjectTaskTree.md) - `frontend/src/components/projects/ProjectTaskTree.tsx`
+- [ProjectsPage](modules/ProjectsPage.md) - `frontend/src/pages/ProjectsPage.tsx`
+- [ProjectsPage.test](modules/ProjectsPage.test.md) - `frontend/src/pages/ProjectsPage.test.tsx`
+- [QueryState](modules/QueryState.md) - `frontend/src/components/feedback/QueryState.tsx`
+- [ReleaseForm](modules/ReleaseForm.md) - `frontend/src/components/releases/ReleaseForm.tsx`
+- [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx`
+- [RequestSourceLinksPanel.test](modules/RequestSourceLinksPanel.test.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.test.tsx`
+- [RoadmapPage](modules/RoadmapPage.md) - `frontend/src/pages/RoadmapPage.tsx`
+- [RoadmapPage.test](modules/RoadmapPage.test.md) - `frontend/src/pages/RoadmapPage.test.tsx`
+- [RouteErrorBoundary](modules/RouteErrorBoundary.md) - `frontend/src/components/layout/RouteErrorBoundary.tsx`
+- [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) - `frontend/src/components/agent/RoutingCandidateComparison.tsx`
+- [RoutingCandidateComparison.test](modules/RoutingCandidateComparison.test.md) - `frontend/src/components/agent/RoutingCandidateComparison.test.tsx`
+- [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) - `frontend/src/components/settings/RuntimeConfigSettings.tsx`
+- [RuntimeConfigSettings.test](modules/RuntimeConfigSettings.test.md) - `frontend/src/components/settings/RuntimeConfigSettings.test.tsx`
+- [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) - `frontend/src/components/dashboard/SavedViewDashboardCards.tsx`
+- [SavedViewsControl](modules/SavedViewsControl.md) - `frontend/src/components/tasks/SavedViewsControl.tsx`
+- [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) - `frontend/src/components/gantt/ScheduleExplanationDetails.tsx`
+- [SchedulingPassCard](modules/SchedulingPassCard.md) - `frontend/src/components/settings/SchedulingPassCard.tsx`
+- [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) - `frontend/src/components/settings/SchedulingRulesSettings.tsx`
+- [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) - `frontend/src/components/settings/SchedulingRulesSettings.test.tsx`
+- [SectionCard](modules/SectionCard.md) - `frontend/src/components/ui/SectionCard.tsx`
+- [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) - `frontend/src/components/settings/SettingsGoalHelpContent.tsx`
+- [SettingsPage](modules/SettingsPage.md) - `frontend/src/pages/SettingsPage.tsx`
+- [SettingsPage.test](modules/SettingsPage.test.md) - `frontend/src/pages/SettingsPage.test.tsx`
+- [SidebarIterationCard](modules/SidebarIterationCard.md) - `frontend/src/components/layout/SidebarIterationCard.tsx`
+- [SidebarIterationCard.test](modules/SidebarIterationCard.test.md) - `frontend/src/components/layout/SidebarIterationCard.test.tsx`
+- [SlideOverDrawer](modules/SlideOverDrawer.md) - `frontend/src/components/ui/SlideOverDrawer.tsx`
+- [SortableTaskItem](modules/SortableTaskItem.md) - `frontend/src/components/tasks/SortableTaskItem.tsx`
+- [StatusChangeControl](modules/StatusChangeControl.md) - `frontend/src/components/tasks/StatusChangeControl.tsx`
+- [StatusSegmentStrip](modules/StatusSegmentStrip.md) - `frontend/src/components/ui/StatusSegmentStrip.tsx`
+- [StickyRail](modules/StickyRail.md) - `frontend/src/components/ui/StickyRail.tsx`
+- [SystemHealthPanel](modules/SystemHealthPanel.md) - `frontend/src/components/settings/SystemHealthPanel.tsx`
+- [SystemLanguageProvider](modules/SystemLanguageProvider.md) - `frontend/src/i18n/SystemLanguageProvider.tsx`
+- [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) - `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx`
+- [TaskAgentReadinessBadge.test](modules/TaskAgentReadinessBadge.test.md) - `frontend/src/components/tasks/TaskAgentReadinessBadge.test.tsx`
+- [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) - `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
+- [TaskDependencySelector](modules/TaskDependencySelector.md) - `frontend/src/components/tasks/TaskDependencySelector.tsx`
+- [TaskEditModal](modules/TaskEditModal.md) - `frontend/src/components/gantt/TaskEditModal.tsx`
+- [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
+- [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
+- [TaskForm](modules/TaskForm.md) - `frontend/src/components/tasks/TaskForm.tsx`
+- [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
+- [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
+- [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
+- [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
+- [TaskStatusFlow](modules/TaskStatusFlow.md) - `frontend/src/components/analytics/TaskStatusFlow.tsx`
+- [TaskTextEditorModal](modules/TaskTextEditorModal.md) - `frontend/src/components/tasks/TaskTextEditorModal.tsx`
+- [TaskTimelinePanel](modules/TaskTimelinePanel.md) - `frontend/src/components/tasks/TaskTimelinePanel.tsx`
+- [TaskTimelinePanel.test](modules/TaskTimelinePanel.test.md) - `frontend/src/components/tasks/TaskTimelinePanel.test.tsx`
+- [TaskWorkflowGuide](modules/TaskWorkflowGuide.md) - `frontend/src/components/tasks/TaskWorkflowGuide.tsx`
+- [TasksPage](modules/TasksPage.md) - `frontend/src/pages/TasksPage.tsx`
+- [TasksPage.test](modules/TasksPage.test.md) - `frontend/src/pages/TasksPage.test.tsx`
+- [TeamForm](modules/TeamForm.md) - `frontend/src/components/team/TeamForm.tsx`
+- [TeamForm.test](modules/TeamForm.test.md) - `frontend/src/components/team/TeamForm.test.tsx`
+- [TeamList](modules/TeamList.md) - `frontend/src/components/team/TeamList.tsx`
+- [TeamPage](modules/TeamPage.md) - `frontend/src/pages/TeamPage.tsx`
+- [TeamProfileManager](modules/TeamProfileManager.md) - `frontend/src/components/team/TeamProfileManager.tsx`
+- [TeamProfileManager.test](modules/TeamProfileManager.test.md) - `frontend/src/components/team/TeamProfileManager.test.tsx`
+- [TemplateLabelSettings](modules/TemplateLabelSettings.md) - `frontend/src/components/settings/TemplateLabelSettings.tsx`
+- [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) - `frontend/src/components/settings/TemplateLabelSettings.test.tsx`
+- [ToastProvider](modules/ToastProvider.md) - `frontend/src/components/feedback/ToastProvider.tsx`
+- [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
+- [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
+- [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
+- [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
+- [accessibilityInvariants](modules/accessibilityInvariants.md) - `frontend/src/test/accessibilityInvariants.ts`
+- [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) - `frontend/src/test/accessibilityInvariants.test.ts`
+- [adminAccess](modules/adminAccess.md) - `frontend/src/utils/adminAccess.ts`
+- [agentAccess](modules/agentAccess.md) - `frontend/src/utils/agentAccess.ts`
+- [agentService](modules/agentService.md) - `frontend/src/services/agentService.ts`
+- [agentService.test](modules/agentService.test.md) - `frontend/src/services/agentService.test.ts`
+- [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) - `frontend/src/features/agentTeamSetup/manifest.ts`
+- [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) - `frontend/src/features/agentTeamSetup/masters.ts`
+- [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) - `frontend/src/features/agentTeamSetup/masters.test.ts`
+- [agent_catalog](modules/agent_catalog.md) - Agent capability, profile, and operator-owned model catalog API.
+- [agent_contract](modules/agent_contract.md) - Shared capability handshake contract for REST and MCP projections.
+- [agent_model_catalog_service](modules/agent_model_catalog_service.md) - Operator-owned model catalog, binding administration, and audit receipts.
+- [agent_planning_service](modules/agent_planning_service.md) - Safe PM setup commands for authenticated agent actors.
+- [agent_preflight](modules/agent_preflight.md) - Fail-closed local diagnostic for the autonomous PostgreSQL start gate.
+- [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) - Code-owned capability catalog, profile presets, and explainable agent routes.
+- [agent_readiness](modules/agent_readiness.md) - Deterministic task readiness evaluation for agent handoff.
+- [agent_routing](modules/agent_routing.md) - Provider-neutral model-routing boundary contracts.
+- [agent_routing_observability](modules/agent_routing_observability.md) - Bounded operational evidence for model-aware routing.
+- [agent_routing_policy](modules/agent_routing_policy.md) - Pure, provider-neutral policy for model-aware agent routing.
+- [agent_routing_rollout](modules/agent_routing_rollout.md) - Fail-closed rollout controls for model-aware agent routing.
+- [agent_routing_service](modules/agent_routing_service.md) - Authoritative assessment, preview, and selection validation for agent routing.
+- [agent_service](modules/agent_service.md) - Agent integration services.
+- [agent_skill_bundle](modules/agent_skill_bundle.md) - Schemas for immutable, distributable agent role-skill bundles.
+- [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) - Read-only delivery of deterministic agent role-skill build artifacts.
+- [agent_skill_bundles](modules/agent_skill_bundles.md) - Read-only HTTP delivery for immutable agent role-skill artifacts.
+- [agent_team_setup](modules/agent_team_setup.md) - Portable agent-team setup, reconciliation, and readiness contracts.
+- [agent_team_setup_service](modules/agent_team_setup_service.md) - Operator-only agent-team validation, reconciliation, setup, and readiness.
+- [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
+- [api](modules/api.md) - `frontend/src/services/api.ts`
+- [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
+- [app_database](modules/app_database.md) - `backend/app/database.py`
+- [app_main](modules/app_main.md) - `backend/app/main.py`
+- [assignee_recommendation_service](modules/assignee_recommendation_service.md) - Explainable assignee recommendations from team capability profiles.
+- [attentionRanking](modules/attentionRanking.md) - `frontend/src/features/overview/attentionRanking.ts`
+- [attentionRanking.test](modules/attentionRanking.test.md) - `frontend/src/features/overview/attentionRanking.test.ts`
+- [autonomy___init__](modules/autonomy___init__.md) - Fail-closed primitives for WorkChord autonomous execution.
+- [autonomy_canonical](modules/autonomy_canonical.md) - Canonical serialization and secret-boundary helpers.
+- [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) - Container-backed acceptance for a self-hosted WorkChord server.
+- [autonomy_work_package_service](modules/autonomy_work_package_service.md) - Fenced, package-level autonomous verification lifecycle service.
+- [build_agent_skills](modules/build_agent_skills.md) - Validate and reproducibly package WorkChord role skills.
+- [build_identity](modules/build_identity.md) - Revision-bound identity baked into WorkChord container images.
+- [calendarService](modules/calendarService.md) - `frontend/src/services/calendarService.ts`
+- [calendar_service](modules/calendar_service.md) - Calendar service with business logic.
+- [calendars](modules/calendars.md) - Calendar API router.
+- [catalog](modules/catalog.md) - Versioned transfer catalog derived from the packaged ORM schema.
+- [charter](modules/charter.md) - Standing delegation and finite bootstrap-action contracts.
+- [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
+- [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
+- [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
+- [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
+- [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
+- [cli_server_acceptance](modules/cli_server_acceptance.md) - Run the bounded self-hosted server acceptance profile.
+- [collect](modules/collect.md) - Collect sealed PostgreSQL evidence and derive qualification metrics.
+- [commandMenuEvents](modules/commandMenuEvents.md) - `frontend/src/components/layout/commandMenuEvents.ts`
+- [compare](modules/compare.md) - Create a sealed, machine-readable baseline versus tuned load comparison.
+- [config](modules/config.md) - `backend/app/config.py`
+- [conftest](modules/conftest.md) - Shared isolated SQLite and PostgreSQL lifecycle fixtures.
+- [contracts___init__](modules/contracts___init__.md) - Versioned autonomy contracts.
+- [copyText](modules/copyText.md) - `frontend/src/utils/copyText.ts`
+- [create_agent_actor](modules/create_agent_actor.md) - Provision a WorkChord AgentActor through the REST Agent API.
+- [database_config](modules/database_config.md) - Driver-neutral database URL, connection, and engine configuration.
+- [database_migration___init__](modules/database_migration___init__.md) - Fail-closed SQLite-to-PostgreSQL migration tooling.
+- [database_migration_canonical](modules/database_migration_canonical.md) - Cross-dialect value normalization and streaming table digests.
+- [database_migration_closeout](modules/database_migration_closeout.md) - Fail-closed PostgreSQL release publication and contract closeout evidence.
+- [database_migration_cutover](modules/database_migration_cutover.md) - Signed, fail-closed evidence for PostgreSQL rehearsals and cutover.
+- [database_migration_manifest](modules/database_migration_manifest.md) - Deterministic, checksummed, secret-free operational documents.
+- [database_runtime](modules/database_runtime.md) - PostgreSQL error classification and bounded transaction retry policy.
+- [dateLocale](modules/dateLocale.md) - `frontend/src/i18n/dateLocale.ts`
+- [dialogLayer](modules/dialogLayer.md) - `frontend/src/components/common/dialogLayer.ts`
+- [emailSettings](modules/emailSettings.md) - `frontend/src/types/emailSettings.ts`
+- [emailSettingsService](modules/emailSettingsService.md) - `frontend/src/services/emailSettingsService.ts`
+- [email_settings_service](modules/email_settings_service.md) - Email settings service backed by runtime system settings.
+- [eslint.config](modules/eslint.config.md) - `frontend/eslint.config.js`
+- [evidence](modules/evidence.md) - Source-attested evidence envelopes and append-only attempt coordination.
+- [exceptions](modules/exceptions.md) - Exception handlers and error middleware.
+- [execution_mode](modules/execution_mode.md) - Execution-mode guards shared by legacy and autonomous migration tools.
+- [export](modules/export.md) - Export/Import API router.
+- [exportService](modules/exportService.md) - `frontend/src/services/exportService.ts`
+- [external_link_service](modules/external_link_service.md) - External link service.
+- [factories](modules/factories.md) - Deterministic mapped-model and representative legacy-database factories.
+- [faults](modules/faults.md) - Clock, concurrency, and deterministic fault-injection helpers.
+- [finalize](modules/finalize.md) - Bind post-run external evidence to one sealed client load result.
+- [focusLifecycle](modules/focusLifecycle.md) - `frontend/src/utils/focusLifecycle.ts`
+- [focusLifecycle.test](modules/focusLifecycle.test.md) - `frontend/src/utils/focusLifecycle.test.ts`
+- [formatDate](modules/formatDate.md) - `frontend/src/utils/formatDate.ts`
+- [ganttService](modules/ganttService.md) - `frontend/src/services/ganttService.ts`
+- [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.
+- [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) - Generate the JSON Schema for the bounded agent-team setup report.
+- [generate_workchord_keys](modules/generate_workchord_keys.md) - Generate local secrets consumed by WorkChord.
+- [githubService](modules/githubService.md) - `frontend/src/services/githubService.ts`
+- [github_status_automation_service](modules/github_status_automation_service.md) - GitHub status automation rule service.
+- [github_status_service](modules/github_status_service.md) - GitHub pull request status refresh service.
+- [github_webhook_service](modules/github_webhook_service.md) - GitHub webhook intake service.
+- [handoff](modules/handoff.md) - Deterministic, unpublished manual-handoff and closeout decision tooling.
+- [healthService](modules/healthService.md) - `frontend/src/services/healthService.ts`
+- [helpContexts](modules/helpContexts.md) - `frontend/src/navigation/helpContexts.ts`
+- [i18n](modules/i18n.md) - `frontend/src/i18n/i18n.ts`
+- [i18n.test](modules/i18n.test.md) - `frontend/src/i18n/i18n.test.ts`
+- [import_parser](modules/import_parser.md) - Parser utilities for importing tasks and team members from text files.
+- [index](modules/index.md) - `frontend/src/components/ui/index.ts`
+- [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) - Qualify the installed backend wheel across the SQLite/PostgreSQL boundary.
+- [iterationService](modules/iterationService.md) - `frontend/src/services/iterationService.ts`
+- [iterationStore](modules/iterationStore.md) - `frontend/src/store/iterationStore.ts`
+- [iteration_service](modules/iteration_service.md) - Iteration service with business logic.
+- [iterations](modules/iterations.md) - Iteration API router.
+- [labelService](modules/labelService.md) - `frontend/src/services/labelService.ts`
+- [label_service](modules/label_service.md) - Service for governed label taxonomy and built-in defaults.
+- [labels](modules/labels.md) - Label taxonomy API router.
+- [language_service](modules/language_service.md) - Language resolution helpers for UI and AI output.
+- [leases](modules/leases.md) - Short-lived exact-target action leases parented to durable attempt starts.
+- [llm_service](modules/llm_service.md) - LLM service for task formalization and schedule explanation.
+- [load_common](modules/load_common.md) - Shared, fail-closed contracts for the WorkChord load and qualification tools.
+- [loader](modules/loader.md) - Installed-resource loader for the PostgreSQL machine contract bundle.
+- [maintenance](modules/maintenance.md) - Fail-closed maintenance/validation authority shared by REST, MCP, and workers.
+- [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
+- [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
+- [migrations_env](modules/migrations_env.md) - Alembic environment configuration.
+- [modelAwareRouting](modules/modelAwareRouting.md) - `frontend/src/test/fixtures/modelAwareRouting.ts`
+- [modelRouting](modules/modelRouting.md) - `frontend/src/utils/modelRouting.ts`
+- [modelRouting.test](modules/modelRouting.test.md) - `frontend/src/utils/modelRouting.test.ts`
+- [models___init__](modules/models___init__.md) - Models package.
+- [models_agent](modules/models_agent.md) - Agent integration and tracing models.
+- [models_autonomy](modules/models_autonomy.md) - WorkChord mirror models for autonomous topology and verification state.
+- [models_calendar](modules/models_calendar.md) - Calendar model.
+- [models_database_migration](modules/models_database_migration.md) - Target-owned state for controlled SQLite-to-PostgreSQL transfers.
+- [models_external_link](modules/models_external_link.md) - External link model for delivery traceability.
+- [models_github](modules/models_github.md) - GitHub integration models.
+- [models_iteration](modules/models_iteration.md) - Iteration model.
+- [models_label](modules/models_label.md) - Governed label taxonomy models.
+- [models_outbound_webhook](modules/models_outbound_webhook.md) - Outbound webhook configuration and delivery log models.
+- [models_plan_share](modules/models_plan_share.md) - Immutable read-only plan snapshots shared through revocable links.
+- [models_project](modules/models_project.md) - Project model.
+- [models_release](modules/models_release.md) - Release model for shipped-work tracking.
+- [models_request_source](modules/models_request_source.md) - Request source models for customer and intake traceability.
+- [models_saved_view](modules/models_saved_view.md) - Saved view model for reusable list and dashboard filters.
+- [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
+- [models_task](modules/models_task.md) - Task model.
+- [models_template](modules/models_template.md) - Reusable work template model.
+- [models_triage](modules/models_triage.md) - Triage item model.
+- [notification_service](modules/notification_service.md) - Email notification service for task status changes.
+- [observability](modules/observability.md) - Database-backed readiness, drain state, and low-cardinality instrumentation.
+- [orchestration](modules/orchestration.md) - External-journal-first DAG and fenced verification state machines.
+- [outboundWebhook](modules/outboundWebhook.md) - `frontend/src/types/outboundWebhook.ts`
+- [outboundWebhookService](modules/outboundWebhookService.md) - `frontend/src/services/outboundWebhookService.ts`
+- [outbound_webhook_service](modules/outbound_webhook_service.md) - Outbound webhook target management and delivery service.
+- [outbound_webhooks](modules/outbound_webhooks.md) - Outbound webhook target and delivery API router.
+- [overviewTaskThread](modules/overviewTaskThread.md) - `frontend/src/features/overview/overviewTaskThread.ts`
+- [planShareService](modules/planShareService.md) - `frontend/src/services/planShareService.ts`
+- [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
+- [plan_shares](modules/plan_shares.md) - Read-only iteration plan sharing API.
+- [planning-masters.test](modules/planning-masters.test.md) - `frontend/src/styles/planning-masters.test.ts`
+- [planningMasters_masters](modules/planningMasters_masters.md) - `frontend/src/features/planningMasters/masters.ts`
+- [planningMasters_masters.test](modules/planningMasters_masters.test.md) - `frontend/src/features/planningMasters/masters.test.ts`
+- [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) - `frontend/src/features/planningMasters/planningNavigationInvalidation.ts`
+- [planningNavigationInvalidation.test](modules/planningNavigationInvalidation.test.md) - `frontend/src/features/planningMasters/planningNavigationInvalidation.test.ts`
+- [planningReturn](modules/planningReturn.md) - `frontend/src/features/planningMasters/planningReturn.ts`
+- [planningTaskIssues](modules/planningTaskIssues.md) - `frontend/src/features/planningMasters/planningTaskIssues.ts`
+- [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
+- [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
+- [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
+- [postgresql_migrations_env](modules/postgresql_migrations_env.md) - Minimal Alembic environment used to prove the PostgreSQL test harness.
+- [preflight](modules/preflight.md) - Deterministic autonomous-start gate evaluation.
+- [projectService](modules/projectService.md) - `frontend/src/services/projectService.ts`
+- [projectStatusStyles](modules/projectStatusStyles.md) - `frontend/src/components/projects/projectStatusStyles.ts`
+- [projectStatusStyles.test](modules/projectStatusStyles.test.md) - `frontend/src/components/projects/projectStatusStyles.test.ts`
+- [project_service](modules/project_service.md) - Project service with CRUD and summary logic.
+- [projects](modules/projects.md) - Project API router.
+- [protectedQueries](modules/protectedQueries.md) - `frontend/src/utils/protectedQueries.ts`
+- [providers](modules/providers.md) - Provider mutation/source-collection boundaries and correlation rules.
+- [qualify](modules/qualify.md) - Freeze, assemble, sign, and verify PostgreSQL capacity qualification.
+- [query_limits](modules/query_limits.md) - Explicit response cardinality bounds for synchronous API surfaces.
+- [releaseService](modules/releaseService.md) - `frontend/src/services/releaseService.ts`
+- [release_service](modules/release_service.md) - Release service for project-scoped shipping records.
+- [renderWithProviders](modules/renderWithProviders.md) - `frontend/src/test/renderWithProviders.tsx`
+- [renderWithProviders.test](modules/renderWithProviders.test.md) - `frontend/src/test/renderWithProviders.test.tsx`
+- [requestSource](modules/requestSource.md) - `frontend/src/types/requestSource.ts`
+- [requestSourceService](modules/requestSourceService.md) - `frontend/src/services/requestSourceService.ts`
+- [request_source_service](modules/request_source_service.md) - Helpers for request source traceability.
+- [request_sources](modules/request_sources.md) - Request source linking API router.
+- [resilience](modules/resilience.md) - Derive fail-closed resilience metrics from sealed fault observations.
+- [resources.en](modules/resources.en.md) - `frontend/src/i18n/resources.en.ts`
+- [resources.ru](modules/resources.ru.md) - `frontend/src/i18n/resources.ru.ts`
+- [result](modules/result.md) - Build, validate, and evaluate machine-readable load result documents.
+- [routeModules](modules/routeModules.md) - `frontend/src/navigation/routeModules.ts`
+- [routers___init__](modules/routers___init__.md) - Routers package.
+- [routers_agent](modules/routers_agent.md) - Agent integration API router.
+- [routers_agent_planning](modules/routers_agent_planning.md) - Agent-authenticated PM setup and schedule-control commands.
+- [routers_email_settings](modules/routers_email_settings.md) - Email settings API router.
+- [routers_gantt](modules/routers_gantt.md) - Gantt API router.
+- [routers_github](modules/routers_github.md) - GitHub webhook API router.
+- [routers_intake](modules/routers_intake.md) - Controlled external intake API router.
+- [routers_llm](modules/routers_llm.md) - LLM API router.
+- [routers_scheduling_rules](modules/routers_scheduling_rules.md) - Scheduling rules API router.
+- [routers_session](modules/routers_session.md) - Browser identity lifecycle API.
+- [routers_system_settings](modules/routers_system_settings.md) - Runtime system settings API router.
+- [routers_team](modules/routers_team.md) - Team API router.
+- [routers_triage](modules/routers_triage.md) - Triage API router.
+- [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
+- [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
+- [safeUrl](modules/safeUrl.md) - `frontend/src/utils/safeUrl.ts`
+- [savedView](modules/savedView.md) - `frontend/src/types/savedView.ts`
+- [savedViewService](modules/savedViewService.md) - `frontend/src/services/savedViewService.ts`
+- [saved_view_service](modules/saved_view_service.md) - Service for saved view persistence and filter payload compatibility.
+- [saved_views](modules/saved_views.md) - Saved view API router.
+- [scheduler_service](modules/scheduler_service.md) - Gantt Scheduler Service - automatic task scheduling with optimization.
+- [schedulingDisplay](modules/schedulingDisplay.md) - `frontend/src/i18n/schedulingDisplay.ts`
+- [schedulingRules](modules/schedulingRules.md) - /** * Scheduling Rules Types * Mirrors backend SchedulingRulesSchema structure */
+- [schedulingRulesService](modules/schedulingRulesService.md) - `frontend/src/services/schedulingRulesService.ts`
+- [scheduling_rules_service](modules/scheduling_rules_service.md) - Scheduling Rules Service - loads and evaluates YAML-based scheduling rules.
+- [schema](modules/schema.md) - Stable schema snapshots for the SQLite/PostgreSQL migration matrix.
+- [schemas___init__](modules/schemas___init__.md) - Schemas package.
+- [schemas_agent](modules/schemas_agent.md) - Agent integration API schemas.
+- [schemas_agent_planning](modules/schemas_agent_planning.md) - Schemas for idempotent, agent-authenticated PM setup commands.
+- [schemas_autonomy](modules/schemas_autonomy.md) - Bounded schemas for autonomous work-package and verifier lifecycles.
+- [schemas_calendar](modules/schemas_calendar.md) - Calendar schemas.
+- [schemas_common](modules/schemas_common.md) - Common schemas and error handling.
+- [schemas_email_settings](modules/schemas_email_settings.md) - Email settings schemas.
+- [schemas_external_link](modules/schemas_external_link.md) - External link schemas.
+- [schemas_gantt](modules/schemas_gantt.md) - Gantt chart schemas.
+- [schemas_github](modules/schemas_github.md) - GitHub integration schemas.
+- [schemas_intake](modules/schemas_intake.md) - Schemas for controlled external intake endpoints.
+- [schemas_iteration](modules/schemas_iteration.md) - Iteration schemas.
+- [schemas_label](modules/schemas_label.md) - Governed label taxonomy schemas.
+- [schemas_llm](modules/schemas_llm.md) - LLM integration schemas.
+- [schemas_outbound_webhook](modules/schemas_outbound_webhook.md) - Outbound webhook API schemas.
+- [schemas_plan_share](modules/schemas_plan_share.md) - Schemas for immutable read-only plan shares.
+- [schemas_project](modules/schemas_project.md) - Project schemas.
+- [schemas_release](modules/schemas_release.md) - Release schemas.
+- [schemas_request_source](modules/schemas_request_source.md) - Request source schemas.
+- [schemas_saved_view](modules/schemas_saved_view.md) - Saved view schemas and filter payload validation primitives.
+- [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) - Scheduling rules schemas for API.
+- [schemas_session](modules/schemas_session.md) - `backend/app/schemas/session.py`
+- [schemas_system_settings](modules/schemas_system_settings.md) - Schemas for runtime system settings.
+- [schemas_task](modules/schemas_task.md) - Task schemas.
+- [schemas_team](modules/schemas_team.md) - Team member schemas.
+- [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
+- [schemas_triage](modules/schemas_triage.md) - Triage item schemas.
+- [seal](modules/seal.md) - Seal a reviewed JSON evidence object with its canonical SHA-256.
+- [security](modules/security.md) - Shared request authorization helpers.
+- [seed](modules/seed.md) - Create the deterministic, resumable PostgreSQL qualification data set.
+- [seedDisplay](modules/seedDisplay.md) - `frontend/src/i18n/seedDisplay.ts`
+- [selectWorkNowTasks](modules/selectWorkNowTasks.md) - `frontend/src/utils/selectWorkNowTasks.ts`
+- [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
+- [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
+- [setup](modules/setup.md) - `frontend/src/test/setup.ts`
+- [setup_agent_team](modules/setup_agent_team.md) - Validate, plan, apply, and inspect a WorkChord agent-team master.
+- [signing](modules/signing.md) - Detached remote-signing envelopes and pinned public-key verification.
+- [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) - `frontend/src/utils/singleKeyShortcutPreference.ts`
+- [snapshot](modules/snapshot.md) - Snapshot restore API schemas.
+- [snapshotService](modules/snapshotService.md) - `frontend/src/services/snapshotService.ts`
+- [snapshot_service](modules/snapshot_service.md) - Snapshot service for iteration state backups.
+- [snapshots](modules/snapshots.md) - Snapshots API router.
+- [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
+- [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
+- [src_main](modules/src_main.md) - `frontend/src/main.tsx`
+- [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
+- [statusScopes](modules/statusScopes.md) - `frontend/src/features/agentTeamSetup/statusScopes.ts`
+- [statusScopes.test](modules/statusScopes.test.md) - `frontend/src/features/agentTeamSetup/statusScopes.test.ts`
+- [support___init__](modules/support___init__.md) - Reusable test infrastructure for database and concurrency qualification.
+- [support_database](modules/support_database.md) - Safety-fenced lifecycle management for disposable test databases.
+- [systemSettings](modules/systemSettings.md) - `frontend/src/types/systemSettings.ts`
+- [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
+- [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
+- [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
+- [taskEditorContract](modules/taskEditorContract.md) - `frontend/src/components/tasks/taskEditorContract.ts`
+- [taskFilterDefaults](modules/taskFilterDefaults.md) - `frontend/src/utils/taskFilterDefaults.ts`
+- [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
+- [taskFilters.test](modules/taskFilters.test.md) - `frontend/src/utils/taskFilters.test.ts`
+- [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.
+- [task_context_revision_service](modules/task_context_revision_service.md) - Atomic task-version fencing for relationship-backed execution context.
+- [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
+- [task_service](modules/task_service.md) - Task service with business logic.
+- [task_status_log](modules/task_status_log.md) - Task status log model for audit trail.
+- [task_status_service](modules/task_status_service.md) - Task status transitions, roll-up reconciliation, and status reporting.
+- [tasks](modules/tasks.md) - Task API router.
+- [teamMemberLabels](modules/teamMemberLabels.md) - `frontend/src/utils/teamMemberLabels.ts`
+- [teamService](modules/teamService.md) - `frontend/src/services/teamService.ts`
+- [team_member](modules/team_member.md) - Team member model.
+- [team_service](modules/team_service.md) - Team member service with business logic.
+- [templateDefaults](modules/templateDefaults.md) - `frontend/src/utils/templateDefaults.ts`
+- [templateService](modules/templateService.md) - `frontend/src/services/templateService.ts`
+- [template_service](modules/template_service.md) - Service for reusable work templates and built-in defaults.
+- [templates](modules/templates.md) - Template API router.
+- [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.
+- [test_agent_routing_contract](modules/test_agent_routing_contract.md) - Focused contract tests for model-aware routing vocabulary and compatibility.
+- [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.
+- [test_agent_routing_harness](modules/test_agent_routing_harness.md) - Smoke tests for the isolated routing database harness.
+- [test_agent_routing_history_surfaces](modules/test_agent_routing_history_surfaces.md) - Contract and parity coverage for routing-assessment history surfaces.
+- [test_agent_routing_migrations](modules/test_agent_routing_migrations.md) - Alembic and cross-dialect DDL coverage for routing Wave 1.
+- [test_agent_routing_observability](modules/test_agent_routing_observability.md) - Security and persistence coverage for bounded routing telemetry.
+- [test_agent_routing_rollout](modules/test_agent_routing_rollout.md) - Focused qualification for model-aware routing rollout controls.
+- [test_agent_routing_service](modules/test_agent_routing_service.md) - End-to-end service coverage for authoritative Wave 3 routing.
+- [test_agent_routing_wave3_contract](modules/test_agent_routing_wave3_contract.md) - Focused policy and schema contracts for deterministic Wave 3 routing.
+- [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) - Cross-surface qualification scenarios for model-aware agent routing.
+- [test_agent_run_trust_compatibility](modules/test_agent_run_trust_compatibility.md) - Compatibility coverage for persisted and projected run-model trust evidence.
+- [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) - Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
+- [test_agent_team_setup](modules/test_agent_team_setup.md) - Contract and service coverage for portable agent-team setup.
+- [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
+- [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
+- [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
+- [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
+- [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
+- [test_cutover_evidence](modules/test_cutover_evidence.md) - Fail-closed contracts for rehearsal and production cutover evidence.
+- [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
+- [test_database_harness](modules/test_database_harness.md) - Fast unit coverage for the Wave 0 database test infrastructure.
+- [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
+- [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
+- [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
+- [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
+- [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
+- [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
+- [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.
+- [test_postgresql_documentation](modules/test_postgresql_documentation.md) - Machine-check the pre-cutover PostgreSQL operator documentation.
+- [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) - Real-server smoke for create, migrate, exercise, and drop lifecycle.
+- [test_postgresql_migrations](modules/test_postgresql_migrations.md) - Real PostgreSQL migration, locking, and schema contract tests.
+- [test_postgresql_transfer](modules/test_postgresql_transfer.md) - Real PostgreSQL loader and fail-closed reconciliation tests.
+- [test_process_roles](modules/test_process_roles.md) - DBM-WORK-001 command ownership and process-role tests.
+- [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
+- [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
+- [test_runtime_policy](modules/test_runtime_policy.md) - DBM-RUN-002/003 retry, ordering, and comparison contract tests.
+- [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
+- [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
+- [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
+- [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh/legacy/inspection migration matrix.
+- [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
+- [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
+- [text_similarity](modules/text_similarity.md) - Lightweight text similarity helpers for advisory search.
+- [themeStore](modules/themeStore.md) - `frontend/src/store/themeStore.ts`
+- [time](modules/time.md) - Timezone-safe UTC helpers and SQLAlchemy datetime normalization.
+- [toast](modules/toast.md) - `frontend/src/components/feedback/toast.ts`
+- [tone](modules/tone.md) - `frontend/src/components/ui/tone.ts`
+- [tone.test](modules/tone.test.md) - `frontend/src/components/ui/tone.test.ts`
+- [topology](modules/topology.md) - Secret-free agent-team topology and deterministic reconciliation contract.
+- [transfer](modules/transfer.md) - Catalogued PostgreSQL loading, repairs, and two-phase reconciliation.
+- [triageService](modules/triageService.md) - `frontend/src/services/triageService.ts`
+- [triage_service](modules/triage_service.md) - Triage service with inbox, lifecycle, and conversion logic.
+- [types_agent](modules/types_agent.md) - `frontend/src/types/agent.ts`
+- [types_calendar](modules/types_calendar.md) - `frontend/src/types/calendar.ts`
+- [types_gantt](modules/types_gantt.md) - `frontend/src/types/gantt.ts`
+- [types_github](modules/types_github.md) - `frontend/src/types/github.ts`
+- [types_iteration](modules/types_iteration.md) - `frontend/src/types/iteration.ts`
+- [types_label](modules/types_label.md) - `frontend/src/types/label.ts`
+- [types_project](modules/types_project.md) - `frontend/src/types/project.ts`
+- [types_release](modules/types_release.md) - `frontend/src/types/release.ts`
+- [types_task](modules/types_task.md) - `frontend/src/types/task.ts`
+- [types_team](modules/types_team.md) - `frontend/src/types/team.ts`
+- [types_template](modules/types_template.md) - `frontend/src/types/template.ts`
+- [types_triage](modules/types_triage.md) - `frontend/src/types/triage.ts`
+- [upgrade](modules/upgrade.md) - Operational database upgrade command.
+- [upgrade_service](modules/upgrade_service.md) - Database upgrade and schema-version helpers.
+- [url_policy](modules/url_policy.md) - Centralized outbound URL and host validation.
+- [useAdminAccess](modules/useAdminAccess.md) - `frontend/src/hooks/useAdminAccess.ts`
+- [useAgentAccess](modules/useAgentAccess.md) - `frontend/src/hooks/useAgentAccess.ts`
+- [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) - `frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts`
+- [useConfirmDialog](modules/useConfirmDialog.md) - `frontend/src/components/common/useConfirmDialog.tsx`
+- [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) - `frontend/src/features/planningMasters/usePlanningNavigationSummary.ts`
+- [usePlanningReadiness](modules/usePlanningReadiness.md) - `frontend/src/features/planningMasters/usePlanningReadiness.ts`
+- [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`
+- [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.ts`
+- [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx`
+- [user_session](modules/user_session.md) - `backend/app/models/user_session.py`
+- [vite.config](modules/vite.config.md) - `frontend/vite.config.ts`
+- [vitest.config](modules/vitest.config.md) - `frontend/vitest.config.ts`
+- [web_intake_service](modules/web_intake_service.md) - Controlled external web intake service.
+- [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
+- [workspaces](modules/workspaces.md) - `frontend/src/navigation/workspaces.ts`
+- [workspaces.test](modules/workspaces.test.md) - `frontend/src/navigation/workspaces.test.ts`
+
+## Workflows
+
+- [AgentModelCatalogService__execute](workflows/AgentModelCatalogService__execute.md) - entry: `agent_model_catalog_service.AgentModelCatalogService._execute`
+- [AgentPlanningService___init__](workflows/AgentPlanningService___init__.md) - entry: `agent_planning_service.AgentPlanningService.__init__`
+- [AgentPlanningService__execute](workflows/AgentPlanningService__execute.md) - entry: `agent_planning_service.AgentPlanningService._execute`
+- [AgentRoutingService__build_preview](workflows/AgentRoutingService__build_preview.md) - entry: `agent_routing_service.AgentRoutingService._build_preview`
+- [AgentRoutingService_create_assessment](workflows/AgentRoutingService_create_assessment.md) - entry: `agent_routing_service.AgentRoutingService.create_assessment`
+- [AgentRoutingService_preview_task_routing](workflows/AgentRoutingService_preview_task_routing.md) - entry: `agent_routing_service.AgentRoutingService.preview_task_routing`
+- [AgentRoutingService_validate_assignment_selection](workflows/AgentRoutingService_validate_assignment_selection.md) - entry: `agent_routing_service.AgentRoutingService.validate_assignment_selection`
+- [AgentService_append_run_event](workflows/AgentService_append_run_event.md) - entry: `agent_service.AgentService.append_run_event`
+- [AgentService_authenticate_bootstrap_key](workflows/AgentService_authenticate_bootstrap_key.md) - entry: `agent_service.AgentService.authenticate_bootstrap_key`
+- [AgentService_claim_task](workflows/AgentService_claim_task.md) - entry: `agent_service.AgentService.claim_task`
+- [AgentService_get_pipeline](workflows/AgentService_get_pipeline.md) - entry: `agent_service.AgentService.get_pipeline`
+- [AgentService_start_run](workflows/AgentService_start_run.md) - entry: `agent_service.AgentService.start_run`
+- [AgentTeamSetupService__apply_create_or_update](workflows/AgentTeamSetupService__apply_create_or_update.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_create_or_update`
+- [AgentTeamSetupService__apply_identity_replacement](workflows/AgentTeamSetupService__apply_identity_replacement.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_identity_replacement`
+- [AgentTeamSetupService__status_for_topology](workflows/AgentTeamSetupService__status_for_topology.md) - entry: `agent_team_setup_service.AgentTeamSetupService._status_for_topology`
+- [AgentTeamSetupService_acknowledge_runtime](workflows/AgentTeamSetupService_acknowledge_runtime.md) - entry: `agent_team_setup_service.AgentTeamSetupService.acknowledge_runtime`
+- [AgentTeamSetupService_apply](workflows/AgentTeamSetupService_apply.md) - entry: `agent_team_setup_service.AgentTeamSetupService.apply`
+- [AgentWorkService__terminal_work](workflows/AgentWorkService__terminal_work.md) - entry: `agent_work_service.AgentWorkService._terminal_work`
+- [AgentWorkService__work_item](workflows/AgentWorkService__work_item.md) - entry: `agent_work_service.AgentWorkService._work_item`
+- [AgentWorkService_begin](workflows/AgentWorkService_begin.md) - entry: `agent_work_service.AgentWorkService.begin`
+- [AgentWorkService_create_assignment](workflows/AgentWorkService_create_assignment.md) - entry: `agent_work_service.AgentWorkService.create_assignment`
+- [AgentWorkService_create_project_update](workflows/AgentWorkService_create_project_update.md) - entry: `agent_work_service.AgentWorkService.create_project_update`
+- [AgentWorkService_get_reviews](workflows/AgentWorkService_get_reviews.md) - entry: `agent_work_service.AgentWorkService.get_reviews`
+- [AgentWorkService_get_task_context](workflows/AgentWorkService_get_task_context.md) - entry: `agent_work_service.AgentWorkService.get_task_context`
+- [AgentWorkService_get_work](workflows/AgentWorkService_get_work.md) - entry: `agent_work_service.AgentWorkService.get_work`
+- [AgentWorkService_list_actor_roster](workflows/AgentWorkService_list_actor_roster.md) - entry: `agent_work_service.AgentWorkService.list_actor_roster`
+- [AgentWorkService_renew_work](workflows/AgentWorkService_renew_work.md) - entry: `agent_work_service.AgentWorkService.renew_work`
+- [AgentWorkService_report_discovery](workflows/AgentWorkService_report_discovery.md) - entry: `agent_work_service.AgentWorkService.report_discovery`
+- [AgentWorkService_requeue_recovery](workflows/AgentWorkService_requeue_recovery.md) - entry: `agent_work_service.AgentWorkService.requeue_recovery`
+- [AgentWorkService_review](workflows/AgentWorkService_review.md) - entry: `agent_work_service.AgentWorkService.review`
+- [AgentWorkService_update_assignment](workflows/AgentWorkService_update_assignment.md) - entry: `agent_work_service.AgentWorkService.update_assignment`
+- [AutonomyWorkPackageService__append_event](workflows/AutonomyWorkPackageService__append_event.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService._append_event`
+- [AutonomyWorkPackageService__lease_transition](workflows/AutonomyWorkPackageService__lease_transition.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService._lease_transition`
+- [AutonomyWorkPackageService_submit_requirement](workflows/AutonomyWorkPackageService_submit_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.submit_requirement`
+- [ExternalLinkService_create](workflows/ExternalLinkService_create.md) - entry: `external_link_service.ExternalLinkService.create`
+- [GitHubStatusAutomationService_apply_rules](workflows/GitHubStatusAutomationService_apply_rules.md) - entry: `github_status_automation_service.GitHubStatusAutomationService.apply_rules`
+- [GitHubStatusService___init__](workflows/GitHubStatusService___init__.md) - entry: `github_status_service.GitHubStatusService.__init__`
+- [GitHubWebhookService___init__](workflows/GitHubWebhookService___init__.md) - entry: `github_webhook_service.GitHubWebhookService.__init__`
+- [GitHubWebhookService_process](workflows/GitHubWebhookService_process.md) - entry: `github_webhook_service.GitHubWebhookService.process`
+- [IterationService__reconcile_tasks_for_project_scope](workflows/IterationService__reconcile_tasks_for_project_scope.md) - entry: `iteration_service.IterationService._reconcile_tasks_for_project_scope`
+- [PlanShareService_create](workflows/PlanShareService_create.md) - entry: `plan_share_service.PlanShareService.create`
+- [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
+- [SchedulerService___init__](workflows/SchedulerService___init__.md) - entry: `scheduler_service.SchedulerService.__init__`
+- [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
+- [TaskService_create](workflows/TaskService_create.md) - entry: `task_service.TaskService.create`
+- [TaskService_delete](workflows/TaskService_delete.md) - entry: `task_service.TaskService.delete`
+- [TaskService_task_to_response](workflows/TaskService_task_to_response.md) - entry: `task_service.TaskService.task_to_response`
+- [TaskService_update](workflows/TaskService_update.md) - entry: `task_service.TaskService.update`
+- [TriageService_classify_item](workflows/TriageService_classify_item.md) - entry: `triage_service.TriageService.classify_item`
+- [TriageService_convert_to_task](workflows/TriageService_convert_to_task.md) - entry: `triage_service.TriageService.convert_to_task`
+- [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
+- [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
+- [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
+- [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
+- [create_session](workflows/create_session.md) - entry: `session_service._create_session`
+- [export_iteration](workflows/export_iteration.md) - entry: `export.export_iteration`
+- [final_table_results](workflows/final_table_results.md) - entry: `transfer._final_table_results`
+- [get_agent_capabilities](workflows/get_agent_capabilities.md) - entry: `agent.get_agent_capabilities`
+- [get_agent_run_detail](workflows/get_agent_run_detail.md) - entry: `mcp_agent_tools.get_agent_run_detail`
+- [get_gantt_data](workflows/get_gantt_data.md) - entry: `gantt.get_gantt_data`
+- [get_or_create_session](workflows/get_or_create_session.md) - entry: `session_service.get_or_create_session`
+- [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
+- [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
+- [load_source_manifest](workflows/load_source_manifest.md) - entry: `transfer._load_source_manifest`
+- [main](workflows/main.md) - entry: `database_migration.main`
+- [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
+- [process_import](workflows/process_import.md) - entry: `export._process_import`
+- [raw_table_results](workflows/raw_table_results.md) - entry: `transfer._raw_table_results`
+- [readiness_snapshot](workflows/readiness_snapshot.md) - entry: `observability.readiness_snapshot`
+- [reconcile_snapshot](workflows/reconcile_snapshot.md) - entry: `transfer.reconcile_snapshot`
+- [record_post_copy_repairs](workflows/record_post_copy_repairs.md) - entry: `transfer.record_post_copy_repairs`
+- [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
+- [restore_snapshot](workflows/restore_snapshot.md) - entry: `snapshots.restore_snapshot`
+- [restore_staged_references](workflows/restore_staged_references.md) - entry: `transfer._restore_staged_references`
+- [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
+- [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
+- [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
+- [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
+- [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
+
+<a id="entry-point-flows"></a>
+<a id="user-flows"></a>
+## Entry-point flows <!-- llm-wiki-generated:index:entry-point-flows -->
+
+**http**
+
+- [http-accept_planning_triage_item](flows/http-accept_planning_triage_item.md) - entry: `accept_planning_triage_item`
+- [http-accept_triage_item](flows/http-accept_triage_item.md) - entry: `accept_triage_item`
+- [http-acknowledge_agent_team_runtime](flows/http-acknowledge_agent_team_runtime.md) - entry: `acknowledge_agent_team_runtime`
+- [http-add_dependency](flows/http-add_dependency.md) - entry: `add_dependency`
+- [http-add_vacation](flows/http-add_vacation.md) - entry: `add_vacation`
+- [http-append_agent_run_event](flows/http-append_agent_run_event.md) - entry: `append_agent_run_event`
+- [http-append_task_event](flows/http-append_task_event.md) - entry: `append_task_event`
+- [http-apply_agent_profile_preset](flows/http-apply_agent_profile_preset.md) - entry: `apply_agent_profile_preset`
+- [http-apply_agent_team_reconciliation](flows/http-apply_agent_team_reconciliation.md) - entry: `apply_agent_team_reconciliation`
+- [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
+- [http-batch_update_tasks](flows/http-batch_update_tasks.md) - entry: `batch_update_tasks`
+- [http-begin_my_agent_work](flows/http-begin_my_agent_work.md) - entry: `begin_my_agent_work`
+- [http-build_identity](flows/http-build_identity.md) - entry: `build_identity`
+- [http-bulk_update_tasks](flows/http-bulk_update_tasks.md) - entry: `bulk_update_tasks`
+- [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
+- [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
+- [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
+- [http-classify_triage_item](flows/http-classify_triage_item.md) - entry: `classify_triage_item`
+- [http-convert_planning_triage_item_to_task](flows/http-convert_planning_triage_item_to_task.md) - entry: `convert_planning_triage_item_to_task`
+- [http-convert_triage_item_to_task](flows/http-convert_triage_item_to_task.md) - entry: `convert_triage_item_to_task`
+- [http-create_agent_actor](flows/http-create_agent_actor.md) - entry: `create_agent_actor`
+- [http-create_agent_assignment](flows/http-create_agent_assignment.md) - entry: `create_agent_assignment`
+- [http-create_agent_model_binding](flows/http-create_agent_model_binding.md) - entry: `create_agent_model_binding`
+- [http-create_agent_model_catalog_entry](flows/http-create_agent_model_catalog_entry.md) - entry: `create_agent_model_catalog_entry`
+- [http-create_agent_project_update](flows/http-create_agent_project_update.md) - entry: `create_agent_project_update`
+- [http-create_agent_task](flows/http-create_agent_task.md) - entry: `create_agent_task`
+- [http-create_calendar](flows/http-create_calendar.md) - entry: `create_calendar`
+- [http-create_github_status_automation_rule](flows/http-create_github_status_automation_rule.md) - entry: `create_github_status_automation_rule`
+- [http-create_initiative](flows/http-create_initiative.md) - entry: `create_initiative`
+- [http-create_iteration-agent_planning](flows/http-create_iteration-agent_planning.md) - entry: `create_iteration`
+- [http-create_iteration-iterations](flows/http-create_iteration-iterations.md) - entry: `create_iteration`
+- [http-create_iteration_series](flows/http-create_iteration_series.md) - entry: `create_iteration_series`
+- [http-create_label](flows/http-create_label.md) - entry: `create_label`
+- [http-create_label_group](flows/http-create_label_group.md) - entry: `create_label_group`
+- [http-create_outbound_webhook_target](flows/http-create_outbound_webhook_target.md) - entry: `create_outbound_webhook_target`
+- [http-create_plan_share](flows/http-create_plan_share.md) - entry: `create_plan_share`
+- [http-create_planning_task](flows/http-create_planning_task.md) - entry: `create_planning_task`
+- [http-create_planning_triage_item](flows/http-create_planning_triage_item.md) - entry: `create_planning_triage_item`
+- [http-create_profile](flows/http-create_profile.md) - entry: `create_profile`
+- [http-create_project-agent_planning](flows/http-create_project-agent_planning.md) - entry: `create_project`
+- [http-create_project-projects](flows/http-create_project-projects.md) - entry: `create_project`
+- [http-create_project_milestone-agent_planning](flows/http-create_project_milestone-agent_planning.md) - entry: `create_project_milestone`
+- [http-create_project_milestone-projects](flows/http-create_project_milestone-projects.md) - entry: `create_project_milestone`
+- [http-create_project_release](flows/http-create_project_release.md) - entry: `create_project_release`
+- [http-create_project_update](flows/http-create_project_update.md) - entry: `create_project_update`
+- [http-create_request_source_link](flows/http-create_request_source_link.md) - entry: `create_request_source_link`
+- [http-create_saved_view](flows/http-create_saved_view.md) - entry: `create_saved_view`
+- [http-create_subtask](flows/http-create_subtask.md) - entry: `create_subtask`
+- [http-create_task](flows/http-create_task.md) - entry: `create_task`
+- [http-create_task_external_link](flows/http-create_task_external_link.md) - entry: `create_task_external_link`
+- [http-create_task_github_external_link](flows/http-create_task_github_external_link.md) - entry: `create_task_github_external_link`
+- [http-create_task_routing_assessment](flows/http-create_task_routing_assessment.md) - entry: `create_task_routing_assessment`
+- [http-create_team_member-agent_planning](flows/http-create_team_member-agent_planning.md) - entry: `create_team_member`
+- [http-create_team_member-team](flows/http-create_team_member-team.md) - entry: `create_team_member`
+- [http-create_team_member_profile](flows/http-create_team_member_profile.md) - entry: `create_team_member_profile`
+- [http-create_team_member_profile_skill](flows/http-create_team_member_profile_skill.md) - entry: `create_team_member_profile_skill`
+- [http-create_template](flows/http-create_template.md) - entry: `create_template`
+- [http-create_triage_item](flows/http-create_triage_item.md) - entry: `create_triage_item`
+- [http-create_vacation](flows/http-create_vacation.md) - entry: `create_vacation`
+- [http-create_web_intake_item](flows/http-create_web_intake_item.md) - entry: `create_web_intake_item`
+- [http-decline_planning_triage_item](flows/http-decline_planning_triage_item.md) - entry: `decline_planning_triage_item`
+- [http-decline_triage_item](flows/http-decline_triage_item.md) - entry: `decline_triage_item`
+- [http-delete_calendar](flows/http-delete_calendar.md) - entry: `delete_calendar`
+- [http-delete_external_link](flows/http-delete_external_link.md) - entry: `delete_external_link`
+- [http-delete_github_status_automation_rule](flows/http-delete_github_status_automation_rule.md) - entry: `delete_github_status_automation_rule`
+- [http-delete_initiative](flows/http-delete_initiative.md) - entry: `delete_initiative`
+- [http-delete_iteration](flows/http-delete_iteration.md) - entry: `delete_iteration`
+- [http-delete_outbound_webhook_target](flows/http-delete_outbound_webhook_target.md) - entry: `delete_outbound_webhook_target`
+- [http-delete_project](flows/http-delete_project.md) - entry: `delete_project`
+- [http-delete_project_milestone-agent_planning](flows/http-delete_project_milestone-agent_planning.md) - entry: `delete_project_milestone`
+- [http-delete_project_milestone-projects](flows/http-delete_project_milestone-projects.md) - entry: `delete_project_milestone`
+- [http-delete_request_source_link](flows/http-delete_request_source_link.md) - entry: `delete_request_source_link`
+- [http-delete_saved_view](flows/http-delete_saved_view.md) - entry: `delete_saved_view`
+- [http-delete_task](flows/http-delete_task.md) - entry: `delete_task`
+- [http-delete_team_member](flows/http-delete_team_member.md) - entry: `delete_team_member`
+- [http-delete_team_member_profile](flows/http-delete_team_member_profile.md) - entry: `delete_team_member_profile`
+- [http-delete_team_member_profile_skill](flows/http-delete_team_member_profile_skill.md) - entry: `delete_team_member_profile_skill`
+- [http-delete_vacation](flows/http-delete_vacation.md) - entry: `delete_vacation`
+- [http-disable_agent_model_binding](flows/http-disable_agent_model_binding.md) - entry: `disable_agent_model_binding`
+- [http-disable_agent_model_catalog_entry](flows/http-disable_agent_model_catalog_entry.md) - entry: `disable_agent_model_catalog_entry`
+- [http-discover_agent_skill_bundles](flows/http-discover_agent_skill_bundles.md) - entry: `discover_agent_skill_bundles`
+- [http-download_agent_skill_bundle](flows/http-download_agent_skill_bundle.md) - entry: `download_agent_skill_bundle`
+- [http-draft_triage_task](flows/http-draft_triage_task.md) - entry: `draft_triage_task`
+- [http-duplicate_saved_view](flows/http-duplicate_saved_view.md) - entry: `duplicate_saved_view`
+- [http-explain_schedule](flows/http-explain_schedule.md) - entry: `explain_schedule`
+- [http-export_iteration](flows/http-export_iteration.md) - entry: `export_iteration`
+- [http-fail_my_agent_work](flows/http-fail_my_agent_work.md) - entry: `fail_my_agent_work`
+- [http-finish_agent_run](flows/http-finish_agent_run.md) - entry: `finish_agent_run`
+- [http-formalize_task](flows/http-formalize_task.md) - entry: `formalize_task`
+- [http-formalize_task_draft](flows/http-formalize_task_draft.md) - entry: `formalize_task_draft`
+- [http-get_agent_capabilities](flows/http-get_agent_capabilities.md) - entry: `get_agent_capabilities`
+- [http-get_agent_model_binding](flows/http-get_agent_model_binding.md) - entry: `get_agent_model_binding`
+- [http-get_agent_model_catalog_entry](flows/http-get_agent_model_catalog_entry.md) - entry: `get_agent_model_catalog_entry`
+- [http-get_agent_pipeline](flows/http-get_agent_pipeline.md) - entry: `get_agent_pipeline`
+- [http-get_agent_profile_presets](flows/http-get_agent_profile_presets.md) - entry: `get_agent_profile_presets`
+- [http-get_agent_route_index](flows/http-get_agent_route_index.md) - entry: `get_agent_route_index`
+- [http-get_agent_run_detail](flows/http-get_agent_run_detail.md) - entry: `get_agent_run_detail`
+- [http-get_agent_skill_bundle_manifest](flows/http-get_agent_skill_bundle_manifest.md) - entry: `get_agent_skill_bundle_manifest`
+- [http-get_agent_task_context](flows/http-get_agent_task_context.md) - entry: `get_agent_task_context`
+- [http-get_agent_team_setup_report](flows/http-get_agent_team_setup_report.md) - entry: `get_agent_team_setup_report`
+- [http-get_agent_team_setup_status](flows/http-get_agent_team_setup_status.md) - entry: `get_agent_team_setup_status`
+- [http-get_calendar](flows/http-get_calendar.md) - entry: `get_calendar`
+- [http-get_calendars](flows/http-get_calendars.md) - entry: `get_calendars`
+- [http-get_current_plan_share](flows/http-get_current_plan_share.md) - entry: `get_current_plan_share`
+- [http-get_email_settings](flows/http-get_email_settings.md) - entry: `get_email_settings`
+- [http-get_gantt_data](flows/http-get_gantt_data.md) - entry: `get_gantt_data`
+- [http-get_initiative](flows/http-get_initiative.md) - entry: `get_initiative`
+- [http-get_iteration](flows/http-get_iteration.md) - entry: `get_iteration`
+- [http-get_iteration_planning_readiness](flows/http-get_iteration_planning_readiness.md) - entry: `get_iteration_planning_readiness`
+- [http-get_iteration_status_history](flows/http-get_iteration_status_history.md) - entry: `get_iteration_status_history`
+- [http-get_iteration_summary](flows/http-get_iteration_summary.md) - entry: `get_iteration_summary`
+- [http-get_iterations](flows/http-get_iterations.md) - entry: `get_iterations`
+- [http-get_member_capacity](flows/http-get_member_capacity.md) - entry: `get_member_capacity`
+- [http-get_member_workload](flows/http-get_member_workload.md) - entry: `get_member_workload`
+- [http-get_my_agent_reviews](flows/http-get_my_agent_reviews.md) - entry: `get_my_agent_reviews`
+- [http-get_my_agent_work](flows/http-get_my_agent_work.md) - entry: `get_my_agent_work`
+- [http-get_overdue_tasks](flows/http-get_overdue_tasks.md) - entry: `get_overdue_tasks`
+- [http-get_plan_share](flows/http-get_plan_share.md) - entry: `get_plan_share`
+- [http-get_profile_skill_catalog](flows/http-get_profile_skill_catalog.md) - entry: `get_profile_skill_catalog`
+- [http-get_project](flows/http-get_project.md) - entry: `get_project`
+- [http-get_project_summary](flows/http-get_project_summary.md) - entry: `get_project_summary`
+- [http-get_project_tasks](flows/http-get_project_tasks.md) - entry: `get_project_tasks`
+- [http-get_release](flows/http-get_release.md) - entry: `get_release`
+- [http-get_saved_view](flows/http-get_saved_view.md) - entry: `get_saved_view`
+- [http-get_scheduling_rules](flows/http-get_scheduling_rules.md) - entry: `get_scheduling_rules`
+- [http-get_subtasks](flows/http-get_subtasks.md) - entry: `get_subtasks`
+- [http-get_system_settings](flows/http-get_system_settings.md) - entry: `get_system_settings`
+- [http-get_task](flows/http-get_task.md) - entry: `get_task`
+- [http-get_task_assignee_recommendations](flows/http-get_task_assignee_recommendations.md) - entry: `get_task_assignee_recommendations`
+- [http-get_task_routing_assessment](flows/http-get_task_routing_assessment.md) - entry: `get_task_routing_assessment`
+- [http-get_task_status_history](flows/http-get_task_status_history.md) - entry: `get_task_status_history`
+- [http-get_task_timeline](flows/http-get_task_timeline.md) - entry: `get_task_timeline`
+- [http-get_tasks](flows/http-get_tasks.md) - entry: `get_tasks`
+- [http-get_tasks_text](flows/http-get_tasks_text.md) - entry: `get_tasks_text`
+- [http-get_team_member](flows/http-get_team_member.md) - entry: `get_team_member`
+- [http-get_team_member_profile](flows/http-get_team_member_profile.md) - entry: `get_team_member_profile`
+- [http-get_team_members](flows/http-get_team_members.md) - entry: `get_team_members`
+- [http-get_template](flows/http-get_template.md) - entry: `get_template`
+- [http-get_triage_assignee_recommendations](flows/http-get_triage_assignee_recommendations.md) - entry: `get_triage_assignee_recommendations`
+- [http-get_triage_duplicate_suggestions](flows/http-get_triage_duplicate_suggestions.md) - entry: `get_triage_duplicate_suggestions`
+- [http-get_triage_item](flows/http-get_triage_item.md) - entry: `get_triage_item`
+- [http-get_unique_employees](flows/http-get_unique_employees.md) - entry: `get_unique_employees`
+- [http-get_vacations](flows/http-get_vacations.md) - entry: `get_vacations`
+- [http-get_working_days](flows/http-get_working_days.md) - entry: `get_working_days`
+- [http-health_check](flows/http-health_check.md) - entry: `health_check`
+- [http-import_calendar_holidays](flows/http-import_calendar_holidays.md) - entry: `import_calendar_holidays`
+- [http-import_iteration](flows/http-import_iteration.md) - entry: `import_iteration`
+- [http-import_new_iteration](flows/http-import_new_iteration.md) - entry: `import_new_iteration`
+- [http-import_tasks](flows/http-import_tasks.md) - entry: `import_tasks`
+- [http-import_team_members](flows/http-import_team_members.md) - entry: `import_team_members`
+- [http-import_team_vacations](flows/http-import_team_vacations.md) - entry: `import_team_vacations`
+- [http-improve_task_description](flows/http-improve_task_description.md) - entry: `improve_task_description`
+- [http-improve_task_description_draft](flows/http-improve_task_description_draft.md) - entry: `improve_task_description_draft`
+- [http-inspect_agent_skill_bundle_file](flows/http-inspect_agent_skill_bundle_file.md) - entry: `inspect_agent_skill_bundle_file`
+- [http-list_agent_actors](flows/http-list_agent_actors.md) - entry: `list_agent_actors`
+- [http-list_agent_assignments](flows/http-list_agent_assignments.md) - entry: `list_agent_assignments`
+- [http-list_agent_model_bindings](flows/http-list_agent_model_bindings.md) - entry: `list_agent_model_bindings`
+- [http-list_agent_model_catalog](flows/http-list_agent_model_catalog.md) - entry: `list_agent_model_catalog`
+- [http-list_agent_recovery_tasks](flows/http-list_agent_recovery_tasks.md) - entry: `list_agent_recovery_tasks`
+- [http-list_agent_skill_bundles](flows/http-list_agent_skill_bundles.md) - entry: `list_agent_skill_bundles`
+- [http-list_github_status_automation_rules](flows/http-list_github_status_automation_rules.md) - entry: `list_github_status_automation_rules`
+- [http-list_initiatives](flows/http-list_initiatives.md) - entry: `list_initiatives`
+- [http-list_label_groups](flows/http-list_label_groups.md) - entry: `list_label_groups`
+- [http-list_labels](flows/http-list_labels.md) - entry: `list_labels`
+- [http-list_my_agent_claims](flows/http-list_my_agent_claims.md) - entry: `list_my_agent_claims`
+- [http-list_my_agent_runs](flows/http-list_my_agent_runs.md) - entry: `list_my_agent_runs`
+- [http-list_outbound_webhook_deliveries](flows/http-list_outbound_webhook_deliveries.md) - entry: `list_outbound_webhook_deliveries`
+- [http-list_outbound_webhook_targets](flows/http-list_outbound_webhook_targets.md) - entry: `list_outbound_webhook_targets`
+- [http-list_project_iterations](flows/http-list_project_iterations.md) - entry: `list_project_iterations`
+- [http-list_project_milestones](flows/http-list_project_milestones.md) - entry: `list_project_milestones`
+- [http-list_project_portfolio_summaries](flows/http-list_project_portfolio_summaries.md) - entry: `list_project_portfolio_summaries`
+- [http-list_project_releases](flows/http-list_project_releases.md) - entry: `list_project_releases`
+- [http-list_project_updates](flows/http-list_project_updates.md) - entry: `list_project_updates`
+- [http-list_projects](flows/http-list_projects.md) - entry: `list_projects`
+- [http-list_ready_tasks](flows/http-list_ready_tasks.md) - entry: `list_ready_tasks`
+- [http-list_request_source_links](flows/http-list_request_source_links.md) - entry: `list_request_source_links`
+- [http-list_roadmap_milestones](flows/http-list_roadmap_milestones.md) - entry: `list_roadmap_milestones`
+- [http-list_saved_view_dashboard_cards](flows/http-list_saved_view_dashboard_cards.md) - entry: `list_saved_view_dashboard_cards`
+- [http-list_saved_views](flows/http-list_saved_views.md) - entry: `list_saved_views`
+- [http-list_snapshots](flows/http-list_snapshots.md) - entry: `list_snapshots`
+- [http-list_task_external_links](flows/http-list_task_external_links.md) - entry: `list_task_external_links`
+- [http-list_task_routing_assessments](flows/http-list_task_routing_assessments.md) - entry: `list_task_routing_assessments`
+- [http-list_team_member_options](flows/http-list_team_member_options.md) - entry: `list_team_member_options`
+- [http-list_team_member_profiles](flows/http-list_team_member_profiles.md) - entry: `list_team_member_profiles`
+- [http-list_templates](flows/http-list_templates.md) - entry: `list_templates`
+- [http-list_triage_classification_suggestions](flows/http-list_triage_classification_suggestions.md) - entry: `list_triage_classification_suggestions`
+- [http-list_triage_items](flows/http-list_triage_items.md) - entry: `list_triage_items`
+- [http-live](flows/http-live.md) - entry: `live`
+- [http-liveness_check](flows/http-liveness_check.md) - entry: `liveness_check`
+- [http-mark_planning_triage_item_duplicate](flows/http-mark_planning_triage_item_duplicate.md) - entry: `mark_planning_triage_item_duplicate`
+- [http-mark_triage_item_duplicate](flows/http-mark_triage_item_duplicate.md) - entry: `mark_triage_item_duplicate`
+- [http-merge_tasks](flows/http-merge_tasks.md) - entry: `merge_tasks`
+- [http-metrics_endpoint](flows/http-metrics_endpoint.md) - entry: `metrics_endpoint`
+- [http-move_task](flows/http-move_task.md) - entry: `move_task`
+- [http-new_mutation](flows/http-new_mutation.md) - entry: `new_mutation`
+- [http-patch_agent_task](flows/http-patch_agent_task.md) - entry: `patch_agent_task`
+- [http-patch_planning_task](flows/http-patch_planning_task.md) - entry: `patch_planning_task`
+- [http-plan_agent_team_reconciliation](flows/http-plan_agent_team_reconciliation.md) - entry: `plan_agent_team_reconciliation`
+- [http-preview_iteration_schedule](flows/http-preview_iteration_schedule.md) - entry: `preview_iteration_schedule`
+- [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
+- [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
+- [http-read](flows/http-read.md) - entry: `read`
+- [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
+- [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`
+- [http-refresh_github_external_link](flows/http-refresh_github_external_link.md) - entry: `refresh_github_external_link`
+- [http-release_task_claim](flows/http-release_task_claim.md) - entry: `release_task_claim`
+- [http-remove_dependency](flows/http-remove_dependency.md) - entry: `remove_dependency`
+- [http-renew_my_agent_work](flows/http-renew_my_agent_work.md) - entry: `renew_my_agent_work`
+- [http-renew_task_claim](flows/http-renew_task_claim.md) - entry: `renew_task_claim`
+- [http-reorder_tasks](flows/http-reorder_tasks.md) - entry: `reorder_tasks`
+- [http-report_agent_discovery](flows/http-report_agent_discovery.md) - entry: `report_agent_discovery`
+- [http-requeue_agent_recovery_task](flows/http-requeue_agent_recovery_task.md) - entry: `requeue_agent_recovery_task`
+- [http-reset_scheduling_rules](flows/http-reset_scheduling_rules.md) - entry: `reset_scheduling_rules`
+- [http-restore_snapshot](flows/http-restore_snapshot.md) - entry: `restore_snapshot`
+- [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
+- [http-revoke_plan_share](flows/http-revoke_plan_share.md) - entry: `revoke_plan_share`
+- [http-revoke_session](flows/http-revoke_session.md) - entry: `revoke_session`
+- [http-rotate_session](flows/http-rotate_session.md) - entry: `rotate_session`
+- [http-run_task_bulk_operation](flows/http-run_task_bulk_operation.md) - entry: `run_task_bulk_operation`
+- [http-schedule_iteration](flows/http-schedule_iteration.md) - entry: `schedule_iteration`
+- [http-search_request_sources](flows/http-search_request_sources.md) - entry: `search_request_sources`
+- [http-snooze_planning_triage_item](flows/http-snooze_planning_triage_item.md) - entry: `snooze_planning_triage_item`
+- [http-snooze_triage_item](flows/http-snooze_triage_item.md) - entry: `snooze_triage_item`
+- [http-start_agent_run](flows/http-start_agent_run.md) - entry: `start_agent_run`
+- [http-submit_my_agent_review_verdict](flows/http-submit_my_agent_review_verdict.md) - entry: `submit_my_agent_review_verdict`
+- [http-submit_my_agent_work](flows/http-submit_my_agent_work.md) - entry: `submit_my_agent_work`
+- [http-suggest_existing_task](flows/http-suggest_existing_task.md) - entry: `suggest_existing_task`
+- [http-suggest_task_draft](flows/http-suggest_task_draft.md) - entry: `suggest_task_draft`
+- [http-test_email_settings](flows/http-test_email_settings.md) - entry: `test_email_settings`
+- [http-test_outbound_webhook_target](flows/http-test_outbound_webhook_target.md) - entry: `test_outbound_webhook_target`
+- [http-unmerge_task](flows/http-unmerge_task.md) - entry: `unmerge_task`
+- [http-update_agent_actor](flows/http-update_agent_actor.md) - entry: `update_agent_actor`
+- [http-update_agent_assignment](flows/http-update_agent_assignment.md) - entry: `update_agent_assignment`
+- [http-update_agent_model_binding](flows/http-update_agent_model_binding.md) - entry: `update_agent_model_binding`
+- [http-update_agent_model_catalog_entry](flows/http-update_agent_model_catalog_entry.md) - entry: `update_agent_model_catalog_entry`
+- [http-update_app_settings](flows/http-update_app_settings.md) - entry: `update_app_settings`
+- [http-update_calendar](flows/http-update_calendar.md) - entry: `update_calendar`
+- [http-update_email_settings](flows/http-update_email_settings.md) - entry: `update_email_settings`
+- [http-update_external_link](flows/http-update_external_link.md) - entry: `update_external_link`
+- [http-update_github_settings](flows/http-update_github_settings.md) - entry: `update_github_settings`
+- [http-update_github_status_automation_rule](flows/http-update_github_status_automation_rule.md) - entry: `update_github_status_automation_rule`
+- [http-update_initiative](flows/http-update_initiative.md) - entry: `update_initiative`
+- [http-update_iteration-agent_planning](flows/http-update_iteration-agent_planning.md) - entry: `update_iteration`
+- [http-update_iteration-iterations](flows/http-update_iteration-iterations.md) - entry: `update_iteration`
+- [http-update_label](flows/http-update_label.md) - entry: `update_label`
+- [http-update_label_group](flows/http-update_label_group.md) - entry: `update_label_group`
+- [http-update_llm_settings](flows/http-update_llm_settings.md) - entry: `update_llm_settings`
+- [http-update_outbound_webhook_target](flows/http-update_outbound_webhook_target.md) - entry: `update_outbound_webhook_target`
+- [http-update_planning_triage_item](flows/http-update_planning_triage_item.md) - entry: `update_planning_triage_item`
+- [http-update_profile](flows/http-update_profile.md) - entry: `update_profile`
+- [http-update_project-agent_planning](flows/http-update_project-agent_planning.md) - entry: `update_project`
+- [http-update_project-projects](flows/http-update_project-projects.md) - entry: `update_project`
+- [http-update_project_milestone-agent_planning](flows/http-update_project_milestone-agent_planning.md) - entry: `update_project_milestone`
+- [http-update_project_milestone-projects](flows/http-update_project_milestone-projects.md) - entry: `update_project_milestone`
+- [http-update_release](flows/http-update_release.md) - entry: `update_release`
+- [http-update_saved_view](flows/http-update_saved_view.md) - entry: `update_saved_view`
+- [http-update_scheduling_rules](flows/http-update_scheduling_rules.md) - entry: `update_scheduling_rules`
+- [http-update_task](flows/http-update_task.md) - entry: `update_task`
+- [http-update_team_member-agent_planning](flows/http-update_team_member-agent_planning.md) - entry: `update_team_member`
+- [http-update_team_member-team](flows/http-update_team_member-team.md) - entry: `update_team_member`
+- [http-update_team_member_profile](flows/http-update_team_member_profile.md) - entry: `update_team_member_profile`
+- [http-update_team_member_profile_skill](flows/http-update_team_member_profile_skill.md) - entry: `update_team_member_profile_skill`
+- [http-update_template](flows/http-update_template.md) - entry: `update_template`
+- [http-update_triage_item](flows/http-update_triage_item.md) - entry: `update_triage_item`
+- [http-update_vacation](flows/http-update_vacation.md) - entry: `update_vacation`
+- [http-update_web_intake_settings](flows/http-update_web_intake_settings.md) - entry: `update_web_intake_settings`
+- [http-validate_agent_team_master](flows/http-validate_agent_team_master.md) - entry: `validate_agent_team_master`
+- [http-whoami](flows/http-whoami.md) - entry: `whoami`
+
+**mcp**
+
+- [mcp-agent_actor_roster_resource](flows/mcp-agent_actor_roster_resource.md) - entry: `agent_actor_roster_resource`
+- [mcp-agent_append_run_event](flows/mcp-agent_append_run_event.md) - entry: `agent_append_run_event`
+- [mcp-agent_append_task_event](flows/mcp-agent_append_task_event.md) - entry: `agent_append_task_event`
+- [mcp-agent_apply_schedule](flows/mcp-agent_apply_schedule.md) - entry: `agent_apply_schedule`
+- [mcp-agent_begin_my_work](flows/mcp-agent_begin_my_work.md) - entry: `agent_begin_my_work`
+- [mcp-agent_capabilities_resource](flows/mcp-agent_capabilities_resource.md) - entry: `agent_capabilities_resource`
+- [mcp-agent_claim_task](flows/mcp-agent_claim_task.md) - entry: `agent_claim_task`
+- [mcp-agent_create_assignment](flows/mcp-agent_create_assignment.md) - entry: `agent_create_assignment`
+- [mcp-agent_create_iteration](flows/mcp-agent_create_iteration.md) - entry: `agent_create_iteration`
+- [mcp-agent_create_model_binding](flows/mcp-agent_create_model_binding.md) - entry: `agent_create_model_binding`
+- [mcp-agent_create_model_catalog_entry](flows/mcp-agent_create_model_catalog_entry.md) - entry: `agent_create_model_catalog_entry`
+- [mcp-agent_create_planning_task](flows/mcp-agent_create_planning_task.md) - entry: `agent_create_planning_task`
+- [mcp-agent_create_project](flows/mcp-agent_create_project.md) - entry: `agent_create_project`
+- [mcp-agent_create_project_milestone](flows/mcp-agent_create_project_milestone.md) - entry: `agent_create_project_milestone`
+- [mcp-agent_create_project_update](flows/mcp-agent_create_project_update.md) - entry: `agent_create_project_update`
+- [mcp-agent_create_task](flows/mcp-agent_create_task.md) - entry: `agent_create_task`
+- [mcp-agent_create_task_routing_assessment](flows/mcp-agent_create_task_routing_assessment.md) - entry: `agent_create_task_routing_assessment`
+- [mcp-agent_create_team_member](flows/mcp-agent_create_team_member.md) - entry: `agent_create_team_member`
+- [mcp-agent_create_team_profile](flows/mcp-agent_create_team_profile.md) - entry: `agent_create_team_profile`
+- [mcp-agent_create_vacation](flows/mcp-agent_create_vacation.md) - entry: `agent_create_vacation`
+- [mcp-agent_delete_project_milestone](flows/mcp-agent_delete_project_milestone.md) - entry: `agent_delete_project_milestone`
+- [mcp-agent_disable_model_binding](flows/mcp-agent_disable_model_binding.md) - entry: `agent_disable_model_binding`
+- [mcp-agent_disable_model_catalog_entry](flows/mcp-agent_disable_model_catalog_entry.md) - entry: `agent_disable_model_catalog_entry`
+- [mcp-agent_fail_my_work](flows/mcp-agent_fail_my_work.md) - entry: `agent_fail_my_work`
+- [mcp-agent_finish_run](flows/mcp-agent_finish_run.md) - entry: `agent_finish_run`
+- [mcp-agent_get_capabilities](flows/mcp-agent_get_capabilities.md) - entry: `agent_get_capabilities`
+- [mcp-agent_get_complete_task_context](flows/mcp-agent_get_complete_task_context.md) - entry: `agent_get_complete_task_context`
+- [mcp-agent_get_model_binding](flows/mcp-agent_get_model_binding.md) - entry: `agent_get_model_binding`
+- [mcp-agent_get_model_catalog_entry](flows/mcp-agent_get_model_catalog_entry.md) - entry: `agent_get_model_catalog_entry`
+- [mcp-agent_get_my_reviews](flows/mcp-agent_get_my_reviews.md) - entry: `agent_get_my_reviews`
+- [mcp-agent_get_my_work](flows/mcp-agent_get_my_work.md) - entry: `agent_get_my_work`
+- [mcp-agent_get_pipeline](flows/mcp-agent_get_pipeline.md) - entry: `agent_get_pipeline`
+- [mcp-agent_get_run_detail](flows/mcp-agent_get_run_detail.md) - entry: `agent_get_run_detail`
+- [mcp-agent_get_task_context](flows/mcp-agent_get_task_context.md) - entry: `agent_get_task_context`
+- [mcp-agent_get_task_routing_assessment](flows/mcp-agent_get_task_routing_assessment.md) - entry: `agent_get_task_routing_assessment`
+- [mcp-agent_get_team_setup_status](flows/mcp-agent_get_team_setup_status.md) - entry: `agent_get_team_setup_status`
+- [mcp-agent_list_actor_roster](flows/mcp-agent_list_actor_roster.md) - entry: `agent_list_actor_roster`
+- [mcp-agent_list_assignments](flows/mcp-agent_list_assignments.md) - entry: `agent_list_assignments`
+- [mcp-agent_list_model_bindings](flows/mcp-agent_list_model_bindings.md) - entry: `agent_list_model_bindings`
+- [mcp-agent_list_model_catalog](flows/mcp-agent_list_model_catalog.md) - entry: `agent_list_model_catalog`
+- [mcp-agent_list_my_claims](flows/mcp-agent_list_my_claims.md) - entry: `agent_list_my_claims`
+- [mcp-agent_list_my_runs](flows/mcp-agent_list_my_runs.md) - entry: `agent_list_my_runs`
+- [mcp-agent_list_ready_tasks](flows/mcp-agent_list_ready_tasks.md) - entry: `agent_list_ready_tasks`
+- [mcp-agent_list_recovery_tasks](flows/mcp-agent_list_recovery_tasks.md) - entry: `agent_list_recovery_tasks`
+- [mcp-agent_list_task_routing_assessments](flows/mcp-agent_list_task_routing_assessments.md) - entry: `agent_list_task_routing_assessments`
+- [mcp-agent_model_catalog_resource](flows/mcp-agent_model_catalog_resource.md) - entry: `agent_model_catalog_resource`
+- [mcp-agent_patch_planning_task](flows/mcp-agent_patch_planning_task.md) - entry: `agent_patch_planning_task`
+- [mcp-agent_patch_task](flows/mcp-agent_patch_task.md) - entry: `agent_patch_task`
+- [mcp-agent_pipeline_resource](flows/mcp-agent_pipeline_resource.md) - entry: `agent_pipeline_resource`
+- [mcp-agent_preview_schedule](flows/mcp-agent_preview_schedule.md) - entry: `agent_preview_schedule`
+- [mcp-agent_preview_task_routing](flows/mcp-agent_preview_task_routing.md) - entry: `agent_preview_task_routing`
+- [mcp-agent_profile_presets_resource](flows/mcp-agent_profile_presets_resource.md) - entry: `agent_profile_presets_resource`
+- [mcp-agent_release_task](flows/mcp-agent_release_task.md) - entry: `agent_release_task`
+- [mcp-agent_renew_claim](flows/mcp-agent_renew_claim.md) - entry: `agent_renew_claim`
+- [mcp-agent_renew_my_work](flows/mcp-agent_renew_my_work.md) - entry: `agent_renew_my_work`
+- [mcp-agent_report_discovery](flows/mcp-agent_report_discovery.md) - entry: `agent_report_discovery`
+- [mcp-agent_requeue_recovery](flows/mcp-agent_requeue_recovery.md) - entry: `agent_requeue_recovery`
+- [mcp-agent_reviews_resource](flows/mcp-agent_reviews_resource.md) - entry: `agent_reviews_resource`
+- [mcp-agent_routes_resource](flows/mcp-agent_routes_resource.md) - entry: `agent_routes_resource`
+- [mcp-agent_skill_catalog_resource](flows/mcp-agent_skill_catalog_resource.md) - entry: `agent_skill_catalog_resource`
+- [mcp-agent_skill_entrypoint_resource](flows/mcp-agent_skill_entrypoint_resource.md) - entry: `agent_skill_entrypoint_resource`
+- [mcp-agent_skill_manifest_resource](flows/mcp-agent_skill_manifest_resource.md) - entry: `agent_skill_manifest_resource`
+- [mcp-agent_skill_reference_resource](flows/mcp-agent_skill_reference_resource.md) - entry: `agent_skill_reference_resource`
+- [mcp-agent_start_run](flows/mcp-agent_start_run.md) - entry: `agent_start_run`
+- [mcp-agent_submit_my_work](flows/mcp-agent_submit_my_work.md) - entry: `agent_submit_my_work`
+- [mcp-agent_submit_review_verdict](flows/mcp-agent_submit_review_verdict.md) - entry: `agent_submit_review_verdict`
+- [mcp-agent_update_assignment](flows/mcp-agent_update_assignment.md) - entry: `agent_update_assignment`
+- [mcp-agent_update_iteration](flows/mcp-agent_update_iteration.md) - entry: `agent_update_iteration`
+- [mcp-agent_update_model_binding](flows/mcp-agent_update_model_binding.md) - entry: `agent_update_model_binding`
+- [mcp-agent_update_model_catalog_entry](flows/mcp-agent_update_model_catalog_entry.md) - entry: `agent_update_model_catalog_entry`
+- [mcp-agent_update_project](flows/mcp-agent_update_project.md) - entry: `agent_update_project`
+- [mcp-agent_update_project_milestone](flows/mcp-agent_update_project_milestone.md) - entry: `agent_update_project_milestone`
+- [mcp-agent_update_team_member](flows/mcp-agent_update_team_member.md) - entry: `agent_update_team_member`
+- [mcp-agent_update_team_profile](flows/mcp-agent_update_team_profile.md) - entry: `agent_update_team_profile`
+- [mcp-agent_update_vacation](flows/mcp-agent_update_vacation.md) - entry: `agent_update_vacation`
+- [mcp-agent_work_resource](flows/mcp-agent_work_resource.md) - entry: `agent_work_resource`
+- [mcp-blocker_explanation](flows/mcp-blocker_explanation.md) - entry: `blocker_explanation`
+- [mcp-complete_task_context_resource](flows/mcp-complete_task_context_resource.md) - entry: `complete_task_context_resource`
+- [mcp-iteration_resource](flows/mcp-iteration_resource.md) - entry: `iteration_resource`
+- [mcp-profile_skill_catalog_resource](flows/mcp-profile_skill_catalog_resource.md) - entry: `profile_skill_catalog_resource`
+- [mcp-project_resource](flows/mcp-project_resource.md) - entry: `project_resource`
+- [mcp-recommendations_for_task](flows/mcp-recommendations_for_task.md) - entry: `recommendations_for_task`
+- [mcp-recommendations_for_triage](flows/mcp-recommendations_for_triage.md) - entry: `recommendations_for_triage`
+- [mcp-release_resource](flows/mcp-release_resource.md) - entry: `release_resource`
+- [mcp-status_update_draft](flows/mcp-status_update_draft.md) - entry: `status_update_draft`
+- [mcp-system_get_runtime_config_status](flows/mcp-system_get_runtime_config_status.md) - entry: `system_get_runtime_config_status`
+- [mcp-task_implementation_brief](flows/mcp-task_implementation_brief.md) - entry: `task_implementation_brief`
+- [mcp-task_progress_event](flows/mcp-task_progress_event.md) - entry: `task_progress_event`
+- [mcp-task_resource](flows/mcp-task_resource.md) - entry: `task_resource`
+- [mcp-task_routing_assessment_resource](flows/mcp-task_routing_assessment_resource.md) - entry: `task_routing_assessment_resource`
+- [mcp-task_timeline_resource](flows/mcp-task_timeline_resource.md) - entry: `task_timeline_resource`
+- [mcp-triage_resource](flows/mcp-triage_resource.md) - entry: `triage_resource`
+- [mcp-triage_to_task_draft](flows/mcp-triage_to_task_draft.md) - entry: `triage_to_task_draft`
+- [mcp-workchord_pm_role](flows/mcp-workchord_pm_role.md) - entry: `workchord_pm_role`
+- [mcp-workchord_worker_role](flows/mcp-workchord_worker_role.md) - entry: `workchord_worker_role`
+- [mcp-workspace_accept_triage_item](flows/mcp-workspace_accept_triage_item.md) - entry: `workspace_accept_triage_item`
+- [mcp-workspace_apply_agent_profile_preset](flows/mcp-workspace_apply_agent_profile_preset.md) - entry: `workspace_apply_agent_profile_preset`
+- [mcp-workspace_classify_triage_item](flows/mcp-workspace_classify_triage_item.md) - entry: `workspace_classify_triage_item`
+- [mcp-workspace_convert_triage_to_task](flows/mcp-workspace_convert_triage_to_task.md) - entry: `workspace_convert_triage_to_task`
+- [mcp-workspace_create_request_source_link](flows/mcp-workspace_create_request_source_link.md) - entry: `workspace_create_request_source_link`
+- [mcp-workspace_create_task_github_link](flows/mcp-workspace_create_task_github_link.md) - entry: `workspace_create_task_github_link`
+- [mcp-workspace_create_triage_item](flows/mcp-workspace_create_triage_item.md) - entry: `workspace_create_triage_item`
+- [mcp-workspace_decline_triage_item](flows/mcp-workspace_decline_triage_item.md) - entry: `workspace_decline_triage_item`
+- [mcp-workspace_delete_external_link](flows/mcp-workspace_delete_external_link.md) - entry: `workspace_delete_external_link`
+- [mcp-workspace_draft_triage_task](flows/mcp-workspace_draft_triage_task.md) - entry: `workspace_draft_triage_task`
+- [mcp-workspace_get_agent_profile_presets](flows/mcp-workspace_get_agent_profile_presets.md) - entry: `workspace_get_agent_profile_presets`
+- [mcp-workspace_get_agent_routes](flows/mcp-workspace_get_agent_routes.md) - entry: `workspace_get_agent_routes`
+- [mcp-workspace_get_iteration](flows/mcp-workspace_get_iteration.md) - entry: `workspace_get_iteration`
+- [mcp-workspace_get_iteration_gantt](flows/mcp-workspace_get_iteration_gantt.md) - entry: `workspace_get_iteration_gantt`
+- [mcp-workspace_get_iteration_summary](flows/mcp-workspace_get_iteration_summary.md) - entry: `workspace_get_iteration_summary`
+- [mcp-workspace_get_profile_skill_catalog](flows/mcp-workspace_get_profile_skill_catalog.md) - entry: `workspace_get_profile_skill_catalog`
+- [mcp-workspace_get_project](flows/mcp-workspace_get_project.md) - entry: `workspace_get_project`
+- [mcp-workspace_get_project_milestone](flows/mcp-workspace_get_project_milestone.md) - entry: `workspace_get_project_milestone`
+- [mcp-workspace_get_project_summary](flows/mcp-workspace_get_project_summary.md) - entry: `workspace_get_project_summary`
+- [mcp-workspace_get_release](flows/mcp-workspace_get_release.md) - entry: `workspace_get_release`
+- [mcp-workspace_get_team_member_capacity](flows/mcp-workspace_get_team_member_capacity.md) - entry: `workspace_get_team_member_capacity`
+- [mcp-workspace_get_team_member_profile](flows/mcp-workspace_get_team_member_profile.md) - entry: `workspace_get_team_member_profile`
+- [mcp-workspace_get_team_member_workload](flows/mcp-workspace_get_team_member_workload.md) - entry: `workspace_get_team_member_workload`
+- [mcp-workspace_get_triage_item](flows/mcp-workspace_get_triage_item.md) - entry: `workspace_get_triage_item`
+- [mcp-workspace_list_external_links](flows/mcp-workspace_list_external_links.md) - entry: `workspace_list_external_links`
+- [mcp-workspace_list_iteration_team](flows/mcp-workspace_list_iteration_team.md) - entry: `workspace_list_iteration_team`
+- [mcp-workspace_list_iterations](flows/mcp-workspace_list_iterations.md) - entry: `workspace_list_iterations`
+- [mcp-workspace_list_label_groups](flows/mcp-workspace_list_label_groups.md) - entry: `workspace_list_label_groups`
+- [mcp-workspace_list_labels](flows/mcp-workspace_list_labels.md) - entry: `workspace_list_labels`
+- [mcp-workspace_list_project_milestones](flows/mcp-workspace_list_project_milestones.md) - entry: `workspace_list_project_milestones`
+- [mcp-workspace_list_project_tasks](flows/mcp-workspace_list_project_tasks.md) - entry: `workspace_list_project_tasks`
+- [mcp-workspace_list_project_updates](flows/mcp-workspace_list_project_updates.md) - entry: `workspace_list_project_updates`
+- [mcp-workspace_list_projects](flows/mcp-workspace_list_projects.md) - entry: `workspace_list_projects`
+- [mcp-workspace_list_releases](flows/mcp-workspace_list_releases.md) - entry: `workspace_list_releases`
+- [mcp-workspace_list_request_source_links](flows/mcp-workspace_list_request_source_links.md) - entry: `workspace_list_request_source_links`
+- [mcp-workspace_list_saved_views](flows/mcp-workspace_list_saved_views.md) - entry: `workspace_list_saved_views`
+- [mcp-workspace_list_team_member_profiles](flows/mcp-workspace_list_team_member_profiles.md) - entry: `workspace_list_team_member_profiles`
+- [mcp-workspace_list_team_member_vacations](flows/mcp-workspace_list_team_member_vacations.md) - entry: `workspace_list_team_member_vacations`
+- [mcp-workspace_list_templates](flows/mcp-workspace_list_templates.md) - entry: `workspace_list_templates`
+- [mcp-workspace_list_triage_items](flows/mcp-workspace_list_triage_items.md) - entry: `workspace_list_triage_items`
+- [mcp-workspace_mark_triage_item_duplicate](flows/mcp-workspace_mark_triage_item_duplicate.md) - entry: `workspace_mark_triage_item_duplicate`
+- [mcp-workspace_search_request_sources](flows/mcp-workspace_search_request_sources.md) - entry: `workspace_search_request_sources`
+- [mcp-workspace_snooze_triage_item](flows/mcp-workspace_snooze_triage_item.md) - entry: `workspace_snooze_triage_item`
+- [mcp-workspace_unlink_request_source](flows/mcp-workspace_unlink_request_source.md) - entry: `workspace_unlink_request_source`
+- [mcp-workspace_update_triage_item](flows/mcp-workspace_update_triage_item.md) - entry: `workspace_update_triage_item`
+
+**process**
+
+- [process-agent_preflight](flows/process-agent_preflight.md) - entry: `main`
+- [process-build_agent_skills](flows/process-build_agent_skills.md) - entry: `main`
+- [process-build_identity](flows/process-build_identity.md) - entry: `main`
+- [process-check_model_aware_routing_closeout](flows/process-check_model_aware_routing_closeout.md) - entry: `main`
+- [process-check_postgresql_documentation](flows/process-check_postgresql_documentation.md) - entry: `main`
+- [process-closeout](flows/process-closeout.md) - entry: `main`
+- [process-collect](flows/process-collect.md) - entry: `main`
+- [process-compare](flows/process-compare.md) - entry: `main`
+- [process-create_agent_actor](flows/process-create_agent_actor.md) - entry: `main`
+- [process-cutover](flows/process-cutover.md) - entry: `main`
+- [process-database_migration](flows/process-database_migration.md) - entry: `main`
+- [process-finalize](flows/process-finalize.md) - entry: `main`
+- [process-generate_agent_team_contract](flows/process-generate_agent_team_contract.md) - entry: `main`
+- [process-generate_agent_team_report_contract](flows/process-generate_agent_team_report_contract.md) - entry: `main`
+- [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
+- [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
+- [process-mcp_server](flows/process-mcp_server.md) - entry: `main`
+- [process-qualify](flows/process-qualify.md) - entry: `main`
+- [process-resilience](flows/process-resilience.md) - entry: `main`
+- [process-run](flows/process-run.md) - entry: `main`
+- [process-seal](flows/process-seal.md) - entry: `main`
+- [process-seed](flows/process-seed.md) - entry: `main`
+- [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
+- [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
+- [process-upgrade](flows/process-upgrade.md) - entry: `main`
+- [process-worker](flows/process-worker.md) - entry: `main`
+
+## Infrastructure
+
+- [Dockerfile_backend](infrastructure/Dockerfile_backend.md) - dockerfile
+- [Dockerfile_frontend](infrastructure/Dockerfile_frontend.md) - dockerfile
+- [GitHub Actions: CI](infrastructure/_github_workflows_ci_yml.md) - github_actions
+- [docker-compose_prod_yml](infrastructure/docker-compose_prod_yml.md) - compose
+- [docker-compose_rehearsal_yml](infrastructure/docker-compose_rehearsal_yml.md) - compose
+- [docker-compose_server_yml](infrastructure/docker-compose_server_yml.md) - compose
+- [docker-compose_yml](infrastructure/docker-compose_yml.md) - compose
+
+## Dependency Architecture
+
+- [Dependencies](dependencies.md)
+- [Load order](load-order.md)
+
+## Log
+
+- [Architectural log](log.md)

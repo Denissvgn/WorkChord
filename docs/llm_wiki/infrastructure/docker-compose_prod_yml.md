@@ -1,0 +1,82 @@
+# docker-compose.prod.yml
+
+**Path:** `docker-compose.prod.yml`
+
+## Services
+
+| Service | Image / Build | Ports | Depends On |
+|---------|---------------|-------|------------|
+| `migration` | `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}` |  |  |
+| `repair` | `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}` |  | `{'migration': {'condition': 'service_completed_successfully'}}` |
+| `backend` | `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag for offline use or repository@sha256 digest for registry deployment}` |  | `{'repair': {'condition': 'service_completed_successfully'}}` |
+| `delivery-worker` | `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}` |  | `{'repair': {'condition': 'service_completed_successfully'}}` |
+| `frontend` | `${WORKCHORD_FRONTEND_IMAGE:?Set an exact frontend image tag for offline use or repository@sha256 digest for registry deployment}` |  | `{'backend': {'condition': 'service_healthy'}}` |
+| `proxy` | `${WORKCHORD_PROXY_IMAGE:-nginx:1.28.3-alpine3.23@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236}` | `${WORKCHORD_HTTP_PORT:-80}:80`, `${WORKCHORD_HTTPS_PORT:-443}:443` | `{'backend': {'condition': 'service_healthy'}, 'frontend': {'condition': 'service_started'}}` |
+| `logical-backup` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  |  |
+| `restore-verify` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  |  |
+
+### migration
+
+- **Image:** `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}`
+- **Volumes:** `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`
+- **Environment:** `{'DATABASE_URL': '${DATABASE_MIGRATION_URL:?Set the dedicated PostgreSQL migrator URL}', 'DATABASE_POSTGRESQL_REQUIRED': 'true', 'DATABASE_PROCESS_ROLE': 'migration', 'DATABASE_APPLICATION_NAME': 'workchord-migration', 'DATABASE_SESSION_ROLE': '${DATABASE_OWNER_ROLE:-workchord_owner}', 'DATABASE_POOL_SIZE': '1', 'DATABASE_MAX_OVERFLOW': '0', 'DATABASE_SSL_MODE': '${DATABASE_SSL_MODE:-verify-full}', 'DATABASE_SSL_ROOT_CERT': '${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}', 'DATABASE_SSL_CERT': '${DATABASE_SSL_CERT:-}', 'DATABASE_SSL_KEY': '${DATABASE_SSL_KEY:-}', 'DATABASE_EXTERNAL_BACKUP_REFERENCE': '${DATABASE_EXTERNAL_BACKUP_REFERENCE:?Set the approved backup or PITR recovery point}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'SETTINGS_ENCRYPTION_KEY': '${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}', 'OUTBOUND_DELIVERY_WORKER_ENABLED': 'false', 'MAINTENANCE_MODE': '${MAINTENANCE_MODE:-off}', 'MAINTENANCE_REVISION': '${MAINTENANCE_REVISION:-production-off}', 'MAINTENANCE_REPLICA_ID': 'migration'}`
+- **Command:** `['sh', '-c', 'python -m app.cli.upgrade --no-repairs --external-backup-reference \\"$$DATABASE_EXTERNAL_BACKUP_REFERENCE\\']`
+
+### repair
+
+- **Image:** `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}`
+- **Volumes:** `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`
+- **Environment:** `{'DATABASE_URL': '${DATABASE_MIGRATION_URL:?Set the dedicated PostgreSQL migrator URL}', 'DATABASE_POSTGRESQL_REQUIRED': 'true', 'DATABASE_PROCESS_ROLE': 'repair', 'DATABASE_APPLICATION_NAME': 'workchord-repair', 'DATABASE_SESSION_ROLE': '${DATABASE_OWNER_ROLE:-workchord_owner}', 'DATABASE_POOL_SIZE': '1', 'DATABASE_MAX_OVERFLOW': '0', 'DATABASE_SSL_MODE': '${DATABASE_SSL_MODE:-verify-full}', 'DATABASE_SSL_ROOT_CERT': '${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}', 'DATABASE_SSL_CERT': '${DATABASE_SSL_CERT:-}', 'DATABASE_SSL_KEY': '${DATABASE_SSL_KEY:-}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'SETTINGS_ENCRYPTION_KEY': '${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}', 'OUTBOUND_DELIVERY_WORKER_ENABLED': 'false', 'MAINTENANCE_MODE': 'off', 'MAINTENANCE_REVISION': 'production-repair', 'MAINTENANCE_REPLICA_ID': 'repair'}`
+- **Depends on:** `{'migration': {'condition': 'service_completed_successfully'}}`
+- **Command:** `['python', '-m', 'app.cli.upgrade', '--repairs-only']`
+
+### backend
+
+- **Image:** `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag for offline use or repository@sha256 digest for registry deployment}`
+- **Volumes:** `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`
+- **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}', 'DATABASE_POSTGRESQL_REQUIRED': 'true', 'DATABASE_PROCESS_ROLE': 'web', 'DATABASE_APPLICATION_NAME': 'workchord-web', 'DATABASE_SESSION_ROLE': '', 'DATABASE_POOL_SIZE': '${DATABASE_WEB_POOL_SIZE:-15}', 'DATABASE_MAX_OVERFLOW': '${DATABASE_WEB_MAX_OVERFLOW:-5}', 'DATABASE_SSL_MODE': '${DATABASE_SSL_MODE:-verify-full}', 'DATABASE_SSL_ROOT_CERT': '${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}', 'DATABASE_SSL_CERT': '${DATABASE_SSL_CERT:-}', 'DATABASE_SSL_KEY': '${DATABASE_SSL_KEY:-}', 'API_PREFIX': '${API_PREFIX:-/api}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'DEBUG': 'false', 'CORS_ORIGINS': '${CORS_ORIGINS:?Set the production HTTPS origin list}', 'SETTINGS_ENCRYPTION_KEY': '${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}', 'AGENT_BOOTSTRAP_API_KEY': '${AGENT_BOOTSTRAP_API_KEY:-}', 'AGENT_SKILL_BUNDLES_PUBLIC': '${AGENT_SKILL_BUNDLES_PUBLIC:-false}', 'AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256': '${AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256:-}', 'MODEL_AWARE_ROUTING_MODE': '${MODEL_AWARE_ROUTING_MODE:-off}', 'MCP_DNS_REBINDING_PROTECTION': 'true', 'MCP_ALLOWED_HOSTS': '${MCP_ALLOWED_HOSTS:?Set the exact public MCP host allowlist}', 'MCP_ALLOWED_ORIGINS': '${MCP_ALLOWED_ORIGINS:?Set the exact public MCP HTTPS origin allowlist}', 'MCP_UNSAFE_ALLOW_PUBLIC_BINDING': 'false', 'WORKCHORD_ADMIN_API_KEY': '${WORKCHORD_ADMIN_API_KEY:?Set WORKCHORD_ADMIN_API_KEY}', 'ALLOW_PRIVATE_EGRESS_URLS': '${ALLOW_PRIVATE_EGRESS_URLS:-false}', 'TRUSTED_PROXY_IPS': '${TRUSTED_PROXY_IPS:?Set the proxy IP or subnet allowlist}', 'SESSION_COOKIE_SECURE': 'true', 'SESSION_MAX_AGE_SECONDS': '${SESSION_MAX_AGE_SECONDS:-2592000}', 'SESSION_TOUCH_INTERVAL_SECONDS': '${SESSION_TOUCH_INTERVAL_SECONDS:-300}', 'AGENT_LAST_SEEN_INTERVAL_SECONDS': '${AGENT_LAST_SEEN_INTERVAL_SECONDS:-300}', 'LLM_PROVIDER': '${LLM_PROVIDER:-openai}', 'LLM_API_KEY': '${LLM_API_KEY:-}', 'LLM_API_URL': '${LLM_API_URL:-}', 'LLM_MODEL': '${LLM_MODEL:-gpt-4}', 'LLM_TEMPERATURE': '${LLM_TEMPERATURE:-0.2}', 'LLM_MAX_OUTPUT_TOKENS': '${LLM_MAX_OUTPUT_TOKENS:-3000}', 'GITHUB_API_URL': '${GITHUB_API_URL:-https://api.github.com}', 'GITHUB_TOKEN': '${GITHUB_TOKEN:-}', 'GITHUB_REQUEST_TIMEOUT_SECONDS': '${GITHUB_REQUEST_TIMEOUT_SECONDS:-10}', 'GITHUB_WEBHOOK_SECRET': '${GITHUB_WEBHOOK_SECRET:-}', 'GITHUB_WEBHOOK_CREATE_TRIAGE_FOR_UNMATCHED': '${GITHUB_WEBHOOK_CREATE_TRIAGE_FOR_UNMATCHED:-false}', 'WEB_INTAKE_TOKEN': '${WEB_INTAKE_TOKEN:-}', 'WEB_INTAKE_RATE_LIMIT_PER_MINUTE': '${WEB_INTAKE_RATE_LIMIT_PER_MINUTE:-30}', 'NOTIFICATIONS_ENABLED': '${NOTIFICATIONS_ENABLED:-false}', 'OUTBOUND_DELIVERY_WORKER_ENABLED': 'false', 'OUTBOUND_DELIVERY_POLL_SECONDS': '${OUTBOUND_DELIVERY_POLL_SECONDS:-1}', 'OUTBOUND_DELIVERY_BATCH_SIZE': '${OUTBOUND_DELIVERY_BATCH_SIZE:-50}', 'SMTP_HOST': '${SMTP_HOST:-}', 'SMTP_PORT': '${SMTP_PORT:-587}', 'SMTP_USER': '${SMTP_USER:-}', 'SMTP_PASSWORD': '${SMTP_PASSWORD:-}', 'SMTP_FROM_EMAIL': '${SMTP_FROM_EMAIL:-notifications@workchord.local}', 'SMTP_USE_TLS': '${SMTP_USE_TLS:-true}', 'MAINTENANCE_MODE': '${MAINTENANCE_MODE:-off}', 'MAINTENANCE_REVISION': '${MAINTENANCE_REVISION:-production-off}', 'MAINTENANCE_REPLICA_ID': '${WORKCHORD_WEB_REPLICA_ID:-auto}', 'MAINTENANCE_RETRY_AFTER_SECONDS': '${MAINTENANCE_RETRY_AFTER_SECONDS:-60}', 'MAINTENANCE_VALIDATION_ALLOWLIST': '${MAINTENANCE_VALIDATION_ALLOWLIST:-["/health","/health/live","/health/ready","/metrics"]}'}`
+- **Depends on:** `{'repair': {'condition': 'service_completed_successfully'}}`
+
+### delivery-worker
+
+- **Image:** `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}`
+- **Volumes:** `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`
+- **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}', 'DATABASE_POSTGRESQL_REQUIRED': 'true', 'DATABASE_PROCESS_ROLE': 'delivery_worker', 'DATABASE_APPLICATION_NAME': 'workchord-delivery-worker', 'DATABASE_SESSION_ROLE': '', 'DATABASE_POOL_SIZE': '${DATABASE_WORKER_POOL_SIZE:-8}', 'DATABASE_MAX_OVERFLOW': '${DATABASE_WORKER_MAX_OVERFLOW:-2}', 'DATABASE_SSL_MODE': '${DATABASE_SSL_MODE:-verify-full}', 'DATABASE_SSL_ROOT_CERT': '${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}', 'DATABASE_SSL_CERT': '${DATABASE_SSL_CERT:-}', 'DATABASE_SSL_KEY': '${DATABASE_SSL_KEY:-}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'SETTINGS_ENCRYPTION_KEY': '${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}', 'OUTBOUND_DELIVERY_WORKER_ENABLED': 'true', 'OUTBOUND_DELIVERY_POLL_SECONDS': '${OUTBOUND_DELIVERY_POLL_SECONDS:-1}', 'OUTBOUND_DELIVERY_BATCH_SIZE': '${OUTBOUND_DELIVERY_BATCH_SIZE:-50}', 'NOTIFICATIONS_ENABLED': '${NOTIFICATIONS_ENABLED:-false}', 'SMTP_HOST': '${SMTP_HOST:-}', 'SMTP_PORT': '${SMTP_PORT:-587}', 'SMTP_USER': '${SMTP_USER:-}', 'SMTP_PASSWORD': '${SMTP_PASSWORD:-}', 'SMTP_FROM_EMAIL': '${SMTP_FROM_EMAIL:-notifications@workchord.local}', 'SMTP_USE_TLS': '${SMTP_USE_TLS:-true}', 'MAINTENANCE_MODE': '${MAINTENANCE_MODE:-off}', 'MAINTENANCE_REVISION': '${MAINTENANCE_REVISION:-production-off}', 'MAINTENANCE_REPLICA_ID': '${WORKCHORD_WORKER_REPLICA_ID:-auto}'}`
+- **Depends on:** `{'repair': {'condition': 'service_completed_successfully'}}`
+- **Command:** `['python', '-m', 'app.cli.worker']`
+
+### frontend
+
+- **Image:** `${WORKCHORD_FRONTEND_IMAGE:?Set an exact frontend image tag for offline use or repository@sha256 digest for registry deployment}`
+- **Depends on:** `{'backend': {'condition': 'service_healthy'}}`
+
+### proxy
+
+- **Image:** `${WORKCHORD_PROXY_IMAGE:-nginx:1.28.3-alpine3.23@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236}`
+- **Ports:** `${WORKCHORD_HTTP_PORT:-80}:80`, `${WORKCHORD_HTTPS_PORT:-443}:443`
+- **Volumes:** `./deploy/nginx.production.conf.template:/etc/nginx/templates/default.conf.template:ro`, `${WORKCHORD_TLS_CERT_DIR:-./certs}:/etc/workchord/tls:ro`
+- **Environment:** `{'NGINX_ENVSUBST_FILTER': 'WORKCHORD_SERVER_NAME', 'WORKCHORD_SERVER_NAME': '${WORKCHORD_SERVER_NAME:?Set the canonical public hostname}'}`
+- **Depends on:** `{'backend': {'condition': 'service_healthy'}, 'frontend': {'condition': 'service_started'}}`
+
+### logical-backup
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `${DATABASE_BACKUP_DIR:-./backups}:/backups`, `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`, `./scripts/database_backup/logical_backup.sh:/opt/workchord/logical_backup.sh:ro`
+- **Environment:** `{'DATABASE_BACKUP_URL': '${DATABASE_BACKUP_URL:-}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'BACKUP_ENCRYPTION_CONFIRMED': '${BACKUP_ENCRYPTION_CONFIRMED:-false}', 'BACKUP_RETENTION_DAYS': '${BACKUP_RETENTION_DAYS:-35}', 'PGSSLMODE': 'verify-full', 'PGSSLROOTCERT': '/etc/workchord/database-tls/root.crt', 'PGSSLCERT': '${DATABASE_BACKUP_SSL_CERT:-}', 'PGSSLKEY': '${DATABASE_BACKUP_SSL_KEY:-}'}`
+- **Command:** `['/bin/bash', '/opt/workchord/logical_backup.sh']`
+
+### restore-verify
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `${DATABASE_BACKUP_DIR:-./backups}:/backups:ro`, `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`, `./scripts/database_backup/restore_verify.sh:/opt/workchord/restore_verify.sh:ro`
+- **Environment:** `{'DATABASE_RESTORE_URL': '${DATABASE_RESTORE_URL:-}', 'RESTORE_TARGET_IDENTIFIER': '${RESTORE_TARGET_IDENTIFIER:-}', 'RESTORE_AUTHORIZED_TARGET': '${RESTORE_AUTHORIZED_TARGET:-}', 'BACKUP_PATH': '${BACKUP_PATH:-}', 'BACKUP_SHA256': '${BACKUP_SHA256:-}', 'PGSSLMODE': 'verify-full', 'PGSSLROOTCERT': '/etc/workchord/database-tls/root.crt'}`
+- **Command:** `['/bin/bash', '/opt/workchord/restore_verify.sh']`
+
+## Networks
+
+- `application`
+- `egress`
+
+## Notes
+
+_Add reviewed operational context here; generated sections are replaced from source observations._
