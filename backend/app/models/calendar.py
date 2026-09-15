@@ -20,6 +20,7 @@ class Calendar(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
+    timezone: Mapped[str] = mapped_column(String(64), default="UTC", server_default="UTC", nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # List of holiday dates as ISO strings ["2025-01-01", "2025-01-02", ...]

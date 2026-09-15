@@ -1,4 +1,5 @@
 """Gantt API router."""
+from app.commands import command_transaction, lock_iterations
 from typing import Annotated, Optional
 import json
 
@@ -11,6 +12,7 @@ from app.schemas.gantt import (
     GanttResponse, GanttTask, GanttAssignee, GanttMilestone, ScheduleResult,
     SchedulePreviewRequest, SchedulePreviewResponse, WorkloadIssue, SchedulingDecision
 )
+from app.schemas.gantt import ScheduleApplyRequest
 from app.schemas.iteration import IterationResponse
 from app.services.scheduler_service import SchedulerService
 from app.services.iteration_service import IterationService
@@ -22,7 +24,7 @@ from datetime import date
 router = APIRouter()
 
 
-async def get_scheduler_service(db: Annotated[AsyncSession, Depends(get_db)]) -> SchedulerService:
+async def get_scheduler_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> SchedulerService:
     """Dependency for scheduler service."""
     return SchedulerService(db)
 
@@ -31,7 +33,8 @@ async def get_scheduler_service(db: Annotated[AsyncSession, Depends(get_db)]) ->
 async def schedule_iteration(
     iteration_id: int,
     service: Annotated[SchedulerService, Depends(get_scheduler_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    data: ScheduleApplyRequest | None = None,
 ):
     """Run automatic scheduling for an iteration."""
     iteration_service = IterationService(db)
@@ -43,7 +46,8 @@ async def schedule_iteration(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
-    result = await service.schedule_iteration(iteration_id)
+    result = await service.schedule_iteration(iteration_id, expected_revision=data.expected_revision if data else None,
+        commit_baseline=True, rebaseline_reason=data.rebaseline_reason if data else None)
     return result
 
 
@@ -52,7 +56,7 @@ async def preview_iteration_schedule(
     iteration_id: int,
     data: SchedulePreviewRequest,
     service: Annotated[SchedulerService, Depends(get_scheduler_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Dry-run sandbox edits through the real scheduler and roll everything back.
 
@@ -74,62 +78,49 @@ async def preview_iteration_schedule(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
-    # Neutralize nested commits from status transitions the same way
-    # batch_update_tasks does; the whole preview is rolled back at the end.
-    original_commit = db.commit
-    async def noop_commit():
-        await db.flush()
-    db.commit = noop_commit
+    async with command_transaction(db, mode="preview"):
+        try:
+            revisions = await lock_iterations(db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
+            if data.changes:
+                await apply_batch_update_items(
+                    task_service, iteration_id, iteration.end_date, data.changes
+                )
 
-    try:
-        if data.changes:
-            await apply_batch_update_items(
-                task_service, iteration_id, iteration.end_date, data.changes
+            schedule_result = await service.schedule_iteration(iteration_id, commit=False)
+
+            tasks = await task_service.get_by_iteration(iteration_id)
+            gantt_tasks: list[GanttTask] = []
+            overdue_ids: list[int] = []
+            for task in tasks:
+                if task.is_deferred:
+                    continue
+                gantt_task = _task_to_gantt(task, iteration.end_date, calendar_timezone=iteration.calendar.timezone)
+                if gantt_task is None:
+                    continue
+                gantt_tasks.append(gantt_task)
+            overdue_ids = _overdue_task_ids(gantt_tasks)
+
+            return SchedulePreviewResponse(
+                input_revision=revisions[iteration_id],
+                tasks=gantt_tasks,
+                overdue_task_ids=overdue_ids,
+                schedule_result=schedule_result,
             )
-
-        schedule_result = await service.schedule_iteration(iteration_id, commit=False)
-
-        tasks = await task_service.get_by_iteration(iteration_id)
-        gantt_tasks: list[GanttTask] = []
-        overdue_ids: list[int] = []
-        for task in tasks:
-            if task.is_deferred:
-                continue
-            gantt_task = _task_to_gantt(task, iteration.end_date)
-            if gantt_task is None:
-                continue
-            gantt_tasks.append(gantt_task)
-            if gantt_task.is_overdue:
-                overdue_ids.append(gantt_task.id)
-            for child in gantt_task.children:
-                if child.is_overdue:
-                    overdue_ids.append(child.id)
-
-        return SchedulePreviewResponse(
-            tasks=gantt_tasks,
-            overdue_task_ids=overdue_ids,
-            schedule_result=schedule_result,
-        )
-    except TaskVersionConflictError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=exc.detail(),
-        ) from exc
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc)
-        ) from exc
-    finally:
-        # Discard every preview mutation regardless of outcome.
-        db.commit = original_commit
-        await db.rollback()
-
+        except TaskVersionConflictError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=exc.detail(),
+            ) from exc
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(exc)
+            ) from exc
 
 @router.get("/iterations/{iteration_id}/gantt", response_model=GanttResponse)
 async def get_gantt_data(
     iteration_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get Gantt chart data for an iteration.
 
@@ -172,18 +163,12 @@ async def get_gantt_data(
         # Skip deferred tasks - they should not appear on Gantt
         if task.is_deferred:
             continue
-        gantt_task = _task_to_gantt(task, iteration.end_date)
+        gantt_task = _task_to_gantt(task, iteration.end_date, calendar_timezone=iteration.calendar.timezone)
         if gantt_task is None:
             continue
         gantt_tasks.append(gantt_task)
 
-        if gantt_task.is_overdue:
-            overdue_ids.append(gantt_task.id)
-
-        # Collect overdue children
-        for child in gantt_task.children:
-            if child.is_overdue:
-                overdue_ids.append(child.id)
+    overdue_ids = _overdue_task_ids(gantt_tasks)
 
     # Calculate latest task end date (for overdue range)
     latest_task_end = iteration.end_date
@@ -213,6 +198,7 @@ async def get_gantt_data(
     return GanttResponse(
         iteration=IterationResponse(
             id=iteration.id,
+            revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
             start_date=iteration.start_date,
@@ -225,6 +211,17 @@ async def get_gantt_data(
         weekends=working_days_info.weekends,
         member_vacations=member_vacations,
     )
+
+
+def _overdue_task_ids(tasks):
+    """Collect canonical overdue leaves through every level of the returned tree."""
+    result, pending = [], list(tasks)
+    while pending:
+        task = pending.pop()
+        if task.is_overdue:
+            result.append(task.id)
+        pending.extend(task.children)
+    return sorted(result)
 
 
 def _get_calculated_effort(task: Task) -> Optional[float]:
@@ -243,7 +240,8 @@ def _task_to_gantt(
     task: Task,
     iteration_end_date: date,
     issues: Optional[list[WorkloadIssue]] = None,
-    decisions: Optional[list[SchedulingDecision]] = None
+    decisions: Optional[list[SchedulingDecision]] = None,
+    *, calendar_timezone: str = "UTC",
 ) -> Optional[GanttTask]:
     """Convert Task to GanttTask."""
     if task.is_deferred:
@@ -260,8 +258,12 @@ def _task_to_gantt(
     loaded_assignee = task.assignee if assignee_loaded else None
     loaded_milestone = task.milestone if milestone_loaded else None
 
-    is_composite = len(loaded_children) > 0
-    is_overdue = bool(task.end_date and task.end_date > iteration_end_date)
+    is_composite = bool(task.is_summary) or len(loaded_children) > 0
+    from app.services.work_metrics import task_signals
+    project = task.__dict__.get("project")
+    signals = task_signals(task, iteration_end=iteration_end_date, project_target=project.target_date if project else None,
+                           timezone=project.timezone if project else calendar_timezone, composite=is_composite)
+    is_overdue = signals.pop("is_overdue")
 
     # Check if task violates its date constraints
     is_outside_constraints = False
@@ -327,7 +329,7 @@ def _task_to_gantt(
     # Convert children recursively (excluding deferred)
     children = []
     for c in loaded_children:
-        child_gantt = _task_to_gantt(c, iteration_end_date, issues, decisions)
+        child_gantt = _task_to_gantt(c, iteration_end_date, issues, decisions, calendar_timezone=calendar_timezone)
         if child_gantt:  # Only add if not deferred
             children.append(child_gantt)
 
@@ -349,11 +351,7 @@ def _task_to_gantt(
         progress = 50.0
     # planned = 0.0 (default)
 
-    # Check if task is delayed (PLANNED and start_date passed)
-    today = date.today()
-    is_delayed = False
-    if task.status == "planned" and task.start_date and task.start_date < today:
-        is_delayed = True
+    is_delayed = signals["is_late_start"]
 
     return GanttTask(
         id=task.id,
@@ -377,6 +375,7 @@ def _task_to_gantt(
         effort_hours=task.effort_hours,
         version=task.version,
         is_overdue=is_overdue,
+        **signals,
         is_delayed=is_delayed,
         tags=tags,
         is_composite=is_composite,

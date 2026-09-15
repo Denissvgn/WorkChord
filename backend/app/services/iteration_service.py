@@ -1,4 +1,6 @@
 """Iteration service with business logic."""
+
+from app.commands import commit_or_flush, schedule_input_command
 import re
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -62,6 +64,7 @@ class IterationService:
         )
         return IterationResponse(
             id=iteration.id,
+            revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
             project_id=iteration.project_id,
@@ -340,7 +343,7 @@ class IterationService:
         )
         self.db.add(iteration)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(iteration)
@@ -371,7 +374,7 @@ class IterationService:
         ]
         self.db.add_all(iterations)
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -385,6 +388,7 @@ class IterationService:
             created.append(reloaded)
         return created
 
+    @schedule_input_command("iteration")
     async def update(
         self,
         iteration_id: int,
@@ -397,7 +401,7 @@ class IterationService:
         if not iteration:
             return None
 
-        update_data = data.model_dump(exclude_unset=True)
+        update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         next_start = update_data.get("start_date", iteration.start_date)
         next_end = update_data.get("end_date", iteration.end_date)
         self._validate_date_range(next_start, next_end)
@@ -417,7 +421,7 @@ class IterationService:
             setattr(iteration, field, value)
 
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(iteration)
@@ -430,7 +434,7 @@ class IterationService:
             return False
 
         await self.db.delete(iteration)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def get_summary(self, iteration_id: int) -> IterationSummary | None:
@@ -445,46 +449,20 @@ class IterationService:
             iteration.calendar, iteration.start_date, iteration.end_date
         )
 
-        task_row = (
-            await self.db.execute(
-                select(
-                    func.count(Task.id),
-                    func.coalesce(
-                        func.sum(
-                            case(
-                                (Task.status == TaskStatusModel.CLOSED.value, 1),
-                                else_=0,
-                            )
-                        ),
-                        0,
-                    ),
-                    func.coalesce(func.sum(Task.effort_days), 0.0),
-                    func.coalesce(
-                        func.sum(
-                            case(
-                                (
-                                    Task.end_date.is_not(None)
-                                    & (Task.end_date > iteration.end_date),
-                                    1,
-                                ),
-                                else_=0,
-                            )
-                        ),
-                        0,
-                    ),
-                ).where(Task.iteration_id == iteration_id)
-            )
-        ).one()
-        total_tasks = int(task_row[0])
-        completed_tasks = int(task_row[1])
-        total_effort_days = float(task_row[2])
+        from app.services.work_metrics import aggregate_metrics
+        metrics = await aggregate_metrics(self.db, iteration_id=iteration_id)
+        total_tasks = metrics["total_tasks"]
+        completed_tasks = metrics["implemented_tasks"]
+        total_effort_days = metrics["total_effort_days"]
 
         # Calculate team capacity
         team_capacity = await self._calculate_team_capacity(iteration)
 
-        overdue_count = int(task_row[3])
+        overdue_count = metrics["overdue_tasks"]
 
+        from app.schemas.work_metrics import WorkMetricSummary
         return IterationSummary(
+            **{key: metrics[key] for key in WorkMetricSummary.model_fields if key in metrics},
             id=iteration.id,
             name=iteration.name,
             project_id=iteration.project_id,

@@ -27,7 +27,7 @@ async def whoami(
 async def rotate_session(
     response: Response,
     current_session: Annotated[UserSession, Depends(session_service.get_current_session)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> UserSession:
     """Rotate the browser token without changing saved-view ownership."""
     return await session_service.rotate_session(db, current_session, response)
@@ -37,7 +37,7 @@ async def rotate_session(
 async def revoke_session(
     response: Response,
     current_session: Annotated[UserSession, Depends(session_service.get_current_session)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> MessageResponse:
     """Revoke the current browser identity."""
     await session_service.revoke_session(db, current_session, response)

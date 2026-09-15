@@ -38,14 +38,14 @@ router = APIRouter()
 
 
 async def get_triage_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> TriageService:
     """Dependency for triage service."""
     return TriageService(db)
 
 
 async def get_llm_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> LLMService:
     """Dependency for LLM-powered triage classification."""
     service = await LLMService.from_runtime(db)
@@ -54,7 +54,7 @@ async def get_llm_service(
 
 
 async def get_assignee_recommendation_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> AssigneeRecommendationService:
     """Dependency for assignee recommendation service."""
     return AssigneeRecommendationService(db)

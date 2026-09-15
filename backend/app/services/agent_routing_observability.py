@@ -7,6 +7,8 @@ identifiers, and arbitrary evidence never cross this boundary.
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 from enum import StrEnum
 import hashlib
 import json
@@ -592,7 +594,7 @@ async def record_routing_operational_event(
         labels={"event": event.value},
     )
     if commit:
-        await db.commit()
+        await commit_or_flush(db)
     return task_event.id
 
 

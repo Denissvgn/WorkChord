@@ -4,6 +4,8 @@ The adapter delegates validation and mutation behavior to the existing domain
 services, then stores an exact actor-attributed receipt in the same transaction.
 """
 
+from app.commands import commit_or_flush, atomic_command, preview_command
+
 import hashlib
 import json
 import secrets
@@ -128,6 +130,7 @@ class AgentPlanningService:
                 "Idempotent PM setup receipt is invalid"
             ) from exc
 
+    @atomic_command
     async def _execute(
         self,
         *,
@@ -154,7 +157,8 @@ class AgentPlanningService:
             "payload": request_payload,
         }
 
-        replay = await self._replay(
+        is_preview = operation == "planning.schedule.preview"
+        replay = None if is_preview else await self._replay(
             actor=actor,
             operation=operation,
             target_type=target_type,
@@ -177,6 +181,8 @@ class AgentPlanningService:
                 correlation_id=command.correlation_id,
                 result=result,
             )
+            if is_preview:
+                return receipt
             self.db.add(
                 AgentIdempotencyRecord(
                     actor_id=actor.id,
@@ -191,7 +197,7 @@ class AgentPlanningService:
                     ),
                 )
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return receipt
         except IntegrityError:
             await self.db.rollback()
@@ -1117,6 +1123,7 @@ class AgentPlanningService:
             task_states=AgentPlanningService._schedule_task_states(tasks),
         ).model_dump(mode="json")
 
+    @preview_command
     async def preview_schedule(
         self,
         iteration_id: int,
@@ -1131,7 +1138,8 @@ class AgentPlanningService:
             try:
                 async with self.db.begin_nested():
                     await self._lock_schedule_task_set(iteration_id)
-                    await self._iteration_tasks_for_update(iteration_id)
+                    original_tasks = await self._iteration_tasks_for_update(iteration_id)
+                    input_versions = {task.id: task.version for task in original_tasks}
                     input_digest, _rules_digest = await self._schedule_input_digest(
                         iteration_id
                     )
@@ -1145,6 +1153,9 @@ class AgentPlanningService:
                         tasks,
                         input_digest,
                     )
+                    for state in result["task_states"]:
+                        state["version"] = input_versions[state["task_id"]]
+                    result["preview"] = True
                     raise _SchedulePreviewComplete(result)
             except _SchedulePreviewComplete as complete:
                 return iteration_id, complete.result

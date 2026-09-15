@@ -1,5 +1,7 @@
 """Task text import, export, and triage intake workflows."""
 
+from app.commands import commit_or_flush
+
 import json
 from typing import Optional, TYPE_CHECKING
 
@@ -214,7 +216,7 @@ class TaskImportService:
 
         await self.db.flush()
         await self._record_triage_import_events(created_triage_items)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for task in created_tasks:
             await self.db.refresh(task)
         for triage_item in created_triage_items:
@@ -327,7 +329,7 @@ class TaskImportService:
 
         await self.db.flush()
         await self._record_triage_import_events(created_triage_items)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for task in processed_tasks:
             await self.db.refresh(task)
         for triage_item in created_triage_items:

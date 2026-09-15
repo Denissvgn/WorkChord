@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -10,27 +10,31 @@ interface CollapsibleSectionProps {
 
 export const CollapsibleSection = ({ title, defaultOpen = false, children }: CollapsibleSectionProps) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
+    const contentId = useId();
 
     return (
         <div className="border border-border rounded-lg overflow-hidden">
             <button
                 type="button"
+                aria-expanded={isOpen}
+                aria-controls={contentId}
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between px-4 py-3 bg-surface-muted hover:bg-surface-subtle transition-colors"
             >
                 <span className="font-medium text-content-primary">{title}</span>
                 <ChevronDown
+                    aria-hidden="true"
                     className={clsx(
                         "w-4 h-4 text-content-secondary transition-transform duration-200",
                         isOpen ? "rotate-0" : "-rotate-90"
                     )}
                 />
             </button>
-            {isOpen && (
-                <div className="p-4 space-y-4 bg-surface-card border-t border-border">
+            <div id={contentId} hidden={!isOpen}>
+                {isOpen && <div className="p-4 space-y-4 bg-surface-card border-t border-border">
                     {children}
-                </div>
-            )}
+                </div>}
+            </div>
         </div>
     );
 };

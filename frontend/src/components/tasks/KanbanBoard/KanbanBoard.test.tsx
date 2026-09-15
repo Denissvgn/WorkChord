@@ -15,6 +15,7 @@ const taskServiceMock = vi.hoisted(() => ({
     getByIteration: vi.fn(),
     update: vi.fn(),
     changeStatus: vi.fn(),
+    batchUpdate: vi.fn(),
 }));
 
 const teamServiceMock = vi.hoisted(() => ({
@@ -126,6 +127,8 @@ describe('KanbanBoard explicit ownership guard', () => {
         dragState.overId = 'planned-assigned';
         taskServiceMock.getByIteration.mockReset();
         taskServiceMock.update.mockReset();
+        taskServiceMock.batchUpdate.mockReset();
+        taskServiceMock.batchUpdate.mockResolvedValue({ results: [{ success: true }] });
         taskServiceMock.changeStatus.mockReset();
         teamServiceMock.getByIteration.mockReset();
         labelServiceMock.getGroups.mockReset();
@@ -179,15 +182,12 @@ describe('KanbanBoard explicit ownership guard', () => {
 
         await user.click(screen.getByRole('button', { name: 'Assign and move' }));
 
-        await waitFor(() => {
-            expect(taskServiceMock.update).toHaveBeenCalledWith(1, {
-                assignee_id: 20,
-                expected_version: 7,
-            });
-        });
-        await waitFor(() => {
-            expect(taskServiceMock.changeStatus).toHaveBeenCalledWith(1, 'active', 'Moved on board', 8);
-        });
+        await waitFor(() => expect(taskServiceMock.batchUpdate).toHaveBeenCalledWith(1, {
+            expected_revision: undefined,
+            tasks: [{ task_id: 1, expected_version: 7, update: { assignee_id: 20, status: 'active' }, status_reason: 'Moved on board' }],
+        }));
+        expect(taskServiceMock.update).not.toHaveBeenCalled();
+        expect(taskServiceMock.changeStatus).not.toHaveBeenCalled();
     });
 
     it('cancels an ownership-selection drop without changing the task', async () => {

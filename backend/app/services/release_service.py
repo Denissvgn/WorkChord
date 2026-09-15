@@ -1,4 +1,6 @@
 """Release service for project-scoped shipping records."""
+
+from app.commands import commit_or_flush
 from datetime import datetime
 from typing import Optional, Sequence
 
@@ -89,6 +91,21 @@ class ReleaseService:
         result = await self.db.execute(select(Project.id).where(Project.id == project_id))
         return result.scalar_one_or_none() is not None
 
+    async def _attach_work_metrics(self, release, tasks=None):
+        from app.services.work_metrics import scoped_metric_tasks, aggregate_metrics
+        if tasks is None:
+            tasks = await scoped_metric_tasks(self.db, project_id=release.project_id)
+        selected = {task.id for task in release.tasks}
+        changed = True
+        while changed:
+            expanded = selected | {task.id for task in tasks if task.parent_id in selected}
+            changed, selected = expanded != selected, expanded
+        values = await aggregate_metrics(self.db, project_id=release.project_id, task_ids=selected)
+        for key, value in values.items():
+            setattr(release, key, value)
+        release.target_overflow_tasks = sum(1 for task in tasks if task.id in selected and not task.is_summary and not task.is_deferred and task.end_date and release.target_date and task.end_date > release.target_date)
+        return release
+
     async def get_by_id(self, release_id: int) -> Optional[Release]:
         """Get a release with linked tasks loaded."""
         result = await self.db.execute(
@@ -96,7 +113,8 @@ class ReleaseService:
             .options(*self._release_options())
             .where(Release.id == release_id)
         )
-        return result.scalar_one_or_none()
+        release = result.scalar_one_or_none()
+        return await self._attach_work_metrics(release) if release else None
 
     async def list_for_project(self, project_id: int) -> Optional[Sequence[Release]]:
         """List releases for a project in project-release order."""
@@ -119,7 +137,9 @@ class ReleaseService:
                 "project release list",
                 MAX_BOUNDED_LIST_ITEMS,
             )
-        return releases
+        from app.services.work_metrics import scoped_metric_tasks
+        tasks = await scoped_metric_tasks(self.db, project_id=project_id)
+        return [await self._attach_work_metrics(release, tasks) for release in releases]
 
     async def _validate_task_ids(
         self,
@@ -211,7 +231,7 @@ class ReleaseService:
                         "shipped_at": release.shipped_at.isoformat() if release.shipped_at else None,
                     },
                 )
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -274,7 +294,7 @@ class ReleaseService:
                         "shipped_at": release.shipped_at.isoformat() if release.shipped_at else None,
                     },
                 )
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise

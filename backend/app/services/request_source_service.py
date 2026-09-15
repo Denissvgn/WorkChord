@@ -1,4 +1,6 @@
 """Helpers for request source traceability."""
+
+from app.commands import commit_or_flush
 from typing import Optional, Sequence
 
 from sqlalchemy import func, or_, select
@@ -236,7 +238,7 @@ class RequestSourceService:
             )
             if not commit:
                 return link
-            await self.db.commit()
+            await commit_or_flush(self.db)
             loaded_link = await self.get_link(link_id)
             if loaded_link is None:
                 raise RequestSourceNotFoundError(
@@ -286,7 +288,7 @@ class RequestSourceService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
         except Exception:
             if commit:
                 await self.db.rollback()

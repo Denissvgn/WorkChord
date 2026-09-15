@@ -1,3 +1,4 @@
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import i18n from '../i18n/i18n';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
@@ -1280,6 +1281,7 @@ const ProjectDetailPage = () => {
                     </>
                 )}
             />
+            <WorkMetricsLine metrics={summary} />
 
             {/* Progress bar */}
             <div>

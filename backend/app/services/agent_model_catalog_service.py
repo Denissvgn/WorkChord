@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 import hashlib
 import json
 import secrets
@@ -220,7 +222,7 @@ class AgentModelCatalogService:
                     ),
                 )
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return receipt
         except IntegrityError as exc:
             await self.db.rollback()

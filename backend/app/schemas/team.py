@@ -1,4 +1,6 @@
 """Team member schemas."""
+
+from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
 from datetime import date, datetime
 from typing import Any, Literal, Optional
 
@@ -23,7 +25,7 @@ def _dedupe_keywords(values: list[Any]) -> list[str]:
     return result
 
 
-class VacationCreate(BaseModel):
+class VacationCreate(PlanningInputRevisions):
     """Schema for creating a vacation."""
     start_date: date
     end_date: date
@@ -36,7 +38,7 @@ class VacationCreate(BaseModel):
         return self
 
 
-class VacationUpdate(BaseModel):
+class VacationUpdate(PlanningInputRevisions):
     """Schema for partially updating a vacation period."""
 
     start_date: Optional[date] = None
@@ -73,7 +75,7 @@ class VacationImportResponse(BaseModel):
     vacations: list[VacationResponse] = Field(default_factory=list)
 
 
-class TeamMemberCreate(BaseModel):
+class TeamMemberCreate(PlanningInputRevisions):
     """Schema for creating a team member."""
     name: str = Field(..., min_length=1, max_length=255)
     position: str = Field(..., min_length=1, max_length=255)
@@ -84,7 +86,7 @@ class TeamMemberCreate(BaseModel):
     operational_utilization: float = Field(default=20.0, ge=0, le=100)
 
 
-class TeamMemberUpdate(BaseModel):
+class TeamMemberUpdate(PlanningInputRevisions):
     """Schema for updating a team member."""
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     position: Optional[str] = Field(default=None, min_length=1, max_length=255)
@@ -129,7 +131,7 @@ class TeamMemberProfileSkillCreate(BaseModel):
         return _dedupe_keywords(value)
 
 
-class TeamMemberProfileSkillUpdate(BaseModel):
+class TeamMemberProfileSkillUpdate(PlanningInputRevisions):
     """Schema for updating a profile skill or weakness."""
     skill_key: Optional[str] = Field(default=None, min_length=1, max_length=120)
     skill_name: Optional[str] = Field(default=None, min_length=1, max_length=255)
@@ -211,7 +213,7 @@ class TeamMemberProfileCreate(BaseModel):
         return _clean_optional_text(value)
 
 
-class TeamMemberProfileUpdate(BaseModel):
+class TeamMemberProfileUpdate(PlanningInputRevisions):
     """Schema for updating a reusable team-member profile."""
     display_name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     email: Optional[str] = Field(default=None, max_length=255)

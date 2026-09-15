@@ -1,4 +1,6 @@
 """Release schemas."""
+
+from app.schemas.work_metrics import WorkMetricSummary
 from datetime import date, datetime
 from enum import Enum
 from typing import Optional
@@ -76,8 +78,13 @@ class ReleaseUpdateRequest(ReleaseUpdate):
     """API request for partially updating a release."""
 
 
-class ReleaseResponse(BaseModel):
+class ReleaseResponse(WorkMetricSummary):
     """Schema for release responses."""
+    total_tasks: int = 0
+    completed_tasks: int = 0
+    overdue_tasks: int = 0
+    target_overflow_tasks: int = 0
+
 
     model_config = ConfigDict(from_attributes=True)
 

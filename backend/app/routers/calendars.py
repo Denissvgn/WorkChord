@@ -17,7 +17,7 @@ from app.services.calendar_service import CalendarService
 router = APIRouter()
 
 
-async def get_calendar_service(db: Annotated[AsyncSession, Depends(get_db)]) -> CalendarService:
+async def get_calendar_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> CalendarService:
     """Dependency for calendar service."""
     return CalendarService(db)
 

@@ -1,4 +1,6 @@
 """Selected-task bulk operation orchestration."""
+
+from app.commands import atomic_command, lock_iterations
 import json
 from typing import Any, Optional
 
@@ -36,6 +38,7 @@ class TaskBulkOperationService:
         self.task_service = TaskService(db)
         self.recommendation_service = AssigneeRecommendationService(db)
 
+    @atomic_command
     async def run(self, data: TaskBulkOperationRequest) -> TaskBulkOperationResponse:
         """Run or preview one bulk operation for selected tasks."""
         ui_language = await resolve_runtime_ui_language(self.db)
@@ -57,6 +60,12 @@ class TaskBulkOperationService:
                     "Массовые операции с задачами требуют, чтобы все найденные задачи были в одной итерации",
                 ),
             )
+
+        input_revisions = await lock_iterations(self.db, found_iteration_ids, expected=data.expected_revisions)
+        found_tasks = await self._load_found_tasks(task_ids)
+        task_versions = {task.id: task.version for task in found_tasks.values()}
+        for task in found_tasks.values():
+            self.task_service.ensure_expected_version(task, data.expected_versions.get(task.id))
 
         iteration_end_date: Optional[Any] = None
         if found_iteration_ids:
@@ -102,8 +111,12 @@ class TaskBulkOperationService:
             results.append(result)
 
         failed_count = sum(1 for result in results if result.outcome == "failed")
+        if failed_count and not data.dry_run:
+            raise HTTPException(status_code=400, detail={"code": "bulk_command_rejected",
+                "message": "No changes were applied because one or more selected tasks failed validation.",
+                "results": [item.model_dump(mode="json") for item in results]})
         return TaskBulkOperationResponse(
-            requested_count=len(task_ids),
+            input_revisions=input_revisions, task_versions=task_versions,            requested_count=len(task_ids),
             succeeded_count=len(results) - failed_count,
             failed_count=failed_count,
             dry_run=data.dry_run,

@@ -82,6 +82,24 @@ export interface ExternalLinkUpdate {
 }
 
 export interface Task {
+    iteration_revision?: number;
+    effective_is_deferred?: boolean;
+    effective_is_optional?: boolean;
+    metric_contract_version?: number;
+    is_late_start?: boolean;
+    is_iteration_overflow?: boolean;
+    is_project_target_overflow?: boolean;
+    is_implemented?: boolean;
+    is_accepted?: boolean;
+    acceptance_unknown?: boolean;
+    baseline_start_date?: string | null;
+    baseline_end_date?: string | null;
+    baseline_revision?: number;
+    baseline_provenance?: string;
+    started_at?: string | null;
+    resolved_at?: string | null;
+    accepted_at?: string | null;
+
     id: number;
     iteration_id: number;
     project_id?: number | null;
@@ -125,6 +143,7 @@ export interface Task {
 }
 
 export interface TaskCreate {
+    expected_revision?: number;
     parent_id?: number | null;
     title: string;
     description?: string;
@@ -153,6 +172,7 @@ export interface TaskUpdate extends Partial<TaskCreate> {
 }
 
 export interface TaskMoveRequest {
+    expected_revisions?: Record<number, number>;
     iteration_id: number;
     parent_id?: number | null;
     expected_version?: number;
@@ -247,6 +267,7 @@ export interface TasksImportResponse {
 }
 
 export interface TaskMergeRequest {
+    expected_revision?: number;
     task_ids: number[];
     parent_title: string;
     parent_description?: string;
@@ -270,6 +291,8 @@ export type TaskBulkAction =
 export type TaskBulkOutcome = 'updated' | 'deleted' | 'skipped' | 'failed' | 'would_update' | 'would_delete';
 
 export interface TaskBulkOperationRequest {
+    expected_versions?: Record<number, number>;
+    expected_revisions?: Record<number, number>;
     task_ids: number[];
     action: TaskBulkAction;
     payload?: Record<string, unknown>;
@@ -287,6 +310,8 @@ export interface TaskBulkOperationResult {
 }
 
 export interface TaskBulkOperationResponse {
+    input_revisions?: Record<number, number>;
+    task_versions?: Record<number, number>;
     requested_count: number;
     succeeded_count: number;
     failed_count: number;
@@ -350,6 +375,7 @@ export interface TaskBatchUpdateItem {
 }
 
 export interface TaskBatchUpdateRequest {
+    expected_revision?: number;
     tasks: TaskBatchUpdateItem[];
 }
 

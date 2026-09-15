@@ -57,7 +57,7 @@ def seed_legacy_baseline(database_path: Path) -> None:
 
 
 def test_single_head_invariant() -> None:
-    assert head_revision() == "20260802_0036"
+    assert head_revision() == "20260915_0037"
 
 
 @pytest.mark.sqlite
@@ -217,7 +217,7 @@ def test_target_alignment_revision_supports_reviewed_downgrade(
 ) -> None:
     path = tmp_path / "downgrade.db"
     configure_database(sqlite_url(path))
-    bootstrap_database_schema()
+    command.upgrade(alembic_config(), "20260802_0036")
 
     command.downgrade(alembic_config(), "20260718_0030")
     assert inspect_database().current_revision == "20260718_0030"

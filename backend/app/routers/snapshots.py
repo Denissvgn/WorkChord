@@ -1,9 +1,11 @@
 """Snapshots API router."""
+
+from app.commands import commit_or_flush
 from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import ValidationError
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -182,7 +184,7 @@ async def _validate_snapshot_task_payloads(
 @router.get("/iterations/{iteration_id}/snapshots")
 async def list_snapshots(
     iteration_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """List available snapshots for an iteration."""
     iteration_service = IterationService(db)
@@ -196,7 +198,7 @@ async def list_snapshots(
 
     snapshot_service = SnapshotService(db)
     try:
-        return snapshot_service.list_snapshots(iteration_id)
+        return await snapshot_service.list_snapshots(iteration_id)
     except SnapshotPathError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
@@ -209,7 +211,7 @@ async def restore_snapshot(
     iteration_id: int,
     filename: str,
     data: SnapshotRestoreRequest,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     _admin: Annotated[None, Depends(require_admin_api_key)],
 ):
     """Restore iteration state from a snapshot."""
@@ -228,97 +230,57 @@ async def restore_snapshot(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
-    snapshot_service = SnapshotService(db)
     try:
-        snapshot_data = snapshot_service.get_snapshot(iteration_id, filename)
-    except SnapshotPathError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-
-    if not snapshot_data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Snapshot {filename} not found"
-        )
-
-    task_service = TaskService(db)
-    try:
-        await _validate_snapshot_task_payloads(iteration_id, snapshot_data, task_service)
+        return await SnapshotService(db).restore(iteration_id, filename, expected_revision=data.expected_revision)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc),
-        ) from exc
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    recovery_snapshot = await snapshot_service.create_snapshot(
-        iteration_id,
-        "before_restore",
-    )
-    if recovery_snapshot is None:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Could not create a pre-restore recovery snapshot.",
-        )
 
-    restored_count = len(snapshot_data.get("team_members", []) or []) + len(
-        snapshot_data.get("tasks", []) or []
-    )
+class HierarchyRepairRequest(BaseModel):
+    apply: bool = False
+    expected_versions: dict[int, int] = Field(default_factory=dict)
+    expected_revision: int | None = Field(default=None, ge=1)
+    reason: str = Field(default="", max_length=2000)
+    after_id: int = Field(default=0, ge=0)
+    limit: int = Field(default=100, ge=1, le=500)
 
-    original_commit = db.commit
 
-    async def flush_instead_of_commit() -> None:
-        await db.flush()
+@router.get("/iterations/{iteration_id}/hierarchy-audit")
+async def audit_hierarchy(iteration_id: int, db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+                          _operator: Annotated[None, Depends(require_admin_api_key)]):
+    from app.services.hierarchy_repair_service import HierarchyRepairService
+    return await HierarchyRepairService(db).audit(iteration_id)
 
-    db.commit = flush_instead_of_commit
-    try:
-        # Clear current state only after validation and recovery snapshot creation.
-        tasks = await task_service.get_all_tasks(iteration_id)
-        for task in tasks:
-            await db.delete(task)
 
-        team_service = TeamService(db)
-        members = await team_service.get_by_iteration(iteration_id)
-        for member in members:
-            await db.delete(member)
-        await db.flush()
+@router.post("/iterations/{iteration_id}/hierarchy-repair")
+async def repair_hierarchy(iteration_id: int, data: HierarchyRepairRequest,
+                           db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+                           _operator: Annotated[None, Depends(require_admin_api_key)]):
+    from app.services.hierarchy_repair_service import HierarchyRepairService
+    service = HierarchyRepairService(db)
+    if not data.apply:
+        return await service.audit(iteration_id, after_id=data.after_id, limit=data.limit)
+    return await service.repair(iteration_id, expected_versions=data.expected_versions, expected_revision=data.expected_revision,
+                                reason=data.reason, after_id=data.after_id, limit=data.limit)
 
-        await _process_import(
-            iteration_id,
-            snapshot_data,
-            db,
-            create_snapshots=False,
-        )
 
-        audit_event = await task_service.record_task_event(
-            None,
-            "snapshot_restored",
-            {
-                "iteration_id": iteration_id,
-                "source_snapshot": filename,
-                "pre_restore_snapshot": recovery_snapshot,
-                "restored_count": restored_count,
-            },
-            actor_type="admin",
-        )
-        db.commit = original_commit
-        await db.commit()
-        await db.refresh(audit_event)
-    except Exception as exc:
-        db.commit = original_commit
-        await db.rollback()
-        if not isinstance(exc, ValueError):
-            raise
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc),
-        ) from exc
-    finally:
-        db.commit = original_commit
+class LegacySnapshotImportRequest(BaseModel):
+    dry_run: bool = True
+    limit: int = Field(default=25, ge=1, le=100)
 
-    return SnapshotRestoreResponse(
-        message=f"Restored {restored_count} items from snapshot {filename}",
-        success=True,
-        source_snapshot=filename,
-        pre_restore_snapshot=recovery_snapshot,
-        restored_count=restored_count,
-        audit_event_id=audit_event.id,
-    )
+
+@router.post("/iterations/{iteration_id}/snapshots/import-legacy")
+async def import_legacy_snapshots(iteration_id: int, data: LegacySnapshotImportRequest,
+                                 db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+                                 _operator: Annotated[None, Depends(require_admin_api_key)]):
+    return await SnapshotService(db).import_legacy(iteration_id, dry_run=data.dry_run, limit=data.limit)
+
+
+@router.get("/iterations/{iteration_id}/snapshots/{filename}")
+async def read_snapshot(iteration_id: int, filename: str, db: Annotated[AsyncSession, Depends(get_db, scope="function")]):
+    payload = await SnapshotService(db).get_snapshot(iteration_id, filename)
+    if payload is None:
+        raise HTTPException(status_code=404, detail="Snapshot not found or inaccessible")
+    return payload

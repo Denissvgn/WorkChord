@@ -33,7 +33,7 @@ async def get_agent_skill_bundle_service() -> AgentSkillBundleService:
 
 async def require_agent_skill_bundle_access(
     request: Request,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> None:
     """Require skills:read unless public code-artifact delivery is explicit."""
     if get_settings().agent_skill_bundles_public:

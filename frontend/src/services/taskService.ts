@@ -58,8 +58,8 @@ export const taskService = {
         return response.data;
     },
 
-    delete: async (taskId: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/tasks/${taskId}`);
+    delete: async (taskId: number, expectedVersion?: number, expectedRevision?: number) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/tasks/${taskId}`, { params: { expected_version: expectedVersion, expected_revision: expectedRevision } });
         return response.data;
     },
 
@@ -109,13 +109,14 @@ export const taskService = {
         return response.data;
     },
 
-    reorder: async (data: { taskIds: number[]; iterationId: number; parentId?: number | null }) => {
+    reorder: async (data: { taskIds: number[]; iterationId: number; parentId?: number | null; expectedRevision?: number }) => {
         const response = await api.post(`/tasks/reorder`, {
             task_ids: data.taskIds,
             iteration_id: data.iterationId,
             parent_id: data.parentId ?? null,
+            expected_revision: data.expectedRevision,
         });
-        return response.data;
+        return { ...response.data, iteration_revision: Number(response.headers["x-iteration-revision"]) || undefined };
     },
 
     mergeTasks: async (iterationId: number, data: TaskMergeRequest) => {
@@ -123,8 +124,8 @@ export const taskService = {
         return response.data;
     },
 
-    unmergeTask: async (taskId: number, deleteParent: boolean = true) => {
-        const response = await api.post<Task[]>(`/tasks/${taskId}/unmerge`, { delete_parent: deleteParent });
+    unmergeTask: async (taskId: number, deleteParent: boolean = true, expectedRevision?: number) => {
+        const response = await api.post<Task[]>(`/tasks/${taskId}/unmerge`, { delete_parent: deleteParent, expected_revision: expectedRevision });
         return response.data;
     },
 

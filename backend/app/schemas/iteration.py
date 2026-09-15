@@ -1,4 +1,8 @@
 """Iteration schemas."""
+
+from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
+
+from app.schemas.work_metrics import WorkMetricSummary
 from datetime import date
 from typing import Literal, Optional
 
@@ -15,7 +19,7 @@ class IterationCreate(BaseModel):
     manager_email: Optional[str] = Field(default=None, max_length=255)
 
 
-class IterationUpdate(BaseModel):
+class IterationUpdate(PlanningInputRevisions):
     """Schema for updating an iteration."""
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     calendar_id: Optional[int] = None
@@ -65,6 +69,8 @@ class IterationProjectSummary(BaseModel):
 
 class IterationResponse(BaseModel):
     """Schema for iteration response."""
+    revision: int = 1
+
     id: int
     name: str
     calendar_id: int
@@ -84,7 +90,7 @@ class IterationSeriesResponse(BaseModel):
     iterations: list[IterationResponse]
 
 
-class IterationSummary(BaseModel):
+class IterationSummary(WorkMetricSummary):
     """Summary statistics for an iteration."""
     id: int
     name: str

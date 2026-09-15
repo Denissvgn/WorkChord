@@ -34,7 +34,7 @@ def autonomy_migration_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 @pytest.mark.sqlite
 def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config) -> None:
     config, database_path = autonomy_migration_config
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
     engine = create_engine(f"sqlite:///{database_path}")
     try:
         inspector = inspect(engine)
@@ -71,7 +71,7 @@ def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config
     finally:
         downgraded.dispose()
 
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
     upgraded = create_engine(f"sqlite:///{database_path}")
     try:
         with upgraded.connect() as connection:
@@ -108,4 +108,4 @@ def test_autonomy_projection_postgresql_ddl_preserves_fences() -> None:
 @pytest.mark.contract
 def test_autonomy_migration_chain_has_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260802_0036"]
+    assert script.get_heads() == ["20260915_0037"]

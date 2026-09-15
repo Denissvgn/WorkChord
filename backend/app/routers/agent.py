@@ -126,27 +126,27 @@ def _if_none_match_matches(value: Optional[str], etag: str) -> bool:
     )
 
 
-async def get_agent_service(db: Annotated[AsyncSession, Depends(get_db)]) -> AgentService:
+async def get_agent_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> AgentService:
     """Dependency for agent service."""
     return AgentService(db)
 
 
 async def get_agent_work_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentWorkService:
     """Dependency for durable assignment and worker lifecycle operations."""
     return AgentWorkService(db)
 
 
 async def get_agent_routing_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentRoutingService:
     """Dependency for deterministic model-aware routing operations."""
     return AgentRoutingService(db)
 
 
 async def get_agent_team_setup_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentTeamSetupService:
     """Dependency for manifest-driven agent-team setup operations."""
     return AgentTeamSetupService(db)
@@ -190,6 +190,11 @@ async def get_agent_admin_actor(
     admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
 ) -> AgentActor:
     """Authenticate a stored admin actor, bootstrap provisioning key, or admin API key."""
+    authority = service.db.info.get("authority")
+    if authority is not None and authority.operator:
+        if authority.actor_id is not None:
+            return await service.db.get(AgentActor, authority.actor_id)
+        return _admin_header_actor()
     if admin_api_key_is_valid(admin_api_key):
         return _admin_header_actor()
     if agent_api_key:
@@ -216,6 +221,9 @@ async def require_agent_read_access(
 ) -> None:
     """Allow pipeline reads from a configured admin key or scoped agent key."""
     if admin_api_key_is_valid(admin_api_key):
+        return
+    authority = service.db.info.get("authority")
+    if authority is not None and authority.operator:
         return
     if not agent_api_key:
         if not get_settings().workchord_admin_api_key:

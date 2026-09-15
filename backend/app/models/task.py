@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Date, Float, ForeignKey, Integer, String, Text, and_
+from sqlalchemy import Date, Float, ForeignKey, Integer, String, Text, and_, false
 from sqlalchemy.orm import Mapped, foreign, mapped_column, relationship
 
 from app.database import Base
@@ -47,6 +47,17 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
+    is_summary: Mapped[bool] = mapped_column(default=False, server_default=false(), nullable=False)
+    baseline_start_date: Mapped[date | None] = mapped_column(Date)
+    baseline_end_date: Mapped[date | None] = mapped_column(Date)
+    baseline_revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    baseline_provenance: Mapped[str] = mapped_column(String(32), default="uncommitted", server_default="legacy_unknown", nullable=False)
+    started_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    resolved_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    accepted_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    accepted_version: Mapped[int | None] = mapped_column(Integer)
+    executed_by_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
+    accepted_by_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     priority: Mapped[int] = mapped_column(Integer, default=5)  # 1=highest
 

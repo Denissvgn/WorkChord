@@ -1,4 +1,6 @@
 """External link service."""
+
+from app.commands import commit_or_flush
 from dataclasses import dataclass
 from typing import Any, Optional, Sequence
 from urllib.parse import urlparse
@@ -224,7 +226,7 @@ class ExternalLinkService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(link)
         except Exception:
             if commit:
@@ -323,7 +325,7 @@ class ExternalLinkService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(link)
         except Exception:
             if commit:
@@ -372,7 +374,7 @@ class ExternalLinkService:
                         },
                     },
                 )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             await self.db.refresh(link)
         except Exception:
             await self.db.rollback()
@@ -413,7 +415,7 @@ class ExternalLinkService:
                 data=event_data,
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
         except Exception:
             if commit:
                 await self.db.rollback()

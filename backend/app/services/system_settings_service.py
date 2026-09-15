@@ -1,4 +1,6 @@
 """DB-backed runtime system settings resolution."""
+
+from app.commands import commit_or_flush
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
@@ -238,7 +240,7 @@ class RuntimeSettingsService:
         row.value_json = coerced
         row.secret_ciphertext = None
         row.is_secret = False
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(row)
         return row
 
@@ -260,14 +262,14 @@ class RuntimeSettingsService:
         row.value_json = None
         row.secret_ciphertext = self._encrypt_secret(coerced)
         row.is_secret = True
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(row)
         return row
 
     async def clear_key(self, key: str) -> None:
         self._definition(key)
         await self.db.execute(delete(SystemSetting).where(SystemSetting.key == key))
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
     async def clear_fields(self, category: str, fields: list[str]) -> None:
         for field in fields:

@@ -1,0 +1,57 @@
+name: Client and scenario baseline
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: client-baseline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  delivery:
+    name: Disposable database and browser (${{ matrix.access }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - access: trusted-local
+            browser_args: ""
+          - access: managed
+            browser_args: "--managed-browser"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run the pinned runtimes
+        run: python3 scripts/ci/run_disposable_checks.py --full-backend ${{ matrix.browser_args }} --output /tmp/workchord-client-results
+      - name: Upload commands, revision, JUnit and browser readback
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: client-baseline-${{ matrix.access }}-${{ github.sha }}
+          path: /tmp/workchord-client-results
+          if-no-files-found: error
+          retention-days: 14
+
+  android:
+    name: Android unit results and debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build and execute with the pinned JDK and SDK
+        run: python3 scripts/ci/run_android_checks.py --output /tmp/workchord-android-results
+      - name: Upload actual results and debug APK
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: android-baseline-${{ github.sha }}
+          path: /tmp/workchord-android-results
+          if-no-files-found: error
+          retention-days: 14

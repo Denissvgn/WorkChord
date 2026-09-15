@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 import hashlib
@@ -683,7 +685,7 @@ class AgentRoutingService:
                     ),
                 )
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return receipt
         except IntegrityError as exc:
             await self.db.rollback()
@@ -2106,7 +2108,7 @@ class AgentRoutingService:
             )
             recorded = True
         if recorded:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         return preview
 
     @staticmethod

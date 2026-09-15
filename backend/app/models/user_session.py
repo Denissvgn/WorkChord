@@ -3,11 +3,12 @@ import secrets
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
 
 if TYPE_CHECKING:
+    from app.models.identity import Principal
     from app.models.plan_share import PlanShare
     from app.models.project import ProjectUpdateEntry
     from app.models.saved_view import SavedView
@@ -23,6 +24,10 @@ class UserSession(Base):
         index=True,
         default=lambda: secrets.token_hex(6),
     )
+    principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), index=True)
+    csrf_token: Mapped[str | None] = mapped_column(String(128))
+    authenticated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    principal: Mapped["Principal | None"] = relationship("Principal", lazy="selectin")
     session_token_hash: Mapped[str | None] = mapped_column(
         String(64),
         unique=True,
@@ -54,4 +59,11 @@ class UserSession(Base):
     @property
     def display_name(self) -> str:
         """Return a privacy-safe stable label without exposing IP or token data."""
+        principal = self.__dict__.get("principal")
+        if principal is not None:
+            return principal.display_name
         return f"Guest {self.public_id[-6:].upper()}"
+
+    @property
+    def authenticated(self) -> bool:
+        return self.principal_id is not None

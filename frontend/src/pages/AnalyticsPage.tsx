@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../services/taskService';
+import { iterationService } from '../services/iterationService';
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { NotificationsPanel } from '../components/notifications/NotificationsPanel';
 import { TaskStatusFlow } from '../components/analytics/TaskStatusFlow';
 import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashboardCards';
@@ -29,6 +31,10 @@ const AnalyticsPage = () => {
         enabled: selectedIterationId > 0,
     });
 
+    // feedback-policy: query loading,error,retry,empty
+    const summaryQuery = useQuery({ queryKey: ['iterationSummary', selectedIterationId],
+        queryFn: () => iterationService.getSummary(selectedIterationId), enabled: selectedIterationId > 0 });
+
     const groupedHistory = history?.reduce<Record<number, HistoryGroup>>((acc, log) => {
         if (!acc[log.task_id]) acc[log.task_id] = { taskTitle: log.task_title || `Task #${log.task_id}`, logs: [] };
         acc[log.task_id].logs.push(log);
@@ -55,6 +61,9 @@ const AnalyticsPage = () => {
                 actions={<button className="btn" onClick={() => navigate('/')}>{t('actions.backToTasks')}</button>}
             />
 
+            {summaryQuery.isLoading && <p role="status">{t('common.loading')}</p>}
+            {summaryQuery.isError && <QueryErrorState error={summaryQuery.error} onRetry={() => { void summaryQuery.refetch(); }} />}
+            <WorkMetricsLine metrics={summaryQuery.data} />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
 
             {isHistoryError && (

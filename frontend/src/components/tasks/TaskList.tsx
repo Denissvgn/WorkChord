@@ -10,7 +10,9 @@ import { labelService } from '../../services/labelService';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { Modal } from '../common/Modal';
-import { TaskForm } from './TaskForm';
+import { GuardedTaskModal } from './GuardedTaskModal';
+import { selectVisibleWork } from '../../utils/visibleWork';
+import { WorkFreshness } from '../feedback/WorkFreshness';
 import { TaskAgentReadinessBadge } from './TaskAgentReadinessBadge';
 import { TaskBulkOperationsPanel } from './TaskBulkOperationsPanel';
 import type { Task } from '../../types/task';
@@ -118,10 +120,12 @@ export const TaskList = ({
         return () => window.clearInterval(timer);
     }, []);
 
-    const { data: tasks, isLoading, error: tasksError, refetch: refetchTasks } = useQuery({
+    const { data: tasks, isLoading, error: tasksError, refetch: refetchTasks, dataUpdatedAt, isRefetchError, isFetching } = useQuery({
         queryKey: ['tasks', iterationId],
         queryFn: () => taskService.getByIteration(iterationId),
     });
+
+    const iterationRevision = tasks?.[0]?.iteration_revision;
 
     const { data: labelGroups = [], error: labelsError, refetch: refetchLabels } = useQuery({
         queryKey: ['label-groups'],
@@ -134,7 +138,7 @@ export const TaskList = ({
     });
 
     const deleteMutation = useMutation({
-        mutationFn: taskService.delete,
+        mutationFn: (task: Task) => taskService.delete(task.id, task.version, task.iteration_revision),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
@@ -148,7 +152,7 @@ export const TaskList = ({
 
     const reorderMutation = useMutation({
         mutationFn: ({ order }: ReorderVariables) => taskService.reorder(order),
-        onSuccess: (_response, variables) => {
+        onSuccess: (response, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             toast.success(t('taskList.reorderSaved'), {
                 dedupeKey: `task-order-${Date.now()}`,
@@ -156,7 +160,7 @@ export const TaskList = ({
                 actionLabel: t('taskList.undo'),
                 onAction: async () => {
                     try {
-                        await taskService.reorder(variables.undoOrder);
+                        await taskService.reorder({ ...variables.undoOrder, expectedRevision: response.iteration_revision });
                         await queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
                         toast.success(t('taskList.reorderRestored'));
                     } catch (error) {
@@ -170,7 +174,7 @@ export const TaskList = ({
 
     const mergeMutation = useMutation({
         mutationFn: (data: { task_ids: number[]; parent_title: string }) =>
-            taskService.mergeTasks(iterationId, data),
+            taskService.mergeTasks(iterationId, { ...data, expected_revision: iterationRevision }),
         onSuccess: (parent, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
@@ -180,7 +184,7 @@ export const TaskList = ({
                 actionLabel: t('taskList.undo'),
                 onAction: async () => {
                     try {
-                        await taskService.unmergeTask(parent.id, true);
+                        await taskService.unmergeTask(parent.id, true, parent.iteration_revision);
                         await Promise.all([
                             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
                             queryClient.invalidateQueries({ queryKey: ['gantt'] }),
@@ -202,7 +206,7 @@ export const TaskList = ({
     });
 
     const unmergeMutation = useMutation({
-        mutationFn: (taskId: number) => taskService.unmergeTask(taskId, true),
+        mutationFn: (taskId: number) => taskService.unmergeTask(taskId, true, iterationRevision),
         onSuccess: async () => {
             // Explicitly refetch - this is more reliable than invalidateQueries
             await queryClient.refetchQueries({ queryKey: ['tasks', iterationId] });
@@ -277,19 +281,7 @@ export const TaskList = ({
         return sorted;
     }, [tasks, sortKey, filters, labelGroups]);
 
-    const visibleTasks = useMemo(() => {
-        const flatten = (taskList: Task[]): Task[] => {
-            const flattened: Task[] = [];
-            taskList.forEach(task => {
-                flattened.push(task);
-                if (task.children?.length) {
-                    flattened.push(...flatten(task.children));
-                }
-            });
-            return flattened;
-        };
-        return flatten(filteredAndSortedTasks);
-    }, [filteredAndSortedTasks]);
+    const visibleTasks = useMemo(() => selectVisibleWork(filteredAndSortedTasks).leaves, [filteredAndSortedTasks]);
     const selectedBulkTasks = useMemo(
         () => visibleTasks.filter(task => selectedBulkTaskIds.has(task.id)),
         [visibleTasks, selectedBulkTaskIds]
@@ -352,7 +344,7 @@ export const TaskList = ({
             const reordered = arrayMove(filteredAndSortedTasks, oldIndex, newIndex);
             const newOrderIds = reordered.map(t => t.id);
             reorderMutation.mutate({
-                order: { taskIds: newOrderIds, iterationId, parentId: null },
+                order: { taskIds: newOrderIds, iterationId, parentId: null, expectedRevision: iterationRevision },
                 undoOrder: {
                     taskIds: filteredAndSortedTasks.map(task => task.id),
                     iterationId,
@@ -374,7 +366,7 @@ export const TaskList = ({
             const reordered = arrayMove(parentTask.children, oldIndex, newIndex);
             const newOrderIds = reordered.map(t => t.id);
             reorderMutation.mutate({
-                order: { taskIds: newOrderIds, iterationId, parentId: parentTask.id },
+                order: { taskIds: newOrderIds, iterationId, parentId: parentTask.id, expectedRevision: iterationRevision },
                 undoOrder: {
                     taskIds: parentTask.children.map(task => task.id),
                     iterationId,
@@ -387,16 +379,17 @@ export const TaskList = ({
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
     if (isLoading) return <QueryLoadingState message={t('taskList.loading')} />;
-    if (tasksError || labelsError || allLabelsError) return <QueryErrorState error={tasksError ?? labelsError ?? allLabelsError} onRetry={() => { void refetchTasks(); void refetchLabels(); void refetchAllLabels(); }} />;
+    if ((!tasks && tasksError) || labelsError || allLabelsError) return <QueryErrorState error={tasksError ?? labelsError ?? allLabelsError} onRetry={() => { void refetchTasks(); void refetchLabels(); void refetchAllLabels(); }} />;
 
     return (
         <div className="space-y-4">
+            <WorkFreshness updatedAt={dataUpdatedAt} stale={isRefetchError} refreshing={isFetching} onRefresh={() => { void refetchTasks(); }} />
             {reorderMutation.isError && (
                 <QueryErrorState
                     error={reorderMutation.error}
                     fallback={t('taskList.reorderFailed')}
                     onRetry={() => {
-                        if (reorderMutation.variables) reorderMutation.mutate(reorderMutation.variables);
+                        void refetchTasks(); reorderMutation.reset();
                     }}
                 />
             )}
@@ -419,7 +412,7 @@ export const TaskList = ({
                     error={unmergeMutation.error}
                     fallback={t('taskList.unmergeFailed')}
                     onRetry={() => {
-                        if (unmergeMutation.variables) unmergeMutation.mutate(unmergeMutation.variables);
+                        void refetchTasks(); unmergeMutation.reset();
                     }}
                 />
             )}
@@ -629,25 +622,16 @@ export const TaskList = ({
                 </div>
             )}
 
-            <Modal
-                open={Boolean(editingTask || addingChildTo)}
+            {(editingTask || addingChildTo) && <GuardedTaskModal
+                key={editingTask?.id ?? `child-${addingChildTo}`}
                 title={editingTask ? t('tasks.editTask') : t('tasks.addSubtask')}
                 closeLabel={t('actions.close')}
                 onClose={() => { setEditingTask(null); setAddingChildTo(null); }}
-            >
-                {(editingTask || addingChildTo) && (
-                        <TaskForm
-                            iterationId={iterationId}
-                            initialData={editingTask || undefined}
-                            parentId={addingChildTo}
-                            parentPriority={parentTaskForForm?.priority}
-                            parentProjectId={parentTaskForForm?.project_id ?? null}
-                            parentMilestoneId={parentTaskForForm?.milestone_id ?? null}
-                            onSuccess={() => { setEditingTask(null); setAddingChildTo(null); }}
-                            onCancel={() => { setEditingTask(null); setAddingChildTo(null); }}
-                        />
-                )}
-            </Modal>
+                iterationId={iterationId} initialData={editingTask || undefined}
+                parentId={addingChildTo} parentPriority={parentTaskForForm?.priority}
+                parentProjectId={parentTaskForForm?.project_id ?? null}
+                parentMilestoneId={parentTaskForForm?.milestone_id ?? null}
+            />}
 
             <ConfirmDialog
                 open={deletingTask !== null}
@@ -670,7 +654,7 @@ export const TaskList = ({
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
                 onCancel={() => setDeletingTask(null)}
-                onConfirm={() => { if (deletingTask) deleteMutation.mutate(deletingTask.id); }}
+                onConfirm={() => { if (deletingTask) deleteMutation.mutate(deletingTask); }}
             />
 
             {/* Merge Modal */}
@@ -891,7 +875,8 @@ const TaskItemContent = ({
                 {isDraggingEnabled && dragHandleProps && (
                     <button
                         type="button"
-                        aria-label={t('literalWords.drag')}
+                        aria-label={`${t('literalWords.drag')}: ${task.title}`}
+
                         className="p-1 text-content-tertiary cursor-grab active:cursor-grabbing hover:text-content-secondary touch-none"
                         {...dragHandleProps}
                     >
@@ -902,8 +887,8 @@ const TaskItemContent = ({
                 {hasChildren ? (
                     <button
                         type="button"
+                        aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
                         aria-expanded={isExpanded}
-                        aria-label={isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="rounded p-1 hover:bg-surface-subtle"
                     >
@@ -1007,7 +992,7 @@ const TaskItemContent = ({
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" title={t('tasks.editTask')} aria-label={t('tasks.editTask')} onClick={() => onEdit(task)}>
+                    <Button variant="ghost" size="sm" title={t('tasks.editTask')} aria-label={`${t('tasks.editTask')}: ${task.title}`} onClick={() => onEdit(task)}>
                         <Edit className="w-4 h-4" />
                     </Button>
                     <OverflowMenu

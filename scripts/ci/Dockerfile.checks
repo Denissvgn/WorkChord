@@ -1,0 +1,13 @@
+FROM python:3.12.13-slim-bookworm@sha256:8a7e7cc04fd3e2bd787f7f24e22d5d119aa590d429b50c95dfe12b3abe52f48b
+
+WORKDIR /opt/workchord
+COPY backend/build-requirements.lock backend/requirements.lock backend/test-requirements.lock ./
+RUN python -m pip install --no-cache-dir --require-hashes -r build-requirements.lock \
+    && python -m pip install --no-cache-dir --require-hashes -r requirements.lock \
+    && python -m pip install --no-cache-dir --require-hashes -r test-requirements.lock
+COPY backend ./backend
+RUN python -m pip install --no-build-isolation --no-deps ./backend
+
+ENV WORKCHORD_AUTH_MODE=trusted_local DEPLOYMENT_ENVIRONMENT=test DATABASE_SSL_MODE=disable PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/workchord-pycache
+WORKDIR /tmp/workchord
+CMD ["python", "--version"]

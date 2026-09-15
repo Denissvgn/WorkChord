@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 from typing import Any
 
 from sqlalchemy import select
@@ -379,7 +381,7 @@ class AgentProfileCatalogService:
             existing.add(skill_key)
         try:
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
             else:
                 await self.db.flush()
         except IntegrityError as exc:

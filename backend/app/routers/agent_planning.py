@@ -65,14 +65,14 @@ router = APIRouter()
 
 
 async def get_agent_planning_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentPlanningService:
     """Return the request-scoped PM setup command adapter."""
     return AgentPlanningService(db)
 
 
 async def get_agent_routing_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentRoutingService:
     """Return the request-scoped model-aware routing service."""
     return AgentRoutingService(db)
@@ -587,7 +587,7 @@ def _require_triage_result(result, triage_item_id: int):
 async def create_planning_triage_item(
     data: TriageItemCreate,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Create one actor-attributed triage item through the shared command adapter."""
@@ -613,7 +613,7 @@ async def create_planning_triage_item(
 async def classify_planning_triage_item(
     triage_item_id: int,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Persist one exact advisory classification through the shared adapter."""
@@ -640,7 +640,7 @@ async def update_planning_triage_item(
     triage_item_id: int,
     data: TriageItemUpdate,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Update editable triage metadata through the shared durable adapter."""
@@ -691,7 +691,7 @@ async def accept_planning_triage_item(
     triage_item_id: int,
     data: TriageActionRequest,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Accept one triage item with an exact actor-attributed receipt."""
@@ -716,7 +716,7 @@ async def decline_planning_triage_item(
     triage_item_id: int,
     data: TriageActionRequest,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Decline one triage item with an exact actor-attributed receipt."""
@@ -741,7 +741,7 @@ async def snooze_planning_triage_item(
     triage_item_id: int,
     data: TriageSnoozeRequest,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Snooze one triage item with an exact actor-attributed receipt."""
@@ -766,7 +766,7 @@ async def mark_planning_triage_item_duplicate(
     triage_item_id: int,
     data: TriageDuplicateRequest,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Record one duplicate disposition through the shared durable adapter."""
@@ -791,7 +791,7 @@ async def convert_planning_triage_item_to_task(
     triage_item_id: int,
     data: TriageConvertToTaskRequest,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
 ):
     """Convert one triage item through the same locked exact-replay adapter as MCP."""

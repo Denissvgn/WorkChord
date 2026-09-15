@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
+
 from typing import Any
 
 from sqlalchemy import inspect
@@ -61,6 +63,18 @@ def schema_snapshot(bind: Connection | Engine) -> dict[str, Any]:
                 for foreign_key in inspector.get_foreign_keys(table_name)
             }
         )
+        if inspector.bind.dialect.name == "sqlite":
+            # SQLite's inspector omits ON DELETE for inline REFERENCES. PRAGMA
+            # reports the enforced actions, including columns added by ALTER.
+            with (bind.connect() if isinstance(bind, Engine) else nullcontext(bind)) as connection:
+                table_identifier = connection.dialect.identifier_preparer.quote(table_name)
+                rows = connection.exec_driver_sql(f"PRAGMA foreign_key_list({table_identifier})").all()
+            grouped = {}
+            for row in rows:
+                grouped.setdefault(row[0], []).append(row)
+            foreign_keys = sorted({(tuple(row[3] for row in sorted(group, key=lambda row: row[1])),
+                group[0][2], tuple(row[4] for row in sorted(group, key=lambda row: row[1])),
+                None if group[0][6] == "NO ACTION" else group[0][6]) for group in grouped.values()})
         unique_constraints = sorted(
             {
                 tuple(constraint.get("column_names") or ())

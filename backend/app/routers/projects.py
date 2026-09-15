@@ -49,14 +49,14 @@ router = APIRouter()
 
 
 async def get_project_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> ProjectService:
     """Dependency for project service."""
     return ProjectService(db)
 
 
 async def get_release_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> ReleaseService:
     """Dependency for release service."""
     return ReleaseService(db)

@@ -3,6 +3,8 @@
 These functions intentionally delegate to domain services so REST and MCP use
 the same audited command and read-model paths.
 """
+
+from app.commands import commit_or_flush
 import asyncio
 import hashlib
 import json
@@ -374,7 +376,7 @@ async def _commit_triage_command(
 ) -> dict[str, Any]:
     """Commit mutation and receipt together, recovering a concurrent exact replay."""
     try:
-        await db.commit()
+        await commit_or_flush(db)
     except IntegrityError:
         await db.rollback()
         replay = await _triage_command_replay(

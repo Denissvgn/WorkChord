@@ -1,12 +1,16 @@
 """Calendar schemas."""
+
+from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
 from datetime import date
 from typing import Optional
 
 from pydantic import BaseModel, Field
 
 
-class CalendarCreate(BaseModel):
+class CalendarCreate(PlanningInputRevisions):
     """Schema for creating a calendar."""
+    timezone: WorkingZone = "UTC"
+
     name: str = Field(..., min_length=1, max_length=255)
     year: int = Field(..., ge=2000, le=2100)
     holidays: list[str] = Field(default_factory=list, description="ISO date strings")
@@ -14,8 +18,10 @@ class CalendarCreate(BaseModel):
     short_days: list[str] = Field(default_factory=list, description="Pre-holiday shortened days")
 
 
-class CalendarUpdate(BaseModel):
+class CalendarUpdate(PlanningInputRevisions):
     """Schema for updating a calendar."""
+    timezone: WorkingZone | None = None
+
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     year: Optional[int] = Field(default=None, ge=2000, le=2100)
     holidays: Optional[list[str]] = None
@@ -25,6 +31,8 @@ class CalendarUpdate(BaseModel):
 
 class CalendarResponse(BaseModel):
     """Schema for calendar response."""
+    timezone: str = "UTC"
+
     id: int
     name: str
     year: int

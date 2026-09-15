@@ -24,6 +24,7 @@ dependencies = [
     "python-multipart",
     "aiosmtplib>=3.0.0",
     "cryptography>=41.0.0",
+    "PyJWT[crypto]>=2.13,<3",
     "email-validator>=2.0.0",
     "mcp[cli]>=1,<2",
 ]

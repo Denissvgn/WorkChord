@@ -1,4 +1,6 @@
 """Triage service with inbox, lifecycle, and conversion logic."""
+
+from app.commands import commit_or_flush
 import json
 from datetime import datetime
 from typing import Any, Optional, Sequence
@@ -351,7 +353,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(suggestion)
         except Exception:
             if commit:
@@ -815,7 +817,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -878,7 +880,7 @@ class TriageService:
                     },
                 )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -926,7 +928,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -974,7 +976,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1028,7 +1030,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1089,7 +1091,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1491,7 +1493,7 @@ class TriageService:
             )
             await self.db.flush()
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:

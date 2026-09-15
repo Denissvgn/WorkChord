@@ -1,4 +1,6 @@
 """Service for reusable work templates and built-in defaults."""
+
+from app.commands import commit_or_flush
 from typing import Any, Optional, Sequence
 
 from sqlalchemy import Select, select
@@ -200,7 +202,7 @@ class TemplateService:
             return []
 
         self.db.add_all(templates)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for template in templates:
             await self.db.refresh(template)
         return templates
@@ -239,7 +241,7 @@ class TemplateService:
         template_data["template_type"] = self._enum_value(template_data["template_type"])
         template = WorkTemplate(**template_data)
         self.db.add(template)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(template)
         return template
 
@@ -257,6 +259,6 @@ class TemplateService:
         for field, value in update_data.items():
             setattr(template, field, self._enum_value(value))
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(template)
         return template

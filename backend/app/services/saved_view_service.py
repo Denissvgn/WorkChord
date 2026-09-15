@@ -1,4 +1,6 @@
 """Service for saved view persistence and filter payload compatibility."""
+
+from app.commands import commit_or_flush
 from datetime import date
 from math import isfinite
 from typing import Any, Optional, Sequence
@@ -36,6 +38,7 @@ TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "status": None,
     "hasDependency": None,
     "isOverdue": None,
+    "isIterationOverflow": None,
     "agentReady": None,
     "planningIssue": None,
     "startDateFrom": "",
@@ -91,10 +94,10 @@ DEFAULT_SAVED_VIEW_DEFINITIONS: list[dict[str, Any]] = [
     },
     {
         "seed_key": "tasks_overdue",
-        "name": "Overdue",
-        "description": "Tasks currently marked as overdue.",
+        "name": "Iteration overflow",
+        "description": "Work forecast beyond its iteration boundary; this retains the legacy view predicate.",
         "view_type": SavedViewType.TASKS.value,
-        "filters_json": {"isOverdue": True},
+        "filters_json": {"isIterationOverflow": True},
         "sort_json": {"sortKey": "priority"},
     },
     {
@@ -275,6 +278,8 @@ class SavedViewService:
                 normalized["hasDependency"] = self._normalize_nullable_bool(filters["hasDependency"], "hasDependency")
             if "isOverdue" in filters:
                 normalized["isOverdue"] = self._normalize_nullable_bool(filters["isOverdue"], "isOverdue")
+            if "isIterationOverflow" in filters:
+                normalized["isIterationOverflow"] = self._normalize_nullable_bool(filters["isIterationOverflow"], "isIterationOverflow")
             if "agentReady" in filters:
                 normalized["agentReady"] = self._normalize_nullable_bool(filters["agentReady"], "agentReady")
             if "planningIssue" in filters:
@@ -411,6 +416,7 @@ class SavedViewService:
         ]
 
         return SavedViewResponse(
+            owner_principal_id=view.owner_principal_id,
             id=view.id,
             name=view.name,
             description=view.description,
@@ -422,6 +428,7 @@ class SavedViewService:
             columns_json=columns_json,
             created_by_session_id=view.created_by_session_id,
             schema_version=view.schema_version,
+            metric_migration_note=view.metric_migration_note,
             is_valid=not invalid_reasons,
             invalid_reason="; ".join(invalid_reasons) if invalid_reasons else None,
             created_at=view.created_at,
@@ -465,7 +472,7 @@ class SavedViewService:
             "sort_json": sort_json,
             "columns_json": columns_json,
             "created_by_session_id": None,
-            "schema_version": definition.get("schema_version", 1),
+            "schema_version": definition.get("schema_version", 2),
         }
 
     async def seed_default_views(self) -> list[SavedView]:
@@ -501,7 +508,7 @@ class SavedViewService:
         if not touched:
             return []
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for view in touched:
             await self.db.refresh(view)
         return touched
@@ -559,7 +566,7 @@ class SavedViewService:
     ) -> bool:
         if planning_issue is None:
             return True
-        if task.is_deferred or task.is_composite or task.children:
+        if getattr(task, "effective_is_deferred", task.is_deferred) or task.is_composite or task.children:
             return False
 
         effort_days = task.effort_days
@@ -630,6 +637,9 @@ class SavedViewService:
         if filters.get("isOverdue") is not None and task.is_overdue != filters["isOverdue"]:
             return False
 
+        if filters.get("isIterationOverflow") is not None and task.is_iteration_overflow != filters["isIterationOverflow"]:
+            return False
+
         if filters.get("agentReady") is not None and task.agent_readiness.is_ready != filters["agentReady"]:
             return False
 
@@ -690,11 +700,15 @@ class SavedViewService:
             task_service.task_to_response(task, iteration.end_date)
             for task in root_tasks
         ]
-        return sum(
-            1
-            for task in task_responses
-            if self._task_filter_includes_row(task, filters, label_group_slugs)
-        )
+        leaves = []
+        pending = list(task_responses)
+        while pending:
+            task = pending.pop()
+            if task.children or task.is_composite:
+                pending.extend(task.children)
+            else:
+                leaves.append(task)
+        return sum(1 for task in leaves if self._task_matches_filters(task, filters, label_group_slugs))
 
     async def _count_project_dashboard_view(self, filters: dict[str, Any]) -> int:
         from app.services.project_service import ProjectService
@@ -786,6 +800,13 @@ class SavedViewService:
 
     async def create(self, data: SavedViewCreate) -> SavedView:
         """Create a saved view after scope and filter validation."""
+        migration_note = None
+        if data.view_type == SavedViewType.TASKS and data.schema_version < 2:
+            filters = dict(data.filters_json)
+            if filters.get("isOverdue") is not None:
+                filters["isIterationOverflow"], filters["isOverdue"] = filters["isOverdue"], None
+                migration_note = "legacy_overdue_means_iteration_overflow"
+            data = data.model_copy(update={"filters_json": filters, "schema_version": 2})
         self._require_personal_creator(data.scope, data.created_by_session_id)
         self._require_object(data.filters_json, "filters_json")
         self._require_object(data.sort_json, "sort_json")
@@ -808,9 +829,12 @@ class SavedViewService:
         saved_view_data["scope"] = self._enum_value(saved_view_data["scope"])
         saved_view_data["filters_json"] = filters_json
         saved_view_data["sort_json"] = sort_json
-        view = SavedView(**saved_view_data)
+        view = SavedView(**saved_view_data, metric_migration_note=migration_note)
+        authority = self.db.info.get("authority")
+        if authority is not None:
+            view.owner_principal_id = authority.principal_id
         self.db.add(view)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(view)
         return view
 
@@ -852,7 +876,7 @@ class SavedViewService:
         for field, value in update_data.items():
             setattr(view, field, self._enum_value(value))
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(view)
         return view
 
@@ -874,6 +898,9 @@ class SavedViewService:
                 & (SavedView.created_by_session_id == session_id),
             )
 
+        authority = self.db.info.get("authority")
+        if authority is not None and authority.principal_id is not None:
+            visibility_filter = or_(visibility_filter, SavedView.owner_principal_id == authority.principal_id)
         result = await self.db.execute(
             self._query()
             .where(SavedView.view_type == view_type_value, visibility_filter)
@@ -884,13 +911,15 @@ class SavedViewService:
     def _is_visible_to_session(self, view: SavedView, session_id: Optional[int]) -> bool:
         if view.scope in (SavedViewScope.SHARED.value, SavedViewScope.SYSTEM.value):
             return True
-        return session_id is not None and view.created_by_session_id == session_id
+        authority = self.db.info.get("authority")
+        return (session_id is not None and view.created_by_session_id == session_id or
+                authority is not None and authority.principal_id is not None and view.owner_principal_id == authority.principal_id)
 
     def _can_write(self, view: SavedView, session_id: Optional[int]) -> bool:
         return (
             view.scope != SavedViewScope.SYSTEM.value
-            and session_id is not None
-            and view.created_by_session_id == session_id
+            and self._is_visible_to_session(view, session_id)
+            and (view.scope == SavedViewScope.PERSONAL.value or view.created_by_session_id == session_id)
         )
 
     async def get_visible_model(
@@ -967,7 +996,7 @@ class SavedViewService:
             raise SavedViewPermissionError("Only the creating session can delete this saved view")
 
         await self.db.delete(view)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def duplicate_for_session(

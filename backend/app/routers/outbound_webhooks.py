@@ -30,7 +30,7 @@ router = APIRouter(dependencies=[Depends(require_admin_api_key)])
 
 
 async def get_outbound_webhook_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> OutboundWebhookService:
     """Dependency for outbound webhook API operations."""
     return OutboundWebhookService(db)

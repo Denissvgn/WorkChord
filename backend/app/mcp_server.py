@@ -9,6 +9,9 @@ from contextvars import ContextVar
 from typing import Any, AsyncIterator, Callable, Optional
 
 from mcp.server.fastmcp import FastMCP
+from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError
+from app.authority import AuthorityError
+from app.services.identity_service import IdentityService
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
 from pydantic import ValidationError as PydanticValidationError
@@ -117,7 +120,23 @@ class MCPAgentKeyMiddleware:
         try:
             async with _open_db_session() as db:
                 await _authenticate_agent_key(db, agent_key)
-        except MCPAuthError as exc:
+                from starlette.requests import Request
+                from app.http_authority import resolve_http_identity
+                normalized = dict(scope)
+                headers = list(scope.get("headers", []))
+                bearer = next((value.decode() for name, value in headers if name.lower() == b"authorization"), None)
+                if bearer:
+                    scheme, _, supplied = bearer.partition(" ")
+                    if scheme.lower() != "bearer" or supplied != agent_key:
+                        raise MCPAuthError("Conflicting MCP credentials")
+                    headers = [(name, value) for name, value in headers if name.lower() != b"authorization"]
+                    if not any(name.lower() == b"x-agent-api-key" for name, _ in headers):
+                        headers.append((b"x-agent-api-key", agent_key.encode()))
+                normalized["headers"] = headers
+                identity = await resolve_http_identity(Request(normalized), db)
+                if identity is None or identity.kind != "agent":
+                    raise MCPAuthError("MCP requires one unambiguous agent identity")
+        except (MCPAuthError, AuthorityError) as exc:
             await PlainTextResponse(str(exc), status_code=401)(scope, receive, send)
             return
 
@@ -186,7 +205,7 @@ async def _authenticate_agent_key(db: Any, api_key: str) -> AgentActor:
     if settings.agent_bootstrap_api_key and api_key == settings.agent_bootstrap_api_key:
         raise MCPAuthError("Bootstrap agent key cannot be used for MCP execution")
 
-    actor = await AgentService(db).authenticate(api_key)
+    actor = await AgentService(db).authenticate(api_key, touch=False)
     if not actor:
         raise MCPAuthError("Invalid or disabled MCP agent API key")
     if actor.name == "bootstrap-agent":
@@ -222,19 +241,24 @@ def _require_scope_requirement(actor: AgentActor, required: ScopeRequirement) ->
 
 
 @asynccontextmanager
-async def _agent_context(required_scope: ScopeRequirement = None) -> AsyncIterator[tuple[Any, AgentActor]]:
+async def _agent_context(required_scope: ScopeRequirement = None, *, preview=False) -> AsyncIterator[tuple[Any, AgentActor]]:
     """Open an authenticated MCP agent DB context."""
     api_key = _current_agent_key()
     if not api_key:
         raise MCPAuthError(f"Missing {MCP_AGENT_API_KEY_ENV} or HTTP agent key")
     async with _open_db_session() as db:
-        actor = await _authenticate_agent_key(db, api_key)
-        _require_scope_requirement(actor, required_scope)
-        yield db, actor
+        async with command_transaction(db, mode="preview" if preview else "apply"):
+            actor = await _authenticate_agent_key(db, api_key)
+            _require_scope_requirement(actor, required_scope)
+            db.info["authority"] = await IdentityService(db).actor_context(actor, source="mcp")
+            yield db, actor
 
 
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
+    from app.commands import AggregateVersionConflict, HierarchyScopeError
+    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError)):
+        return json.dumps(exc.detail(), ensure_ascii=False, sort_keys=True)
     if isinstance(exc, AgentRoutingConflictError):
         payload = exc.detail()
     elif isinstance(exc, AgentTeamSetupConflictError):
@@ -272,15 +296,18 @@ def _structured_tool_error(exc: Exception) -> str:
     return json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str)
 
 
-async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any]) -> Any:
+async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any], *, preview=False) -> Any:
     """Run a service-backed MCP tool and return MCP-safe errors."""
     try:
         enforce_mcp_access(required_scope)
-        async with _agent_context(required_scope) as (db, actor):
+        async with _agent_context(required_scope, preview=preview) as (db, actor):
             return await func(db, actor)
     except ToolError:
         raise
     except (
+        AggregateVersionConflict,
+        HierarchyScopeError,
+        AuthorityError,
         MCPAuthError,
         MaintenanceModeError,
         AgentRoutingConflictError,
@@ -1421,6 +1448,7 @@ def create_mcp_server() -> FastMCP:
                 rationale=rationale,
                 correlation_id=correlation_id,
             ),
+            preview=True,
         )
 
     @mcp.tool()

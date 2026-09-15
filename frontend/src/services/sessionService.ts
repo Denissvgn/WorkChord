@@ -1,6 +1,8 @@
 import api from './api';
 
 export interface UserSession {
+    principal_id?: number | null;
+    authenticated?: boolean;
     id: number;
     public_id: string;
     display_name: string;

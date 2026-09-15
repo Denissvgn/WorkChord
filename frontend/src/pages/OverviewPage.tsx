@@ -1,3 +1,4 @@
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -746,6 +747,7 @@ const OverviewPage = () => {
                     </>
                 )}
             />
+            <WorkMetricsLine metrics={iterationSummary} />
             {recoveryAnnouncement && (
                 <p className="sr-only" role="status" aria-atomic="true">
                     {recoveryAnnouncement}

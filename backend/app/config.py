@@ -115,6 +115,16 @@ class Settings(BaseSettings):
     mcp_http_host: str = "127.0.0.1"
     mcp_unsafe_allow_public_binding: bool = False
     workchord_admin_api_key: str = ""
+    workchord_auth_mode: Literal["managed", "trusted_local"] = "managed"
+    oidc_issuer_url: str = ""
+    oidc_client_id: str = ""
+    oidc_client_secret: str = ""
+    oidc_redirect_uri: str = ""
+    oidc_allow_http_loopback: bool = False
+    auth_session_max_age_seconds: int = 8 * 60 * 60
+    session_metadata_retention_days: int = 30
+    snapshot_retention_count: int = 10
+    snapshot_max_bytes: int = 8 * 1024 * 1024
     allow_private_egress_urls: bool = False
     trusted_proxy_ips: list[str] = []
     session_cookie_name: str = "workchord_session"

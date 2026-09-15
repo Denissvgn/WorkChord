@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 import hashlib
 import json
 import os
@@ -1387,7 +1389,7 @@ class AgentTeamSetupService:
             )
             if member.role == "pm":
                 topology.primary_actor_id = actor.id
-            await self.db.commit()
+            await commit_or_flush(self.db)
             try:
                 delivery_digest = await self.credential_sink.deliver(
                     credential_ref=member.credential_ref,
@@ -1434,7 +1436,7 @@ class AgentTeamSetupService:
                         "topology_key": member_topology_key,
                     },
                 )
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 return (
                     AgentTeamActionReceipt(
                         action_id=action.action_id,
@@ -1592,7 +1594,7 @@ class AgentTeamSetupService:
                 "object_revision": record.object_revision,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return (
             AgentTeamActionReceipt(
                 action_id=action.action_id,
@@ -1771,7 +1773,7 @@ class AgentTeamSetupService:
         elif topology.primary_actor_id == old_actor_id:
             topology.primary_actor_id = None
         topology.state = "onboarding"
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
         try:
             receipt_digest = await self.credential_sink.deliver(
@@ -1822,7 +1824,7 @@ class AgentTeamSetupService:
                     "target_actor_id": record.actor_id,
                 },
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return (
                 AgentTeamActionReceipt(
                     action_id=action.action_id,
@@ -1868,7 +1870,7 @@ class AgentTeamSetupService:
                 "object_revision": record.object_revision,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return (
             AgentTeamActionReceipt(
                 action_id=action.action_id,
@@ -1989,7 +1991,7 @@ class AgentTeamSetupService:
         record.lifecycle_state = "configured"
         record.object_revision += 1
         self._set_member_contract(record, member)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         try:
             receipt_digest = await self.credential_sink.deliver(
                 credential_ref=member.credential_ref,
@@ -2008,7 +2010,7 @@ class AgentTeamSetupService:
             record.lifecycle_state = "disabled"
             record.actor.lifecycle_state = "disabled"
             record.object_revision += 1
-            await self.db.commit()
+            await commit_or_flush(self.db)
             raise CredentialDeliveryError(
                 "Credential recovery delivery remains uncertain"
             ) from exc
@@ -2034,7 +2036,7 @@ class AgentTeamSetupService:
                 "credential_delivery_state": "delivered",
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return (
             AgentTeamActionReceipt(
                 action_id=action.action_id,
@@ -2099,7 +2101,7 @@ class AgentTeamSetupService:
                 "topology_key": topology.topology_key,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return (
             AgentTeamActionReceipt(
                 action_id=action.action_id,
@@ -2140,7 +2142,7 @@ class AgentTeamSetupService:
                 ),
             )
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
     async def _execute_action(
         self,
@@ -2470,7 +2472,7 @@ class AgentTeamSetupService:
             )
             self.db.add(run)
             try:
-                await self.db.commit()
+                await commit_or_flush(self.db)
             except IntegrityError:
                 await self.db.rollback()
                 concurrent = await self._find_apply_run(
@@ -2627,7 +2629,7 @@ class AgentTeamSetupService:
         run.status = response_status
         run.blocker_codes = _canonical_json(list(blocker_codes))
         run.response_payload = _canonical_json(response.model_dump(mode="json"))
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def _select_status_topology(
@@ -3278,7 +3280,7 @@ class AgentTeamSetupService:
                 retry_after_seconds=ACK_WINDOW_SECONDS,
             )
         member.ack_attempt_count += 1
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
     async def acknowledge_runtime(
         self,
@@ -3290,11 +3292,22 @@ class AgentTeamSetupService:
         actor_service = AgentService(self.db)
         actor = await actor_service.authenticate_onboarding(api_key)
         if actor is None:
-            actor = await actor_service.authenticate(api_key)
+            actor = await actor_service.authenticate(api_key, touch=False)
         if actor is None:
             raise AgentPermissionError(
                 "Invalid setup onboarding credential"
             )
+        from app.models.identity import Principal
+        from app.authority import internal_authority
+        from app.services.identity_service import bind_verified_system
+        with internal_authority(self.db):
+            principal = await self.db.scalar(select(Principal).where(Principal.agent_actor_id == actor.id))
+            if principal is not None and not principal.enabled:
+                raise AgentPermissionError("The onboarding principal is disabled")
+            if principal is None:
+                self.db.add(Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id))
+                await self.db.flush()
+        await bind_verified_system(self.db, source="agent_onboarding", reason=f"Verified restricted runtime acknowledgement for actor {actor.id}")
         result = await self.db.execute(
             select(AgentTeamTopologyMember)
             .options(
@@ -3436,7 +3449,7 @@ class AgentTeamSetupService:
                 "runtime_ready": True,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return AgentTeamRuntimeAcknowledgementResponse(
             topology_key=topology.topology_key,
             topology_revision=topology.revision,

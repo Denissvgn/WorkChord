@@ -368,8 +368,12 @@ class TaskRepositoryTest {
     fun testUpdateTaskStatusConflictVersionMismatch() = runTest(testDispatcher) {
         val conflictErrorJson = """
             {
-                "error": "version_conflict",
-                "message": "Task was modified by another user. Expected version 1, current version is 3."
+                "detail": {
+                    "code": "task_version_conflict",
+                    "message": "Task version conflict: expected 1, current 3.",
+                    "expected_version": 1,
+                    "current_task": {"id": 5, "version": 3}
+                }
             }
         """.trimIndent()
         mockWebServer.enqueue(MockResponse().setResponseCode(409).setBody(conflictErrorJson))
@@ -469,15 +473,15 @@ class TaskRepositoryTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setHeader("Set-Cookie", "session_token=new_refreshed_token_abc; Path=/; HttpOnly")
+                .setHeader("Set-Cookie", "workchord_session=new_refreshed_token_abc; Path=/; HttpOnly")
                 .setBody("{\"id\":1,\"public_id\":\"usr_1\",\"display_name\":\"User\"}")
         )
 
         repository.getWhoAmI()
 
         val recordedRequest = mockWebServer.takeRequest()
-        assertEquals("Bearer existing_session_token_xyz", recordedRequest.getHeader("Authorization"))
-        assertEquals("session_token=existing_session_token_xyz", recordedRequest.getHeader("Cookie"))
+        assertEquals(null, recordedRequest.getHeader("Authorization"))
+        assertEquals("workchord_session=existing_session_token_xyz", recordedRequest.getHeader("Cookie"))
 
         // Verify new cookie token was persisted in tokenManager
         assertEquals("new_refreshed_token_abc", tokenManager.sessionToken)

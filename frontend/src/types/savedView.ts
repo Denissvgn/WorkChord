@@ -13,6 +13,8 @@ export interface SavedView {
     columns_json: Record<string, unknown>;
     created_by_session_id?: number | null;
     schema_version: number;
+    metric_migration_note?: string | null;
+    owner_principal_id?: number | null;
     is_valid: boolean;
     invalid_reason?: string | null;
     created_at: string;

@@ -1,4 +1,6 @@
 """Agent integration services."""
+
+from app.commands import commit_or_flush
 import hashlib
 import json
 import secrets
@@ -112,7 +114,7 @@ class AgentService:
         self.db = db
         self.task_service = TaskService(db)
 
-    async def authenticate(self, api_key: str) -> Optional[AgentActor]:
+    async def authenticate(self, api_key: str, *, touch: bool = True) -> Optional[AgentActor]:
         """Authenticate an API key against stored enabled agent actors."""
         key_hash = hash_api_key(api_key)
         result = await self.db.execute(
@@ -135,9 +137,9 @@ class AgentService:
             # Authentication remains a pure read while the deployment write
             # fence is active. In normal operation, throttle this audit field
             # so 200 concurrent MCP clients do not turn every read into a write.
-            if settings.maintenance_mode == "off" and touch_due:
+            if settings.maintenance_mode == "off" and touch_due and touch:
                 actor.last_seen_at = now
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(actor)
 
         return actor
@@ -210,6 +212,10 @@ class AgentService:
             max_parallel_work=data.max_parallel_work,
         )
         self.db.add(actor)
+        await self.db.flush()
+        from app.models.identity import Principal
+        self.db.add(Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id))
+
         binding: AgentModelBinding | None = None
         if data.model_binding is not None:
             assert catalog is not None
@@ -256,7 +262,7 @@ class AgentService:
                     ),
                 )
             )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(actor)
         if binding is not None:
             await self.db.refresh(binding)
@@ -443,7 +449,7 @@ class AgentService:
                 "version": task.version,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return await self.task_service.get_by_id(task_id)
 
     async def renew_claim(
@@ -506,7 +512,7 @@ class AgentService:
                 "version": task.version,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return await self.task_service.get_by_id(task_id)
 
     async def release_claim(
@@ -556,7 +562,7 @@ class AgentService:
                 "version": task.version,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return await self.task_service.get_by_id(task_id)
 
     async def create_task(
@@ -609,7 +615,7 @@ class AgentService:
                 request_payload,
                 {"response": response.model_dump(mode="json")},
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return response
         except IntegrityError:
             await self.db.rollback()
@@ -728,7 +734,7 @@ class AgentService:
                 request_payload,
                 {"response": response.model_dump(mode="json")},
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -975,7 +981,7 @@ class AgentService:
                 "payload": self.event_to_payload(event.payload),
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(event)
         return event
 
@@ -1081,7 +1087,7 @@ class AgentService:
                 "trace_id": run.trace_id,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(run)
         return run
 
@@ -1232,7 +1238,7 @@ class AgentService:
                 "trace_id": event.trace_id,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(event)
         return event
 
@@ -1339,7 +1345,7 @@ class AgentService:
                 "trace_id": run.trace_id,
             },
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(run)
         return run
 

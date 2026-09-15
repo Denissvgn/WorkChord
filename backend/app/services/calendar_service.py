@@ -1,4 +1,6 @@
 """Calendar service with business logic."""
+
+from app.commands import commit_or_flush, schedule_input_command
 import csv
 from collections.abc import Iterable
 from datetime import date, timedelta
@@ -89,7 +91,7 @@ class CalendarService:
         )
         self.db.add(calendar)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(calendar)
@@ -106,29 +108,32 @@ class CalendarService:
         """Create a new calendar."""
         calendar = Calendar(
             name=data.name,
+            timezone=data.timezone,
             year=data.year,
             holidays=data.holidays,
             weekend_days=data.weekend_days,
         )
         self.db.add(calendar)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(calendar)
         return calendar
 
+    @schedule_input_command("calendar")
     async def update(self, calendar_id: int, data: CalendarUpdate) -> Calendar | None:
         """Update an existing calendar."""
         calendar = await self.get_by_id(calendar_id)
         if not calendar:
             return None
 
-        update_data = data.model_dump(exclude_unset=True)
+        update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         for field, value in update_data.items():
             setattr(calendar, field, value)
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(calendar)
         return calendar
 
+    @schedule_input_command("calendar")
     async def delete(self, calendar_id: int) -> bool:
         """Delete a calendar."""
         calendar = await self.get_by_id(calendar_id)
@@ -146,7 +151,7 @@ class CalendarService:
             raise ValueError("Calendar is used by iterations and cannot be deleted")
 
         await self.db.delete(calendar)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     def _public_holidays(self, country: str, year: int) -> list[str]:
@@ -227,7 +232,7 @@ class CalendarService:
             imported_dates,
         )
         calendar.holidays = merged
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(calendar)
 
         return CalendarImportResponse(

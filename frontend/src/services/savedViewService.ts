@@ -43,12 +43,12 @@ export const savedViewService: FrontendSavedViewService = {
     },
 
     create: async (data: SavedViewCreate) => {
-        const response = await api.post<SavedView>('/saved-views', data);
+        const response = await api.post<SavedView>('/saved-views', { ...data, schema_version: 2 });
         return response.data;
     },
 
     update: async (savedViewId: number, data: SavedViewUpdate) => {
-        const response = await api.put<SavedView>(`/saved-views/${savedViewId}`, data);
+        const response = await api.put<SavedView>(`/saved-views/${savedViewId}`, { ...data, schema_version: 2 });
         return response.data;
     },
 

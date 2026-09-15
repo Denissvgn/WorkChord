@@ -23,7 +23,7 @@ router = APIRouter(dependencies=[Depends(require_admin_api_key)])
 
 
 async def get_runtime_settings_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> RuntimeSettingsService:
     """Dependency for runtime system settings."""
     return RuntimeSettingsService(db)

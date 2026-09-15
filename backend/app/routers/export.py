@@ -1,9 +1,12 @@
 """Export/Import API router."""
+
+from app.commands import commit_or_flush
 import json
 from typing import Annotated, Any, Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -73,7 +76,7 @@ def _validate_import_task_tree(task_data: Any, *, depth: int, counter: list[int]
 @router.get("/iterations/{iteration_id}/export")
 async def export_iteration(
     iteration_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Export iteration data as JSON."""
     iteration_service = IterationService(db)
@@ -102,7 +105,7 @@ async def export_iteration(
 
         def process_task(task):
             nonlocal allocated_days, task_count
-            if task.assignee and task.assignee.id == member.id and not task.is_deferred:
+            if not task.children and not task.is_summary and task.assignee and task.assignee.id == member.id and not task.is_deferred:
                 if task.start_date and task.end_date:
                     # Count working days (simple approximation)
                     from datetime import timedelta
@@ -122,7 +125,9 @@ async def export_iteration(
             "task_count": task_count,
         }
 
+    from app.services.work_metrics import aggregate_metrics
     export_data = {
+        "work_metrics": await aggregate_metrics(db, iteration_id=iteration_id),
         "iteration": {
             "name": iteration.name,
             "start_date": iteration.start_date.isoformat(),
@@ -154,7 +159,7 @@ async def export_iteration(
     }
 
     return JSONResponse(
-        content=export_data,
+        content=jsonable_encoder(export_data),
         headers={
             "Content-Disposition": f'attachment; filename="iteration_{iteration_id}.json"'
         }
@@ -188,6 +193,13 @@ def _task_to_export(task) -> dict:
         # Scheduled dates from Gantt
         "start_date": task.start_date.isoformat() if task.start_date else None,
         "end_date": task.end_date.isoformat() if task.end_date else None,
+        "baseline_start_date": task.baseline_start_date.isoformat() if task.baseline_start_date else None,
+        "baseline_end_date": task.baseline_end_date.isoformat() if task.baseline_end_date else None,
+        "baseline_provenance": task.baseline_provenance,
+        "baseline_revision": task.baseline_revision,
+        "started_at": task.started_at.isoformat() if task.started_at else None,
+        "resolved_at": task.resolved_at.isoformat() if task.resolved_at else None,
+        "accepted_at": task.accepted_at.isoformat() if task.accepted_at else None,
         "actual_start_date": task.actual_start_date.isoformat() if task.actual_start_date else None,
         "actual_end_date": task.actual_end_date.isoformat() if task.actual_end_date else None,
         # Date constraints
@@ -214,7 +226,7 @@ def _task_to_export(task) -> dict:
 @router.post("/iterations/import")
 async def import_new_iteration(
     file: Annotated[UploadFile, File(...)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Import a new iteration from JSON export file."""
     data = await _read_json_upload(file)
@@ -341,7 +353,7 @@ async def _process_import(
             for resolved_id in resolved_ids:
                 if resolved_id != new_task_id:
                     db.add(TaskDependency(task_id=new_task_id, depends_on_id=resolved_id))
-        await db.commit()
+        await commit_or_flush(db)
 
     return MessageResponse(
         message=f"Imported iteration '{iteration_id}' with {imported_count} items successfully",
@@ -352,7 +364,7 @@ async def _process_import(
 async def import_iteration(
     iteration_id: int,
     file: Annotated[UploadFile, File(...)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Import tasks and team members into an iteration from JSON file."""
     data = await _read_json_upload(file)

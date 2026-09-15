@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 import base64
 import binascii
 import hashlib
@@ -1359,7 +1361,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def update_assignment(
@@ -1645,7 +1647,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def get_work(
@@ -2329,7 +2331,7 @@ class AgentWorkService:
             request_payload,
             self._live_fence_receipt(response),
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def submit(
@@ -2459,7 +2461,7 @@ class AgentWorkService:
             request_payload,
             self._live_fence_receipt(response),
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def fail(
@@ -2619,7 +2621,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def review(
@@ -2882,7 +2884,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def list_my_claims(self, actor: AgentActor) -> list[dict[str, Any]]:
@@ -3502,7 +3504,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def create_project_update(
@@ -3588,7 +3590,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     async def report_discovery(
@@ -3713,7 +3715,7 @@ class AgentWorkService:
             request_payload,
             {"response": response.model_dump(mode="json")},
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return response
 
     def _definition_blockers(self, task: Task) -> list[str]:

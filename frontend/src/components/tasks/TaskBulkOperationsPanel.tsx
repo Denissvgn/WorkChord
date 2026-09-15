@@ -85,6 +85,7 @@ export const TaskBulkOperationsPanel = ({
     const [isDeferred, setIsDeferred] = useState('');
     const [minConfidence, setMinConfidence] = useState('0.5');
     const [preview, setPreview] = useState<TaskBulkOperationResponse | null>(null);
+    const [previewSignature, setPreviewSignature] = useState<string | null>(null);
     const [previewAction, setPreviewAction] = useState<TaskBulkAction | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -175,6 +176,7 @@ export const TaskBulkOperationsPanel = ({
         mutationFn: (request: TaskBulkOperationRequest) => taskService.runBulkOperation(request),
         onSuccess: async (response, variables) => {
             setPreview(response);
+            setPreviewSignature(JSON.stringify([variables.task_ids, variables.action, variables.payload]));
             setPreviewAction(response.dry_run ? variables.action : null);
             setError(null);
             if (!response.dry_run) {
@@ -189,6 +191,7 @@ export const TaskBulkOperationsPanel = ({
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('surfaces.taskBulk.failedToRun')));
+            setPreview(null);
         },
     });
 
@@ -214,10 +217,13 @@ export const TaskBulkOperationsPanel = ({
             action: effectiveAction,
             payload: buildPayload(),
             dry_run: dryRun,
+            expected_versions: dryRun ? undefined : preview?.task_versions,
+            expected_revisions: dryRun ? undefined : preview?.input_revisions,
         });
     };
 
     const canApply = preview?.dry_run === true
+        && previewSignature === JSON.stringify([selectedTaskIds, effectiveAction, buildPayload()])
         && previewAction === effectiveAction
         && selectedTaskIds.length > 0
         && !mutation.isPending;

@@ -38,7 +38,7 @@ router = APIRouter()
 
 
 async def get_agent_model_catalog_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentModelCatalogService:
     """Return the request-scoped model control service."""
 
@@ -78,7 +78,7 @@ def _require_catalog_read(actor: AgentActor) -> None:
 @router.get("/agent/profile-skill-catalog", response_model=list[dict[str, Any]])
 async def get_profile_skill_catalog(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Return code-owned advisory capability definitions."""
     _require_catalog_read(actor)
@@ -88,7 +88,7 @@ async def get_profile_skill_catalog(
 @router.get("/agent/profile-presets", response_model=list[dict[str, Any]])
 async def get_agent_profile_presets(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Return reusable human-reviewable agent profile presets."""
     _require_catalog_read(actor)
@@ -98,7 +98,7 @@ async def get_agent_profile_presets(
 @router.get("/agent/routes", response_model=list[dict[str, Any]])
 async def get_agent_route_index(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Return the explainable, non-authorizing agent route index."""
     _require_catalog_read(actor)
@@ -113,7 +113,7 @@ async def get_agent_route_index(
 async def apply_agent_profile_preset(
     preset_key: str,
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     command: Annotated[
         AgentPlanningCommandContext,
         Depends(get_agent_planning_command_context),

@@ -229,6 +229,7 @@ def backup_sqlite_database(backup_dir: Optional[Path] = None) -> Optional[Path]:
 async def run_post_migration_repairs() -> None:
     """Run idempotent seeders and compatibility repairs after migrations."""
     from app.maintenance import require_background_writes_enabled
+    from app.commands import commit_or_flush
     from app.database import async_session_maker
     from app.services.calendar_service import CalendarService
     from app.services.github_status_automation_service import GitHubStatusAutomationService
@@ -239,6 +240,9 @@ async def run_post_migration_repairs() -> None:
 
     require_background_writes_enabled("database repair and default seeding")
     async with async_session_maker() as db:
+        from app.services.identity_service import initialize_control_plane
+        await initialize_control_plane(db)
+        await commit_or_flush(db)
         await CalendarService(db).get_or_create_default()
         await TemplateService(db).seed_default_templates()
         await LabelService(db).seed_default_labels()

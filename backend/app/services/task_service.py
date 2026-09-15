@@ -1,4 +1,7 @@
 """Task service with business logic."""
+
+from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations, current_command
+from app.authority import require_project
 import json
 from datetime import date
 from typing import Any, Optional, Sequence
@@ -210,6 +213,8 @@ class TaskService:
 
     async def _lock_dependency_task(self, task_id: int) -> Optional[Task]:
         """Lock one dependency graph in Iteration -> Task order."""
+        await self._lock_task_scope(task_id)
+
         hint_result = await self.db.execute(
             select(Task.iteration_id).where(Task.id == task_id)
         )
@@ -366,6 +371,13 @@ class TaskService:
         idempotency_key: Optional[str] = None,
     ) -> TaskEvent:
         """Append an audit event for a task mutation or checkpoint."""
+        authority = self.db.info.get("authority")
+        if authority is not None:
+            payload = {**(payload or {}), "principal_id": authority.principal_id, "source": authority.source}
+            correlation_id = authority.correlation_id
+            actor_id = authority.actor_id
+            if actor_type != "auto":
+                actor_type = "agent" if authority.kind == "agent" else "admin" if authority.kind == "system" else "user"
         event = TaskEvent(
             task_id=task_id,
             actor_type=actor_type,
@@ -410,7 +422,9 @@ class TaskService:
 
     def ensure_expected_version(self, task: Task, expected_version: int | None) -> None:
         """Fail early for an already-stale caller before filesystem side effects."""
-        if expected_version is not None and task.version != expected_version:
+        command = current_command(self.db)
+        version = command.tasks.get(task.id, task.version) if command is not None else task.version
+        if expected_version is not None and version != expected_version:
             raise TaskVersionConflictError(expected_version, self._metadata_from_task(task))
 
     async def reserve_task_version(
@@ -424,6 +438,16 @@ class TaskService:
         # never triggers an implicit synchronous refresh (MissingGreenlet).
         task_id = task.id
         loaded_version = task.version
+        command = current_command(self.db)
+        if command is not None:
+            await lock_iterations(self.db, [task.iteration_id])
+            if task_id in command.tasks:
+                if expected_version is not None and expected_version not in {command.tasks[task_id], task.version}:
+                    raise TaskVersionConflictError(expected_version, self._metadata_from_task(task))
+                return task.version
+        if expected_version is None:
+            from app.runtime_telemetry import metrics
+            metrics.increment("workchord_legacy_task_commands_total")
         statement = sql_update(Task).where(Task.id == task_id)
         if expected_version is not None:
             statement = statement.where(Task.version == expected_version)
@@ -444,6 +468,8 @@ class TaskService:
                 expected_version = loaded_version
             raise TaskVersionConflictError(expected_version, current)
 
+        if command is not None:
+            command.tasks[task_id] = row.version - 1
         attributes.set_committed_value(task, "version", row.version)
         if row.updated_at is not None:
             attributes.set_committed_value(task, "updated_at", row.updated_at)
@@ -590,6 +616,7 @@ class TaskService:
         _, tasks_by_id = await self._load_iteration_tree(iteration_id)
         return tasks_by_id.get(task_id)
 
+    @atomic_command
     async def create(
         self,
         iteration_id: int,
@@ -604,6 +631,8 @@ class TaskService:
         commit: bool = True,
     ) -> Task:
         """Create a new task."""
+        if iteration_id is not None:
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
         await self.require_iteration_exists(iteration_id)
         await self._require_same_iteration_dependencies(iteration_id, data.depends_on)
 
@@ -617,6 +646,14 @@ class TaskService:
                 raise ValueError(f"Parent task with id {data.parent_id} not found")
             if parent.iteration_id != iteration_id:
                 raise ValueError("Parent task must belong to the same iteration.")
+            await self._require_unclaimed_structure([parent.id])
+            if not parent.children and not parent.is_summary:
+                if parent.status != "planned":
+                    raise ValueError("Executed leaf work cannot be silently converted into a summary")
+                inherited = {key: getattr(parent, key) for key in ["priority", "assignee_id", "effort_days", "effort_hours"] if key not in data.model_fields_set}
+                data = data.model_copy(update=inherited)
+                effort_hours = data.effort_hours if data.effort_hours is not None else data.effort_days * 8
+
             if project_id is None:
                 project_id = parent.project_id
             elif project_id != parent.project_id:
@@ -628,6 +665,7 @@ class TaskService:
             iteration_id,
             project_id,
         )
+        require_project(self.db, project_id, "create")
         await self._require_milestone_compatible(milestone_id, project_id)
         await self.require_iteration_assignee(data.assignee_id, iteration_id)
 
@@ -660,6 +698,8 @@ class TaskService:
         )
         self.db.add(task)
         await self.db.flush()
+        if task.parent_id is not None:
+            await self.status_service.reconcile_parent_chain(task.parent_id, commit=False)
 
         # Add dependencies
         for dep_id in data.depends_on:
@@ -704,7 +744,7 @@ class TaskService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
             else:
                 await self.db.flush()
         except Exception:
@@ -732,6 +772,7 @@ class TaskService:
             data.project_id = parent.project_id
         return await self.create(parent.iteration_id, data)
 
+    @atomic_command
     async def update(
         self,
         task_id: int,
@@ -745,9 +786,17 @@ class TaskService:
         commit: bool = True,
     ) -> Optional[Task]:
         """Update an existing task."""
+        await self._lock_task_scope(task_id)
         task = await self.get_by_id(task_id)
         if not task:
             return None
+
+        fields = set(data.model_dump(exclude_unset=True)) - {"expected_version"}
+        new_state = getattr(data.status, "value", data.status)
+        action = ("review" if new_state == "closed" else "execute") if fields == {"status"} else "edit"
+        require_project(self.db, task.project_id, action)
+        if task.is_summary and fields.intersection({"priority", "effort_days", "effort_hours", "assignee_id", "status"}):
+            raise ValueError("Summary work fields are derived from leaves; edit the relevant leaf tasks")
 
         self.ensure_expected_version(task, data.expected_version)
 
@@ -900,6 +949,10 @@ class TaskService:
                     "new": sorted(new_dep_ids),
                 }
 
+        if changed_fields and task.is_summary:
+            for child_id in sorted((await self._task_subtree_ids(task.id)) - {task.id}):
+                child = await self.db.get(Task, child_id)
+                await self.reserve_task_version(child, child.version)
         if changed_fields:
             await self.reserve_task_version(task, expected_version)
             await self.record_task_event(
@@ -915,6 +968,8 @@ class TaskService:
             )
 
         try:
+            if changed_fields and task.parent_id is not None:
+                await self.status_service.reconcile_parent_chain(task.parent_id, commit=False)
             if changed_fields:
                 await emit_outbound_webhook_event(
                     self.db,
@@ -931,7 +986,7 @@ class TaskService:
                     },
                 )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(task)
             else:
                 await self.db.flush()
@@ -940,17 +995,25 @@ class TaskService:
             raise
         return await self.get_by_id(task_id)
 
+    @atomic_command
     async def delete(
         self,
         task_id: int,
         actor_type: str = "user",
         actor_id: Optional[int] = None,
+        *, expected_version: Optional[int] = None, expected_revision: Optional[int] = None,
     ) -> bool:
         """Delete a task and its subtasks."""
+        iteration_id = await self.db.scalar(select(Task.iteration_id).where(Task.id == task_id))
+        await self._lock_task_scope(task_id, expected_revisions={iteration_id: expected_revision} if expected_revision is not None else None)
         task = await self.get_by_id(task_id)
         if not task:
             return False
 
+        self.ensure_expected_version(task, expected_version)
+        require_project(self.db, task.project_id, "edit")
+        await self._require_unclaimed_structure(await self._task_subtree_ids(task_id))
+        old_parent_id = task.parent_id
         # Create snapshot before deletion
         snapshot_service = SnapshotService(self.db)
         await snapshot_service.create_snapshot(task.iteration_id, f"before_delete_task_{task_id}")
@@ -965,6 +1028,9 @@ class TaskService:
 
         await ExternalLinkService(self.db).delete_for_entity("task", task_id)
         await self.db.delete(task)
+        await self.db.flush()
+        if old_parent_id is not None:
+            await self.status_service.reconcile_parent_chain(old_parent_id, commit=False)
         try:
             await emit_outbound_webhook_event(
                 self.db,
@@ -979,12 +1045,13 @@ class TaskService:
                     "project_id": task.project_id,
                 },
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
         return True
 
+    @atomic_command
     async def add_dependency(
         self,
         task_id: int,
@@ -1030,9 +1097,10 @@ class TaskService:
             actor_type=actor_type,
             actor_id=actor_id,
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
+    @atomic_command
     async def remove_dependency(
         self,
         task_id: int,
@@ -1065,9 +1133,10 @@ class TaskService:
             actor_type=actor_type,
             actor_id=actor_id,
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
+    @atomic_command
     async def reorder_tasks(
         self,
         task_ids: list[int],
@@ -1075,8 +1144,11 @@ class TaskService:
         parent_id: Optional[int] = None,
         actor_type: str = "user",
         actor_id: Optional[int] = None,
+        expected_revision: int | None = None,
     ) -> bool:
         """Update sort_order for tasks within one declared sibling scope."""
+        if iteration_id is not None:
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
         from sqlalchemy import update
 
         if not task_ids:
@@ -1096,16 +1168,14 @@ class TaskService:
             if task.parent_id != parent_id:
                 raise ValueError("All reordered tasks must belong to the declared parent scope")
 
+        for task in tasks:
+            require_project(self.db, task.project_id, "edit")
+            await self._require_unclaimed_structure(await self._task_subtree_ids(task.id))
+        by_id = {task.id: task for task in tasks}
         for index, task_id in enumerate(task_ids):
-            await self.db.execute(
-                update(Task)
-                .where(
-                    Task.id == task_id,
-                    Task.iteration_id == iteration_id,
-                    Task.parent_id == parent_id,
-                )
-                .values(sort_order=index)
-            )
+            task = by_id[task_id]
+            await self._reserve_structural_version(task)
+            task.sort_order = index
             await self.record_task_event(
                 task_id,
                 "task_reordered",
@@ -1113,15 +1183,34 @@ class TaskService:
                 actor_type=actor_type,
                 actor_id=actor_id,
             )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
+    async def _reserve_structural_version(self, task: Task, *, preserve_inherited_facets=False):
+        """Carry existing acceptance across a rearrangement that preserves leaf work meaning."""
+        from app.services.work_metrics import task_signals
+        signals = task_signals(task)
+        previous_version = task.version
+        accepted = signals["is_accepted"] and not task.is_summary
+        if preserve_inherited_facets:
+            task.is_deferred = signals["effective_is_deferred"]
+            task.is_optional = signals["effective_is_optional"]
+        await self.reserve_task_version(task, previous_version)
+        if accepted:
+            task.accepted_version = task.version
+            await self.record_task_event(task.id, "acceptance_preserved_after_rearrangement", {
+                "previous_version": previous_version, "current_version": task.version,
+                "reason": "Hierarchy/order changed without changing the accepted leaf work or its effective facets",
+            })
+
+    @atomic_command
     async def merge_tasks(
         self,
         iteration_id: int,
         task_ids: list[int],
         parent_title: str,
         parent_description: Optional[str] = None,
+        expected_revision: int | None = None,
     ) -> Optional[Task]:
         """
         Merge multiple leaf tasks under a new parent task.
@@ -1129,12 +1218,14 @@ class TaskService:
         - All tasks must exist and belong to the same iteration
         - All tasks must have no children (leaf nodes only)
         - Creates a new parent task and updates parent_id for all merged tasks
-        - Parent inherits maximum priority from child tasks
+        - Parent derives the lowest numeric priority from child tasks
         """
+        if iteration_id is not None:
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
         import json
 
         # Validate minimum task count
-        if len(task_ids) < 2:
+        if len(task_ids) < 2 or len(set(task_ids)) != len(task_ids):
             return None
 
         iteration_project_id = await self._iteration_project_id(iteration_id)
@@ -1152,7 +1243,7 @@ class TaskService:
                 return None  # Task doesn't exist
             if task.iteration_id != iteration_id:
                 return None  # Task belongs to different iteration
-            if task.children and len(task.children) > 0:
+            if task.is_summary or task.children:
                 return None  # Task has children, cannot merge
             tasks_to_merge.append(task)
             project_ids.add(task.project_id)
@@ -1166,8 +1257,9 @@ class TaskService:
                 return None  # All merged tasks must belong to the same project scope
             project_id = next(iter(project_ids))
 
-        # Calculate maximum priority from child tasks
-        max_priority = max(task.priority for task in tasks_to_merge)
+        require_project(self.db, project_id, "edit")
+        # Lower numeric values represent more urgent work.
+        derived_priority = min(task.priority for task in tasks_to_merge)
 
         # Calculate date bounds from child tasks (if scheduled)
         start_dates = [task.start_date for task in tasks_to_merge if task.start_date]
@@ -1183,7 +1275,8 @@ class TaskService:
             parent_id=None,  # Root level
             title=parent_title,
             description=parent_description,
-            priority=max_priority,
+            priority=derived_priority,
+            is_summary=True,
             effort_days=0.0,  # Composite tasks derive effort from children
             effort_hours=0.0,
             assignee_id=None,  # No assignee for composite tasks
@@ -1196,14 +1289,16 @@ class TaskService:
             end_date=parent_end_date,
         )
         self.db.add(parent_task)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(parent_task)
 
+        old_parent_ids = {task.parent_id for task in tasks_to_merge if task.parent_id is not None}
+        await self._require_unclaimed_structure([task.id for task in tasks_to_merge])
         # Update all merged tasks to have the new parent
         for idx, task in enumerate(tasks_to_merge):
+            await self._reserve_structural_version(task, preserve_inherited_facets=True)
             task.parent_id = parent_task.id
             task.sort_order = idx
-            task.version += 1
             await self.record_task_event(
                 task.id,
                 "task_merged",
@@ -1221,91 +1316,65 @@ class TaskService:
             },
         )
 
-        await self.db.commit()
-
+        await self.db.flush()
+        await self.status_service.reconcile_parent_chain(parent_task.id, commit=False)
+        for old_parent_id in sorted(old_parent_ids):
+            await self.status_service.reconcile_parent_chain(old_parent_id, commit=False)
+        await commit_or_flush(self.db)
         return await self.get_by_id(parent_task.id)
 
-    async def unmerge_task(
-        self,
-        parent_task_id: int,
-        delete_parent: bool = True
-    ) -> list[Task]:
-        """
-        Promote all child tasks of a parent to the top level.
-
-        - Parent task must exist and have children
-        - All children become root-level tasks (parent_id = None)
-        - Optionally deletes the parent task after unmerging
-
-        Returns list of promoted tasks.
-        """
-        from sqlalchemy import update, delete as sql_delete, text
-
-        # First, get the parent task info and children IDs using raw SQL
-        result = await self.db.execute(
-            select(Task.id, Task.iteration_id)
-            .where(Task.id == parent_task_id)
-        )
-        parent_row = result.first()
-        if not parent_row:
+    @atomic_command
+    async def unmerge_task(self, parent_task_id: int, delete_parent: bool = True, *, expected_revisions=None) -> list[Task]:
+        """Promote children into the parent's sibling scope without losing referenced work."""
+        await self._lock_task_scope(parent_task_id, expected_revisions=expected_revisions)
+        parent = await self.get_by_id(parent_task_id)
+        if parent is None or not parent.children:
             return []
-
-        iteration_id = parent_row.iteration_id
-
-        # Get child IDs
-        children_result = await self.db.execute(
-            select(Task.id).where(Task.parent_id == parent_task_id)
-        )
-        child_ids = [row[0] for row in children_result.fetchall()]
-
-        if not child_ids:
-            return []
-
-        # Create snapshot before modification
-        snapshot_service = SnapshotService(self.db)
-        await snapshot_service.create_snapshot(iteration_id, "before_unmerge_task")
-
-        # Get current max sort_order for root tasks
-        result = await self.db.execute(
-            select(Task.sort_order)
-            .where(Task.iteration_id == iteration_id, Task.parent_id.is_(None))
-            .order_by(Task.sort_order.desc(), Task.id.desc())
-            .limit(1)
-        )
-        max_order_row = result.first()
-        next_sort_order = (max_order_row[0] + 1) if max_order_row else 0
-
-        # Update all children to have no parent using raw SQL
-        for idx, child_id in enumerate(child_ids):
-            await self.db.execute(
-                update(Task)
-                .where(Task.id == child_id)
-                .values(parent_id=None, sort_order=next_sort_order + idx, version=Task.version + 1)
-            )
-            await self.record_task_event(
-                child_id,
-                "task_unmerged",
-                {
-                    "previous_parent_id": parent_task_id,
-                    "sort_order": next_sort_order + idx,
-                },
-            )
-
-        await self.db.commit()
-
-        # Delete the parent using raw SQL (completely bypasses ORM)
+        require_project(self.db, parent.project_id, "edit")
+        await self._require_unclaimed_structure(await self._task_subtree_ids(parent.id))
+        referenced = await self.db.scalar(select(TaskDependency.id).where(
+            (TaskDependency.task_id == parent.id) | (TaskDependency.depends_on_id == parent.id)).limit(1))
+        if referenced is not None:
+            raise ValueError("A referenced summary cannot be unmerged until its dependencies are explicitly reconciled")
+        await SnapshotService(self.db).create_snapshot(parent.iteration_id, "before_unmerge_task")
+        children = list(parent.children)
+        old_parent_id = parent.parent_id
+        next_order = await self._get_next_child_sort_order(old_parent_id) if old_parent_id is not None else await self._get_next_root_sort_order(parent.iteration_id)
+        for index, child in enumerate(children):
+            await self._reserve_structural_version(child, preserve_inherited_facets=True)
+            child.parent_id, child.sort_order = old_parent_id, next_order + index
+            await self.record_task_event(child.id, "task_unmerged", {"previous_parent_id": parent.id, "parent_id": old_parent_id})
+        await self.db.flush()
+        from sqlalchemy.orm import attributes
+        attributes.set_committed_value(parent, "children", [])
         if delete_parent:
-            await self.db.execute(
-                sql_delete(Task).where(Task.id == parent_task_id)
-            )
-            await self.db.commit()
+            await self.db.delete(parent)
+        else:
+            await self.reserve_task_version(parent, parent.version)
+            parent.is_summary = True
+            parent.status = "planned"
+            parent.effort_days = parent.effort_hours = 0.0
+            parent.assignee_id = None
+            parent.accepted_at = parent.accepted_by_principal_id = parent.accepted_version = None
+        await self.db.flush()
+        if old_parent_id is not None:
+            await self.status_service.reconcile_parent_chain(old_parent_id, commit=False)
+        return [await self.get_by_id(child.id) for child in children]
 
-        # Clear session to avoid stale data
-        await self.db.close()
+    async def _lock_task_scope(self, task_id, *, target_iteration_id=None, expected_revisions=None):
+        iteration_id = await self.db.scalar(select(Task.iteration_id).where(Task.id == task_id))
+        if iteration_id is None:
+            return
+        ids = [iteration_id] + ([target_iteration_id] if target_iteration_id is not None else [])
+        await lock_iterations(self.db, ids, expected=expected_revisions)
 
-        # Return empty list - the API will refetch via frontend
-        # This avoids any ORM state issues
-        return []
+    async def _require_unclaimed_structure(self, task_ids):
+        from app.models.agent import AgentTaskAssignment
+        claimed = await self.db.scalar(select(Task.id).where(Task.id.in_(task_ids), Task.claimed_by.is_not(None)).limit(1))
+        assignment = await self.db.scalar(select(AgentTaskAssignment.id).where(AgentTaskAssignment.task_id.in_(task_ids),
+            AgentTaskAssignment.state == "accepted").limit(1))
+        if claimed is not None or assignment is not None:
+            raise ValueError("Recover active execution before changing its hierarchy or assignment scope")
 
     async def _task_subtree_ids(self, root_task_id: int) -> set[int]:
         """Return the IDs in a task subtree, including the root."""
@@ -1370,6 +1439,7 @@ class TaskService:
             raise ValueError("Moved subtask project must match parent task project.")
         return task.project_id
 
+    @atomic_command
     async def move_task(
         self,
         task_id: int,
@@ -1378,8 +1448,10 @@ class TaskService:
         actor_type: str = "user",
         actor_id: Optional[int] = None,
         expected_version: Optional[int] = None,
+        expected_revisions: dict[int, int] | None = None,
     ) -> Optional[Task]:
         """Move a task subtree to an iteration, applying scoped project inheritance."""
+        await self._lock_task_scope(task_id, target_iteration_id=target_iteration_id, expected_revisions=expected_revisions)
         task = await self.get_by_id(task_id)
         if not task:
             return None
@@ -1422,6 +1494,14 @@ class TaskService:
                 target_iteration_id,
             )
 
+        require_project(self.db, task.project_id, "edit")
+        require_project(self.db, effective_project_id, "edit")
+        await self._require_unclaimed_structure(subtree_ids)
+        old_parent_id = task.parent_id
+        if target_parent is not None:
+            await self._require_unclaimed_structure([target_parent.id])
+            if not target_parent.children and not target_parent.is_summary and target_parent.status != "planned":
+                raise ValueError("Executed leaf work cannot be silently converted into a summary")
         snapshot_service = SnapshotService(self.db)
         await snapshot_service.create_snapshot(task.iteration_id, f"before_move_task_{task_id}")
         if target_iteration_id != task.iteration_id:
@@ -1485,6 +1565,9 @@ class TaskService:
                     actor_id=actor_id,
                 )
 
+        await self.db.flush()
+        for affected_parent in sorted({pid for pid in [old_parent_id, parent_id] if pid is not None}):
+            await self.status_service.reconcile_parent_chain(affected_parent, commit=False)
         try:
             await emit_outbound_webhook_event(
                 self.db,
@@ -1500,7 +1583,7 @@ class TaskService:
                     "changed_task_ids": changed_task_ids,
                 },
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -1509,6 +1592,14 @@ class TaskService:
     def task_to_response(self, task: Task, iteration_end_date: Optional[date] = None) -> TaskResponse:
         """Convert Task model to TaskResponse schema."""
         from sqlalchemy.orm import attributes
+
+        from app.models.iteration import Iteration
+        from app.commands import current_command
+        command = current_command(self.db)
+        iteration = self.db.identity_map.get((Iteration, (task.iteration_id,), None))
+        iteration_revision = (command.iterations[task.iteration_id] + 1
+            if command and task.iteration_id in command.iterations
+            else iteration.revision if iteration is not None else None)
 
         state = attributes.instance_state(task)
 
@@ -1533,18 +1624,12 @@ class TaskService:
             task.request_source_links if request_source_links_loaded else []
         )
 
-        is_composite = len(loaded_children) > 0
-        is_overdue = False
-        is_delayed = False
-
-        today = date.today()
-
-        if iteration_end_date and task.end_date:
-            is_overdue = task.end_date > iteration_end_date
-
-        # Task is delayed if: status is PLANNED and start_date has passed
-        if task.status == TaskStatus.PLANNED.value and task.start_date:
-            is_delayed = task.start_date < today
+        is_composite = bool(task.is_summary) or len(loaded_children) > 0
+        from app.services.work_metrics import task_signals
+        signals = task_signals(task, iteration_end=iteration_end_date,
+            project_target=loaded_project.target_date if loaded_project else None,
+            timezone=loaded_project.timezone if loaded_project else (iteration.__dict__.get("calendar").timezone if iteration is not None and iteration.__dict__.get("calendar") else "UTC"), composite=is_composite)
+        is_overdue, is_delayed = signals.pop("is_overdue"), signals["is_late_start"]
 
         assignee = None
         if loaded_assignee:
@@ -1600,6 +1685,7 @@ class TaskService:
 
         return TaskResponse(
             id=task.id,
+            iteration_revision=iteration_revision,
             iteration_id=task.iteration_id,
             project_id=task.project_id,
             milestone_id=task.milestone_id,
@@ -1621,6 +1707,10 @@ class TaskService:
             max_end_date=task.max_end_date,
             is_overdue=is_overdue,
             is_delayed=is_delayed,
+            **signals,
+            baseline_start_date=task.baseline_start_date, baseline_end_date=task.baseline_end_date,
+            baseline_revision=task.baseline_revision, baseline_provenance=task.baseline_provenance,
+            started_at=task.started_at, resolved_at=task.resolved_at, accepted_at=task.accepted_at,
             is_composite=is_composite,
             is_optional=task.is_optional,
             is_deferred=task.is_deferred,
@@ -1714,6 +1804,7 @@ class TaskService:
             self._status_service = TaskStatusService(self.db, self)
         return self._status_service
 
+    @atomic_command
     async def change_status(
         self,
         task_id: int,

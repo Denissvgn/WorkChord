@@ -1,3 +1,4 @@
+import type { WorkMetrics } from './workMetrics';
 import type { TaskStatus } from './task';
 
 export type ReleaseStatus = 'planned' | 'building' | 'shipped' | 'canceled';
@@ -9,7 +10,7 @@ export interface ReleaseTaskSummary {
     project_id?: number | null;
 }
 
-export interface Release {
+export interface Release extends WorkMetrics {
     id: number;
     project_id: number;
     name: string;

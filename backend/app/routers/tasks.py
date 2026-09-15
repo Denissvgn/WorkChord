@@ -1,8 +1,10 @@
 """Task API router."""
+
+from app.commands import command_transaction, commit_or_flush, lock_iterations
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -65,41 +67,41 @@ async def _not_found_detail(db: AsyncSession, entity: str, entity_id: int) -> st
     return entity_not_found_message(entity, entity_id, ui_language)
 
 
-async def get_task_service(db: Annotated[AsyncSession, Depends(get_db)]) -> TaskService:
+async def get_task_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> TaskService:
     """Dependency for task service."""
     return TaskService(db)
 
 
 async def get_external_link_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> ExternalLinkService:
     """Dependency for external link service."""
     return ExternalLinkService(db)
 
 
 async def get_github_status_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> GitHubStatusService:
     """Dependency for GitHub status refresh service."""
     return await GitHubStatusService.from_runtime(db)
 
 
 async def get_assignee_recommendation_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> AssigneeRecommendationService:
     """Dependency for assignee recommendation service."""
     return AssigneeRecommendationService(db)
 
 
 async def get_task_bulk_operation_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> TaskBulkOperationService:
     """Dependency for selected-task bulk operation service."""
     return TaskBulkOperationService(db)
 
 
 async def get_scheduler_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> SchedulerService:
     """Dependency for scheduler service."""
     return SchedulerService(db)
@@ -109,7 +111,7 @@ async def get_scheduler_service(
 async def get_tasks(
     iteration_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get all tasks for an iteration (tree structure)."""
     # Get iteration to check end_date for overdue detection
@@ -135,7 +137,7 @@ async def create_task(
     iteration_id: int,
     data: TaskCreate,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Create a new task in an iteration."""
     iteration_service = IterationService(db)
@@ -230,7 +232,7 @@ async def batch_update_tasks(
     data: TaskBatchUpdateRequest,
     service: Annotated[TaskService, Depends(get_task_service)],
     scheduler_service: Annotated[SchedulerService, Depends(get_scheduler_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Batch update multiple tasks in a single iteration under transaction block."""
     iteration_service = IterationService(db)
@@ -241,22 +243,15 @@ async def batch_update_tasks(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
-    original_commit = db.commit
-    async def noop_commit():
-        await db.flush()
-
-    db.commit = noop_commit
     try:
-        updated_tasks_list, results = await apply_batch_update_items(
-            service, iteration_id, iteration.end_date, data.tasks
-        )
-
-        # Restore commit and final commit
-        db.commit = original_commit
-        await db.commit()
+        async with command_transaction(db):
+            await lock_iterations(db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
+            updated_tasks_list, results = await apply_batch_update_items(
+                service, iteration_id, iteration.end_date, data.tasks
+            )
+            schedule_res = await scheduler_service.schedule_iteration(iteration_id)
+            updated_tasks_list = [service.task_to_response(await service.get_by_id(task.id), iteration.end_date) for task in updated_tasks_list]
     except Exception as e:
-        db.commit = original_commit
-        await db.rollback()
         if isinstance(e, TaskVersionConflictError):
             _raise_task_version_conflict(e)
         if isinstance(e, ValueError):
@@ -265,18 +260,6 @@ async def batch_update_tasks(
                 detail=str(e)
             )
         raise
-
-    # Automatically reschedule after successful batch commit
-    schedule_res = None
-    try:
-        schedule_res = await scheduler_service.schedule_iteration(iteration_id)
-    except Exception:
-        # Scheduling is a secondary operation after the batch transaction commits.
-        logger.warning(
-            "Automatic reschedule after task batch update failed",
-            exc_info=True,
-            extra={"iteration_id": iteration_id},
-        )
 
     return TaskBatchUpdateResponse(
         results=results,
@@ -298,7 +281,7 @@ async def run_task_bulk_operation(
 async def get_task(
     task_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get task by ID."""
     task = await service.get_by_id(task_id)
@@ -337,7 +320,7 @@ async def update_task(
     task_id: int,
     data: TaskUpdate,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Update a task."""
     try:
@@ -366,7 +349,7 @@ async def move_task(
     task_id: int,
     data: TaskMoveRequest,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Move a task subtree to a target iteration."""
     try:
@@ -375,6 +358,7 @@ async def move_task(
             target_iteration_id=data.iteration_id,
             parent_id=data.parent_id,
             expected_version=data.expected_version,
+            expected_revisions=data.expected_revisions,
         )
     except TaskVersionConflictError as exc:
         _raise_task_version_conflict(exc)
@@ -403,10 +387,12 @@ async def move_task(
 @router.delete("/tasks/{task_id}", response_model=MessageResponse)
 async def delete_task(
     task_id: int,
-    service: Annotated[TaskService, Depends(get_task_service)]
+    service: Annotated[TaskService, Depends(get_task_service)],
+    expected_version: int | None = None,
+    expected_revision: int | None = None,
 ):
     """Delete a task and its subtasks."""
-    deleted = await service.delete(task_id)
+    deleted = await service.delete(task_id, expected_version=expected_version, expected_revision=expected_revision)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -573,7 +559,7 @@ async def create_subtask(
     task_id: int,
     data: TaskCreate,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Create a subtask under a parent task."""
     try:
@@ -599,7 +585,7 @@ async def create_subtask(
 async def get_subtasks(
     task_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get subtasks of a task."""
     task = await service.get_by_id(task_id)
@@ -666,6 +652,7 @@ async def remove_dependency(
 @router.post("/tasks/reorder", response_model=MessageResponse)
 async def reorder_tasks(
     data: TaskReorder,
+    response: Response,
     service: Annotated[TaskService, Depends(get_task_service)]
 ):
     """Reorder a list of tasks by updating their sort_order."""
@@ -674,9 +661,14 @@ async def reorder_tasks(
             data.task_ids,
             iteration_id=data.iteration_id,
             parent_id=data.parent_id,
+            expected_revision=data.expected_revision,
         )
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    from app.commands import current_command
+    command = current_command(service.db)
+    if command and data.iteration_id in command.iterations:
+        response.headers["X-Iteration-Revision"] = str(command.iterations[data.iteration_id] + 1)
     return MessageResponse(message="Tasks reordered", success=True)
 
 
@@ -689,7 +681,7 @@ async def merge_tasks(
     iteration_id: int,
     data: TaskMerge,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Merge multiple leaf tasks under a new parent task."""
     iteration_service = IterationService(db)
@@ -707,6 +699,7 @@ async def merge_tasks(
             task_ids=data.task_ids,
             parent_title=data.parent_title,
             parent_description=data.parent_description,
+            expected_revision=data.expected_revision,
         )
     except ValueError as e:
         raise HTTPException(
@@ -732,7 +725,7 @@ async def unmerge_task(
     task_id: int,
     data: TaskUnmerge,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Promote all child tasks to top level and optionally delete the parent."""
     task = await service.get_by_id(task_id)
@@ -751,7 +744,7 @@ async def unmerge_task(
     iteration_service = IterationService(db)
     iteration = await iteration_service.get_by_id(task.iteration_id)
 
-    promoted_tasks = await service.unmerge_task(task_id, data.delete_parent)
+    promoted_tasks = await service.unmerge_task(task_id, data.delete_parent, expected_revisions={task.iteration_id: data.expected_revision} if data.expected_revision is not None else None)
 
     return [service.task_to_response(t, iteration.end_date if iteration else None) for t in promoted_tasks]
 
@@ -764,7 +757,7 @@ async def import_tasks(
     iteration_id: int,
     data: TasksImportRequest,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Import tasks from text format."""
     iteration_service = IterationService(db)
@@ -806,7 +799,7 @@ async def import_tasks(
 async def get_tasks_text(
     iteration_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Get all tasks in text format for editing."""
     iteration_service = IterationService(db)
@@ -836,7 +829,7 @@ async def bulk_update_tasks(
     iteration_id: int,
     data: TasksImportRequest,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """
     Bulk update tasks from text format.
@@ -879,7 +872,7 @@ async def change_task_status(
     task_id: int,
     data: TaskStatusChange,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """
     Change task status with validation and side effects.
@@ -976,7 +969,7 @@ async def get_task_status_history(
 @router.get("/tasks/{task_id}/timeline", response_model=TaskTimelineResponse)
 async def get_task_timeline(
     task_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get merged task timeline with events, status logs, and agent runs."""
     agent_service = AgentService(db)
@@ -998,7 +991,7 @@ async def get_task_timeline(
 async def get_iteration_status_history(
     iteration_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """Get recent status history for all tasks in an iteration."""
     import json
@@ -1035,7 +1028,7 @@ async def get_iteration_status_history(
 async def get_overdue_tasks(
     iteration_id: int,
     service: Annotated[TaskService, Depends(get_task_service)],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ):
     """
     Get all overdue tasks for an iteration.

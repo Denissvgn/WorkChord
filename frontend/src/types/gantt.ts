@@ -72,6 +72,7 @@ export interface ScheduleResult {
 
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */
 export interface SchedulePreviewResponse {
+    input_revision: number;
     tasks: GanttTask[];
     overdue_task_ids: number[];
     schedule_result?: ScheduleResult | null;

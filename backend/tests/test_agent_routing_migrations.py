@@ -44,7 +44,7 @@ def _sync_url(path: Path) -> str:
 @pytest.mark.sqlite
 def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config) -> None:
     config, database_path = routing_migration_config
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
 
     engine = create_engine(_sync_url(database_path))
     try:
@@ -90,7 +90,7 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
     finally:
         downgraded.dispose()
 
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
     upgraded = create_engine(_sync_url(database_path))
     try:
         with upgraded.connect() as connection:
@@ -174,7 +174,7 @@ def test_legacy_assignment_and_model_less_run_survive_upgrade(
     finally:
         engine.dispose()
 
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
     upgraded = create_engine(_sync_url(database_path))
     try:
         with upgraded.begin() as connection:
@@ -258,7 +258,7 @@ def test_legacy_assignment_and_model_less_run_survive_upgrade(
         constrained.dispose()
 
     command.downgrade(config, "20260711_0028")
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260802_0036")
     round_tripped = create_engine(_sync_url(database_path))
     try:
         with round_tripped.connect() as connection:
@@ -319,4 +319,4 @@ def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> Non
 @pytest.mark.contract
 def test_alembic_reports_exactly_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260802_0036"]
+    assert script.get_heads() == ["20260915_0037"]

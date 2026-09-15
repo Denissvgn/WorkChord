@@ -161,6 +161,8 @@ class WebIntakeService:
         """Authenticate, rate-limit, and create a triage item."""
         self.verify_authorization(authorization_header)
         self.check_rate_limit(client_ip)
+        from app.services.identity_service import bind_verified_system
+        await bind_verified_system(self.db, source="web_intake", reason="Verified configured web intake capability")
 
         triage_data = TriageItemCreate(
             title=data.title,

@@ -2,7 +2,7 @@
 from typing import Annotated, Optional
 import secrets
 
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, status, Request
 
 from app.config import get_settings
 
@@ -19,8 +19,12 @@ def admin_api_key_is_valid(api_key: Optional[str]) -> bool:
 
 async def require_admin_api_key(
     api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
+    request: Request = None,
 ) -> None:
     """Require the configured admin API key for control-plane API routes."""
+    authority = getattr(request.state, "authority", None) if request is not None else None
+    if authority is not None and authority.operator:
+        return
     if not get_settings().workchord_admin_api_key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

@@ -47,6 +47,8 @@ class PlanShare(Base):
         nullable=False,
     )
     snapshot_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    owner_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), index=True)
+    expires_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), index=True)
     created_at: Mapped[datetime] = mapped_column(
         UTCDateTime(),
         default=utc_now,

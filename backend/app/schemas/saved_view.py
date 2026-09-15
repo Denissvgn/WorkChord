@@ -116,6 +116,8 @@ class SavedViewResponse(BaseModel):
     columns_json: dict[str, Any] = Field(default_factory=dict)
     created_by_session_id: Optional[int] = None
     schema_version: int
+    metric_migration_note: str | None = None
+    owner_principal_id: int | None = None
     is_valid: bool = True
     invalid_reason: Optional[str] = None
     created_at: datetime

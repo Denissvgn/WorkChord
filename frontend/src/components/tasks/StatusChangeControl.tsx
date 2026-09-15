@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, AlertTriangle, Check } from 'lucide-react';
@@ -14,6 +14,7 @@ interface StatusChangeControlProps {
     task: Task;
     iterationId: number;
     onStatusChanged?: () => void;
+    onPendingChange?: (pending: boolean) => void;
 }
 
 // Valid transitions map
@@ -24,10 +25,12 @@ const VALID_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
     'closed': []
 };
 
-export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: StatusChangeControlProps) => {
+export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPendingChange }: StatusChangeControlProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
     const [reason, setReason] = useState('');
+    const [refreshedTask, setRefreshedTask] = useState<Task | null>(null);
+    const currentTask = refreshedTask && refreshedTask.version >= task.version ? refreshedTask : task;
     const [cascadeInfo, setCascadeInfo] = useState<CascadeUpdateInfo[] | null>(null);
     const [showConfirm, setShowConfirm] = useState<TaskStatus | null>(null);
 
@@ -36,7 +39,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
             task.id,
             newStatus,
             reason || undefined,
-            task.version,
+            currentTask.version,
         ),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
@@ -52,14 +55,17 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
         }
     });
 
-    const availableTransitions = VALID_TRANSITIONS[task.status] || [];
+    useEffect(() => { onPendingChange?.(mutation.isPending); }, [mutation.isPending, onPendingChange]);
+    const availableTransitions = currentTask.is_composite ? [] : VALID_TRANSITIONS[currentTask.status] || [];
     const statusLabel = (status: TaskStatus) => t(`statuses.${status}`);
 
     const handleStatusChange = (newStatus: TaskStatus) => {
         if (mutation.isPending) return;
+        onPendingChange?.(true);
         mutation.reset();
         // If it's a significant transition (to closed or might cascade), show confirmation
         if (newStatus === 'closed' || task.is_delayed) {
+            onPendingChange?.(false);
             setShowConfirm(newStatus);
         } else {
             mutation.mutate(newStatus);
@@ -68,6 +74,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
 
     const confirmChange = () => {
         if (showConfirm && !mutation.isPending) {
+            onPendingChange?.(true);
             mutation.mutate(showConfirm);
         }
     };
@@ -78,7 +85,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
             <div className="flex items-center gap-2">
                 <span className="text-sm text-content-secondary">{t('statusChange.currentStatus')}</span>
                 <span className={`px-2 py-1 rounded-full text-sm font-medium ${pillToneClassName[STATUS_TONE[task.status]]}`}>
-                    {statusLabel(task.status)}
+                    {statusLabel(currentTask.status)}
                 </span>
                 {task.is_delayed && (
                     <span className="flex items-center gap-1 text-feedback-purple-foreground text-sm">
@@ -110,9 +117,17 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
                 <QueryErrorState
                     error={mutation.error}
                     fallback={t('statusChange.updateFailed')}
-                    onRetry={() => {
-                        if (mutation.variables) mutation.mutate(mutation.variables);
+                    onRetry={async () => {
+                        try {
+                            const latest = await taskService.getById(task.id);
+                            setRefreshedTask(latest);
+                            queryClient.setQueryData(['task', task.id], latest);
+                            mutation.reset();
+                            setShowConfirm(null);
+                            onStatusChanged?.();
+                        } catch { /* Retain the visible request failure until refresh succeeds. */ }
                     }}
+                    retryLabel={t('taskEditor.reload')}
                 />
             )}
 
@@ -128,6 +143,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged }: Stat
                 {showConfirm && (
                     <input
                         type="text"
+                        aria-label={t('statusChange.reasonPlaceholder')}
                         placeholder={t('statusChange.reasonPlaceholder')}
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}

@@ -1,4 +1,6 @@
 """Gantt chart schemas."""
+
+from app.schemas.work_metrics import TaskMetricSignals
 from datetime import date
 from typing import Literal, Optional
 
@@ -23,7 +25,7 @@ class GanttMilestone(BaseModel):
     target_date: Optional[date] = None
 
 
-class GanttTask(BaseModel):
+class GanttTask(TaskMetricSignals):
     """Task representation for Gantt chart."""
     id: int
     title: str
@@ -90,6 +92,11 @@ class GanttResponse(BaseModel):
     schedule_result: Optional[ScheduleResult] = None
 
 
+class ScheduleApplyRequest(BaseModel):
+    expected_revision: Optional[int] = None
+    rebaseline_reason: Optional[str] = None
+
+
 class SchedulePreviewRequest(BaseModel):
     """Sandbox edits to dry-run through the real scheduler.
 
@@ -97,6 +104,7 @@ class SchedulePreviewRequest(BaseModel):
     preview exercises exactly the payload a later apply would send.
     """
     changes: list[TaskBatchUpdateItem] = []
+    expected_revision: Optional[int] = None
 
 
 class SchedulePreviewResponse(BaseModel):
@@ -105,6 +113,7 @@ class SchedulePreviewResponse(BaseModel):
     Produced by the real scheduler inside a rolled-back transaction; nothing
     is persisted.
     """
+    input_revision: int
     tasks: list[GanttTask]
     overdue_task_ids: list[int] = []
     schedule_result: Optional[ScheduleResult] = None

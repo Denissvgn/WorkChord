@@ -1,4 +1,6 @@
 """GitHub pull request status refresh service."""
+
+from app.commands import commit_or_flush
 from datetime import datetime, timezone
 import logging
 from typing import Any, Optional
@@ -136,7 +138,7 @@ class GitHubStatusService:
 
     async def _save_link(self, link: ExternalLink) -> ExternalLink:
         """Persist changed link fields."""
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(link)
         return link
 

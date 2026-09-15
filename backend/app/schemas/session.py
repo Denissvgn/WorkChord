@@ -10,5 +10,7 @@ class UserSession(BaseModel):
     id: int
     public_id: str
     display_name: str
+    principal_id: int | None = None
+    authenticated: bool = False
     created_at: datetime
     last_seen_at: datetime
