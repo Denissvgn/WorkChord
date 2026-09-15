@@ -1,8 +1,8 @@
 # ProjectMilestoneTaskGroup
 
-**Location:** `backend/app/schemas/project.py:248`
+**Location:** `backend/app/schemas/project.py:256`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `WorkMetricSummary`
 **Module:** [schemas_project](../modules/schemas_project.md)
 
 ## Description
@@ -33,7 +33,7 @@ Task progress metrics grouped under one milestone or unassigned work.
 ```mermaid
 flowchart LR
     n0["ProjectMilestoneTaskGroup (backend/app/schemas/project.py)"]
-    n1["BaseModel"]
+    n1["WorkMetricSummary (backend/app/schemas/work_metrics.py)"]
     n2["backend/app/schemas/__init__.py"]
     n3["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
     n4["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
@@ -44,6 +44,7 @@ flowchart LR
     n4 --> n0
     n5 --> n0
     click n0 "../modules/schemas_project.md"
+    click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/schemas___init__.md"
     click n3 "../modules/project_service.md"
     click n4 "../modules/project_service.md"
@@ -60,7 +61,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `WorkMetricSummary` | [schemas_work_metrics](../modules/schemas_work_metrics.md) |
 
 ### References
 

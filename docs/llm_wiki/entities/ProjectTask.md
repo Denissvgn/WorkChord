@@ -1,6 +1,6 @@
 # ProjectTask
 
-**Location:** `frontend/src/types/project.ts:236`
+**Location:** `frontend/src/types/project.ts:237`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

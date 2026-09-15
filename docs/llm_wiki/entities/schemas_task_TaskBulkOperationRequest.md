@@ -1,6 +1,6 @@
 # TaskBulkOperationRequest
 
-**Location:** `backend/app/schemas/task.py:250`
+**Location:** `backend/app/schemas/task.py:270`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,8 @@ Request schema for selected-task bulk operations.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_versions` | `dict[int, int]` | `expected_versions` | No | No | factory: `dict` | — | — | — |
+| `expected_revisions` | `dict[int, int]` | `expected_revisions` | No | No | factory: `dict` | — | — | — |
 | `task_ids` | `list[int]` | `task_ids` | Yes | No | — | min_length=1; max_length=200 | — | — |
 | `action` | `TaskBulkAction` | `action` | Yes | No | — | — | — | — |
 | `payload` | `dict[str, Any]` | `payload` | No | No | factory: `dict` | — | — | — |
@@ -52,7 +54,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `action`, `dry_run`, `payload`, `task_ids` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `action`, `dry_run`, `expected_revisions`, `expected_versions`, `payload`, `task_ids` |
 
 ### Structure
 

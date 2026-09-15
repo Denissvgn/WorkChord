@@ -1,8 +1,8 @@
 # IterationSummary
 
-**Location:** `frontend/src/types/iteration.ts:56`
+**Location:** `frontend/src/types/iteration.ts:58`
 **Kind:** Class
-**Bases:** —
+**Bases:** `WorkMetrics`
 **Module:** [types_iteration](../modules/types_iteration.md)
 
 ## Description
@@ -36,13 +36,16 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 ```mermaid
 flowchart LR
     n0["IterationSummary (frontend/src/types/iteration.ts)"]
-    n1["frontend/src/pages/OverviewPage.test.tsx"]
-    n2["frontend/src/services/iterationService.ts"]
-    n1 --> n0
+    n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
+    n2["frontend/src/pages/OverviewPage.test.tsx"]
+    n3["frontend/src/services/iterationService.ts"]
+    n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/types_iteration.md"
-    click n1 "../modules/OverviewPage.test.md"
-    click n2 "../modules/iterationService.md"
+    click n1 "../modules/workMetrics.md"
+    click n2 "../modules/OverviewPage.test.md"
+    click n3 "../modules/iterationService.md"
 ```
 
 ### Summary
@@ -50,6 +53,12 @@ flowchart LR
 | Module | Methods | Attributes |
 |---|---:|---|
 | [types_iteration](../modules/types_iteration.md) | 0 | `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `start_date`, `team_capacity_days`, `total_effort_days`, `total_tasks`, `working_days` |
+
+### Structure
+
+| Kind | Entity | Module |
+|---|---|---|
+| Base | `WorkMetrics` | [workMetrics](../modules/workMetrics.md) |
 
 ### References
 

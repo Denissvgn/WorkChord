@@ -1,6 +1,6 @@
 # WorkingDaysResponse
 
-**Location:** `backend/app/schemas/calendar.py:67`
+**Location:** `backend/app/schemas/calendar.py:75`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)

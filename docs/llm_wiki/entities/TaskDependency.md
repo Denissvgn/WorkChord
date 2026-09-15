@@ -1,6 +1,6 @@
 # TaskDependency
 
-**Location:** `backend/app/models/task.py:204`
+**Location:** `backend/app/models/task.py:215`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)
@@ -39,9 +39,9 @@ flowchart LR
     n8["backend/app/services/agent_work_service.py"]
     n9["backend/app/services/project_service.py"]
     n10["backend/app/services/scheduler_service.py"]
-    n11["TaskService.add_dependency (backend/app/services/task_service.py)"]
-    n12["TaskService.create (backend/app/services/task_service.py)"]
-    n13["TaskService.update (backend/app/services/task_service.py)"]
+    n11["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
+    n12["TaskService.add_dependency (backend/app/services/task_service.py)"]
+    n13["TaskService.create (backend/app/services/task_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n8 "../modules/agent_work_service.md"
     click n9 "../modules/project_service.md"
     click n10 "../modules/scheduler_service.md"
-    click n11 "../modules/task_service.md"
+    click n11 "../modules/snapshot_service.md"
     click n12 "../modules/task_service.md"
     click n13 "../modules/task_service.md"
 ```
@@ -96,8 +96,8 @@ flowchart LR
 | `agent_work_service` | import | [agent_work_service](../modules/agent_work_service.md) | — |
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
 | `TaskService.add_dependency` | call | [task_service](../modules/task_service.md) | 1 |
 | `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.update` | call | [task_service](../modules/task_service.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

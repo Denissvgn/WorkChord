@@ -1,6 +1,6 @@
 # TaskUnmerge
 
-**Location:** `backend/app/schemas/task.py:226`
+**Location:** `backend/app/schemas/task.py:244`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,7 @@ Request schema for unmerging a parent task.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `delete_parent` | `bool` | `delete_parent` | No | No | `True` | — | — | Delete the parent task after unmerging |
 
 ## Methods
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `delete_parent` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `delete_parent`, `expected_revision` |
 
 ### Structure
 

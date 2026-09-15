@@ -14,12 +14,14 @@ Database upgrade and schema-version helpers.
 | `alembic` | `command` |
 | `alembic.config` | `Config` |
 | `alembic.script` | `ScriptDirectory` |
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker` |
 | `app.database_config` | `DatabaseConfiguration`, `alembic_safe_url`, `parse_database_configuration` |
 | `app.maintenance` | `require_background_writes_enabled` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.github_status_automation_service` | `GitHubStatusAutomationService` |
+| `app.services.identity_service` | `initialize_control_plane` |
 | `app.services.label_service` | `LabelService` |
 | `app.services.saved_view_service` | `SavedViewService` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
@@ -55,9 +57,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
-| Inbound | `scripts` (2) |
-| Outbound | `backend` (10) |
+| Inbound | `backend` (16) |
+| Inbound | `scripts` (3) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -65,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

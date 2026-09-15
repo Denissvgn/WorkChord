@@ -1,6 +1,6 @@
 # IterationUpdate
 
-**Location:** `frontend/src/types/iteration.ts:29`
+**Location:** `frontend/src/types/iteration.ts:31`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

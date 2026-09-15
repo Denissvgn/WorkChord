@@ -1,6 +1,6 @@
 # HistoryGroup
 
-**Location:** `frontend/src/pages/AnalyticsPage.tsx:13`
+**Location:** `frontend/src/pages/AnalyticsPage.tsx:15`
 **Kind:** Class
 **Bases:** —
 **Module:** [AnalyticsPage](../modules/AnalyticsPage.md)

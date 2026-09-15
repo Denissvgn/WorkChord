@@ -103,10 +103,10 @@ flowchart LR
 | [GanttResponse](../entities/types_gantt_GanttResponse.md) | Class | 56 | — | — |
 | [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Class | 66 | — | — |
 | [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Class | 74 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
-| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Class | 80 | — | — |
-| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Class | 88 | — | — |
-| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Class | 96 | — | — |
-| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Class | 100 | — | — |
-| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Class | 107 | — | — |
-| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Class | 112 | — | — |
-| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 94 | — | — |
+| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Class | 81 | — | — |
+| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Class | 89 | — | — |
+| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Class | 97 | — | — |
+| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Class | 101 | — | — |
+| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Class | 108 | — | — |
+| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Class | 113 | — | — |
+| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 95 | — | — |

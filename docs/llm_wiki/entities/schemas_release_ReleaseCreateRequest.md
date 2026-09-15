@@ -1,6 +1,6 @@
 # ReleaseCreateRequest
 
-**Location:** `backend/app/schemas/release.py:45`
+**Location:** `backend/app/schemas/release.py:47`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_release](../modules/schemas_release.md)

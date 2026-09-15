@@ -160,7 +160,7 @@ flowchart LR
 | main | asyncio.run | 77 | `asyncio.run(_run(...))` |
 | main | _run | 77 | `_run(once=args.once)` |
 | _run | get_settings | 32 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
 | _run | print | 34 | `print('DATABASE_PROCESS_ROLE=delivery_worker is required', file=sys.stderr)` |
 | _run | print | 40 | `print('Outbound delivery worker is disabled', file=sys.stderr)` |
 | _run | print | 43 | `print(..., file=sys.stderr)` |

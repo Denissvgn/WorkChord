@@ -1,7 +1,7 @@
 # AgentWorkService_renew_work
 
 **Entry point:** `agent_work_service.AgentWorkService.renew_work`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Atomically renew an accepted assignment's live claim and heartbeat.
 
@@ -19,11 +19,13 @@
 9. `task_service.TaskVersionConflictError`
 10. `time.utc_now`
 11. `schemas_agent.AgentWorkBeginResponse`
+12. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [commands](../modules/commands.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)

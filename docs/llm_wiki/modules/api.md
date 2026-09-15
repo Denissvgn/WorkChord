@@ -18,9 +18,9 @@ _Auto-generated from `frontend/src/services/api.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `default` |
-| Constants | `api` |
-| Module calls | `api = create`, `use` |
+| Exports | `IDENTITY_EXPIRED_EVENT`, `default`, `setSessionIntegrity` |
+| Constants | `IDENTITY_EXPIRED_EVENT`, `api` |
+| Module calls | `api = create`, `use`, `use` |
 
 ## Local dependency map
 
@@ -40,7 +40,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (23) |
+| Inbound | `frontend` (25) |
 | Outbound | `frontend` (2) |
 
 ### External packages
@@ -49,4 +49,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 1 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `setSessionIntegrity` | `(token: string \| null, human: boolean)` | — | — |

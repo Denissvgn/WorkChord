@@ -13,6 +13,7 @@ Server dry-run of sandbox edits through the real scheduler (nothing persisted).
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `input_revision` | `number` | *required* | — |
 | `tasks` | `GanttTask[]` | *required* | — |
 | `overdue_task_ids` | `number[]` | *required* | — |
 | `schedule_result` | `ScheduleResult \| null` | *required* | — |
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `overdue_task_ids`, `schedule_result`, `tasks` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `input_revision`, `overdue_task_ids`, `schedule_result`, `tasks` |
 
 ### References
 

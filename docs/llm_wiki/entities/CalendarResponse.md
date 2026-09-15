@@ -1,6 +1,6 @@
 # CalendarResponse
 
-**Location:** `backend/app/schemas/calendar.py:26`
+**Location:** `backend/app/schemas/calendar.py:32`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)
@@ -19,6 +19,7 @@ Schema for calendar response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `timezone` | `str` | `timezone` | No | No | `'UTC'` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `year` | `int` | `year` | Yes | No | — | — | — | — |
@@ -60,7 +61,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `id`, `name`, `short_days`, `weekend_days`, `year` |
+| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `id`, `name`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### Structure
 

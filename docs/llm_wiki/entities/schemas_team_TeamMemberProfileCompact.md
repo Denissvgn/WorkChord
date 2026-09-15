@@ -1,6 +1,6 @@
 # TeamMemberProfileCompact
 
-**Location:** `backend/app/schemas/team.py:262`
+**Location:** `backend/app/schemas/team.py:264`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

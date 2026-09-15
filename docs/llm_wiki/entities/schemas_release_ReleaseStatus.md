@@ -1,6 +1,6 @@
 # ReleaseStatus
 
-**Location:** `backend/app/schemas/release.py:9`
+**Location:** `backend/app/schemas/release.py:11`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_release](../modules/schemas_release.md)

@@ -1,6 +1,6 @@
 # SchedulingDecision
 
-**Location:** `backend/app/schemas/gantt.py:58`
+**Location:** `backend/app/schemas/gantt.py:60`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

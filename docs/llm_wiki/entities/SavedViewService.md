@@ -1,6 +1,6 @@
 # SavedViewService
 
-**Location:** `backend/app/services/saved_view_service.py:171`
+**Location:** `backend/app/services/saved_view_service.py:174`
 **Kind:** Class
 **Bases:** —
 **Module:** [saved_view_service](../modules/saved_view_service.md)
@@ -131,4 +131,4 @@ flowchart LR
 | `update_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 | `run_post_migration_repairs` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

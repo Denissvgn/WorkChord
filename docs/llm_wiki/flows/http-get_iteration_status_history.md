@@ -51,7 +51,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_iteration_status_history` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `...` |
+| `get_iteration_status_history` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `...` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -63,12 +63,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_status_history | IterationService | 1007 | `IterationService(db)` |
-| get_iteration_status_history | iteration_service.get_by_id | 1008 | `iteration_service.get_by_id(iteration_id)` |
-| get_iteration_status_history | HTTPException | 1010 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_iteration_status_history | service.get_iteration_status_history | 1015 | `service.get_iteration_status_history(iteration_id)` |
-| get_iteration_status_history | TaskStatusLogResponse | 1018 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, task_title=log.task_title, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
-| get_iteration_status_history | json.loads | 1027 | `json.loads(log.affected_task_ids)` |
+| get_iteration_status_history | IterationService | 1000 | `IterationService(db)` |
+| get_iteration_status_history | iteration_service.get_by_id | 1001 | `iteration_service.get_by_id(iteration_id)` |
+| get_iteration_status_history | HTTPException | 1003 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_iteration_status_history | service.get_iteration_status_history | 1008 | `service.get_iteration_status_history(iteration_id)` |
+| get_iteration_status_history | TaskStatusLogResponse | 1011 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, task_title=log.task_title, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
+| get_iteration_status_history | json.loads | 1020 | `json.loads(log.affected_task_ids)` |
 
 ### Boundary effects
 
@@ -78,10 +78,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_iteration_status_history` | `iteration_service.get_by_id` | 1008 |
-| external_call | `get_iteration_status_history` | `HTTPException` | 1010 |
-| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1015 |
-| external_call | `get_iteration_status_history` | `json.loads` | 1027 |
+| unresolved_call | `get_iteration_status_history` | `iteration_service.get_by_id` | 1001 |
+| external_call | `get_iteration_status_history` | `HTTPException` | 1003 |
+| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1008 |
+| external_call | `get_iteration_status_history` | `json.loads` | 1020 |
 
 ## Behavior
 

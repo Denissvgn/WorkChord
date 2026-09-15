@@ -1,6 +1,6 @@
 # RoutingOperationalEvent
 
-**Location:** `backend/app/services/agent_routing_observability.py:37`
+**Location:** `backend/app/services/agent_routing_observability.py:39`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_routing_observability](../modules/agent_routing_observability.md)

@@ -34,10 +34,11 @@ flowchart LR
     n3["backend/app/mcp_server.py"]
     n4["backend/app/observability.py"]
     n5["backend/app/runtime_telemetry.py"]
-    n6["backend/app/services/outbound_webhook_service.py"]
-    n7["backend/app/services/session_service.py"]
-    n8["backend/app/services/upgrade_service.py"]
-    n9["backend/tests/test_runtime_boundaries.py"]
+    n6["backend/app/services/identity_service.py"]
+    n7["backend/app/services/outbound_webhook_service.py"]
+    n8["backend/app/services/session_service.py"]
+    n9["backend/app/services/upgrade_service.py"]
+    n10["backend/tests/test_runtime_boundaries.py"]
     n1 --> n0
     n1 --> n2
     n1 --> n3
@@ -47,31 +48,37 @@ flowchart LR
     n2 --> n5
     n3 --> n0
     n3 --> n2
+    n3 --> n6
     n4 --> n0
     n4 --> n2
     n4 --> n5
-    n4 --> n8
+    n4 --> n9
+    n6 --> n0
     n6 --> n2
-    n6 --> n5
-    n7 --> n0
     n7 --> n2
     n7 --> n5
     n8 --> n0
     n8 --> n2
+    n8 --> n5
+    n8 --> n6
     n9 --> n0
-    n9 --> n1
     n9 --> n2
-    n9 --> n7
+    n9 --> n6
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n8
     click n0 "../modules/config.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/maintenance.md"
     click n3 "../modules/mcp_server.md"
     click n4 "../modules/observability.md"
     click n5 "../modules/runtime_telemetry.md"
-    click n6 "../modules/outbound_webhook_service.md"
-    click n7 "../modules/session_service.md"
-    click n8 "../modules/upgrade_service.md"
-    click n9 "../modules/test_runtime_boundaries.md"
+    click n6 "../modules/identity_service.md"
+    click n7 "../modules/outbound_webhook_service.md"
+    click n8 "../modules/session_service.md"
+    click n9 "../modules/upgrade_service.md"
+    click n10 "../modules/test_runtime_boundaries.md"
 ```
 
 ### Internal neighbors
@@ -81,6 +88,7 @@ flowchart LR
 | Inbound | [app_main](../modules/app_main.md) |
 | Inbound | [mcp_server](../modules/mcp_server.md) |
 | Inbound | [observability](../modules/observability.md) |
+| Inbound | [identity_service](../modules/identity_service.md) |
 | Inbound | [outbound_webhook_service](../modules/outbound_webhook_service.md) |
 | Inbound | [session_service](../modules/session_service.md) |
 | Inbound | [upgrade_service](../modules/upgrade_service.md) |

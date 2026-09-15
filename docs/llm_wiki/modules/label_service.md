@@ -10,6 +10,7 @@ Service for governed label taxonomy and built-in defaults.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.models.label` | `Label`, `LabelGroup` |
 | `app.schemas.label` | `LabelCreate`, `LabelGroupCreate`, `LabelGroupUpdate`, `LabelUpdate` |
 | `app.services.agent_routing_policy` | `CAPABILITY_LABEL_SKILL_KEYS` |
@@ -26,39 +27,44 @@ Service for governed label taxonomy and built-in defaults.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/mcp_agent_tools.py"]
-    n1["backend/app/models/label.py"]
-    n2["backend/app/routers/labels.py"]
-    n3["backend/app/schemas/label.py"]
-    n4["backend/app/services/agent_routing_policy.py"]
-    n5["backend/app/services/label_service.py"]
-    n6["backend/app/services/language_service.py"]
-    n7["backend/app/services/upgrade_service.py"]
-    n8["backend/app/sql_semantics.py"]
-    n9["backend/tests/test_agent_routing_contract.py"]
-    n0 --> n3
-    n0 --> n5
-    n2 --> n3
-    n2 --> n5
-    n2 --> n6
-    n5 --> n1
-    n5 --> n3
-    n5 --> n4
-    n5 --> n6
-    n5 --> n8
-    n7 --> n5
-    n9 --> n4
-    n9 --> n5
-    click n0 "../modules/mcp_agent_tools.md"
-    click n1 "../modules/models_label.md"
-    click n2 "../modules/labels.md"
-    click n3 "../modules/schemas_label.md"
-    click n4 "../modules/agent_routing_policy.md"
-    click n5 "../modules/label_service.md"
-    click n6 "../modules/language_service.md"
-    click n7 "../modules/upgrade_service.md"
-    click n8 "../modules/sql_semantics.md"
-    click n9 "../modules/test_agent_routing_contract.md"
+    n0["backend/app/commands.py"]
+    n1["backend/app/mcp_agent_tools.py"]
+    n2["backend/app/models/label.py"]
+    n3["backend/app/routers/labels.py"]
+    n4["backend/app/schemas/label.py"]
+    n5["backend/app/services/agent_routing_policy.py"]
+    n6["backend/app/services/label_service.py"]
+    n7["backend/app/services/language_service.py"]
+    n8["backend/app/services/upgrade_service.py"]
+    n9["backend/app/sql_semantics.py"]
+    n10["backend/tests/test_agent_routing_contract.py"]
+    n1 --> n0
+    n1 --> n4
+    n1 --> n6
+    n3 --> n4
+    n3 --> n6
+    n3 --> n7
+    n6 --> n0
+    n6 --> n2
+    n6 --> n4
+    n6 --> n5
+    n6 --> n7
+    n6 --> n9
+    n8 --> n0
+    n8 --> n6
+    n10 --> n5
+    n10 --> n6
+    click n0 "../modules/commands.md"
+    click n1 "../modules/mcp_agent_tools.md"
+    click n2 "../modules/models_label.md"
+    click n3 "../modules/labels.md"
+    click n4 "../modules/schemas_label.md"
+    click n5 "../modules/agent_routing_policy.md"
+    click n6 "../modules/label_service.md"
+    click n7 "../modules/language_service.md"
+    click n8 "../modules/upgrade_service.md"
+    click n9 "../modules/sql_semantics.md"
+    click n10 "../modules/test_agent_routing_contract.md"
 ```
 
 ### Internal neighbors
@@ -69,6 +75,7 @@ flowchart LR
 | Inbound | [labels](../modules/labels.md) |
 | Inbound | [upgrade_service](../modules/upgrade_service.md) |
 | Inbound | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) |
+| Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_label](../modules/models_label.md) |
 | Outbound | [schemas_label](../modules/schemas_label.md) |
 | Outbound | [agent_routing_policy](../modules/agent_routing_policy.md) |
@@ -85,5 +92,5 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [LabelService](../entities/LabelService.md) | 110 | — | Service for label group and label CRUD plus built-in label seeding. |
-| [LabelConflictError](../entities/LabelConflictError.md) | 317 | `ValueError` | Raised when label taxonomy uniqueness constraints are violated. |
+| [LabelService](../entities/LabelService.md) | 112 | — | Service for label group and label CRUD plus built-in label seeding. |
+| [LabelConflictError](../entities/LabelConflictError.md) | 319 | `ValueError` | Raised when label taxonomy uniqueness constraints are violated. |

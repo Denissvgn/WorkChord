@@ -68,7 +68,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_template_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> TemplateService` | — | Dependency for template service. |
+| `get_template_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> TemplateService` | — | Dependency for template service. |
 | `list_templates` | *(async)* `(service: Annotated[TemplateService, Depends(get_template_service)], template_type: Annotated[Optional[TemplateType], Query()] = None, include_inactive: bool = Query(False))` | `@router.get('/templates', response_model=list[WorkTemplateResponse])` | List reusable templates. |
 | `create_template` | *(async)* `(data: WorkTemplateCreate, service: Annotated[TemplateService, Depends(get_template_service)])` | `@router.post('/templates', response_model=WorkTemplateResponse, status_code=status.HTTP_201_CREATED)` | Create a reusable template. |
 | `get_template` | *(async)* `(template_id: int, service: Annotated[TemplateService, Depends(get_template_service)])` | `@router.get('/templates/{template_id}', response_model=WorkTemplateResponse)` | Get a template by ID. |

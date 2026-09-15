@@ -1,8 +1,8 @@
 # IterationUpdate
 
-**Location:** `backend/app/schemas/iteration.py:18`
+**Location:** `backend/app/schemas/iteration.py:22`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
 
 ## Description
@@ -30,7 +30,7 @@ Schema for updating an iteration.
 ```mermaid
 flowchart LR
     n0["IterationUpdate (backend/app/schemas/iteration.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["update_iteration (backend/app/routers/agent_planning.py)"]
     n4["update_iteration (backend/app/routers/iterations.py)"]
@@ -45,6 +45,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     click n0 "../modules/schemas_iteration.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/iterations.md"
@@ -63,7 +64,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

@@ -1,6 +1,6 @@
 # MemberWorkload
 
-**Location:** `backend/app/schemas/team.py:317`
+**Location:** `backend/app/schemas/team.py:319`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

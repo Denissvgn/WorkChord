@@ -14,6 +14,7 @@ _Auto-generated from `GanttChartProps` in `frontend/src/components/gantt/GanttCh
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `iterationId` | `number` | *required* | — |
+| `iterationRevision` | `number` | *required* | — |
 | `startDate` | `string` | *required* | — |
 | `endDate` | `string` | *required* | — |
 | `tasks` | `GanttTask[]` | *required* | — |
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [GanttChart](../modules/GanttChart.md) | 0 | `endDate`, `holidays`, `iterationId`, `memberVacations`, `onSaveSandbox`, `sandboxMode`, `startDate`, `tasks`, `weekends` |
+| [GanttChart](../modules/GanttChart.md) | 0 | `endDate`, `holidays`, `iterationId`, `iterationRevision`, `memberVacations`, `onSaveSandbox`, `sandboxMode`, `startDate`, `tasks`, `weekends` |
 
 ### References
 

@@ -2,12 +2,14 @@
 
 **Entry point:** `workspace_mark_triage_item_duplicate` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [config](../modules/config.md), [maintenance](../modules/maintenance.md), [mcp_agent_tools](../modules/mcp_agent_tools.md), and 6 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), and 8 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
@@ -41,11 +43,14 @@ sequenceDiagram
     participant p16 as _open_db_session
     participant p17 as _session_factory
     participant p18 as hasattr
-    participant p19 as _authenticate_agent_key
-    participant p20 as AgentService(…).authenticate
-    participant p21 as AgentService
-    participant p22 as _require_scope_requirement
-    participant p23 as isinstance (backend/app/mcp_server.py…require_scope_requirement)
+    participant p19 as command_transaction
+    participant p20 as current_command
+    participant p21 as getattr (backend/app/commands.py:current_command)
+    participant p22 as isinstance (backend/app/commands.py:current_command)
+    participant p23 as info.get
+    participant p24 as RuntimeError
+    participant p25 as CommandState
+    participant p26 as db.rollback (backend/app/commands.py:command_transaction)
     p0->>p1: _tool_call
     p1->>p2: enforce_mcp_access
     p2->>p3: get_settings
@@ -67,18 +72,18 @@ sequenceDiagram
     p11->>p16: _open_db_session
     p16-->>p17: _session_factory
     p16-->>p18: hasattr
-    p11->>p19: _authenticate_agent_key
-    p19->>p3: get_settings
-    p19->>p15: MCPAuthError
-    p19-->>p20: AgentService(…).authenticate
-    p19->>p21: AgentService
-    p19->>p15: MCPAuthError
-    p19->>p15: MCPAuthError
-    p11->>p22: _require_scope_requirement
-    p22-->>p23: isinstance (backend/app/mcp_server.py…require_scope_requirement)
+    p11->>p19: command_transaction
+    p19->>p20: current_command
+    p20-->>p21: getattr (backend/app/commands.py:current_command)
+    p20-->>p22: isinstance (backend/app/commands.py:current_command)
+    p20-->>p23: info.get
+    p19-->>p24: RuntimeError
+    p19->>p25: CommandState
+    p19-->>p24: RuntimeError
+    p19-->>p26: db.rollback (backend/app/commands.py:command_transaction)
 ```
 
-> Call sequence diagram shows 30 of 124 interactions; 94 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 146 interactions; 116 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -123,7 +128,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `workspace_mark_triage_item_duplicate` | `triage_item_id: int`, `payload: dict[str, Any]`, `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | `ToolError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError`, `AgentTeamSetupConflictError`, `AgentModelConflictError`, `AgentConflictError`, `AgentPermissionError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError`, `AgentTeamSetupConflictError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -139,10 +144,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_mark_triage_item_duplicate | _tool_call | 1825 | `_tool_call('planning:write', ...)` |
-| _tool_call | enforce_mcp_access | 278 | `enforce_mcp_access(required_scope)` |
+| workspace_mark_triage_item_duplicate | _tool_call | 1853 | `_tool_call('planning:write', ...)` |
+| _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

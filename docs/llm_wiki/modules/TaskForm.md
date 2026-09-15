@@ -6,10 +6,13 @@
 
 _Auto-generated from `frontend/src/components/tasks/TaskForm.tsx`._
 
+Task drafts have explicit dirty/pending guards and same-account recovery storage. Conflicts load current state before an explicit reapply; saving stays disabled while that refresh is incomplete. Stable labels/disclosure state identify controls, and baselines, forecasts and actual events remain distinct in the editor.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `../../features/identity/identityContext` | `useIdentity` |
 | `../../i18n/seedDisplay` | `templateDisplay` |
 | `../../services/iterationService` | `iterationService` |
 | `../../services/projectService` | `projectService` |
@@ -34,10 +37,11 @@ _Auto-generated from `frontend/src/components/tasks/TaskForm.tsx`._
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
 | `./TaskDependencySelector` | `TaskDependencySelector` |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` |
+| `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft` |
 | `./taskEditorContract` | `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor`, `TaskConflictMetadata`, `TaskEditorValues` |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` |
 | `lucide-react` | `Inbox`, `Save`, `Sparkles` |
-| `react` | `useEffect`, `useMemo`, `useState` |
+| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useState` |
 | `react-i18next` | `useTranslation` |
 
 ## Module Signals
@@ -64,8 +68,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (4) |
-| Outbound | `frontend` (25) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (27) |
 
 ### External packages
 
@@ -73,16 +77,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 45 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Class | 47 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskForm` | `({     iterationId,     initialData,     parentId,     parentPriority,     parentProjectId,     parentMilestoneId,     onSuccess,     onCancel,     mode = 'direct',     onSaveSandbox,     onDirtyChange,     confirmUnsavedOnCancel = true, }: TaskFormProps)` | — | — |
+| `TaskForm` | `({     iterationId,     initialData,     parentId,     parentPriority,     parentProjectId,     parentMilestoneId,     onSuccess,     onCancel,     mode = 'direct',     onSaveSandbox,     onDirtyChange,     onPendingChange,     onDiscardReady,     confirmUnsavedOnCancel = true, }: TaskFormProps)` | — | — |

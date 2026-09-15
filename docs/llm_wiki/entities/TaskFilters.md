@@ -20,6 +20,7 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 | `status` | `string \| null` | *required* | — |
 | `hasDependency` | `boolean \| null` | *required* | — |
 | `isOverdue` | `boolean \| null` | *required* | — |
+| `isIterationOverflow` | `boolean \| null` | *required* | — |
 | `agentReady` | `boolean \| null` | *required* | — |
 | `startDateFrom` | `string` | *required* | — |
 | `startDateTo` | `string` | *required* | — |
@@ -46,6 +47,7 @@ flowchart LR
     n6["frontend/src/utils/taskFilterDefaults.ts"]
     n7["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
     n8["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
+    n9["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -54,6 +56,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/KanbanBoard.md"
     click n2 "../modules/SavedViewsControl.md"
@@ -63,13 +66,14 @@ flowchart LR
     click n6 "../modules/taskFilterDefaults.md"
     click n7 "../modules/taskFilters.md"
     click n8 "../modules/taskFilters.md"
+    click n9 "../modules/visibleWork.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `planningIssue`, `priority`, `projectId`, `startDateFrom` |
+| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isIterationOverflow`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `planningIssue`, `priority`, `projectId` |
 
 ### References
 
@@ -83,3 +87,4 @@ flowchart LR
 | `taskFilterDefaults` | import | [taskFilterDefaults](../modules/taskFilterDefaults.md) | — |
 | `filterTaskWithChildren` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
 | `taskMatchesFilters` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
+| `selectVisibleWork` | type_reference | [visibleWork](../modules/visibleWork.md) | — |

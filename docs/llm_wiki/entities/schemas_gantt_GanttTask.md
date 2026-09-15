@@ -1,8 +1,8 @@
 # GanttTask
 
-**Location:** `backend/app/schemas/gantt.py:26`
+**Location:** `backend/app/schemas/gantt.py:28`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `TaskMetricSignals`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
 
 ## Description
@@ -52,13 +52,14 @@ Task representation for Gantt chart.
 ```mermaid
 flowchart LR
     n0["GanttTask (backend/app/schemas/gantt.py)"]
-    n1["BaseModel"]
+    n1["TaskMetricSignals (backend/app/schemas/work_metrics.py)"]
     n2["_task_to_gantt (backend/app/routers/gantt.py)"]
     n3["backend/app/schemas/__init__.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     click n0 "../modules/schemas_gantt.md"
+    click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/routers_gantt.md"
     click n3 "../modules/schemas___init__.md"
 ```
@@ -73,7 +74,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `TaskMetricSignals` | [schemas_work_metrics](../modules/schemas_work_metrics.md) |
 
 ### References
 

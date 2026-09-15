@@ -1,6 +1,6 @@
 # TaskReorder
 
-**Location:** `backend/app/schemas/task.py:97`
+**Location:** `backend/app/schemas/task.py:100`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,7 @@ Schema for reordering tasks.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `task_ids` | `list[int]` | `task_ids` | Yes | No | — | — | — | — |
 | `iteration_id` | `Optional[int]` | `iteration_id` | No | Yes | `None` | — | — | — |
 | `parent_id` | `Optional[int]` | `parent_id` | No | Yes | `None` | — | — | — |
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `iteration_id`, `parent_id`, `task_ids` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `expected_revision`, `iteration_id`, `parent_id`, `task_ids` |
 
 ### Structure
 

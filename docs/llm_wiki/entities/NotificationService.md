@@ -1,6 +1,6 @@
 # NotificationService
 
-**Location:** `backend/app/services/notification_service.py:22`
+**Location:** `backend/app/services/notification_service.py:24`
 **Kind:** Class
 **Bases:** —
 **Module:** [notification_service](../modules/notification_service.md)

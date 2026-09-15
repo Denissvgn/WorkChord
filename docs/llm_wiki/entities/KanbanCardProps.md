@@ -14,6 +14,7 @@ _Auto-generated from `KanbanCardProps` in `frontend/src/components/tasks/KanbanB
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `task` | `Task` | *required* | — |
+| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | *required* | — |
 
 ## Methods
 
@@ -35,7 +36,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [KanbanCard](../modules/KanbanCard.md) | 0 | `task` |
+| [KanbanCard](../modules/KanbanCard.md) | 0 | `onOpen`, `task` |
 
 ### References
 

@@ -1,6 +1,6 @@
 # RoadmapMilestonePage
 
-**Location:** `frontend/src/types/project.ts:137`
+**Location:** `frontend/src/types/project.ts:138`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

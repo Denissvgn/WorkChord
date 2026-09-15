@@ -83,4 +83,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `KanbanColumn` | `({ id, title, tasks, count, tone }: KanbanColumnProps)` | — | — |
+| `KanbanColumn` | `({ id, title, tasks, count, tone, onOpen }: KanbanColumnProps)` | — | — |

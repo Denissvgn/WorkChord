@@ -51,7 +51,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `explain_schedule` | `iteration_id: int`, `db: Annotated[AsyncSession, Depends(get_db)]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]`, `data: Annotated[ExplainScheduleRequest \| None, Body()]` | `status` | - | `...` |
+| `explain_schedule` | `iteration_id: int`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]`, `data: Annotated[ExplainScheduleRequest \| None, Body()]` | `status` | - | `...` |
 | `SchedulerService` | - | - | - | - |
 | `scheduler_service.schedule_iteration` | - | - | - | - |
 | `HTTPException` | - | - | - | - |

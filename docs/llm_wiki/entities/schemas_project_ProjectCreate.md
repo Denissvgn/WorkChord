@@ -1,6 +1,6 @@
 # ProjectCreate
 
-**Location:** `backend/app/schemas/project.py:111`
+**Location:** `backend/app/schemas/project.py:115`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -13,6 +13,7 @@ Schema for creating a project.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `ProjectStatus` | `status` | No | No | `ProjectStatus.PLANNED` | — | — | — |
@@ -61,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date` |
+| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
 
 ### Structure
 

@@ -41,12 +41,14 @@ flowchart LR
     n4["frontend/src/services/labelService.ts"]
     n5["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
     n6["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
+    n7["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_label.md"
     click n1 "../modules/TemplateLabelSettings.test.md"
     click n2 "../modules/TemplateLabelSettings.md"
@@ -54,6 +56,7 @@ flowchart LR
     click n4 "../modules/labelService.md"
     click n5 "../modules/taskFilters.md"
     click n6 "../modules/taskFilters.md"
+    click n7 "../modules/visibleWork.md"
 ```
 
 ### Summary
@@ -72,3 +75,4 @@ flowchart LR
 | `labelService` | import | [labelService](../modules/labelService.md) | — |
 | `filterTaskWithChildren` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
 | `taskMatchesFilters` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
+| `selectVisibleWork` | type_reference | [visibleWork](../modules/visibleWork.md) | — |

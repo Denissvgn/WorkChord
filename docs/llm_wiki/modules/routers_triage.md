@@ -87,9 +87,9 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_triage_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> TriageService` | — | Dependency for triage service. |
-| `get_llm_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> LLMService` | — | Dependency for LLM-powered triage classification. |
-| `get_assignee_recommendation_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> AssigneeRecommendationService` | — | Dependency for assignee recommendation service. |
+| `get_triage_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> TriageService` | — | Dependency for triage service. |
+| `get_llm_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> LLMService` | — | Dependency for LLM-powered triage classification. |
+| `get_assignee_recommendation_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AssigneeRecommendationService` | — | Dependency for assignee recommendation service. |
 | `_bad_request` | *(async)* `(service, error: ValueError) -> HTTPException` | — | — |
 | `_not_found_detail` | *(async)* `(service, triage_item_id: int) -> str` | — | — |
 | `list_triage_items` | *(async)* `(service: Annotated[TriageService, Depends(get_triage_service)], active: Annotated[Optional[bool], Query()] = True, statuses: Annotated[Optional[list[TriageItemStatus]], Query(alias='status')] = None, q: Optional[str] = Query(None, min_length=1), source: Optional[str] = Query(None, min_length=1, max_length=100), limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0))` | `@router.get('/triage', response_model=list[TriageItemResponse])` | List triage items. |

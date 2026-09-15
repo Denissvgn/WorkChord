@@ -36,7 +36,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| run_task_bulk_operation | service.run | 294 | `service.run(data)` |
+| run_task_bulk_operation | service.run | 277 | `service.run(data)` |
 
 ### Boundary effects
 
@@ -46,7 +46,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `run_task_bulk_operation` | `service.run` | 294 |
+| unresolved_call | `run_task_bulk_operation` | `service.run` | 277 |
 
 ## Behavior
 

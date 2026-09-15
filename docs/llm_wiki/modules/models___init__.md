@@ -16,11 +16,13 @@ Models package.
 | `app.models.database_migration` | `DatabaseMigrationGate` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType`, `ExternalLinkProvider` |
 | `app.models.github` | `GitHubStatusAutomationRule` |
+| `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `Label`, `LabelGroup` |
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
+| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport`, `TaskScheduleBaseline` |
 | `app.models.release` | `Release`, `ReleaseStatus`, `release_tasks` |
 | `app.models.request_source` | `RequestSource`, `RequestSourceLink`, `RequestSourceType` |
 | `app.models.saved_view` | `SavedView`, `SavedViewScope`, `SavedViewType` |
@@ -51,6 +53,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (21) |
+| Outbound | `backend` (23) |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

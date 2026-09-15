@@ -72,10 +72,10 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `_if_none_match_matches` | `(value: Optional[str], etag: str) -> bool` | — | Apply weak If-None-Match comparison for a GET representation. |
-| `get_agent_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> AgentService` | — | Dependency for agent service. |
-| `get_agent_work_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> AgentWorkService` | — | Dependency for durable assignment and worker lifecycle operations. |
-| `get_agent_routing_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> AgentRoutingService` | — | Dependency for deterministic model-aware routing operations. |
-| `get_agent_team_setup_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> AgentTeamSetupService` | — | Dependency for manifest-driven agent-team setup operations. |
+| `get_agent_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AgentService` | — | Dependency for agent service. |
+| `get_agent_work_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AgentWorkService` | — | Dependency for durable assignment and worker lifecycle operations. |
+| `get_agent_routing_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AgentRoutingService` | — | Dependency for deterministic model-aware routing operations. |
+| `get_agent_team_setup_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AgentTeamSetupService` | — | Dependency for manifest-driven agent-team setup operations. |
 | `get_agent_actor` | *(async)* `(service: Annotated[AgentService, Depends(get_agent_service)], api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None) -> AgentActor` | — | Authenticate an agent API key. |
 | `_admin_header_actor` | `() -> AgentActor` | — | Build a transient actor for authenticated human control-plane access. |
 | `get_agent_admin_actor` | *(async)* `(service: Annotated[AgentService, Depends(get_agent_service)], agent_api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None, admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None) -> AgentActor` | — | Authenticate a stored admin actor, bootstrap provisioning key, or admin API key. |

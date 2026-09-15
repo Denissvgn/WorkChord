@@ -1,6 +1,6 @@
 # GitHubWebhookSignatureError
 
-**Location:** `backend/app/services/github_webhook_service.py:41`
+**Location:** `backend/app/services/github_webhook_service.py:43`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [github_webhook_service](../modules/github_webhook_service.md)

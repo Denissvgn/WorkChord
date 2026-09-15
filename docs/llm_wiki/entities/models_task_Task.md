@@ -15,6 +15,17 @@ Task model with tree structure and dependencies.
 |------|------|---------|-------------|
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
 | `title` | `Mapped[str]` | `mapped_column(String(500), nullable=False)` | — |
+| `is_summary` | `Mapped[bool]` | `mapped_column(default=False, server_default=false(), nullable=False)` | — |
+| `baseline_start_date` | `Mapped[date \| None]` | `mapped_column(Date)` | — |
+| `baseline_end_date` | `Mapped[date \| None]` | `mapped_column(Date)` | — |
+| `baseline_revision` | `Mapped[int]` | `mapped_column(Integer, default=0, server_default='0', nullable=False)` | — |
+| `baseline_provenance` | `Mapped[str]` | `mapped_column(String(32), default='uncommitted', server_default='legacy_unknown', nullable=False)` | — |
+| `started_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `resolved_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `accepted_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `accepted_version` | `Mapped[int \| None]` | `mapped_column(Integer)` | — |
+| `executed_by_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
+| `accepted_by_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
 | `description` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `priority` | `Mapped[int]` | `mapped_column(Integer, default=5)` | — |
 | `effort_days` | `Mapped[float]` | `mapped_column(Float, default=1.0)` | — |
@@ -73,18 +84,18 @@ Task model with tree structure and dependencies.
 flowchart LR
     n0["Task (backend/app/models/task.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/models/__init__.py"]
-    n3["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
-    n4["backend/app/models/iteration.py"]
-    n5["backend/app/models/project.py"]
-    n6["backend/app/models/release.py"]
-    n7["backend/app/models/request_source.py"]
-    n8["backend/app/models/task_status_log.py"]
-    n9["backend/app/models/team_member.py"]
-    n10["backend/app/models/triage.py"]
-    n11["_get_calculated_effort (backend/app/routers/gantt.py)"]
-    n12["_task_to_gantt (backend/app/routers/gantt.py)"]
-    n13["AgentPlanningService._iteration_tasks_for_update (backend/app/services/agent_planning_service.py)"]
+    n2["backend/app/authority.py"]
+    n3["backend/app/commands.py"]
+    n4["backend/app/http_authority.py"]
+    n5["backend/app/models/__init__.py"]
+    n6["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
+    n7["backend/app/models/iteration.py"]
+    n8["backend/app/models/project.py"]
+    n9["backend/app/models/release.py"]
+    n10["backend/app/models/request_source.py"]
+    n11["backend/app/models/task_status_log.py"]
+    n12["backend/app/models/team_member.py"]
+    n13["backend/app/models/triage.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -100,25 +111,25 @@ flowchart LR
     n13 --> n0
     click n0 "../modules/models_task.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_agent.md"
-    click n4 "../modules/models_iteration.md"
-    click n5 "../modules/models_project.md"
-    click n6 "../modules/models_release.md"
-    click n7 "../modules/models_request_source.md"
-    click n8 "../modules/task_status_log.md"
-    click n9 "../modules/team_member.md"
-    click n10 "../modules/models_triage.md"
-    click n11 "../modules/routers_gantt.md"
-    click n12 "../modules/routers_gantt.md"
-    click n13 "../modules/agent_planning_service.md"
+    click n2 "../modules/authority.md"
+    click n3 "../modules/commands.md"
+    click n4 "../modules/http_authority.md"
+    click n5 "../modules/models___init__.md"
+    click n6 "../modules/models_agent.md"
+    click n7 "../modules/models_iteration.md"
+    click n8 "../modules/models_project.md"
+    click n9 "../modules/models_release.md"
+    click n10 "../modules/models_request_source.md"
+    click n11 "../modules/task_status_log.md"
+    click n12 "../modules/team_member.md"
+    click n13 "../modules/models_triage.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task](../modules/models_task.md) | 0 | `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `assignee`, `assignee_id`, `calculated_effort_days`, `children`, `claim_expires_at`, `claim_generation`, `claim_id`, `claimed_agent` |
+| [models_task](../modules/models_task.md) | 0 | `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `assignee`, `assignee_id`, `baseline_end_date`, `baseline_provenance`, `baseline_revision` |
 
 ### Structure
 
@@ -130,6 +141,9 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `authority` | import | [authority](../modules/authority.md) | — |
+| `commands` | import | [commands](../modules/commands.md) | — |
+| `http_authority` | import | [http_authority](../modules/http_authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `_reject_routing_assessment_mutation` | type_reference | [models_agent](../modules/models_agent.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
@@ -139,8 +153,5 @@ flowchart LR
 | `task_status_log` | import | [task_status_log](../modules/task_status_log.md) | — |
 | `team_member` | import | [team_member](../modules/team_member.md) | — |
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
-| `_get_calculated_effort` | type_reference | [routers_gantt](../modules/routers_gantt.md) | — |
-| `_task_to_gantt` | type_reference | [routers_gantt](../modules/routers_gantt.md) | — |
-| `AgentPlanningService._iteration_tasks_for_update` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 
-> References: showing 12 of 163 logical references; 151 omitted by the 12-row generated summary limit.
+> References: showing 12 of 175 logical references; 163 omitted by the 12-row generated summary limit.

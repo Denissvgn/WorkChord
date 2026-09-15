@@ -14,7 +14,9 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 | `../components/dashboard/SavedViewDashboardCards` | `SavedViewDashboardCards` |
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/notifications/NotificationsPanel` | `NotificationsPanel` |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
 | `../components/ui` | `PageHeader`, `PageLayout` |
+| `../services/iterationService` | `iterationService` |
 | `../services/taskService` | `taskService` |
 | `../store/iterationStore` | `useIterationStore` |
 | `../types/task` | `TaskStatusLog` |
@@ -37,33 +39,39 @@ flowchart LR
     n1["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
     n2["frontend/src/components/feedback/QueryState.tsx"]
     n3["frontend/src/components/notifications/NotificationsPanel.tsx"]
-    n4["frontend/src/components/ui/index.ts"]
-    n5["frontend/src/pages/AnalyticsPage.tsx"]
-    n6["frontend/src/services/taskService.ts"]
-    n7["frontend/src/store/iterationStore.ts"]
-    n8["frontend/src/types/task.ts"]
-    n0 --> n8
+    n4["frontend/src/components/tasks/WorkMetricsLine.tsx"]
+    n5["frontend/src/components/ui/index.ts"]
+    n6["frontend/src/pages/AnalyticsPage.tsx"]
+    n7["frontend/src/services/iterationService.ts"]
+    n8["frontend/src/services/taskService.ts"]
+    n9["frontend/src/store/iterationStore.ts"]
+    n10["frontend/src/types/task.ts"]
+    n0 --> n10
     n1 --> n2
     n3 --> n2
-    n3 --> n6
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n3
-    n5 --> n4
-    n5 --> n6
-    n5 --> n7
-    n5 --> n8
+    n3 --> n8
+    n6 --> n0
+    n6 --> n1
+    n6 --> n2
+    n6 --> n3
+    n6 --> n4
+    n6 --> n5
+    n6 --> n7
     n6 --> n8
+    n6 --> n9
+    n6 --> n10
+    n8 --> n10
     click n0 "../modules/TaskStatusFlow.md"
     click n1 "../modules/SavedViewDashboardCards.md"
     click n2 "../modules/QueryState.md"
     click n3 "../modules/NotificationsPanel.md"
-    click n4 "../modules/index.md"
-    click n5 "../modules/AnalyticsPage.md"
-    click n6 "../modules/taskService.md"
-    click n7 "../modules/iterationStore.md"
-    click n8 "../modules/types_task.md"
+    click n4 "../modules/WorkMetricsLine.md"
+    click n5 "../modules/index.md"
+    click n6 "../modules/AnalyticsPage.md"
+    click n7 "../modules/iterationService.md"
+    click n8 "../modules/taskService.md"
+    click n9 "../modules/iterationStore.md"
+    click n10 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -74,7 +82,9 @@ flowchart LR
 | Outbound | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [NotificationsPanel](../modules/NotificationsPanel.md) |
+| Outbound | [WorkMetricsLine](../modules/WorkMetricsLine.md) |
 | Outbound | [index](../modules/index.md) |
+| Outbound | [iterationService](../modules/iterationService.md) |
 | Outbound | [taskService](../modules/taskService.md) |
 | Outbound | [iterationStore](../modules/iterationStore.md) |
 | Outbound | [types_task](../modules/types_task.md) |
@@ -89,4 +99,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [HistoryGroup](../entities/HistoryGroup.md) | Class | 13 | — | — |
+| [HistoryGroup](../entities/HistoryGroup.md) | Class | 15 | — | — |

@@ -1,6 +1,6 @@
 # SavedViewListParams
 
-**Location:** `frontend/src/types/savedView.ts:35`
+**Location:** `frontend/src/types/savedView.ts:37`
 **Kind:** Class
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)

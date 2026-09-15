@@ -98,17 +98,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_project_update | service.create_project_update | 1004 | `service.create_project_update(actor, project_id, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| create_agent_project_update | _handle_agent_error | 1013 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 244 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 246 | `str(exc)` |
-| _handle_agent_error | str | 248 | `str(exc)` |
-| _handle_agent_error | HTTPException | 250 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 251 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 252 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 252 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 253 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 254 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| create_agent_project_update | service.create_project_update | 1012 | `service.create_project_update(actor, project_id, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| create_agent_project_update | _handle_agent_error | 1021 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 254 | `str(exc)` |
+| _handle_agent_error | str | 256 | `str(exc)` |
+| _handle_agent_error | HTTPException | 258 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 259 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 260 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 260 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 261 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 262 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -118,14 +118,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_agent_project_update` | `service.create_project_update` | 1004 |
-| external_call | `_handle_agent_error` | `isinstance` | 244 |
-| external_call | `_handle_agent_error` | `HTTPException` | 250 |
-| external_call | `_handle_agent_error` | `isinstance` | 251 |
-| external_call | `_handle_agent_error` | `HTTPException` | 252 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 252 |
-| external_call | `_handle_agent_error` | `isinstance` | 253 |
-| external_call | `_handle_agent_error` | `HTTPException` | 254 |
+| unresolved_call | `create_agent_project_update` | `service.create_project_update` | 1012 |
+| external_call | `_handle_agent_error` | `isinstance` | 252 |
+| external_call | `_handle_agent_error` | `HTTPException` | 258 |
+| external_call | `_handle_agent_error` | `isinstance` | 259 |
+| external_call | `_handle_agent_error` | `HTTPException` | 260 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 260 |
+| external_call | `_handle_agent_error` | `isinstance` | 261 |
+| external_call | `_handle_agent_error` | `HTTPException` | 262 |
 | step_limit | `create_agent_project_update` | `first 12 steps` | 0 |
 
 ## Behavior

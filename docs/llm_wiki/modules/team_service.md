@@ -10,6 +10,7 @@ Team member service with business logic.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush`, `schedule_input_command` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
@@ -44,7 +45,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (7) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
@@ -52,10 +53,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TeamService](../entities/TeamService.md) | 34 | — | Service for team member operations. |
+| [TeamService](../entities/TeamService.md) | 36 | — | Service for team member operations. |

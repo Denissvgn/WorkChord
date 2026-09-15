@@ -1,6 +1,6 @@
 # ProjectProfileOwner
 
-**Location:** `frontend/src/types/project.ts:10`
+**Location:** `frontend/src/types/project.ts:11`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

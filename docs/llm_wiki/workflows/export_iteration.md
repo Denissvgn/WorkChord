@@ -1,7 +1,7 @@
 # export_iteration
 
 **Entry point:** `export.export_iteration`
-**Modules involved:** [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md)
+**Modules involved:** [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), [services_work_metrics](../modules/services_work_metrics.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md)
 
 > Export iteration data as JSON.
 
@@ -11,11 +11,13 @@
 1. `iteration_service.IterationService`
 2. `task_service.TaskService`
 3. `team_service.TeamService`
+4. `services_work_metrics.aggregate_metrics`
 
 ## Touches
 
 - [export](../modules/export.md)
 - [iteration_service](../modules/iteration_service.md)
+- [services_work_metrics](../modules/services_work_metrics.md)
 - [task_service](../modules/task_service.md)
 - [team_service](../modules/team_service.md)
 

@@ -33,7 +33,7 @@ flowchart LR
     s1 -->|"IterationService(db)"| s2
     s1 -. "iteration_service.get_by_id(iteration_id)" .-> s3
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s4
-    s1 -. "service.schedule_iteration(iteration_id)" .-> s5
+    s1 -. "service.schedule_iteration(iteration_id, expected_revision=..., commit_baseline=True, rebaseline_reason=...)" .-> s5
     click s1 "../modules/routers_gantt.md"
     click s2 "../modules/iteration_service.md"
 ```
@@ -42,7 +42,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `schedule_iteration` | `iteration_id: int`, `service: Annotated[SchedulerService, Depends(get_scheduler_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `result` |
+| `schedule_iteration` | `iteration_id: int`, `service: Annotated[SchedulerService, Depends(get_scheduler_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `data: ScheduleApplyRequest \| None` | `status` | - | `result` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -52,10 +52,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| schedule_iteration | IterationService | 37 | `IterationService(db)` |
-| schedule_iteration | iteration_service.get_by_id | 38 | `iteration_service.get_by_id(iteration_id)` |
-| schedule_iteration | HTTPException | 41 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| schedule_iteration | service.schedule_iteration | 46 | `service.schedule_iteration(iteration_id)` |
+| schedule_iteration | IterationService | 40 | `IterationService(db)` |
+| schedule_iteration | iteration_service.get_by_id | 41 | `iteration_service.get_by_id(iteration_id)` |
+| schedule_iteration | HTTPException | 44 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| schedule_iteration | service.schedule_iteration | 49 | `service.schedule_iteration(iteration_id, expected_revision=..., commit_baseline=True, rebaseline_reason=...)` |
 
 ### Boundary effects
 
@@ -65,9 +65,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `schedule_iteration` | `iteration_service.get_by_id` | 38 |
-| external_call | `schedule_iteration` | `HTTPException` | 41 |
-| unresolved_call | `schedule_iteration` | `service.schedule_iteration` | 46 |
+| unresolved_call | `schedule_iteration` | `iteration_service.get_by_id` | 41 |
+| external_call | `schedule_iteration` | `HTTPException` | 44 |
+| unresolved_call | `schedule_iteration` | `service.schedule_iteration` | 49 |
 
 ## Behavior
 

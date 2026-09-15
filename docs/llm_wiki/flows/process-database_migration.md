@@ -2,20 +2,24 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [cli_database_migration](../modules/cli_database_migration.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_database_migration](../modules/cli_database_migration.md), [config](../modules/config.md), and 13 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_database_migration](../modules/cli_database_migration.md), and 17 more
 
 **Complete modules touched:**
 
+- [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [catalog](../modules/catalog.md)
 - [cli_database_migration](../modules/cli_database_migration.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [database_config](../modules/database_config.md)
 - [database_migration_canonical](../modules/database_migration_canonical.md)
 - [database_migration_manifest](../modules/database_migration_manifest.md)
 - [github_status_automation_service](../modules/github_status_automation_service.md)
+- [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
+- [models_identity](../modules/models_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [source](../modules/source.md)
 - [system_settings_service](../modules/system_settings_service.md)
@@ -73,7 +77,7 @@ sequenceDiagram
     p2-->>p9: reconcile.add_argument
 ```
 
-> Call sequence diagram shows 30 of 1099 interactions; 1069 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1120 interactions; 1090 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

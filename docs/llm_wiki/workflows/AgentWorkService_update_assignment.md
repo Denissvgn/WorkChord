@@ -1,7 +1,7 @@
 # AgentWorkService_update_assignment
 
 **Entry point:** `agent_work_service.AgentWorkService.update_assignment`
-**Modules involved:** [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [time](../modules/time.md)
 
 > Reassign, reorder, or cancel queued work.
 
@@ -21,12 +21,14 @@
 11. `agent_routing_service.AgentRoutingConflictError`
 12. `time.utc_now`
 13. `agent_routing_service.AgentRoutingConflictError`
+14. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [commands](../modules/commands.md)
 - [time](../modules/time.md)
 
 ## Behavior

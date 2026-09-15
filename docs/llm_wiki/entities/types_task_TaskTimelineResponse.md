@@ -1,6 +1,6 @@
 # TaskTimelineResponse
 
-**Location:** `frontend/src/types/task.ts:340`
+**Location:** `frontend/src/types/task.ts:365`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -1,6 +1,6 @@
 # GitHubStatusService
 
-**Location:** `backend/app/services/github_status_service.py:22`
+**Location:** `backend/app/services/github_status_service.py:24`
 **Kind:** Class
 **Bases:** —
 **Module:** [github_status_service](../modules/github_status_service.md)

@@ -54,7 +54,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `list_snapshots` | `iteration_id: int`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `SnapshotPathError`, `status` | - | `snapshot_service.list_snapshots(...)` |
+| `list_snapshots` | `iteration_id: int`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `SnapshotPathError`, `status` | - | `...` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -67,13 +67,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_snapshots | IterationService | 188 | `IterationService(db)` |
-| list_snapshots | iteration_service.get_by_id | 189 | `iteration_service.get_by_id(iteration_id)` |
-| list_snapshots | HTTPException | 192 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| list_snapshots | SnapshotService | 197 | `SnapshotService(db)` |
-| list_snapshots | snapshot_service.list_snapshots | 199 | `snapshot_service.list_snapshots(iteration_id)` |
-| list_snapshots | HTTPException | 201 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| list_snapshots | str | 201 | `str(exc)` |
+| list_snapshots | IterationService | 190 | `IterationService(db)` |
+| list_snapshots | iteration_service.get_by_id | 191 | `iteration_service.get_by_id(iteration_id)` |
+| list_snapshots | HTTPException | 194 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| list_snapshots | SnapshotService | 199 | `SnapshotService(db)` |
+| list_snapshots | snapshot_service.list_snapshots | 201 | `snapshot_service.list_snapshots(iteration_id)` |
+| list_snapshots | HTTPException | 203 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| list_snapshots | str | 203 | `str(exc)` |
 
 ### Boundary effects
 
@@ -83,10 +83,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_snapshots` | `iteration_service.get_by_id` | 189 |
-| external_call | `list_snapshots` | `HTTPException` | 192 |
-| unresolved_call | `list_snapshots` | `snapshot_service.list_snapshots` | 199 |
-| external_call | `list_snapshots` | `HTTPException` | 201 |
+| unresolved_call | `list_snapshots` | `iteration_service.get_by_id` | 191 |
+| external_call | `list_snapshots` | `HTTPException` | 194 |
+| unresolved_call | `list_snapshots` | `snapshot_service.list_snapshots` | 201 |
+| external_call | `list_snapshots` | `HTTPException` | 203 |
 
 ## Behavior
 

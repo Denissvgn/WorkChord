@@ -1,6 +1,6 @@
 # DrawerCopy
 
-**Location:** `frontend/src/components/tasks/TaskEditorDrawer.tsx:13`
+**Location:** `frontend/src/components/tasks/TaskEditorDrawer.tsx:14`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskEditorDrawer](../modules/TaskEditorDrawer.md)

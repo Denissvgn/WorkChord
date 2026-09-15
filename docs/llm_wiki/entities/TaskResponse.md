@@ -1,8 +1,8 @@
 # TaskResponse
 
-**Location:** `backend/app/schemas/task.py:172`
+**Location:** `backend/app/schemas/task.py:179`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `TaskMetricSignals`
 **Module:** [schemas_task](../modules/schemas_task.md)
 
 ## Description
@@ -19,6 +19,14 @@ Schema for task response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `iteration_revision` | `Optional[int]` | `iteration_revision` | No | Yes | `None` | — | — | — |
+| `baseline_start_date` | `Optional[date]` | `baseline_start_date` | No | Yes | `None` | — | — | — |
+| `baseline_end_date` | `Optional[date]` | `baseline_end_date` | No | Yes | `None` | — | — | — |
+| `baseline_revision` | `int` | `baseline_revision` | No | No | `0` | — | — | — |
+| `baseline_provenance` | `str` | `baseline_provenance` | No | No | `'legacy_unknown'` | — | — | — |
+| `started_at` | `Optional[datetime]` | `started_at` | No | Yes | `None` | — | — | — |
+| `resolved_at` | `Optional[datetime]` | `resolved_at` | No | Yes | `None` | — | — | — |
+| `accepted_at` | `Optional[datetime]` | `accepted_at` | No | Yes | `None` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
@@ -70,7 +78,7 @@ Schema for task response.
 ```mermaid
 flowchart LR
     n0["TaskResponse (backend/app/schemas/task.py)"]
-    n1["BaseModel"]
+    n1["TaskMetricSignals (backend/app/schemas/work_metrics.py)"]
     n2["create_agent_task (backend/app/routers/agent.py)"]
     n3["list_ready_tasks (backend/app/routers/agent.py)"]
     n4["patch_agent_task (backend/app/routers/agent.py)"]
@@ -97,6 +105,7 @@ flowchart LR
     n12 --> n0
     n13 --> n0
     click n0 "../modules/schemas_task.md"
+    click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/routers_agent.md"
@@ -115,13 +124,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `children`, `claim_expires_at`, `claimed_by`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `children`, `claim_expires_at`, `claimed_by` |
 
 ### Structure
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `TaskMetricSignals` | [schemas_work_metrics](../modules/schemas_work_metrics.md) |
 
 ### References
 

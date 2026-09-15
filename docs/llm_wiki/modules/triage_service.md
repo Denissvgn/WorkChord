@@ -10,6 +10,7 @@ Triage service with inbox, lifecycle, and conversion logic.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `LabelGroup` |
 | `app.models.project` | `Project` |
@@ -52,7 +53,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (7) |
-| Outbound | `backend` (16) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -60,12 +61,12 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TriageConflictError](../entities/TriageConflictError.md) | 44 | `Exception` | Raised when a triage action conflicts with current item state. |
-| [TriageDraftNotFoundError](../entities/TriageDraftNotFoundError.md) | 48 | `Exception` | Raised when referenced draft context does not exist. |
-| [TriageService](../entities/TriageService.md) | 52 | — | Service for triage CRUD, inbox filtering, lifecycle actions, and conversion. |
+| [TriageConflictError](../entities/TriageConflictError.md) | 46 | `Exception` | Raised when a triage action conflicts with current item state. |
+| [TriageDraftNotFoundError](../entities/TriageDraftNotFoundError.md) | 50 | `Exception` | Raised when referenced draft context does not exist. |
+| [TriageService](../entities/TriageService.md) | 54 | — | Service for triage CRUD, inbox filtering, lifecycle actions, and conversion. |

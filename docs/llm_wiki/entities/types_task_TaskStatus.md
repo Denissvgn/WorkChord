@@ -85,4 +85,4 @@ flowchart LR
 | `taskService` | import | [taskService](../modules/taskService.md) | — |
 | `github` | import | [types_github](../modules/types_github.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

@@ -10,6 +10,7 @@ Team member schemas.
 
 | Source | Symbols |
 |--------|---------|
+| `app.schemas.planning_inputs` | `PlanningInputRevisions`, `WorkingZone` |
 | `datetime` | `date`, `datetime` |
 | `pydantic` | `BaseModel`, `ConfigDict`, `Field`, `field_validator`, `model_validator` |
 | `typing` | `Any`, `Literal`, `Optional` |
@@ -22,6 +23,7 @@ flowchart LR
     n0["backend"]
     n1["backend/app/schemas/team.py"]
     n0 --> n1
+    n1 --> n0
     click n1 "../modules/schemas_team.md"
 ```
 
@@ -32,6 +34,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (16) |
+| Outbound | `backend` (1) |
 
 ### External packages
 
@@ -39,34 +42,34 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [VacationCreate](../entities/schemas_team_VacationCreate.md) | 26 | `BaseModel` | Schema for creating a vacation. |
-| [VacationUpdate](../entities/VacationUpdate.md) | 39 | `BaseModel` | Schema for partially updating a vacation period. |
-| [VacationResponse](../entities/VacationResponse.md) | 46 | `BaseModel` | Schema for vacation response. |
-| [VacationImportError](../entities/schemas_team_VacationImportError.md) | 57 | `BaseModel` | One vacation import row that could not be applied. |
-| [VacationImportRequest](../entities/VacationImportRequest.md) | 63 | `BaseModel` | CSV text for bulk importing team vacations. |
-| [VacationImportResponse](../entities/schemas_team_VacationImportResponse.md) | 68 | `BaseModel` | Summary of bulk vacation import results. |
-| [TeamMemberCreate](../entities/schemas_team_TeamMemberCreate.md) | 76 | `BaseModel` | Schema for creating a team member. |
-| [TeamMemberUpdate](../entities/TeamMemberUpdate.md) | 87 | `BaseModel` | Schema for updating a team member. |
-| [TeamMemberProfileSkillCreate](../entities/schemas_team_TeamMemberProfileSkillCreate.md) | 98 | `BaseModel` | Schema for creating a profile skill or weakness. |
-| [TeamMemberProfileSkillUpdate](../entities/schemas_team_TeamMemberProfileSkillUpdate.md) | 132 | `BaseModel` | Schema for updating a profile skill or weakness. |
-| [TeamMemberProfileSkillResponse](../entities/TeamMemberProfileSkillResponse.md) | 168 | `BaseModel` | Schema for profile skill responses. |
-| [TeamMemberProfileCreate](../entities/schemas_team_TeamMemberProfileCreate.md) | 186 | `BaseModel` | Schema for creating a reusable team-member profile. |
-| [TeamMemberProfileUpdate](../entities/schemas_team_TeamMemberProfileUpdate.md) | 214 | `BaseModel` | Schema for updating a reusable team-member profile. |
-| [TeamMemberProfileResponse](../entities/TeamMemberProfileResponse.md) | 243 | `BaseModel` | Schema for reusable team-member profile responses. |
-| [TeamMemberProfileCompact](../entities/schemas_team_TeamMemberProfileCompact.md) | 262 | `BaseModel` | Compact profile data embedded in team-member responses. |
-| [TeamMemberResponse](../entities/TeamMemberResponse.md) | 276 | `BaseModel` | Schema for team member response. |
-| [TeamMemberOptionResponse](../entities/TeamMemberOptionResponse.md) | 294 | `BaseModel` | Compact team-member identity for owner and assignee selectors. |
-| [MemberCapacity](../entities/schemas_team_MemberCapacity.md) | 306 | `BaseModel` | Capacity calculation for a team member. |
-| [MemberWorkload](../entities/schemas_team_MemberWorkload.md) | 317 | `BaseModel` | Workload information for a team member. |
-| [TeamImportRequest](../entities/TeamImportRequest.md) | 328 | `BaseModel` | Request for importing team members from text. |
-| [TeamImportResponse](../entities/TeamImportResponse.md) | 333 | `BaseModel` | Response for team import. |
-| [AssigneeRecommendationResponse](../entities/AssigneeRecommendationResponse.md) | 339 | `BaseModel` | Explainable candidate score for assigning a task or triage item. |
+| [VacationCreate](../entities/schemas_team_VacationCreate.md) | 28 | `PlanningInputRevisions` | Schema for creating a vacation. |
+| [VacationUpdate](../entities/VacationUpdate.md) | 41 | `PlanningInputRevisions` | Schema for partially updating a vacation period. |
+| [VacationResponse](../entities/VacationResponse.md) | 48 | `BaseModel` | Schema for vacation response. |
+| [VacationImportError](../entities/schemas_team_VacationImportError.md) | 59 | `BaseModel` | One vacation import row that could not be applied. |
+| [VacationImportRequest](../entities/VacationImportRequest.md) | 65 | `BaseModel` | CSV text for bulk importing team vacations. |
+| [VacationImportResponse](../entities/schemas_team_VacationImportResponse.md) | 70 | `BaseModel` | Summary of bulk vacation import results. |
+| [TeamMemberCreate](../entities/schemas_team_TeamMemberCreate.md) | 78 | `PlanningInputRevisions` | Schema for creating a team member. |
+| [TeamMemberUpdate](../entities/TeamMemberUpdate.md) | 89 | `PlanningInputRevisions` | Schema for updating a team member. |
+| [TeamMemberProfileSkillCreate](../entities/schemas_team_TeamMemberProfileSkillCreate.md) | 100 | `BaseModel` | Schema for creating a profile skill or weakness. |
+| [TeamMemberProfileSkillUpdate](../entities/schemas_team_TeamMemberProfileSkillUpdate.md) | 134 | `PlanningInputRevisions` | Schema for updating a profile skill or weakness. |
+| [TeamMemberProfileSkillResponse](../entities/TeamMemberProfileSkillResponse.md) | 170 | `BaseModel` | Schema for profile skill responses. |
+| [TeamMemberProfileCreate](../entities/schemas_team_TeamMemberProfileCreate.md) | 188 | `BaseModel` | Schema for creating a reusable team-member profile. |
+| [TeamMemberProfileUpdate](../entities/schemas_team_TeamMemberProfileUpdate.md) | 216 | `PlanningInputRevisions` | Schema for updating a reusable team-member profile. |
+| [TeamMemberProfileResponse](../entities/TeamMemberProfileResponse.md) | 245 | `BaseModel` | Schema for reusable team-member profile responses. |
+| [TeamMemberProfileCompact](../entities/schemas_team_TeamMemberProfileCompact.md) | 264 | `BaseModel` | Compact profile data embedded in team-member responses. |
+| [TeamMemberResponse](../entities/TeamMemberResponse.md) | 278 | `BaseModel` | Schema for team member response. |
+| [TeamMemberOptionResponse](../entities/TeamMemberOptionResponse.md) | 296 | `BaseModel` | Compact team-member identity for owner and assignee selectors. |
+| [MemberCapacity](../entities/schemas_team_MemberCapacity.md) | 308 | `BaseModel` | Capacity calculation for a team member. |
+| [MemberWorkload](../entities/schemas_team_MemberWorkload.md) | 319 | `BaseModel` | Workload information for a team member. |
+| [TeamImportRequest](../entities/TeamImportRequest.md) | 330 | `BaseModel` | Request for importing team members from text. |
+| [TeamImportResponse](../entities/TeamImportResponse.md) | 335 | `BaseModel` | Response for team import. |
+| [AssigneeRecommendationResponse](../entities/AssigneeRecommendationResponse.md) | 341 | `BaseModel` | Explainable candidate score for assigning a task or triage item. |
 
 ## Functions
 

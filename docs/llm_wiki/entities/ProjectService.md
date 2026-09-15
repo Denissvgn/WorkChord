@@ -1,6 +1,6 @@
 # ProjectService
 
-**Location:** `backend/app/services/project_service.py:51`
+**Location:** `backend/app/services/project_service.py:53`
 **Kind:** Class
 **Bases:** —
 **Module:** [project_service](../modules/project_service.md)
@@ -42,7 +42,7 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `get_by_id` | *(async)* `(project_id: int) -> Optional[Project]` | — | Get project by ID. |
 | `_project_exists` | *(async)* `(project_id: int) -> bool` | — | Return whether a project exists without loading relationships. |
 | `create` | *(async)* `(data: ProjectCreate, *, commit: bool = True) -> Project` | — | Create a project, optionally leaving commit ownership to the caller. |
-| `update` | *(async)* `(project_id: int, data: ProjectUpdate, *, commit: bool = True) -> Optional[Project]` | — | Apply a partial project update, optionally deferring the commit. |
+| `update` | *(async)* `(project_id: int, data: ProjectUpdate, *, commit: bool = True) -> Optional[Project]` | `@schedule_input_command('project')` | Apply a partial project update, optionally deferring the commit. |
 | `create_project_update` | *(async)* `(project_id: int, data: ProjectUpdateEntryCreate, created_by_session_id: Optional[int], *, created_by_actor_id: Optional[int] = None, evidence_json: Optional[dict] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, commit: bool = True) -> Optional[ProjectUpdateEntry]` | — | Create an append-only project update and apply its health to the project. |
 | `list_project_updates` | *(async)* `(project_id: int) -> Optional[Sequence[ProjectUpdateEntry]]` | — | List append-only project updates in newest-first order. |
 | `list_milestones` | *(async)* `(project_id: int) -> Optional[Sequence[ProjectMilestone]]` | — | List project milestones in roadmap order. |
@@ -66,8 +66,8 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `_empty_task_status_counts` | `() -> dict[str, int]` | — | Return a fresh task status counter. |
 | `_build_milestone_task_group` | `(milestone: Optional[ProjectMilestone], tasks: Sequence[Task], done_statuses: set[str], remaining_statuses: set[str]) -> ProjectMilestoneTaskGroup` | — | Build task aggregate metrics for one milestone bucket. |
 | `_calculate_milestone_groups` | *(async)* `(project_id: int, tasks: Sequence[Task], done_statuses: set[str], remaining_statuses: set[str]) -> list[ProjectMilestoneTaskGroup]` | — | Group linked project tasks by milestone, with unassigned work last. |
-| `_project_task_aggregates` | *(async)* `(project: Project) -> dict[str, object]` | — | Compute workspace-sized project summary inputs inside the database. |
-| `_aggregated_milestone_groups` | *(async)* `(project_id: int) -> list[ProjectMilestoneTaskGroup]` | — | Build milestone summaries from grouped rows rather than task objects. |
+| `_project_task_aggregates` | *(async)* `(project: Project) -> dict[str, object]` | — | Compute canonical authorized leaf metrics in a bounded result aggregate. |
+| `_aggregated_milestone_groups` | *(async)* `(project_id: int) -> list[ProjectMilestoneTaskGroup]` | — | Use the same canonical leaf denominators for each milestone. |
 | `get_summary` | *(async)* `(project_id: int) -> Optional[ProjectSummary]` | — | Calculate project task summary metrics. |
 
 ## Relationships
@@ -138,4 +138,4 @@ flowchart LR
 | `create_project_update` | type_reference | [projects](../modules/projects.md) | — |
 | `delete_initiative` | type_reference | [projects](../modules/projects.md) | — |
 
-> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.
+> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.

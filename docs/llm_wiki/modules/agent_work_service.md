@@ -11,6 +11,7 @@ Durable agent assignment, current-work, verification, and recovery services.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.commands` | `commit_or_flush` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.project` | `Project`, `ProjectUpdateEntry` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
@@ -61,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (19) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -69,13 +70,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 169 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 171 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

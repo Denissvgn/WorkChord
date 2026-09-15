@@ -1,6 +1,6 @@
 # ExplainScheduleResponse
 
-**Location:** `frontend/src/types/gantt.ts:112`
+**Location:** `frontend/src/types/gantt.ts:113`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

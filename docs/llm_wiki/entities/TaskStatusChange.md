@@ -1,6 +1,6 @@
 # TaskStatusChange
 
-**Location:** `backend/app/schemas/task.py:329`
+**Location:** `backend/app/schemas/task.py:353`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -29,10 +29,13 @@ flowchart LR
     n0["TaskStatusChange (backend/app/schemas/task.py)"]
     n1["BaseModel"]
     n2["change_task_status (backend/app/routers/tasks.py)"]
+    n3["backend/tests/test_client_contract.py"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/schemas_task.md"
     click n2 "../modules/tasks.md"
+    click n3 "../modules/test_client_contract.md"
 ```
 
 ### Summary
@@ -52,3 +55,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `change_task_status` | type_reference | [tasks](../modules/tasks.md) | — |
+| `test_client_contract` | import | [test_client_contract](../modules/test_client_contract.md) | — |

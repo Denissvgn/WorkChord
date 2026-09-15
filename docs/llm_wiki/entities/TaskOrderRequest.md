@@ -1,6 +1,6 @@
 # TaskOrderRequest
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:45`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:47`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

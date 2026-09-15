@@ -46,7 +46,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `formalize_task` | `task_id: int`, `data: FormalizeRequest`, `db: Annotated[AsyncSession, Depends(get_db)]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
+| `formalize_task` | `task_id: int`, `data: FormalizeRequest`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
 | `TaskService` | - | - | - | - |
 | `task_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |

@@ -1,6 +1,6 @@
 # CalendarImportError
 
-**Location:** `backend/app/schemas/calendar.py:39`
+**Location:** `backend/app/schemas/calendar.py:47`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)

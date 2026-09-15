@@ -1,6 +1,6 @@
 # RuntimeSettingsError
 
-**Location:** `backend/app/services/system_settings_service.py:36`
+**Location:** `backend/app/services/system_settings_service.py:38`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [system_settings_service](../modules/system_settings_service.md)

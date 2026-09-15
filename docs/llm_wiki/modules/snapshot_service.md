@@ -6,17 +6,24 @@
 
 Snapshot service for iteration state backups.
 
+Stores bounded, checksummed pre-command points transactionally in the database; preview and failed commands cannot publish or evict them. Captured project scopes gate payload reads. Restore preserves supported IDs, recovers captured iteration dates and absences, records baseline restoration, and invalidates current acceptance. Ambiguous legacy files remain quarantined provenance records. Global configuration and external side effects require separate recovery.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `atomic_command`, `current_command`, `lock_iterations` |
+| `app.config` | `get_settings` |
+| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.team_service` | `TeamService` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `timedelta` |
+| `hashlib` | `hashlib` |
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `re` | `re` |
+| `sqlalchemy` | `select`, `delete` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 
 ## Local dependency map
@@ -24,47 +31,21 @@ Snapshot service for iteration state backups.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/routers/snapshots.py"]
-    n1["backend/app/services/iteration_service.py"]
-    n2["backend/app/services/plan_share_service.py"]
-    n3["backend/app/services/snapshot_service.py"]
-    n4["backend/app/services/task_import_service.py"]
-    n5["backend/app/services/task_service.py"]
-    n6["backend/app/services/team_service.py"]
-    n7["backend/app/utils/time.py"]
+    n0["backend"]
+    n1["backend/app/services/snapshot_service.py"]
     n0 --> n1
-    n0 --> n3
-    n0 --> n5
-    n0 --> n6
-    n2 --> n3
-    n2 --> n7
-    n3 --> n1
-    n3 --> n6
-    n3 --> n7
-    n4 --> n3
-    n4 --> n5
-    n5 --> n3
-    click n0 "../modules/snapshots.md"
-    click n1 "../modules/iteration_service.md"
-    click n2 "../modules/plan_share_service.md"
-    click n3 "../modules/snapshot_service.md"
-    click n4 "../modules/task_import_service.md"
-    click n5 "../modules/task_service.md"
-    click n6 "../modules/team_service.md"
-    click n7 "../modules/time.md"
+    n1 --> n0
+    click n1 "../modules/snapshot_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [snapshots](../modules/snapshots.md) |
-| Inbound | [plan_share_service](../modules/plan_share_service.md) |
-| Inbound | [task_import_service](../modules/task_import_service.md) |
-| Inbound | [task_service](../modules/task_service.md) |
-| Outbound | [iteration_service](../modules/iteration_service.md) |
-| Outbound | [team_service](../modules/team_service.md) |
-| Outbound | [time](../modules/time.md) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (6) |
 
 ### External packages
 
@@ -72,9 +53,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SnapshotPathError](../entities/SnapshotPathError.md) | 22 | `ValueError` | Raised when a snapshot name cannot be safely resolved inside its iteration directory. |
-| [SnapshotService](../entities/SnapshotService.md) | 26 | — | Service for creating and managing iteration snapshots. |
+| [SnapshotPathError](../entities/SnapshotPathError.md) | 27 | `ValueError` | Raised when a snapshot name cannot be safely resolved inside its iteration directory. |
+| [SnapshotService](../entities/SnapshotService.md) | 31 | — | Service for creating and managing iteration snapshots. |

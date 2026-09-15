@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `backend/app/schemas/task.py:35`
+**Location:** `backend/app/schemas/task.py:37`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -19,6 +19,7 @@ Schema for creating a task.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `parent_id` | `Optional[int]` | `parent_id` | No | Yes | `None` | — | — | — |
@@ -96,7 +97,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 1 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date`, `parent_id` |
+| [schemas_task](../modules/schemas_task.md) | 1 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `expected_revision`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
 
 ### Structure
 
@@ -121,3 +122,5 @@ flowchart LR
 | `TaskService.create` | type_reference | [task_service](../modules/task_service.md) | — |
 | `TaskService.create_subtask` | type_reference | [task_service](../modules/task_service.md) | — |
 | `TriageService.convert_to_task` | call | [triage_service](../modules/triage_service.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

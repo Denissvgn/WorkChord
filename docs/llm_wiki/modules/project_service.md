@@ -10,6 +10,7 @@ Project service with CRUD and summary logic.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush`, `schedule_input_command` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
@@ -45,8 +46,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Outbound | `backend` (11) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -54,10 +55,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ProjectService](../entities/ProjectService.md) | 51 | — | Service for project CRUD, linked task retrieval, and summary metrics. |
+| [ProjectService](../entities/ProjectService.md) | 53 | — | Service for project CRUD, linked task retrieval, and summary metrics. |

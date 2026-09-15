@@ -1,6 +1,6 @@
 # OutboundWebhookService
 
-**Location:** `backend/app/services/outbound_webhook_service.py:148`
+**Location:** `backend/app/services/outbound_webhook_service.py:150`
 **Kind:** Class
 **Bases:** —
 **Module:** [outbound_webhook_service](../modules/outbound_webhook_service.md)

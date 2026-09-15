@@ -1,6 +1,6 @@
 # RequestSourceNotFoundError
 
-**Location:** `backend/app/services/request_source_service.py:27`
+**Location:** `backend/app/services/request_source_service.py:29`
 **Kind:** Class
 **Bases:** `LookupError`
 **Module:** [request_source_service](../modules/request_source_service.md)

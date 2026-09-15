@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/UserSessionBadge.tsx`._
 
 | Source | Symbols |
 |--------|---------|
+| `../features/identity/IdentityProvider` | `IdentityBadge` |
+| `../features/identity/identityContext` | `useIdentity` |
 | `../services/sessionService` | `sessionService`, `UserSession` |
 | `lucide-react` | `User`, `Loader2` |
 | `react` | `useEffect`, `useState` |
@@ -29,14 +31,21 @@ flowchart LR
     n0["frontend/src/components/layout/AppTopNav.tsx"]
     n1["frontend/src/components/UserSessionBadge.test.tsx"]
     n2["frontend/src/components/UserSessionBadge.tsx"]
-    n3["frontend/src/services/sessionService.ts"]
+    n3["frontend/src/features/identity/identityContext.ts"]
+    n4["frontend/src/features/identity/IdentityProvider.tsx"]
+    n5["frontend/src/services/sessionService.ts"]
     n0 --> n2
     n1 --> n2
     n2 --> n3
+    n2 --> n4
+    n2 --> n5
+    n4 --> n3
     click n0 "../modules/AppTopNav.md"
     click n1 "../modules/UserSessionBadge.test.md"
     click n2 "../modules/UserSessionBadge.md"
-    click n3 "../modules/sessionService.md"
+    click n3 "../modules/identityContext.md"
+    click n4 "../modules/IdentityProvider.md"
+    click n5 "../modules/sessionService.md"
 ```
 
 ### Internal neighbors
@@ -45,6 +54,8 @@ flowchart LR
 |---|---|
 | Inbound | [AppTopNav](../modules/AppTopNav.md) |
 | Inbound | [UserSessionBadge.test](../modules/UserSessionBadge.test.md) |
+| Outbound | [identityContext](../modules/identityContext.md) |
+| Outbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Outbound | [sessionService](../modules/sessionService.md) |
 
 ### External packages

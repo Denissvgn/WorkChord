@@ -1,6 +1,6 @@
 # CalendarImportResponse
 
-**Location:** `backend/app/schemas/calendar.py:53`
+**Location:** `backend/app/schemas/calendar.py:61`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)

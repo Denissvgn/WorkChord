@@ -75,7 +75,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `_response` | `(settings) -> EmailSettingsResponse` | — | — |
-| `get_settings_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> EmailSettingsService` | — | Get email settings service singleton. |
+| `get_settings_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> EmailSettingsService` | — | Get email settings service singleton. |
 | `get_email_settings` | *(async)* `(service: Annotated[EmailSettingsService, Depends(get_settings_service)])` | `@router.get('/email-settings', response_model=EmailSettingsResponse)` | Get current email settings (password masked). |
 | `update_email_settings` | *(async)* `(data: EmailSettingsUpdate, service: Annotated[EmailSettingsService, Depends(get_settings_service)])` | `@router.put('/email-settings', response_model=EmailSettingsResponse)` | Update email settings. |
 | `test_email_settings` | *(async)* `(data: TestEmailRequest, service: Annotated[EmailSettingsService, Depends(get_settings_service)])` | `@router.post('/email-settings/test', response_model=TestEmailResponse)` | Send a test email to verify settings. |

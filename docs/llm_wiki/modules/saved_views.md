@@ -87,7 +87,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_saved_view_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> SavedViewService` | — | Dependency for saved view service. |
+| `get_saved_view_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> SavedViewService` | — | Dependency for saved view service. |
 | `raise_saved_view_http_error` | *(async)* `(service: SavedViewService, exc: Exception) -> NoReturn` | — | Map service/schema errors to saved-view API responses. |
 | `list_saved_views` | *(async)* `(service: Annotated[SavedViewService, Depends(get_saved_view_service)], current_session: Annotated[UserSession, Depends(session_service.get_current_session)], view_type: Annotated[SavedViewType, Query()])` | `@router.get('/saved-views', response_model=list[SavedViewResponse])` | List saved views visible to the current session. |
 | `create_saved_view` | *(async)* `(data: SavedViewCreateRequest, service: Annotated[SavedViewService, Depends(get_saved_view_service)], current_session: Annotated[UserSession, Depends(session_service.get_current_session)])` | `@router.post('/saved-views', response_model=SavedViewResponse, status_code=status.HTTP_201_CREATED)` | Create a user-owned saved view. |

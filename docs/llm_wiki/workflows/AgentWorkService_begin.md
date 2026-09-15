@@ -1,7 +1,7 @@
 # AgentWorkService_begin
 
 **Entry point:** `agent_work_service.AgentWorkService.begin`
-**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [models_agent](../modules/models_agent.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Atomically accept, fence, claim, run, and activate selected work.
 
@@ -32,6 +32,7 @@
 22. `agent_service.AgentConflictError`
 23. `models_agent.AgentRun`
 24. `schemas_agent.AgentWorkBeginResponse`
+25. `commands.commit_or_flush`
 
 ## Touches
 
@@ -39,6 +40,7 @@
 - [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_service](../modules/task_service.md)

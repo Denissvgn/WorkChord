@@ -30,6 +30,8 @@ Schema for saved view responses.
 | `columns_json` | `dict[str, Any]` | `columns_json` | No | No | factory: `dict` | — | — | — |
 | `created_by_session_id` | `Optional[int]` | `created_by_session_id` | No | Yes | `None` | — | — | — |
 | `schema_version` | `int` | `schema_version` | Yes | No | — | — | — | — |
+| `metric_migration_note` | `str \| None` | `metric_migration_note` | No | Yes | `None` | — | — | — |
+| `owner_principal_id` | `int \| None` | `owner_principal_id` | No | Yes | `None` | — | — | — |
 | `is_valid` | `bool` | `is_valid` | No | No | `True` | — | — | — |
 | `invalid_reason` | `Optional[str]` | `invalid_reason` | No | Yes | `None` | — | — | — |
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
@@ -87,7 +89,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_saved_view](../modules/schemas_saved_view.md) | 0 | `columns_json`, `created_at`, `created_by_session_id`, `description`, `filters_json`, `id`, `invalid_reason`, `is_valid`, `name`, `schema_version`, `scope`, `seed_key` |
+| [schemas_saved_view](../modules/schemas_saved_view.md) | 0 | `columns_json`, `created_at`, `created_by_session_id`, `description`, `filters_json`, `id`, `invalid_reason`, `is_valid`, `metric_migration_note`, `name`, `owner_principal_id`, `schema_version` |
 
 ### Structure
 

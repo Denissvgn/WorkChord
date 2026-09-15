@@ -16,16 +16,18 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.tsx`._
 | `../../types/task` | `Task` |
 | `../../utils/apiError` | `getApiErrorMessage` |
 | `../../utils/taskFilters` | `filterTaskWithChildren` |
+| `../../utils/visibleWork` | `selectVisibleWork` |
 | `../common/Button` | `Button` |
 | `../common/ConfirmDialog` | `ConfirmDialog` |
 | `../common/Modal` | `Modal` |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
+| `../feedback/WorkFreshness` | `WorkFreshness` |
 | `../feedback/toast` | `useToast` |
 | `../ui` | `OverflowMenu` |
+| `./GuardedTaskModal` | `GuardedTaskModal` |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
 | `./TaskBulkOperationsPanel` | `TaskBulkOperationsPanel` |
 | `./TaskFiltersBar` | `TaskFilters` |
-| `./TaskForm` | `TaskForm` |
 | `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors`, `DragEndEvent` |
 | `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` |
 | `@dnd-kit/utilities` | `CSS` |
@@ -60,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -68,19 +70,19 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Class | 64 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 745 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 797 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 43 | — | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 44 | — | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 45 | — | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 46 | — | — |
+| [TaskListProps](../entities/TaskListProps.md) | Class | 66 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Class | 729 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 781 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 45 | — | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 46 | — | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 47 | — | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 48 | — | — |
 
 ## Functions
 

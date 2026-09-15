@@ -1,6 +1,6 @@
 # CapacityException
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:53`
+**Location:** `frontend/src/pages/OverviewPage.tsx:54`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

@@ -1,6 +1,6 @@
 # SavedViewCreate
 
-**Location:** `frontend/src/types/savedView.ts:39`
+**Location:** `frontend/src/types/savedView.ts:41`
 **Kind:** Class
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)

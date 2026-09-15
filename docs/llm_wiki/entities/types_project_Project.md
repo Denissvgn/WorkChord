@@ -1,6 +1,6 @@
 # Project
 
-**Location:** `frontend/src/types/project.ts:55`
+**Location:** `frontend/src/types/project.ts:56`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

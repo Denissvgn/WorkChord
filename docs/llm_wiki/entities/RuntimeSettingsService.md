@@ -1,6 +1,6 @@
 # RuntimeSettingsService
 
-**Location:** `backend/app/services/system_settings_service.py:114`
+**Location:** `backend/app/services/system_settings_service.py:116`
 **Kind:** Class
 **Bases:** —
 **Module:** [system_settings_service](../modules/system_settings_service.md)

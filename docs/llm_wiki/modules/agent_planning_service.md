@@ -9,10 +9,13 @@ Safe PM setup commands for authenticated agent actors.
 The adapter delegates validation and mutation behavior to the existing domain
 services, then stores an exact actor-attributed receipt in the same transaction.
 
+Composed planning mutations share one transaction and retain exact durable mutation receipts. Schedule preview has an explicit rollback owner and a transient receipt with original input versions; apply validates the observed task set and input digest. A preview cannot publish snapshots, idempotency records or outbound work.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush`, `atomic_command`, `preview_command` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
@@ -58,8 +61,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
-| Outbound | `backend` (18) |
+| Inbound | `backend` (5) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -67,11 +70,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 68 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
-| [AgentPlanningService](../entities/AgentPlanningService.md) | 76 | — | Expose bounded PM setup commands without bypassing domain services. |
+| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 70 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
+| [AgentPlanningService](../entities/AgentPlanningService.md) | 78 | — | Expose bounded PM setup commands without bypassing domain services. |

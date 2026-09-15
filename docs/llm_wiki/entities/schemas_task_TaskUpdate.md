@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `backend/app/schemas/task.py:63`
+**Location:** `backend/app/schemas/task.py:66`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -64,6 +64,7 @@ flowchart LR
     n10["TaskBulkOperationService._changes_for_update (backend/app/services/task_bulk_operation_service.py)"]
     n11["TaskBulkOperationService._validate_update (backend/app/services/task_bulk_operation_service.py)"]
     n12["TaskService.update (backend/app/services/task_service.py)"]
+    n13["backend/tests/test_client_contract.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -76,6 +77,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_task.md"
     click n2 "../modules/schemas_agent.md"
     click n3 "../modules/tasks.md"
@@ -88,6 +90,7 @@ flowchart LR
     click n10 "../modules/task_bulk_operation_service.md"
     click n11 "../modules/task_bulk_operation_service.md"
     click n12 "../modules/task_service.md"
+    click n13 "../modules/test_client_contract.md"
 ```
 
 ### Summary
@@ -118,3 +121,6 @@ flowchart LR
 | `TaskBulkOperationService._changes_for_update` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 | `TaskBulkOperationService._validate_update` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 | `TaskService.update` | type_reference | [task_service](../modules/task_service.md) | — |
+| `test_client_contract` | import | [test_client_contract](../modules/test_client_contract.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

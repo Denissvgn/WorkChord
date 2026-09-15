@@ -1,6 +1,6 @@
 # ScopeRequirement
 
-**Location:** `backend/app/mcp_server.py:197`
+**Location:** `backend/app/mcp_server.py:216`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [mcp_server](../modules/mcp_server.md)

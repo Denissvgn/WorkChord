@@ -70,4 +70,4 @@ flowchart LR
 | [SavedViewUpdateRequest](../entities/SavedViewUpdateRequest.md) | Pydantic model | 81 | `BaseModel` | Public API payload for updating a saved view. |
 | [SavedViewDuplicateRequest](../entities/SavedViewDuplicateRequest.md) | Pydantic model | 95 | `BaseModel` | Public API payload for duplicating an existing saved view. |
 | [SavedViewResponse](../entities/SavedViewResponse.md) | Pydantic model | 104 | `BaseModel` | Schema for saved view responses. |
-| [SavedViewDashboardCardResponse](../entities/SavedViewDashboardCardResponse.md) | Pydantic model | 125 | `BaseModel` | Dashboard card summary backed by a saved view. |
+| [SavedViewDashboardCardResponse](../entities/SavedViewDashboardCardResponse.md) | Pydantic model | 127 | `BaseModel` | Dashboard card summary backed by a saved view. |

@@ -4,7 +4,7 @@
 **Source:** [mcp_server](../modules/mcp_server.md)
 **Modules touched:** [app_database](../modules/app_database.md), [config](../modules/config.md), [database_config](../modules/database_config.md), [mcp_server](../modules/mcp_server.md), [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 7 more
+**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 10 more
 
 **Complete related modules:**
 
@@ -13,7 +13,10 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [app_database](../modules/app_database.md)
+- [authority](../modules/authority.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
 - [task_service](../modules/task_service.md)
@@ -153,35 +156,35 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 2345 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
-| main | parser.add_argument | 2346 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
-| main | parser.parse_args | 2352 | `parser.parse_args(argv)` |
-| main | os.getenv | 2354 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| main | print | 2355 | `print(..., file=sys.stderr)` |
-| main | SystemExit | 2356 | `SystemExit(2)` |
-| main | redirect_stdout | 2360 | `redirect_stdout(sys.stderr)` |
-| main | asyncio.run | 2361 | `asyncio.run(init_db(...))` |
-| main | init_db | 2361 | `init_db(data not statically known)` |
-| init_db | assert_database_current | 54 | `assert_database_current(data not statically known)` |
-| assert_database_current | inspect_database | 437 | `inspect_database(data not statically known)` |
+| main | argparse.ArgumentParser | 2373 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
+| main | parser.add_argument | 2374 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
+| main | parser.parse_args | 2380 | `parser.parse_args(argv)` |
+| main | os.getenv | 2382 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| main | print | 2383 | `print(..., file=sys.stderr)` |
+| main | SystemExit | 2384 | `SystemExit(2)` |
+| main | redirect_stdout | 2388 | `redirect_stdout(sys.stderr)` |
+| main | asyncio.run | 2389 | `asyncio.run(init_db(...))` |
+| main | init_db | 2389 | `init_db(data not statically known)` |
+| init_db | assert_database_current | 71 | `assert_database_current(data not statically known)` |
+| assert_database_current | inspect_database | 441 | `inspect_database(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `main` | 2354 |
-| output | `print` | `main` | 2355 |
+| environment_read | `os.getenv` | `main` | 2382 |
+| output | `print` | `main` | 2383 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 2345 |
-| unresolved_call | `main` | `parser.add_argument` | 2346 |
-| unresolved_call | `main` | `parser.parse_args` | 2352 |
-| external_call | `main` | `SystemExit` | 2356 |
-| external_call | `main` | `redirect_stdout` | 2360 |
-| external_call | `main` | `asyncio.run` | 2361 |
+| external_call | `main` | `argparse.ArgumentParser` | 2373 |
+| unresolved_call | `main` | `parser.add_argument` | 2374 |
+| unresolved_call | `main` | `parser.parse_args` | 2380 |
+| external_call | `main` | `SystemExit` | 2384 |
+| external_call | `main` | `redirect_stdout` | 2388 |
+| external_call | `main` | `asyncio.run` | 2389 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

@@ -13,6 +13,8 @@ _Auto-generated from `UserSession` in `frontend/src/services/sessionService.ts`.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `principal_id` | `number \| null` | *required* | — |
+| `authenticated` | `boolean` | *required* | — |
 | `id` | `number` | *required* | — |
 | `public_id` | `string` | *required* | — |
 | `display_name` | `string` | *required* | — |
@@ -39,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [sessionService](../modules/sessionService.md) | 0 | `created_at`, `display_name`, `id`, `last_seen_at`, `public_id` |
+| [sessionService](../modules/sessionService.md) | 0 | `authenticated`, `created_at`, `display_name`, `id`, `last_seen_at`, `principal_id`, `public_id` |
 
 ### References
 

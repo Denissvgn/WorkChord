@@ -14,6 +14,7 @@ the same audited command and read-model paths.
 | Source | Symbols |
 |--------|---------|
 | `app.agent_contract` | `agent_contract_features` |
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
 | `app.routers.gantt` | `get_gantt_data` |
@@ -87,7 +88,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (41) |
+| Outbound | `backend` (42) |
 
 ### External packages
 
@@ -95,7 +96,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 50 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

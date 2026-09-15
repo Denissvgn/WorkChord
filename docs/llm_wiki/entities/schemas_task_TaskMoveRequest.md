@@ -1,6 +1,6 @@
 # TaskMoveRequest
 
-**Location:** `backend/app/schemas/task.py:104`
+**Location:** `backend/app/schemas/task.py:109`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,7 @@ Schema for moving a task subtree to another iteration.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revisions` | `dict[int, int]` | `expected_revisions` | No | No | factory: `dict` | — | — | — |
 | `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
 | `parent_id` | `Optional[int]` | `parent_id` | No | Yes | `None` | — | — | — |
 | `expected_version` | `Optional[int]` | `expected_version` | No | Yes | `None` | ge=1 | — | — |
@@ -42,7 +43,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `expected_version`, `iteration_id`, `parent_id` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `expected_revisions`, `expected_version`, `iteration_id`, `parent_id` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # ProjectMilestoneCreateRequest
 
-**Location:** `frontend/src/types/project.ts:142`
+**Location:** `frontend/src/types/project.ts:143`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

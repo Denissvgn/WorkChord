@@ -69,7 +69,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_calendar_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> CalendarService` | — | Dependency for calendar service. |
+| `get_calendar_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> CalendarService` | — | Dependency for calendar service. |
 | `get_calendars` | *(async)* `(service: Annotated[CalendarService, Depends(get_calendar_service)])` | `@router.get('/calendars', response_model=list[CalendarResponse])` | Get all calendars. |
 | `create_calendar` | *(async)* `(data: CalendarCreate, service: Annotated[CalendarService, Depends(get_calendar_service)])` | `@router.post('/calendars', response_model=CalendarResponse, status_code=status.HTTP_201_CREATED)` | Create a new calendar. |
 | `get_calendar` | *(async)* `(calendar_id: int, service: Annotated[CalendarService, Depends(get_calendar_service)])` | `@router.get('/calendars/{calendar_id}', response_model=CalendarResponse)` | Get calendar by ID. |

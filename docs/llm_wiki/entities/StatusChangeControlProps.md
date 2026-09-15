@@ -16,6 +16,7 @@ _Auto-generated from `StatusChangeControlProps` in `frontend/src/components/task
 | `task` | `Task` | *required* | — |
 | `iterationId` | `number` | *required* | — |
 | `onStatusChanged` | `() => void` | *required* | — |
+| `onPendingChange` | `(pending: boolean) => void` | *required* | — |
 
 ## Methods
 
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [StatusChangeControl](../modules/StatusChangeControl.md) | 0 | `iterationId`, `onStatusChanged`, `task` |
+| [StatusChangeControl](../modules/StatusChangeControl.md) | 0 | `iterationId`, `onPendingChange`, `onStatusChanged`, `task` |
 
 ### References
 

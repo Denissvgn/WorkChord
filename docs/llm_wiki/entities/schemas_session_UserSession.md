@@ -22,6 +22,8 @@ Privacy-safe browser session response.
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `public_id` | `str` | `public_id` | Yes | No | — | — | — | — |
 | `display_name` | `str` | `display_name` | Yes | No | — | — | — | — |
+| `principal_id` | `int \| None` | `principal_id` | No | Yes | `None` | — | — | — |
+| `authenticated` | `bool` | `authenticated` | No | No | `False` | — | — | — |
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
 | `last_seen_at` | `datetime` | `last_seen_at` | Yes | No | — | — | — | — |
 
@@ -50,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_session](../modules/schemas_session.md) | 0 | `created_at`, `display_name`, `id`, `last_seen_at`, `public_id` |
+| [schemas_session](../modules/schemas_session.md) | 0 | `authenticated`, `created_at`, `display_name`, `id`, `last_seen_at`, `principal_id`, `public_id` |
 
 ### Structure
 

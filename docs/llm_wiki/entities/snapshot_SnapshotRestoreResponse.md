@@ -1,6 +1,6 @@
 # SnapshotRestoreResponse
 
-**Location:** `backend/app/schemas/snapshot.py:12`
+**Location:** `backend/app/schemas/snapshot.py:13`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [snapshot](../modules/snapshot.md)
@@ -54,5 +54,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `restore_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `restore_snapshot` | type_reference | [snapshots](../modules/snapshots.md) | — |

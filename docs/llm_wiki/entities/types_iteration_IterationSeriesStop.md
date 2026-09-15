@@ -1,6 +1,6 @@
 # IterationSeriesStop
 
-**Location:** `frontend/src/types/iteration.ts:38`
+**Location:** `frontend/src/types/iteration.ts:40`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

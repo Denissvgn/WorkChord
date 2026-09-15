@@ -25,25 +25,30 @@ _Auto-generated from `frontend/src/components/tasks/taskEditorContract.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/taskEditorContract.ts"]
-    n1["frontend/src/components/tasks/TaskForm.tsx"]
-    n2["frontend/src/types/task.ts"]
-    n3["frontend/src/utils/apiError.ts"]
-    n0 --> n2
-    n0 --> n3
-    n1 --> n0
-    n1 --> n2
+    n0["frontend/src/components/tasks/taskDraftStorage.ts"]
+    n1["frontend/src/components/tasks/taskEditorContract.ts"]
+    n2["frontend/src/components/tasks/TaskForm.tsx"]
+    n3["frontend/src/types/task.ts"]
+    n4["frontend/src/utils/apiError.ts"]
+    n0 --> n1
     n1 --> n3
-    click n0 "../modules/taskEditorContract.md"
-    click n1 "../modules/TaskForm.md"
-    click n2 "../modules/types_task.md"
-    click n3 "../modules/apiError.md"
+    n1 --> n4
+    n2 --> n0
+    n2 --> n1
+    n2 --> n3
+    n2 --> n4
+    click n0 "../modules/taskDraftStorage.md"
+    click n1 "../modules/taskEditorContract.md"
+    click n2 "../modules/TaskForm.md"
+    click n3 "../modules/types_task.md"
+    click n4 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [taskDraftStorage](../modules/taskDraftStorage.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 | Outbound | [apiError](../modules/apiError.md) |

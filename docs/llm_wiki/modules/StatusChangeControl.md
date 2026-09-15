@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/components/tasks/StatusChangeControl.tsx`._
 | `../ui/tone` | `pillToneClassName`, `STATUS_TONE` |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` |
 | `lucide-react` | `ArrowRight`, `AlertTriangle`, `Check` |
-| `react` | `useState` |
+| `react` | `useEffect`, `useState` |
 | `react-i18next` | `useTranslation` |
 
 ## Module Signals
@@ -99,4 +99,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `StatusChangeControl` | `({ task, iterationId, onStatusChanged }: StatusChangeControlProps)` | — | — |
+| `StatusChangeControl` | `({ task, iterationId, onStatusChanged, onPendingChange }: StatusChangeControlProps)` | — | — |

@@ -10,6 +10,7 @@ Export/Import API router.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.database` | `get_db` |
 | `app.models.task` | `TaskDependency` |
 | `app.query_limits` | `MAX_SYNC_EXPORT_TASKS` |
@@ -21,8 +22,10 @@ Export/Import API router.
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
+| `app.services.work_metrics` | `aggregate_metrics` |
 | `datetime` | `timedelta`, `date`, `date`, `date` |
 | `fastapi` | `APIRouter`, `Depends`, `File`, `HTTPException`, `UploadFile`, `status` |
+| `fastapi.encoders` | `jsonable_encoder` |
 | `fastapi.responses` | `JSONResponse` |
 | `json` | `json` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
@@ -47,7 +50,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (11) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -55,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -64,10 +67,10 @@ flowchart LR
 | `_optional_int` | `(value, field_name: str) -> int \| None` | — | Parse optional integer values from backward-compatible JSON imports. |
 | `_read_json_upload` | *(async)* `(file: UploadFile) -> dict[str, Any]` | — | Read a bounded JSON upload into an object. |
 | `_validate_import_task_tree` | `(task_data: Any, *, depth: int, counter: list[int]) -> None` | — | Validate an arbitrarily deep task tree with bounded total cardinality. |
-| `export_iteration` | *(async)* `(iteration_id: int, db: Annotated[AsyncSession, Depends(get_db)])` | `@router.get('/iterations/{iteration_id}/export')` | Export iteration data as JSON. |
+| `export_iteration` | *(async)* `(iteration_id: int, db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/iterations/{iteration_id}/export')` | Export iteration data as JSON. |
 | `_task_to_export` | `(task) -> dict` | — | Convert task to export format recursively with full Gantt data. |
-| `import_new_iteration` | *(async)* `(file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db)])` | `@router.post('/iterations/import')` | Import a new iteration from JSON export file. |
+| `import_new_iteration` | *(async)* `(file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/import')` | Import a new iteration from JSON export file. |
 | `_process_import` | *(async)* `(iteration_id: int, data: dict, db: AsyncSession, *, create_snapshots: bool = True)` | — | Import team members and tasks while preserving task metadata and dependencies. |
-| `import_iteration` | *(async)* `(iteration_id: int, file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db)])` | `@router.post('/iterations/{iteration_id}/import')` | Import tasks and team members into an iteration from JSON file. |
+| `import_iteration` | *(async)* `(iteration_id: int, file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/import')` | Import tasks and team members into an iteration from JSON file. |
 | `_import_task_record` | *(async)* `(task_service: TaskService, iteration_id: int, task_data: dict, parent_id: Optional[int], name_to_member_id: dict[str, int], id_to_new_id: dict[int, int], external_key_to_new_id: dict[str, int], pending_dependencies: list[tuple[int, list[int], list[str]]], *, create_snapshots: bool = True)` | — | Import one task record after its parent has been persisted. |
 | `_import_task` | *(async)* `(task_service: TaskService, iteration_id: int, task_data: dict, parent_id: Optional[int], name_to_member_id: dict[str, int], id_to_new_id: dict[int, int], external_key_to_new_id: dict[str, int], pending_dependencies: list[tuple[int, list[int], list[str]]], *, create_snapshots: bool = True) -> None` | — | Import a complete task tree iteratively so product depth stays unbounded. |

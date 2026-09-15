@@ -11,6 +11,7 @@ Stable schema snapshots for the SQLite/PostgreSQL migration matrix.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `contextlib` | `nullcontext` |
 | `sqlalchemy` | `inspect` |
 | `sqlalchemy.engine` | `Connection`, `Engine` |
 | `typing` | `Any` |

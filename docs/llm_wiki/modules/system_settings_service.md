@@ -10,6 +10,7 @@ DB-backed runtime system settings resolution.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.system_settings` | `SystemSetting` |
 | `app.schemas.system_settings` | `AppRuntimeSettingsResponse`, `GitHubRuntimeSettingsResponse`, `LLMRuntimeSettingsResponse`, `RestartRequiredSetting`, `SystemSettingsResponse`, `WebIntakeRuntimeSettingsResponse` |
@@ -43,7 +44,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (4) |
+| Outbound | `backend` (5) |
 
 ### External packages
 
@@ -51,14 +52,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RuntimeSettingSource](../entities/system_settings_service_RuntimeSettingSource.md) | Type alias | 31 | `Literal['runtime', 'environment', 'default']` | — |
-| [RuntimeSettingsError](../entities/RuntimeSettingsError.md) | Class | 36 | `ValueError` | Raised when a runtime settings update is invalid. |
-| [RuntimeSettingsEncryptionError](../entities/RuntimeSettingsEncryptionError.md) | Class | 40 | `RuntimeSettingsError` | Raised when a secret cannot be encrypted or decrypted. |
-| [SettingDefinition](../entities/SettingDefinition.md) | Class | 45 | — | Catalog definition for one writable runtime setting. |
-| [RuntimeSettingsService](../entities/RuntimeSettingsService.md) | Class | 114 | — | Read, update, and resolve catalogued runtime system settings. |
+| [RuntimeSettingSource](../entities/system_settings_service_RuntimeSettingSource.md) | Type alias | 33 | `Literal['runtime', 'environment', 'default']` | — |
+| [RuntimeSettingsError](../entities/RuntimeSettingsError.md) | Class | 38 | `ValueError` | Raised when a runtime settings update is invalid. |
+| [RuntimeSettingsEncryptionError](../entities/RuntimeSettingsEncryptionError.md) | Class | 42 | `RuntimeSettingsError` | Raised when a secret cannot be encrypted or decrypted. |
+| [SettingDefinition](../entities/SettingDefinition.md) | Class | 47 | — | Catalog definition for one writable runtime setting. |
+| [RuntimeSettingsService](../entities/RuntimeSettingsService.md) | Class | 116 | — | Read, update, and resolve catalogued runtime system settings. |

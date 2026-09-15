@@ -68,7 +68,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_runtime_settings_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> RuntimeSettingsService` | — | Dependency for runtime system settings. |
+| `get_runtime_settings_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> RuntimeSettingsService` | — | Dependency for runtime system settings. |
 | `_bad_request` | `(error: ValueError) -> HTTPException` | — | — |
 | `get_system_settings` | *(async)* `(service: Annotated[RuntimeSettingsService, Depends(get_runtime_settings_service)])` | `@router.get('/system-settings', response_model=SystemSettingsResponse)` | Return resolved runtime settings and restart-required env settings. |
 | `update_llm_settings` | *(async)* `(data: LLMRuntimeSettingsUpdate, service: Annotated[RuntimeSettingsService, Depends(get_runtime_settings_service)])` | `@router.put('/system-settings/llm', response_model=LLMRuntimeSettingsResponse)` | Update runtime LLM settings. |

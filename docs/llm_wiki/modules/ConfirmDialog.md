@@ -35,7 +35,7 @@ flowchart LR
     n4["frontend/src/components/gantt/TaskEditModal.tsx"]
     n5["frontend/src/components/iteration/IterationList.tsx"]
     n6["frontend/src/components/projects/ProjectIterationsSection.tsx"]
-    n7["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
+    n7["frontend/src/components/tasks/DraftDismissalDialog.tsx"]
     n8["frontend/src/components/tasks/TaskForm.tsx"]
     n9["frontend/src/components/tasks/TaskList.tsx"]
     n10["frontend/src/pages/GanttPage.tsx"]
@@ -51,15 +51,12 @@ flowchart LR
     n6 --> n0
     n6 --> n1
     n6 --> n2
-    n7 --> n0
     n7 --> n1
-    n7 --> n8
     n8 --> n0
     n8 --> n1
     n9 --> n0
     n9 --> n1
     n9 --> n2
-    n9 --> n8
     n10 --> n0
     n10 --> n1
     n10 --> n2
@@ -75,7 +72,7 @@ flowchart LR
     click n4 "../modules/TaskEditModal.md"
     click n5 "../modules/IterationList.md"
     click n6 "../modules/ProjectIterationsSection.md"
-    click n7 "../modules/TaskEditorDrawer.md"
+    click n7 "../modules/DraftDismissalDialog.md"
     click n8 "../modules/TaskForm.md"
     click n9 "../modules/TaskList.md"
     click n10 "../modules/GanttPage.md"
@@ -90,7 +87,7 @@ flowchart LR
 | Inbound | [TaskEditModal](../modules/TaskEditModal.md) |
 | Inbound | [IterationList](../modules/IterationList.md) |
 | Inbound | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) |
-| Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
+| Inbound | [DraftDismissalDialog](../modules/DraftDismissalDialog.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Inbound | [TaskList](../modules/TaskList.md) |
 | Inbound | [GanttPage](../modules/GanttPage.md) |

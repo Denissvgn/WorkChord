@@ -78,7 +78,7 @@ sequenceDiagram
     p19->>p23: DatabaseConfigurationError
 ```
 
-> Call sequence diagram shows 30 of 204 interactions; 174 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 205 interactions; 175 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -123,7 +123,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `readiness_check` | - | - | - | `JSONResponse(...)` |
+| `readiness_check` | `request: Request` | - | - | `JSONResponse(...)` |
 | `readiness_snapshot` | - | `SQLAlchemyError`, `SQLAlchemyError`, `SQLAlchemyError`, `SQLAlchemyError` | - | `(...)`, `(...)` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -140,9 +140,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| readiness_check | readiness_snapshot | 216 | `readiness_snapshot(data not statically known)` |
+| readiness_check | readiness_snapshot | 239 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
 | readiness_snapshot | head_revision | 253 | `head_revision(data not statically known)` |
 | head_revision | ScriptDirectory.from_config | 132 | `ScriptDirectory.from_config(alembic_config(...))` |
 | head_revision | alembic_config | 132 | `alembic_config(data not statically known)` |

@@ -10,6 +10,7 @@ Helpers for request source traceability.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.models.project` | `Project` |
 | `app.models.request_source` | `RequestSource`, `RequestSourceLink`, `RequestSourceType` |
 | `app.models.task` | `Task` |
@@ -43,7 +44,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (4) |
-| Outbound | `backend` (8) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -51,14 +52,14 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [RequestSourceValidationError](../entities/RequestSourceValidationError.md) | 23 | `ValueError` | Raised when request-source input is invalid. |
-| [RequestSourceNotFoundError](../entities/RequestSourceNotFoundError.md) | 27 | `LookupError` | Raised when a request source or link cannot be found. |
-| [RequestSourceTargetNotFoundError](../entities/RequestSourceTargetNotFoundError.md) | 31 | `LookupError` | Raised when a requested link target cannot be found. |
-| [RequestSourceConflictError](../entities/RequestSourceConflictError.md) | 35 | `ValueError` | Raised when a source is already linked to the target. |
-| [RequestSourceService](../entities/RequestSourceService.md) | 39 | — | Small service for direct request-source link counts. |
+| [RequestSourceValidationError](../entities/RequestSourceValidationError.md) | 25 | `ValueError` | Raised when request-source input is invalid. |
+| [RequestSourceNotFoundError](../entities/RequestSourceNotFoundError.md) | 29 | `LookupError` | Raised when a request source or link cannot be found. |
+| [RequestSourceTargetNotFoundError](../entities/RequestSourceTargetNotFoundError.md) | 33 | `LookupError` | Raised when a requested link target cannot be found. |
+| [RequestSourceConflictError](../entities/RequestSourceConflictError.md) | 37 | `ValueError` | Raised when a source is already linked to the target. |
+| [RequestSourceService](../entities/RequestSourceService.md) | 41 | — | Small service for direct request-source link counts. |

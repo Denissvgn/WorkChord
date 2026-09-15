@@ -1,6 +1,6 @@
 # FlattenedTask
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:34`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:35`
 **Kind:** Class
 **Bases:** `GanttTask`
 **Module:** [GanttChart](../modules/GanttChart.md)

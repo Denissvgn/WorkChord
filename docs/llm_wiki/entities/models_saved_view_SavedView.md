@@ -24,6 +24,8 @@ Persisted filter, sort, and column configuration for reusable views.
 | `columns_json` | `Mapped[dict[str, Any]]` | `mapped_column(JSON, default=dict, nullable=False)` | — |
 | `created_by_session_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('user_sessions.id', ondelete='SET NULL'), nullable=True, index=True)` | — |
 | `schema_version` | `Mapped[int]` | `mapped_column(Integer, default=1, nullable=False)` | — |
+| `metric_migration_note` | `Mapped[str \| None]` | `mapped_column(String(64))` | — |
+| `owner_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'), index=True)` | — |
 | `created_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, nullable=False, index=True)` | — |
 | `updated_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, onupdate=utc_now, nullable=False, index=True)` | — |
 | `created_by_session` | `Mapped[Optional['UserSession']]` | `relationship('UserSession', back_populates='saved_views')` | — |
@@ -81,7 +83,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_saved_view](../modules/models_saved_view.md) | 0 | `columns_json`, `created_at`, `created_by_session`, `created_by_session_id`, `description`, `filters_json`, `id`, `name`, `schema_version`, `scope`, `seed_key`, `sort_json` |
+| [models_saved_view](../modules/models_saved_view.md) | 0 | `columns_json`, `created_at`, `created_by_session`, `created_by_session_id`, `description`, `filters_json`, `id`, `metric_migration_note`, `name`, `owner_principal_id`, `schema_version`, `scope` |
 
 ### Structure
 
@@ -106,4 +108,4 @@ flowchart LR
 | `SavedViewService.create` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 | `SavedViewService.create_for_session` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

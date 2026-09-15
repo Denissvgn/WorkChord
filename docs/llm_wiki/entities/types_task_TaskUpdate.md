@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `frontend/src/types/task.ts:149`
+**Location:** `frontend/src/types/task.ts:168`
 **Kind:** Class
 **Bases:** `Partial`
 **Module:** [types_task](../modules/types_task.md)

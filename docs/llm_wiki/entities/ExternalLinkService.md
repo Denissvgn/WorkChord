@@ -1,6 +1,6 @@
 # ExternalLinkService
 
-**Location:** `backend/app/services/external_link_service.py:61`
+**Location:** `backend/app/services/external_link_service.py:63`
 **Kind:** Class
 **Bases:** —
 **Module:** [external_link_service](../modules/external_link_service.md)

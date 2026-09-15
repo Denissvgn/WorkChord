@@ -105,7 +105,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_tasks` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `...` |
+| `get_tasks` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `...` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -122,11 +122,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_tasks | IterationService | 116 | `IterationService(db)` |
-| get_tasks | iteration_service.get_by_id | 117 | `iteration_service.get_by_id(iteration_id)` |
-| get_tasks | HTTPException | 120 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_tasks | _not_found_detail | 122 | `_not_found_detail(db, 'iteration', iteration_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(db)` |
+| get_tasks | IterationService | 118 | `IterationService(db)` |
+| get_tasks | iteration_service.get_by_id | 119 | `iteration_service.get_by_id(iteration_id)` |
+| get_tasks | HTTPException | 122 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_tasks | _not_found_detail | 124 | `_not_found_detail(db, 'iteration', iteration_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -142,8 +142,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_tasks` | `iteration_service.get_by_id` | 117 |
-| external_call | `get_tasks` | `HTTPException` | 120 |
+| unresolved_call | `get_tasks` | `iteration_service.get_by_id` | 119 |
+| external_call | `get_tasks` | `HTTPException` | 122 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

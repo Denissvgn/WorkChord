@@ -1,7 +1,7 @@
 # get_or_create_session
 
 **Entry point:** `session_service.get_or_create_session`
-**Modules involved:** [config](../modules/config.md), [maintenance](../modules/maintenance.md), [session_service](../modules/session_service.md), [time](../modules/time.md)
+**Modules involved:** [commands](../modules/commands.md), [config](../modules/config.md), [maintenance](../modules/maintenance.md), [session_service](../modules/session_service.md), [time](../modules/time.md)
 
 > Resolve an opaque token or create a fresh session without IP ownership.
 
@@ -13,9 +13,11 @@
 3. `time.utc_now`
 4. `config.get_settings`
 5. `time.as_utc`
+6. `commands.commit_or_flush`
 
 ## Touches
 
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [maintenance](../modules/maintenance.md)
 - [session_service](../modules/session_service.md)

@@ -1,6 +1,6 @@
 # GitHubWebhookPayloadError
 
-**Location:** `backend/app/services/github_webhook_service.py:45`
+**Location:** `backend/app/services/github_webhook_service.py:47`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [github_webhook_service](../modules/github_webhook_service.md)

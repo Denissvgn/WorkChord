@@ -44,7 +44,6 @@ flowchart LR
     n2 --> n1
     n2 --> n5
     n3 --> n1
-    n3 --> n2
     n3 --> n5
     click n0 "../modules/TaskAgentReadinessBadge.test.md"
     click n1 "../modules/TaskAgentReadinessBadge.md"

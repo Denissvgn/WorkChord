@@ -65,7 +65,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_agent_route_index` | `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | - | - | `...` |
+| `get_agent_route_index` | `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | - | - | `...` |
 | `_require_catalog_read` | `actor: AgentActor` | `status` | - | - |
 | `any` | - | - | - | - |
 | `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
@@ -83,9 +83,9 @@ flowchart LR
 | get_agent_route_index | _require_catalog_read | 104 | `_require_catalog_read(actor)` |
 | _require_catalog_read | any | 68 | `any(...)` |
 | _require_catalog_read | actor_has_scope | 69 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 78 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 70 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance | 73 | `isinstance(scopes, list)` |
+| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance | 75 | `isinstance(scopes, list)` |
 | _require_catalog_read | HTTPException | 72 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
 | get_agent_route_index | AgentProfileCatalogService(…).routes | 105 | `AgentProfileCatalogService(db).routes(data not statically known)` |
 | get_agent_route_index | AgentProfileCatalogService | 105 | `AgentProfileCatalogService(db)` |
@@ -99,8 +99,8 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `_require_catalog_read` | `any` | 68 |
-| external_call | `actor_scopes` | `json.loads` | 70 |
-| external_call | `actor_scopes` | `isinstance` | 73 |
+| external_call | `actor_scopes` | `json.loads` | 72 |
+| external_call | `actor_scopes` | `isinstance` | 75 |
 | external_call | `_require_catalog_read` | `HTTPException` | 72 |
 | unresolved_call | `get_agent_route_index` | `AgentProfileCatalogService(db).routes` | 105 |
 

@@ -1,6 +1,6 @@
 # OutboundWebhookValidationError
 
-**Location:** `backend/app/services/outbound_webhook_service.py:132`
+**Location:** `backend/app/services/outbound_webhook_service.py:134`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [outbound_webhook_service](../modules/outbound_webhook_service.md)

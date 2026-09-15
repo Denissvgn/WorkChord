@@ -1,6 +1,6 @@
 # SavedViewDashboardCard
 
-**Location:** `frontend/src/types/savedView.ts:22`
+**Location:** `frontend/src/types/savedView.ts:24`
 **Kind:** Class
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)

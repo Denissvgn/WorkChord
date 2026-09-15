@@ -1,6 +1,6 @@
 # IterationSeriesResponse
 
-**Location:** `frontend/src/types/iteration.ts:52`
+**Location:** `frontend/src/types/iteration.ts:54`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

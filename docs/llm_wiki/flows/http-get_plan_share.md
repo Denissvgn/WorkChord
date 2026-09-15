@@ -42,7 +42,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_plan_share` | `public_id: str`, `response: Response`, `_current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | `response.headers[...]` | `service.to_response(...)` |
+| `get_plan_share` | `public_id: str`, `response: Response`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | `response.headers[...]` | `service.to_response(...)` |
 | `PlanShareService` | - | - | - | - |
 | `service.get_active_by_public_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -52,10 +52,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_plan_share | PlanShareService | 79 | `PlanShareService(db)` |
-| get_plan_share | service.get_active_by_public_id | 80 | `service.get_active_by_public_id(public_id)` |
-| get_plan_share | HTTPException | 82 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Plan share not found or no longer available')` |
-| get_plan_share | service.to_response | 86 | `service.to_response(share)` |
+| get_plan_share | PlanShareService | 75 | `PlanShareService(db)` |
+| get_plan_share | service.get_active_by_public_id | 76 | `service.get_active_by_public_id(public_id)` |
+| get_plan_share | HTTPException | 78 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Plan share not found or no longer available')` |
+| get_plan_share | service.to_response | 82 | `service.to_response(share)` |
 
 ### Boundary effects
 
@@ -65,9 +65,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_plan_share` | `service.get_active_by_public_id` | 80 |
-| external_call | `get_plan_share` | `HTTPException` | 82 |
-| unresolved_call | `get_plan_share` | `service.to_response` | 86 |
+| unresolved_call | `get_plan_share` | `service.get_active_by_public_id` | 76 |
+| external_call | `get_plan_share` | `HTTPException` | 78 |
+| unresolved_call | `get_plan_share` | `service.to_response` | 82 |
 
 ## Behavior
 

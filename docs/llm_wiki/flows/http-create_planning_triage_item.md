@@ -2,11 +2,12 @@
 
 **Entry point:** `create_planning_triage_item` (`http`)
 **Source:** [routers_agent_planning](../modules/routers_agent_planning.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [mcp_agent_tools](../modules/mcp_agent_tools.md), [models_agent](../modules/models_agent.md), [routers_agent_planning](../modules/routers_agent_planning.md), and 4 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [mcp_agent_tools](../modules/mcp_agent_tools.md), [models_agent](../modules/models_agent.md), and 5 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [commands](../modules/commands.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [models_agent](../modules/models_agent.md)
 - [routers_agent_planning](../modules/routers_agent_planning.md)
@@ -81,7 +82,7 @@ sequenceDiagram
     p24-->>p28: canonical.encode
 ```
 
-> Call sequence diagram shows 30 of 77 interactions; 47 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 83 interactions; 53 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -125,7 +126,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `create_planning_triage_item` | `data: TriageItemCreate`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db)]`, `command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)]` | - | - | `...` |
+| `create_planning_triage_item` | `data: TriageItemCreate`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)]` | - | - | `...` |
 | `require_scope` | `actor: AgentActor`, `scope: str` | - | - | - |
 | `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
 | `actor_scopes` | `actor: AgentActor` | `json` | - | `...` |
@@ -143,16 +144,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | create_planning_triage_item | require_scope | 595 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 84 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 78 | `actor_scopes(actor)` |
-| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 70 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 73 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 85 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
+| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 72 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
 | create_planning_triage_item | create_triage_item | 596 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2209 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| _triage_command_context | validate_idempotency_key | 212 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 94 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 98 | `value.strip(data not statically known)` |
+| create_triage_item | _triage_command_context | 2211 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| _triage_command_context | validate_idempotency_key | 214 | `validate_idempotency_key(idempotency_key, required=True)` |
+| validate_idempotency_key | ValueError | 96 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 100 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -162,10 +163,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 70 |
-| external_call | `actor_scopes` | `isinstance` | 73 |
-| external_call | `validate_idempotency_key` | `ValueError` | 94 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 98 |
+| external_call | `actor_scopes` | `json.loads` | 72 |
+| external_call | `actor_scopes` | `isinstance` | 75 |
+| external_call | `validate_idempotency_key` | `ValueError` | 96 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 100 |
 | step_limit | `create_planning_triage_item` | `first 12 steps` | 0 |
 
 ## Behavior

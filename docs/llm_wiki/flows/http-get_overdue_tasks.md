@@ -46,7 +46,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_overdue_tasks` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `...` |
+| `get_overdue_tasks` | `iteration_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `...` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_overdue_tasks | IterationService | 1046 | `IterationService(db)` |
-| get_overdue_tasks | iteration_service.get_by_id | 1047 | `iteration_service.get_by_id(iteration_id)` |
-| get_overdue_tasks | HTTPException | 1050 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_overdue_tasks | service.get_overdue_tasks | 1055 | `service.get_overdue_tasks(iteration_id)` |
-| get_overdue_tasks | service.task_to_response | 1056 | `service.task_to_response(t, iteration.end_date)` |
+| get_overdue_tasks | IterationService | 1039 | `IterationService(db)` |
+| get_overdue_tasks | iteration_service.get_by_id | 1040 | `iteration_service.get_by_id(iteration_id)` |
+| get_overdue_tasks | HTTPException | 1043 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_overdue_tasks | service.get_overdue_tasks | 1048 | `service.get_overdue_tasks(iteration_id)` |
+| get_overdue_tasks | service.task_to_response | 1049 | `service.task_to_response(t, iteration.end_date)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_overdue_tasks` | `iteration_service.get_by_id` | 1047 |
-| external_call | `get_overdue_tasks` | `HTTPException` | 1050 |
-| unresolved_call | `get_overdue_tasks` | `service.get_overdue_tasks` | 1055 |
-| unresolved_call | `get_overdue_tasks` | `service.task_to_response` | 1056 |
+| unresolved_call | `get_overdue_tasks` | `iteration_service.get_by_id` | 1040 |
+| external_call | `get_overdue_tasks` | `HTTPException` | 1043 |
+| unresolved_call | `get_overdue_tasks` | `service.get_overdue_tasks` | 1048 |
+| unresolved_call | `get_overdue_tasks` | `service.task_to_response` | 1049 |
 
 ## Behavior
 

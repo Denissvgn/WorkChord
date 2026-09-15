@@ -10,19 +10,22 @@ _Auto-generated from `backend/app/main.py`._
 
 | Source | Symbols |
 |--------|---------|
+| `app.authority` | `AuthorityError` |
 | `app.autonomy.contracts.postgresql` | `load_postgresql_contract_bundle` |
 | `app.build_identity` | `load_backend_build_identity` |
+| `app.commands` | `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `close_database`, `init_db` |
 | `app.database_runtime` | `DatabaseConflictError`, `DatabaseUnavailableError` |
+| `app.http_authority` | `enforce_http_authority` |
 | `app.maintenance` | `MaintenanceModeError`, `RuntimeBoundaryMiddleware`, `maintenance_state` |
 | `app.mcp_server` | `mcp`, `mount_mcp_http` |
 | `app.observability` | `collect_metrics`, `readiness_snapshot` |
 | `app.query_limits` | `CollectionLimitExceededError` |
-| `app.routers` | `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
+| `app.routers` | `identity`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
 | `app.runtime_telemetry` | `metrics` |
 | `contextlib` | `asynccontextmanager` |
-| `fastapi` | `FastAPI`, `Request`, `status` |
+| `fastapi` | `FastAPI`, `Request`, `status`, `Depends` |
 | `fastapi.exceptions` | `RequestValidationError` |
 | `fastapi.middleware.cors` | `CORSMiddleware` |
 | `fastapi.responses` | `JSONResponse`, `PlainTextResponse` |
@@ -48,9 +51,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Inbound | `scripts` (2) |
-| Outbound | `backend` (36) |
+| Inbound | `backend` (9) |
+| Inbound | `scripts` (3) |
+| Outbound | `backend` (40) |
 
 ### External packages
 
@@ -58,13 +61,16 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 52 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `lifespan` | *(async)* `(app: FastAPI)` | `@asynccontextmanager` | Application lifespan handler. |
+| `aggregate_version_conflict` | *(async)* `(request: Request, exc: AggregateVersionConflict)` | `@app.exception_handler(AggregateVersionConflict)` | — |
+| `authority_error` | *(async)* `(request: Request, exc: AuthorityError)` | `@app.exception_handler(AuthorityError)` | — |
+| `hierarchy_scope_error` | *(async)* `(request: Request, exc: HierarchyScopeError)` | `@app.exception_handler(HierarchyScopeError)` | — |
 | `redact_request_validation_input` | *(async)* `(request: Request, exc: RequestValidationError) -> JSONResponse` | `@app.exception_handler(RequestValidationError)` | Return useful validation locations without echoing credentials or fences. |
 | `maintenance_mode_error` | *(async)* `(request: Request, exc: MaintenanceModeError) -> JSONResponse` | `@app.exception_handler(MaintenanceModeError)` | Keep hidden-write fences typed even when raised by a dependency. |
 | `collection_limit_error` | *(async)* `(request: Request, exc: CollectionLimitExceededError) -> JSONResponse` | `@app.exception_handler(CollectionLimitExceededError)` | Refuse oversized synchronous graphs without silent truncation. |
@@ -73,6 +79,6 @@ flowchart LR
 | `database_pool_timeout_error` | *(async)* `(request: Request, exc: SQLAlchemyTimeoutError) -> JSONResponse` | `@app.exception_handler(SQLAlchemyTimeoutError)` | Turn pool saturation into an observable retryable failure. |
 | `health_check` | *(async)* `()` | `@app.get('/health')` | Backward-compatible process liveness endpoint. |
 | `liveness_check` | *(async)* `()` | `@app.get('/health/live')` | Report only whether this process can service HTTP. |
-| `readiness_check` | *(async)* `()` | `@app.get('/health/ready')` | Fail when the database is unavailable or not at packaged Alembic head. |
+| `readiness_check` | *(async)* `(request: Request)` | `@app.get('/health/ready')` | Fail when the database is unavailable or not at packaged Alembic head. |
 | `build_identity` | *(async)* `()` | `@app.get('/.well-known/workchord-build.json')` | Expose non-secret immutable build identity for internal attestation. |
 | `metrics_endpoint` | *(async)* `()` | `@app.get('/metrics', response_class=PlainTextResponse)` | Export process/database qualification inputs without SQL or secrets. |

@@ -1,8 +1,8 @@
 # Release
 
-**Location:** `frontend/src/types/release.ts:12`
+**Location:** `frontend/src/types/release.ts:13`
 **Kind:** Class
-**Bases:** —
+**Bases:** `WorkMetrics`
 **Module:** [types_release](../modules/types_release.md)
 
 ## Description
@@ -37,19 +37,22 @@ _Auto-generated from `Release` in `frontend/src/types/release.ts`._
 ```mermaid
 flowchart LR
     n0["Release (frontend/src/types/release.ts)"]
-    n1["ReleaseForm (frontend/src/components/releases/ReleaseForm.tsx)"]
-    n2["frontend/src/pages/ProjectDetailPage.tsx"]
-    n3["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
-    n4["frontend/src/services/releaseService.ts"]
-    n1 --> n0
+    n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
+    n2["ReleaseForm (frontend/src/components/releases/ReleaseForm.tsx)"]
+    n3["frontend/src/pages/ProjectDetailPage.tsx"]
+    n4["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n5["frontend/src/services/releaseService.ts"]
+    n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/types_release.md"
-    click n1 "../modules/ReleaseForm.md"
-    click n2 "../modules/ProjectDetailPage.md"
-    click n3 "../modules/ProjectReleaseDetailPage.md"
-    click n4 "../modules/releaseService.md"
+    click n1 "../modules/workMetrics.md"
+    click n2 "../modules/ReleaseForm.md"
+    click n3 "../modules/ProjectDetailPage.md"
+    click n4 "../modules/ProjectReleaseDetailPage.md"
+    click n5 "../modules/releaseService.md"
 ```
 
 ### Summary
@@ -57,6 +60,12 @@ flowchart LR
 | Module | Methods | Attributes |
 |---|---:|---|
 | [types_release](../modules/types_release.md) | 0 | `created_at`, `description`, `environment`, `id`, `name`, `project_id`, `shipped_at`, `status`, `target_date`, `task_ids`, `tasks`, `updated_at` |
+
+### Structure
+
+| Kind | Entity | Module |
+|---|---|---|
+| Base | `WorkMetrics` | [workMetrics](../modules/workMetrics.md) |
 
 ### References
 

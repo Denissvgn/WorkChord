@@ -1,6 +1,6 @@
 # ProjectMilestoneDeleteResponse
 
-**Location:** `frontend/src/types/project.ts:160`
+**Location:** `frontend/src/types/project.ts:161`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

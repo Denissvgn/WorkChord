@@ -15,6 +15,7 @@ Development iteration (sprint) model.
 |------|------|---------|-------------|
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
+| `revision` | `Mapped[int]` | `mapped_column(Integer, default=1, server_default='1', nullable=False)` | — |
 | `start_date` | `Mapped[date]` | `mapped_column(Date, nullable=False)` | — |
 | `end_date` | `Mapped[date]` | `mapped_column(Date, nullable=False)` | — |
 | `manager_email` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
@@ -37,18 +38,18 @@ Development iteration (sprint) model.
 flowchart LR
     n0["Iteration (backend/app/models/iteration.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/models/__init__.py"]
-    n3["backend/app/models/calendar.py"]
-    n4["backend/app/models/plan_share.py"]
-    n5["backend/app/models/project.py"]
-    n6["backend/app/models/task.py"]
-    n7["backend/app/models/team_member.py"]
-    n8["backend/app/models/triage.py"]
-    n9["AgentPlanningService._require_iteration_for_update (backend/app/services/agent_planning_service.py)"]
-    n10["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
-    n11["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
-    n12["AgentRoutingService._capacity_inputs (backend/app/services/agent_routing_service.py)"]
-    n13["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
+    n2["backend/app/commands.py"]
+    n3["backend/app/models/__init__.py"]
+    n4["backend/app/models/calendar.py"]
+    n5["backend/app/models/plan_share.py"]
+    n6["backend/app/models/project.py"]
+    n7["backend/app/models/task.py"]
+    n8["backend/app/models/team_member.py"]
+    n9["backend/app/models/triage.py"]
+    n10["AgentPlanningService._require_iteration_for_update (backend/app/services/agent_planning_service.py)"]
+    n11["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
+    n12["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
+    n13["AgentRoutingService._capacity_inputs (backend/app/services/agent_routing_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -64,17 +65,17 @@ flowchart LR
     n13 --> n0
     click n0 "../modules/models_iteration.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_calendar.md"
-    click n4 "../modules/models_plan_share.md"
-    click n5 "../modules/models_project.md"
-    click n6 "../modules/models_task.md"
-    click n7 "../modules/team_member.md"
-    click n8 "../modules/models_triage.md"
-    click n9 "../modules/agent_planning_service.md"
+    click n2 "../modules/commands.md"
+    click n3 "../modules/models___init__.md"
+    click n4 "../modules/models_calendar.md"
+    click n5 "../modules/models_plan_share.md"
+    click n6 "../modules/models_project.md"
+    click n7 "../modules/models_task.md"
+    click n8 "../modules/team_member.md"
+    click n9 "../modules/models_triage.md"
     click n10 "../modules/agent_planning_service.md"
     click n11 "../modules/agent_planning_service.md"
-    click n12 "../modules/agent_routing_service.md"
+    click n12 "../modules/agent_planning_service.md"
     click n13 "../modules/agent_routing_service.md"
 ```
 
@@ -82,7 +83,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_iteration](../modules/models_iteration.md) | 0 | `calendar`, `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `plan_shares`, `project`, `project_id`, `start_date`, `tasks`, `team_members` |
+| [models_iteration](../modules/models_iteration.md) | 0 | `calendar`, `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `plan_shares`, `project`, `project_id`, `revision`, `start_date`, `tasks` |
 
 ### Structure
 
@@ -94,6 +95,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `calendar` | import | [models_calendar](../modules/models_calendar.md) | — |
 | `plan_share` | import | [models_plan_share](../modules/models_plan_share.md) | — |
@@ -105,6 +107,5 @@ flowchart LR
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentRoutingService._capacity_inputs` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
-| `AgentRoutingService._preview_context` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.

@@ -1,6 +1,6 @@
 # GitHubWebhookService
 
-**Location:** `backend/app/services/github_webhook_service.py:49`
+**Location:** `backend/app/services/github_webhook_service.py:51`
 **Kind:** Class
 **Bases:** —
 **Module:** [github_webhook_service](../modules/github_webhook_service.md)

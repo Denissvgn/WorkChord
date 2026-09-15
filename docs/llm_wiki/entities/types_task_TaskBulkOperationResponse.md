@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `frontend/src/types/task.ts:289`
+**Location:** `frontend/src/types/task.ts:312`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -13,6 +13,8 @@ _Auto-generated from `TaskBulkOperationResponse` in `frontend/src/types/task.ts`
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `input_revisions` | `Record<number, number>` | *required* | — |
+| `task_versions` | `Record<number, number>` | *required* | — |
 | `requested_count` | `number` | *required* | — |
 | `succeeded_count` | `number` | *required* | — |
 | `failed_count` | `number` | *required* | — |
@@ -42,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `dry_run`, `failed_count`, `requested_count`, `results`, `succeeded_count` |
+| [types_task](../modules/types_task.md) | 0 | `dry_run`, `failed_count`, `input_revisions`, `requested_count`, `results`, `succeeded_count`, `task_versions` |
 
 ### References
 

@@ -1,8 +1,8 @@
 # ReleaseResponse
 
-**Location:** `backend/app/schemas/release.py:79`
+**Location:** `backend/app/schemas/release.py:81`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `WorkMetricSummary`
 **Module:** [schemas_release](../modules/schemas_release.md)
 
 ## Description
@@ -19,6 +19,10 @@ Schema for release responses.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `total_tasks` | `int` | `total_tasks` | No | No | `0` | — | — | — |
+| `completed_tasks` | `int` | `completed_tasks` | No | No | `0` | — | — | — |
+| `overdue_tasks` | `int` | `overdue_tasks` | No | No | `0` | — | — | — |
+| `target_overflow_tasks` | `int` | `target_overflow_tasks` | No | No | `0` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `project_id` | `int` | `project_id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
@@ -43,7 +47,7 @@ Schema for release responses.
 ```mermaid
 flowchart LR
     n0["ReleaseResponse (backend/app/schemas/release.py)"]
-    n1["BaseModel"]
+    n1["WorkMetricSummary (backend/app/schemas/work_metrics.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["create_project_release (backend/app/routers/projects.py)"]
     n4["get_release (backend/app/routers/projects.py)"]
@@ -58,6 +62,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     click n0 "../modules/schemas_release.md"
+    click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/projects.md"
     click n4 "../modules/projects.md"
@@ -70,13 +75,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_release](../modules/schemas_release.md) | 0 | `created_at`, `description`, `environment`, `id`, `name`, `project_id`, `shipped_at`, `status`, `target_date`, `task_ids`, `tasks`, `updated_at` |
+| [schemas_release](../modules/schemas_release.md) | 0 | `completed_tasks`, `created_at`, `description`, `environment`, `id`, `name`, `overdue_tasks`, `project_id`, `shipped_at`, `status`, `target_date`, `target_overflow_tasks` |
 
 ### Structure
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `WorkMetricSummary` | [schemas_work_metrics](../modules/schemas_work_metrics.md) |
 
 ### References
 

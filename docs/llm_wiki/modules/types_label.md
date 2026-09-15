@@ -25,6 +25,7 @@ flowchart LR
     n5["frontend/src/services/labelService.ts"]
     n6["frontend/src/types/label.ts"]
     n7["frontend/src/utils/taskFilters.ts"]
+    n8["frontend/src/utils/visibleWork.ts"]
     n0 --> n4
     n0 --> n5
     n0 --> n6
@@ -37,9 +38,12 @@ flowchart LR
     n3 --> n5
     n3 --> n6
     n3 --> n7
+    n3 --> n8
     n4 --> n6
     n5 --> n6
     n7 --> n6
+    n8 --> n6
+    n8 --> n7
     click n0 "../modules/LabelSelector.md"
     click n1 "../modules/TemplateLabelSettings.test.md"
     click n2 "../modules/TemplateLabelSettings.md"
@@ -48,6 +52,7 @@ flowchart LR
     click n5 "../modules/labelService.md"
     click n6 "../modules/types_label.md"
     click n7 "../modules/taskFilters.md"
+    click n8 "../modules/visibleWork.md"
 ```
 
 ### Internal neighbors
@@ -61,6 +66,7 @@ flowchart LR
 | Inbound | [seedDisplay](../modules/seedDisplay.md) |
 | Inbound | [labelService](../modules/labelService.md) |
 | Inbound | [taskFilters](../modules/taskFilters.md) |
+| Inbound | [visibleWork](../modules/visibleWork.md) |
 
 ## Classes
 

@@ -98,17 +98,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_my_agent_reviews | service.get_reviews | 917 | `service.get_reviews(actor, limit=limit, cursor=cursor)` |
-| get_my_agent_reviews | _handle_agent_error | 919 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 244 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 246 | `str(exc)` |
-| _handle_agent_error | str | 248 | `str(exc)` |
-| _handle_agent_error | HTTPException | 250 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 251 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 252 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 252 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 253 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 254 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| get_my_agent_reviews | service.get_reviews | 925 | `service.get_reviews(actor, limit=limit, cursor=cursor)` |
+| get_my_agent_reviews | _handle_agent_error | 927 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 254 | `str(exc)` |
+| _handle_agent_error | str | 256 | `str(exc)` |
+| _handle_agent_error | HTTPException | 258 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 259 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 260 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 260 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 261 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 262 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -118,14 +118,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_my_agent_reviews` | `service.get_reviews` | 917 |
-| external_call | `_handle_agent_error` | `isinstance` | 244 |
-| external_call | `_handle_agent_error` | `HTTPException` | 250 |
-| external_call | `_handle_agent_error` | `isinstance` | 251 |
-| external_call | `_handle_agent_error` | `HTTPException` | 252 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 252 |
-| external_call | `_handle_agent_error` | `isinstance` | 253 |
-| external_call | `_handle_agent_error` | `HTTPException` | 254 |
+| unresolved_call | `get_my_agent_reviews` | `service.get_reviews` | 925 |
+| external_call | `_handle_agent_error` | `isinstance` | 252 |
+| external_call | `_handle_agent_error` | `HTTPException` | 258 |
+| external_call | `_handle_agent_error` | `isinstance` | 259 |
+| external_call | `_handle_agent_error` | `HTTPException` | 260 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 260 |
+| external_call | `_handle_agent_error` | `isinstance` | 261 |
+| external_call | `_handle_agent_error` | `HTTPException` | 262 |
 | step_limit | `get_my_agent_reviews` | `first 12 steps` | 0 |
 
 ## Behavior

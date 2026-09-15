@@ -12,7 +12,7 @@ _Auto-generated from `frontend/src/components/common/CollapsibleSection.tsx`._
 |--------|---------|
 | `clsx` | `clsx` |
 | `lucide-react` | `ChevronDown` |
-| `react` | `useState` |
+| `react` | `useId`, `useState` |
 
 ## Module Signals
 

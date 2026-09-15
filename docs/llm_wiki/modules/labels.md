@@ -69,7 +69,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_label_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> LabelService` | — | Dependency for label service. |
+| `get_label_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> LabelService` | — | Dependency for label service. |
 | `list_label_groups` | *(async)* `(service: Annotated[LabelService, Depends(get_label_service)], include_inactive: bool = Query(False))` | `@router.get('/label-groups', response_model=list[LabelGroupResponse])` | List governed label groups. |
 | `create_label_group` | *(async)* `(data: LabelGroupCreate, service: Annotated[LabelService, Depends(get_label_service)])` | `@router.post('/label-groups', response_model=LabelGroupResponse, status_code=status.HTTP_201_CREATED)` | Create a governed label group. |
 | `update_label_group` | *(async)* `(group_id: int, data: LabelGroupUpdate, service: Annotated[LabelService, Depends(get_label_service)])` | `@router.put('/label-groups/{group_id}', response_model=LabelGroupResponse)` | Update a governed label group. |

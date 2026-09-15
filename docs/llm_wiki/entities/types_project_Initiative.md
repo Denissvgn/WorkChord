@@ -1,6 +1,6 @@
 # Initiative
 
-**Location:** `frontend/src/types/project.ts:12`
+**Location:** `frontend/src/types/project.ts:13`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

@@ -96,4 +96,4 @@ flowchart LR
 | `ProjectService.list_initiatives` | call | [project_service](../modules/project_service.md) | 1 |
 | `ProjectService.list_iterations` | call | [project_service](../modules/project_service.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

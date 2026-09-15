@@ -6,12 +6,15 @@
 
 Operator-only agent-team validation, reconciliation, setup, and readiness.
 
+Runtime acknowledgement remains scoped to its exact issued handoff credential. Managed controllers receive workspace membership explicitly, and account disablement remains separate from runtime readiness and model-binding observations.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.agent_contract` | `AGENT_CONTRACT_FEATURES`, `AGENT_TEAM_MASTER_FEATURE`, `MODEL_AWARE_ROUTING_FEATURE` |
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.team_member` | `TeamMemberProfile` |
@@ -55,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (5) |
-| Outbound | `backend` (11) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -63,18 +66,18 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 98 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [CredentialDeliveryError](../entities/CredentialDeliveryError.md) | 111 | `RuntimeError` | Raised when a one-time actor key did not reach the approved sink. |
-| [AgentTeamCredentialSink](../entities/AgentTeamCredentialSink.md) | 115 | `Protocol` | One-way sink boundary; implementations never return credential material. |
-| [FilesystemAgentTeamCredentialSink](../entities/FilesystemAgentTeamCredentialSink.md) | 135 | — | Write one-time credentials to an operator-owned mode-0700 directory. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 230 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 264 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 100 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
+| [CredentialDeliveryError](../entities/CredentialDeliveryError.md) | 113 | `RuntimeError` | Raised when a one-time actor key did not reach the approved sink. |
+| [AgentTeamCredentialSink](../entities/AgentTeamCredentialSink.md) | 117 | `Protocol` | One-way sink boundary; implementations never return credential material. |
+| [FilesystemAgentTeamCredentialSink](../entities/FilesystemAgentTeamCredentialSink.md) | 137 | — | Write one-time credentials to an operator-owned mode-0700 directory. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 232 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 266 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

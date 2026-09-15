@@ -89,7 +89,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `get_agent_skill_bundle_service` | *(async)* `() -> AgentSkillBundleService` | — | Create a service against the configured code-owned artifact directory. |
-| `require_agent_skill_bundle_access` | *(async)* `(request: Request, db: Annotated[AsyncSession, Depends(get_db)]) -> None` | — | Require skills:read unless public code-artifact delivery is explicit. |
+| `require_agent_skill_bundle_access` | *(async)* `(request: Request, db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> None` | — | Require skills:read unless public code-artifact delivery is explicit. |
 | `_resolve_payload` | `(action: Callable[[], SkillBundlePayload]) -> SkillBundlePayload` | — | — |
 | `_etag_matches` | `(if_none_match: str \| None, etag: str) -> bool` | — | — |
 | `_response` | `(payload: SkillBundlePayload, request: Request) -> Response` | — | — |

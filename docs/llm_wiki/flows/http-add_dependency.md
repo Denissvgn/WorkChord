@@ -56,11 +56,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| add_dependency | service.add_dependency | 627 | `service.add_dependency(task_id, data.depends_on_id)` |
-| add_dependency | HTTPException | 629 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| add_dependency | str | 631 | `str(e)` |
-| add_dependency | HTTPException | 634 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
-| add_dependency | MessageResponse | 638 | `MessageResponse(message=..., success=True)` |
+| add_dependency | service.add_dependency | 613 | `service.add_dependency(task_id, data.depends_on_id)` |
+| add_dependency | HTTPException | 615 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| add_dependency | str | 617 | `str(e)` |
+| add_dependency | HTTPException | 620 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
+| add_dependency | MessageResponse | 624 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -70,9 +70,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `add_dependency` | `service.add_dependency` | 627 |
-| external_call | `add_dependency` | `HTTPException` | 629 |
-| external_call | `add_dependency` | `HTTPException` | 634 |
+| unresolved_call | `add_dependency` | `service.add_dependency` | 613 |
+| external_call | `add_dependency` | `HTTPException` | 615 |
+| external_call | `add_dependency` | `HTTPException` | 620 |
 
 ## Behavior
 

@@ -19,17 +19,21 @@ _Auto-generated from `frontend/src/utils/agentAccess.ts`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentAccessPanel.tsx"]
-    n1["frontend/src/hooks/useAgentAccess.ts"]
-    n2["frontend/src/services/api.ts"]
-    n3["frontend/src/utils/agentAccess.ts"]
-    n0 --> n1
-    n0 --> n3
+    n1["frontend/src/features/identity/IdentityProvider.tsx"]
+    n2["frontend/src/hooks/useAgentAccess.ts"]
+    n3["frontend/src/services/api.ts"]
+    n4["frontend/src/utils/agentAccess.ts"]
+    n0 --> n2
+    n0 --> n4
     n1 --> n3
-    n2 --> n3
+    n1 --> n4
+    n2 --> n4
+    n3 --> n4
     click n0 "../modules/AgentAccessPanel.md"
-    click n1 "../modules/useAgentAccess.md"
-    click n2 "../modules/api.md"
-    click n3 "../modules/agentAccess.md"
+    click n1 "../modules/IdentityProvider.md"
+    click n2 "../modules/useAgentAccess.md"
+    click n3 "../modules/api.md"
+    click n4 "../modules/agentAccess.md"
 ```
 
 ### Internal neighbors
@@ -37,6 +41,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [AgentAccessPanel](../modules/AgentAccessPanel.md) |
+| Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [useAgentAccess](../modules/useAgentAccess.md) |
 | Inbound | [api](../modules/api.md) |
 

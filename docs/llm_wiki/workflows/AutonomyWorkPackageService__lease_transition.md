@@ -1,7 +1,7 @@
 # AutonomyWorkPackageService__lease_transition
 
 **Entry point:** `autonomy_work_package_service.AutonomyWorkPackageService._lease_transition`
-**Modules involved:** [agent_service](../modules/agent_service.md), [autonomy_canonical](../modules/autonomy_canonical.md), [autonomy_work_package_service](../modules/autonomy_work_package_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [autonomy_canonical](../modules/autonomy_canonical.md), [autonomy_work_package_service](../modules/autonomy_work_package_service.md), [commands](../modules/commands.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -10,12 +10,14 @@
 2. `agent_service.AgentConflictError`
 3. `agent_service.AgentConflictError`
 4. `time.utc_now`
+5. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
 - [autonomy_canonical](../modules/autonomy_canonical.md)
 - [autonomy_work_package_service](../modules/autonomy_work_package_service.md)
+- [commands](../modules/commands.md)
 - [time](../modules/time.md)
 
 ## Behavior

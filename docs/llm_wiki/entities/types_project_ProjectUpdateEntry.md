@@ -1,6 +1,6 @@
 # ProjectUpdateEntry
 
-**Location:** `frontend/src/types/project.ts:102`
+**Location:** `frontend/src/types/project.ts:103`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

@@ -71,7 +71,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `import_tasks` | `iteration_id: int`, `data: TasksImportRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `status` | - | `TasksImportResponse(...)` |
+| `import_tasks` | `iteration_id: int`, `data: TasksImportRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status` | - | `TasksImportResponse(...)` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -88,17 +88,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_tasks | IterationService | 770 | `IterationService(db)` |
-| import_tasks | iteration_service.get_by_id | 771 | `iteration_service.get_by_id(iteration_id)` |
-| import_tasks | HTTPException | 774 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| import_tasks | service.import_tasks | 780 | `service.import_tasks(iteration_id, data.text, data.destination)` |
-| import_tasks | TasksImportResponse | 785 | `TasksImportResponse(imported_count=..., task_count=len(...), triage_count=len(...), tasks=..., triage_items=...)` |
-| import_tasks | len | 786 | `len(tasks)` |
-| import_tasks | len | 786 | `len(triage_items)` |
-| import_tasks | len | 787 | `len(tasks)` |
-| import_tasks | len | 788 | `len(triage_items)` |
-| import_tasks | service.task_to_response | 789 | `service.task_to_response(t, iteration.end_date)` |
-| import_tasks | TaskImportTriageItemResponse.model_validate | 791 | `TaskImportTriageItemResponse.model_validate(item)` |
+| import_tasks | IterationService | 763 | `IterationService(db)` |
+| import_tasks | iteration_service.get_by_id | 764 | `iteration_service.get_by_id(iteration_id)` |
+| import_tasks | HTTPException | 767 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| import_tasks | service.import_tasks | 773 | `service.import_tasks(iteration_id, data.text, data.destination)` |
+| import_tasks | TasksImportResponse | 778 | `TasksImportResponse(imported_count=..., task_count=len(...), triage_count=len(...), tasks=..., triage_items=...)` |
+| import_tasks | len | 779 | `len(tasks)` |
+| import_tasks | len | 779 | `len(triage_items)` |
+| import_tasks | len | 780 | `len(tasks)` |
+| import_tasks | len | 781 | `len(triage_items)` |
+| import_tasks | service.task_to_response | 782 | `service.task_to_response(t, iteration.end_date)` |
+| import_tasks | TaskImportTriageItemResponse.model_validate | 784 | `TaskImportTriageItemResponse.model_validate(item)` |
 
 ### Boundary effects
 
@@ -108,11 +108,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `import_tasks` | `iteration_service.get_by_id` | 771 |
-| external_call | `import_tasks` | `HTTPException` | 774 |
-| unresolved_call | `import_tasks` | `service.import_tasks` | 780 |
-| unresolved_call | `import_tasks` | `service.task_to_response` | 789 |
-| unresolved_call | `import_tasks` | `TaskImportTriageItemResponse.model_validate` | 791 |
+| unresolved_call | `import_tasks` | `iteration_service.get_by_id` | 764 |
+| external_call | `import_tasks` | `HTTPException` | 767 |
+| unresolved_call | `import_tasks` | `service.import_tasks` | 773 |
+| unresolved_call | `import_tasks` | `service.task_to_response` | 782 |
+| unresolved_call | `import_tasks` | `TaskImportTriageItemResponse.model_validate` | 784 |
 | step_limit | `import_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

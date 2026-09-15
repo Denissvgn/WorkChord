@@ -1,6 +1,6 @@
 # ProjectMilestoneCreate
 
-**Location:** `backend/app/schemas/project.py:172`
+**Location:** `backend/app/schemas/project.py:180`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

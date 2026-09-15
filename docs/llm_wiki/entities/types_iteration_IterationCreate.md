@@ -1,6 +1,6 @@
 # IterationCreate
 
-**Location:** `frontend/src/types/iteration.ts:20`
+**Location:** `frontend/src/types/iteration.ts:22`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

@@ -1,6 +1,6 @@
 # RescheduleResult
 
-**Location:** `backend/app/services/scheduler_service.py:49`
+**Location:** `backend/app/services/scheduler_service.py:51`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)

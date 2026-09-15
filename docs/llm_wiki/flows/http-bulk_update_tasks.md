@@ -115,7 +115,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `bulk_update_tasks` | `iteration_id: int`, `data: TasksImportRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `status` | - | `TasksImportResponse(...)` |
+| `bulk_update_tasks` | `iteration_id: int`, `data: TasksImportRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status` | - | `TasksImportResponse(...)` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -132,11 +132,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| bulk_update_tasks | IterationService | 845 | `IterationService(db)` |
-| bulk_update_tasks | iteration_service.get_by_id | 846 | `iteration_service.get_by_id(iteration_id)` |
-| bulk_update_tasks | HTTPException | 849 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| bulk_update_tasks | _not_found_detail | 851 | `_not_found_detail(db, 'iteration', iteration_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(db)` |
+| bulk_update_tasks | IterationService | 838 | `IterationService(db)` |
+| bulk_update_tasks | iteration_service.get_by_id | 839 | `iteration_service.get_by_id(iteration_id)` |
+| bulk_update_tasks | HTTPException | 842 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| bulk_update_tasks | _not_found_detail | 844 | `_not_found_detail(db, 'iteration', iteration_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -152,8 +152,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `bulk_update_tasks` | `iteration_service.get_by_id` | 846 |
-| external_call | `bulk_update_tasks` | `HTTPException` | 849 |
+| unresolved_call | `bulk_update_tasks` | `iteration_service.get_by_id` | 839 |
+| external_call | `bulk_update_tasks` | `HTTPException` | 842 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

@@ -1,6 +1,6 @@
 # CascadeUpdateInfo
 
-**Location:** `frontend/src/types/task.ts:297`
+**Location:** `frontend/src/types/task.ts:322`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

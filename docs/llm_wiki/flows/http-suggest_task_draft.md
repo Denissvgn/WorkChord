@@ -84,7 +84,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `suggest_task_draft` | `data: TaskAISuggestRequest`, `db: Annotated[AsyncSession, Depends(get_db)]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
+| `suggest_task_draft` | `data: TaskAISuggestRequest`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
 | `data.title.strip` | - | - | - | - |
 | `(…).strip` | - | - | - | - |
 | `HTTPException` | - | - | - | - |

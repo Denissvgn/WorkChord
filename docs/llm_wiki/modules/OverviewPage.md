@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/pages/OverviewPage.tsx`._
 |--------|---------|
 | `../components/common/Button` | `Button` |
 | `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
 | `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `SectionCard` |
 | `../components/ui/tone` | `PillTone`, `STATUS_TONE`, `toneVar`, `toneSoftVar` |
 | `../features/overview/attentionRanking` | `rankAttentionItems`, `rankAttentionTaskCandidates`, `AttentionKind`, `AttentionSeverity` |
@@ -61,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -69,16 +70,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OverviewFocusPanelProps](../entities/OverviewFocusPanelProps.md) | Class | 1006 | — | — |
-| [OverviewDeliverySnapshotProps](../entities/OverviewDeliverySnapshotProps.md) | Class | 1093 | — | — |
-| [CapacityException](../entities/CapacityException.md) | Type alias | 53 | — | — |
-| [AttentionItem](../entities/AttentionItem.md) | Type alias | 63 | — | — |
-| [OverviewDataSource](../entities/OverviewDataSource.md) | Type alias | 77 | — | — |
-| [DirectQueryFeedback](../entities/DirectQueryFeedback.md) | Type alias | 91 | — | — |
-| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 101 | — | — |
+| [OverviewFocusPanelProps](../entities/OverviewFocusPanelProps.md) | Class | 1008 | — | — |
+| [OverviewDeliverySnapshotProps](../entities/OverviewDeliverySnapshotProps.md) | Class | 1095 | — | — |
+| [CapacityException](../entities/CapacityException.md) | Type alias | 54 | — | — |
+| [AttentionItem](../entities/AttentionItem.md) | Type alias | 64 | — | — |
+| [OverviewDataSource](../entities/OverviewDataSource.md) | Type alias | 78 | — | — |
+| [DirectQueryFeedback](../entities/DirectQueryFeedback.md) | Type alias | 92 | — | — |
+| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 102 | — | — |

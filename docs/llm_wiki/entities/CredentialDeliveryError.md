@@ -1,6 +1,6 @@
 # CredentialDeliveryError
 
-**Location:** `backend/app/services/agent_team_setup_service.py:111`
+**Location:** `backend/app/services/agent_team_setup_service.py:113`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)

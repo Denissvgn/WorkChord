@@ -1,6 +1,6 @@
 # ProjectMilestoneTaskGroup
 
-**Location:** `frontend/src/types/project.ts:175`
+**Location:** `frontend/src/types/project.ts:176`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

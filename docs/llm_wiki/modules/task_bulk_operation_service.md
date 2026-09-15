@@ -6,10 +6,13 @@
 
 Selected-task bulk operation orchestration.
 
+Bulk preview returns original task and iteration revisions. Apply validates those observations before modifying selected work, and any failed item rejects the whole command. Preview defaults are preserved by the request transaction owner; supplied stale revisions cannot be retried as an unchanged plan.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `atomic_command`, `lock_iterations` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task`, `TaskStatus` |
 | `app.schemas.task` | `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskResponse`, `TaskUpdate` |
@@ -28,46 +31,54 @@ Selected-task bulk operation orchestration.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/models/iteration.py"]
-    n1["backend/app/models/task.py"]
-    n2["backend/app/routers/tasks.py"]
-    n3["backend/app/schemas/task.py"]
-    n4["backend/app/schemas/team.py"]
-    n5["backend/app/services/assignee_recommendation_service.py"]
-    n6["backend/app/services/language_service.py"]
-    n7["backend/app/services/task_bulk_operation_service.py"]
-    n8["backend/app/services/task_service.py"]
+    n0["backend/app/commands.py"]
+    n1["backend/app/models/iteration.py"]
+    n2["backend/app/models/task.py"]
+    n3["backend/app/routers/tasks.py"]
+    n4["backend/app/schemas/task.py"]
+    n5["backend/app/schemas/team.py"]
+    n6["backend/app/services/assignee_recommendation_service.py"]
+    n7["backend/app/services/language_service.py"]
+    n8["backend/app/services/task_bulk_operation_service.py"]
+    n9["backend/app/services/task_service.py"]
     n0 --> n1
-    n1 --> n0
-    n2 --> n3
-    n2 --> n4
-    n2 --> n5
-    n2 --> n6
-    n2 --> n7
-    n2 --> n8
+    n0 --> n2
+    n0 --> n9
+    n1 --> n2
+    n2 --> n1
+    n3 --> n0
     n3 --> n4
-    n5 --> n1
-    n5 --> n4
-    n7 --> n0
-    n7 --> n1
-    n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n7 --> n6
-    n7 --> n8
+    n3 --> n5
+    n3 --> n6
+    n3 --> n7
+    n3 --> n8
+    n3 --> n9
+    n4 --> n5
+    n6 --> n2
+    n6 --> n5
     n8 --> n0
     n8 --> n1
-    n8 --> n3
+    n8 --> n2
+    n8 --> n4
+    n8 --> n5
     n8 --> n6
-    click n0 "../modules/models_iteration.md"
-    click n1 "../modules/models_task.md"
-    click n2 "../modules/tasks.md"
-    click n3 "../modules/schemas_task.md"
-    click n4 "../modules/schemas_team.md"
-    click n5 "../modules/assignee_recommendation_service.md"
-    click n6 "../modules/language_service.md"
-    click n7 "../modules/task_bulk_operation_service.md"
-    click n8 "../modules/task_service.md"
+    n8 --> n7
+    n8 --> n9
+    n9 --> n0
+    n9 --> n1
+    n9 --> n2
+    n9 --> n4
+    n9 --> n7
+    click n0 "../modules/commands.md"
+    click n1 "../modules/models_iteration.md"
+    click n2 "../modules/models_task.md"
+    click n3 "../modules/tasks.md"
+    click n4 "../modules/schemas_task.md"
+    click n5 "../modules/schemas_team.md"
+    click n6 "../modules/assignee_recommendation_service.md"
+    click n7 "../modules/language_service.md"
+    click n8 "../modules/task_bulk_operation_service.md"
+    click n9 "../modules/task_service.md"
 ```
 
 ### Internal neighbors
@@ -75,6 +86,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [tasks](../modules/tasks.md) |
+| Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |
@@ -93,4 +105,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskBulkOperationService](../entities/TaskBulkOperationService.md) | 31 | — | Validate, preview, and apply selected-task bulk operations. |
+| [TaskBulkOperationService](../entities/TaskBulkOperationService.md) | 33 | — | Validate, preview, and apply selected-task bulk operations. |

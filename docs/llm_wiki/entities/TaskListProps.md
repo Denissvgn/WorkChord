@@ -1,6 +1,6 @@
 # TaskListProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:64`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:66`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

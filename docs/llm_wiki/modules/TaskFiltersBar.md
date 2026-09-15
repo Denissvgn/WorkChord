@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 | `./TaskTextEditorModal` | `TaskTextEditorModal` |
 | `@tanstack/react-query` | `useQuery` |
 | `lucide-react` | `ChevronDown`, `ChevronRight`, `X`, `FileText`, `XCircle` |
-| `react` | `useMemo`, `useState` |
+| `react` | `useId`, `useMemo`, `useState` |
 | `react-i18next` | `useTranslation` |
 
 ## Module Signals
@@ -48,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (6) |
+| Inbound | `frontend` (7) |
 | Outbound | `frontend` (9) |
 
 ### External packages
@@ -57,14 +57,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskFilters](../entities/TaskFilters.md) | Class | 15 | — | — |
-| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Class | 32 | — | — |
+| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Class | 33 | — | — |
 
 ## Functions
 

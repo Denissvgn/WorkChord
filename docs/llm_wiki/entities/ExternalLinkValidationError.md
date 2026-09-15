@@ -1,6 +1,6 @@
 # ExternalLinkValidationError
 
-**Location:** `backend/app/services/external_link_service.py:23`
+**Location:** `backend/app/services/external_link_service.py:25`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [external_link_service](../modules/external_link_service.md)

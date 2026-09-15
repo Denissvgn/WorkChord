@@ -69,7 +69,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_request_source_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> RequestSourceService` | — | Dependency for request-source service. |
+| `get_request_source_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> RequestSourceService` | — | Dependency for request-source service. |
 | `_bad_request` | `(error: Exception) -> HTTPException` | — | — |
 | `_not_found` | `(error: Exception) -> HTTPException` | — | — |
 | `search_request_sources` | *(async)* `(service: Annotated[RequestSourceService, Depends(get_request_source_service)], q: Optional[str] = Query(None, min_length=1), source_type: Optional[str] = Query(None), limit: int = Query(20, ge=1, le=100))` | `@router.get('/request-sources', response_model=list[RequestSourceResponse])` | Search request sources for linking. |

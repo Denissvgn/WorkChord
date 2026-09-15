@@ -1,6 +1,6 @@
 # SavedViewUpdate
 
-**Location:** `frontend/src/types/savedView.ts:50`
+**Location:** `frontend/src/types/savedView.ts:52`
 **Kind:** Class
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)

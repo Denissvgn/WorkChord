@@ -47,9 +47,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| remove_dependency | service.remove_dependency | 654 | `service.remove_dependency(task_id, depends_on_id)` |
-| remove_dependency | HTTPException | 656 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| remove_dependency | MessageResponse | 660 | `MessageResponse(message=..., success=True)` |
+| remove_dependency | service.remove_dependency | 640 | `service.remove_dependency(task_id, depends_on_id)` |
+| remove_dependency | HTTPException | 642 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| remove_dependency | MessageResponse | 646 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,8 +59,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `remove_dependency` | `service.remove_dependency` | 654 |
-| external_call | `remove_dependency` | `HTTPException` | 656 |
+| unresolved_call | `remove_dependency` | `service.remove_dependency` | 640 |
+| external_call | `remove_dependency` | `HTTPException` | 642 |
 
 ## Behavior
 

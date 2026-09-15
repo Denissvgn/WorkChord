@@ -1,6 +1,6 @@
 # AutonomyWorkPackageService
 
-**Location:** `backend/app/services/autonomy_work_package_service.py:44`
+**Location:** `backend/app/services/autonomy_work_package_service.py:46`
 **Kind:** Class
 **Bases:** —
 **Module:** [autonomy_work_package_service](../modules/autonomy_work_package_service.md)

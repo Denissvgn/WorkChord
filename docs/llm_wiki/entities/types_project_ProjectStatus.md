@@ -1,6 +1,6 @@
 # ProjectStatus
 
-**Location:** `frontend/src/types/project.ts:4`
+**Location:** `frontend/src/types/project.ts:5`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

@@ -1,6 +1,6 @@
 # TaskImportService
 
-**Location:** `backend/app/services/task_import_service.py:17`
+**Location:** `backend/app/services/task_import_service.py:19`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_import_service](../modules/task_import_service.md)

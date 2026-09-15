@@ -61,8 +61,8 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_project_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> ProjectService` | — | Dependency for project service. |
-| `get_release_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> ReleaseService` | — | Dependency for release service. |
+| `get_project_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> ProjectService` | — | Dependency for project service. |
+| `get_release_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> ReleaseService` | — | Dependency for release service. |
 | `_localized_detail` | *(async)* `(service: Any, message: str) -> str` | — | — |
 | `_not_found_detail` | *(async)* `(service: Any, entity: str, entity_id: int) -> str` | — | — |
 | `_scoped_not_found_detail` | *(async)* `(service: Any, entity: str, entity_id: int, scope: str, scope_id: int) -> str` | — | — |

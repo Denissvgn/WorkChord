@@ -43,7 +43,7 @@ flowchart LR
     s1 -->|"IterationService(db)"| s2
     s1 -. "iteration_service.get_by_id(iteration_id)" .-> s3
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s4
-    s1 -. "service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description)" .-> s5
+    s1 -. "service.merge_tasks(…)" .-> s5
     s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))" .-> s6
     s1 -. "str(e)" .-> s7
     s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not merge tasks. Ensure all tasks exist, belong to this iteration, and have no children.')" .-> s8
@@ -56,7 +56,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `merge_tasks` | `iteration_id: int`, `data: TaskMerge`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `status`, `status` | - | `service.task_to_response(...)` |
+| `merge_tasks` | `iteration_id: int`, `data: TaskMerge`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status`, `status` | - | `service.task_to_response(...)` |
 | `IterationService` | - | - | - | - |
 | `iteration_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -70,14 +70,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| merge_tasks | IterationService | 695 | `IterationService(db)` |
-| merge_tasks | iteration_service.get_by_id | 696 | `iteration_service.get_by_id(iteration_id)` |
-| merge_tasks | HTTPException | 699 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| merge_tasks | service.merge_tasks | 705 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description)` |
-| merge_tasks | HTTPException | 712 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| merge_tasks | str | 714 | `str(e)` |
-| merge_tasks | HTTPException | 718 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not merge tasks. Ensure all tasks exist, belong to this iteration, and have no children.')` |
-| merge_tasks | service.task_to_response | 723 | `service.task_to_response(parent_task, iteration.end_date)` |
+| merge_tasks | IterationService | 687 | `IterationService(db)` |
+| merge_tasks | iteration_service.get_by_id | 688 | `iteration_service.get_by_id(iteration_id)` |
+| merge_tasks | HTTPException | 691 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| merge_tasks | service.merge_tasks | 697 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description, expected_revision=data.expected_revision)` |
+| merge_tasks | HTTPException | 705 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| merge_tasks | str | 707 | `str(e)` |
+| merge_tasks | HTTPException | 711 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not merge tasks. Ensure all tasks exist, belong to this iteration, and have no children.')` |
+| merge_tasks | service.task_to_response | 716 | `service.task_to_response(parent_task, iteration.end_date)` |
 
 ### Boundary effects
 
@@ -87,12 +87,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `merge_tasks` | `iteration_service.get_by_id` | 696 |
-| external_call | `merge_tasks` | `HTTPException` | 699 |
-| unresolved_call | `merge_tasks` | `service.merge_tasks` | 705 |
-| external_call | `merge_tasks` | `HTTPException` | 712 |
-| external_call | `merge_tasks` | `HTTPException` | 718 |
-| unresolved_call | `merge_tasks` | `service.task_to_response` | 723 |
+| unresolved_call | `merge_tasks` | `iteration_service.get_by_id` | 688 |
+| external_call | `merge_tasks` | `HTTPException` | 691 |
+| unresolved_call | `merge_tasks` | `service.merge_tasks` | 697 |
+| external_call | `merge_tasks` | `HTTPException` | 705 |
+| external_call | `merge_tasks` | `HTTPException` | 711 |
+| unresolved_call | `merge_tasks` | `service.task_to_response` | 716 |
 
 ## Behavior
 

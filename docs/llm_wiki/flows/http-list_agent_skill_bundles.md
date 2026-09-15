@@ -98,7 +98,7 @@ flowchart LR
 |---|---|---:|---|
 | list_agent_skill_bundles | _response | 131 | `_response(_resolve_payload(...), request)` |
 | _response | get_settings | 92 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
 | _response | cache_control.replace | 93 | `cache_control.replace('public,', 'private,', 1)` |
 | _response | _etag_matches | 102 | `_etag_matches(request.headers.get(...), payload.etag)` |
 | _etag_matches | if_none_match.split | 83 | `if_none_match.split(',')` |

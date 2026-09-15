@@ -1,6 +1,6 @@
 # PlanShareService
 
-**Location:** `backend/app/services/plan_share_service.py:16`
+**Location:** `backend/app/services/plan_share_service.py:19`
 **Kind:** Class
 **Bases:** —
 **Module:** [plan_share_service](../modules/plan_share_service.md)
@@ -21,6 +21,7 @@ Persist plan snapshots without exposing mutable planning records.
 | `_query` | `()` | `@staticmethod` | — |
 | `to_response` | `(share: PlanShare) -> PlanShareResponse` | `@staticmethod` | — |
 | `_share_snapshot` | `(snapshot_data: dict) -> dict` | `@staticmethod` | Keep token-scoped responses limited to plan-review information. |
+| `_owner_filter` | `(session_id)` | — | — |
 | `get_owned_current` | *(async)* `(iteration_id: int, session_id: int) -> PlanShare \| None` | — | — |
 | `get_active_by_public_id` | *(async)* `(public_id: str) -> PlanShare \| None` | — | — |
 | `create` | *(async)* `(iteration_id: int, session: UserSession) -> PlanShare \| None` | — | — |
@@ -57,7 +58,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [plan_share_service](../modules/plan_share_service.md) | 8 | — |
+| [plan_share_service](../modules/plan_share_service.md) | 9 | — |
 
 ### References
 

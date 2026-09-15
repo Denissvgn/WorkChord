@@ -49,18 +49,21 @@ flowchart LR
     n4["convert_triage_item_to_task (backend/app/routers/triage.py)"]
     n5["backend/app/schemas/__init__.py"]
     n6["TriageService.convert_to_task (backend/app/services/triage_service.py)"]
+    n7["backend/tests/test_client_contract.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_triage.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/routers_triage.md"
     click n5 "../modules/schemas___init__.md"
     click n6 "../modules/triage_service.md"
+    click n7 "../modules/test_client_contract.md"
 ```
 
 ### Summary
@@ -84,3 +87,4 @@ flowchart LR
 | `convert_triage_item_to_task` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `TriageService.convert_to_task` | type_reference | [triage_service](../modules/triage_service.md) | — |
+| `test_client_contract` | import | [test_client_contract](../modules/test_client_contract.md) | — |

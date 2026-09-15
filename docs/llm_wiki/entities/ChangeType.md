@@ -1,6 +1,6 @@
 # ChangeType
 
-**Location:** `backend/app/services/scheduler_service.py:24`
+**Location:** `backend/app/services/scheduler_service.py:26`
 **Kind:** Enum
 **Bases:** `Enum`
 **Module:** [scheduler_service](../modules/scheduler_service.md)

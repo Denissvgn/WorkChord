@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:169`
+**Location:** `backend/app/services/agent_work_service.py:171`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)

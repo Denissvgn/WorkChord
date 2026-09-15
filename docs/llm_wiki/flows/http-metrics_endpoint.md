@@ -143,10 +143,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| metrics_endpoint | collect_metrics | 237 | `collect_metrics(data not statically known)` |
+| metrics_endpoint | collect_metrics | 262 | `collect_metrics(data not statically known)` |
 | collect_metrics | readiness_snapshot | 399 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
 | readiness_snapshot | head_revision | 253 | `head_revision(data not statically known)` |
 | head_revision | ScriptDirectory.from_config | 132 | `ScriptDirectory.from_config(alembic_config(...))` |
 | head_revision | alembic_config | 132 | `alembic_config(data not statically known)` |

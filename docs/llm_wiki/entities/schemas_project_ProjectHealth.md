@@ -1,6 +1,6 @@
 # ProjectHealth
 
-**Location:** `backend/app/schemas/project.py:21`
+**Location:** `backend/app/schemas/project.py:25`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_project](../modules/schemas_project.md)

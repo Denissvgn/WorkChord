@@ -28,53 +28,61 @@ request bodies.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/database_runtime.py"]
-    n1["backend/app/main.py"]
-    n2["backend/app/maintenance.py"]
-    n3["backend/app/observability.py"]
-    n4["backend/app/runtime_telemetry.py"]
-    n5["backend/app/services/agent_routing_observability.py"]
-    n6["backend/app/services/outbound_webhook_service.py"]
-    n7["backend/app/services/session_service.py"]
-    n8["backend/tests/database/test_observability.py"]
-    n9["backend/tests/test_agent_routing_observability.py"]
-    n0 --> n4
-    n1 --> n0
-    n1 --> n2
-    n1 --> n3
-    n1 --> n4
+    n0["backend/app/commands.py"]
+    n1["backend/app/database_runtime.py"]
+    n2["backend/app/main.py"]
+    n3["backend/app/maintenance.py"]
+    n4["backend/app/observability.py"]
+    n5["backend/app/runtime_telemetry.py"]
+    n6["backend/app/services/agent_routing_observability.py"]
+    n7["backend/app/services/outbound_webhook_service.py"]
+    n8["backend/app/services/session_service.py"]
+    n9["backend/tests/database/test_observability.py"]
+    n10["backend/tests/test_agent_routing_observability.py"]
+    n0 --> n5
+    n1 --> n5
+    n2 --> n0
+    n2 --> n1
+    n2 --> n3
     n2 --> n4
-    n3 --> n0
-    n3 --> n2
-    n3 --> n4
-    n5 --> n4
-    n5 --> n6
+    n2 --> n5
+    n3 --> n5
+    n4 --> n1
+    n4 --> n3
+    n4 --> n5
     n6 --> n0
-    n6 --> n2
-    n6 --> n4
-    n7 --> n2
-    n7 --> n4
+    n6 --> n5
+    n6 --> n7
+    n7 --> n0
+    n7 --> n1
+    n7 --> n3
+    n7 --> n5
+    n8 --> n0
     n8 --> n3
-    n8 --> n4
+    n8 --> n5
     n9 --> n4
     n9 --> n5
-    n9 --> n6
-    click n0 "../modules/database_runtime.md"
-    click n1 "../modules/app_main.md"
-    click n2 "../modules/maintenance.md"
-    click n3 "../modules/observability.md"
-    click n4 "../modules/runtime_telemetry.md"
-    click n5 "../modules/agent_routing_observability.md"
-    click n6 "../modules/outbound_webhook_service.md"
-    click n7 "../modules/session_service.md"
-    click n8 "../modules/test_observability.md"
-    click n9 "../modules/test_agent_routing_observability.md"
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    click n0 "../modules/commands.md"
+    click n1 "../modules/database_runtime.md"
+    click n2 "../modules/app_main.md"
+    click n3 "../modules/maintenance.md"
+    click n4 "../modules/observability.md"
+    click n5 "../modules/runtime_telemetry.md"
+    click n6 "../modules/agent_routing_observability.md"
+    click n7 "../modules/outbound_webhook_service.md"
+    click n8 "../modules/session_service.md"
+    click n9 "../modules/test_observability.md"
+    click n10 "../modules/test_agent_routing_observability.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [commands](../modules/commands.md) |
 | Inbound | [database_runtime](../modules/database_runtime.md) |
 | Inbound | [app_main](../modules/app_main.md) |
 | Inbound | [maintenance](../modules/maintenance.md) |

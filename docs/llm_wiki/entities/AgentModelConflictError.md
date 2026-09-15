@@ -1,6 +1,6 @@
 # AgentModelConflictError
 
-**Location:** `backend/app/services/agent_model_catalog_service.py:52`
+**Location:** `backend/app/services/agent_model_catalog_service.py:54`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md)

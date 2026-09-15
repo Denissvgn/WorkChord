@@ -1,6 +1,6 @@
 # TriageService
 
-**Location:** `backend/app/services/triage_service.py:52`
+**Location:** `backend/app/services/triage_service.py:54`
 **Kind:** Class
 **Bases:** —
 **Module:** [triage_service](../modules/triage_service.md)

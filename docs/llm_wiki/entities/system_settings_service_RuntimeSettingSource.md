@@ -1,6 +1,6 @@
 # RuntimeSettingSource
 
-**Location:** `backend/app/services/system_settings_service.py:31`
+**Location:** `backend/app/services/system_settings_service.py:33`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [system_settings_service](../modules/system_settings_service.md)

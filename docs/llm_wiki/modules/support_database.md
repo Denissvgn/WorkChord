@@ -29,12 +29,18 @@ flowchart LR
     n0["backend/tests/support/__init__.py"]
     n1["backend/tests/support/database.py"]
     n2["backend/tests/test_database_harness.py"]
+    n3["scripts/ci/serve_disposable_api.py"]
+    n4["scripts/ci/serve_disposable_oidc.py"]
     n0 --> n1
     n2 --> n0
     n2 --> n1
+    n3 --> n1
+    n4 --> n1
     click n0 "../modules/support___init__.md"
     click n1 "../modules/support_database.md"
     click n2 "../modules/test_database_harness.md"
+    click n3 "../modules/serve_disposable_api.md"
+    click n4 "../modules/serve_disposable_oidc.md"
 ```
 
 ### Internal neighbors
@@ -43,6 +49,8 @@ flowchart LR
 |---|---|
 | Inbound | [support___init__](../modules/support___init__.md) |
 | Inbound | [test_database_harness](../modules/test_database_harness.md) |
+| Inbound | [serve_disposable_api](../modules/serve_disposable_api.md) |
+| Inbound | [serve_disposable_oidc](../modules/serve_disposable_oidc.md) |
 
 ### External packages
 

@@ -29,15 +29,18 @@ flowchart LR
     n1["frontend/src/pages/TasksPage.tsx"]
     n2["frontend/src/utils/taskFilterDefaults.ts"]
     n3["frontend/src/utils/taskFilters.test.ts"]
+    n4["frontend/src/utils/visibleWork.test.ts"]
     n0 ==> n2
     n1 --> n0
     n1 --> n2
     n2 ==> n0
     n3 --> n2
+    n4 --> n2
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/TasksPage.md"
     click n2 "../modules/taskFilterDefaults.md"
     click n3 "../modules/taskFilters.test.md"
+    click n4 "../modules/visibleWork.test.md"
 ```
 
 ### Internal neighbors
@@ -47,4 +50,5 @@ flowchart LR
 | Inbound | [TaskFiltersBar](../modules/TaskFiltersBar.md) |
 | Inbound | [TasksPage](../modules/TasksPage.md) |
 | Inbound | [taskFilters.test](../modules/taskFilters.test.md) |
+| Inbound | [visibleWork.test](../modules/visibleWork.test.md) |
 | Outbound | [TaskFiltersBar](../modules/TaskFiltersBar.md) |

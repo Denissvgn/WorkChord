@@ -1,6 +1,6 @@
 # TaskBatchUpdateRequest
 
-**Location:** `backend/app/schemas/task.py:381`
+**Location:** `backend/app/schemas/task.py:405`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -14,6 +14,7 @@ Schema for updating multiple tasks in a single request.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `tasks` | `list[TaskBatchUpdateItem]` | `tasks` | Yes | No | — | — | — | — |
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods
 
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `tasks` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `expected_revision`, `tasks` |
 
 ### Structure
 

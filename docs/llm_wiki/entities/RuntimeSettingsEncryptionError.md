@@ -1,6 +1,6 @@
 # RuntimeSettingsEncryptionError
 
-**Location:** `backend/app/services/system_settings_service.py:40`
+**Location:** `backend/app/services/system_settings_service.py:42`
 **Kind:** Class
 **Bases:** `RuntimeSettingsError`
 **Module:** [system_settings_service](../modules/system_settings_service.md)

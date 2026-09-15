@@ -2,16 +2,20 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [upgrade](../modules/upgrade.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [config](../modules/config.md), [database_config](../modules/database_config.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 11 more
 
 **Complete modules touched:**
 
+- [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [database_config](../modules/database_config.md)
 - [github_status_automation_service](../modules/github_status_automation_service.md)
+- [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
+- [models_identity](../modules/models_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [template_service](../modules/template_service.md)
@@ -82,7 +86,7 @@ sequenceDiagram
     p23-->>p24: ScriptDirectory.from_config (backend/app/services/upgr…_service.py:head_revision)
 ```
 
-> Call sequence diagram shows 30 of 165 interactions; 135 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 186 interactions; 156 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

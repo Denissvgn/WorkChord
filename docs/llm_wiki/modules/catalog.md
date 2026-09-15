@@ -32,6 +32,7 @@ flowchart LR
     n5["backend/app/models/__init__.py"]
     n6["backend/tests/database_migration/test_postgresql_transfer.py"]
     n7["backend/tests/database_migration/test_transfer_catalog.py"]
+    n8["backend/tests/test_authority_migrations.py"]
     n1 --> n2
     n2 --> n0
     n2 --> n5
@@ -44,6 +45,7 @@ flowchart LR
     n6 --> n3
     n6 --> n4
     n7 --> n2
+    n8 --> n2
     click n0 "../modules/app_database.md"
     click n1 "../modules/database_migration_canonical.md"
     click n2 "../modules/catalog.md"
@@ -52,6 +54,7 @@ flowchart LR
     click n5 "../modules/models___init__.md"
     click n6 "../modules/test_postgresql_transfer.md"
     click n7 "../modules/test_transfer_catalog.md"
+    click n8 "../modules/test_authority_migrations.md"
 ```
 
 ### Internal neighbors
@@ -63,6 +66,7 @@ flowchart LR
 | Inbound | [transfer](../modules/transfer.md) |
 | Inbound | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) |
 | Inbound | [test_transfer_catalog](../modules/test_transfer_catalog.md) |
+| Inbound | [test_authority_migrations](../modules/test_authority_migrations.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [models___init__](../modules/models___init__.md) |
 

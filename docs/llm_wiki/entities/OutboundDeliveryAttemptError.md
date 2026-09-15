@@ -1,6 +1,6 @@
 # OutboundDeliveryAttemptError
 
-**Location:** `backend/app/services/outbound_webhook_service.py:140`
+**Location:** `backend/app/services/outbound_webhook_service.py:142`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [outbound_webhook_service](../modules/outbound_webhook_service.md)

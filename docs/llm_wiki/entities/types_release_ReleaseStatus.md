@@ -1,6 +1,6 @@
 # ReleaseStatus
 
-**Location:** `frontend/src/types/release.ts:3`
+**Location:** `frontend/src/types/release.ts:4`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_release](../modules/types_release.md)

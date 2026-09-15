@@ -1,6 +1,6 @@
 # ExternalLinkConflictError
 
-**Location:** `backend/app/services/external_link_service.py:27`
+**Location:** `backend/app/services/external_link_service.py:29`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [external_link_service](../modules/external_link_service.md)

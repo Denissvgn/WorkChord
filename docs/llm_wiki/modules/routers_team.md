@@ -68,7 +68,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_team_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> TeamService` | — | Dependency for team service. |
+| `get_team_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> TeamService` | — | Dependency for team service. |
 | `get_team_members` | *(async)* `(iteration_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/iterations/{iteration_id}/team', response_model=list[TeamMemberResponse])` | Get all team members for an iteration. |
 | `get_unique_employees` | *(async)* `(service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/employees/unique', response_model=list[dict])` | Get unique employees from all iterations for reuse. |
 | `list_team_member_options` | *(async)* `(service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/team-members', response_model=list[TeamMemberOptionResponse])` | List all team members for owner and assignee selectors. |

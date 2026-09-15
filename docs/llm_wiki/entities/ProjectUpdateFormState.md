@@ -1,6 +1,6 @@
 # ProjectUpdateFormState
 
-**Location:** `frontend/src/pages/ProjectDetailPage.tsx:149`
+**Location:** `frontend/src/pages/ProjectDetailPage.tsx:150`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)

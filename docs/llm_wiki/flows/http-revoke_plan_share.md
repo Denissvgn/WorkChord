@@ -43,7 +43,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `revoke_plan_share` | `share_id: int`, `response: Response`, `current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | `response.headers[...]` | `MessageResponse(...)` |
+| `revoke_plan_share` | `share_id: int`, `response: Response`, `current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | `response.headers[...]` | `MessageResponse(...)` |
 | `PlanShareService(…).revoke` | - | - | - | - |
 | `PlanShareService` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -53,10 +53,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| revoke_plan_share | PlanShareService(…).revoke | 104 | `PlanShareService(db).revoke(share_id, current_session.id)` |
-| revoke_plan_share | PlanShareService | 104 | `PlanShareService(db)` |
-| revoke_plan_share | HTTPException | 106 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Plan share not found or not owned by this session')` |
-| revoke_plan_share | MessageResponse | 110 | `MessageResponse(message='Plan share revoked', success=True)` |
+| revoke_plan_share | PlanShareService(…).revoke | 100 | `PlanShareService(db).revoke(share_id, current_session.id)` |
+| revoke_plan_share | PlanShareService | 100 | `PlanShareService(db)` |
+| revoke_plan_share | HTTPException | 102 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Plan share not found or not owned by this session')` |
+| revoke_plan_share | MessageResponse | 106 | `MessageResponse(message='Plan share revoked', success=True)` |
 
 ### Boundary effects
 
@@ -66,8 +66,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `revoke_plan_share` | `PlanShareService(db).revoke` | 104 |
-| external_call | `revoke_plan_share` | `HTTPException` | 106 |
+| unresolved_call | `revoke_plan_share` | `PlanShareService(db).revoke` | 100 |
+| external_call | `revoke_plan_share` | `HTTPException` | 102 |
 
 ## Behavior
 

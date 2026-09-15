@@ -1,6 +1,6 @@
 # TriageDraftNotFoundError
 
-**Location:** `backend/app/services/triage_service.py:48`
+**Location:** `backend/app/services/triage_service.py:50`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [triage_service](../modules/triage_service.md)

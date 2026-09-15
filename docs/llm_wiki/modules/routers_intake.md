@@ -81,5 +81,5 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_web_intake_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> WebIntakeService` | — | Dependency for controlled web intake. |
+| `get_web_intake_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> WebIntakeService` | — | Dependency for controlled web intake. |
 | `create_web_intake_item` | *(async)* `(request: Request, raw_data: Annotated[Any, Body(...)], service: Annotated[WebIntakeService, Depends(get_web_intake_service)], authorization: Annotated[Optional[str], Header(alias='Authorization')] = None)` | `@router.post('/intake/web', response_model=TriageItemResponse, status_code=status.HTTP_201_CREATED)` | Create a triage item from a controlled external web/form intake payload. |

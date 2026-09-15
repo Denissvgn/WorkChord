@@ -1,6 +1,6 @@
 # ProjectInitiativeSummary
 
-**Location:** `frontend/src/types/project.ts:44`
+**Location:** `frontend/src/types/project.ts:45`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

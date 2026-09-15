@@ -1,6 +1,6 @@
 # RequestSourceConflictError
 
-**Location:** `backend/app/services/request_source_service.py:35`
+**Location:** `backend/app/services/request_source_service.py:37`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [request_source_service](../modules/request_source_service.md)

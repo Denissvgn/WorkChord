@@ -1,6 +1,6 @@
 # TaskMergeRequest
 
-**Location:** `frontend/src/types/task.ts:249`
+**Location:** `frontend/src/types/task.ts:269`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -13,6 +13,7 @@ _Auto-generated from `TaskMergeRequest` in `frontend/src/types/task.ts`._
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `expected_revision` | `number` | *required* | — |
 | `task_ids` | `number[]` | *required* | — |
 | `parent_title` | `string` | *required* | — |
 | `parent_description` | `string` | *required* | — |
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `parent_description`, `parent_title`, `task_ids` |
+| [types_task](../modules/types_task.md) | 0 | `expected_revision`, `parent_description`, `parent_title`, `task_ids` |
 
 ### References
 

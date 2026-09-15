@@ -10,6 +10,7 @@ GitHub webhook intake service.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `TaskEvent` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType` |
@@ -50,7 +51,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (13) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -58,13 +59,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [GitHubWebhookConfigurationError](../entities/GitHubWebhookConfigurationError.md) | 37 | `RuntimeError` | Raised when webhook processing is not configured. |
-| [GitHubWebhookSignatureError](../entities/GitHubWebhookSignatureError.md) | 41 | `ValueError` | Raised when a webhook signature is missing or invalid. |
-| [GitHubWebhookPayloadError](../entities/GitHubWebhookPayloadError.md) | 45 | `ValueError` | Raised when a webhook payload cannot be processed. |
-| [GitHubWebhookService](../entities/GitHubWebhookService.md) | 49 | — | Verify and process GitHub webhook deliveries. |
+| [GitHubWebhookConfigurationError](../entities/GitHubWebhookConfigurationError.md) | 39 | `RuntimeError` | Raised when webhook processing is not configured. |
+| [GitHubWebhookSignatureError](../entities/GitHubWebhookSignatureError.md) | 43 | `ValueError` | Raised when a webhook signature is missing or invalid. |
+| [GitHubWebhookPayloadError](../entities/GitHubWebhookPayloadError.md) | 47 | `ValueError` | Raised when a webhook payload cannot be processed. |
+| [GitHubWebhookService](../entities/GitHubWebhookService.md) | 51 | — | Verify and process GitHub webhook deliveries. |

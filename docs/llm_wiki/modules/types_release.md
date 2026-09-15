@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/types/release.ts`._
 | Source | Symbols |
 |--------|---------|
 | `./task` | `TaskStatus` |
+| `./workMetrics` | `WorkMetrics` |
 
 ## Module Signals
 
@@ -29,6 +30,7 @@ flowchart LR
     n3["frontend/src/services/releaseService.ts"]
     n4["frontend/src/types/release.ts"]
     n5["frontend/src/types/task.ts"]
+    n6["frontend/src/types/workMetrics.ts"]
     n0 --> n3
     n0 --> n4
     n0 --> n5
@@ -40,12 +42,14 @@ flowchart LR
     n2 --> n4
     n3 --> n4
     n4 --> n5
+    n4 --> n6
     click n0 "../modules/ReleaseForm.md"
     click n1 "../modules/ProjectDetailPage.md"
     click n2 "../modules/ProjectReleaseDetailPage.md"
     click n3 "../modules/releaseService.md"
     click n4 "../modules/types_release.md"
     click n5 "../modules/types_task.md"
+    click n6 "../modules/workMetrics.md"
 ```
 
 ### Internal neighbors
@@ -57,13 +61,14 @@ flowchart LR
 | Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |
 | Inbound | [releaseService](../modules/releaseService.md) |
 | Outbound | [types_task](../modules/types_task.md) |
+| Outbound | [workMetrics](../modules/workMetrics.md) |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseTaskSummary](../entities/types_release_ReleaseTaskSummary.md) | Class | 5 | — | — |
-| [Release](../entities/types_release_Release.md) | Class | 12 | — | — |
-| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Class | 28 | — | — |
-| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Class | 39 | — | — |
-| [ReleaseStatus](../entities/types_release_ReleaseStatus.md) | Type alias | 3 | — | — |
+| [ReleaseTaskSummary](../entities/types_release_ReleaseTaskSummary.md) | Class | 6 | — | — |
+| [Release](../entities/types_release_Release.md) | Class | 13 | `WorkMetrics` | — |
+| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Class | 29 | — | — |
+| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Class | 40 | — | — |
+| [ReleaseStatus](../entities/types_release_ReleaseStatus.md) | Type alias | 4 | — | — |

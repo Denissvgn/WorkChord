@@ -10,6 +10,7 @@ Iteration service with business logic.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush`, `schedule_input_command` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
 | `app.models.task` | `Task`, `TaskStatus` |
@@ -43,8 +44,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
@@ -52,11 +53,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [IterationSeriesItem](../entities/IterationSeriesItem.md) | 35 | — | Computed iteration row for a series create request. |
-| [IterationService](../entities/IterationService.md) | 42 | — | Service for iteration operations. |
+| [IterationSeriesItem](../entities/IterationSeriesItem.md) | 37 | — | Computed iteration row for a series create request. |
+| [IterationService](../entities/IterationService.md) | 44 | — | Service for iteration operations. |

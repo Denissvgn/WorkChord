@@ -47,7 +47,7 @@ flowchart LR
     s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')" .-> s5
     s1 -->|"IterationService(db)"| s6
     s1 -. "iteration_service.get_by_id(task.iteration_id)" .-> s7
-    s1 -. "service.unmerge_task(task_id, data.delete_parent)" .-> s8
+    s1 -. "service.unmerge_task(task_id, data.delete_parent, expected_revisions=...)" .-> s8
     s1 -. "service.task_to_response(t, ...)" .-> s9
     click s1 "../modules/tasks.md"
     click s6 "../modules/iteration_service.md"
@@ -57,7 +57,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `unmerge_task` | `task_id: int`, `data: TaskUnmerge`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `status` | - | `...` |
+| `unmerge_task` | `task_id: int`, `data: TaskUnmerge`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status` | - | `...` |
 | `service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `len` | - | - | - | - |
@@ -71,14 +71,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| unmerge_task | service.get_by_id | 738 | `service.get_by_id(task_id)` |
-| unmerge_task | HTTPException | 740 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| unmerge_task | len | 745 | `len(task.children)` |
-| unmerge_task | HTTPException | 746 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
-| unmerge_task | IterationService | 751 | `IterationService(db)` |
-| unmerge_task | iteration_service.get_by_id | 752 | `iteration_service.get_by_id(task.iteration_id)` |
-| unmerge_task | service.unmerge_task | 754 | `service.unmerge_task(task_id, data.delete_parent)` |
-| unmerge_task | service.task_to_response | 756 | `service.task_to_response(t, ...)` |
+| unmerge_task | service.get_by_id | 731 | `service.get_by_id(task_id)` |
+| unmerge_task | HTTPException | 733 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| unmerge_task | len | 738 | `len(task.children)` |
+| unmerge_task | HTTPException | 739 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
+| unmerge_task | IterationService | 744 | `IterationService(db)` |
+| unmerge_task | iteration_service.get_by_id | 745 | `iteration_service.get_by_id(task.iteration_id)` |
+| unmerge_task | service.unmerge_task | 747 | `service.unmerge_task(task_id, data.delete_parent, expected_revisions=...)` |
+| unmerge_task | service.task_to_response | 749 | `service.task_to_response(t, ...)` |
 
 ### Boundary effects
 
@@ -88,12 +88,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `unmerge_task` | `service.get_by_id` | 738 |
-| external_call | `unmerge_task` | `HTTPException` | 740 |
-| external_call | `unmerge_task` | `HTTPException` | 746 |
-| unresolved_call | `unmerge_task` | `iteration_service.get_by_id` | 752 |
-| unresolved_call | `unmerge_task` | `service.unmerge_task` | 754 |
-| unresolved_call | `unmerge_task` | `service.task_to_response` | 756 |
+| unresolved_call | `unmerge_task` | `service.get_by_id` | 731 |
+| external_call | `unmerge_task` | `HTTPException` | 733 |
+| external_call | `unmerge_task` | `HTTPException` | 739 |
+| unresolved_call | `unmerge_task` | `iteration_service.get_by_id` | 745 |
+| unresolved_call | `unmerge_task` | `service.unmerge_task` | 747 |
+| unresolved_call | `unmerge_task` | `service.task_to_response` | 749 |
 
 ## Behavior
 

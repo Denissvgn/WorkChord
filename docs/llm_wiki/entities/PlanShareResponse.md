@@ -27,6 +27,7 @@ A revocable plan snapshot link and its immutable captured data.
 | `snapshot_data` | `dict[str, Any]` | `snapshot_data` | No | No | factory: `dict` | — | — | — |
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
 | `revoked_at` | `datetime \| None` | `revoked_at` | No | Yes | `None` | — | — | — |
+| `expires_at` | `datetime \| None` | `expires_at` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -59,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_plan_share](../modules/schemas_plan_share.md) | 0 | `created_at`, `created_by_display`, `id`, `iteration_id`, `iteration_name`, `public_id`, `revoked_at`, `snapshot_data` |
+| [schemas_plan_share](../modules/schemas_plan_share.md) | 0 | `created_at`, `created_by_display`, `expires_at`, `id`, `iteration_id`, `iteration_name`, `public_id`, `revoked_at`, `snapshot_data` |
 
 ### Structure
 

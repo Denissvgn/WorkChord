@@ -55,11 +55,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| refresh_github_external_link | github_service.refresh_pull_request_status | 513 | `github_service.refresh_pull_request_status(link_id)` |
-| refresh_github_external_link | HTTPException | 515 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| refresh_github_external_link | str | 517 | `str(e)` |
-| refresh_github_external_link | HTTPException | 521 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| refresh_github_external_link | link_service.link_to_response | 525 | `link_service.link_to_response(link)` |
+| refresh_github_external_link | github_service.refresh_pull_request_status | 499 | `github_service.refresh_pull_request_status(link_id)` |
+| refresh_github_external_link | HTTPException | 501 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| refresh_github_external_link | str | 503 | `str(e)` |
+| refresh_github_external_link | HTTPException | 507 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| refresh_github_external_link | link_service.link_to_response | 511 | `link_service.link_to_response(link)` |
 
 ### Boundary effects
 
@@ -69,10 +69,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `refresh_github_external_link` | `github_service.refresh_pull_request_status` | 513 |
-| external_call | `refresh_github_external_link` | `HTTPException` | 515 |
-| external_call | `refresh_github_external_link` | `HTTPException` | 521 |
-| unresolved_call | `refresh_github_external_link` | `link_service.link_to_response` | 525 |
+| unresolved_call | `refresh_github_external_link` | `github_service.refresh_pull_request_status` | 499 |
+| external_call | `refresh_github_external_link` | `HTTPException` | 501 |
+| external_call | `refresh_github_external_link` | `HTTPException` | 507 |
+| unresolved_call | `refresh_github_external_link` | `link_service.link_to_response` | 511 |
 
 ## Behavior
 

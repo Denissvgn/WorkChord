@@ -18,6 +18,7 @@ _Auto-generated from `KanbanColumnProps` in `frontend/src/components/tasks/Kanba
 | `tasks` | `Task[]` | *required* | — |
 | `count` | `number` | *required* | — |
 | `tone` | `PillTone` | *required* | — |
+| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | *required* | — |
 
 ## Methods
 
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [KanbanColumn](../modules/KanbanColumn.md) | 0 | `count`, `id`, `tasks`, `title`, `tone` |
+| [KanbanColumn](../modules/KanbanColumn.md) | 0 | `count`, `id`, `onOpen`, `tasks`, `title`, `tone` |
 
 ### References
 

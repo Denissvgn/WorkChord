@@ -70,11 +70,11 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [GanttChartProps](../entities/GanttChartProps.md) | Class | 22 | — | — |
-| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Class | 34 | `GanttTask` | — |
-| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Class | 38 | — | — |
+| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Class | 35 | `GanttTask` | — |
+| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Class | 39 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `GanttChart` | `({     iterationId,     startDate,     endDate,     tasks,     weekends,     holidays,     memberVacations,     sandboxMode = false,     onSaveSandbox, }: GanttChartProps)` | — | — |
+| `GanttChart` | `({     iterationId,     iterationRevision,    startDate,     endDate,     tasks,     weekends,     holidays,     memberVacations,     sandboxMode = false,     onSaveSandbox, }: GanttChartProps)` | — | — |

@@ -1,6 +1,6 @@
 # IncrementalScheduler
 
-**Location:** `backend/app/services/scheduler_service.py:1281`
+**Location:** `backend/app/services/scheduler_service.py:1312`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)

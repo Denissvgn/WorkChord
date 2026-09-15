@@ -10,6 +10,7 @@ Outbound webhook target management and delivery service.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.database` | `async_session_maker` |
 | `app.database_runtime` | `run_database_retry` |
 | `app.maintenance` | `require_background_writes_enabled` |
@@ -53,7 +54,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (14) |
-| Outbound | `backend` (10) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -61,16 +62,16 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [OutboundWebhookValidationError](../entities/OutboundWebhookValidationError.md) | 132 | `ValueError` | Raised when outbound webhook input is invalid. |
-| [OutboundWebhookNotFoundError](../entities/OutboundWebhookNotFoundError.md) | 136 | `LookupError` | Raised when an outbound webhook target or delivery cannot be found. |
-| [OutboundDeliveryAttemptError](../entities/OutboundDeliveryAttemptError.md) | 140 | `RuntimeError` | Classify a transport failure as retryable or terminal. |
-| [OutboundWebhookService](../entities/OutboundWebhookService.md) | 148 | — | Manage outbound webhook targets and deliver matching domain events. |
+| [OutboundWebhookValidationError](../entities/OutboundWebhookValidationError.md) | 134 | `ValueError` | Raised when outbound webhook input is invalid. |
+| [OutboundWebhookNotFoundError](../entities/OutboundWebhookNotFoundError.md) | 138 | `LookupError` | Raised when an outbound webhook target or delivery cannot be found. |
+| [OutboundDeliveryAttemptError](../entities/OutboundDeliveryAttemptError.md) | 142 | `RuntimeError` | Classify a transport failure as retryable or terminal. |
+| [OutboundWebhookService](../entities/OutboundWebhookService.md) | 150 | — | Manage outbound webhook targets and deliver matching domain events. |
 
 ## Functions
 

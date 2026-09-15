@@ -42,6 +42,7 @@ flowchart LR
     n7["AgentService._record_command_receipt (backend/app/services/agent_service.py)"]
     n8["AgentWorkService._record_idempotency (backend/app/services/agent_work_service.py)"]
     n9["_record_planning_command (backend/tests/database/test_postgresql_concurrency.py)"]
+    n10["backend/tests/test_work_correctness.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -51,6 +52,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -61,6 +63,7 @@ flowchart LR
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_work_service.md"
     click n9 "../modules/test_postgresql_concurrency.md"
+    click n10 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -87,3 +90,4 @@ flowchart LR
 | `AgentService._record_command_receipt` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService._record_idempotency` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `_record_planning_command` | call | [test_postgresql_concurrency](../modules/test_postgresql_concurrency.md) | 1 |
+| `test_work_correctness` | import | [test_work_correctness](../modules/test_work_correctness.md) | — |

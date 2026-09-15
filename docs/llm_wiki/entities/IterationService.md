@@ -1,6 +1,6 @@
 # IterationService
 
-**Location:** `backend/app/services/iteration_service.py:42`
+**Location:** `backend/app/services/iteration_service.py:44`
 **Kind:** Class
 **Bases:** —
 **Module:** [iteration_service](../modules/iteration_service.md)
@@ -33,7 +33,7 @@ Service for iteration operations.
 | `get_by_id` | *(async)* `(iteration_id: int) -> Iteration \| None` | — | Get iteration by ID with related data. |
 | `create` | *(async)* `(data: IterationCreate, *, commit: bool = True) -> Iteration` | — | Create an iteration, optionally leaving commit ownership to the caller. |
 | `create_series` | *(async)* `(data: IterationSeriesCreate) -> list[Iteration]` | — | Create multiple back-to-back iterations as one operation. |
-| `update` | *(async)* `(iteration_id: int, data: IterationUpdate, *, commit: bool = True) -> Iteration \| None` | — | Update an iteration, optionally leaving commit ownership to the caller. |
+| `update` | *(async)* `(iteration_id: int, data: IterationUpdate, *, commit: bool = True) -> Iteration \| None` | `@schedule_input_command('iteration')` | Update an iteration, optionally leaving commit ownership to the caller. |
 | `delete` | *(async)* `(iteration_id: int) -> bool` | — | Delete an iteration. |
 | `get_summary` | *(async)* `(iteration_id: int) -> IterationSummary \| None` | — | Get iteration summary with statistics. |
 | `get_planning_readiness_summary` | *(async)* `(iteration_id: int) -> IterationPlanningReadinessSummary \| None` | — | Return bounded aggregate planning inputs without loading task graphs. |
@@ -107,4 +107,4 @@ flowchart LR
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `create_iteration_series` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.
+> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.

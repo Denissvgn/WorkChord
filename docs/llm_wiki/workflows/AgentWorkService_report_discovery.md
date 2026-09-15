@@ -1,7 +1,7 @@
 # AgentWorkService_report_discovery
 
 **Entry point:** `agent_work_service.AgentWorkService.report_discovery`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [schemas_triage](../modules/schemas_triage.md), [task_service](../modules/task_service.md), [triage_service](../modules/triage_service.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [schemas_triage](../modules/schemas_triage.md), [task_service](../modules/task_service.md), [triage_service](../modules/triage_service.md)
 
 > Create one claim-bound discovery Triage item without expanding scope.
 
@@ -20,11 +20,13 @@
 10. `task_service.TaskVersionConflictError`
 11. `triage_service.TriageService`
 12. `schemas_triage.TriageItemCreate`
+13. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [commands](../modules/commands.md)
 - [schemas_triage](../modules/schemas_triage.md)
 - [task_service](../modules/task_service.md)
 - [triage_service](../modules/triage_service.md)

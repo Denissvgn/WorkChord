@@ -1,7 +1,7 @@
 # AgentPlanningService__execute
 
 **Entry point:** `agent_planning_service.AgentPlanningService._execute`
-**Modules involved:** [agent_planning_service](../modules/agent_planning_service.md), [agent_service](../modules/agent_service.md), [models_agent](../modules/models_agent.md), [schemas_agent_planning](../modules/schemas_agent_planning.md)
+**Modules involved:** [agent_planning_service](../modules/agent_planning_service.md), [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [schemas_agent_planning](../modules/schemas_agent_planning.md)
 
 ## Sequence
 
@@ -10,11 +10,13 @@
 2. `agent_service.validate_idempotency_key`
 3. `schemas_agent_planning.AgentPlanningReceipt`
 4. `models_agent.AgentIdempotencyRecord`
+5. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_planning_service](../modules/agent_planning_service.md)
 - [agent_service](../modules/agent_service.md)
+- [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 

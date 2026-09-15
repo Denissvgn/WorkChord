@@ -10,7 +10,7 @@ Snapshot restore API schemas.
 
 | Source | Symbols |
 |--------|---------|
-| `pydantic` | `BaseModel` |
+| `pydantic` | `BaseModel`, `Field` |
 
 ## Local dependency map
 
@@ -41,4 +41,4 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [SnapshotRestoreRequest](../entities/SnapshotRestoreRequest.md) | 6 | `BaseModel` | Explicit acknowledgement required before destructive snapshot restore. |
-| [SnapshotRestoreResponse](../entities/snapshot_SnapshotRestoreResponse.md) | 12 | `BaseModel` | Recoverable and auditable result of a completed snapshot restore. |
+| [SnapshotRestoreResponse](../entities/snapshot_SnapshotRestoreResponse.md) | 13 | `BaseModel` | Recoverable and auditable result of a completed snapshot restore. |

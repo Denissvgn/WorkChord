@@ -10,6 +10,7 @@ GitHub status automation rule service.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.models.agent` | `TaskEvent` |
 | `app.models.github` | `GitHubStatusAutomationRule` |
 | `app.models.task` | `TaskStatus` |
@@ -26,47 +27,55 @@ GitHub status automation rule service.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/models/agent.py"]
-    n1["backend/app/models/github.py"]
-    n2["backend/app/models/task.py"]
-    n3["backend/app/routers/github.py"]
-    n4["backend/app/schemas/github.py"]
-    n5["backend/app/services/github_status_automation_service.py"]
-    n6["backend/app/services/github_webhook_service.py"]
-    n7["backend/app/services/language_service.py"]
-    n8["backend/app/services/task_service.py"]
-    n9["backend/app/services/upgrade_service.py"]
-    n0 --> n2
-    n2 --> n0
-    n3 --> n4
-    n3 --> n5
-    n3 --> n6
-    n3 --> n7
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n4
-    n5 --> n7
-    n5 --> n8
+    n0["backend/app/commands.py"]
+    n1["backend/app/models/agent.py"]
+    n2["backend/app/models/github.py"]
+    n3["backend/app/models/task.py"]
+    n4["backend/app/routers/github.py"]
+    n5["backend/app/schemas/github.py"]
+    n6["backend/app/services/github_status_automation_service.py"]
+    n7["backend/app/services/github_webhook_service.py"]
+    n8["backend/app/services/language_service.py"]
+    n9["backend/app/services/task_service.py"]
+    n10["backend/app/services/upgrade_service.py"]
+    n0 --> n3
+    n0 --> n9
+    n1 --> n3
+    n3 --> n1
+    n4 --> n5
+    n4 --> n6
+    n4 --> n7
+    n4 --> n8
     n6 --> n0
-    n6 --> n4
+    n6 --> n1
+    n6 --> n2
+    n6 --> n3
     n6 --> n5
-    n6 --> n7
     n6 --> n8
-    n8 --> n0
-    n8 --> n2
-    n8 --> n7
-    n9 --> n5
-    click n0 "../modules/models_agent.md"
-    click n1 "../modules/models_github.md"
-    click n2 "../modules/models_task.md"
-    click n3 "../modules/routers_github.md"
-    click n4 "../modules/schemas_github.md"
-    click n5 "../modules/github_status_automation_service.md"
-    click n6 "../modules/github_webhook_service.md"
-    click n7 "../modules/language_service.md"
-    click n8 "../modules/task_service.md"
-    click n9 "../modules/upgrade_service.md"
+    n6 --> n9
+    n7 --> n0
+    n7 --> n1
+    n7 --> n5
+    n7 --> n6
+    n7 --> n8
+    n7 --> n9
+    n9 --> n0
+    n9 --> n1
+    n9 --> n3
+    n9 --> n8
+    n10 --> n0
+    n10 --> n6
+    click n0 "../modules/commands.md"
+    click n1 "../modules/models_agent.md"
+    click n2 "../modules/models_github.md"
+    click n3 "../modules/models_task.md"
+    click n4 "../modules/routers_github.md"
+    click n5 "../modules/schemas_github.md"
+    click n6 "../modules/github_status_automation_service.md"
+    click n7 "../modules/github_webhook_service.md"
+    click n8 "../modules/language_service.md"
+    click n9 "../modules/task_service.md"
+    click n10 "../modules/upgrade_service.md"
 ```
 
 ### Internal neighbors
@@ -76,6 +85,7 @@ flowchart LR
 | Inbound | [routers_github](../modules/routers_github.md) |
 | Inbound | [github_webhook_service](../modules/github_webhook_service.md) |
 | Inbound | [upgrade_service](../modules/upgrade_service.md) |
+| Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |
 | Outbound | [models_github](../modules/models_github.md) |
 | Outbound | [models_task](../modules/models_task.md) |
@@ -93,5 +103,5 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [_SafeFormatDict](../entities/SafeFormatDict.md) | 68 | `defaultdict` | Leave unknown reason-template placeholders readable. |
-| [GitHubStatusAutomationService](../entities/GitHubStatusAutomationService.md) | 75 | — | Manage and apply GitHub status automation rules. |
+| [_SafeFormatDict](../entities/SafeFormatDict.md) | 70 | `defaultdict` | Leave unknown reason-template placeholders readable. |
+| [GitHubStatusAutomationService](../entities/GitHubStatusAutomationService.md) | 77 | — | Manage and apply GitHub status automation rules. |

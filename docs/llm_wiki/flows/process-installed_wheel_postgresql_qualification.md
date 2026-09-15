@@ -2,24 +2,28 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), [cli_cutover](../modules/cli_cutover.md), and 21 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 25 more
 
 **Complete modules touched:**
 
+- [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [catalog](../modules/catalog.md)
 - [cli_closeout](../modules/cli_closeout.md)
 - [cli_cutover](../modules/cli_cutover.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [database_config](../modules/database_config.md)
 - [database_migration_canonical](../modules/database_migration_canonical.md)
 - [database_migration_manifest](../modules/database_migration_manifest.md)
 - [github_status_automation_service](../modules/github_status_automation_service.md)
+- [identity_service](../modules/identity_service.md)
 - [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
 - [models_calendar](../modules/models_calendar.md)
+- [models_identity](../modules/models_identity.md)
 - [models_iteration](../modules/models_iteration.md)
 - [models_project](../modules/models_project.md)
 - [models_task](../modules/models_task.md)
@@ -113,7 +117,7 @@ sequenceDiagram
     p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
 ```
 
-> Call sequence diagram shows 30 of 1361 interactions; 1331 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1375 interactions; 1345 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

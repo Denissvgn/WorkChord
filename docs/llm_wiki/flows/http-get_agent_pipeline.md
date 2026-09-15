@@ -59,12 +59,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_pipeline | service.get_pipeline | 1303 | `service.get_pipeline(data not statically known)` |
-| get_agent_pipeline | AgentPipelineResponse | 1304 | `AgentPipelineResponse(needs_definition=cols[...], ready_for_agent=cols[...], definition_ready_unassigned=cols.get(...), assigned_waiting=cols.get(...), start_ready=cols.get(...), executing=cols[...], verification_required=cols[...], recovery_required=cols.get(...))` |
-| get_agent_pipeline | cols.get | 1307 | `cols.get('definition_ready_unassigned', [...])` |
-| get_agent_pipeline | cols.get | 1308 | `cols.get('assigned_waiting', [...])` |
-| get_agent_pipeline | cols.get | 1309 | `cols.get('start_ready', [...])` |
-| get_agent_pipeline | cols.get | 1312 | `cols.get('recovery_required', [...])` |
+| get_agent_pipeline | service.get_pipeline | 1311 | `service.get_pipeline(data not statically known)` |
+| get_agent_pipeline | AgentPipelineResponse | 1312 | `AgentPipelineResponse(needs_definition=cols[...], ready_for_agent=cols[...], definition_ready_unassigned=cols.get(...), assigned_waiting=cols.get(...), start_ready=cols.get(...), executing=cols[...], verification_required=cols[...], recovery_required=cols.get(...))` |
+| get_agent_pipeline | cols.get | 1315 | `cols.get('definition_ready_unassigned', [...])` |
+| get_agent_pipeline | cols.get | 1316 | `cols.get('assigned_waiting', [...])` |
+| get_agent_pipeline | cols.get | 1317 | `cols.get('start_ready', [...])` |
+| get_agent_pipeline | cols.get | 1320 | `cols.get('recovery_required', [...])` |
 
 ### Boundary effects
 
@@ -74,11 +74,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1303 |
-| unresolved_call | `get_agent_pipeline` | `cols.get` | 1307 |
-| unresolved_call | `get_agent_pipeline` | `cols.get` | 1308 |
-| unresolved_call | `get_agent_pipeline` | `cols.get` | 1309 |
-| unresolved_call | `get_agent_pipeline` | `cols.get` | 1312 |
+| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1311 |
+| unresolved_call | `get_agent_pipeline` | `cols.get` | 1315 |
+| unresolved_call | `get_agent_pipeline` | `cols.get` | 1316 |
+| unresolved_call | `get_agent_pipeline` | `cols.get` | 1317 |
+| unresolved_call | `get_agent_pipeline` | `cols.get` | 1320 |
 
 ## Behavior
 

@@ -69,7 +69,7 @@ sequenceDiagram
     p10->>p6: QualificationInputError
 ```
 
-> Call sequence diagram shows 30 of 360 interactions; 330 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 362 interactions; 332 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -136,38 +136,38 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | _parser().parse_args | 1087 | `_parser().parse_args(data not statically known)` |
-| main | _parser | 1087 | `_parser(data not statically known)` |
-| _parser | argparse.ArgumentParser | 1067 | `argparse.ArgumentParser(description='Seed an isolated PostgreSQL qualification database.')` |
-| _parser | parser.add_argument | 1070 | `parser.add_argument('--profile', choices=(...), required=True)` |
-| _parser | parser.add_argument | 1071 | `parser.add_argument('--seed', type=int, default=20260718)` |
-| _parser | parser.add_argument | 1072 | `parser.add_argument('--as-of', help='Timezone-aware deterministic reference time for session states')` |
-| _parser | parser.add_argument | 1076 | `parser.add_argument('--dry-run', action='store_true')` |
-| _parser | parser.add_argument | 1077 | `parser.add_argument('--database-url', default=os.getenv(...))` |
-| _parser | os.getenv (scripts/load/seed.py:_parser) | 1077 | `os.getenv('DATABASE_URL')` |
-| _parser | parser.add_argument | 1078 | `parser.add_argument('--authorize-target')` |
-| _parser | parser.add_argument | 1079 | `parser.add_argument('--checkpoint', type=Path)` |
+| main | _parser().parse_args | 1092 | `_parser().parse_args(data not statically known)` |
+| main | _parser | 1092 | `_parser(data not statically known)` |
+| _parser | argparse.ArgumentParser | 1072 | `argparse.ArgumentParser(description='Seed an isolated PostgreSQL qualification database.')` |
+| _parser | parser.add_argument | 1075 | `parser.add_argument('--profile', choices=(...), required=True)` |
+| _parser | parser.add_argument | 1076 | `parser.add_argument('--seed', type=int, default=20260718)` |
+| _parser | parser.add_argument | 1077 | `parser.add_argument('--as-of', help='Timezone-aware deterministic reference time for session states')` |
+| _parser | parser.add_argument | 1081 | `parser.add_argument('--dry-run', action='store_true')` |
+| _parser | parser.add_argument | 1082 | `parser.add_argument('--database-url', default=os.getenv(...))` |
+| _parser | os.getenv (scripts/load/seed.py:_parser) | 1082 | `os.getenv('DATABASE_URL')` |
+| _parser | parser.add_argument | 1083 | `parser.add_argument('--authorize-target')` |
+| _parser | parser.add_argument | 1084 | `parser.add_argument('--checkpoint', type=Path)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 1110 |
-| output | `print` | `main` | 1116 |
-| environment_read | `os.getenv` | `_parser` | 1077 |
+| output | `print` | `main` | 1115 |
+| output | `print` | `main` | 1121 |
+| environment_read | `os.getenv` | `_parser` | 1082 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `_parser().parse_args` | 1087 |
-| external_call | `_parser` | `argparse.ArgumentParser` | 1067 |
-| unresolved_call | `_parser` | `parser.add_argument` | 1070 |
-| unresolved_call | `_parser` | `parser.add_argument` | 1071 |
-| unresolved_call | `_parser` | `parser.add_argument` | 1072 |
+| unresolved_call | `main` | `_parser().parse_args` | 1092 |
+| external_call | `_parser` | `argparse.ArgumentParser` | 1072 |
+| unresolved_call | `_parser` | `parser.add_argument` | 1075 |
 | unresolved_call | `_parser` | `parser.add_argument` | 1076 |
-| unresolved_call | `_parser` | `parser.add_argument` | 1078 |
-| unresolved_call | `_parser` | `parser.add_argument` | 1079 |
+| unresolved_call | `_parser` | `parser.add_argument` | 1077 |
+| unresolved_call | `_parser` | `parser.add_argument` | 1081 |
+| unresolved_call | `_parser` | `parser.add_argument` | 1083 |
+| unresolved_call | `_parser` | `parser.add_argument` | 1084 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

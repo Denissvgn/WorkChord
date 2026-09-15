@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `backend/app/schemas/task.py:269`
+**Location:** `backend/app/schemas/task.py:291`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,8 @@ Response for selected-task bulk operations.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `input_revisions` | `dict[int, int]` | `input_revisions` | No | No | factory: `dict` | — | — | — |
+| `task_versions` | `dict[int, int]` | `task_versions` | No | No | factory: `dict` | — | — | — |
 | `requested_count` | `int` | `requested_count` | Yes | No | — | — | — | — |
 | `succeeded_count` | `int` | `succeeded_count` | Yes | No | — | — | — | — |
 | `failed_count` | `int` | `failed_count` | Yes | No | — | — | — | — |
@@ -47,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `dry_run`, `failed_count`, `requested_count`, `results`, `succeeded_count` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `dry_run`, `failed_count`, `input_revisions`, `requested_count`, `results`, `succeeded_count`, `task_versions` |
 
 ### Structure
 

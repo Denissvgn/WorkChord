@@ -2,7 +2,16 @@
 
 **Entry point:** `receive_github_webhook` (`http`)
 **Source:** [routers_github](../modules/routers_github.md)
-**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [routers_github](../modules/routers_github.md), [system_settings_service](../modules/system_settings_service.md)
+**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [language_service](../modules/language_service.md), and 2 more
+
+**Complete modules touched:**
+
+- [authority](../modules/authority.md)
+- [config](../modules/config.md)
+- [identity_service](../modules/identity_service.md)
+- [language_service](../modules/language_service.md)
+- [routers_github](../modules/routers_github.md)
+- [system_settings_service](../modules/system_settings_service.md)
 
 ## Call sequence
 
@@ -64,7 +73,7 @@ sequenceDiagram
     p13-->>p16: match.groups
 ```
 
-> Call sequence diagram shows 30 of 128 interactions; 98 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 138 interactions; 108 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

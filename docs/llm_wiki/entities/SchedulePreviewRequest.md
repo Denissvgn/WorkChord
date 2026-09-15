@@ -1,6 +1,6 @@
 # SchedulePreviewRequest
 
-**Location:** `backend/app/schemas/gantt.py:93`
+**Location:** `backend/app/schemas/gantt.py:100`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -17,6 +17,7 @@ preview exercises exactly the payload a later apply would send.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `changes` | `list[TaskBatchUpdateItem]` | `changes` | No | No | `[]` | — | — | — |
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -40,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `changes` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `changes`, `expected_revision` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # ProjectInitiativeSummary
 
-**Location:** `backend/app/schemas/project.py:97`
+**Location:** `backend/app/schemas/project.py:101`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

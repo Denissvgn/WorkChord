@@ -1,6 +1,6 @@
 # TaskTimelineItem
 
-**Location:** `frontend/src/types/task.ts:330`
+**Location:** `frontend/src/types/task.ts:355`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

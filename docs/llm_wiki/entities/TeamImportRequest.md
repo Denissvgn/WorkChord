@@ -1,6 +1,6 @@
 # TeamImportRequest
 
-**Location:** `backend/app/schemas/team.py:328`
+**Location:** `backend/app/schemas/team.py:330`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

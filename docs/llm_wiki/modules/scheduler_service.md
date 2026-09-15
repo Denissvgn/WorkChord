@@ -10,6 +10,7 @@ Gantt Scheduler Service - automatic task scheduling with optimization.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
@@ -45,8 +46,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (5) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -54,15 +55,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ChangeType](../entities/ChangeType.md) | Enum | 24 | `Enum` | Types of changes that trigger incremental rescheduling. |
-| [TaskChange](../entities/TaskChange.md) | Class | 38 | — | Represents a change to a task for incremental rescheduling. |
-| [RescheduleResult](../entities/RescheduleResult.md) | Class | 49 | — | Result of an incremental reschedule operation. |
-| [MemberSchedule](../entities/MemberSchedule.md) | Class | 59 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
-| [SchedulerService](../entities/SchedulerService.md) | Class | 339 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1281 | — | Handles incremental rescheduling when a single task changes. |
+| [ChangeType](../entities/ChangeType.md) | Enum | 26 | `Enum` | Types of changes that trigger incremental rescheduling. |
+| [TaskChange](../entities/TaskChange.md) | Class | 40 | — | Represents a change to a task for incremental rescheduling. |
+| [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
+| [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
+| [SchedulerService](../entities/SchedulerService.md) | Class | 341 | — | Service for automatic task scheduling. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1312 | — | Handles incremental rescheduling when a single task changes. |

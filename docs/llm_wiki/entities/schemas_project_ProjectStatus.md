@@ -1,6 +1,6 @@
 # ProjectStatus
 
-**Location:** `backend/app/schemas/project.py:11`
+**Location:** `backend/app/schemas/project.py:15`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_project](../modules/schemas_project.md)

@@ -80,10 +80,10 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [SavedView](../entities/savedView_SavedView.md) | Class | 4 | — | — |
-| [SavedViewDashboardCard](../entities/SavedViewDashboardCard.md) | Class | 22 | — | — |
-| [SavedViewListParams](../entities/SavedViewListParams.md) | Class | 35 | — | — |
-| [SavedViewCreate](../entities/savedView_SavedViewCreate.md) | Class | 39 | — | — |
-| [SavedViewUpdate](../entities/savedView_SavedViewUpdate.md) | Class | 50 | — | — |
-| [SavedViewDuplicate](../entities/SavedViewDuplicate.md) | Class | 61 | — | — |
+| [SavedViewDashboardCard](../entities/SavedViewDashboardCard.md) | Class | 24 | — | — |
+| [SavedViewListParams](../entities/SavedViewListParams.md) | Class | 37 | — | — |
+| [SavedViewCreate](../entities/savedView_SavedViewCreate.md) | Class | 41 | — | — |
+| [SavedViewUpdate](../entities/savedView_SavedViewUpdate.md) | Class | 52 | — | — |
+| [SavedViewDuplicate](../entities/SavedViewDuplicate.md) | Class | 63 | — | — |
 | [SavedViewType](../entities/savedView_SavedViewType.md) | Type alias | 1 | — | — |
 | [SavedViewScope](../entities/savedView_SavedViewScope.md) | Type alias | 2 | — | — |

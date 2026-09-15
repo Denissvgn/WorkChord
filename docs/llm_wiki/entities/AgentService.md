@@ -1,6 +1,6 @@
 # AgentService
 
-**Location:** `backend/app/services/agent_service.py:108`
+**Location:** `backend/app/services/agent_service.py:110`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_service](../modules/agent_service.md)
@@ -18,7 +18,7 @@ Service for agent authentication, task control, and run tracing.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
-| `authenticate` | *(async)* `(api_key: str) -> Optional[AgentActor]` | — | Authenticate an API key against stored enabled agent actors. |
+| `authenticate` | *(async)* `(api_key: str, *, touch: bool = True) -> Optional[AgentActor]` | — | Authenticate an API key against stored enabled agent actors. |
 | `authenticate_onboarding` | *(async)* `(api_key: str) -> Optional[AgentActor]` | — | Authenticate only a disabled onboarding identity for setup acknowledgement. |
 | `authenticate_bootstrap_key` | `(api_key: str) -> Optional[AgentActor]` | — | Return a transient provisioning actor for the bootstrap API key. |
 | `create_actor` | *(async)* `(data: AgentActorCreate, *, principal: AgentActor \| None = None) -> tuple[AgentActor, str, AgentModelBinding \| None]` | — | Create an actor and optional secret-free model binding atomically. |
@@ -57,18 +57,18 @@ Service for agent authentication, task control, and run tracing.
 ```mermaid
 flowchart LR
     n0["AgentService (backend/app/services/agent_service.py)"]
-    n1["append_run_event (backend/app/mcp_agent_tools.py)"]
-    n2["append_task_event (backend/app/mcp_agent_tools.py)"]
-    n3["claim_task (backend/app/mcp_agent_tools.py)"]
-    n4["create_task (backend/app/mcp_agent_tools.py)"]
-    n5["finish_agent_run (backend/app/mcp_agent_tools.py)"]
-    n6["get_agent_pipeline (backend/app/mcp_agent_tools.py)"]
-    n7["get_agent_run_detail (backend/app/mcp_agent_tools.py)"]
-    n8["get_task (backend/app/mcp_agent_tools.py)"]
-    n9["get_task_context (backend/app/mcp_agent_tools.py)"]
-    n10["list_ready_tasks (backend/app/mcp_agent_tools.py)"]
-    n11["release_task (backend/app/mcp_agent_tools.py)"]
-    n12["renew_task (backend/app/mcp_agent_tools.py)"]
+    n1["resolve_http_identity (backend/app/http_authority.py)"]
+    n2["append_run_event (backend/app/mcp_agent_tools.py)"]
+    n3["append_task_event (backend/app/mcp_agent_tools.py)"]
+    n4["claim_task (backend/app/mcp_agent_tools.py)"]
+    n5["create_task (backend/app/mcp_agent_tools.py)"]
+    n6["finish_agent_run (backend/app/mcp_agent_tools.py)"]
+    n7["get_agent_pipeline (backend/app/mcp_agent_tools.py)"]
+    n8["get_agent_run_detail (backend/app/mcp_agent_tools.py)"]
+    n9["get_task (backend/app/mcp_agent_tools.py)"]
+    n10["get_task_context (backend/app/mcp_agent_tools.py)"]
+    n11["list_ready_tasks (backend/app/mcp_agent_tools.py)"]
+    n12["release_task (backend/app/mcp_agent_tools.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -82,7 +82,7 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/agent_service.md"
-    click n1 "../modules/mcp_agent_tools.md"
+    click n1 "../modules/http_authority.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/mcp_agent_tools.md"
     click n4 "../modules/mcp_agent_tools.md"
@@ -106,6 +106,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 1 |
 | `append_run_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `append_task_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `claim_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
@@ -117,6 +118,5 @@ flowchart LR
 | `get_task_context` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_ready_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `release_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
-| `renew_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.

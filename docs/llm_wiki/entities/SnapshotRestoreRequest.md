@@ -14,6 +14,7 @@ Explicit acknowledgement required before destructive snapshot restore.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `confirm` | `bool` | `confirm` | No | No | `False` | — | — | — |
+| `expected_revision` | `int \| None` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods
 
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [snapshot](../modules/snapshot.md) | 0 | `confirm` |
+| [snapshot](../modules/snapshot.md) | 0 | `confirm`, `expected_revision` |
 
 ### Structure
 

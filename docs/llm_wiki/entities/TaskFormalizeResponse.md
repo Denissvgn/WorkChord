@@ -1,6 +1,6 @@
 # TaskFormalizeResponse
 
-**Location:** `frontend/src/types/task.ts:173`
+**Location:** `frontend/src/types/task.ts:193`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

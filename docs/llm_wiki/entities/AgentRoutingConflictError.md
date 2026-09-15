@@ -1,6 +1,6 @@
 # AgentRoutingConflictError
 
-**Location:** `backend/app/services/agent_routing_service.py:112`
+**Location:** `backend/app/services/agent_routing_service.py:114`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)

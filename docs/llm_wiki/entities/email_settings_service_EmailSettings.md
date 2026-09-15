@@ -1,6 +1,6 @@
 # EmailSettings
 
-**Location:** `backend/app/services/email_settings_service.py:26`
+**Location:** `backend/app/services/email_settings_service.py:28`
 **Kind:** Class
 **Bases:** —
 **Module:** [email_settings_service](../modules/email_settings_service.md)

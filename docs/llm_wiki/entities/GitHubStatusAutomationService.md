@@ -1,6 +1,6 @@
 # GitHubStatusAutomationService
 
-**Location:** `backend/app/services/github_status_automation_service.py:75`
+**Location:** `backend/app/services/github_status_automation_service.py:77`
 **Kind:** Class
 **Bases:** —
 **Module:** [github_status_automation_service](../modules/github_status_automation_service.md)

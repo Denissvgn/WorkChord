@@ -46,7 +46,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `improve_task_description` | `task_id: int`, `data: ImproveDescriptionRequest`, `db: Annotated[AsyncSession, Depends(get_db)]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
+| `improve_task_description` | `task_id: int`, `data: ImproveDescriptionRequest`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `llm_service: Annotated[LLMService, Depends(get_llm_service)]` | `status` | - | `...` |
 | `TaskService` | - | - | - | - |
 | `task_service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |

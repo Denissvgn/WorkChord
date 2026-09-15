@@ -1,6 +1,6 @@
 # ProjectUpdateFreshness
 
-**Location:** `backend/app/schemas/project.py:37`
+**Location:** `backend/app/schemas/project.py:41`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_project](../modules/schemas_project.md)

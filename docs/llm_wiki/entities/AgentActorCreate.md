@@ -51,14 +51,17 @@ flowchart LR
     n2["create_agent_actor (backend/app/routers/agent.py)"]
     n3["AgentService.create_actor (backend/app/services/agent_service.py)"]
     n4["backend/tests/test_agent_model_catalog_api.py"]
+    n5["test_actor_provisioning_does_not_require_or_invent_runtime_binding (backend/tests/test_client_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_service.md"
     click n4 "../modules/test_agent_model_catalog_api.md"
+    click n5 "../modules/test_client_contract.md"
 ```
 
 ### Summary
@@ -80,3 +83,4 @@ flowchart LR
 | `create_agent_actor` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentService.create_actor` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
+| `test_actor_provisioning_does_not_require_or_invent_runtime_binding` | call | [test_client_contract](../modules/test_client_contract.md) | 1 |

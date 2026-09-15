@@ -109,15 +109,15 @@ flowchart LR
 |---|---|---:|---|
 | create_web_intake_item | WebIntakeRequest.model_validate | 48 | `WebIntakeRequest.model_validate(raw_data)` |
 | create_web_intake_item | get_client_ip | 49 | `get_client_ip(request)` |
-| get_client_ip | ip_address | 50 | `ip_address(direct_ip)` |
-| get_client_ip | any | 51 | `any(...)` |
-| get_client_ip | ip_network | 52 | `ip_network(network, strict=False)` |
-| get_client_ip | get_settings | 53 | `get_settings(data not statically known)` |
-| get_settings | Settings | 469 | `Settings(data not statically known)` |
-| get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 58 | `request.headers.get('X-Forwarded-For')` |
-| get_client_ip | forwarded_for.split(…)[…].strip | 60 | `forwarded_for.split(',')[0].strip(data not statically known)` |
-| get_client_ip | forwarded_for.split | 60 | `forwarded_for.split(',')` |
-| get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 61 | `request.headers.get('X-Real-IP')` |
+| get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
+| get_client_ip | any | 53 | `any(...)` |
+| get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
+| get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
+| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
+| get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
+| get_client_ip | forwarded_for.split | 62 | `forwarded_for.split(',')` |
+| get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 63 | `request.headers.get('X-Real-IP')` |
 
 ### Boundary effects
 
@@ -128,13 +128,13 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `create_web_intake_item` | `WebIntakeRequest.model_validate` | 48 |
-| external_call | `get_client_ip` | `ip_address` | 50 |
-| external_call | `get_client_ip` | `any` | 51 |
-| external_call | `get_client_ip` | `ip_network` | 52 |
-| unresolved_call | `get_client_ip` | `request.headers.get` | 58 |
-| unresolved_call | `get_client_ip` | `forwarded_for.split(',')[0].strip` | 60 |
-| unresolved_call | `get_client_ip` | `forwarded_for.split` | 60 |
-| unresolved_call | `get_client_ip` | `request.headers.get` | 61 |
+| external_call | `get_client_ip` | `ip_address` | 52 |
+| external_call | `get_client_ip` | `any` | 53 |
+| external_call | `get_client_ip` | `ip_network` | 54 |
+| unresolved_call | `get_client_ip` | `request.headers.get` | 60 |
+| unresolved_call | `get_client_ip` | `forwarded_for.split(',')[0].strip` | 62 |
+| unresolved_call | `get_client_ip` | `forwarded_for.split` | 62 |
+| unresolved_call | `get_client_ip` | `request.headers.get` | 63 |
 | step_limit | `create_web_intake_item` | `first 12 steps` | 0 |
 
 ## Behavior

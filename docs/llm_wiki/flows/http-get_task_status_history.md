@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_status_history | service.get_by_id | 952 | `service.get_by_id(task_id)` |
-| get_task_status_history | HTTPException | 954 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task_status_history | service.get_status_history | 959 | `service.get_status_history(task_id)` |
-| get_task_status_history | TaskStatusLogResponse | 962 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
-| get_task_status_history | json.loads | 970 | `json.loads(log.affected_task_ids)` |
+| get_task_status_history | service.get_by_id | 945 | `service.get_by_id(task_id)` |
+| get_task_status_history | HTTPException | 947 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task_status_history | service.get_status_history | 952 | `service.get_status_history(task_id)` |
+| get_task_status_history | TaskStatusLogResponse | 955 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
+| get_task_status_history | json.loads | 963 | `json.loads(log.affected_task_ids)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task_status_history` | `service.get_by_id` | 952 |
-| external_call | `get_task_status_history` | `HTTPException` | 954 |
-| unresolved_call | `get_task_status_history` | `service.get_status_history` | 959 |
-| external_call | `get_task_status_history` | `json.loads` | 970 |
+| unresolved_call | `get_task_status_history` | `service.get_by_id` | 945 |
+| external_call | `get_task_status_history` | `HTTPException` | 947 |
+| unresolved_call | `get_task_status_history` | `service.get_status_history` | 952 |
+| external_call | `get_task_status_history` | `json.loads` | 963 |
 
 ## Behavior
 

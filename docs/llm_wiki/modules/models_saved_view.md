@@ -31,6 +31,8 @@ flowchart LR
     n4["backend/app/services/saved_view_service.py"]
     n5["backend/app/utils/time.py"]
     n6["backend/tests/database/test_schema_behavior.py"]
+    n7["backend/tests/test_identity_lifecycle.py"]
+    n8["backend/tests/test_managed_authority.py"]
     n1 --> n2
     n1 --> n3
     n2 --> n0
@@ -43,6 +45,13 @@ flowchart LR
     n6 --> n2
     n6 --> n3
     n6 --> n5
+    n7 --> n2
+    n7 --> n3
+    n7 --> n5
+    n7 --> n8
+    n8 --> n2
+    n8 --> n3
+    n8 --> n5
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_saved_view.md"
@@ -50,6 +59,8 @@ flowchart LR
     click n4 "../modules/saved_view_service.md"
     click n5 "../modules/time.md"
     click n6 "../modules/test_schema_behavior.md"
+    click n7 "../modules/test_identity_lifecycle.md"
+    click n8 "../modules/test_managed_authority.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +71,8 @@ flowchart LR
 | Inbound | [user_session](../modules/user_session.md) |
 | Inbound | [saved_view_service](../modules/saved_view_service.md) |
 | Inbound | [test_schema_behavior](../modules/test_schema_behavior.md) |
+| Inbound | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) |
+| Inbound | [test_managed_authority](../modules/test_managed_authority.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [user_session](../modules/user_session.md) |
 | Outbound | [time](../modules/time.md) |

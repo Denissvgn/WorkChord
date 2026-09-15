@@ -10,6 +10,7 @@ Calendar schemas.
 
 | Source | Symbols |
 |--------|---------|
+| `app.schemas.planning_inputs` | `PlanningInputRevisions`, `WorkingZone` |
 | `datetime` | `date` |
 | `pydantic` | `BaseModel`, `Field` |
 | `typing` | `Optional` |
@@ -22,15 +23,18 @@ flowchart LR
     n0["backend/app/routers/calendars.py"]
     n1["backend/app/schemas/__init__.py"]
     n2["backend/app/schemas/calendar.py"]
-    n3["backend/app/services/calendar_service.py"]
+    n3["backend/app/schemas/planning_inputs.py"]
+    n4["backend/app/services/calendar_service.py"]
     n0 --> n2
-    n0 --> n3
+    n0 --> n4
     n1 --> n2
-    n3 --> n2
+    n2 --> n3
+    n4 --> n2
     click n0 "../modules/calendars.md"
     click n1 "../modules/schemas___init__.md"
     click n2 "../modules/schemas_calendar.md"
-    click n3 "../modules/calendar_service.md"
+    click n3 "../modules/planning_inputs.md"
+    click n4 "../modules/calendar_service.md"
 ```
 
 ### Internal neighbors
@@ -40,6 +44,7 @@ flowchart LR
 | Inbound | [calendars](../modules/calendars.md) |
 | Inbound | [schemas___init__](../modules/schemas___init__.md) |
 | Inbound | [calendar_service](../modules/calendar_service.md) |
+| Outbound | [planning_inputs](../modules/planning_inputs.md) |
 
 ### External packages
 
@@ -51,12 +56,12 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CalendarCreate](../entities/schemas_calendar_CalendarCreate.md) | 8 | `BaseModel` | Schema for creating a calendar. |
-| [CalendarUpdate](../entities/schemas_calendar_CalendarUpdate.md) | 17 | `BaseModel` | Schema for updating a calendar. |
-| [CalendarResponse](../entities/CalendarResponse.md) | 26 | `BaseModel` | Schema for calendar response. |
-| [CalendarImportError](../entities/schemas_calendar_CalendarImportError.md) | 39 | `BaseModel` | One calendar import row that could not be applied. |
-| [CalendarImportRequest](../entities/CalendarImportRequest.md) | 45 | `BaseModel` | Request for importing calendar holidays from a public source or CSV text. |
-| [CalendarImportResponse](../entities/schemas_calendar_CalendarImportResponse.md) | 53 | `BaseModel` | Summary of imported calendar holidays. |
-| [WorkingDaysRequest](../entities/WorkingDaysRequest.md) | 61 | `BaseModel` | Request for calculating working days. |
-| [WorkingDaysResponse](../entities/schemas_calendar_WorkingDaysResponse.md) | 67 | `BaseModel` | Response with working days calculation. |
-| [HolidayImportRequest](../entities/HolidayImportRequest.md) | 77 | `BaseModel` | Request for importing holidays from external source. |
+| [CalendarCreate](../entities/schemas_calendar_CalendarCreate.md) | 10 | `PlanningInputRevisions` | Schema for creating a calendar. |
+| [CalendarUpdate](../entities/schemas_calendar_CalendarUpdate.md) | 21 | `PlanningInputRevisions` | Schema for updating a calendar. |
+| [CalendarResponse](../entities/CalendarResponse.md) | 32 | `BaseModel` | Schema for calendar response. |
+| [CalendarImportError](../entities/schemas_calendar_CalendarImportError.md) | 47 | `BaseModel` | One calendar import row that could not be applied. |
+| [CalendarImportRequest](../entities/CalendarImportRequest.md) | 53 | `BaseModel` | Request for importing calendar holidays from a public source or CSV text. |
+| [CalendarImportResponse](../entities/schemas_calendar_CalendarImportResponse.md) | 61 | `BaseModel` | Summary of imported calendar holidays. |
+| [WorkingDaysRequest](../entities/WorkingDaysRequest.md) | 69 | `BaseModel` | Request for calculating working days. |
+| [WorkingDaysResponse](../entities/schemas_calendar_WorkingDaysResponse.md) | 75 | `BaseModel` | Response with working days calculation. |
+| [HolidayImportRequest](../entities/HolidayImportRequest.md) | 85 | `BaseModel` | Request for importing holidays from external source. |

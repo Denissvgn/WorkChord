@@ -1,6 +1,6 @@
 # AgentProfileCatalogService
 
-**Location:** `backend/app/services/agent_profile_catalog_service.py:274`
+**Location:** `backend/app/services/agent_profile_catalog_service.py:276`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_profile_catalog_service](../modules/agent_profile_catalog_service.md)

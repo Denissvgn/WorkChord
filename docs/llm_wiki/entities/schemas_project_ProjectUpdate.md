@@ -1,8 +1,8 @@
 # ProjectUpdate
 
-**Location:** `backend/app/schemas/project.py:125`
+**Location:** `backend/app/schemas/project.py:131`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_project](../modules/schemas_project.md)
 
 ## Description
@@ -13,6 +13,7 @@ Schema for updating a project.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
 | `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `Optional[ProjectStatus]` | `status` | No | Yes | `None` | — | — | — |
@@ -35,7 +36,7 @@ Schema for updating a project.
 ```mermaid
 flowchart LR
     n0["ProjectUpdate (backend/app/schemas/project.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["update_project (backend/app/routers/agent_planning.py)"]
     n4["create_project_update (backend/app/routers/projects.py)"]
@@ -62,6 +63,7 @@ flowchart LR
     n12 --> n0
     n13 --> n0
     click n0 "../modules/schemas_project.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/projects.md"
@@ -80,13 +82,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_project](../modules/schemas_project.md) | 0 | `completed_at`, `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date` |
+| [schemas_project](../modules/schemas_project.md) | 0 | `completed_at`, `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
 
 ### Structure
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

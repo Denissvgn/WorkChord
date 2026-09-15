@@ -1,6 +1,6 @@
 # LabelService
 
-**Location:** `backend/app/services/label_service.py:110`
+**Location:** `backend/app/services/label_service.py:112`
 **Kind:** Class
 **Bases:** —
 **Module:** [label_service](../modules/label_service.md)

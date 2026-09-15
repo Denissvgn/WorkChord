@@ -70,7 +70,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `update_task` | `task_id: int`, `data: TaskUpdate`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `TaskVersionConflictError`, `status`, `status` | - | `service.task_to_response(...)` |
+| `update_task` | `task_id: int`, `data: TaskUpdate`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `TaskVersionConflictError`, `status`, `status` | - | `service.task_to_response(...)` |
 | `service.update` | - | - | - | - |
 | `_raise_task_version_conflict` | `exc: TaskVersionConflictError` | `status` | - | - |
 | `HTTPException (backend/app/routers/tasks…aise_task_version_conflict)` | - | - | - | - |
@@ -86,33 +86,33 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_task | service.update | 344 | `service.update(task_id, data)` |
-| update_task | _raise_task_version_conflict | 346 | `_raise_task_version_conflict(exc)` |
-| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 52 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _raise_task_version_conflict | exc.detail | 54 | `exc.detail(data not statically known)` |
-| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 348 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_task | str | 350 | `str(e)` |
-| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 353 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| update_task | IterationService | 358 | `IterationService(db)` |
-| update_task | iteration_service.get_by_id | 359 | `iteration_service.get_by_id(task.iteration_id)` |
-| update_task | service.task_to_response | 361 | `service.task_to_response(task, ...)` |
+| update_task | service.update | 327 | `service.update(task_id, data)` |
+| update_task | _raise_task_version_conflict | 329 | `_raise_task_version_conflict(exc)` |
+| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 54 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _raise_task_version_conflict | exc.detail | 56 | `exc.detail(data not statically known)` |
+| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 331 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_task | str | 333 | `str(e)` |
+| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 336 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_task | IterationService | 341 | `IterationService(db)` |
+| update_task | iteration_service.get_by_id | 342 | `iteration_service.get_by_id(task.iteration_id)` |
+| update_task | service.task_to_response | 344 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_task` | 344 |
+| mutation | `service.update` | `update_task` | 327 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `_raise_task_version_conflict` | `HTTPException` | 52 |
-| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 54 |
-| external_call | `update_task` | `HTTPException` | 348 |
-| external_call | `update_task` | `HTTPException` | 353 |
-| unresolved_call | `update_task` | `iteration_service.get_by_id` | 359 |
-| unresolved_call | `update_task` | `service.task_to_response` | 361 |
+| external_call | `_raise_task_version_conflict` | `HTTPException` | 54 |
+| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 56 |
+| external_call | `update_task` | `HTTPException` | 331 |
+| external_call | `update_task` | `HTTPException` | 336 |
+| unresolved_call | `update_task` | `iteration_service.get_by_id` | 342 |
+| unresolved_call | `update_task` | `service.task_to_response` | 344 |
 
 ## Behavior
 

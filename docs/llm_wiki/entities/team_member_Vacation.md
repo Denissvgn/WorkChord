@@ -30,13 +30,16 @@ Vacation period for a team member.
 flowchart LR
     n0["Vacation (backend/app/models/team_member.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/models/__init__.py"]
-    n3["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
-    n4["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
-    n5["backend/app/services/scheduler_service.py"]
-    n6["TeamService.add_vacation (backend/app/services/team_service.py)"]
-    n7["TeamService.import_vacations (backend/app/services/team_service.py)"]
-    n8["TeamService.update_vacation (backend/app/services/team_service.py)"]
+    n2["backend/app/commands.py"]
+    n3["backend/app/models/__init__.py"]
+    n4["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
+    n5["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
+    n6["backend/app/services/scheduler_service.py"]
+    n7["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
+    n8["TeamService.add_vacation (backend/app/services/team_service.py)"]
+    n9["TeamService.import_vacations (backend/app/services/team_service.py)"]
+    n10["TeamService.update_vacation (backend/app/services/team_service.py)"]
+    n11["test_restore_recovers_dates_and_absences_without_inventing_acceptance (backend/tests/test_work_correctness.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -45,15 +48,21 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/team_member.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/models___init__.md"
-    click n3 "../modules/agent_planning_service.md"
+    click n2 "../modules/commands.md"
+    click n3 "../modules/models___init__.md"
     click n4 "../modules/agent_planning_service.md"
-    click n5 "../modules/scheduler_service.md"
-    click n6 "../modules/team_service.md"
-    click n7 "../modules/team_service.md"
+    click n5 "../modules/agent_planning_service.md"
+    click n6 "../modules/scheduler_service.md"
+    click n7 "../modules/snapshot_service.md"
     click n8 "../modules/team_service.md"
+    click n9 "../modules/team_service.md"
+    click n10 "../modules/team_service.md"
+    click n11 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -72,12 +81,15 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `AgentPlanningService.create_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
 | `TeamService.add_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.add_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.import_vacations` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.import_vacations` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
+| `test_restore_recovers_dates_and_absences_without_inventing_acceptance` | call | [test_work_correctness](../modules/test_work_correctness.md) | 1 |

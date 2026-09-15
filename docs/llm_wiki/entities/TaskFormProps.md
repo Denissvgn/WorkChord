@@ -1,6 +1,6 @@
 # TaskFormProps
 
-**Location:** `frontend/src/components/tasks/TaskForm.tsx:45`
+**Location:** `frontend/src/components/tasks/TaskForm.tsx:47`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskForm](../modules/TaskForm.md)
@@ -24,6 +24,8 @@ _Auto-generated from `TaskFormProps` in `frontend/src/components/tasks/TaskForm.
 | `mode` | `'direct' \| 'sandbox'` | *required* | — |
 | `onSaveSandbox` | `(update: TaskUpdate) => void` | *required* | — |
 | `onDirtyChange` | `(dirty: boolean) => void` | *required* | — |
+| `onPendingChange` | `(pending: boolean) => void` | *required* | — |
+| `onDiscardReady` | `(handler: (() => void) \| null) => void` | *required* | — |
 | `confirmUnsavedOnCancel` | `boolean` | *required* | — |
 
 ## Methods
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskForm](../modules/TaskForm.md) | 0 | `confirmUnsavedOnCancel`, `initialData`, `iterationId`, `mode`, `onCancel`, `onDirtyChange`, `onSaveSandbox`, `onSuccess`, `parentId`, `parentMilestoneId`, `parentPriority`, `parentProjectId` |
+| [TaskForm](../modules/TaskForm.md) | 0 | `confirmUnsavedOnCancel`, `initialData`, `iterationId`, `mode`, `onCancel`, `onDirtyChange`, `onDiscardReady`, `onPendingChange`, `onSaveSandbox`, `onSuccess`, `parentId`, `parentMilestoneId` |
 
 ### References
 

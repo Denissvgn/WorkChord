@@ -1,6 +1,6 @@
 # ProjectMilestoneSummary
 
-**Location:** `backend/app/schemas/project.py:238`
+**Location:** `backend/app/schemas/project.py:246`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -32,16 +32,13 @@ flowchart LR
     n0["ProjectMilestoneSummary (backend/app/schemas/project.py)"]
     n1["BaseModel"]
     n2["backend/app/schemas/__init__.py"]
-    n3["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
-    n4["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
+    n3["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
-    n4 --> n0
     click n0 "../modules/schemas_project.md"
     click n2 "../modules/schemas___init__.md"
     click n3 "../modules/project_service.md"
-    click n4 "../modules/project_service.md"
 ```
 
 ### Summary
@@ -61,5 +58,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
-| `ProjectService._aggregated_milestone_groups` | call | [project_service](../modules/project_service.md) | 1 |
 | `ProjectService._build_milestone_task_group` | call | [project_service](../modules/project_service.md) | 1 |

@@ -1,6 +1,6 @@
 # ReleaseTaskSummary
 
-**Location:** `backend/app/schemas/release.py:18`
+**Location:** `backend/app/schemas/release.py:20`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_release](../modules/schemas_release.md)

@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `frontend/src/types/task.ts:127`
+**Location:** `frontend/src/types/task.ts:145`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -13,6 +13,7 @@ _Auto-generated from `TaskCreate` in `frontend/src/types/task.ts`._
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `expected_revision` | `number` | *required* | — |
 | `parent_id` | `number \| null` | *required* | — |
 | `title` | `string` | *required* | — |
 | `description` | `string` | *required* | — |
@@ -59,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date`, `parent_id` |
+| [types_task](../modules/types_task.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `expected_revision`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
 
 ### References
 

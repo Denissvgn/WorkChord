@@ -6,12 +6,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1321 | [Open section](#entities) |
-| Modules | 567 | [Open section](#modules) |
-| Workflows | 79 | [Open section](#workflows) |
+| Entities | 1361 | [Open section](#entities) |
+| Modules | 605 | [Open section](#modules) |
+| Workflows | 137 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 434 | [Open section](#entry-point-flows) |
-| Infrastructure | 7 | [Open section](#infrastructure) |
+| Entry-point flows | 463 | [Open section](#entry-point-flows) |
+| Infrastructure | 10 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
 | Log | 1 | [Open log](log.md) |
@@ -154,6 +154,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentWorkSubmit](entities/AgentWorkSubmit.md)
 - [AgentWorkTerminal](entities/AgentWorkTerminal.md)
 - [AgentWorkTerminalResponse](entities/AgentWorkTerminalResponse.md)
+- [AggregateVersionConflict](entities/AggregateVersionConflict.md)
 - [ApiErrorKind](entities/ApiErrorKind.md)
 - [ApiErrorShape](entities/ApiErrorShape.md)
 - [ApiFieldError](entities/ApiFieldError.md)
@@ -161,6 +162,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AppRuntimeSettings](entities/AppRuntimeSettings.md)
 - [AppRuntimeSettingsResponse](entities/AppRuntimeSettingsResponse.md)
 - [ApplicationAcceptance](entities/ApplicationAcceptance.md)
+- [ApplicationSnapshot](entities/ApplicationSnapshot.md)
 - [AssessmentDraft](entities/AssessmentDraft.md)
 - [AssigneeRecommendation](entities/AssigneeRecommendation.md)
 - [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
@@ -178,6 +180,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AttentionItem](entities/AttentionItem.md)
 - [AttentionKind](entities/AttentionKind.md)
 - [AttentionSeverity](entities/AttentionSeverity.md)
+- [Authority](entities/Authority.md)
+- [AuthorityError](entities/AuthorityError.md)
 - [AutonomousDagContract](entities/AutonomousDagContract.md)
 - [AutonomousEvidence](entities/AutonomousEvidence.md)
 - [AutonomyCharter](entities/AutonomyCharter.md)
@@ -195,6 +199,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [BoardTaskUpdate](entities/BoardTaskUpdate.md)
 - [BootstrapActionManifest](entities/BootstrapActionManifest.md)
 - [BootstrapActionSlot](entities/BootstrapActionSlot.md)
+- [BootstrapOwner](entities/BootstrapOwner.md)
 - [BreadcrumbItem](entities/BreadcrumbItem.md)
 - [BreadcrumbsProps](entities/BreadcrumbsProps.md)
 - [BuildIdentity](entities/BuildIdentity.md)
@@ -228,7 +233,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [CollectorBinding](entities/CollectorBinding.md)
 - [ColumnId](entities/ColumnId.md)
 - [CommandAction](entities/CommandAction.md)
+- [CommandAudit](entities/CommandAudit.md)
 - [CommandGroup](entities/CommandGroup.md)
+- [CommandState](entities/CommandState.md)
 - [CompleteMetricWindow](entities/CompleteMetricWindow.md)
 - [ConfirmDialogProps](entities/ConfirmDialogProps.md)
 - [ConfirmDialogTone](entities/ConfirmDialogTone.md)
@@ -257,6 +264,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DagNodeSpec](entities/DagNodeSpec.md)
 - [DagNodeState](entities/DagNodeState.md)
 - [DagStateConflict](entities/DagStateConflict.md)
+- [Database](entities/Database.md)
 - [DatabaseConfiguration](entities/DatabaseConfiguration.md)
 - [DatabaseConfigurationError](entities/DatabaseConfigurationError.md)
 - [DatabaseConflictError](entities/DatabaseConflictError.md)
@@ -270,6 +278,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DateInput](entities/DateInput.md)
 - [DateListProps](entities/DateListProps.md)
 - [DateRange](entities/DateRange.md)
+- [DeliveryScenario](entities/DeliveryScenario.md)
 - [DetachedSignatureEnvelope](entities/DetachedSignatureEnvelope.md)
 - [DialogLayerOptions](entities/DialogLayerOptions.md)
 - [DifficultyAxis](entities/DifficultyAxis.md)
@@ -278,6 +287,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DirectQueryFeedback](entities/DirectQueryFeedback.md)
 - [DndContextMockProps](entities/DndContextMockProps.md)
 - [DocumentationContractError](entities/DocumentationContractError.md)
+- [DraftGuard](entities/DraftGuard.md)
 - [DrawerCopy](entities/DrawerCopy.md)
 - [DuplicateActionDefaults](entities/DuplicateActionDefaults.md)
 - [DuplicateSuggestionGroupProps](entities/DuplicateSuggestionGroupProps.md)
@@ -321,6 +331,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FilterConfigSchema](entities/FilterConfigSchema.md)
 - [FormErrors](entities/FormErrors.md)
 - [FormMode](entities/FormMode.md)
+- [FormProps](entities/FormProps.md)
 - [FormalizeDraftRequest](entities/FormalizeDraftRequest.md)
 - [FormalizeRequest](entities/FormalizeRequest.md)
 - [FormalizeResponse](entities/FormalizeResponse.md)
@@ -347,14 +358,21 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GitHubWebhookResponse](entities/GitHubWebhookResponse.md)
 - [GitHubWebhookService](entities/GitHubWebhookService.md)
 - [GitHubWebhookSignatureError](entities/GitHubWebhookSignatureError.md)
+- [GuestTransferRequest](entities/GuestTransferRequest.md)
 - [GuideItem](entities/GuideItem.md)
 - [HandoffEvidenceReference](entities/HandoffEvidenceReference.md)
 - [HandoffVerification](entities/HandoffVerification.md)
 - [HealthCheckResult](entities/HealthCheckResult.md)
 - [HelpContentProvider](entities/HelpContentProvider.md)
 - [HelpRelatedLink](entities/HelpRelatedLink.md)
+- [HierarchyRepairRequest](entities/HierarchyRepairRequest.md)
+- [HierarchyRepairService](entities/HierarchyRepairService.md)
+- [HierarchyScopeError](entities/HierarchyScopeError.md)
 - [HistoryGroup](entities/HistoryGroup.md)
 - [HolidayImportRequest](entities/HolidayImportRequest.md)
+- [IdentityContextValue](entities/IdentityContextValue.md)
+- [IdentityService](entities/IdentityService.md)
+- [IdentitySubject](entities/IdentitySubject.md)
 - [ImmutableAutonomyEventError](entities/ImmutableAutonomyEventError.md)
 - [ImmutableContractArchive](entities/ImmutableContractArchive.md)
 - [ImmutableInputBinding](entities/ImmutableInputBinding.md)
@@ -387,6 +405,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [KanbanBoardProps](entities/KanbanBoardProps.md)
 - [KanbanCardProps](entities/KanbanCardProps.md)
 - [KanbanColumnProps](entities/KanbanColumnProps.md)
+- [KnownDeliveryDiscrepancy](entities/KnownDeliveryDiscrepancy.md)
 - [LLMCallResult](entities/LLMCallResult.md)
 - [LLMForm](entities/LLMForm.md)
 - [LLMRuntimeSettings](entities/LLMRuntimeSettings.md)
@@ -405,6 +424,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LanguageResolution](entities/LanguageResolution.md)
 - [LatencyTier](entities/LatencyTier.md)
 - [LegacySQLiteFactory](entities/LegacySQLiteFactory.md)
+- [LegacySnapshotImport](entities/LegacySnapshotImport.md)
+- [LegacySnapshotImportRequest](entities/LegacySnapshotImportRequest.md)
 - [LoadedRelease](entities/LoadedRelease.md)
 - [LocalizedStepStatus](entities/LocalizedStepStatus.md)
 - [LockedAcceptanceObject](entities/LockedAcceptanceObject.md)
@@ -420,6 +441,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MasterProgressProps](entities/MasterProgressProps.md)
 - [MasterStepDef](entities/MasterStepDef.md)
 - [MemberSchedule](entities/MemberSchedule.md)
+- [MembershipChange](entities/MembershipChange.md)
 - [MemoryAttemptBackend](entities/MemoryAttemptBackend.md)
 - [MemoryDagJournal](entities/MemoryDagJournal.md)
 - [MemoryWormStore](entities/MemoryWormStore.md)
@@ -449,6 +471,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NotFoundException](entities/NotFoundException.md)
 - [NotificationService](entities/NotificationService.md)
 - [NotificationsPanelProps](entities/NotificationsPanelProps.md)
+- [OIDCLoginAttempt](entities/OIDCLoginAttempt.md)
 - [ObjectStoreAcceptance](entities/ObjectStoreAcceptance.md)
 - [OpenBaoTransitClient](entities/OpenBaoTransitClient.md)
 - [OperationBuilder](entities/OperationBuilder.md)
@@ -469,6 +492,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OverviewLocationState](entities/OverviewLocationState.md)
 - [OverviewTaskThreadSource](entities/OverviewTaskThreadSource.md)
 - [OwnershipSelection](entities/OwnershipSelection.md)
+- [OwnershipTransfer](entities/OwnershipTransfer.md)
 - [PageHeaderProps](entities/PageHeaderProps.md)
 - [PageLayoutProps](entities/PageLayoutProps.md)
 - [ParsedGitHubLink](entities/ParsedGitHubLink.md)
@@ -483,6 +507,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanShareSnapshot](entities/PlanShareSnapshot.md)
 - [PlanShareTask](entities/PlanShareTask.md)
 - [PlanShareTeamMember](entities/PlanShareTeamMember.md)
+- [PlanningInputRevisions](entities/PlanningInputRevisions.md)
 - [PlanningJob](entities/PlanningJob.md)
 - [PlanningMember](entities/PlanningMember.md)
 - [PlanningQueryFeedback](entities/PlanningQueryFeedback.md)
@@ -501,9 +526,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PostgresTestDatabase](entities/PostgresTestDatabase.md)
 - [PostgresTestDatabaseManager](entities/PostgresTestDatabaseManager.md)
 - [PreflightPredicateResult](entities/PreflightPredicateResult.md)
+- [Principal](entities/Principal.md)
+- [PrincipalProfileLink](entities/PrincipalProfileLink.md)
+- [PrincipalRecoveryRequest](entities/PrincipalRecoveryRequest.md)
+- [ProfileLinkRequest](entities/ProfileLinkRequest.md)
 - [ProgramDecision](entities/ProgramDecision.md)
 - [ProjectFormProps](entities/ProjectFormProps.md)
 - [ProjectIterationsSectionProps](entities/ProjectIterationsSectionProps.md)
+- [ProjectMembership](entities/ProjectMembership.md)
 - [ProjectMilestoneCreate](entities/ProjectMilestoneCreate.md)
 - [ProjectMilestoneResponse](entities/ProjectMilestoneResponse.md)
 - [ProjectMilestoneUpdate](entities/ProjectMilestoneUpdate.md)
@@ -630,6 +660,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SavedViewsControlProps](entities/SavedViewsControlProps.md)
 - [ScalarResult](entities/ScalarResult.md)
 - [ScenarioBase](entities/ScenarioBase.md)
+- [ScheduleApplyRequest](entities/ScheduleApplyRequest.md)
 - [ScheduleExplanationDetailsProps](entities/ScheduleExplanationDetailsProps.md)
 - [SchedulePreviewComplete](entities/SchedulePreviewComplete.md)
 - [SchedulePreviewRequest](entities/SchedulePreviewRequest.md)
@@ -758,6 +789,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskListProps](entities/TaskListProps.md)
 - [TaskMerge](entities/TaskMerge.md)
 - [TaskMergeRequest](entities/TaskMergeRequest.md)
+- [TaskMetricSignals](entities/TaskMetricSignals.md)
 - [TaskMode](entities/TaskMode.md)
 - [TaskOrderRequest](entities/TaskOrderRequest.md)
 - [TaskReorder](entities/TaskReorder.md)
@@ -769,6 +801,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskRoutingAssessmentListResponse](entities/TaskRoutingAssessmentListResponse.md)
 - [TaskRoutingAssessmentResponse](entities/TaskRoutingAssessmentResponse.md)
 - [TaskRoutingPanelProps](entities/TaskRoutingPanelProps.md)
+- [TaskScheduleBaseline](entities/TaskScheduleBaseline.md)
 - [TaskService](entities/TaskService.md)
 - [TaskSkillLevel](entities/TaskSkillLevel.md)
 - [TaskStatusAmendment](entities/TaskStatusAmendment.md)
@@ -857,6 +890,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ViewMode](entities/ViewMode.md)
 - [VirtualClient](entities/VirtualClient.md)
 - [VisibleHealthState](entities/VisibleHealthState.md)
+- [VisibleLeaf](entities/VisibleLeaf.md)
 - [WebIntakeConfigurationError](entities/WebIntakeConfigurationError.md)
 - [WebIntakeForm](entities/WebIntakeForm.md)
 - [WebIntakeRateLimitError](entities/WebIntakeRateLimitError.md)
@@ -868,13 +902,19 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WebIntakeService](entities/WebIntakeService.md)
 - [WebIntakeUnauthorizedError](entities/WebIntakeUnauthorizedError.md)
 - [WorkChordException](entities/WorkChordException.md)
+- [WorkMetricSummary](entities/WorkMetricSummary.md)
+- [WorkMetrics](entities/WorkMetrics.md)
 - [WorkPackageContract](entities/WorkPackageContract.md)
 - [WorkTemplateResponse](entities/WorkTemplateResponse.md)
 - [WorkflowFocusIntent](entities/WorkflowFocusIntent.md)
 - [WorkflowFocusTarget](entities/WorkflowFocusTarget.md)
 - [WorkingDaysRequest](entities/WorkingDaysRequest.md)
+- [WorkingZone](entities/WorkingZone.md)
 - [WorkspaceAttention](entities/WorkspaceAttention.md)
+- [WorkspaceAuthorityState](entities/WorkspaceAuthorityState.md)
+- [WorkspaceIdentity](entities/WorkspaceIdentity.md)
 - [WorkspaceKey](entities/WorkspaceKey.md)
+- [WorkspaceMembership](entities/WorkspaceMembership.md)
 - [WorkspaceMetadata](entities/WorkspaceMetadata.md)
 - [WormObjectStore](entities/WormObjectStore.md)
 - [agent_routing_AgentModelBindingCreate](entities/agent_routing_AgentModelBindingCreate.md)
@@ -1380,6 +1420,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20260727_0034_add_agent_run_model_trust](modules/20260727_0034_add_agent_run_model_trust.md) - Add explicit configured-versus-observed model trust evidence.
 - [20260728_0035_add_agent_team_setup](modules/20260728_0035_add_agent_team_setup.md) - Add operator-owned agent-team setup and onboarding state.
 - [20260802_0036_add_plan_shares](modules/20260802_0036_add_plan_shares.md) - Add immutable, revocable plan shares.
+- [20260915_0037_add_authority_and_recovery](modules/20260915_0037_add_authority_and_recovery.md) - Add durable authority, application snapshots and explicit schedule commitments.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1413,6 +1454,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ContextHelp](modules/ContextHelp.md) - `frontend/src/components/layout/ContextHelp.tsx`
 - [ContextHelp.test](modules/ContextHelp.test.md) - `frontend/src/components/layout/ContextHelp.test.tsx`
 - [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
+- [DraftDismissalDialog](modules/DraftDismissalDialog.md) - `frontend/src/components/tasks/DraftDismissalDialog.tsx`
 - [EffortModifierCard](modules/EffortModifierCard.md) - `frontend/src/components/settings/EffortModifierCard.tsx`
 - [EffortModifierCard.test](modules/EffortModifierCard.test.md) - `frontend/src/components/settings/EffortModifierCard.test.tsx`
 - [EmailSettingsPanel](modules/EmailSettingsPanel.md) - `frontend/src/components/settings/EmailSettingsPanel.tsx`
@@ -1424,6 +1466,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GanttPage.test](modules/GanttPage.test.md) - `frontend/src/pages/GanttPage.test.tsx`
 - [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) - `frontend/src/components/settings/GitHubSettingsPanel.tsx`
 - [GitHubSettingsPanel.test](modules/GitHubSettingsPanel.test.md) - `frontend/src/components/settings/GitHubSettingsPanel.test.tsx`
+- [GuardedTaskModal](modules/GuardedTaskModal.md) - `frontend/src/components/tasks/GuardedTaskModal.tsx`
+- [IdentityProvider](modules/IdentityProvider.md) - `frontend/src/features/identity/IdentityProvider.tsx`
 - [ImportTasksModal](modules/ImportTasksModal.md) - `frontend/src/components/tasks/ImportTasksModal.tsx`
 - [ImportTeamModal](modules/ImportTeamModal.md) - `frontend/src/components/team/ImportTeamModal.tsx`
 - [ImportTeamModal.test](modules/ImportTeamModal.test.md) - `frontend/src/components/team/ImportTeamModal.test.tsx`
@@ -1539,6 +1583,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
+- [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
+- [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
 - [accessibilityInvariants](modules/accessibilityInvariants.md) - `frontend/src/test/accessibilityInvariants.ts`
 - [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) - `frontend/src/test/accessibilityInvariants.test.ts`
 - [adminAccess](modules/adminAccess.md) - `frontend/src/utils/adminAccess.ts`
@@ -1574,6 +1620,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [assignee_recommendation_service](modules/assignee_recommendation_service.md) - Explainable assignee recommendations from team capability profiles.
 - [attentionRanking](modules/attentionRanking.md) - `frontend/src/features/overview/attentionRanking.ts`
 - [attentionRanking.test](modules/attentionRanking.test.md) - `frontend/src/features/overview/attentionRanking.test.ts`
+- [authority](modules/authority.md) - Principal-bound authorization shared by transport adapters and ORM commands.
 - [autonomy___init__](modules/autonomy___init__.md) - Fail-closed primitives for WorkChord autonomous execution.
 - [autonomy_canonical](modules/autonomy_canonical.md) - Canonical serialization and secret-boundary helpers.
 - [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) - Container-backed acceptance for a self-hosted WorkChord server.
@@ -1593,6 +1640,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [cli_server_acceptance](modules/cli_server_acceptance.md) - Run the bounded self-hosted server acceptance profile.
 - [collect](modules/collect.md) - Collect sealed PostgreSQL evidence and derive qualification metrics.
 - [commandMenuEvents](modules/commandMenuEvents.md) - `frontend/src/components/layout/commandMenuEvents.ts`
+- [commands](modules/commands.md) - Explicit transaction ownership shared by HTTP, MCP and service commands.
 - [compare](modules/compare.md) - Create a sealed, machine-readable baseline versus tuned load comparison.
 - [config](modules/config.md) - `backend/app/config.py`
 - [conftest](modules/conftest.md) - Shared isolated SQLite and PostgreSQL lifecycle fixtures.
@@ -1607,6 +1655,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [database_migration_manifest](modules/database_migration_manifest.md) - Deterministic, checksummed, secret-free operational documents.
 - [database_runtime](modules/database_runtime.md) - PostgreSQL error classification and bounded transaction retry policy.
 - [dateLocale](modules/dateLocale.md) - `frontend/src/i18n/dateLocale.ts`
+- [delivery](modules/delivery.md) - Deterministic shared delivery graph for database and HTTP scenarios.
 - [dialogLayer](modules/dialogLayer.md) - `frontend/src/components/common/dialogLayer.ts`
 - [emailSettings](modules/emailSettings.md) - `frontend/src/types/emailSettings.ts`
 - [emailSettingsService](modules/emailSettingsService.md) - `frontend/src/services/emailSettingsService.ts`
@@ -1627,6 +1676,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ganttService](modules/ganttService.md) - `frontend/src/services/ganttService.ts`
 - [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.
 - [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) - Generate the JSON Schema for the bounded agent-team setup report.
+- [generate_client_contract](modules/generate_client_contract.md) - Export a deterministic client contract from the registered backend schemas.
 - [generate_workchord_keys](modules/generate_workchord_keys.md) - Generate local secrets consumed by WorkChord.
 - [githubService](modules/githubService.md) - `frontend/src/services/githubService.ts`
 - [github_status_automation_service](modules/github_status_automation_service.md) - GitHub status automation rule service.
@@ -1635,8 +1685,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [handoff](modules/handoff.md) - Deterministic, unpublished manual-handoff and closeout decision tooling.
 - [healthService](modules/healthService.md) - `frontend/src/services/healthService.ts`
 - [helpContexts](modules/helpContexts.md) - `frontend/src/navigation/helpContexts.ts`
+- [hierarchy_repair_service](modules/hierarchy_repair_service.md) - Operator-scoped, bounded hierarchy diagnosis and version-checked deterministic repair.
+- [http_authority](modules/http_authority.md) - Fail-closed HTTP identity resolution and explicit public capability boundaries.
 - [i18n](modules/i18n.md) - `frontend/src/i18n/i18n.ts`
 - [i18n.test](modules/i18n.test.md) - `frontend/src/i18n/i18n.test.ts`
+- [identityContext](modules/identityContext.md) - `frontend/src/features/identity/identityContext.ts`
+- [identityService](modules/identityService.md) - `frontend/src/features/identity/identityService.ts`
+- [identity_service](modules/identity_service.md) - Trusted OIDC sign-in and durable principal/session lifecycle.
 - [import_parser](modules/import_parser.md) - Parser utilities for importing tasks and team members from text files.
 - [index](modules/index.md) - `frontend/src/components/ui/index.ts`
 - [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) - Qualify the installed backend wheel across the SQLite/PostgreSQL boundary.
@@ -1666,6 +1721,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_database_migration](modules/models_database_migration.md) - Target-owned state for controlled SQLite-to-PostgreSQL transfers.
 - [models_external_link](modules/models_external_link.md) - External link model for delivery traceability.
 - [models_github](modules/models_github.md) - GitHub integration models.
+- [models_identity](modules/models_identity.md) - Durable authentication subjects, scoped authority and attributable ownership.
 - [models_iteration](modules/models_iteration.md) - Iteration model.
 - [models_label](modules/models_label.md) - Governed label taxonomy models.
 - [models_outbound_webhook](modules/models_outbound_webhook.md) - Outbound webhook configuration and delivery log models.
@@ -1697,6 +1753,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [planningReturn](modules/planningReturn.md) - `frontend/src/features/planningMasters/planningReturn.ts`
 - [planningTaskIssues](modules/planningTaskIssues.md) - `frontend/src/features/planningMasters/planningTaskIssues.ts`
 - [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
+- [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
 - [postgresql_migrations_env](modules/postgresql_migrations_env.md) - Minimal Alembic environment used to prove the PostgreSQL test harness.
@@ -1710,6 +1767,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [providers](modules/providers.md) - Provider mutation/source-collection boundaries and correlation rules.
 - [qualify](modules/qualify.md) - Freeze, assemble, sign, and verify PostgreSQL capacity qualification.
 - [query_limits](modules/query_limits.md) - Explicit response cardinality bounds for synchronous API surfaces.
+- [recovery](modules/recovery.md) - Transactional application recovery points and explicit schedule commitments.
 - [releaseService](modules/releaseService.md) - `frontend/src/services/releaseService.ts`
 - [release_service](modules/release_service.md) - Release service for project-scoped shipping records.
 - [renderWithProviders](modules/renderWithProviders.md) - `frontend/src/test/renderWithProviders.tsx`
@@ -1729,6 +1787,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [routers_email_settings](modules/routers_email_settings.md) - Email settings API router.
 - [routers_gantt](modules/routers_gantt.md) - Gantt API router.
 - [routers_github](modules/routers_github.md) - GitHub webhook API router.
+- [routers_identity](modules/routers_identity.md) - Human sign-in, owner bootstrap, membership and session management.
 - [routers_intake](modules/routers_intake.md) - Controlled external intake API router.
 - [routers_llm](modules/routers_llm.md) - LLM API router.
 - [routers_scheduling_rules](modules/routers_scheduling_rules.md) - Scheduling rules API router.
@@ -1737,6 +1796,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
+- [run_android_checks](modules/run_android_checks.md) - Build Android with JDK 17, SDK 34 and the checksum-pinned Gradle wrapper in Docker.
+- [run_disposable_checks](modules/run_disposable_checks.md) - Run pinned database, frontend, and browser checks without an existing app stack.
 - [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
 - [safeUrl](modules/safeUrl.md) - `frontend/src/utils/safeUrl.ts`
 - [savedView](modules/savedView.md) - `frontend/src/types/savedView.ts`
@@ -1776,11 +1837,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_team](modules/schemas_team.md) - Team member schemas.
 - [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
 - [schemas_triage](modules/schemas_triage.md) - Triage item schemas.
+- [schemas_work_metrics](modules/schemas_work_metrics.md) - Shared additive delivery metrics; legacy completed fields mean implemented work.
 - [seal](modules/seal.md) - Seal a reviewed JSON evidence object with its canonical SHA-256.
 - [security](modules/security.md) - Shared request authorization helpers.
 - [seed](modules/seed.md) - Create the deterministic, resumable PostgreSQL qualification data set.
 - [seedDisplay](modules/seedDisplay.md) - `frontend/src/i18n/seedDisplay.ts`
 - [selectWorkNowTasks](modules/selectWorkNowTasks.md) - `frontend/src/utils/selectWorkNowTasks.ts`
+- [serve_disposable_api](modules/serve_disposable_api.md) - Start the real HTTP application only against a safety-fenced temporary database.
+- [serve_disposable_oidc](modules/serve_disposable_oidc.md) - Synthetic OIDC issuer confined to the disposable browser network and database.
+- [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
 - [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
 - [setup](modules/setup.md) - `frontend/src/test/setup.ts`
@@ -1803,6 +1868,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
 - [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
+- [taskDraftStorage](modules/taskDraftStorage.md) - `frontend/src/components/tasks/taskDraftStorage.ts`
 - [taskEditorContract](modules/taskEditorContract.md) - `frontend/src/components/tasks/taskEditorContract.ts`
 - [taskFilterDefaults](modules/taskFilterDefaults.md) - `frontend/src/utils/taskFilterDefaults.ts`
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
@@ -1840,15 +1906,20 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_authority_migrations](modules/test_authority_migrations.md) - Additive authority upgrades preserve legacy attribution and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
 - [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
+- [test_client_contract](modules/test_client_contract.md) - Schema-derived compatibility, legacy payloads, and additive client behavior.
 - [test_cutover_evidence](modules/test_cutover_evidence.md) - Fail-closed contracts for rehearsal and production cutover evidence.
 - [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
 - [test_database_harness](modules/test_database_harness.md) - Fast unit coverage for the Wave 0 database test infrastructure.
+- [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
+- [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
+- [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
@@ -1867,6 +1938,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh/legacy/inspection migration matrix.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
+- [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
 - [text_similarity](modules/text_similarity.md) - Lightweight text similarity helpers for advisory search.
 - [themeStore](modules/themeStore.md) - `frontend/src/store/themeStore.ts`
@@ -1897,15 +1969,21 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [useAgentAccess](modules/useAgentAccess.md) - `frontend/src/hooks/useAgentAccess.ts`
 - [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) - `frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts`
 - [useConfirmDialog](modules/useConfirmDialog.md) - `frontend/src/components/common/useConfirmDialog.tsx`
+- [useDraftDismissal](modules/useDraftDismissal.md) - `frontend/src/components/tasks/useDraftDismissal.ts`
+- [useDraftDismissal.test](modules/useDraftDismissal.test.md) - `frontend/src/components/tasks/useDraftDismissal.test.tsx`
 - [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) - `frontend/src/features/planningMasters/usePlanningNavigationSummary.ts`
 - [usePlanningReadiness](modules/usePlanningReadiness.md) - `frontend/src/features/planningMasters/usePlanningReadiness.ts`
 - [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`
 - [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.ts`
 - [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx`
 - [user_session](modules/user_session.md) - `backend/app/models/user_session.py`
+- [visibleWork](modules/visibleWork.md) - `frontend/src/utils/visibleWork.ts`
+- [visibleWork.test](modules/visibleWork.test.md) - `frontend/src/utils/visibleWork.test.ts`
 - [vite.config](modules/vite.config.md) - `frontend/vite.config.ts`
 - [vitest.config](modules/vitest.config.md) - `frontend/vitest.config.ts`
 - [web_intake_service](modules/web_intake_service.md) - Controlled external web intake service.
+- [workMetrics](modules/workMetrics.md) - `frontend/src/types/workMetrics.ts`
+- [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
 - [workspaces](modules/workspaces.md) - `frontend/src/navigation/workspaces.ts`
 - [workspaces.test](modules/workspaces.test.md) - `frontend/src/navigation/workspaces.test.ts`
@@ -1920,12 +1998,17 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentRoutingService_preview_task_routing](workflows/AgentRoutingService_preview_task_routing.md) - entry: `agent_routing_service.AgentRoutingService.preview_task_routing`
 - [AgentRoutingService_validate_assignment_selection](workflows/AgentRoutingService_validate_assignment_selection.md) - entry: `agent_routing_service.AgentRoutingService.validate_assignment_selection`
 - [AgentService_append_run_event](workflows/AgentService_append_run_event.md) - entry: `agent_service.AgentService.append_run_event`
+- [AgentService_authenticate](workflows/AgentService_authenticate.md) - entry: `agent_service.AgentService.authenticate`
 - [AgentService_authenticate_bootstrap_key](workflows/AgentService_authenticate_bootstrap_key.md) - entry: `agent_service.AgentService.authenticate_bootstrap_key`
 - [AgentService_claim_task](workflows/AgentService_claim_task.md) - entry: `agent_service.AgentService.claim_task`
+- [AgentService_create_actor](workflows/AgentService_create_actor.md) - entry: `agent_service.AgentService.create_actor`
+- [AgentService_finish_run](workflows/AgentService_finish_run.md) - entry: `agent_service.AgentService.finish_run`
 - [AgentService_get_pipeline](workflows/AgentService_get_pipeline.md) - entry: `agent_service.AgentService.get_pipeline`
+- [AgentService_renew_claim](workflows/AgentService_renew_claim.md) - entry: `agent_service.AgentService.renew_claim`
 - [AgentService_start_run](workflows/AgentService_start_run.md) - entry: `agent_service.AgentService.start_run`
 - [AgentTeamSetupService__apply_create_or_update](workflows/AgentTeamSetupService__apply_create_or_update.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_create_or_update`
 - [AgentTeamSetupService__apply_identity_replacement](workflows/AgentTeamSetupService__apply_identity_replacement.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_identity_replacement`
+- [AgentTeamSetupService__apply_replace_recovery](workflows/AgentTeamSetupService__apply_replace_recovery.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_replace_recovery`
 - [AgentTeamSetupService__status_for_topology](workflows/AgentTeamSetupService__status_for_topology.md) - entry: `agent_team_setup_service.AgentTeamSetupService._status_for_topology`
 - [AgentTeamSetupService_acknowledge_runtime](workflows/AgentTeamSetupService_acknowledge_runtime.md) - entry: `agent_team_setup_service.AgentTeamSetupService.acknowledge_runtime`
 - [AgentTeamSetupService_apply](workflows/AgentTeamSetupService_apply.md) - entry: `agent_team_setup_service.AgentTeamSetupService.apply`
@@ -1945,24 +2028,66 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentWorkService_update_assignment](workflows/AgentWorkService_update_assignment.md) - entry: `agent_work_service.AgentWorkService.update_assignment`
 - [AutonomyWorkPackageService__append_event](workflows/AutonomyWorkPackageService__append_event.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService._append_event`
 - [AutonomyWorkPackageService__lease_transition](workflows/AutonomyWorkPackageService__lease_transition.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService._lease_transition`
+- [AutonomyWorkPackageService_activate_requirements](workflows/AutonomyWorkPackageService_activate_requirements.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.activate_requirements`
+- [AutonomyWorkPackageService_claim_requirement](workflows/AutonomyWorkPackageService_claim_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.claim_requirement`
+- [AutonomyWorkPackageService_create_package](workflows/AutonomyWorkPackageService_create_package.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.create_package`
 - [AutonomyWorkPackageService_submit_requirement](workflows/AutonomyWorkPackageService_submit_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.submit_requirement`
 - [ExternalLinkService_create](workflows/ExternalLinkService_create.md) - entry: `external_link_service.ExternalLinkService.create`
+- [ExternalLinkService_create_task_github_link](workflows/ExternalLinkService_create_task_github_link.md) - entry: `external_link_service.ExternalLinkService.create_task_github_link`
+- [ExternalLinkService_delete_link](workflows/ExternalLinkService_delete_link.md) - entry: `external_link_service.ExternalLinkService.delete_link`
+- [ExternalLinkService_update](workflows/ExternalLinkService_update.md) - entry: `external_link_service.ExternalLinkService.update`
 - [GitHubStatusAutomationService_apply_rules](workflows/GitHubStatusAutomationService_apply_rules.md) - entry: `github_status_automation_service.GitHubStatusAutomationService.apply_rules`
 - [GitHubStatusService___init__](workflows/GitHubStatusService___init__.md) - entry: `github_status_service.GitHubStatusService.__init__`
 - [GitHubWebhookService___init__](workflows/GitHubWebhookService___init__.md) - entry: `github_webhook_service.GitHubWebhookService.__init__`
 - [GitHubWebhookService_process](workflows/GitHubWebhookService_process.md) - entry: `github_webhook_service.GitHubWebhookService.process`
+- [HierarchyRepairService_audit](workflows/HierarchyRepairService_audit.md) - entry: `hierarchy_repair_service.HierarchyRepairService.audit`
+- [HierarchyRepairService_repair](workflows/HierarchyRepairService_repair.md) - entry: `hierarchy_repair_service.HierarchyRepairService.repair`
+- [IdentityService_begin_login](workflows/IdentityService_begin_login.md) - entry: `identity_service.IdentityService.begin_login`
+- [IdentityService_cleanup_sessions](workflows/IdentityService_cleanup_sessions.md) - entry: `identity_service.IdentityService.cleanup_sessions`
+- [IdentityService_finish_login](workflows/IdentityService_finish_login.md) - entry: `identity_service.IdentityService.finish_login`
+- [IdentityService_issue_session](workflows/IdentityService_issue_session.md) - entry: `identity_service.IdentityService.issue_session`
+- [IdentityService_transfer_guest](workflows/IdentityService_transfer_guest.md) - entry: `identity_service.IdentityService.transfer_guest`
 - [IterationService__reconcile_tasks_for_project_scope](workflows/IterationService__reconcile_tasks_for_project_scope.md) - entry: `iteration_service.IterationService._reconcile_tasks_for_project_scope`
+- [IterationService_get_summary](workflows/IterationService_get_summary.md) - entry: `iteration_service.IterationService.get_summary`
+- [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
+- [OutboundWebhookService__enqueue_event_records](workflows/OutboundWebhookService__enqueue_event_records.md) - entry: `outbound_webhook_service.OutboundWebhookService._enqueue_event_records`
+- [OutboundWebhookService_retry_delivery](workflows/OutboundWebhookService_retry_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService.retry_delivery`
 - [PlanShareService_create](workflows/PlanShareService_create.md) - entry: `plan_share_service.PlanShareService.create`
+- [ProjectService_create](workflows/ProjectService_create.md) - entry: `project_service.ProjectService.create`
+- [ProjectService_create_initiative](workflows/ProjectService_create_initiative.md) - entry: `project_service.ProjectService.create_initiative`
+- [ProjectService_create_project_update](workflows/ProjectService_create_project_update.md) - entry: `project_service.ProjectService.create_project_update`
+- [ProjectService_list_portfolio_summaries](workflows/ProjectService_list_portfolio_summaries.md) - entry: `project_service.ProjectService.list_portfolio_summaries`
+- [ProjectService_update](workflows/ProjectService_update.md) - entry: `project_service.ProjectService.update`
+- [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
+- [RequestSourceService_unlink](workflows/RequestSourceService_unlink.md) - entry: `request_source_service.RequestSourceService.unlink`
 - [SchedulerService___init__](workflows/SchedulerService___init__.md) - entry: `scheduler_service.SchedulerService.__init__`
+- [SchedulerService_schedule_iteration](workflows/SchedulerService_schedule_iteration.md) - entry: `scheduler_service.SchedulerService.schedule_iteration`
 - [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
+- [SnapshotService_create_snapshot](workflows/SnapshotService_create_snapshot.md) - entry: `snapshot_service.SnapshotService.create_snapshot`
+- [SnapshotService_restore](workflows/SnapshotService_restore.md) - entry: `snapshot_service.SnapshotService.restore`
+- [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
+- [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`
+- [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
 - [TaskService_create](workflows/TaskService_create.md) - entry: `task_service.TaskService.create`
 - [TaskService_delete](workflows/TaskService_delete.md) - entry: `task_service.TaskService.delete`
+- [TaskService_merge_tasks](workflows/TaskService_merge_tasks.md) - entry: `task_service.TaskService.merge_tasks`
+- [TaskService_move_task](workflows/TaskService_move_task.md) - entry: `task_service.TaskService.move_task`
 - [TaskService_task_to_response](workflows/TaskService_task_to_response.md) - entry: `task_service.TaskService.task_to_response`
 - [TaskService_update](workflows/TaskService_update.md) - entry: `task_service.TaskService.update`
+- [TaskStatusService__apply_transition](workflows/TaskStatusService__apply_transition.md) - entry: `task_status_service.TaskStatusService._apply_transition`
+- [TaskStatusService_change_status](workflows/TaskStatusService_change_status.md) - entry: `task_status_service.TaskStatusService.change_status`
+- [TeamService_import_members](workflows/TeamService_import_members.md) - entry: `team_service.TeamService.import_members`
+- [TeamService_import_vacations](workflows/TeamService_import_vacations.md) - entry: `team_service.TeamService.import_vacations`
 - [TriageService_classify_item](workflows/TriageService_classify_item.md) - entry: `triage_service.TriageService.classify_item`
 - [TriageService_convert_to_task](workflows/TriageService_convert_to_task.md) - entry: `triage_service.TriageService.convert_to_task`
+- [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
+- [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
+- [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
+- [batch_update_tasks](workflows/batch_update_tasks.md) - entry: `tasks.batch_update_tasks`
+- [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`
+- [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
@@ -1974,23 +2099,34 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [get_gantt_data](workflows/get_gantt_data.md) - entry: `gantt.get_gantt_data`
 - [get_or_create_session](workflows/get_or_create_session.md) - entry: `session_service.get_or_create_session`
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
+- [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
 - [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
 - [load_source_manifest](workflows/load_source_manifest.md) - entry: `transfer._load_source_manifest`
+- [login](workflows/login.md) - entry: `identity.login`
+- [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `database_migration.main`
+- [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
 - [process_import](workflows/process_import.md) - entry: `export._process_import`
+- [project_member](workflows/project_member.md) - entry: `identity.project_member`
 - [raw_table_results](workflows/raw_table_results.md) - entry: `transfer._raw_table_results`
 - [readiness_snapshot](workflows/readiness_snapshot.md) - entry: `observability.readiness_snapshot`
 - [reconcile_snapshot](workflows/reconcile_snapshot.md) - entry: `transfer.reconcile_snapshot`
 - [record_post_copy_repairs](workflows/record_post_copy_repairs.md) - entry: `transfer.record_post_copy_repairs`
+- [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
+- [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
-- [restore_snapshot](workflows/restore_snapshot.md) - entry: `snapshots.restore_snapshot`
+- [reserve_task_context_revision](workflows/reserve_task_context_revision.md) - entry: `task_context_revision_service.reserve_task_context_revision`
+- [resolve_http_identity](workflows/resolve_http_identity.md) - entry: `http_authority.resolve_http_identity`
 - [restore_staged_references](workflows/restore_staged_references.md) - entry: `transfer._restore_staged_references`
+- [revoke_owned_session](workflows/revoke_owned_session.md) - entry: `identity.revoke_owned_session`
+- [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
+- [workspace_member](workflows/workspace_member.md) - entry: `identity.workspace_member`
 
 <a id="entry-point-flows"></a>
 <a id="user-flows"></a>
@@ -2008,14 +2144,20 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-apply_agent_profile_preset](flows/http-apply_agent_profile_preset.md) - entry: `apply_agent_profile_preset`
 - [http-apply_agent_team_reconciliation](flows/http-apply_agent_team_reconciliation.md) - entry: `apply_agent_team_reconciliation`
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
+- [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
+- [http-authorize](flows/http-authorize.md) - entry: `authorize`
 - [http-batch_update_tasks](flows/http-batch_update_tasks.md) - entry: `batch_update_tasks`
 - [http-begin_my_agent_work](flows/http-begin_my_agent_work.md) - entry: `begin_my_agent_work`
+- [http-bootstrap](flows/http-bootstrap.md) - entry: `bootstrap`
 - [http-build_identity](flows/http-build_identity.md) - entry: `build_identity`
 - [http-bulk_update_tasks](flows/http-bulk_update_tasks.md) - entry: `bulk_update_tasks`
+- [http-callback](flows/http-callback.md) - entry: `callback`
 - [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
 - [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
 - [http-classify_triage_item](flows/http-classify_triage_item.md) - entry: `classify_triage_item`
+- [http-cleanup](flows/http-cleanup.md) - entry: `cleanup`
+- [http-configuration](flows/http-configuration.md) - entry: `configuration`
 - [http-convert_planning_triage_item_to_task](flows/http-convert_planning_triage_item_to_task.md) - entry: `convert_planning_triage_item_to_task`
 - [http-convert_triage_item_to_task](flows/http-convert_triage_item_to_task.md) - entry: `convert_triage_item_to_task`
 - [http-create_agent_actor](flows/http-create_agent_actor.md) - entry: `create_agent_actor`
@@ -2082,6 +2224,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-download_agent_skill_bundle](flows/http-download_agent_skill_bundle.md) - entry: `download_agent_skill_bundle`
 - [http-draft_triage_task](flows/http-draft_triage_task.md) - entry: `draft_triage_task`
 - [http-duplicate_saved_view](flows/http-duplicate_saved_view.md) - entry: `duplicate_saved_view`
+- [http-expire](flows/http-expire.md) - entry: `expire`
 - [http-explain_schedule](flows/http-explain_schedule.md) - entry: `explain_schedule`
 - [http-export_iteration](flows/http-export_iteration.md) - entry: `export_iteration`
 - [http-fail_my_agent_work](flows/http-fail_my_agent_work.md) - entry: `fail_my_agent_work`
@@ -2145,6 +2288,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-health_check](flows/http-health_check.md) - entry: `health_check`
 - [http-import_calendar_holidays](flows/http-import_calendar_holidays.md) - entry: `import_calendar_holidays`
 - [http-import_iteration](flows/http-import_iteration.md) - entry: `import_iteration`
+- [http-import_legacy_snapshots](flows/http-import_legacy_snapshots.md) - entry: `import_legacy_snapshots`
 - [http-import_new_iteration](flows/http-import_new_iteration.md) - entry: `import_new_iteration`
 - [http-import_tasks](flows/http-import_tasks.md) - entry: `import_tasks`
 - [http-import_team_members](flows/http-import_team_members.md) - entry: `import_team_members`
@@ -2152,6 +2296,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-improve_task_description](flows/http-improve_task_description.md) - entry: `improve_task_description`
 - [http-improve_task_description_draft](flows/http-improve_task_description_draft.md) - entry: `improve_task_description_draft`
 - [http-inspect_agent_skill_bundle_file](flows/http-inspect_agent_skill_bundle_file.md) - entry: `inspect_agent_skill_bundle_file`
+- [http-keys](flows/http-keys.md) - entry: `keys`
+- [http-link_profile](flows/http-link_profile.md) - entry: `link_profile`
 - [http-list_agent_actors](flows/http-list_agent_actors.md) - entry: `list_agent_actors`
 - [http-list_agent_assignments](flows/http-list_agent_assignments.md) - entry: `list_agent_assignments`
 - [http-list_agent_model_bindings](flows/http-list_agent_model_bindings.md) - entry: `list_agent_model_bindings`
@@ -2166,6 +2312,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-list_my_agent_runs](flows/http-list_my_agent_runs.md) - entry: `list_my_agent_runs`
 - [http-list_outbound_webhook_deliveries](flows/http-list_outbound_webhook_deliveries.md) - entry: `list_outbound_webhook_deliveries`
 - [http-list_outbound_webhook_targets](flows/http-list_outbound_webhook_targets.md) - entry: `list_outbound_webhook_targets`
+- [http-list_principals](flows/http-list_principals.md) - entry: `list_principals`
 - [http-list_project_iterations](flows/http-list_project_iterations.md) - entry: `list_project_iterations`
 - [http-list_project_milestones](flows/http-list_project_milestones.md) - entry: `list_project_milestones`
 - [http-list_project_portfolio_summaries](flows/http-list_project_portfolio_summaries.md) - entry: `list_project_portfolio_summaries`
@@ -2187,11 +2334,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-list_triage_items](flows/http-list_triage_items.md) - entry: `list_triage_items`
 - [http-live](flows/http-live.md) - entry: `live`
 - [http-liveness_check](flows/http-liveness_check.md) - entry: `liveness_check`
+- [http-login](flows/http-login.md) - entry: `login`
+- [http-logout](flows/http-logout.md) - entry: `logout`
 - [http-mark_planning_triage_item_duplicate](flows/http-mark_planning_triage_item_duplicate.md) - entry: `mark_planning_triage_item_duplicate`
 - [http-mark_triage_item_duplicate](flows/http-mark_triage_item_duplicate.md) - entry: `mark_triage_item_duplicate`
+- [http-me](flows/http-me.md) - entry: `me`
 - [http-merge_tasks](flows/http-merge_tasks.md) - entry: `merge_tasks`
 - [http-metrics_endpoint](flows/http-metrics_endpoint.md) - entry: `metrics_endpoint`
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
+- [http-native_token](flows/http-native_token.md) - entry: `native_token`
 - [http-new_mutation](flows/http-new_mutation.md) - entry: `new_mutation`
 - [http-patch_agent_task](flows/http-patch_agent_task.md) - entry: `patch_agent_task`
 - [http-patch_planning_task](flows/http-patch_planning_task.md) - entry: `patch_planning_task`
@@ -2199,26 +2350,32 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-preview_iteration_schedule](flows/http-preview_iteration_schedule.md) - entry: `preview_iteration_schedule`
 - [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
+- [http-project_member](flows/http-project_member.md) - entry: `project_member`
 - [http-read](flows/http-read.md) - entry: `read`
+- [http-read_snapshot](flows/http-read_snapshot.md) - entry: `read_snapshot`
 - [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
 - [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`
+- [http-recover_principal](flows/http-recover_principal.md) - entry: `recover_principal`
 - [http-refresh_github_external_link](flows/http-refresh_github_external_link.md) - entry: `refresh_github_external_link`
 - [http-release_task_claim](flows/http-release_task_claim.md) - entry: `release_task_claim`
 - [http-remove_dependency](flows/http-remove_dependency.md) - entry: `remove_dependency`
 - [http-renew_my_agent_work](flows/http-renew_my_agent_work.md) - entry: `renew_my_agent_work`
 - [http-renew_task_claim](flows/http-renew_task_claim.md) - entry: `renew_task_claim`
 - [http-reorder_tasks](flows/http-reorder_tasks.md) - entry: `reorder_tasks`
+- [http-repair_hierarchy](flows/http-repair_hierarchy.md) - entry: `repair_hierarchy`
 - [http-report_agent_discovery](flows/http-report_agent_discovery.md) - entry: `report_agent_discovery`
 - [http-requeue_agent_recovery_task](flows/http-requeue_agent_recovery_task.md) - entry: `requeue_agent_recovery_task`
 - [http-reset_scheduling_rules](flows/http-reset_scheduling_rules.md) - entry: `reset_scheduling_rules`
 - [http-restore_snapshot](flows/http-restore_snapshot.md) - entry: `restore_snapshot`
 - [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
+- [http-revoke_owned_session](flows/http-revoke_owned_session.md) - entry: `revoke_owned_session`
 - [http-revoke_plan_share](flows/http-revoke_plan_share.md) - entry: `revoke_plan_share`
 - [http-revoke_session](flows/http-revoke_session.md) - entry: `revoke_session`
 - [http-rotate_session](flows/http-rotate_session.md) - entry: `rotate_session`
 - [http-run_task_bulk_operation](flows/http-run_task_bulk_operation.md) - entry: `run_task_bulk_operation`
 - [http-schedule_iteration](flows/http-schedule_iteration.md) - entry: `schedule_iteration`
 - [http-search_request_sources](flows/http-search_request_sources.md) - entry: `search_request_sources`
+- [http-sessions](flows/http-sessions.md) - entry: `sessions`
 - [http-snooze_planning_triage_item](flows/http-snooze_planning_triage_item.md) - entry: `snooze_planning_triage_item`
 - [http-snooze_triage_item](flows/http-snooze_triage_item.md) - entry: `snooze_triage_item`
 - [http-start_agent_run](flows/http-start_agent_run.md) - entry: `start_agent_run`
@@ -2228,6 +2385,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-suggest_task_draft](flows/http-suggest_task_draft.md) - entry: `suggest_task_draft`
 - [http-test_email_settings](flows/http-test_email_settings.md) - entry: `test_email_settings`
 - [http-test_outbound_webhook_target](flows/http-test_outbound_webhook_target.md) - entry: `test_outbound_webhook_target`
+- [http-token](flows/http-token.md) - entry: `token`
+- [http-transfer_guest](flows/http-transfer_guest.md) - entry: `transfer_guest`
 - [http-unmerge_task](flows/http-unmerge_task.md) - entry: `unmerge_task`
 - [http-update_agent_actor](flows/http-update_agent_actor.md) - entry: `update_agent_actor`
 - [http-update_agent_assignment](flows/http-update_agent_assignment.md) - entry: `update_agent_assignment`
@@ -2266,6 +2425,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-update_web_intake_settings](flows/http-update_web_intake_settings.md) - entry: `update_web_intake_settings`
 - [http-validate_agent_team_master](flows/http-validate_agent_team_master.md) - entry: `validate_agent_team_master`
 - [http-whoami](flows/http-whoami.md) - entry: `whoami`
+- [http-workspace_member](flows/http-workspace_member.md) - entry: `workspace_member`
 
 **mcp**
 
@@ -2426,14 +2586,19 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-finalize](flows/process-finalize.md) - entry: `main`
 - [process-generate_agent_team_contract](flows/process-generate_agent_team_contract.md) - entry: `main`
 - [process-generate_agent_team_report_contract](flows/process-generate_agent_team_report_contract.md) - entry: `main`
+- [process-generate_client_contract](flows/process-generate_client_contract.md) - entry: `main`
 - [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
 - [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
 - [process-mcp_server](flows/process-mcp_server.md) - entry: `main`
 - [process-qualify](flows/process-qualify.md) - entry: `main`
 - [process-resilience](flows/process-resilience.md) - entry: `main`
 - [process-run](flows/process-run.md) - entry: `main`
+- [process-run_android_checks](flows/process-run_android_checks.md) - entry: `main`
+- [process-run_disposable_checks](flows/process-run_disposable_checks.md) - entry: `main`
 - [process-seal](flows/process-seal.md) - entry: `main`
 - [process-seed](flows/process-seed.md) - entry: `main`
+- [process-serve_disposable_api](flows/process-serve_disposable_api.md) - entry: `main`
+- [process-serve_disposable_oidc](flows/process-serve_disposable_oidc.md) - entry: `__main__`
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`
@@ -2444,10 +2609,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Dockerfile_backend](infrastructure/Dockerfile_backend.md) - dockerfile
 - [Dockerfile_frontend](infrastructure/Dockerfile_frontend.md) - dockerfile
 - [GitHub Actions: CI](infrastructure/_github_workflows_ci_yml.md) - github_actions
+- [GitHub Actions: Client and scenario baseline](infrastructure/_github_workflows_client-baseline_yml.md) - github_actions
 - [docker-compose_prod_yml](infrastructure/docker-compose_prod_yml.md) - compose
 - [docker-compose_rehearsal_yml](infrastructure/docker-compose_rehearsal_yml.md) - compose
 - [docker-compose_server_yml](infrastructure/docker-compose_server_yml.md) - compose
 - [docker-compose_yml](infrastructure/docker-compose_yml.md) - compose
+- [scripts_ci_Dockerfile_android](infrastructure/scripts_ci_Dockerfile_android.md) - dockerfile
+- [scripts_ci_Dockerfile_checks](infrastructure/scripts_ci_Dockerfile_checks.md) - dockerfile
 
 ## Dependency Architecture
 

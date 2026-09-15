@@ -1,8 +1,8 @@
 # ProjectSummary
 
-**Location:** `backend/app/schemas/project.py:304`
+**Location:** `backend/app/schemas/project.py:314`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `WorkMetricSummary`
 **Module:** [schemas_project](../modules/schemas_project.md)
 
 ## Description
@@ -59,7 +59,7 @@ Summary statistics for a project.
 ```mermaid
 flowchart LR
     n0["ProjectSummary (backend/app/schemas/project.py)"]
-    n1["BaseModel"]
+    n1["WorkMetricSummary (backend/app/schemas/work_metrics.py)"]
     n2["get_project_summary (backend/app/routers/projects.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["ProjectService.get_summary (backend/app/services/project_service.py)"]
@@ -68,6 +68,7 @@ flowchart LR
     n3 --> n0
     n4 --> n0
     click n0 "../modules/schemas_project.md"
+    click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/projects.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/project_service.md"
@@ -83,7 +84,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `WorkMetricSummary` | [schemas_work_metrics](../modules/schemas_work_metrics.md) |
 
 ### References
 

@@ -1,6 +1,6 @@
 # AgentModelCatalogService
 
-**Location:** `backend/app/services/agent_model_catalog_service.py:82`
+**Location:** `backend/app/services/agent_model_catalog_service.py:84`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md)

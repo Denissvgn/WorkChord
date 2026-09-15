@@ -1,7 +1,7 @@
 # TriageService_classify_item
 
 **Entry point:** `triage_service.TriageService.classify_item`
-**Modules involved:** [llm_service](../modules/llm_service.md), [models_triage](../modules/models_triage.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [triage_service](../modules/triage_service.md)
+**Modules involved:** [commands](../modules/commands.md), [llm_service](../modules/llm_service.md), [models_triage](../modules/models_triage.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [triage_service](../modules/triage_service.md)
 
 > Create an advisory classification suggestion for a triage item.
 
@@ -11,9 +11,11 @@
 1. `llm_service.LLMService.from_runtime`
 2. `models_triage.TriageClassificationSuggestion`
 3. `outbound_webhook_service.emit_outbound_webhook_event`
+4. `commands.commit_or_flush`
 
 ## Touches
 
+- [commands](../modules/commands.md)
 - [llm_service](../modules/llm_service.md)
 - [models_triage](../modules/models_triage.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)

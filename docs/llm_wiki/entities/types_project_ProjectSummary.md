@@ -1,8 +1,8 @@
 # ProjectSummary
 
-**Location:** `frontend/src/types/project.ts:198`
+**Location:** `frontend/src/types/project.ts:199`
 **Kind:** Class
-**Bases:** —
+**Bases:** `WorkMetrics`
 **Module:** [types_project](../modules/types_project.md)
 
 ## Description
@@ -59,13 +59,16 @@ _Auto-generated from `ProjectSummary` in `frontend/src/types/project.ts`._
 ```mermaid
 flowchart LR
     n0["ProjectSummary (frontend/src/types/project.ts)"]
-    n1["frontend/src/pages/OverviewPage.tsx"]
-    n2["frontend/src/services/projectService.ts"]
-    n1 --> n0
+    n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
+    n2["frontend/src/pages/OverviewPage.tsx"]
+    n3["frontend/src/services/projectService.ts"]
+    n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/OverviewPage.md"
-    click n2 "../modules/projectService.md"
+    click n1 "../modules/workMetrics.md"
+    click n2 "../modules/OverviewPage.md"
+    click n3 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -73,6 +76,12 @@ flowchart LR
 | Module | Methods | Attributes |
 |---|---:|---|
 | [types_project](../modules/types_project.md) | 0 | `active_tasks`, `blocked_tasks`, `completed_at`, `completed_tasks`, `completion_percent`, `days_since_latest_update`, `days_until_target`, `health`, `id`, `initiative_id`, `is_update_stale`, `latest_update` |
+
+### Structure
+
+| Kind | Entity | Module |
+|---|---|---|
+| Base | `WorkMetrics` | [workMetrics](../modules/workMetrics.md) |
 
 ### References
 

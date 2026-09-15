@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` |
 | `../components/releases/ReleaseForm` | `ReleaseForm` |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
 | `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` |
 | `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE` |
 | `../services/projectService` | `projectService` |
@@ -53,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -61,4 +62,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

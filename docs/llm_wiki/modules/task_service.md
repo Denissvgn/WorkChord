@@ -6,10 +6,14 @@
 
 Task service with business logic.
 
+Task and aggregate versions fence edits and structural commands. Merge/unmerge reconcile old/new ancestors with leaf-only effort and lower-number-is-higher priority; claimed descendants require recovery. Pure rearrangement preserves valid accepted leaf evidence and effective optional/deferred meaning with audit, while content changes invalidate old acceptance. An empty summary remains structural rather than becoming invented leaf work.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `app.authority` | `require_project` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command` |
 | `app.models.agent` | `TaskEvent` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
@@ -49,8 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (25) |
-| Outbound | `backend` (14) |
+| Inbound | `backend` (31) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -58,12 +62,12 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskTreeIntegrityError](../entities/TaskTreeIntegrityError.md) | 43 | `ValueError` | Raised when persisted task parent links cannot form a valid iteration tree. |
-| [TaskVersionConflictError](../entities/TaskVersionConflictError.md) | 47 | `RuntimeError` | Raised when an optimistic task write no longer matches the stored version. |
-| [TaskService](../entities/TaskService.md) | 68 | — | Service for task operations. |
+| [TaskTreeIntegrityError](../entities/TaskTreeIntegrityError.md) | 46 | `ValueError` | Raised when persisted task parent links cannot form a valid iteration tree. |
+| [TaskVersionConflictError](../entities/TaskVersionConflictError.md) | 50 | `RuntimeError` | Raised when an optimistic task write no longer matches the stored version. |
+| [TaskService](../entities/TaskService.md) | 71 | — | Service for task operations. |

@@ -1,6 +1,6 @@
 # GanttAssignee
 
-**Location:** `backend/app/schemas/gantt.py:11`
+**Location:** `backend/app/schemas/gantt.py:13`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

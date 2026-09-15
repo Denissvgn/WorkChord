@@ -1,8 +1,8 @@
 # CalendarUpdate
 
-**Location:** `backend/app/schemas/calendar.py:17`
+**Location:** `backend/app/schemas/calendar.py:21`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)
 
 ## Description
@@ -13,6 +13,7 @@ Schema for updating a calendar.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
 | `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `year` | `Optional[int]` | `year` | No | Yes | `None` | ge=2000; le=2100 | — | — |
 | `holidays` | `Optional[list[str]]` | `holidays` | No | Yes | `None` | — | — | — |
@@ -29,7 +30,7 @@ Schema for updating a calendar.
 ```mermaid
 flowchart LR
     n0["CalendarUpdate (backend/app/schemas/calendar.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["update_calendar (backend/app/routers/calendars.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["CalendarService.update (backend/app/services/calendar_service.py)"]
@@ -38,6 +39,7 @@ flowchart LR
     n3 --> n0
     n4 --> n0
     click n0 "../modules/schemas_calendar.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/calendars.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/calendar_service.md"
@@ -47,13 +49,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `short_days`, `weekend_days`, `year` |
+| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### Structure
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

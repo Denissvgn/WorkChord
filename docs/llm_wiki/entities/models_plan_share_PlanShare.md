@@ -18,6 +18,8 @@ One immutable iteration plan snapshot owned by a browser session.
 | `iteration_id` | `Mapped[int]` | `mapped_column(Integer, ForeignKey('iterations.id', ondelete='CASCADE'), index=True, nullable=False)` | — |
 | `created_by_session_id` | `Mapped[int]` | `mapped_column(Integer, ForeignKey('user_sessions.id', ondelete='RESTRICT'), index=True, nullable=False)` | — |
 | `snapshot_data` | `Mapped[dict[str, Any]]` | `mapped_column(JSON, nullable=False)` | — |
+| `owner_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'), index=True)` | — |
+| `expires_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime(), index=True)` | — |
 | `created_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, index=True, nullable=False)` | — |
 | `revoked_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime(), index=True, nullable=True)` | — |
 | `iteration` | `Mapped['Iteration']` | `relationship('Iteration', back_populates='plan_shares')` | — |
@@ -64,7 +66,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_plan_share](../modules/models_plan_share.md) | 0 | `created_at`, `created_by_session`, `created_by_session_id`, `id`, `iteration`, `iteration_id`, `public_id`, `revoked_at`, `snapshot_data` |
+| [models_plan_share](../modules/models_plan_share.md) | 0 | `created_at`, `created_by_session`, `created_by_session_id`, `expires_at`, `id`, `iteration`, `iteration_id`, `owner_principal_id`, `public_id`, `revoked_at`, `snapshot_data` |
 
 ### Structure
 

@@ -46,13 +46,13 @@ flowchart LR
     n3["backend/app/models/agent.py"]
     n4["backend/app/models/project.py"]
     n5["backend/app/routers/agent.py"]
-    n6["AgentProfileCatalogService.apply_preset (backend/app/services/agent_profile_catalog_service.py)"]
-    n7["AgentRoutingService._profile_evidence (backend/app/services/agent_routing_service.py)"]
-    n8["AgentRoutingService._profile_revision (backend/app/services/agent_routing_service.py)"]
-    n9["backend/app/services/agent_service.py"]
-    n10["AgentTeamSetupService._resolve_profile (backend/app/services/agent_team_setup_service.py)"]
-    n11["AgentWorkService._profile_roster_response (backend/app/services/agent_work_service.py)"]
-    n12["AssigneeRecommendationService._skill_matches (backend/app/services/assignee_recommendation_service.py)"]
+    n6["backend/app/routers/identity.py"]
+    n7["AgentProfileCatalogService.apply_preset (backend/app/services/agent_profile_catalog_service.py)"]
+    n8["AgentRoutingService._profile_evidence (backend/app/services/agent_routing_service.py)"]
+    n9["AgentRoutingService._profile_revision (backend/app/services/agent_routing_service.py)"]
+    n10["backend/app/services/agent_service.py"]
+    n11["AgentTeamSetupService._resolve_profile (backend/app/services/agent_team_setup_service.py)"]
+    n12["AgentWorkService._profile_roster_response (backend/app/services/agent_work_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -71,13 +71,13 @@ flowchart LR
     click n3 "../modules/models_agent.md"
     click n4 "../modules/models_project.md"
     click n5 "../modules/routers_agent.md"
-    click n6 "../modules/agent_profile_catalog_service.md"
-    click n7 "../modules/agent_routing_service.md"
+    click n6 "../modules/routers_identity.md"
+    click n7 "../modules/agent_profile_catalog_service.md"
     click n8 "../modules/agent_routing_service.md"
-    click n9 "../modules/agent_service.md"
-    click n10 "../modules/agent_team_setup_service.md"
-    click n11 "../modules/agent_work_service.md"
-    click n12 "../modules/assignee_recommendation_service.md"
+    click n9 "../modules/agent_routing_service.md"
+    click n10 "../modules/agent_service.md"
+    click n11 "../modules/agent_team_setup_service.md"
+    click n12 "../modules/agent_work_service.md"
 ```
 
 ### Summary
@@ -100,6 +100,7 @@ flowchart LR
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
+| `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `AgentProfileCatalogService.apply_preset` | call | [agent_profile_catalog_service](../modules/agent_profile_catalog_service.md) | 1 |
 | `AgentProfileCatalogService.apply_preset` | type_reference | [agent_profile_catalog_service](../modules/agent_profile_catalog_service.md) | — |
 | `AgentRoutingService._profile_evidence` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
@@ -107,6 +108,5 @@ flowchart LR
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 | `AgentTeamSetupService._resolve_profile` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentWorkService._profile_roster_response` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
-| `AssigneeRecommendationService._skill_matches` | type_reference | [assignee_recommendation_service](../modules/assignee_recommendation_service.md) | — |
 
-> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.
+> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.

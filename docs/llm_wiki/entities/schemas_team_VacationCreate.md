@@ -1,8 +1,8 @@
 # VacationCreate
 
-**Location:** `backend/app/schemas/team.py:26`
+**Location:** `backend/app/schemas/team.py:28`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 
 ## Description
@@ -34,7 +34,7 @@ Schema for creating a vacation.
 ```mermaid
 flowchart LR
     n0["VacationCreate (backend/app/schemas/team.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["create_vacation (backend/app/routers/agent_planning.py)"]
     n4["_process_import (backend/app/routers/export.py)"]
@@ -55,6 +55,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     click n0 "../modules/schemas_team.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/export.md"
@@ -76,7 +77,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

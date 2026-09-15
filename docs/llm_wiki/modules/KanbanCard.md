@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`.
 | `@dnd-kit/sortable` | `useSortable` |
 | `@dnd-kit/utilities` | `CSS` |
 | `clsx` | `clsx` |
-| `lucide-react` | `Bot`, `Clock`, `User`, `AlertCircle` |
+| `lucide-react` | `Bot`, `Clock`, `User`, `AlertCircle`, `GripVertical` |
 
 ## Module Signals
 
@@ -75,4 +75,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `KanbanCard` | `({ task }: KanbanCardProps)` | — | — |
+| `KanbanCard` | `({ task, onOpen }: KanbanCardProps)` | — | — |

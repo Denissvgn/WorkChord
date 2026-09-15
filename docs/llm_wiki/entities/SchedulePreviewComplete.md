@@ -1,6 +1,6 @@
 # _SchedulePreviewComplete
 
-**Location:** `backend/app/services/agent_planning_service.py:68`
+**Location:** `backend/app/services/agent_planning_service.py:70`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [agent_planning_service](../modules/agent_planning_service.md)

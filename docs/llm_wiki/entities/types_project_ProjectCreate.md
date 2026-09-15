@@ -1,6 +1,6 @@
 # ProjectCreate
 
-**Location:** `frontend/src/types/project.ts:75`
+**Location:** `frontend/src/types/project.ts:76`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

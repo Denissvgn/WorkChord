@@ -37,10 +37,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (52) |
+| Inbound | `frontend` (54) |
 | Outbound | `frontend` (2) |
 
-> All 53 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -57,34 +57,34 @@ flowchart LR
 | [GitHubExternalLinkCreate](../entities/types_task_GitHubExternalLinkCreate.md) | Class | 71 | — | — |
 | [ExternalLinkUpdate](../entities/types_task_ExternalLinkUpdate.md) | Class | 75 | — | — |
 | [Task](../entities/types_task_Task.md) | Class | 84 | — | — |
-| [TaskCreate](../entities/types_task_TaskCreate.md) | Class | 127 | — | — |
-| [TaskUpdate](../entities/types_task_TaskUpdate.md) | Class | 149 | `Partial` | — |
-| [TaskMoveRequest](../entities/types_task_TaskMoveRequest.md) | Class | 155 | — | — |
-| [TaskVersionConflictDetail](../entities/TaskVersionConflictDetail.md) | Class | 161 | — | — |
-| [SuggestedSubtask](../entities/types_task_SuggestedSubtask.md) | Class | 168 | — | — |
-| [TaskFormalizeResponse](../entities/TaskFormalizeResponse.md) | Class | 173 | — | — |
-| [TaskImproveDescriptionResponse](../entities/TaskImproveDescriptionResponse.md) | Class | 182 | — | — |
-| [GroundedFact](../entities/types_task_GroundedFact.md) | Class | 187 | — | — |
-| [TaskAISuggestRequest](../entities/types_task_TaskAISuggestRequest.md) | Class | 192 | — | — |
-| [GroundedAISuggestionResponse](../entities/types_task_GroundedAISuggestionResponse.md) | Class | 216 | — | — |
-| [TasksImportRequest](../entities/types_task_TasksImportRequest.md) | Class | 236 | — | — |
-| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Class | 241 | — | — |
-| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Class | 249 | — | — |
-| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Class | 272 | — | — |
-| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Class | 279 | — | — |
-| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Class | 289 | — | — |
-| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Class | 297 | — | — |
-| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Class | 306 | — | — |
-| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Class | 312 | — | — |
-| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Class | 324 | — | — |
-| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Class | 330 | — | — |
-| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Class | 340 | — | — |
-| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Class | 345 | — | — |
-| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Class | 352 | — | — |
-| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 356 | — | — |
-| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 362 | — | — |
+| [TaskCreate](../entities/types_task_TaskCreate.md) | Class | 145 | — | — |
+| [TaskUpdate](../entities/types_task_TaskUpdate.md) | Class | 168 | `Partial` | — |
+| [TaskMoveRequest](../entities/types_task_TaskMoveRequest.md) | Class | 174 | — | — |
+| [TaskVersionConflictDetail](../entities/TaskVersionConflictDetail.md) | Class | 181 | — | — |
+| [SuggestedSubtask](../entities/types_task_SuggestedSubtask.md) | Class | 188 | — | — |
+| [TaskFormalizeResponse](../entities/TaskFormalizeResponse.md) | Class | 193 | — | — |
+| [TaskImproveDescriptionResponse](../entities/TaskImproveDescriptionResponse.md) | Class | 202 | — | — |
+| [GroundedFact](../entities/types_task_GroundedFact.md) | Class | 207 | — | — |
+| [TaskAISuggestRequest](../entities/types_task_TaskAISuggestRequest.md) | Class | 212 | — | — |
+| [GroundedAISuggestionResponse](../entities/types_task_GroundedAISuggestionResponse.md) | Class | 236 | — | — |
+| [TasksImportRequest](../entities/types_task_TasksImportRequest.md) | Class | 256 | — | — |
+| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Class | 261 | — | — |
+| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Class | 269 | — | — |
+| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Class | 293 | — | — |
+| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Class | 302 | — | — |
+| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Class | 312 | — | — |
+| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Class | 322 | — | — |
+| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Class | 331 | — | — |
+| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Class | 337 | — | — |
+| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Class | 349 | — | — |
+| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Class | 355 | — | — |
+| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Class | 365 | — | — |
+| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Class | 370 | — | — |
+| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Class | 377 | — | — |
+| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 382 | — | — |
+| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 388 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 44 | — | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 45 | — | — |
-| [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 234 | — | — |
-| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 255 | — | — |
-| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 270 | — | — |
+| [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 254 | — | — |
+| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 276 | — | — |
+| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 291 | — | — |

@@ -46,7 +46,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_subtasks` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `...` |
+| `get_subtasks` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `...` |
 | `service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `IterationService` | - | - | - | - |
@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_subtasks | service.get_by_id | 605 | `service.get_by_id(task_id)` |
-| get_subtasks | HTTPException | 607 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_subtasks | IterationService | 612 | `IterationService(db)` |
-| get_subtasks | iteration_service.get_by_id | 613 | `iteration_service.get_by_id(task.iteration_id)` |
-| get_subtasks | service.task_to_response | 616 | `service.task_to_response(child, end_date)` |
+| get_subtasks | service.get_by_id | 591 | `service.get_by_id(task_id)` |
+| get_subtasks | HTTPException | 593 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_subtasks | IterationService | 598 | `IterationService(db)` |
+| get_subtasks | iteration_service.get_by_id | 599 | `iteration_service.get_by_id(task.iteration_id)` |
+| get_subtasks | service.task_to_response | 602 | `service.task_to_response(child, end_date)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_subtasks` | `service.get_by_id` | 605 |
-| external_call | `get_subtasks` | `HTTPException` | 607 |
-| unresolved_call | `get_subtasks` | `iteration_service.get_by_id` | 613 |
-| unresolved_call | `get_subtasks` | `service.task_to_response` | 616 |
+| unresolved_call | `get_subtasks` | `service.get_by_id` | 591 |
+| external_call | `get_subtasks` | `HTTPException` | 593 |
+| unresolved_call | `get_subtasks` | `iteration_service.get_by_id` | 599 |
+| unresolved_call | `get_subtasks` | `service.task_to_response` | 602 |
 
 ## Behavior
 

@@ -1,6 +1,6 @@
 # MemberCapacity
 
-**Location:** `backend/app/schemas/team.py:306`
+**Location:** `backend/app/schemas/team.py:308`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

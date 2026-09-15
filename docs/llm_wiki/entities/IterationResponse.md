@@ -1,6 +1,6 @@
 # IterationResponse
 
-**Location:** `backend/app/schemas/iteration.py:66`
+**Location:** `backend/app/schemas/iteration.py:70`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
@@ -19,6 +19,7 @@ Schema for iteration response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `revision` | `int` | `revision` | No | No | `1` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `calendar_id` | `int` | `calendar_id` | Yes | No | — | — | — | — |
@@ -75,7 +76,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `project`, `project_id`, `start_date`, `working_days` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
 
 ### Structure
 

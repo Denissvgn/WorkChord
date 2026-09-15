@@ -1,6 +1,6 @@
 # TeamService
 
-**Location:** `backend/app/services/team_service.py:34`
+**Location:** `backend/app/services/team_service.py:36`
 **Kind:** Class
 **Bases:** —
 **Module:** [team_service](../modules/team_service.md)
@@ -27,21 +27,21 @@ Service for team member operations.
 | `list_profiles` | *(async)* `() -> Sequence[TeamMemberProfile]` | — | List reusable capability profiles. |
 | `get_profile` | *(async)* `(profile_id: int) -> TeamMemberProfile \| None` | — | Get a reusable capability profile by id. |
 | `create_profile` | *(async)* `(data: TeamMemberProfileCreate, *, commit: bool = True) -> TeamMemberProfile` | — | Create a profile, optionally leaving commit ownership to the caller. |
-| `update_profile` | *(async)* `(profile_id: int, data: TeamMemberProfileUpdate, *, commit: bool = True) -> TeamMemberProfile \| None` | — | Update profile metadata, optionally deferring the commit. |
-| `delete_profile` | *(async)* `(profile_id: int) -> bool` | — | Delete a reusable profile and detach linked team members. |
+| `update_profile` | *(async)* `(profile_id: int, data: TeamMemberProfileUpdate, *, commit: bool = True) -> TeamMemberProfile \| None` | `@schedule_input_command('profile')` | Update profile metadata, optionally deferring the commit. |
+| `delete_profile` | *(async)* `(profile_id: int) -> bool` | `@schedule_input_command('profile')` | Delete a reusable profile and detach linked team members. |
 | `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | — | Add a skill or weakness to a profile. |
-| `update_profile_skill` | *(async)* `(profile_id: int, skill_id: int, data: TeamMemberProfileSkillUpdate) -> TeamMemberProfileSkill \| None` | — | Update a profile skill or weakness. |
-| `delete_profile_skill` | *(async)* `(profile_id: int, skill_id: int) -> bool` | — | Delete one profile skill or weakness. |
+| `update_profile_skill` | *(async)* `(profile_id: int, skill_id: int, data: TeamMemberProfileSkillUpdate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Update a profile skill or weakness. |
+| `delete_profile_skill` | *(async)* `(profile_id: int, skill_id: int) -> bool` | `@schedule_input_command('profile')` | Delete one profile skill or weakness. |
 | `get_by_iteration` | *(async)* `(iteration_id: int) -> Sequence[TeamMember]` | — | Get all team members for an iteration. |
 | `get_all_unique_members` | *(async)* `() -> list[dict]` | — | Get unique members by name across all iterations (for reuse). |
 | `list_member_options` | *(async)* `() -> list[TeamMemberOptionResponse]` | — | List all team members with enough context for owner selectors. |
 | `get_by_id` | *(async)* `(member_id: int) -> TeamMember \| None` | — | Get team member by ID. |
-| `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | — | Create a team member, optionally leaving commit ownership to the caller. |
-| `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | — | Update a team member, optionally leaving commit ownership to the caller. |
-| `delete` | *(async)* `(member_id: int) -> bool` | — | Delete a team member. |
-| `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | — | Add a vacation, optionally leaving commit ownership to the caller. |
-| `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | — | Update a vacation period, optionally leaving commit ownership to the caller. |
-| `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | — | Delete a vacation. |
+| `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
+| `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
+| `delete` | *(async)* `(member_id: int) -> bool` | `@schedule_input_command('member')` | Delete a team member. |
+| `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
+| `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
+| `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
 | `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | — | Import vacation ranges for iteration team members from CSV text. |
 | `calculate_capacity` | *(async)* `(member_id: int) -> MemberCapacity \| None` | — | Calculate capacity for a team member. |
 | `get_workload` | *(async)* `(member_id: int) -> MemberWorkload \| None` | — | Get workload information for a team member. |
@@ -62,7 +62,7 @@ flowchart LR
     n7["_process_import (backend/app/routers/export.py)"]
     n8["export_iteration (backend/app/routers/export.py)"]
     n9["get_gantt_data (backend/app/routers/gantt.py)"]
-    n10["restore_snapshot (backend/app/routers/snapshots.py)"]
+    n10["backend/app/routers/snapshots.py"]
     n11["add_vacation (backend/app/routers/team.py)"]
     n12["create_team_member (backend/app/routers/team.py)"]
     n1 --> n0
@@ -111,7 +111,7 @@ flowchart LR
 | `_process_import` | call | [export](../modules/export.md) | 1 |
 | `export_iteration` | call | [export](../modules/export.md) | 1 |
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
-| `restore_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
+| `snapshots` | import | [snapshots](../modules/snapshots.md) | — |
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 

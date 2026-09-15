@@ -112,6 +112,16 @@ Application settings.
 | `mcp_http_host` | `str` | `mcp_http_host` | No | No | `'127.0.0.1'` | — | — | — |
 | `mcp_unsafe_allow_public_binding` | `bool` | `mcp_unsafe_allow_public_binding` | No | No | `False` | — | — | — |
 | `workchord_admin_api_key` | `str` | `workchord_admin_api_key` | No | No | `''` | — | — | — |
+| `workchord_auth_mode` | `Literal['managed', 'trusted_local']` | `workchord_auth_mode` | No | No | `'managed'` | — | — | — |
+| `oidc_issuer_url` | `str` | `oidc_issuer_url` | No | No | `''` | — | — | — |
+| `oidc_client_id` | `str` | `oidc_client_id` | No | No | `''` | — | — | — |
+| `oidc_client_secret` | `str` | `oidc_client_secret` | No | No | `''` | — | — | — |
+| `oidc_redirect_uri` | `str` | `oidc_redirect_uri` | No | No | `''` | — | — | — |
+| `oidc_allow_http_loopback` | `bool` | `oidc_allow_http_loopback` | No | No | `False` | — | — | — |
+| `auth_session_max_age_seconds` | `int` | `auth_session_max_age_seconds` | No | No | `8 * 60 * 60` | — | — | — |
+| `session_metadata_retention_days` | `int` | `session_metadata_retention_days` | No | No | `30` | — | — | — |
+| `snapshot_retention_count` | `int` | `snapshot_retention_count` | No | No | `10` | — | — | — |
+| `snapshot_max_bytes` | `int` | `snapshot_max_bytes` | No | No | `8 * 1024 * 1024` | — | — | — |
 | `allow_private_egress_urls` | `bool` | `allow_private_egress_urls` | No | No | `False` | — | — | — |
 | `trusted_proxy_ips` | `list[str]` | `trusted_proxy_ips` | No | No | `[]` | — | — | — |
 | `session_cookie_name` | `str` | `session_cookie_name` | No | No | `'workchord_session'` | — | — | — |
@@ -170,18 +180,21 @@ flowchart LR
     n4["Settings.validate_release_security_boundaries (backend/app/config.py)"]
     n5["settings (backend/tests/database/test_database_configuration.py)"]
     n6["_settings (backend/tests/test_agent_routing_rollout.py)"]
+    n7["test_public_skill_bundles_require_the_trusted_checksum (backend/tests/test_client_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/config.md"
     click n2 "../modules/config.md"
     click n3 "../modules/config.md"
     click n4 "../modules/config.md"
     click n5 "../modules/test_database_configuration.md"
     click n6 "../modules/test_agent_routing_rollout.md"
+    click n7 "../modules/test_client_contract.md"
 ```
 
 ### Summary
@@ -208,3 +221,4 @@ flowchart LR
 | `settings` | type_reference | [test_database_configuration](../modules/test_database_configuration.md) | — |
 | `_settings` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
 | `_settings` | type_reference | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | — |
+| `test_public_skill_bundles_require_the_trusted_checksum` | call | [test_client_contract](../modules/test_client_contract.md) | 2 |

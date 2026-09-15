@@ -1,6 +1,6 @@
 # ProjectUpdate
 
-**Location:** `frontend/src/types/project.ts:88`
+**Location:** `frontend/src/types/project.ts:89`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

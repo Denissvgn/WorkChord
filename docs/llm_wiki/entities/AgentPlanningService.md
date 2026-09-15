@@ -1,6 +1,6 @@
 # AgentPlanningService
 
-**Location:** `backend/app/services/agent_planning_service.py:76`
+**Location:** `backend/app/services/agent_planning_service.py:78`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_planning_service](../modules/agent_planning_service.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Expose bounded PM setup commands without bypassing domain services.
+
+Composed planning mutations share one transaction and retain exact durable mutation receipts. Schedule preview has an explicit rollback owner and a transient receipt with original input versions; apply validates the observed task set and input digest. A preview cannot publish snapshots, idempotency records or outbound work.
 
 ## Attributes
 
@@ -20,7 +22,7 @@ Expose bounded PM setup commands without bypassing domain services.
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `_request_hash` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | — |
 | `_replay` | *(async)* `(*, actor: AgentActor, operation: str, target_type: str, idempotency_target_id: int, idempotency_key: str, request_payload: dict[str, Any]) -> AgentPlanningReceipt \| None` | — | — |
-| `_execute` | *(async)* `(*, actor: AgentActor, scope: str, operation: str, target_type: str, idempotency_target_id: int, command: AgentPlanningCommandContext, request_payload: dict[str, Any], mutate: Mutation) -> AgentPlanningReceipt` | — | — |
+| `_execute` | *(async)* `(*, actor: AgentActor, scope: str, operation: str, target_type: str, idempotency_target_id: int, command: AgentPlanningCommandContext, request_payload: dict[str, Any], mutate: Mutation) -> AgentPlanningReceipt` | `@atomic_command` | — |
 | `create_project` | *(async)* `(actor: AgentActor, data: ProjectCreate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `update_project` | *(async)* `(project_id: int, actor: AgentActor, data: ProjectUpdate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `create_milestone` | *(async)* `(project_id: int, actor: AgentActor, data: ProjectMilestoneCreateRequest, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Create one project milestone with an exact planning receipt. |
@@ -45,7 +47,7 @@ Expose bounded PM setup commands without bypassing domain services.
 | `_scheduling_rules_digest` | `() -> str` | — | Return the digest of the rules currently used by the scheduler. |
 | `_schedule_input_digest` | *(async)* `(iteration_id: int, *, schedule_output_overrides: Mapping[int, tuple[Any, Any, Any]] \| None = None) -> tuple[str, str]` | — | Hash every mutable input consumed by ``SchedulerService``. |
 | `_schedule_result_payload` | `(schedule: Any, tasks: list[Task], input_digest: str) -> dict[str, Any]` | `@staticmethod` | — |
-| `preview_schedule` | *(async)* `(iteration_id: int, actor: AgentActor, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
+| `preview_schedule` | *(async)* `(iteration_id: int, actor: AgentActor, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | `@preview_command` | — |
 | `apply_schedule` | *(async)* `(iteration_id: int, actor: AgentActor, data: AgentScheduleCommand, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 
 ## Relationships
@@ -116,4 +118,4 @@ flowchart LR
 | `patch_planning_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `preview_planning_schedule` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.
+> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.

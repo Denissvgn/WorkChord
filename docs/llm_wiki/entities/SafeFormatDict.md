@@ -1,6 +1,6 @@
 # _SafeFormatDict
 
-**Location:** `backend/app/services/github_status_automation_service.py:68`
+**Location:** `backend/app/services/github_status_automation_service.py:70`
 **Kind:** Class
 **Bases:** `defaultdict`
 **Module:** [github_status_automation_service](../modules/github_status_automation_service.md)

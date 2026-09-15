@@ -1,6 +1,6 @@
 # MCPAuthError
 
-**Location:** `backend/app/mcp_server.py:43`
+**Location:** `backend/app/mcp_server.py:46`
 **Kind:** Class
 **Bases:** `PermissionError`
 **Module:** [mcp_server](../modules/mcp_server.md)
@@ -26,12 +26,15 @@ flowchart LR
     n1["PermissionError"]
     n2["_agent_context (backend/app/mcp_server.py)"]
     n3["_authenticate_agent_key (backend/app/mcp_server.py)"]
+    n4["MCPAgentKeyMiddleware.__call__ (backend/app/mcp_server.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/mcp_server.md"
     click n2 "../modules/mcp_server.md"
     click n3 "../modules/mcp_server.md"
+    click n4 "../modules/mcp_server.md"
 ```
 
 ### Summary
@@ -52,3 +55,4 @@ flowchart LR
 |---|---|---|---:|
 | `_agent_context` | call | [mcp_server](../modules/mcp_server.md) | 1 |
 | `_authenticate_agent_key` | call | [mcp_server](../modules/mcp_server.md) | 3 |
+| `MCPAgentKeyMiddleware.__call__` | call | [mcp_server](../modules/mcp_server.md) | 2 |

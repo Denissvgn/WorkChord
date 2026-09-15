@@ -2,10 +2,11 @@
 
 **Entry point:** `import_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), [models_task](../modules/models_task.md), [schemas_common](../modules/schemas_common.md), and 4 more
+**Modules touched:** [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), [models_task](../modules/models_task.md), and 5 more
 
 **Complete modules touched:**
 
+- [commands](../modules/commands.md)
 - [export](../modules/export.md)
 - [iteration_service](../modules/iteration_service.md)
 - [models_task](../modules/models_task.md)
@@ -76,7 +77,7 @@ sequenceDiagram
     p22-->>p23: stack.pop (backend/app/routers/expor…validate_import_task_tree)
 ```
 
-> Call sequence diagram shows 30 of 100 interactions; 70 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 106 interactions; 76 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -115,7 +116,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `import_iteration` | `iteration_id: int`, `file: Annotated[UploadFile, File(...)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status`, `status` | - | `...` |
+| `import_iteration` | `iteration_id: int`, `file: Annotated[UploadFile, File(...)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status` | - | `...` |
 | `_read_json_upload` | `file: UploadFile` | `MAX_JSON_IMPORT_BYTES`, `MAX_JSON_IMPORT_BYTES`, `status`, `json`, `status`, `status` | - | `data` |
 | `file.read` | - | - | - | - |
 | `len` | - | - | - | - |
@@ -132,17 +133,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_iteration | _read_json_upload | 358 | `_read_json_upload(file)` |
-| _read_json_upload | file.read | 35 | `file.read(...)` |
-| _read_json_upload | len | 36 | `len(content)` |
-| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 37 | `HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')` |
-| _read_json_upload | json.loads | 42 | `json.loads(content.decode(...))` |
-| _read_json_upload | content.decode | 42 | `content.decode('utf-8')` |
-| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 44 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| _read_json_upload | str (backend/app/routers/export.py:_read_json_upload) | 46 | `str(e)` |
-| _read_json_upload | isinstance (backend/app/routers/export.py:_read_json_upload) | 48 | `isinstance(data, dict)` |
-| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 49 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Import file must contain a JSON object')` |
-| import_iteration | IterationService | 360 | `IterationService(db)` |
+| import_iteration | _read_json_upload | 370 | `_read_json_upload(file)` |
+| _read_json_upload | file.read | 38 | `file.read(...)` |
+| _read_json_upload | len | 39 | `len(content)` |
+| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 40 | `HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')` |
+| _read_json_upload | json.loads | 45 | `json.loads(content.decode(...))` |
+| _read_json_upload | content.decode | 45 | `content.decode('utf-8')` |
+| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 47 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| _read_json_upload | str (backend/app/routers/export.py:_read_json_upload) | 49 | `str(e)` |
+| _read_json_upload | isinstance (backend/app/routers/export.py:_read_json_upload) | 51 | `isinstance(data, dict)` |
+| _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 52 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Import file must contain a JSON object')` |
+| import_iteration | IterationService | 372 | `IterationService(db)` |
 
 ### Boundary effects
 
@@ -152,13 +153,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_read_json_upload` | `file.read` | 35 |
-| external_call | `_read_json_upload` | `HTTPException` | 37 |
-| external_call | `_read_json_upload` | `json.loads` | 42 |
-| unresolved_call | `_read_json_upload` | `content.decode` | 42 |
-| external_call | `_read_json_upload` | `HTTPException` | 44 |
-| external_call | `_read_json_upload` | `isinstance` | 48 |
-| external_call | `_read_json_upload` | `HTTPException` | 49 |
+| unresolved_call | `_read_json_upload` | `file.read` | 38 |
+| external_call | `_read_json_upload` | `HTTPException` | 40 |
+| external_call | `_read_json_upload` | `json.loads` | 45 |
+| unresolved_call | `_read_json_upload` | `content.decode` | 45 |
+| external_call | `_read_json_upload` | `HTTPException` | 47 |
+| external_call | `_read_json_upload` | `isinstance` | 51 |
+| external_call | `_read_json_upload` | `HTTPException` | 52 |
 | step_limit | `import_iteration` | `first 12 steps` | 0 |
 
 ## Behavior

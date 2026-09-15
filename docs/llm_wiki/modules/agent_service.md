@@ -10,6 +10,7 @@ Agent integration services.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.label` | `Label`, `LabelGroup` |
@@ -50,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -59,15 +60,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentConflictError](../entities/AgentConflictError.md) | 54 | `Exception` | Raised when an agent operation conflicts with current task state. |
-| [AgentPermissionError](../entities/AgentPermissionError.md) | 58 | `Exception` | Raised when an agent lacks a required scope. |
-| [AgentService](../entities/AgentService.md) | 108 | — | Service for agent authentication, task control, and run tracing. |
+| [AgentConflictError](../entities/AgentConflictError.md) | 56 | `Exception` | Raised when an agent operation conflicts with current task state. |
+| [AgentPermissionError](../entities/AgentPermissionError.md) | 60 | `Exception` | Raised when an agent lacks a required scope. |
+| [AgentService](../entities/AgentService.md) | 110 | — | Service for agent authentication, task control, and run tracing. |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # LabelConflictError
 
-**Location:** `backend/app/services/label_service.py:317`
+**Location:** `backend/app/services/label_service.py:319`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [label_service](../modules/label_service.md)

@@ -11,6 +11,7 @@ Authoritative assessment, preview, and selection validation for agent routing.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskRoutingAssessment` |
 | `app.models.iteration` | `Iteration` |
@@ -58,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (11) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -66,15 +67,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 112 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 132 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 199 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 114 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 134 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 201 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 

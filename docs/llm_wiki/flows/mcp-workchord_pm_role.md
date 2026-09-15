@@ -2,7 +2,7 @@
 
 **Entry point:** `workchord_pm_role` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [config](../modules/config.md), [mcp_server](../modules/mcp_server.md)
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [mcp_server](../modules/mcp_server.md)
 
 ## Call sequence
 
@@ -19,20 +19,22 @@ sequenceDiagram
     participant p7 as _open_db_session
     participant p8 as _session_factory
     participant p9 as hasattr
-    participant p10 as _authenticate_agent_key
-    participant p11 as get_settings
-    participant p12 as Settings
-    participant p13 as AgentService(…).authenticate
-    participant p14 as AgentService
-    participant p15 as _require_scope_requirement
-    participant p16 as isinstance
-    participant p17 as require_scope
-    participant p18 as actor_has_scope
-    participant p19 as actor_scopes
-    participant p20 as AgentPermissionError
-    participant p21 as any
-    participant p22 as ', '.join
-    participant p23 as _skill_bundle_scope_requirement
+    participant p10 as command_transaction
+    participant p11 as current_command
+    participant p12 as getattr
+    participant p13 as isinstance (backend/app/commands.py:current_command)
+    participant p14 as info.get
+    participant p15 as RuntimeError
+    participant p16 as CommandState
+    participant p17 as db.rollback
+    participant p18 as db.commit
+    participant p19 as db.flush
+    participant p20 as db.info.pop
+    participant p21 as _authenticate_agent_key
+    participant p22 as get_settings
+    participant p23 as Settings
+    participant p24 as AgentService(…).authenticate
+    participant p25 as AgentService
     p0->>p1: _skill_bundle_prompt
     p1->>p2: _agent_context
     p2->>p3: _current_agent_key
@@ -42,27 +44,30 @@ sequenceDiagram
     p2->>p7: _open_db_session
     p7-->>p8: _session_factory
     p7-->>p9: hasattr
-    p2->>p10: _authenticate_agent_key
-    p10->>p11: get_settings
-    p11->>p12: Settings
-    p10->>p6: MCPAuthError
-    p10-->>p13: AgentService(…).authenticate
-    p10->>p14: AgentService
-    p10->>p6: MCPAuthError
-    p10->>p6: MCPAuthError
-    p2->>p15: _require_scope_requirement
-    p15-->>p16: isinstance
-    p15->>p17: require_scope
-    p17->>p18: actor_has_scope
-    p18->>p19: actor_scopes
-    p17->>p20: AgentPermissionError
-    p15-->>p21: any
-    p15->>p18: actor_has_scope
-    p15->>p20: AgentPermissionError
-    p15-->>p22: ', '.join
-    p1->>p23: _skill_bundle_scope_requirement
-    p23->>p11: get_settings
+    p2->>p10: command_transaction
+    p10->>p11: current_command
+    p11-->>p12: getattr
+    p11-->>p13: isinstance (backend/app/commands.py:current_command)
+    p11-->>p14: info.get
+    p10-->>p15: RuntimeError
+    p10->>p16: CommandState
+    p10-->>p15: RuntimeError
+    p10-->>p17: db.rollback
+    p10-->>p18: db.commit
+    p10-->>p19: db.flush
+    p10-->>p17: db.rollback
+    p10-->>p20: db.info.pop
+    p10-->>p20: db.info.pop
+    p2->>p21: _authenticate_agent_key
+    p21->>p22: get_settings
+    p22->>p23: Settings
+    p21->>p6: MCPAuthError
+    p21-->>p24: AgentService(…).authenticate
+    p21->>p25: AgentService
+    p21->>p6: MCPAuthError
 ```
+
+> Call sequence diagram shows 30 of 45 interactions; 15 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -81,8 +86,8 @@ flowchart LR
     s8["8. _open_db_session"]
     s9["9. _session_factory"]
     s10["10. hasattr"]
-    s11["11. _authenticate_agent_key"]
-    s12["12. get_settings"]
+    s11["11. command_transaction"]
+    s12["12. current_command"]
     s1 -->|"_skill_bundle_prompt(…)"| s2
     s2 -->|"_agent_context(_skill_bundle_scope_requirement(...))"| s3
     s3 -->|"_current_agent_key(data not statically known)"| s4
@@ -92,20 +97,26 @@ flowchart LR
     s3 -->|"_open_db_session(data not statically known)"| s8
     s8 -. "_session_factory(data not statically known)" .-> s9
     s8 -. "hasattr(session_context, '__aenter__')" .-> s10
-    s3 -->|"_authenticate_agent_key(db, api_key)"| s11
-    s11 -->|"get_settings(data not statically known)"| s12
+    s3 -->|"command_transaction(db, mode=...)"| s11
+    s11 -->|"current_command(db)"| s12
     b0["environment_read os.getenv"]
     s4 -. "environment_read os.getenv" .-> b0
+    b1["mutation db.info.pop"]
+    s11 -. "mutation db.info.pop" .-> b1
+    b2["mutation db.info.pop"]
+    s11 -. "mutation db.info.pop" .-> b2
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
     click s3 "../modules/mcp_server.md"
     click s4 "../modules/mcp_server.md"
     click s7 "../modules/mcp_server.md"
     click s8 "../modules/mcp_server.md"
-    click s11 "../modules/mcp_server.md"
-    click s12 "../modules/config.md"
+    click s11 "../modules/commands.md"
+    click s12 "../modules/commands.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
+    class b1 boundary
+    class b2 boundary
 ```
 
 ### Step data
@@ -114,7 +125,7 @@ flowchart LR
 |---|---|---|---|---|
 | `workchord_pm_role` | - | - | - | `...` |
 | `_skill_bundle_prompt` | `value: str` | - | - | `value` |
-| `_agent_context` | `required_scope: ScopeRequirement` | `MCP_AGENT_API_KEY_ENV` | - | - |
+| `_agent_context` | `required_scope: ScopeRequirement`, `preview` | `MCP_AGENT_API_KEY_ENV` | `db.info[...]` | - |
 | `_current_agent_key` | - | `MCP_AGENT_API_KEY_ENV` | - | `...` |
 | `_http_agent_key.get` | - | - | - | - |
 | `os.getenv` | - | - | - | - |
@@ -122,37 +133,39 @@ flowchart LR
 | `_open_db_session` | - | - | - | `none` |
 | `_session_factory` | - | - | - | - |
 | `hasattr` | - | - | - | - |
-| `_authenticate_agent_key` | `db: Any`, `api_key: str` | - | - | `actor` |
-| `get_settings` | - | - | - | `Settings(...)` |
+| `command_transaction` | `db: AsyncSession`, `mode`, `commit` | - | `previous.failed`, `db.info[...]` | `none` |
+| `current_command` | `db` | - | - | `...` |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_pm_role | _skill_bundle_prompt | 2247 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
-| _skill_bundle_prompt | _agent_context | 309 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 227 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 180 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 180 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 229 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 230 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 161 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 162 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | _authenticate_agent_key | 231 | `_authenticate_agent_key(db, api_key)` |
-| _authenticate_agent_key | get_settings | 185 | `get_settings(data not statically known)` |
+| workchord_pm_role | _skill_bundle_prompt | 2275 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
+| _skill_bundle_prompt | _agent_context | 336 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 246 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 199 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 199 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 248 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 249 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 180 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 181 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 250 | `command_transaction(db, mode=...)` |
+| command_transaction | current_command | 52 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 180 |
+| environment_read | `os.getenv` | `_current_agent_key` | 199 |
+| mutation | `db.info.pop` | `command_transaction` | 78 |
+| mutation | `db.info.pop` | `command_transaction` | 80 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 161 |
-| external_call | `_open_db_session` | `hasattr` | 162 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 180 |
+| external_call | `_open_db_session` | `hasattr` | 181 |
 | step_limit | `workchord_pm_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_pm_role` | `depth limit` | 0 |
 

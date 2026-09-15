@@ -21,7 +21,7 @@ Task model.
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `date`, `datetime` |
 | `enum` | `Enum` |
-| `sqlalchemy` | `Date`, `Float`, `ForeignKey`, `Integer`, `String`, `Text`, `and_` |
+| `sqlalchemy` | `Date`, `Float`, `ForeignKey`, `Integer`, `String`, `Text`, `and_`, `false` |
 | `sqlalchemy.orm` | `Mapped`, `foreign`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Optional` |
 
@@ -45,7 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (41) |
+| Inbound | `backend` (51) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -55,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -63,4 +63,4 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [TaskStatus](../entities/models_task_TaskStatus.md) | Enum | 29 | `str`, `Enum` | Task status enumeration for work tracking. |
 | [Task](../entities/models_task_Task.md) | Class | 44 | `Base` | Task model with tree structure and dependencies. |
-| [TaskDependency](../entities/TaskDependency.md) | Class | 204 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |
+| [TaskDependency](../entities/TaskDependency.md) | Class | 215 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |

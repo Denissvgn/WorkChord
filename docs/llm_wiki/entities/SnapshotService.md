@@ -1,6 +1,6 @@
 # SnapshotService
 
-**Location:** `backend/app/services/snapshot_service.py:26`
+**Location:** `backend/app/services/snapshot_service.py:31`
 **Kind:** Class
 **Bases:** —
 **Module:** [snapshot_service](../modules/snapshot_service.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Service for creating and managing iteration snapshots.
+
+Stores bounded, checksummed pre-command points transactionally in the database; preview and failed commands cannot publish or evict them. Captured project scopes gate payload reads. Restore preserves supported IDs, recovers captured iteration dates and absences, records baseline restoration, and invalidates current acceptance. Ambiguous legacy files remain quarantined provenance records. Global configuration and external side effects require separate recovery.
 
 ## Attributes
 
@@ -23,10 +25,14 @@ Service for creating and managing iteration snapshots.
 | `_snapshot_path` | `(iteration_id: int, filename: str, *, reject_symlink: bool = True) -> Path` | — | Resolve a generated basename beneath the iteration snapshot directory. |
 | `_snapshot_files` | `(iteration_id: int) -> list[Path]` | — | Return validated generated snapshot files without following unsafe links. |
 | `build_snapshot_data` | *(async)* `(iteration_id: int, reason: str = 'auto') -> dict \| None` | — | Build one JSON-native immutable representation of an iteration. |
-| `create_snapshot` | *(async)* `(iteration_id: int, reason: str = 'auto') -> str \| None` | — | Create a snapshot of the iteration's current state. |
-| `rotate_snapshots` | *(async)* `(iteration_id: int, max_count: int = 10) -> int` | — | Remove oldest snapshots if count exceeds max. |
-| `list_snapshots` | `(iteration_id: int) -> list[dict]` | — | List all snapshots for an iteration. |
-| `get_snapshot` | `(iteration_id: int, filename: str) -> dict \| None` | — | Get snapshot data by filename. |
+| `create_snapshot` | *(async)* `(iteration_id: int, reason: str = 'auto') -> str \| None` | `@atomic_command` | Persist one pre-command recovery point and retention in the owner's transaction. |
+| `_encode` | `(payload: dict) -> bytes` | `@staticmethod` | — |
+| `rotate_snapshots` | *(async)* `(iteration_id: int, max_count: int \| None = None) -> int` | `@atomic_command` | — |
+| `list_snapshots` | *(async)* `(iteration_id: int) -> list[dict]` | — | — |
+| `get_snapshot` | *(async)* `(iteration_id: int, filename: str) -> dict \| None` | — | — |
+| `_payload_visible` | `(payload)` | — | Historical JSON must not bypass current project visibility through an unscoped iteration. |
+| `import_legacy` | *(async)* `(iteration_id: int, *, dry_run = True, limit = 25) -> list[dict]` | `@atomic_command` | Inventory legacy files without inventing trust for ambiguous preview-era content. |
+| `restore` | *(async)* `(iteration_id: int, filename: str, *, expected_revision = None) -> dict` | `@atomic_command` | Restore supported IDs in place, retain history and invalidate current execution acceptance. |
 | `_task_to_export` | `(task) -> dict` | — | Convert task to export format recursively. |
 | `_member_to_export` | `(member) -> dict` | — | Convert team member to export format. |
 
@@ -36,18 +42,18 @@ Service for creating and managing iteration snapshots.
 ```mermaid
 flowchart LR
     n0["SnapshotService (backend/app/services/snapshot_service.py)"]
-    n1["list_snapshots (backend/app/routers/snapshots.py)"]
-    n2["restore_snapshot (backend/app/routers/snapshots.py)"]
-    n3["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
-    n4["PlanShareService.create (backend/app/services/plan_share_service.py)"]
-    n5["TaskImportService.bulk_update_tasks_from_text (backend/app/services/task_import_service.py)"]
-    n6["TaskImportService.import_tasks (backend/app/services/task_import_service.py)"]
-    n7["TaskService.create (backend/app/services/task_service.py)"]
-    n8["TaskService.delete (backend/app/services/task_service.py)"]
-    n9["TaskService.merge_tasks (backend/app/services/task_service.py)"]
-    n10["TaskService.move_task (backend/app/services/task_service.py)"]
-    n11["TaskService.unmerge_task (backend/app/services/task_service.py)"]
-    n12["TaskService.update (backend/app/services/task_service.py)"]
+    n1["wrapped (backend/app/commands.py)"]
+    n2["import_legacy_snapshots (backend/app/routers/snapshots.py)"]
+    n3["list_snapshots (backend/app/routers/snapshots.py)"]
+    n4["read_snapshot (backend/app/routers/snapshots.py)"]
+    n5["restore_snapshot (backend/app/routers/snapshots.py)"]
+    n6["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
+    n7["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n8["PlanShareService.create (backend/app/services/plan_share_service.py)"]
+    n9["reserve_task_context_revision (backend/app/services/task_context_revision_service.py)"]
+    n10["TaskImportService.bulk_update_tasks_from_text (backend/app/services/task_import_service.py)"]
+    n11["TaskImportService.import_tasks (backend/app/services/task_import_service.py)"]
+    n12["TaskService.create (backend/app/services/task_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -61,17 +67,17 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/snapshot_service.md"
-    click n1 "../modules/snapshots.md"
+    click n1 "../modules/commands.md"
     click n2 "../modules/snapshots.md"
-    click n3 "../modules/iteration_service.md"
-    click n4 "../modules/plan_share_service.md"
-    click n5 "../modules/task_import_service.md"
-    click n6 "../modules/task_import_service.md"
-    click n7 "../modules/task_service.md"
-    click n8 "../modules/task_service.md"
-    click n9 "../modules/task_service.md"
-    click n10 "../modules/task_service.md"
-    click n11 "../modules/task_service.md"
+    click n3 "../modules/snapshots.md"
+    click n4 "../modules/snapshots.md"
+    click n5 "../modules/snapshots.md"
+    click n6 "../modules/hierarchy_repair_service.md"
+    click n7 "../modules/iteration_service.md"
+    click n8 "../modules/plan_share_service.md"
+    click n9 "../modules/task_context_revision_service.md"
+    click n10 "../modules/task_import_service.md"
+    click n11 "../modules/task_import_service.md"
     click n12 "../modules/task_service.md"
 ```
 
@@ -79,21 +85,23 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [snapshot_service](../modules/snapshot_service.md) | 12 | — |
+| [snapshot_service](../modules/snapshot_service.md) | 16 | — |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `wrapped` | call | [commands](../modules/commands.md) | 1 |
+| `import_legacy_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `list_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
+| `read_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `restore_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
+| `HierarchyRepairService.repair` | call | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) | 1 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
+| `reserve_task_context_revision` | call | [task_context_revision_service](../modules/task_context_revision_service.md) | 1 |
 | `TaskImportService.bulk_update_tasks_from_text` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskImportService.import_tasks` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.delete` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.merge_tasks` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.move_task` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.unmerge_task` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.update` | call | [task_service](../modules/task_service.md) | 1 |
+
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

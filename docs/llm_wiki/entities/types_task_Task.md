@@ -13,6 +13,23 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `iteration_revision` | `number` | *required* | — |
+| `effective_is_deferred` | `boolean` | *required* | — |
+| `effective_is_optional` | `boolean` | *required* | — |
+| `metric_contract_version` | `number` | *required* | — |
+| `is_late_start` | `boolean` | *required* | — |
+| `is_iteration_overflow` | `boolean` | *required* | — |
+| `is_project_target_overflow` | `boolean` | *required* | — |
+| `is_implemented` | `boolean` | *required* | — |
+| `is_accepted` | `boolean` | *required* | — |
+| `acceptance_unknown` | `boolean` | *required* | — |
+| `baseline_start_date` | `string \| null` | *required* | — |
+| `baseline_end_date` | `string \| null` | *required* | — |
+| `baseline_revision` | `number` | *required* | — |
+| `baseline_provenance` | `string` | *required* | — |
+| `started_at` | `string \| null` | *required* | — |
+| `resolved_at` | `string \| null` | *required* | — |
+| `accepted_at` | `string \| null` | *required* | — |
 | `id` | `number` | *required* | — |
 | `iteration_id` | `number` | *required* | — |
 | `project_id` | `number \| null` | *required* | — |
@@ -107,7 +124,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `children`, `claim_expires_at`, `claimed_by`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `children`, `claim_expires_at` |
 
 ### References
 
@@ -126,4 +143,4 @@ flowchart LR
 | `TaskBulkOperationsPanel` | type_reference | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 | `TaskDependencySelector` | type_reference | [TaskDependencySelector](../modules/TaskDependencySelector.md) | — |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

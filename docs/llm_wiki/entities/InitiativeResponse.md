@@ -1,6 +1,6 @@
 # InitiativeResponse
 
-**Location:** `backend/app/schemas/project.py:80`
+**Location:** `backend/app/schemas/project.py:84`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

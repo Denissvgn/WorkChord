@@ -6,11 +6,15 @@
 
 MCP server facade for external LLM-agent integrations.
 
+MCP uses the shared principal/project authority and command owner. Its established bearer actor-key format is validated and normalized before resolution; conflicting credentials remain rejected. Schedule preview selects a rollback context and returns structured version conflicts through the tool boundary.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `app` | `mcp_agent_tools` |
+| `app.authority` | `AuthorityError` |
+| `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
 | `app.maintenance` | `MaintenanceModeError`, `enforce_mcp_access` |
@@ -19,6 +23,7 @@ MCP server facade for external LLM-agent integrations.
 | `app.services.agent_routing_service` | `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `require_scope` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError` |
+| `app.services.identity_service` | `IdentityService` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
 | `argparse` | `argparse` |
@@ -55,8 +60,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Outbound | `backend` (11) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -64,17 +69,17 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MCPAuthError](../entities/MCPAuthError.md) | Class | 43 | `PermissionError` | Raised when MCP agent authentication fails. |
-| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 66 | — | Reject untrusted MCP Host/Origin values before database authentication. |
-| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 101 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
-| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 131 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
-| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 197 | `Optional[str \| tuple[str, ...]]` | — |
+| [MCPAuthError](../entities/MCPAuthError.md) | Class | 46 | `PermissionError` | Raised when MCP agent authentication fails. |
+| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 69 | — | Reject untrusted MCP Host/Origin values before database authentication. |
+| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 104 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
+| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 150 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
+| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 216 | `Optional[str \| tuple[str, ...]]` | — |
 
 ## Functions
 
@@ -90,9 +95,9 @@ flowchart LR
 | `_authenticate_agent_key` | *(async)* `(db: Any, api_key: str) -> AgentActor` | — | Authenticate a real agent actor and reject bootstrap execution. |
 | `_skill_bundle_scope_requirement` | `() -> ScopeRequirement` | — | Match MCP skill delivery to the configured REST public/private mode. |
 | `_require_scope_requirement` | `(actor: AgentActor, required: ScopeRequirement) -> None` | — | Require one scope or any scope from an explicit alternative set. |
-| `_agent_context` | *(async)* `(required_scope: ScopeRequirement = None) -> AsyncIterator[tuple[Any, AgentActor]]` | `@asynccontextmanager` | Open an authenticated MCP agent DB context. |
+| `_agent_context` | *(async)* `(required_scope: ScopeRequirement = None, *, preview = False) -> AsyncIterator[tuple[Any, AgentActor]]` | `@asynccontextmanager` | Open an authenticated MCP agent DB context. |
 | `_structured_tool_error` | `(exc: Exception) -> str` | — | Return stable, machine-readable conflict and validation errors. |
-| `_tool_call` | *(async)* `(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any]) -> Any` | — | Run a service-backed MCP tool and return MCP-safe errors. |
+| `_tool_call` | *(async)* `(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any], *, preview = False) -> Any` | — | Run a service-backed MCP tool and return MCP-safe errors. |
 | `_json_resource` | *(async)* `(required_scope: ScopeRequirement, func: Callable[[Any, AgentActor], Any]) -> str` | — | Return a JSON resource payload through the authenticated MCP context. |
 | `_skill_bundle_prompt` | *(async)* `(value: str) -> str` | — | Authenticate and authorize one role prompt under bundle delivery policy. |
 | `create_mcp_server` | `() -> FastMCP` | — | Create the WorkChord FastMCP server. |

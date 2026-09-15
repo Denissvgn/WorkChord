@@ -27,7 +27,7 @@ flowchart LR
     s2["2. service.delete"]
     s3["3. HTTPException"]
     s4["4. MessageResponse"]
-    s1 -. "service.delete(task_id)" .-> s2
+    s1 -. "service.delete(task_id, expected_version=expected_version, expected_revision=expected_revision)" .-> s2
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s3
     s1 -->|"MessageResponse(message=..., success=True)"| s4
     click s1 "../modules/tasks.md"
@@ -38,7 +38,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `delete_task` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]` | `status` | - | `MessageResponse(...)` |
+| `delete_task` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `expected_version: int \| None`, `expected_revision: int \| None` | `status` | - | `MessageResponse(...)` |
 | `service.delete` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `MessageResponse` | - | - | - | - |
@@ -47,9 +47,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_task | service.delete | 409 | `service.delete(task_id)` |
-| delete_task | HTTPException | 411 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_task | MessageResponse | 415 | `MessageResponse(message=..., success=True)` |
+| delete_task | service.delete | 395 | `service.delete(task_id, expected_version=expected_version, expected_revision=expected_revision)` |
+| delete_task | HTTPException | 397 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_task | MessageResponse | 401 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,8 +59,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_task` | `service.delete` | 409 |
-| external_call | `delete_task` | `HTTPException` | 411 |
+| unresolved_call | `delete_task` | `service.delete` | 395 |
+| external_call | `delete_task` | `HTTPException` | 397 |
 
 ## Behavior
 

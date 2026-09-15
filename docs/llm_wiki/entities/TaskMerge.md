@@ -1,6 +1,6 @@
 # TaskMerge
 
-**Location:** `backend/app/schemas/task.py:219`
+**Location:** `backend/app/schemas/task.py:235`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,7 @@ Request schema for merging tasks under a new parent.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `task_ids` | `list[int]` | `task_ids` | Yes | No | — | min_length=2 | — | IDs of tasks to merge (min 2) |
 | `parent_title` | `str` | `parent_title` | Yes | No | — | min_length=1; max_length=500 | — | — |
 | `parent_description` | `Optional[str]` | `parent_description` | No | Yes | `None` | — | — | — |
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `parent_description`, `parent_title`, `task_ids` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `expected_revision`, `parent_description`, `parent_title`, `task_ids` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # ReleaseService
 
-**Location:** `backend/app/services/release_service.py:23`
+**Location:** `backend/app/services/release_service.py:25`
 **Kind:** Class
 **Bases:** —
 **Module:** [release_service](../modules/release_service.md)
@@ -26,6 +26,7 @@ Service for release CRUD and task link validation.
 | `_release_shipped_payload` | `(release: Release) -> dict` | — | Build the task timeline payload for a shipped release. |
 | `_emit_release_shipped_events` | *(async)* `(release: Release) -> None` | — | Emit missing shipped events for linked release tasks. |
 | `_project_exists` | *(async)* `(project_id: int) -> bool` | — | Return whether a project exists. |
+| `_attach_work_metrics` | *(async)* `(release, tasks = None)` | — | — |
 | `get_by_id` | *(async)* `(release_id: int) -> Optional[Release]` | — | Get a release with linked tasks loaded. |
 | `list_for_project` | *(async)* `(project_id: int) -> Optional[Sequence[Release]]` | — | List releases for a project in project-release order. |
 | `_validate_task_ids` | *(async)* `(project_id: int, task_ids: Sequence[int]) -> list[Task]` | — | Validate that all task IDs exist once and belong to the release project. |
@@ -66,7 +67,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [release_service](../modules/release_service.md) | 14 | — |
+| [release_service](../modules/release_service.md) | 15 | — |
 
 ### References
 

@@ -46,7 +46,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_task` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `status` | - | `service.task_to_response(...)` |
+| `get_task` | `task_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `service.task_to_response(...)` |
 | `service.get_by_id` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `IterationService` | - | - | - | - |
@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task | service.get_by_id | 304 | `service.get_by_id(task_id)` |
-| get_task | HTTPException | 306 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task | IterationService | 311 | `IterationService(db)` |
-| get_task | iteration_service.get_by_id | 312 | `iteration_service.get_by_id(task.iteration_id)` |
-| get_task | service.task_to_response | 314 | `service.task_to_response(task, ...)` |
+| get_task | service.get_by_id | 287 | `service.get_by_id(task_id)` |
+| get_task | HTTPException | 289 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task | IterationService | 294 | `IterationService(db)` |
+| get_task | iteration_service.get_by_id | 295 | `iteration_service.get_by_id(task.iteration_id)` |
+| get_task | service.task_to_response | 297 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task` | `service.get_by_id` | 304 |
-| external_call | `get_task` | `HTTPException` | 306 |
-| unresolved_call | `get_task` | `iteration_service.get_by_id` | 312 |
-| unresolved_call | `get_task` | `service.task_to_response` | 314 |
+| unresolved_call | `get_task` | `service.get_by_id` | 287 |
+| external_call | `get_task` | `HTTPException` | 289 |
+| unresolved_call | `get_task` | `iteration_service.get_by_id` | 295 |
+| unresolved_call | `get_task` | `service.task_to_response` | 297 |
 
 ## Behavior
 

@@ -11,13 +11,14 @@ _Auto-generated from `backend/app/models/user_session.py`._
 | Source | Symbols |
 |--------|---------|
 | `app.database` | `Base` |
+| `app.models.identity` | `Principal` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `ProjectUpdateEntry` |
 | `app.models.saved_view` | `SavedView` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `String` |
+| `sqlalchemy` | `ForeignKey`, `String` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING` |
 
@@ -41,9 +42,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
+| Inbound | `backend` (21) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (5) |
+| Outbound | `backend` (6) |
 
 ### External packages
 
@@ -51,10 +52,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [UserSession](../entities/user_session_UserSession.md) | 15 | `Base` | Opaque browser identity with non-authoritative request audit metadata. |
+| [UserSession](../entities/user_session_UserSession.md) | 16 | `Base` | Opaque browser identity with non-authoritative request audit metadata. |

@@ -1,6 +1,6 @@
 # TriageConflictError
 
-**Location:** `backend/app/services/triage_service.py:44`
+**Location:** `backend/app/services/triage_service.py:46`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [triage_service](../modules/triage_service.md)

@@ -1,7 +1,7 @@
 # GitHubStatusAutomationService_apply_rules
 
 **Entry point:** `github_status_automation_service.GitHubStatusAutomationService.apply_rules`
-**Modules involved:** [github_status_automation_service](../modules/github_status_automation_service.md), [language_service](../modules/language_service.md), [models_task](../modules/models_task.md), [schemas_github](../modules/schemas_github.md)
+**Modules involved:** [commands](../modules/commands.md), [github_status_automation_service](../modules/github_status_automation_service.md), [language_service](../modules/language_service.md), [models_task](../modules/models_task.md), [schemas_github](../modules/schemas_github.md)
 
 > Apply enabled rules for a matched GitHub webhook event.
 
@@ -22,9 +22,11 @@
 12. `language_service.invalid_status_transition_message`
 13. `schemas_github.GitHubStatusAutomationResult`
 14. `schemas_github.GitHubStatusAutomationResult`
+15. `commands.commit_or_flush`
 
 ## Touches
 
+- [commands](../modules/commands.md)
 - [github_status_automation_service](../modules/github_status_automation_service.md)
 - [language_service](../modules/language_service.md)
 - [models_task](../modules/models_task.md)

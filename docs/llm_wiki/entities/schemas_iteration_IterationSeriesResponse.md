@@ -1,6 +1,6 @@
 # IterationSeriesResponse
 
-**Location:** `backend/app/schemas/iteration.py:82`
+**Location:** `backend/app/schemas/iteration.py:88`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)

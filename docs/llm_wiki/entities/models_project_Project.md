@@ -15,6 +15,7 @@ Outcome-oriented planning container above tasks and iterations.
 |------|------|---------|-------------|
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
+| `timezone` | `Mapped[str]` | `mapped_column(String(64), default='UTC', server_default='UTC', nullable=False)` | — |
 | `description` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `status` | `Mapped[str]` | `mapped_column(String(50), default=ProjectStatus.PLANNED.value, nullable=False, index=True)` | — |
 | `health` | `Mapped[str]` | `mapped_column(String(50), default=ProjectHealth.UNKNOWN.value, nullable=False, index=True)` | — |
@@ -55,11 +56,11 @@ flowchart LR
     n6["backend/app/models/task.py"]
     n7["backend/app/models/team_member.py"]
     n8["backend/app/models/triage.py"]
-    n9["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
-    n10["IterationService._response_project (backend/app/services/iteration_service.py)"]
-    n11["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
-    n12["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
-    n13["ProjectService._calculate_milestone_groups (backend/app/services/project_service.py)"]
+    n9["backend/app/routers/identity.py"]
+    n10["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
+    n11["IterationService._response_project (backend/app/services/iteration_service.py)"]
+    n12["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
+    n13["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -82,9 +83,9 @@ flowchart LR
     click n6 "../modules/models_task.md"
     click n7 "../modules/team_member.md"
     click n8 "../modules/models_triage.md"
-    click n9 "../modules/agent_work_service.md"
-    click n10 "../modules/iteration_service.md"
-    click n11 "../modules/project_service.md"
+    click n9 "../modules/routers_identity.md"
+    click n10 "../modules/agent_work_service.md"
+    click n11 "../modules/iteration_service.md"
     click n12 "../modules/project_service.md"
     click n13 "../modules/project_service.md"
 ```
@@ -112,10 +113,10 @@ flowchart LR
 | `task` | import | [models_task](../modules/models_task.md) | — |
 | `team_member` | import | [team_member](../modules/team_member.md) | — |
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
+| `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `IterationService._response_project` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
 | `ProjectService._aggregated_milestone_groups` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService._build_milestone_task_group` | type_reference | [project_service](../modules/project_service.md) | — |
-| `ProjectService._calculate_milestone_groups` | type_reference | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

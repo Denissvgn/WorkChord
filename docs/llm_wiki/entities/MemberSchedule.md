@@ -1,6 +1,6 @@
 # MemberSchedule
 
-**Location:** `backend/app/services/scheduler_service.py:59`
+**Location:** `backend/app/services/scheduler_service.py:61`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)

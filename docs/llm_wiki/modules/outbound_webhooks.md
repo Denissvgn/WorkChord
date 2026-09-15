@@ -79,7 +79,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_outbound_webhook_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> OutboundWebhookService` | — | Dependency for outbound webhook API operations. |
+| `get_outbound_webhook_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> OutboundWebhookService` | — | Dependency for outbound webhook API operations. |
 | `_bad_request` | *(async)* `(service: OutboundWebhookService, error: Exception) -> HTTPException` | — | — |
 | `list_outbound_webhook_targets` | *(async)* `(service: Annotated[OutboundWebhookService, Depends(get_outbound_webhook_service)])` | `@router.get('/outbound-webhooks/targets', response_model=list[OutboundWebhookTargetResponse])` | List outbound webhook targets. |
 | `create_outbound_webhook_target` | *(async)* `(data: OutboundWebhookTargetCreate, service: Annotated[OutboundWebhookService, Depends(get_outbound_webhook_service)])` | `@router.post('/outbound-webhooks/targets', response_model=OutboundWebhookTargetResponse, status_code=status.HTTP_201_CREATED)` | Create an outbound webhook target. |

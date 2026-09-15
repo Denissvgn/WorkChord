@@ -1,6 +1,6 @@
 # TaskService
 
-**Location:** `backend/app/services/task_service.py:68`
+**Location:** `backend/app/services/task_service.py:71`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_service](../modules/task_service.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Service for task operations.
+
+Task and aggregate versions fence edits and structural commands. Merge/unmerge reconcile old/new ancestors with leaf-only effort and lower-number-is-higher priority; claimed descendants require recovery. Pure rearrangement preserves valid accepted leaf evidence and effective optional/deferred meaning with audit, while content changes invalidate old acceptance. An empty summary remains structural rather than becoming invented leaf work.
 
 ## Attributes
 
@@ -43,19 +45,22 @@ Service for task operations.
 | `_load_iteration_tree` | *(async)* `(iteration_id: int, *, max_tasks: int = MAX_ITERATION_TREE_TASKS) -> tuple[list[Task], dict[int, Task]]` | — | Load and defensively assemble a contract-bounded iteration. |
 | `get_all_tasks` | *(async)* `(iteration_id: int) -> Sequence[Task]` | — | Get all tasks (flat list) for an iteration. |
 | `get_by_id` | *(async)* `(task_id: int) -> Optional[Task]` | — | Get one task with its complete iteration tree relationships assembled. |
-| `create` | *(async)* `(iteration_id: int, data: TaskCreate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, create_snapshot: bool = True, commit: bool = True) -> Task` | — | Create a new task. |
+| `create` | *(async)* `(iteration_id: int, data: TaskCreate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, create_snapshot: bool = True, commit: bool = True) -> Task` | `@atomic_command` | Create a new task. |
 | `create_subtask` | *(async)* `(parent_id: int, data: TaskCreate) -> Optional[Task]` | — | Create a subtask under a parent task. |
-| `update` | *(async)* `(task_id: int, data: TaskUpdate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, commit: bool = True) -> Optional[Task]` | — | Update an existing task. |
-| `delete` | *(async)* `(task_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | — | Delete a task and its subtasks. |
-| `add_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | — | Add a dependency to a task. |
-| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | — | Remove a dependency from a task. |
-| `reorder_tasks` | *(async)* `(task_ids: list[int], iteration_id: Optional[int] = None, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | — | Update sort_order for tasks within one declared sibling scope. |
-| `merge_tasks` | *(async)* `(iteration_id: int, task_ids: list[int], parent_title: str, parent_description: Optional[str] = None) -> Optional[Task]` | — | Merge multiple leaf tasks under a new parent task. |
-| `unmerge_task` | *(async)* `(parent_task_id: int, delete_parent: bool = True) -> list[Task]` | — | Promote all child tasks of a parent to the top level. |
+| `update` | *(async)* `(task_id: int, data: TaskUpdate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, commit: bool = True) -> Optional[Task]` | `@atomic_command` | Update an existing task. |
+| `delete` | *(async)* `(task_id: int, actor_type: str = 'user', actor_id: Optional[int] = None, *, expected_version: Optional[int] = None, expected_revision: Optional[int] = None) -> bool` | `@atomic_command` | Delete a task and its subtasks. |
+| `add_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | `@atomic_command` | Add a dependency to a task. |
+| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | `@atomic_command` | Remove a dependency from a task. |
+| `reorder_tasks` | *(async)* `(task_ids: list[int], iteration_id: Optional[int] = None, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None, expected_revision: int \| None = None) -> bool` | `@atomic_command` | Update sort_order for tasks within one declared sibling scope. |
+| `_reserve_structural_version` | *(async)* `(task: Task, *, preserve_inherited_facets = False)` | — | Carry existing acceptance across a rearrangement that preserves leaf work meaning. |
+| `merge_tasks` | *(async)* `(iteration_id: int, task_ids: list[int], parent_title: str, parent_description: Optional[str] = None, expected_revision: int \| None = None) -> Optional[Task]` | `@atomic_command` | Merge multiple leaf tasks under a new parent task. |
+| `unmerge_task` | *(async)* `(parent_task_id: int, delete_parent: bool = True, *, expected_revisions = None) -> list[Task]` | `@atomic_command` | Promote children into the parent's sibling scope without losing referenced work. |
+| `_lock_task_scope` | *(async)* `(task_id, *, target_iteration_id = None, expected_revisions = None)` | — | — |
+| `_require_unclaimed_structure` | *(async)* `(task_ids)` | — | — |
 | `_task_subtree_ids` | *(async)* `(root_task_id: int) -> set[int]` | — | Return the IDs in a task subtree, including the root. |
 | `_require_no_cross_subtree_dependencies` | *(async)* `(subtree_ids: set[int]) -> None` | — | Reject moves that would leave dependency edges crossing iterations. |
 | `_resolve_project_for_move` | *(async)* `(task: Task, target_iteration_id: int, target_parent: Optional[Task]) -> Optional[int]` | — | Resolve the project assignment for a task subtree move. |
-| `move_task` | *(async)* `(task_id: int, target_iteration_id: int, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None, expected_version: Optional[int] = None) -> Optional[Task]` | — | Move a task subtree to an iteration, applying scoped project inheritance. |
+| `move_task` | *(async)* `(task_id: int, target_iteration_id: int, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None, expected_version: Optional[int] = None, expected_revisions: dict[int, int] \| None = None) -> Optional[Task]` | `@atomic_command` | Move a task subtree to an iteration, applying scoped project inheritance. |
 | `task_to_response` | `(task: Task, iteration_end_date: Optional[date] = None) -> TaskResponse` | — | Convert Task model to TaskResponse schema. |
 | `_get_next_root_sort_order` | *(async)* `(iteration_id: int) -> int` | — | Return the next root-level sort order for an iteration. |
 | `_get_next_child_sort_order` | *(async)* `(parent_id: int) -> int` | — | Return the next child sort order under a parent task. |
@@ -64,7 +69,7 @@ Service for task operations.
 | `get_tasks_as_text` | *(async)* `(iteration_id: int) -> str` | — | Delegate editable task text serialization to TaskImportService. |
 | `bulk_update_tasks_from_text` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks') -> tuple[list[Task], list[TriageItem]]` | — | Delegate bulk text edits to TaskImportService. |
 | `status_service` | `()` | `@property` | Return the focused status collaborator behind this facade. |
-| `change_status` | *(async)* `(task_id: int, new_status: TaskStatus \| str, reason: Optional[str] = None, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, expected_version: Optional[int] = None, commit: bool = True, reserve_version: bool = True) -> tuple[Optional[Task], list[dict], bool]` | — | Delegate status transitions to TaskStatusService. |
+| `change_status` | *(async)* `(task_id: int, new_status: TaskStatus \| str, reason: Optional[str] = None, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, expected_version: Optional[int] = None, commit: bool = True, reserve_version: bool = True) -> tuple[Optional[Task], list[dict], bool]` | `@atomic_command` | Delegate status transitions to TaskStatusService. |
 | `_update_parent_status` | *(async)* `(parent_id: int) -> None` | — | Compatibility seam for parent reconciliation. |
 | `_cascade_update_dependents` | *(async)* `(source_task: Task, original_end_date: date, reason: str) -> list[dict]` | — | Compatibility seam for dependent date cascade. |
 | `get_status_history` | *(async)* `(task_id: int) -> list[Any]` | — | Delegate task status history reads. |
@@ -78,18 +83,18 @@ Service for task operations.
 ```mermaid
 flowchart LR
     n0["TaskService (backend/app/services/task_service.py)"]
-    n1["_stage_context_command_audit_event (backend/app/mcp_agent_tools.py)"]
-    n2["_stage_triage_command_audit_event (backend/app/mcp_agent_tools.py)"]
-    n3["convert_triage_to_task (backend/app/mcp_agent_tools.py)"]
-    n4["list_project_tasks (backend/app/mcp_agent_tools.py)"]
-    n5["_import_task (backend/app/routers/export.py)"]
-    n6["_import_task_record (backend/app/routers/export.py)"]
-    n7["_process_import (backend/app/routers/export.py)"]
-    n8["export_iteration (backend/app/routers/export.py)"]
-    n9["get_gantt_data (backend/app/routers/gantt.py)"]
-    n10["preview_iteration_schedule (backend/app/routers/gantt.py)"]
-    n11["formalize_task (backend/app/routers/llm.py)"]
-    n12["improve_task_description (backend/app/routers/llm.py)"]
+    n1["wrapped (backend/app/commands.py)"]
+    n2["_stage_context_command_audit_event (backend/app/mcp_agent_tools.py)"]
+    n3["_stage_triage_command_audit_event (backend/app/mcp_agent_tools.py)"]
+    n4["convert_triage_to_task (backend/app/mcp_agent_tools.py)"]
+    n5["list_project_tasks (backend/app/mcp_agent_tools.py)"]
+    n6["_import_task (backend/app/routers/export.py)"]
+    n7["_import_task_record (backend/app/routers/export.py)"]
+    n8["_process_import (backend/app/routers/export.py)"]
+    n9["export_iteration (backend/app/routers/export.py)"]
+    n10["get_gantt_data (backend/app/routers/gantt.py)"]
+    n11["preview_iteration_schedule (backend/app/routers/gantt.py)"]
+    n12["formalize_task (backend/app/routers/llm.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -103,17 +108,17 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/task_service.md"
-    click n1 "../modules/mcp_agent_tools.md"
+    click n1 "../modules/commands.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/mcp_agent_tools.md"
     click n4 "../modules/mcp_agent_tools.md"
-    click n5 "../modules/export.md"
+    click n5 "../modules/mcp_agent_tools.md"
     click n6 "../modules/export.md"
     click n7 "../modules/export.md"
     click n8 "../modules/export.md"
-    click n9 "../modules/routers_gantt.md"
+    click n9 "../modules/export.md"
     click n10 "../modules/routers_gantt.md"
-    click n11 "../modules/routers_llm.md"
+    click n11 "../modules/routers_gantt.md"
     click n12 "../modules/routers_llm.md"
 ```
 
@@ -121,12 +126,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_service](../modules/task_service.md) | 54 | — |
+| [task_service](../modules/task_service.md) | 57 | — |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `wrapped` | call | [commands](../modules/commands.md) | 1 |
 | `_stage_context_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `_stage_triage_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `convert_triage_to_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
@@ -138,6 +144,5 @@ flowchart LR
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `formalize_task` | call | [routers_llm](../modules/routers_llm.md) | 1 |
-| `improve_task_description` | call | [routers_llm](../modules/routers_llm.md) | 1 |
 
-> References: showing 12 of 59 logical references; 47 omitted by the 12-row generated summary limit.
+> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.

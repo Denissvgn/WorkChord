@@ -1,6 +1,6 @@
 # ProjectMilestone
 
-**Location:** `frontend/src/types/project.ts:124`
+**Location:** `frontend/src/types/project.ts:125`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

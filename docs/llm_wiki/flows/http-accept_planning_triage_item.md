@@ -101,7 +101,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `accept_planning_triage_item` | `triage_item_id: int`, `data: TriageActionRequest`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db)]`, `command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)]` | `mcp_agent_tools` | - | `...` |
+| `accept_planning_triage_item` | `triage_item_id: int`, `data: TriageActionRequest`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)]` | `mcp_agent_tools` | - | `...` |
 | `_run_triage_action` | `adapter`, `db: AsyncSession`, `actor: AgentActor`, `triage_item_id: int`, `data`, `command: AgentPlanningCommandContext` | - | - | `_require_triage_result(...)` |
 | `require_scope` | `actor: AgentActor`, `scope: str` | - | - | - |
 | `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
@@ -120,11 +120,11 @@ flowchart LR
 |---|---|---:|---|
 | accept_planning_triage_item | _run_triage_action | 699 | `_run_triage_action(mcp_agent_tools.accept_triage_item, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
 | _run_triage_action | require_scope | 673 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 84 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 78 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 70 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 73 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 85 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
 | _run_triage_action | adapter | 674 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | _run_triage_action | data.model_dump | 678 | `data.model_dump(mode='json', exclude_unset=True)` |
 | _run_triage_action | _require_triage_result | 683 | `_require_triage_result(result, triage_item_id)` |
@@ -138,8 +138,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 70 |
-| external_call | `actor_scopes` | `isinstance` | 73 |
+| external_call | `actor_scopes` | `json.loads` | 72 |
+| external_call | `actor_scopes` | `isinstance` | 75 |
 | unresolved_call | `_run_triage_action` | `adapter` | 674 |
 | unresolved_call | `_run_triage_action` | `data.model_dump` | 678 |
 | external_call | `_require_triage_result` | `LookupError` | 578 |

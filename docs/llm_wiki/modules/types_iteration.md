@@ -6,6 +6,12 @@
 
 _Auto-generated from `frontend/src/types/iteration.ts`._
 
+## Imports
+
+| Source | Symbols |
+|--------|---------|
+| `./workMetrics` | `WorkMetrics` |
+
 ## Module Signals
 
 | Signal | Values |
@@ -20,6 +26,7 @@ flowchart LR
     n0["frontend"]
     n1["frontend/src/types/iteration.ts"]
     n0 --> n1
+    n1 --> n0
     click n1 "../modules/types_iteration.md"
 ```
 
@@ -30,19 +37,20 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (17) |
+| Outbound | `frontend` (1) |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationProject](../entities/IterationProject.md) | Class | 1 | — | — |
-| [Iteration](../entities/types_iteration_Iteration.md) | Class | 8 | — | — |
-| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Class | 20 | — | — |
-| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Class | 29 | — | — |
-| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Class | 42 | — | — |
-| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Class | 52 | — | — |
-| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Class | 56 | — | — |
-| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Class | 71 | — | — |
-| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 38 | — | — |
+| [IterationProject](../entities/IterationProject.md) | Class | 2 | — | — |
+| [Iteration](../entities/types_iteration_Iteration.md) | Class | 9 | — | — |
+| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Class | 22 | — | — |
+| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Class | 31 | — | — |
+| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Class | 44 | — | — |
+| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Class | 54 | — | — |
+| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Class | 58 | `WorkMetrics` | — |
+| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Class | 73 | — | — |
+| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 40 | — | — |

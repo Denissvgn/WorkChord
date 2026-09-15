@@ -1,6 +1,6 @@
 # TaskAssignee
 
-**Location:** `backend/app/schemas/task.py:111`
+**Location:** `backend/app/schemas/task.py:118`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

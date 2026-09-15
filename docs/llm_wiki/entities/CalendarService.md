@@ -1,6 +1,6 @@
 # CalendarService
 
-**Location:** `backend/app/services/calendar_service.py:62`
+**Location:** `backend/app/services/calendar_service.py:64`
 **Kind:** Class
 **Bases:** —
 **Module:** [calendar_service](../modules/calendar_service.md)
@@ -22,8 +22,8 @@ Service for calendar operations.
 | `get_or_create_default` | *(async)* `(*, commit: bool = True) -> Calendar` | — | Return the default calendar, optionally deferring creation commit. |
 | `get_by_id` | *(async)* `(calendar_id: int) -> Calendar \| None` | — | Get calendar by ID. |
 | `create` | *(async)* `(data: CalendarCreate) -> Calendar` | — | Create a new calendar. |
-| `update` | *(async)* `(calendar_id: int, data: CalendarUpdate) -> Calendar \| None` | — | Update an existing calendar. |
-| `delete` | *(async)* `(calendar_id: int) -> bool` | — | Delete a calendar. |
+| `update` | *(async)* `(calendar_id: int, data: CalendarUpdate) -> Calendar \| None` | `@schedule_input_command('calendar')` | Update an existing calendar. |
+| `delete` | *(async)* `(calendar_id: int) -> bool` | `@schedule_input_command('calendar')` | Delete a calendar. |
 | `_public_holidays` | `(country: str, year: int) -> list[str]` | — | Return deterministic built-in public holiday dates for a country/year. |
 | `_parse_holiday_csv` | `(csv_text: str \| None) -> tuple[list[str], list[CalendarImportError]]` | — | Parse holiday CSV rows with a required date column. |
 | `_merge_holidays` | `(existing_holidays: Iterable[str], imported_holidays: Iterable[str]) -> tuple[list[str], int, int]` | — | Merge imported holiday dates into existing holiday strings. |

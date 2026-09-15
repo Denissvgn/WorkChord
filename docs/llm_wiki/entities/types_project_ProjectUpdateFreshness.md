@@ -1,6 +1,6 @@
 # ProjectUpdateFreshness
 
-**Location:** `frontend/src/types/project.ts:7`
+**Location:** `frontend/src/types/project.ts:8`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)

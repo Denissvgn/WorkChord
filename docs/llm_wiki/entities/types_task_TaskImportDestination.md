@@ -1,6 +1,6 @@
 # TaskImportDestination
 
-**Location:** `frontend/src/types/task.ts:234`
+**Location:** `frontend/src/types/task.ts:254`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

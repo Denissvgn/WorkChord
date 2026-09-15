@@ -49,7 +49,7 @@ flowchart LR
     s10["10. IterationService"]
     s11["11. iteration_service.get_by_id"]
     s12["12. service.task_to_response"]
-    s1 -. "service.move_task(task_id, target_iteration_id=data.iteration_id, parent_id=data.parent_id, expected_version=data.expected_version)" .-> s2
+    s1 -. "service.move_task(…)" .-> s2
     s1 -->|"_raise_task_version_conflict(exc)"| s3
     s3 -. "HTTPException (backend/app/routers/tasks…aise_task_version_conflict)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))" .-> s4
     s3 -. "exc.detail(data not statically known)" .-> s5
@@ -69,7 +69,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `move_task` | `task_id: int`, `data: TaskMoveRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | `TaskVersionConflictError`, `status`, `status`, `status` | - | `service.task_to_response(...)` |
+| `move_task` | `task_id: int`, `data: TaskMoveRequest`, `service: Annotated[TaskService, Depends(get_task_service)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `TaskVersionConflictError`, `status`, `status`, `status` | - | `service.task_to_response(...)` |
 | `service.move_task` | - | - | - | - |
 | `_raise_task_version_conflict` | `exc: TaskVersionConflictError` | `status` | - | - |
 | `HTTPException (backend/app/routers/tasks…aise_task_version_conflict)` | - | - | - | - |
@@ -86,17 +86,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| move_task | service.move_task | 373 | `service.move_task(task_id, target_iteration_id=data.iteration_id, parent_id=data.parent_id, expected_version=data.expected_version)` |
-| move_task | _raise_task_version_conflict | 380 | `_raise_task_version_conflict(exc)` |
-| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 52 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _raise_task_version_conflict | exc.detail | 54 | `exc.detail(data not statically known)` |
-| move_task | str | 382 | `str(e)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 384 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 388 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 393 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| move_task | IterationService | 398 | `IterationService(db)` |
-| move_task | iteration_service.get_by_id | 399 | `iteration_service.get_by_id(task.iteration_id)` |
-| move_task | service.task_to_response | 400 | `service.task_to_response(task, ...)` |
+| move_task | service.move_task | 356 | `service.move_task(task_id, target_iteration_id=data.iteration_id, parent_id=data.parent_id, expected_version=data.expected_version, expected_revisions=data.expected_revisions)` |
+| move_task | _raise_task_version_conflict | 364 | `_raise_task_version_conflict(exc)` |
+| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 54 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _raise_task_version_conflict | exc.detail | 56 | `exc.detail(data not statically known)` |
+| move_task | str | 366 | `str(e)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 368 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 372 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 377 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| move_task | IterationService | 382 | `IterationService(db)` |
+| move_task | iteration_service.get_by_id | 383 | `iteration_service.get_by_id(task.iteration_id)` |
+| move_task | service.task_to_response | 384 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -106,14 +106,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `move_task` | `service.move_task` | 373 |
-| external_call | `_raise_task_version_conflict` | `HTTPException` | 52 |
-| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 54 |
-| external_call | `move_task` | `HTTPException` | 384 |
-| external_call | `move_task` | `HTTPException` | 388 |
-| external_call | `move_task` | `HTTPException` | 393 |
-| unresolved_call | `move_task` | `iteration_service.get_by_id` | 399 |
-| unresolved_call | `move_task` | `service.task_to_response` | 400 |
+| unresolved_call | `move_task` | `service.move_task` | 356 |
+| external_call | `_raise_task_version_conflict` | `HTTPException` | 54 |
+| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 56 |
+| external_call | `move_task` | `HTTPException` | 368 |
+| external_call | `move_task` | `HTTPException` | 372 |
+| external_call | `move_task` | `HTTPException` | 377 |
+| unresolved_call | `move_task` | `iteration_service.get_by_id` | 383 |
+| unresolved_call | `move_task` | `service.task_to_response` | 384 |
 
 ## Behavior
 

@@ -1,6 +1,6 @@
 # TaskBulkOperationService
 
-**Location:** `backend/app/services/task_bulk_operation_service.py:31`
+**Location:** `backend/app/services/task_bulk_operation_service.py:33`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_bulk_operation_service](../modules/task_bulk_operation_service.md)
@@ -18,7 +18,7 @@ Validate, preview, and apply selected-task bulk operations.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
-| `run` | *(async)* `(data: TaskBulkOperationRequest) -> TaskBulkOperationResponse` | — | Run or preview one bulk operation for selected tasks. |
+| `run` | *(async)* `(data: TaskBulkOperationRequest) -> TaskBulkOperationResponse` | `@atomic_command` | Run or preview one bulk operation for selected tasks. |
 | `_run_for_task` | *(async)* `(task: Task, data: TaskBulkOperationRequest, iteration_end_date: Optional[Any], ui_language) -> TaskBulkOperationResult` | — | — |
 | `_delete_task` | *(async)* `(task: Task, dry_run: bool, ui_language) -> TaskBulkOperationResult` | — | — |
 | `_build_update` | *(async)* `(task: Task, data: TaskBulkOperationRequest, ui_language) -> tuple[TaskUpdate, dict[str, Any], Optional[AssigneeRecommendationResponse], list[str]]` | — | — |

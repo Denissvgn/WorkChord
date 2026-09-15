@@ -135,14 +135,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_capabilities | AgentRoutingRolloutService().status | 329 | `AgentRoutingRolloutService().status(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 329 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentTeamSetupService(…).routing_readiness | 331 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| get_agent_capabilities | AgentTeamSetupService | 331 | `AgentTeamSetupService(service.db)` |
-| get_agent_capabilities | (…).status | 334 | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 335 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 338 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
-| get_agent_capabilities | agent_contract_features | 342 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
+| get_agent_capabilities | AgentRoutingRolloutService().status | 337 | `AgentRoutingRolloutService().status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 337 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentTeamSetupService(…).routing_readiness | 339 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
+| get_agent_capabilities | AgentTeamSetupService | 339 | `AgentTeamSetupService(service.db)` |
+| get_agent_capabilities | (…).status | 342 | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 343 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 346 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
+| get_agent_capabilities | agent_contract_features | 350 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
 | agent_contract_features | ValueError | 41 | `ValueError('Unsupported model-aware routing mode')` |
 | agent_contract_features | features.insert | 49 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
 | agent_contract_features | features.index | 50 | `features.index('actor-roster-v1')` |
@@ -151,16 +151,16 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `features.append` | `get_agent_capabilities` | 362 |
+| mutation | `features.append` | `get_agent_capabilities` | 370 |
 | mutation | `features.insert` | `agent_contract_features` | 49 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 329 |
-| unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 331 |
-| unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 334 |
+| unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 337 |
+| unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 339 |
+| unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 342 |
 | external_call | `agent_contract_features` | `ValueError` | 41 |
 | unresolved_call | `agent_contract_features` | `features.index` | 50 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |

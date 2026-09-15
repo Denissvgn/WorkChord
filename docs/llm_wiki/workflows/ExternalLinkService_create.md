@@ -1,7 +1,7 @@
 # ExternalLinkService_create
 
 **Entry point:** `external_link_service.ExternalLinkService.create`
-**Modules involved:** [external_link_service](../modules/external_link_service.md), [models_external_link](../modules/models_external_link.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [task_context_revision_service](../modules/task_context_revision_service.md)
+**Modules involved:** [commands](../modules/commands.md), [external_link_service](../modules/external_link_service.md), [models_external_link](../modules/models_external_link.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [task_context_revision_service](../modules/task_context_revision_service.md)
 
 > Create a generic external link.
 
@@ -11,9 +11,11 @@
 1. `task_context_revision_service.reserve_task_context_revision`
 2. `models_external_link.ExternalLink`
 3. `outbound_webhook_service.emit_outbound_webhook_event`
+4. `commands.commit_or_flush`
 
 ## Touches
 
+- [commands](../modules/commands.md)
 - [external_link_service](../modules/external_link_service.md)
 - [models_external_link](../modules/models_external_link.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)

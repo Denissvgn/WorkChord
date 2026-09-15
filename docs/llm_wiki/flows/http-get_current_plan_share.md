@@ -38,7 +38,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_current_plan_share` | `iteration_id: int`, `response: Response`, `current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db)]` | - | `response.headers[...]` | `...` |
+| `get_current_plan_share` | `iteration_id: int`, `response: Response`, `current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | - | `response.headers[...]` | `...` |
 | `PlanShareService` | - | - | - | - |
 | `service.get_owned_current` | - | - | - | - |
 | `service.to_response` | - | - | - | - |

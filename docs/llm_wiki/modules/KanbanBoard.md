@@ -14,11 +14,13 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 | `../../../services/taskService` | `taskService` |
 | `../../../services/teamService` | `teamService` |
 | `../../../types/task` | `Task`, `TaskStatus`, `TaskUpdate` |
-| `../../../utils/taskFilters` | `filterTaskWithChildren` |
+| `../../../utils/visibleWork` | `selectVisibleWork` |
 | `../../common/Button` | `Button` |
 | `../../common/Modal` | `Modal` |
 | `../../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
+| `../../feedback/WorkFreshness` | `WorkFreshness` |
 | `../../ui/tone` | `STATUS_TONE` |
+| `../TaskEditorDrawer` | `TaskEditorDrawer` |
 | `../TaskFiltersBar` | `TaskFilters` |
 | `./KanbanCard` | `KanbanCard` |
 | `./KanbanColumn` | `KanbanColumn` |
@@ -56,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -64,16 +66,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Class | 31 | — | — |
-| [ColumnId](../entities/ColumnId.md) | Type alias | 36 | — | — |
-| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 53 | — | — |
-| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 57 | — | — |
+| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Class | 33 | — | — |
+| [ColumnId](../entities/ColumnId.md) | Type alias | 38 | — | — |
+| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 55 | — | — |
+| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 59 | — | — |
 
 ## Functions
 

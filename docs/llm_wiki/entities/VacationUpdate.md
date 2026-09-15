@@ -1,8 +1,8 @@
 # VacationUpdate
 
-**Location:** `backend/app/schemas/team.py:39`
+**Location:** `backend/app/schemas/team.py:41`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 
 ## Description
@@ -26,7 +26,7 @@ Schema for partially updating a vacation period.
 ```mermaid
 flowchart LR
     n0["VacationUpdate (backend/app/schemas/team.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["update_vacation (backend/app/routers/agent_planning.py)"]
     n4["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
@@ -37,6 +37,7 @@ flowchart LR
     n4 --> n0
     n5 --> n0
     click n0 "../modules/schemas_team.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/agent_planning_service.md"
@@ -53,7 +54,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

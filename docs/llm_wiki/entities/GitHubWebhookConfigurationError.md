@@ -1,6 +1,6 @@
 # GitHubWebhookConfigurationError
 
-**Location:** `backend/app/services/github_webhook_service.py:37`
+**Location:** `backend/app/services/github_webhook_service.py:39`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [github_webhook_service](../modules/github_webhook_service.md)

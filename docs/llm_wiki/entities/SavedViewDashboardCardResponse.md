@@ -1,6 +1,6 @@
 # SavedViewDashboardCardResponse
 
-**Location:** `backend/app/schemas/saved_view.py:125`
+**Location:** `backend/app/schemas/saved_view.py:127`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_saved_view](../modules/schemas_saved_view.md)

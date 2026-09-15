@@ -1,6 +1,6 @@
 # TaskBulkOperationRequest
 
-**Location:** `frontend/src/types/task.ts:272`
+**Location:** `frontend/src/types/task.ts:293`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -13,6 +13,8 @@ _Auto-generated from `TaskBulkOperationRequest` in `frontend/src/types/task.ts`.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `expected_versions` | `Record<number, number>` | *required* | — |
+| `expected_revisions` | `Record<number, number>` | *required* | — |
 | `task_ids` | `number[]` | *required* | — |
 | `action` | `TaskBulkAction` | *required* | — |
 | `payload` | `Record<string, unknown>` | *required* | — |
@@ -41,7 +43,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `action`, `dry_run`, `payload`, `task_ids` |
+| [types_task](../modules/types_task.md) | 0 | `action`, `dry_run`, `expected_revisions`, `expected_versions`, `payload`, `task_ids` |
 
 ### References
 

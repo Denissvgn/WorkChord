@@ -1,6 +1,6 @@
 # TaskTreeIntegrityError
 
-**Location:** `backend/app/services/task_service.py:43`
+**Location:** `backend/app/services/task_service.py:46`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [task_service](../modules/task_service.md)

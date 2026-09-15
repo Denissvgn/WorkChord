@@ -1,6 +1,6 @@
 # SavedViewDuplicate
 
-**Location:** `frontend/src/types/savedView.ts:61`
+**Location:** `frontend/src/types/savedView.ts:63`
 **Kind:** Class
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)

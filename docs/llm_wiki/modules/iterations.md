@@ -76,7 +76,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `get_iteration_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db)]) -> IterationService` | — | Dependency for iteration service. |
+| `get_iteration_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> IterationService` | — | Dependency for iteration service. |
 | `get_iterations` | *(async)* `(service: Annotated[IterationService, Depends(get_iteration_service)], limit: Annotated[int \| None, Query(ge=1, le=MAX_ITERATION_LIST_ITEMS)] = None, cursor_start_date: date \| None = None, cursor_id: int \| None = None)` | `@router.get('/iterations', response_model=list[IterationResponse])` | Get the compatible small list or one explicit stable keyset page. |
 | `create_iteration` | *(async)* `(data: IterationCreate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.post('/iterations', response_model=IterationResponse, status_code=status.HTTP_201_CREATED)` | Create a new iteration. |
 | `create_iteration_series` | *(async)* `(data: IterationSeriesCreate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.post('/iterations/series', response_model=IterationSeriesResponse, status_code=status.HTTP_201_CREATED)` | Create a back-to-back series of iterations. |

@@ -1,6 +1,6 @@
 # AgentRoutingService
 
-**Location:** `backend/app/services/agent_routing_service.py:199`
+**Location:** `backend/app/services/agent_routing_service.py:201`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)

@@ -24,6 +24,8 @@ _Auto-generated from `SavedView` in `frontend/src/types/savedView.ts`._
 | `columns_json` | `Record<string, unknown>` | *required* | — |
 | `created_by_session_id` | `number \| null` | *required* | — |
 | `schema_version` | `number` | *required* | — |
+| `metric_migration_note` | `string \| null` | *required* | — |
+| `owner_principal_id` | `number \| null` | *required* | — |
 | `is_valid` | `boolean` | *required* | — |
 | `invalid_reason` | `string \| null` | *required* | — |
 | `created_at` | `string` | *required* | — |
@@ -70,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [savedView](../modules/savedView.md) | 0 | `columns_json`, `created_at`, `created_by_session_id`, `description`, `filters_json`, `id`, `invalid_reason`, `is_valid`, `name`, `schema_version`, `scope`, `seed_key` |
+| [savedView](../modules/savedView.md) | 0 | `columns_json`, `created_at`, `created_by_session_id`, `description`, `filters_json`, `id`, `invalid_reason`, `is_valid`, `metric_migration_note`, `name`, `owner_principal_id`, `schema_version` |
 
 ### References
 

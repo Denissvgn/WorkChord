@@ -1,6 +1,6 @@
 # TaskMoveRequest
 
-**Location:** `frontend/src/types/task.ts:155`
+**Location:** `frontend/src/types/task.ts:174`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -13,6 +13,7 @@ _Auto-generated from `TaskMoveRequest` in `frontend/src/types/task.ts`._
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `expected_revisions` | `Record<number, number>` | *required* | — |
 | `iteration_id` | `number` | *required* | — |
 | `parent_id` | `number \| null` | *required* | — |
 | `expected_version` | `number` | *required* | — |
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `expected_version`, `iteration_id`, `parent_id` |
+| [types_task](../modules/types_task.md) | 0 | `expected_revisions`, `expected_version`, `iteration_id`, `parent_id` |
 
 ### References
 

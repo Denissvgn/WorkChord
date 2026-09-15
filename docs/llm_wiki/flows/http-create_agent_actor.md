@@ -113,17 +113,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_actor | require_scope | 546 | `require_scope(actor, 'admin')` |
-| require_scope | actor_has_scope | 84 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 78 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 70 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 73 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 85 | `AgentPermissionError(...)` |
-| create_agent_actor | service.create_actor | 547 | `service.create_actor(data, principal=actor)` |
-| create_agent_actor | _handle_agent_error | 552 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 244 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 246 | `str(exc)` |
-| _handle_agent_error | str | 248 | `str(exc)` |
+| create_agent_actor | require_scope | 554 | `require_scope(actor, 'admin')` |
+| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
+| create_agent_actor | service.create_actor | 555 | `service.create_actor(data, principal=actor)` |
+| create_agent_actor | _handle_agent_error | 560 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 252 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 254 | `str(exc)` |
+| _handle_agent_error | str | 256 | `str(exc)` |
 
 ### Boundary effects
 
@@ -133,10 +133,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 70 |
-| external_call | `actor_scopes` | `isinstance` | 73 |
-| unresolved_call | `create_agent_actor` | `service.create_actor` | 547 |
-| external_call | `_handle_agent_error` | `isinstance` | 244 |
+| external_call | `actor_scopes` | `json.loads` | 72 |
+| external_call | `actor_scopes` | `isinstance` | 75 |
+| unresolved_call | `create_agent_actor` | `service.create_actor` | 555 |
+| external_call | `_handle_agent_error` | `isinstance` | 252 |
 | step_limit | `create_agent_actor` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -1,7 +1,7 @@
 # AgentModelCatalogService__execute
 
 **Entry point:** `agent_model_catalog_service.AgentModelCatalogService._execute`
-**Modules involved:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing](../modules/agent_routing.md), [agent_service](../modules/agent_service.md), [models_agent](../modules/models_agent.md)
+**Modules involved:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing](../modules/agent_routing.md), [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md)
 
 ## Sequence
 
@@ -11,12 +11,14 @@
 3. `agent_service.validate_idempotency_key`
 4. `agent_routing.AgentModelMutationReceipt`
 5. `models_agent.AgentIdempotencyRecord`
+6. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_model_catalog_service](../modules/agent_model_catalog_service.md)
 - [agent_routing](../modules/agent_routing.md)
 - [agent_service](../modules/agent_service.md)
+- [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
 
 ## Behavior
