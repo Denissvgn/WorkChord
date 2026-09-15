@@ -43,9 +43,9 @@ class GanttTask(TaskMetricSignals):
     assignees: list[GanttAssignee] = []  # For composite tasks
     priority: int
     progress: float = 0.0
-    effort_days: float
+    effort_days: Optional[float]
     calculated_effort_days: Optional[float] = None  # Effort after applying coefficients
-    effort_hours: float
+    effort_hours: Optional[float]
     version: int = 1  # Optimistic-concurrency version for batch apply from the Gantt
     is_overdue: bool = False
     is_delayed: bool = False  # start_date passed but still in PLANNED status
@@ -61,7 +61,7 @@ class SchedulingDecision(BaseModel):
     """Explanation for a scheduling decision."""
     task_id: int
     task_title: str
-    decision_type: Literal["scheduled", "reordered", "delayed", "overdue"]
+    decision_type: Literal["scheduled", "reordered", "delayed", "overdue", "unavailable"]
     reason: str
     affected_tasks: list[int] = []
 

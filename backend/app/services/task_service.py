@@ -95,7 +95,8 @@ class TaskService:
 
     async def require_iteration_exists(self, iteration_id: int) -> None:
         """Validate that a task write target is a real iteration."""
-        await self._iteration_project_id(iteration_id)
+        if iteration_id is not None:
+            await self._iteration_project_id(iteration_id)
 
     async def _iteration_project_id(self, iteration_id: int) -> Optional[int]:
         """Return an iteration's project scope, raising when the iteration is missing."""
@@ -113,6 +114,11 @@ class TaskService:
         requested_project_id: Optional[int],
     ) -> Optional[int]:
         """Apply iteration project scope to a new executable task."""
+        if iteration_id is None:
+            if requested_project_id is None:
+                raise ValueError("Project backlog tasks require project_id")
+            await self._require_project_exists(requested_project_id)
+            return requested_project_id
         scoped_project_id = await self._iteration_project_id(iteration_id)
         if scoped_project_id is not None:
             if requested_project_id is not None and requested_project_id != scoped_project_id:
@@ -129,6 +135,12 @@ class TaskService:
         project_id_was_set: bool,
     ) -> Optional[int]:
         """Validate and return the effective project for a task update."""
+        if task.iteration_id is None:
+            effective = requested_project_id if project_id_was_set else task.project_id
+            if effective is None:
+                raise ValueError("Project backlog tasks require project_id")
+            await self._require_project_exists(effective)
+            return effective
         scoped_project_id = await self._iteration_project_id(task.iteration_id)
         if scoped_project_id is not None:
             if project_id_was_set:
@@ -148,6 +160,7 @@ class TaskService:
         self,
         iteration_id: int,
         dependency_ids: Sequence[int],
+        project_id: int | None = None,
     ) -> None:
         """Validate that task dependencies stay inside one iteration schedule graph."""
         dependency_id_set = set(dependency_ids)
@@ -155,18 +168,18 @@ class TaskService:
             return
 
         result = await self.db.execute(
-            select(Task.id, Task.iteration_id).where(Task.id.in_(dependency_id_set))
+            select(Task.id, Task.iteration_id, Task.project_id).where(Task.id.in_(dependency_id_set))
         )
         dependency_iterations = {
-            task_id: dependency_iteration_id
-            for task_id, dependency_iteration_id in result.all()
+            task_id: (dependency_iteration_id, dependency_project_id)
+            for task_id, dependency_iteration_id, dependency_project_id in result.all()
         }
 
         for dependency_id in dependency_id_set:
-            dependency_iteration_id = dependency_iterations.get(dependency_id)
-            if dependency_iteration_id is None:
+            dependency_scope = dependency_iterations.get(dependency_id)
+            if dependency_scope is None:
                 raise ValueError(f"Dependency task with id {dependency_id} not found")
-            if dependency_iteration_id != iteration_id:
+            if dependency_scope[0] != iteration_id or iteration_id is None and dependency_scope[1] != project_id:
                 raise ValueError("Task dependencies must belong to the same iteration.")
 
     async def _require_acyclic_dependencies(
@@ -218,9 +231,10 @@ class TaskService:
         hint_result = await self.db.execute(
             select(Task.iteration_id).where(Task.id == task_id)
         )
-        iteration_id = hint_result.scalar_one_or_none()
-        if iteration_id is None:
+        hint = hint_result.first()
+        if hint is None:
             return None
+        iteration_id = hint[0]
         await self.db.execute(
             select(Iteration.id)
             .where(Iteration.id == iteration_id)
@@ -273,6 +287,8 @@ class TaskService:
         """Validate that an executable task assignee belongs to the task iteration."""
         if assignee_id is None:
             return
+        if iteration_id is None:
+            raise ValueError("Backlog ownership uses owner_profile_id; capacity assignment requires an iteration")
 
         result = await self.db.execute(
             select(TeamMember).where(TeamMember.id == assignee_id)
@@ -314,6 +330,8 @@ class TaskService:
         for child in children:
             child_changes: dict[str, dict[str, Any]] = {}
             if child.project_id != project_id:
+                from app.services.task_domain_service import require_owner
+                await require_owner(self.db, child.owner_profile_id, project_id)
                 old_project_id = child.project_id
                 child.project_id = project_id
                 child_changes["project_id"] = {
@@ -440,7 +458,7 @@ class TaskService:
         loaded_version = task.version
         command = current_command(self.db)
         if command is not None:
-            await lock_iterations(self.db, [task.iteration_id])
+            await lock_iterations(self.db, [task.iteration_id] if task.iteration_id is not None else [])
             if task_id in command.tasks:
                 if expected_version is not None and expected_version not in {command.tasks[task_id], task.version}:
                     raise TaskVersionConflictError(expected_version, self._metadata_from_task(task))
@@ -502,13 +520,30 @@ class TaskService:
         )
         return roots
 
-    def _task_graph_query(self, iteration_id: int):
+    async def load_owner_names(self, tasks):
+        """Expose only the public owner name through already authorized task scope."""
+        from app.authority import internal_authority
+        from app.models.team_member import TeamMemberProfile
+        for task in tasks:
+            task.__dict__["_owner_name"] = None
+        ids = {task.owner_profile_id for task in tasks if task.owner_profile_id is not None}
+        if not ids:
+            return
+        for task in tasks:
+            require_project(self.db, task.project_id, "read")
+        with internal_authority(self.db):
+            names = dict((await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.display_name).where(TeamMemberProfile.id.in_(ids)))).all())
+        for task in tasks:
+            task.__dict__["_owner_name"] = names.get(task.owner_profile_id)
+
+    def _task_graph_query(self, iteration_id: int | None, project_id: int | None = None):
         """Build the bounded relationship query used before in-memory tree assembly."""
         return (
             select(Task)
-            .where(Task.iteration_id == iteration_id)
+            .where(Task.iteration_id == iteration_id, *([Task.project_id == project_id] if iteration_id is None else []))
             .execution_options(populate_existing=True)
             .options(
+                selectinload(Task.owner_profile),
                 selectinload(Task.project),
                 selectinload(Task.milestone),
                 selectinload(Task.assignee).selectinload(TeamMember.vacations),
@@ -526,14 +561,16 @@ class TaskService:
         iteration_id: int,
         *,
         max_tasks: int = MAX_ITERATION_TREE_TASKS,
+        project_id: int | None = None,
     ) -> tuple[list[Task], dict[int, Task]]:
         """Load and defensively assemble a contract-bounded iteration."""
         result = await self.db.execute(
-            self._task_graph_query(iteration_id).limit(max_tasks + 1)
+            self._task_graph_query(iteration_id, project_id).limit(max_tasks + 1)
         )
         tasks = list(result.scalars().all())
         if len(tasks) > max_tasks:
             raise CollectionLimitExceededError("iteration task tree", max_tasks)
+        await self.load_owner_names(tasks)
         tasks_by_id = {task.id: task for task in tasks}
 
         # Relationship access from synchronous scheduling/snapshot serializers
@@ -609,11 +646,10 @@ class TaskService:
 
     async def get_by_id(self, task_id: int) -> Optional[Task]:
         """Get one task with its complete iteration tree relationships assembled."""
-        result = await self.db.execute(select(Task.iteration_id).where(Task.id == task_id))
-        iteration_id = result.scalar_one_or_none()
-        if iteration_id is None:
+        row = (await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first()
+        if row is None:
             return None
-        _, tasks_by_id = await self._load_iteration_tree(iteration_id)
+        _, tasks_by_id = await self._load_iteration_tree(row.iteration_id, project_id=row.project_id)
         return tasks_by_id.get(task_id)
 
     @atomic_command
@@ -634,9 +670,14 @@ class TaskService:
         if iteration_id is not None:
             await lock_iterations(self.db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
         await self.require_iteration_exists(iteration_id)
-        await self._require_same_iteration_dependencies(iteration_id, data.depends_on)
+        if iteration_id is None and data.project_id is not None:
+            from app.commands import lock_backlog_project
+            await lock_backlog_project(self.db, data.project_id)
+            if create_snapshot:
+                from app.services.backlog_snapshot_service import BacklogSnapshotService
+                await BacklogSnapshotService(self.db).capture(data.project_id, "before_create")
+        await self._require_same_iteration_dependencies(iteration_id, data.depends_on, data.project_id)
 
-        effort_hours = data.effort_hours if data.effort_hours else data.effort_days * 8
         project_id = data.project_id
         milestone_id = data.milestone_id
 
@@ -650,9 +691,8 @@ class TaskService:
             if not parent.children and not parent.is_summary:
                 if parent.status != "planned":
                     raise ValueError("Executed leaf work cannot be silently converted into a summary")
-                inherited = {key: getattr(parent, key) for key in ["priority", "assignee_id", "effort_days", "effort_hours"] if key not in data.model_fields_set}
+                inherited = {key: getattr(parent, key) for key in ["priority", "assignee_id", "owner_profile_id", "effort_days", "effort_hours"] if key not in data.model_fields_set}
                 data = data.model_copy(update=inherited)
-                effort_hours = data.effort_hours if data.effort_hours is not None else data.effort_days * 8
 
             if project_id is None:
                 project_id = parent.project_id
@@ -669,6 +709,10 @@ class TaskService:
         await self._require_milestone_compatible(milestone_id, project_id)
         await self.require_iteration_assignee(data.assignee_id, iteration_id)
 
+        from app.services.task_domain_service import normalize_effort, require_owner, nominal_day_hours
+        day_hours = await nominal_day_hours(self.db, iteration_id)
+        estimate = normalize_effort(data.model_dump(exclude_unset=True), day_hours)
+        await require_owner(self.db, data.owner_profile_id, project_id)
         if create_snapshot:
             # Create snapshot after validation so rejected writes do not leave snapshots.
             snapshot_service = SnapshotService(self.db)
@@ -682,8 +726,12 @@ class TaskService:
             title=data.title,
             description=data.description,
             priority=data.priority,
-            effort_days=data.effort_days,
-            effort_hours=effort_hours,
+            effort_hours=estimate["effort_hours"],
+            _legacy_effort_days=estimate["effort_days"],
+            nominal_day_hours=day_hours,
+            estimate_provenance=estimate["estimate_provenance"],
+            owner_profile_id=data.owner_profile_id,
+            ownership_provenance="explicit" if data.owner_profile_id else "unassigned",
             assignee_id=data.assignee_id,
             status=TaskStatus.PLANNED.value,
             is_optional=data.is_optional,
@@ -698,6 +746,9 @@ class TaskService:
         )
         self.db.add(task)
         await self.db.flush()
+        if data.brief is not None:
+            from app.services.task_brief_service import TaskBriefService
+            await TaskBriefService(self.db).apply_brief(task, data.brief)
         if task.parent_id is not None:
             await self.status_service.reconcile_parent_chain(task.parent_id, commit=False)
 
@@ -791,6 +842,7 @@ class TaskService:
         if not task:
             return None
 
+        previous_project_id = task.project_id
         fields = set(data.model_dump(exclude_unset=True)) - {"expected_version"}
         new_state = getattr(data.status, "value", data.status)
         action = ("review" if new_state == "closed" else "execute") if fields == {"status"} else "edit"
@@ -905,9 +957,26 @@ class TaskService:
                     "new": None,
                 }
 
-        # Auto-calculate effort_hours if effort_days changed
-        if "effort_days" in update_data and "effort_hours" not in update_data:
-            update_data["effort_hours"] = update_data["effort_days"] * 8
+        from app.services.task_domain_service import normalize_effort, require_owner
+        if effective_project_id != previous_project_id or "owner_profile_id" in update_data and update_data["owner_profile_id"] != task.owner_profile_id:
+            await require_owner(self.db, update_data.get("owner_profile_id", task.owner_profile_id), effective_project_id)
+        if "owner_profile_id" in update_data:
+            if update_data["owner_profile_id"] != task.owner_profile_id:
+                update_data["ownership_provenance"] = "explicit" if update_data["owner_profile_id"] else "unassigned"
+        if {"effort_days", "effort_hours", "estimate_provenance"}.intersection(update_data):
+            estimate = normalize_effort(update_data, task.nominal_day_hours, current_hours=task.effort_hours)
+            update_data.pop("effort_days", None)
+            update_data.update({"effort_hours": estimate["effort_hours"], "_legacy_effort_days": estimate["effort_days"], "estimate_provenance": estimate["estimate_provenance"]})
+        brief_input = update_data.pop("brief", None)
+        from app.services.task_brief_service import TaskBriefService, render_brief
+        if "brief" in data.model_fields_set and data.brief is None:
+            raise ValueError("A canonical brief cannot be cleared; edit its fields instead")
+        if task.brief is not None and "description" in update_data and update_data["description"] != render_brief(brief_input or task.brief):
+            raise ValueError("This task has a canonical brief; reload and edit its structured fields")
+        if brief_input is not None:
+            if await TaskBriefService(self.db).apply_brief(task, data.brief):
+                changed_fields["brief_revision"] = {"old": task.brief_revision - 1, "new": task.brief_revision}
+            update_data.pop("description", None)
 
         # Convert tags list to JSON string
         if "tags" in update_data and update_data["tags"] is not None:
@@ -921,7 +990,7 @@ class TaskService:
 
         # Handle dependency updates
         if depends_on_ids is not None:
-            await self._require_same_iteration_dependencies(task.iteration_id, depends_on_ids)
+            await self._require_same_iteration_dependencies(task.iteration_id, depends_on_ids, task.project_id)
             await self._require_acyclic_dependencies(
                 task_id,
                 task.iteration_id,
@@ -954,6 +1023,10 @@ class TaskService:
                 child = await self.db.get(Task, child_id)
                 await self.reserve_task_version(child, child.version)
         if changed_fields:
+            from app.services.task_brief_service import clear_acceptance
+            clear_acceptance(task)
+            if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
+                task.progress = None
             await self.reserve_task_version(task, expected_version)
             await self.record_task_event(
                 task_id,
@@ -1069,7 +1142,7 @@ class TaskService:
             return False
 
         await self._require_same_iteration_dependencies(
-            task.iteration_id, [depends_on_id]
+            task.iteration_id, [depends_on_id], task.project_id
         )
         await self._require_acyclic_dependencies(
             task_id,
@@ -1364,8 +1437,13 @@ class TaskService:
     async def _lock_task_scope(self, task_id, *, target_iteration_id=None, expected_revisions=None):
         iteration_id = await self.db.scalar(select(Task.iteration_id).where(Task.id == task_id))
         if iteration_id is None:
-            return
-        ids = [iteration_id] + ([target_iteration_id] if target_iteration_id is not None else [])
+            from app.commands import lock_backlog_project
+            project_id = await self.db.scalar(select(Task.project_id).where(Task.id == task_id))
+            if project_id is not None:
+                await lock_backlog_project(self.db, project_id)
+                from app.services.backlog_snapshot_service import BacklogSnapshotService
+                await BacklogSnapshotService(self.db).capture(project_id, "before_task_change")
+        ids = ([iteration_id] if iteration_id is not None else []) + ([target_iteration_id] if target_iteration_id is not None else [])
         await lock_iterations(self.db, ids, expected=expected_revisions)
 
     async def _require_unclaimed_structure(self, task_ids):
@@ -1489,10 +1567,9 @@ class TaskService:
                 effective_project_id,
             ):
                 raise ValueError("Task milestone must belong to the target iteration project.")
-            await self.require_iteration_assignee(
-                moving_task.assignee_id,
-                target_iteration_id,
-            )
+            from app.services.task_domain_service import require_owner
+            if moving_task.project_id != effective_project_id:
+                await require_owner(self.db, moving_task.owner_profile_id, effective_project_id)
 
         require_project(self.db, task.project_id, "edit")
         require_project(self.db, effective_project_id, "edit")
@@ -1529,6 +1606,13 @@ class TaskService:
                     "new": target_iteration_id,
                 }
                 moving_task.iteration_id = target_iteration_id
+                if moving_task.assignee_id is not None:
+                    changes["assignee_id"] = {"old": moving_task.assignee_id, "new": None}
+                    moving_task.assignee_id = None
+                from app.services.task_domain_service import nominal_day_hours
+                moving_task.nominal_day_hours = await nominal_day_hours(self.db, target_iteration_id)
+                moving_task._legacy_effort_days = moving_task.effort_days
+                moving_task.start_date = moving_task.end_date = moving_task.calculated_effort_days = None
             if moving_task.project_id != effective_project_id:
                 changes["project_id"] = {
                     "old": moving_task.project_id,
@@ -1695,6 +1779,15 @@ class TaskService:
             priority=task.priority,
             effort_days=task.effort_days,
             effort_hours=task.effort_hours,
+            nominal_day_hours=task.nominal_day_hours,
+            estimate_provenance=task.estimate_provenance,
+            owner_profile_id=task.owner_profile_id,
+            owner=TaskAssignee(id=task.owner_profile_id, name=task.__dict__["_owner_name"]) if task.__dict__.get("_owner_name") else None,
+            ownership_provenance=task.ownership_provenance,
+            blocked_reason=task.blocked_reason, canceled_at=task.canceled_at, canceled_reason=task.canceled_reason,
+            execution_mode=task.execution_mode, brief=task.brief, brief_revision=task.brief_revision,
+            brief_provenance=task.brief_provenance, legacy_description=task.legacy_description,
+            brief_migration_notes=task.brief_migration_notes or [], artifact_revision=task.artifact_revision, progress=task.progress,
             project=project,
             milestone=milestone,
             assignee=assignee,
@@ -1819,6 +1912,9 @@ class TaskService:
         expected_version: Optional[int] = None,
         commit: bool = True,
         reserve_version: bool = True,
+        manual_execution: bool = False,
+        review_evidence: str = "",
+        review_rework: bool = False,
     ) -> tuple[Optional[Task], list[dict], bool]:
         """Delegate status transitions to TaskStatusService."""
         return await self.status_service.change_status(
@@ -1834,6 +1930,9 @@ class TaskService:
             expected_version=expected_version,
             commit=commit,
             reserve_version=reserve_version,
+            manual_execution=manual_execution,
+            review_evidence=review_evidence,
+            review_rework=review_rework,
         )
 
     async def _update_parent_status(self, parent_id: int) -> None:

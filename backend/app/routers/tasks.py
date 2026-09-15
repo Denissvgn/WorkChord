@@ -6,7 +6,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from pydantic import ValidationError
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.models.task import Task
 
 from app.database import get_db
 from app.schemas.task import (
@@ -973,8 +975,8 @@ async def get_task_timeline(
 ):
     """Get merged task timeline with events, status logs, and agent runs."""
     agent_service = AgentService(db)
-    task = await agent_service.task_service.get_by_id(task_id)
-    if not task:
+    task = await db.scalar(select(Task.id).where(Task.id == task_id))
+    if task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Task with id {task_id} not found"

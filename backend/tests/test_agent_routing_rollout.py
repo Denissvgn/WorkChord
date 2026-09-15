@@ -527,6 +527,8 @@ async def test_rollback_blocks_queued_model_aware_work_until_enforced(
     task = await task_factory(
         assignee=member,
         description=_TASK_BRIEF,
+        effort_hours=8,
+        estimate_provenance="estimated",
         tags=json.dumps(["agent", "cap:backend-python"]),
         start_date=date(2026, 7, 20),
         end_date=date(2026, 7, 24),

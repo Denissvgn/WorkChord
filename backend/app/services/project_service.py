@@ -870,6 +870,9 @@ class ProjectService:
         if linked_task_count and not detach_tasks:
             return "has_tasks"
 
+        backlog_exists = await self.db.scalar(select(Task.id).where(Task.project_id == project_id, Task.iteration_id.is_(None)).limit(1))
+        if backlog_exists is not None:
+            return "has_tasks"
         project_name = project.name
         try:
             if linked_task_count:
@@ -926,6 +929,7 @@ class ProjectService:
             )
             .options(
                 selectinload(Task.project),
+                selectinload(Task.owner_profile),
                 selectinload(Task.milestone),
                 selectinload(Task.assignee),
                 selectinload(Task.claimed_agent),
@@ -933,6 +937,7 @@ class ProjectService:
                 selectinload(Task.request_source_links),
                 selectinload(Task.dependencies).selectinload(TaskDependency.depends_on),
                 selectinload(Task.children).selectinload(Task.project),
+                selectinload(Task.children).selectinload(Task.owner_profile),
                 selectinload(Task.children).selectinload(Task.milestone),
                 selectinload(Task.children).selectinload(Task.assignee),
                 selectinload(Task.children).selectinload(Task.claimed_agent),
@@ -946,7 +951,15 @@ class ProjectService:
             .order_by(Task.sort_order, Task.id)
         )
         result = await self.db.execute(query)
-        return result.scalars().all()
+        roots = list(result.scalars().all())
+        loaded, pending = [], list(roots)
+        while pending:
+            task = pending.pop()
+            loaded.append(task)
+            pending.extend(task.__dict__.get("children", []))
+        from app.services.task_service import TaskService
+        await TaskService(self.db).load_owner_names(loaded)
+        return roots
 
     async def _get_all_linked_tasks(self, project_id: int) -> Sequence[Task]:
         """Get every task linked to a project for aggregate calculations."""

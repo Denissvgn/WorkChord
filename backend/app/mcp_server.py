@@ -958,6 +958,36 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool()
+    async def agent_convert_triage_to_backlog(triage_item_id: int, payload: dict[str, Any]) -> dict[str, Any] | None:
+        """Convert intake into unscheduled project work."""
+        return await _tool_call("triage:write", lambda db, actor: mcp_agent_tools.convert_triage_to_backlog(db, actor, triage_item_id, payload))
+
+    @mcp.tool()
+    async def agent_get_task_actions(task_id: int) -> dict[str, Any]:
+        """Read shared allowed actions and typed blockers for the authenticated actor."""
+        return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_task_actions(db, actor, task_id))
+
+    @mcp.tool()
+    async def agent_get_task_detail(task_id: int, limit: int = 50) -> dict[str, Any] | None:
+        """Read bounded UI context; use complete context for execution."""
+        return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_task_detail(db, actor, task_id, limit))
+
+    @mcp.tool()
+    async def agent_apply_task_command(task_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        """Apply an explicit domain command with version and reason."""
+        return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.apply_task_command(db, actor, task_id, payload))
+
+    @mcp.tool()
+    async def agent_create_backlog_task(project_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        """Capture project backlog work without an iteration."""
+        return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.create_project_backlog_task(db, actor, project_id, payload))
+
+    @mcp.tool()
+    async def agent_write_task_brief(task_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        """Save canonical brief fields with a current task version."""
+        return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.write_task_brief(db, actor, task_id, payload))
+
+    @mcp.tool()
     async def agent_get_task_context(task_id: int) -> dict[str, Any] | None:
         """Get task details plus merged timeline context."""
         return await _tool_call(

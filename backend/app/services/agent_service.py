@@ -1422,8 +1422,8 @@ class AgentService:
         """Return merged task event, status log, run, and run-event timeline items."""
         from app.models.task_status_log import TaskStatusLog
 
-        task = await self.task_service.get_by_id(task_id)
-        if not task:
+        task_id_exists = await self.db.scalar(select(Task.id).where(Task.id == task_id))
+        if task_id_exists is None:
             return []
 
         items: list[dict[str, Any]] = []

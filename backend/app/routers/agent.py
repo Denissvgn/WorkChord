@@ -351,6 +351,8 @@ async def get_agent_capabilities(
         include_skill_bundles=False,
         model_aware_routing_mode=rollout_status.effective_mode.value,
     )
+    from app.services.task_domain_service import domain_capabilities
+    features.extend((await domain_capabilities(getattr(service, "db", None)))["features"])
     recommended_skills: dict[str, str] = {}
     catalog_version = None
     catalog_url = None

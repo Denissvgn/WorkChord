@@ -36,8 +36,8 @@ export const isPlanningLeafTask = (task: Task) => (
     && !task.children?.length
 );
 
-export const hasPositivePlanningEffort = (value: number) => (
-    Number.isFinite(value) && value > 0
+export const hasPositivePlanningEffort = (value: number | null): value is number => (
+    Number.isFinite(value) && value !== null && value > 0
 );
 
 export const taskMatchesPlanningIssue = (

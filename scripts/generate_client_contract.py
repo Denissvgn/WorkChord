@@ -12,6 +12,10 @@ CLIENT_PATHS = (
     "/api/session/whoami", "/api/iterations/{iteration_id}/tasks", "/api/tasks/{task_id}",
     "/api/tasks/{task_id}/status", "/api/tasks/{task_id}/move",
     "/api/triage/{triage_item_id}/convert-to-task",
+    "/api/triage/{triage_item_id}/convert-to-backlog", "/api/projects/{project_id}/backlog",
+    "/api/tasks/{task_id}/actions", "/api/tasks/{task_id}/commands", "/api/tasks/{task_id}/brief",
+    "/api/tasks/{task_id}/brief/convert", "/api/tasks/{task_id}/progress", "/api/tasks/{task_id}/review",
+    "/api/tasks/{task_id}/detail", "/api/tasks/lookup",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 
@@ -40,7 +44,6 @@ def build_contract():
 
     collect(paths)
     task_fields = components["TaskResponse"]["properties"]
-    triage_fields = components["TriageConvertToTaskRequest"]["properties"]
     return {
         "schema_version": 1,
         "api_version": app.version,
@@ -48,11 +51,11 @@ def build_contract():
         "paths": paths,
         "components": {"schemas": components},
         "schema_capabilities": {
-            "task_allowed_actions": "allowed_actions" in task_fields,
+            "task_allowed_actions": "/api/tasks/{task_id}/actions" in paths,
             "task_aggregate_revision": "iteration_revision" in task_fields,
             "canonical_work_metrics": "metric_contract_version" in task_fields,
-            "task_structured_acceptance_criteria": "acceptance_criteria" in task_fields,
-            "triage_explicit_destination": "destination" in triage_fields,
+            "task_structured_acceptance_criteria": "brief" in task_fields and "acceptance_criteria" in components["TaskBrief"]["properties"],
+            "triage_explicit_destination": "/api/triage/{triage_item_id}/convert-to-backlog" in paths,
             "task_update_version_required": "expected_version" in components["TaskUpdate"].get("required", []),
         },
     }

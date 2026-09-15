@@ -21,7 +21,7 @@ def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC
         deferred = deferred or parent.is_deferred
         optional = optional or parent.is_optional
         parent = parent.__dict__.get("parent")
-    excluded = composite or deferred
+    excluded = composite or deferred or bool(getattr(task, "canceled_at", None))
     implemented = task.status in {"resolved", "closed"}
     accepted = (task.status == "closed" and getattr(task, "accepted_at", None) is not None
                 and getattr(task, "accepted_by_principal_id", None) is not None
@@ -71,6 +71,8 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
             deferred = deferred or parent.is_deferred
             optional = optional or parent.is_optional
             ancestor = parent.parent_id
+        if getattr(task, "canceled_at", None):
+            continue
         if deferred:
             result["deferred_tasks"] += 1
             continue
@@ -167,7 +169,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     descendants = t.alias("metric_descendant")
     composite = or_(t.c.is_summary, select(descendants.c.id).where(descendants.c.parent_id == t.c.id).exists())
     leaf = ~composite
-    included = and_(leaf, ~tree.c.deferred)
+    included = and_(leaf, ~tree.c.deferred, t.c.canceled_at.is_(None))
     required = and_(included, ~tree.c.optional)
     implemented = t.c.status.in_(["resolved", "closed"])
     accepted = and_(t.c.status == "closed", t.c.accepted_at.is_not(None), t.c.accepted_by_principal_id.is_not(None), t.c.accepted_version == t.c.version)
@@ -191,16 +193,16 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
         count(and_(included, t.c.end_date > iterations.c.end_date), "iteration_overflow_tasks"),
         count(and_(included, t.c.end_date > projects.c.target_date), "project_target_overflow_tasks"),
         count(and_(included, t.c.status == "closed", ~accepted), "acceptance_unknown_tasks"),
-        count(and_(included, t.c.effort_days.is_(None)), "unknown_estimate_tasks"), count(and_(included, blocked), "blocked_tasks"),
-        func.coalesce(func.sum(case((included, t.c.effort_days), else_=0.0)), 0.0).label("total_effort_days"),
-        func.coalesce(func.sum(case((and_(included, ~implemented), t.c.effort_days), else_=0.0)), 0.0).label("remaining_effort_days"),
+        count(and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)), "unknown_estimate_tasks"), count(and_(included, blocked), "blocked_tasks"),
+        func.coalesce(func.sum(case((included, (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("total_effort_days"),
+        func.coalesce(func.sum(case((and_(included, ~implemented), (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("remaining_effort_days"),
         func.min(case((included, t.c.start_date))).label("task_start_date"), func.max(case((included, t.c.end_date))).label("task_end_date"),
         *[count(and_(included, t.c.status == state), "status_" + state) for state in ["planned", "active", "resolved", "closed"]]]
     grouping = {"project": t.c.project_id, "milestone": t.c.milestone_id}.get(group_by)
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))
     validation = [visible_count.label("_visible"), reached_count.label("_reachable")]
-    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).join(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
+    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
     if task_ids is not None:
         query = query.where(t.c.id.in_(task_ids))
     if grouping is not None:

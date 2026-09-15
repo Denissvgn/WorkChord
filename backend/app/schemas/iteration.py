@@ -68,6 +68,7 @@ class IterationProjectSummary(BaseModel):
 
 
 class IterationResponse(BaseModel):
+    nominal_day_hours: float = 8
     """Schema for iteration response."""
     revision: int = 1
 

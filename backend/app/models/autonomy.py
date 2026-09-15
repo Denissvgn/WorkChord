@@ -154,6 +154,10 @@ class AgentWorkPackage(Base):
         nullable=True,
         index=True,
     )
+    task_context_version: Mapped[int | None] = mapped_column(Integer)
+    task_brief_revision: Mapped[int | None] = mapped_column(Integer)
+    task_artifact_revision: Mapped[int | None] = mapped_column(Integer)
+    task_brief_digest: Mapped[str | None] = mapped_column(String(64))
     predecessor_package_id: Mapped[Optional[int]] = mapped_column(
         Integer,
         ForeignKey("agent_work_packages.id", ondelete="RESTRICT"),

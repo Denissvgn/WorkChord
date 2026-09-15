@@ -7,6 +7,7 @@ export interface IterationProject {
 }
 
 export interface Iteration {
+    nominal_day_hours?: number;
     revision?: number;
     id: number;
     name: string;

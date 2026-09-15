@@ -135,3 +135,5 @@ __all__ = [
     "TriageItemStatus",
     "UserSession",
 ]
+
+from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord

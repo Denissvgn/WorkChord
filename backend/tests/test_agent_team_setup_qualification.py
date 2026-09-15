@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from tests.support.transactions import reload_session_fixture
 from pydantic import ValidationError
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -1302,6 +1303,7 @@ async def test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed(
             key="setup-qa-stale-preview-dispatch",
         )
     assert stale.value.code == "routing_preview_stale"
+    await reload_session_fixture(db_session)
     assert await db_session.scalar(
         select(func.count(AgentTaskAssignment.id))
     ) == 0
@@ -1376,6 +1378,7 @@ async def test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed(
                 correlation_id=f"setup-qa-legacy-{target.id}-correlation",
             )
         assert legacy.value.code == "agent_team_actor_outside_topology"
+        await reload_session_fixture(db_session)
 
     base.task.status = "active"
     await db_session.commit()

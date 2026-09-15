@@ -70,8 +70,12 @@ class GroundedAISuggestionResponse(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+from app.schemas.task_brief import TaskBrief
+
+
 class TaskAISuggestRequest(BaseModel):
     """Request for grounded advisory task AI suggestions."""
+    brief: Optional[TaskBrief] = None
 
     title: str = Field(default="", max_length=500)
     description: Optional[str] = None

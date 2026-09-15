@@ -106,6 +106,8 @@ def staged_reference_columns(table: Table) -> tuple[str, ...]:
         constrained = [element.parent for element in constraint.elements]
         if constrained and all(column.nullable for column in constrained):
             columns.update(column.name for column in constrained)
+    if table.name in {"tasks", "application_snapshots"}:
+        columns.difference_update({"iteration_id", "project_id"})
     return tuple(sorted(columns))
 
 
@@ -120,7 +122,7 @@ def transfer_order() -> tuple[str, ...]:
             if parent_name == name or parent_name not in tables:
                 continue
             constrained = [element.parent for element in constraint.elements]
-            if constrained and not all(column.nullable for column in constrained):
+            if constrained and (not all(column.nullable for column in constrained) or name in {"tasks", "application_snapshots"} and any(column.name in {"iteration_id", "project_id"} for column in constrained)):
                 dependencies[name].add(parent_name)
 
     ordered: list[str] = []

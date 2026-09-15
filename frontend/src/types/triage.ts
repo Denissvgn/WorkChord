@@ -1,8 +1,10 @@
+import type { TaskBrief } from './task';
 import type { Task } from './task';
 
 export type TriageItemStatus = 'new' | 'accepted' | 'declined' | 'duplicate' | 'snoozed' | 'converted';
 
 export interface TriageItem {
+    brief?: TaskBrief | null;
     id: number;
     title: string;
     description?: string | null;
@@ -117,6 +119,7 @@ export interface TriageTaskDraftRequest {
 }
 
 export interface TriageTaskDraftResponse {
+    brief?: TaskBrief;
     triage_item_id: number;
     suggested_title: string;
     suggested_description: string;
@@ -140,15 +143,17 @@ export interface TriageTaskDraftResponse {
 }
 
 export interface TriageConvertToTaskRequest {
-    iteration_id: number;
+    brief?: TaskBrief;
+    destination?: "iteration" | "project_backlog";
+    iteration_id: number | null;
     title?: string;
     description?: string | null;
     project_id?: number | null;
     assignee_id?: number | null;
     priority?: number;
     tags?: string[];
-    effort_days: number;
-    effort_hours?: number;
+    effort_days: number | null;
+    effort_hours?: number | null;
     depends_on: number[];
 }
 

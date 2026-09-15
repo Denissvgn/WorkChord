@@ -906,8 +906,12 @@ class AgentWorkRenew(BaseModel):
     lease_seconds: int = Field(default=3600, ge=60, le=86400)
 
 
+from app.schemas.task_brief import CriterionProgress
+
+
 class AgentWorkSubmit(BaseModel):
     """Atomically submit an active assignment for verification."""
+    criterion_progress: list[CriterionProgress] = Field(default_factory=list, max_length=100)
     model_config = ConfigDict(extra="forbid")
 
 

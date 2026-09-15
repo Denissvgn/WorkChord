@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from uuid import uuid4
 
-from sqlalchemy import and_, event, false, inspect, or_, select, true
+from sqlalchemy import and_, event, false, func, inspect, or_, select, true
 from sqlalchemy.orm import Session, with_loader_criteria
 from sqlalchemy.sql.elements import TextClause
 
@@ -103,7 +103,7 @@ def _scope_conditions(authority):
     if workspace_read:
         project_condition = or_(project_condition, iterations.c.project_id.is_(None))
     iteration_ids = select(iterations.c.id).where(project_condition)
-    task_condition = and_(task.c.iteration_id.in_(iteration_ids),
+    task_condition = and_(or_(task.c.iteration_id.in_(iteration_ids), and_(task.c.iteration_id.is_(None), task.c.project_id.in_(projects))),
                           or_(task.c.project_id.in_(projects), task.c.project_id.is_(None)))
     task_ids = select(task.c.id).where(task_condition)
     conditions = {}
@@ -137,6 +137,8 @@ def _scope_conditions(authority):
             condition = c.iteration_id.in_(iteration_ids)
             if workspace_read and c.iteration_id.nullable:
                 condition = or_(condition, c.iteration_id.is_(None))
+        elif "original_task_id" in c:
+            condition = c.original_task_id.in_(task_ids)
         elif "task_id" in c:
             condition = c.task_id.in_(task_ids)
         elif name == "triage_items":
@@ -211,6 +213,10 @@ def _check_bulk_write(state, authority):
         if "project_id" in table.c:
             project_column = table.c.project_id
             source = table
+        elif name == "triage_items":
+            target = Base.metadata.tables["iterations"]
+            project_column = func.coalesce(table.c.project_hint_id, target.c.project_id)
+            source = table.outerjoin(target, table.c.iteration_hint_id == target.c.id)
         elif "iteration_id" in table.c:
             target = Base.metadata.tables["iterations"]
             project_column = target.c.project_id
@@ -238,6 +244,18 @@ def _object_project(session, obj):
     table = inspect(type(obj)).local_table
     if table.name == "projects":
         return obj.id
+    if table.name == "triage_items":
+        if obj.project_hint_id is not None:
+            return obj.project_hint_id
+        if obj.iteration_hint_id is not None:
+            iterations = Base.metadata.tables["iterations"]
+            return session.connection().execute(select(iterations.c.project_id).where(iterations.c.id == obj.iteration_hint_id)).scalar_one_or_none()
+    if table.name == "task_events" and obj.task_id is None:
+        import json
+        payload = json.loads(obj.payload or "{}")
+        triage_id = payload.get("triage_item_id") if isinstance(payload, dict) else None
+        if triage_id in session.info.get("command_triage_projects", {}):
+            return session.info["command_triage_projects"][triage_id]
     value = getattr(obj, "project_id", None)
     if value is not None:
         return value
@@ -247,6 +265,8 @@ def _object_project(session, obj):
         row = session.connection().execute(select(event_table.c.entity_type, event_table.c.entity_id).where(event_table.c.id == obj.event_id)).first()
         if row:
             entity_type, entity_id = row
+    if entity_type == "triage_item" and entity_id in session.info.get("command_triage_projects", {}):
+        return session.info["command_triage_projects"][entity_id]
     targets = {"task": "tasks", "project": "projects", "iteration": "iterations", "release": "releases"}
     if entity_type in targets and entity_id is not None:
         target = Base.metadata.tables[targets[entity_type]]
@@ -271,6 +291,9 @@ def authorize_domain_writes(session, _flush_context, _instances):
         return
     from app.models.identity import CommandAudit
     from app.models.task import Task
+    from app.models.agent import AgentTaskAssignment
+    protocol = authority.kind == "agent" and authority.source in {"agent_rest", "mcp"}
+    rework_actors = {obj.actor_id for obj in session.new if isinstance(obj, AgentTaskAssignment) and obj.task_id in session.info.get("review_rework_tasks", set())}
     pending = session.info.setdefault("authority_audit_pending", [])
     seen = session.info.setdefault("authority_audited", set())
     for obj in list(session.new) + list(session.dirty) + list(session.deleted):
@@ -278,21 +301,40 @@ def authorize_domain_writes(session, _flush_context, _instances):
             continue
         table = inspect(type(obj)).local_table.name
         changed = {attr.key for attr in inspect(obj).attrs if attr.history.has_changes()}
+        if table == "agent_actors" and changed <= {"queue_revision", "updated_at"} and obj.id in session.info.get("domain_queue_actors", set()):
+            continue
+        if protocol and table == "agent_actors" and changed <= {"queue_revision", "updated_at"} and (obj.id == authority.actor_id or obj.id in rework_actors):
+            continue
         if table == "agent_actors" and obj.id == authority.actor_id and changed <= {"last_seen_at"} and obj not in session.deleted and obj not in session.new:
             continue
         owned_personal = (table == "user_sessions" and obj.principal_id == authority.principal_id and authority.principal_id is not None
                           or table == "saved_views" and obj.scope == "personal" and
                           (obj.owner_principal_id == authority.principal_id and authority.principal_id is not None or obj.created_by_session_id == authority.session_id and authority.session_id is not None))
+        if protocol and table == "agent_idempotency_records" and obj.actor_id == authority.actor_id:
+            owned_personal = True
         project_id = _object_project(session, obj)
         action = "edit"
-        derived = table in {"task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
+        if protocol and table == "agent_runs" and obj.actor_id == authority.actor_id:
+            action = "execute"
+        if protocol and table == "agent_task_assignments":
+            if obj.actor_id == authority.actor_id and obj not in session.new:
+                action = "review" if obj.purpose == "verification" else "execute"
+            elif obj in session.new and obj.task_id in session.info.get("review_rework_tasks", set()):
+                action = "review"
+        derived = table in {"task_brief_revisions", "task_progress_records", "task_review_records", "task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
         if derived and not authority.allows(project_id, action):
             action = "execute" if authority.allows(project_id, "execute") else "review"
         if isinstance(obj, Task):
+            claim_fields = {"claimed_by", "claim_id", "claim_generation", "claim_expires_at", "version", "updated_at", "execution_mode"}
+            prior_claims = inspect(obj).attrs.claimed_by.history.deleted
+            if protocol and changed <= claim_fields and ("execution_mode" not in changed or obj.execution_mode == "scheduled") and obj.claimed_by in {None, authority.actor_id} and all(prior in {None, authority.actor_id} for prior in prior_claims):
+                action = "execute"
+            if changed <= {"progress", "artifact_revision", "accepted_at", "accepted_by_principal_id", "accepted_version", "version", "updated_at"}:
+                action = "execute"
             history = inspect(obj).attrs.status.history
             rollup = obj.id in session.info.get("derived_rollups", set()) and obj.is_summary
             if history.has_changes() and obj.status in {"active", "resolved"}:
-                action = "execute"
+                action = "review" if obj.id in session.info.get("review_rework_tasks", set()) and obj.status == "active" else "execute"
             if history.has_changes() and obj.status == "closed" and not rollup:
                 action = "review"
                 if authority.kind == "system" and obj.accepted_at is not None and (not authority.review_override or not authority.reason):

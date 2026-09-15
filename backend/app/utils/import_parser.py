@@ -57,10 +57,10 @@ def parse_tasks_text(text: str) -> list[ParsedTask]:
 
     # Regex for extended format: - <priority> "<name>" <effort> <title>
     pattern_quoted = re.compile(
-        r'^-\s+(\d+)\s+"([^"]+)"\s+(\d+(?:\.\d+)?)\s+(.+)$'
+        r'^-\s+(\d+)\s+"([^"]+)"\s+(\?|\d+(?:\.\d+)?)\s+(.+)$'
     )
     pattern_unquoted = re.compile(
-        r'^-\s+(\d+)\s+(\S+)\s+(\d+(?:\.\d+)?)\s+(.+)$'
+        r'^-\s+(\d+)\s+(\S+)\s+(\?|\d+(?:\.\d+)?)\s+(.+)$'
     )
 
     for line_num, line in enumerate(lines, 1):
@@ -87,7 +87,7 @@ def parse_tasks_text(text: str) -> list[ParsedTask]:
             if match:
                 priority_str, assignee, effort_str, title = match.groups()
                 priority = int(priority_str)
-                effort = float(effort_str)
+                effort = None if effort_str == "?" else float(effort_str)
 
                 _validate_task_fields(line_num, priority, effort)
 
@@ -105,7 +105,7 @@ def parse_tasks_text(text: str) -> list[ParsedTask]:
             if match:
                 priority_str, assignee, effort_str, title = match.groups()
                 priority = int(priority_str)
-                effort = float(effort_str)
+                effort = None if effort_str == "?" else float(effort_str)
 
                 _validate_task_fields(line_num, priority, effort)
 
@@ -143,12 +143,12 @@ def parse_tasks_text(text: str) -> list[ParsedTask]:
     return tasks
 
 
-def _validate_task_fields(line_num: int, priority: int, effort: float):
+def _validate_task_fields(line_num: int, priority: int, effort: float | None):
     if not (1 <= priority <= 10):
         # Using lenient logging or raising error?
         # For bulk edit, strict validation is better to prevent data corruption.
          raise ValueError(f"Line {line_num}: Priority must be between 1 and 10, got {priority}")
-    if not (0.0 <= effort <= 365):
+    if effort is not None and not (0.0 <= effort <= 365):
          raise ValueError(f"Line {line_num}: Effort must be between 0.0 and 365 days, got {effort}")
 
 
@@ -179,7 +179,7 @@ def serialize_tasks_to_text(tasks: List[Task]) -> str:
             a_name = f'"{a_name}"'
 
         # Effort
-        e = task.effort_days if task.effort_days else 1.0
+        e = task.effort_days if task.effort_days is not None else "?"
 
         line += f"{p} {a_name} {e} {task.title}"
         output.append(line)

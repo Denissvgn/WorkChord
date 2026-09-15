@@ -19,7 +19,7 @@ from app.query_limits import CollectionLimitExceededError
 from app.commands import AggregateVersionConflict, HierarchyScopeError
 from app.authority import AuthorityError
 from app.http_authority import enforce_http_authority
-from app.routers import identity
+from app.routers import identity, task_domain
 from app.runtime_telemetry import metrics
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
@@ -68,6 +68,7 @@ async def hierarchy_scope_error(request: Request, exc: HierarchyScopeError):
 
 
 app.include_router(identity.router, prefix=settings.api_prefix, tags=["Identity"])
+app.include_router(task_domain.router, prefix=settings.api_prefix, tags=["Task domain"])
 
 
 @app.exception_handler(RequestValidationError)

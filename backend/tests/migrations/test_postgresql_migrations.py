@@ -217,7 +217,9 @@ def test_postgresql_legacy_to_head_repairs_utc_nullability_and_sequences(
                     "RETURNING id"
                 )
             ).scalar_one()
-        assert task == (5, 1.0, 8.0, "planned", False, False, 0)
+        assert task == (5, None, None, "planned", False, False, 0)
+        with engine.connect() as connection:
+            assert connection.execute(text("SELECT estimate_provenance FROM tasks WHERE id=100")).scalar_one() == "unknown"
         assert next_calendar_id == 101
         with Session(engine) as session:
             changed_at = session.scalar(

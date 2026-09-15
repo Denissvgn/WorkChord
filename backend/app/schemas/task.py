@@ -1,6 +1,7 @@
 """Task schemas."""
 
 from app.schemas.work_metrics import TaskMetricSignals
+from app.schemas.task_brief import TaskBrief
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal, Optional
@@ -41,8 +42,11 @@ class TaskCreate(BaseModel):
     description: Optional[str] = None
     parent_id: Optional[int] = None
     priority: int = Field(default=5, ge=1, le=10)
-    effort_days: float = Field(default=1.0, ge=0.1)
-    effort_hours: Optional[float] = None  # Auto-calculated if not provided
+    effort_days: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    effort_hours: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)  # Auto-calculated if not provided
+    owner_profile_id: Optional[int] = Field(default=None, ge=1)
+    brief: Optional[TaskBrief] = None
+    estimate_provenance: Optional[Literal["unknown", "assumed", "estimated"]] = None
     assignee_id: Optional[int] = None
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
@@ -69,8 +73,11 @@ class TaskUpdate(BaseModel):
     title: Optional[str] = Field(default=None, min_length=1, max_length=500)
     description: Optional[str] = None
     priority: Optional[int] = Field(default=None, ge=1, le=10)
-    effort_days: Optional[float] = Field(default=None, ge=0.1)
-    effort_hours: Optional[float] = None
+    effort_days: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    effort_hours: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    owner_profile_id: Optional[int] = Field(default=None, ge=1)
+    brief: Optional[TaskBrief] = None
+    estimate_provenance: Optional[Literal["unknown", "assumed", "estimated"]] = None
     assignee_id: Optional[int] = None
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
@@ -188,15 +195,31 @@ class TaskResponse(TaskMetricSignals):
     accepted_at: Optional[datetime] = None
 
     id: int
-    iteration_id: int
+    iteration_id: Optional[int]
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
     parent_id: Optional[int]
     title: str
     description: Optional[str]
     priority: int
-    effort_days: float
-    effort_hours: float
+    effort_days: Optional[float]
+    effort_hours: Optional[float]
+    nominal_day_hours: float = 8
+    estimate_provenance: str = "unknown"
+    owner_profile_id: Optional[int] = None
+    owner: Optional[TaskAssignee] = None
+    ownership_provenance: str = "unassigned"
+    blocked_reason: Optional[str] = None
+    canceled_at: Optional[datetime] = None
+    canceled_reason: Optional[str] = None
+    execution_mode: str = "scheduled"
+    brief: Optional[TaskBrief] = None
+    brief_revision: int = 0
+    brief_provenance: str = "legacy_text"
+    legacy_description: Optional[str] = None
+    brief_migration_notes: list[str] = Field(default_factory=list)
+    artifact_revision: int = 0
+    progress: Optional[dict[str, Any]] = None
     project: Optional[TaskProject] = None
     milestone: Optional[TaskMilestone] = None
     assignee: Optional[TaskAssignee] = None

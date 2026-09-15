@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from sqlalchemy import ForeignKey, Integer, JSON, String, Text, UniqueConstraint, Date
+from sqlalchemy import ForeignKey, Integer, JSON, String, Text, UniqueConstraint, CheckConstraint, Date
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -11,9 +11,12 @@ from app.utils.time import UTCDateTime, utc_now
 
 class ApplicationSnapshot(Base):
     __tablename__ = "application_snapshots"
-    __table_args__ = (UniqueConstraint("iteration_id", "filename", name="uq_application_snapshot_filename"),)
+    __table_args__ = (UniqueConstraint("iteration_id", "filename", name="uq_application_snapshot_filename"),
+        UniqueConstraint("project_id", "filename", name="uq_application_snapshot_project_filename"),
+        CheckConstraint("iteration_id IS NOT NULL OR project_id IS NOT NULL", name="ck_application_snapshot_scope"))
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    iteration_id: Mapped[int] = mapped_column(ForeignKey("iterations.id", ondelete="CASCADE"), index=True)
+    iteration_id: Mapped[int | None] = mapped_column(ForeignKey("iterations.id", ondelete="CASCADE"), index=True)
+    project_id: Mapped[int | None] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     schema_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     input_revision: Mapped[int] = mapped_column(Integer, nullable=False)

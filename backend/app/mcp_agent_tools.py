@@ -1238,6 +1238,8 @@ async def get_agent_capabilities(
         include_skill_bundles=False,
         model_aware_routing_mode=rollout_status.effective_mode.value,
     )
+    from app.services.task_domain_service import domain_capabilities
+    features.extend((await domain_capabilities(db))["features"])
     catalog_url: str | None = None
     discovery_url: str | None = None
     settings = get_settings()
@@ -3090,3 +3092,52 @@ async def system_runtime_config_status(db: AsyncSession) -> dict[str, Any]:
     """MCP handler: return redacted runtime config status."""
     response = await RuntimeSettingsService(db).system_response()
     return SystemSettingsResponse.model_validate(response).model_dump(mode="json")
+
+
+async def get_task_actions(db, actor, task_id):
+    """Return the shared principal-specific command availability."""
+    from app.services.task_domain_service import TaskDomainService
+    return (await TaskDomainService(db).allowed_actions(task_id)).model_dump(mode="json")
+
+
+async def get_task_detail(db, actor, task_id, limit=50):
+    """Return bounded UI context, explicitly separate from execution context."""
+    from app.services.task_detail_service import TaskDetailService
+    detail = await TaskDetailService(db).detail(task_id, limit=limit)
+    return detail.model_dump(mode="json") if detail else None
+
+
+async def apply_task_command(db, actor, task_id, payload):
+    """Apply the same guarded domain command exposed over REST."""
+    from app.schemas.task_domain import TaskActionRequest
+    from app.services.task_domain_service import TaskDomainService
+    task = await TaskDomainService(db).command(task_id, TaskActionRequest.model_validate(payload))
+    return TaskService(db).task_to_response(task).model_dump(mode="json")
+
+
+async def create_project_backlog_task(db, actor, project_id, payload):
+    """Capture durable project work without scheduling or capacity fabrication."""
+    from app.schemas.task import TaskCreate
+    data = TaskCreate.model_validate(payload)
+    if data.project_id is not None and data.project_id != project_id:
+        raise ValueError("Task project must match the backlog destination")
+    task = await TaskService(db).create(None, data.model_copy(update={"project_id": project_id}))
+    return TaskService(db).task_to_response(task).model_dump(mode="json")
+
+
+async def write_task_brief(db, actor, task_id, payload):
+    """Write canonical fields using the shared task context version."""
+    from app.schemas.task_brief import BriefWrite
+    from app.services.task_brief_service import TaskBriefService
+    task = await TaskBriefService(db).write(task_id, BriefWrite.model_validate(payload))
+    return TaskService(db).task_to_response(task).model_dump(mode="json")
+
+
+async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
+    """Use an explicit project backlog destination while preserving legacy conversion."""
+    from app.schemas.triage import TriageConvertToBacklogRequest
+    result = await TriageService(db).convert_to_task(triage_item_id, TriageConvertToBacklogRequest.model_validate(payload))
+    if result is None:
+        return None
+    item, task = result
+    return {"triage_item": TriageItemResponse.model_validate(item).model_dump(mode="json"), "task": TaskService(db).task_to_response(task).model_dump(mode="json")}

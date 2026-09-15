@@ -9,6 +9,7 @@ import { Button } from '../common/Button';
 import { DraftDismissalDialog } from './DraftDismissalDialog';
 import { useDraftDismissal } from './useDraftDismissal';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
 
 type DrawerCopy = ReactNode | ((task: Task | null) => ReactNode);
@@ -104,14 +105,19 @@ const TaskEditorDrawerContent = ({
         refetch,
         // feedback-policy: query loading,error,retry,empty
     } = useQuery({
-        queryKey: ['task', taskId],
-        queryFn: () => taskService.getById(taskId),
+        queryKey: ['taskEditor', taskId],
+        gcTime: 0,
+        staleTime: 0,
+        queryFn: async () => {
+            const detail = await taskService.getDetail(taskId);
+            return { ...detail.task, dependencies: detail.dependencies.items.map(item => item.id), detail_context: detail };
+        },
     });
     const editorTask = useMemo(
         () => fullTask ? prepareTask?.(fullTask) ?? fullTask : null,
         [fullTask, prepareTask],
     );
-    const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? 0;
+    const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? null;
 
     return (
         <SlideOverDrawer
@@ -150,7 +156,8 @@ const TaskEditorDrawerContent = ({
                     </div>
                 )}
                 {beforeForm}
-                {editorTask && resolvedIterationId > 0 && (
+                {editorTask?.detail_context && <TaskContextSummary detail={editorTask.detail_context} />}
+                {editorTask && (
                     <TaskForm
                         iterationId={resolvedIterationId}
                         initialData={editorTask}

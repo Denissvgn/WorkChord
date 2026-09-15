@@ -51,11 +51,12 @@ type ReorderVariables = {
 };
 
 // Calculate effective effort for composite tasks (sum of children)
-const getEffectiveEffort = (task: Task): number => {
+const getEffectiveEffort = (task: Task): number | null => {
     if (task.children && task.children.length > 0) {
-        return task.children.reduce((sum, child) => sum + getEffectiveEffort(child), 0);
+        const values = task.children.map(getEffectiveEffort);
+        return values.some(value => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
     }
-    return task.effort_days || 0;
+    return task.effort_days;
 };
 
 // Get dependency task names from taskMap
@@ -926,7 +927,7 @@ const TaskItemContent = ({
                         )}
 
                         <span className="text-xs tabular-nums text-content-secondary">
-                            {t('units.daysCompact', { count: getEffectiveEffort(task) })}
+                            {getEffectiveEffort(task) === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: getEffectiveEffort(task)! })}
                         </span>
                     </div>
                     <div className="mt-1 text-xs text-content-secondary">

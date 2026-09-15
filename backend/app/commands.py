@@ -13,8 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 class CommandState:
     mode: Literal["apply", "preview"] = "apply"
     iterations: dict[int, int] = field(default_factory=dict)
-    snapshots: set[int] = field(default_factory=set)
+    snapshots: set[int | tuple[str, int]] = field(default_factory=set)
     tasks: dict[int, int] = field(default_factory=dict)
+    backlog_projects: set[int] = field(default_factory=set)
     failed: bool = False
 
 
@@ -76,7 +77,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         raise
     finally:
         db.info.pop("command", None)
-        for key in ["command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending"]:
+        for key in ["command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending"]:
             db.info.pop(key, None)
 
 
@@ -99,6 +100,26 @@ def preview_command(function):
     return wrapped
 
 
+async def lock_backlog_project(db, project_id):
+    """Serialize unscheduled hierarchy writes without manufacturing an iteration."""
+    from app.authority import internal_authority, require_project
+    from app.models.project import Project
+    require_project(db, project_id, "read")
+    state = current_command(db)
+    if state is None:
+        raise RuntimeError("Backlog reservations require a command transaction")
+    if project_id in state.backlog_projects:
+        return
+    exists = await db.scalar(select(Project.id).where(Project.id == project_id).with_for_update())
+    if exists is None:
+        raise ValueError("Project not found or inaccessible")
+    # SQLite needs an actual writer reservation; the predicate was authorized
+    # above, and this no-op never changes project content or grants.
+    with internal_authority(db):
+        await db.execute(update(Project).where(Project.id == project_id).values(id=Project.id, updated_at=Project.updated_at).execution_options(synchronize_session=False))
+    state.backlog_projects.add(project_id)
+
+
 async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> dict[int, int]:
     """Acquire aggregate locks in ascending ID order, then task locks in ascending ID order."""
     from app.models.iteration import Iteration
@@ -108,7 +129,7 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> 
     if state is None:
         raise RuntimeError("Iteration reservations require a command transaction")
     expected = expected or {}
-    for iteration_id in sorted(set(iteration_ids)):
+    for iteration_id in sorted({item for item in iteration_ids if item is not None}):
         if iteration_id in state.iterations:
             if iteration_id in expected and expected[iteration_id] != state.iterations[iteration_id]:
                 raise AggregateVersionConflict(iteration_id, expected[iteration_id], state.iterations[iteration_id])
@@ -163,7 +184,7 @@ def schedule_input_command(kind):
             elif kind == "project":
                 direct = select(Iteration.id).where(Iteration.project_id == values["project_id"])
                 linked = select(Task.iteration_id).where(Task.project_id == values["project_id"])
-                ids = list((await self.db.scalars(direct.union(linked))).all())
+                ids = [item for item in (await self.db.scalars(direct.union(linked))).all() if item is not None]
             elif kind == "iteration":
                 ids = [values["iteration_id"]]
             elif kind == "profile":

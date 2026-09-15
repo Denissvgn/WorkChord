@@ -35,6 +35,7 @@ export interface TaskAgentReadinessCriterion {
 }
 
 export interface TaskAgentReadiness {
+    blocker_codes?: string[];
     is_ready: boolean;
     blockers: string[];
     warnings: string[];
@@ -92,6 +93,23 @@ export interface Task {
     is_implemented?: boolean;
     is_accepted?: boolean;
     acceptance_unknown?: boolean;
+    owner_profile_id?: number | null;
+    owner?: TaskAssignee | null;
+    ownership_provenance?: string;
+    nominal_day_hours?: number;
+    estimate_provenance?: string;
+    brief?: TaskBrief | null;
+    brief_revision?: number;
+    brief_provenance?: string;
+    legacy_description?: string | null;
+    brief_migration_notes?: string[];
+    progress?: TaskProgress | null;
+    artifact_revision?: number;
+    execution_mode?: 'manual' | 'scheduled';
+    blocked_reason?: string | null;
+    canceled_at?: string | null;
+    canceled_reason?: string | null;
+    detail_context?: TaskDetail;
     baseline_start_date?: string | null;
     baseline_end_date?: string | null;
     baseline_revision?: number;
@@ -101,15 +119,15 @@ export interface Task {
     accepted_at?: string | null;
 
     id: number;
-    iteration_id: number;
+    iteration_id: number | null;
     project_id?: number | null;
     milestone_id?: number | null;
     parent_id?: number | null;
     title: string;
     description?: string;
     priority: number;
-    effort_days: number;
-    effort_hours: number;
+    effort_days: number | null;
+    effort_hours: number | null;
     project?: TaskProject | null;
     milestone?: TaskMilestone | null;
     assignee?: TaskAssignee | null;
@@ -143,13 +161,16 @@ export interface Task {
 }
 
 export interface TaskCreate {
+    owner_profile_id?: number | null;
+    brief?: TaskBrief;
+    estimate_provenance?: "unknown" | "assumed" | "estimated";
     expected_revision?: number;
     parent_id?: number | null;
     title: string;
     description?: string;
     priority: number;
-    effort_days: number;
-    effort_hours?: number;
+    effort_days: number | null;
+    effort_hours?: number | null;
     assignee_id?: number | null;
     project_id?: number | null;
     milestone_id?: number | null;
@@ -210,6 +231,7 @@ export interface GroundedFact {
 }
 
 export interface TaskAISuggestRequest {
+    brief?: TaskBrief | null;
     title: string;
     description?: string | null;
     priority?: number | null;
@@ -388,4 +410,56 @@ export interface TaskBatchUpdateResponseItem {
 export interface TaskBatchUpdateResponse {
     results: TaskBatchUpdateResponseItem[];
     updated_tasks: Task[];
+}
+
+
+export interface BriefCriterion {
+    id: string;
+    revision: number;
+    text: string;
+    verification: string;
+}
+
+export interface TaskBrief {
+    schema_version: 1;
+    goal: string;
+    context: string;
+    scope: string;
+    exclusions: string;
+    acceptance_criteria: BriefCriterion[];
+    verification: string;
+    artifact_expectations: string;
+}
+
+export interface CriterionProgress {
+    criterion_id: string;
+    criterion_revision: number;
+    state: 'pending' | 'in_progress' | 'completed';
+    evidence: string;
+}
+
+export interface TaskProgress {
+    criteria: CriterionProgress[];
+    artifacts: string[];
+    brief_revision: number;
+    artifact_revision: number;
+}
+
+export interface TaskReference {
+    id: number; title: string; version: number; status: TaskStatus;
+    project_id: number | null; iteration_id: number | null; parent_id: number | null; owner_profile_id: number | null;
+}
+export interface TaskReferencePage { items: TaskReference[]; has_more: boolean; next_after_id: number | null; limit: number }
+export interface TaskDetail {
+    task: Task; ancestors: TaskReference[]; ancestors_complete: boolean;
+    children: TaskReferencePage; dependencies: TaskReferencePage; execution_context_complete: false;
+}
+export interface TaskActionAvailability { action: string; allowed: boolean; blockers: { code: string; message: string }[] }
+export interface TaskActions {
+    task_id: number; version: number; actions: TaskActionAvailability[];
+    claim_generation: number; running_run_ids: number[]; live_assignment_ids: number[];
+}
+export interface TaskCommand {
+    action: string; expected_version: number; reason: string; iteration_id?: number;
+    expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[];
 }

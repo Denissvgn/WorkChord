@@ -2,7 +2,7 @@
 from datetime import date
 from typing import TYPE_CHECKING
 
-from sqlalchemy import JSON, Integer, String
+from sqlalchemy import JSON, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,6 +21,7 @@ class Calendar(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     timezone: Mapped[str] = mapped_column(String(64), default="UTC", server_default="UTC", nullable=False)
+    nominal_day_hours: Mapped[float] = mapped_column(Float, default=8.0, server_default="8", nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # List of holiday dates as ISO strings ["2025-01-01", "2025-01-02", ...]

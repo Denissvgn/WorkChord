@@ -1427,9 +1427,7 @@ const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) =>
                         </span>
                     )}
                     <span className="w-10 shrink-0 text-right text-xs tabular-nums text-content-secondary">
-                        {t('units.daysCompact', {
-                            count: formatNumber(task.effort_days || 0, numberLocale),
-                        })}
+                        {task.effort_days === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: formatNumber(task.effort_days, numberLocale) })}
                     </span>
                     {task.assignee ? (
                         <span

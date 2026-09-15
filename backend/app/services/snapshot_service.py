@@ -6,7 +6,7 @@ from sqlalchemy import select, delete
 import hashlib
 import json
 import re
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -131,7 +131,7 @@ class SnapshotService:
     async def create_snapshot(self, iteration_id: int, reason: str = "auto") -> str | None:
         """Persist one pre-command recovery point and retention in the owner's transaction."""
         state = current_command(self.db)
-        if state.mode == "preview" or iteration_id in state.snapshots:
+        if iteration_id is None or state.mode == "preview" or iteration_id in state.snapshots:
             return None
         revisions = await lock_iterations(self.db, [iteration_id])
         payload = await self.build_snapshot_data(iteration_id, reason)
@@ -316,10 +316,20 @@ class SnapshotService:
                 task = Task(id=row["id"], iteration_id=iteration_id, version=1)
                 self.db.add(task)
             else:
-                task.version += 1
+                await service.reserve_task_version(task, task.version)
             for key in ["title", "description", "priority", "effort_days", "effort_hours", "status", "project_id", "milestone_id", "is_optional", "is_deferred", "sort_order", "external_key", "source", "source_url"]:
                 if key in row:
                     setattr(task, key, row[key])
+            for key in ["nominal_day_hours", "estimate_provenance", "owner_profile_id", "ownership_provenance", "blocked_reason", "canceled_reason", "execution_mode"]:
+                if key in row:
+                    setattr(task, key, row[key])
+            from app.services.task_domain_service import require_owner
+            await require_owner(self.db, task.owner_profile_id, task.project_id)
+            from app.services.task_brief_service import TaskBriefService
+            await self.db.flush()
+            await TaskBriefService(self.db).restore_brief(task, row)
+            task.progress = None
+            task.canceled_at = datetime.fromisoformat(row["canceled_at"]) if row.get("canceled_at") else None
             task.is_summary = bool(row.get("is_summary", row.get("children")))
             task.tags = json.dumps(row.get("tags", []))
             task.parent_id = None
@@ -328,7 +338,6 @@ class SnapshotService:
                 raise ValueError("Snapshot task refers to unknown capacity")
             for key in ["start_date", "end_date", "actual_start_date", "actual_end_date", "min_start_date", "max_end_date", "baseline_start_date", "baseline_end_date"]:
                 setattr(task, key, date.fromisoformat(row[key]) if row.get(key) else None)
-            from datetime import datetime
             for key in ["started_at", "resolved_at"]:
                 setattr(task, key, datetime.fromisoformat(row[key]) if row.get(key) else None)
             task.executed_by_principal_id = row.get("executed_by_principal_id")
@@ -372,6 +381,18 @@ class SnapshotService:
             "is_summary": task.is_summary,
             "effort_days": task.effort_days,
             "effort_hours": task.effort_hours,
+            "nominal_day_hours": task.nominal_day_hours,
+            "estimate_provenance": task.estimate_provenance,
+            "owner_profile_id": task.owner_profile_id,
+            "ownership_provenance": task.ownership_provenance,
+            "brief": task.brief,
+            "brief_provenance": task.brief_provenance,
+            "legacy_description": task.legacy_description,
+            "brief_migration_notes": task.brief_migration_notes,
+            "blocked_reason": task.blocked_reason,
+            "canceled_reason": task.canceled_reason,
+            "canceled_at": task.canceled_at.isoformat() if task.canceled_at else None,
+            "execution_mode": task.execution_mode,
             "status": task.status,
             "external_key": task.external_key,
             "source": task.source,

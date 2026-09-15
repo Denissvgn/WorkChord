@@ -48,9 +48,9 @@ def authorize(request: Request):
         raise HTTPException(400, "Invalid fixture authorization request")
     subject = params.pop("fixture_subject", None)
     if subject is None:
-        links = ''.join(f'<a href="/authorize?{html.escape(urlencode({**params, "fixture_subject": person}))}">Continue as {person.title()}</a><br>' for person in ["alice", "bob"])
+        links = ''.join(f'<a href="/authorize?{html.escape(urlencode({**params, "fixture_subject": person}))}">Continue as {person.title()}</a><br>' for person in ["alice", "bob", "charlie"])
         return HTMLResponse('<html lang="en"><title>Disposable identity provider</title><h1>Choose a fixture account</h1>' + links + '</html>')
-    if subject not in {"alice", "bob"}:
+    if subject not in {"alice", "bob", "charlie"}:
         raise HTTPException(400)
     code = secrets.token_urlsafe(24)
     grants[code] = {**params, "subject": subject, "expires": time.time() + 120}

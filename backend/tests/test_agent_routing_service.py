@@ -8,6 +8,7 @@ import json
 from types import SimpleNamespace
 
 import pytest
+from tests.support.transactions import reload_session_fixture
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -140,6 +141,8 @@ async def _routing_fixture(
     task = await task_factory(
         assignee=member,
         description=_TASK_BRIEF,
+        effort_hours=8.0,
+        estimate_provenance="estimated",
         tags=json.dumps(["agent", "cap:backend-python"]),
         start_date=date(2026, 7, 20),
         end_date=date(2026, 7, 24),
@@ -320,6 +323,7 @@ async def test_selection_input_fence_serializes_sqlite_routing_transactions(
     assert not competing.done()
 
     await db_session.rollback()
+    await reload_session_fixture(db_session)
     await asyncio.wait_for(competing, timeout=2)
 
 
@@ -505,6 +509,8 @@ async def test_verification_independence_requires_authoritative_profile_history(
     task = await task_factory(
         assignee=implementation_member,
         description=_TASK_BRIEF,
+        effort_hours=8.0,
+        estimate_provenance="estimated",
         tags=json.dumps(["agent", "cap:backend-python"]),
         status="resolved",
         start_date=date(2026, 7, 20),
@@ -638,6 +644,7 @@ async def test_model_aware_assignment_and_begin_enforce_observed_model(
             correlation_id="corr-assignment-legacy-bypass",
         )
     assert legacy_bypass.value.code == "model_aware_assignment_required"
+    await reload_session_fixture(db_session)
 
     receipt = await routing.create_assessment(
         task.id,
@@ -695,6 +702,7 @@ async def test_model_aware_assignment_and_begin_enforce_observed_model(
             idempotency_key="begin-wrong-model",
         )
     assert mismatch.value.code == "resolved_model_mismatch"
+    await reload_session_fixture(db_session)
 
     begun = await work.begin(
         worker,

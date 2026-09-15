@@ -389,11 +389,28 @@ class SchedulerService:
         # that should not be modified by auto-scheduling
         from app.models.task import TaskStatus
 
-        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not t.is_deferred]
+        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not t.is_deferred and not t.canceled_at and not t.blocked_reason]
 
         # Split into schedulable (PLANNED) and locked (non-PLANNED) tasks
         leaf_tasks = [t for t in all_leaf_tasks if t.status == TaskStatus.PLANNED.value]
         locked_tasks = [t for t in all_leaf_tasks if t.status != TaskStatus.PLANNED.value]
+        unavailable_estimates = [task for task in leaf_tasks if task.effort_hours is None or task.effort_hours == 0]
+        for task in unavailable_estimates:
+            task.start_date = task.end_date = task.calculated_effort_days = None
+            decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
+                reason="Provide a positive effort estimate to schedule this task."))
+        unavailable_ids = {task.id for task in unavailable_estimates}
+        # A downstream task cannot be forecast from a missing predecessor estimate.
+        changed = True
+        while changed:
+            changed = False
+            for task in leaf_tasks:
+                if task.id not in unavailable_ids and any(dep.depends_on_id in unavailable_ids for dep in task.dependencies):
+                    unavailable_ids.add(task.id)
+                    task.start_date = task.end_date = task.calculated_effort_days = None
+                    decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable", reason="Estimate and schedule the prerequisite first."))
+                    changed = True
+        leaf_tasks = [task for task in leaf_tasks if task.id not in unavailable_ids]
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
 
@@ -1562,7 +1579,7 @@ class IncrementalScheduler:
 
         if new_effort is not None and new_effort != old_task.effort_days:
             change_type = (
-                ChangeType.EFFORT_INCREASED if new_effort > old_task.effort_days
+                ChangeType.EFFORT_INCREASED if old_task.effort_days is None or new_effort > old_task.effort_days
                 else ChangeType.EFFORT_DECREASED
             )
             changes.append(TaskChange(

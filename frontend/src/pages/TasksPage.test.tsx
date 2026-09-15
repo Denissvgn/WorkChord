@@ -18,6 +18,7 @@ const savedViewServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 const taskServiceMock = vi.hoisted(() => ({
+    getDetail: vi.fn(),
     getById: vi.fn(),
 }));
 
@@ -139,6 +140,9 @@ describe('TasksPage', () => {
         savedViewServiceMock.getAll.mockResolvedValue([]);
         taskServiceMock.getById.mockReset();
         taskServiceMock.getById.mockResolvedValue(focusedTask);
+        taskServiceMock.getDetail.mockResolvedValue({ task: focusedTask, ancestors: [], ancestors_complete: true,
+            children: { items: [], has_more: false, next_after_id: null, limit: 50 },
+            dependencies: { items: [], has_more: false, next_after_id: null, limit: 50 }, execution_context_complete: false });
     });
 
     it('clears create intent while preserving a Plan Master return checkpoint', async () => {
@@ -342,6 +346,7 @@ describe('TasksPage', () => {
     it('keeps the exact task identity in the drawer when the task cannot be loaded', async () => {
         taskServiceMock.getById.mockReset();
         taskServiceMock.getById.mockRejectedValue(new Error('task unavailable'));
+        taskServiceMock.getDetail.mockRejectedValue(new Error('task unavailable'));
 
         renderWithProviders(<TasksPage />, {
             initialEntries: [

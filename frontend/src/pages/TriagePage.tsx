@@ -1,3 +1,5 @@
+import { TaskBriefEditor } from '../components/tasks/TaskBriefEditor';
+import { emptyTaskBrief, newCriterion } from '../components/tasks/taskEditorContract';
 import i18n from '../i18n/i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
@@ -730,15 +732,18 @@ const ConvertTriageSplitView = ({
     }, [item.iteration_hint_id, iterations, selectedIterationId]);
 
     const [iterationId, setIterationId] = useState(String(defaultIterationId || ''));
+    const [destination, setDestination] = useState<'iteration' | 'project_backlog'>(defaultIterationId ? 'iteration' : 'project_backlog');
     const [projectId, setProjectId] = useState(item.project_hint_id ? String(item.project_hint_id) : '');
     const [assigneeId, setAssigneeId] = useState('');
     const [priority, setPriority] = useState(String(item.priority_hint || 5));
     const [tags, setTags] = useState<string[]>(item.labels);
-    const [effortDays, setEffortDays] = useState('1');
-    const [effortHours, setEffortHours] = useState('8');
+    const [effortDays, setEffortDays] = useState('');
+    const [effortHours, setEffortHours] = useState('');
     const [dependsOn, setDependsOn] = useState<number[]>([]);
     const [title, setTitle] = useState(item.title);
-    const [description, setDescription] = useState(item.description || '');
+    const [brief, setBrief] = useState(item.brief ?? { ...emptyTaskBrief(), goal: item.title, context: item.description || '' });
+    const description = brief.context;
+    const setDescription = (value: string | ((previous: string) => string)) => setBrief(previous => ({ ...previous, context: typeof value === 'function' ? value(previous.context) : value }));
     const [selectedTaskTemplateId, setSelectedTaskTemplateId] = useState('');
     const [draftPreview, setDraftPreview] = useState<TriageTaskDraftResponse | null>(null);
 
@@ -746,7 +751,8 @@ const ConvertTriageSplitView = ({
     const iterationsById = useMemo(() => makeLookup(iterations), [iterations]);
 
     const parsedIterationId = Number(iterationId);
-    const selectedIteration = iterations.find(iteration => iteration.id === parsedIterationId);
+    const selectedIteration = destination === "iteration" ? iterations.find(iteration => iteration.id === parsedIterationId) : undefined;
+    const dayHours = selectedIteration?.nominal_day_hours ?? 8;
     const hasSelectedIteration = Boolean(selectedIteration);
     const { data: teamMembers = [], error: teamError, refetch: refetchTeam } = useQuery<TeamMember[]>({
         queryKey: ['team', parsedIterationId],
@@ -777,7 +783,7 @@ const ConvertTriageSplitView = ({
         setEffortDays(value);
         const parsedDays = Number(value);
         if (!Number.isNaN(parsedDays)) {
-            setEffortHours(String(parsedDays * 8));
+            setEffortHours(value === "" ? "" : String(parsedDays * dayHours));
         }
     };
 
@@ -785,23 +791,25 @@ const ConvertTriageSplitView = ({
         setEffortHours(value);
         const parsedHours = Number(value);
         if (!Number.isNaN(parsedHours)) {
-            setEffortDays(String(parsedHours / 8));
+            setEffortDays(value === "" ? "" : String(parsedHours / dayHours));
         }
     };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!hasSelectedIteration) return;
+        if (destination === "iteration" ? !hasSelectedIteration : !effectiveProjectId) return;
         onSubmit({
-            iteration_id: parsedIterationId,
+            iteration_id: destination === "iteration" ? parsedIterationId : null,
+            destination,
+            brief,
             title: title.trim(),
-            description: optionalText(description),
+
             project_id: effectiveProjectId,
-            assignee_id: parseOptionalNumber(assigneeId),
+            assignee_id: hasSelectedIteration ? parseOptionalNumber(assigneeId) : null,
             priority: Number(priority),
             tags,
-            effort_days: Number(effortDays),
-            effort_hours: Number(effortHours),
+            effort_days: effortDays === "" ? null : Number(effortDays),
+            effort_hours: effortHours === "" ? null : Number(effortHours),
             depends_on: dependsOn,
         });
     };
@@ -809,7 +817,7 @@ const ConvertTriageSplitView = ({
     const applyDraft = () => {
         if (!draftPreview) return;
         setTitle(draftPreview.suggested_title);
-        setDescription(formatDraftDescription(draftPreview));
+        setBrief(draftPreview.brief ?? { ...emptyTaskBrief(), goal: draftPreview.suggested_title, context: formatDraftDescription(draftPreview), acceptance_criteria: draftPreview.acceptance_criteria.map(text => newCriterion(text)) });
     };
 
     return (
@@ -969,7 +977,7 @@ const ConvertTriageSplitView = ({
                                                 <span>{t('surfaces.triagePage.acceptanceCriteria')}</span>
                                                 <button
                                                     type="button"
-                                                    onClick={() => setDescription(prev => prev + (prev ? '\n\n' : '') + `${t('surfaces.triagePage.acceptanceCriteria')}:\n${draftPreview.acceptance_criteria.map(item => `- ${item}`).join('\n')}`)}
+                                                    onClick={() => setBrief(previous => ({ ...previous, acceptance_criteria: [...previous.acceptance_criteria, ...draftPreview.acceptance_criteria.map(text => newCriterion(text))] }))}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
                                                     {t('surfaces.triagePage.appendToDescription')}
@@ -1081,14 +1089,23 @@ const ConvertTriageSplitView = ({
                             )}
                         </div>
 
+                        <TaskBriefEditor value={brief} onChange={setBrief} hideContext disabled={isSubmitting} />
+                        <div>
+                            <label className="field-lbl" htmlFor="triage-task-destination">{t('domain.destination')}</label>
+                            <select id="triage-task-destination" className="input w-full" value={destination} onChange={event => { setDestination(event.target.value as 'iteration' | 'project_backlog'); setAssigneeId(''); setDependsOn([]); }}>
+                                <option value="iteration">{t('domain.scheduledDestination')}</option>
+                                <option value="project_backlog">{t('domain.backlog')}</option>
+                            </select>
+                        </div>
                         {/* Quick Assignment Row */}
                         <div className="grid grid-cols-2 gap-4 p-4 rounded-lg border border-border bg-surface-muted/50">
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-content-primary">
                                     {t('surfaces.triagePage.iteration')}
-                                    <RequiredIndicator />
+                                    {destination === "iteration" && <RequiredIndicator />}
                                 </label>
                                 <select
+                                    disabled={destination === "project_backlog"}
                                     value={iterationId}
                                     onChange={event => {
                                         const nextIterationId = event.target.value;
@@ -1103,7 +1120,7 @@ const ConvertTriageSplitView = ({
                                         setDependsOn([]);
                                     }}
                                     className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    required
+                                    required={destination === "iteration"}
                                 >
                                     <option value="">{t('surfaces.triagePage.select')}</option>
                                     {iterations.map(iteration => (
@@ -1138,7 +1155,7 @@ const ConvertTriageSplitView = ({
                                     value={assigneeId}
                                     onChange={event => setAssigneeId(event.target.value)}
                                     className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    disabled={!parsedIterationId}
+                                    disabled={!hasSelectedIteration}
                                 >
                                     <option value="">{t('surfaces.triagePage.unassigned')}</option>
                                     {teamMembers.map(member => (
@@ -1163,7 +1180,7 @@ const ConvertTriageSplitView = ({
                         <AssigneeRecommendationsPanel
                             targetType="triage"
                             triageItemId={item.id}
-                            iterationId={hasSelectedIteration ? parsedIterationId : 0}
+                            iterationId={hasSelectedIteration ? parsedIterationId : null}
                             selectedAssigneeId={parseOptionalNumber(assigneeId)}
                             onSelectAssignee={teamMemberId => setAssigneeId(String(teamMemberId))}
                         />
@@ -1232,7 +1249,7 @@ const ConvertTriageSplitView = ({
                     {/* Footer Actions */}
                     <div className="flex items-center justify-end gap-3 border-t border-border bg-surface-muted/80 px-6 py-4 shrink-0">
                         <Button type="button" variant="ghost" onClick={onClose}>{t('surfaces.triagePage.cancel')}</Button>
-                        <Button type="submit" isLoading={isSubmitting} disabled={!hasSelectedIteration || !title.trim()}>
+                        <Button type="submit" isLoading={isSubmitting} disabled={(destination === "iteration" ? !hasSelectedIteration : !effectiveProjectId) || !title.trim()}>
                             <Send className="mr-2 h-4 w-4" />
                             {t('surfaces.triagePage.convert')}
                         </Button>
@@ -1896,7 +1913,7 @@ const TriagePage = () => {
         queryClient.invalidateQueries({ queryKey: ['triage'] });
     };
 
-    const invalidateTaskProjectQueries = (iterationId: number, projectId?: number | null) => {
+    const invalidateTaskProjectQueries = (iterationId: number | null, projectId?: number | null) => {
         invalidateTriageQueries();
         queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
         queryClient.invalidateQueries({ queryKey: ['tasks'] });

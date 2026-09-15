@@ -67,6 +67,7 @@ class IterationService:
             revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
+            nominal_day_hours=iteration.calendar.nominal_day_hours,
             project_id=iteration.project_id,
             project=self._response_project(iteration),
             start_date=iteration.start_date,
@@ -507,7 +508,7 @@ class IterationService:
                         0,
                     ),
                     func.coalesce(
-                        func.sum(case((Task.effort_days <= 0, 1), else_=0)),
+                        func.sum(case((or_(Task.effort_hours.is_(None), Task.effort_hours <= 0), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
@@ -515,7 +516,7 @@ class IterationService:
                             case(
                                 (
                                     or_(
-                                        Task.effort_days <= 0,
+                                        or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
                                         Task.start_date.is_(None),
                                         Task.end_date.is_(None),
                                         Task.start_date > Task.end_date,
@@ -575,7 +576,7 @@ class IterationService:
         planned_hours = (
             select(
                 Task.assignee_id.label("assignee_id"),
-                func.sum(Task.effort_days * 8.0).label("planned_hours"),
+                func.sum(Task.effort_hours).label("planned_hours"),
             )
             .where(is_planning_leaf, Task.assignee_id.is_not(None))
             .group_by(Task.assignee_id)

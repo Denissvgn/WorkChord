@@ -342,6 +342,7 @@ const TasksPage = () => {
         const focusedTask = focusedTaskQuery.data;
         if (
             !focusedTask
+            || focusedTask.iteration_id === null
             || focusedTask.iteration_id === selectedIterationId
             || !iterations?.some(iteration => iteration.id === focusedTask.iteration_id)
         ) {

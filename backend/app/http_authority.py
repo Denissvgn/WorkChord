@@ -157,6 +157,14 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
             if task is None:
                 raise AuthorityError("resource_unavailable", "Task not found or inaccessible.", 404)
             action = "edit"
+            if relative.endswith("/progress"):
+                action = "execute"
+            elif relative.endswith("/review"):
+                action = "review"
+            elif relative.endswith("/commands"):
+                payload = await request.json()
+                command = payload.get("action") if isinstance(payload, dict) else None
+                action = "execute" if command in {"start_manual", "resolve_manual"} else "manage" if command in {"cancel", "reopen"} else "edit"
             if relative.endswith("/status"):
                 payload = await request.json()
                 action = "review" if isinstance(payload, dict) and payload.get("status") == "closed" else "execute"

@@ -768,8 +768,14 @@ class AgentRoutingService:
         blockers: list[str] = []
         if task.is_deferred:
             blockers.append(RoutingBlockerCode.TASK_DEFERRED.value)
-        if task.children:
+        if task.children or task.is_summary:
             blockers.append(RoutingBlockerCode.TASK_COMPOSITE.value)
+        if task.canceled_at:
+            blockers.append(RoutingBlockerCode.TASK_CANCELED.value)
+        if task.blocked_reason:
+            blockers.append(RoutingBlockerCode.TASK_BLOCKED.value)
+        if task.iteration_id is None:
+            blockers.append(RoutingBlockerCode.TASK_UNSCHEDULED.value)
 
         if purpose == "execution":
             pending_reselection = any(
@@ -801,9 +807,13 @@ class AgentRoutingService:
                 and open_questions not in {"none", "- none", "n/a", "- n/a"}
             ):
                 definition_incomplete = True
+            if task.brief is not None:
+                from app.services.task_brief_service import brief_definition_blockers
+                definition_incomplete = bool(brief_definition_blockers(task.brief))
             if (
                 "agent" not in tags
                 or not any(tag.startswith("cap:") for tag in tags)
+                or task.effort_days is None
                 or task.effort_days <= 0
                 or not 1 <= task.priority <= 10
             ):
@@ -813,7 +823,7 @@ class AgentRoutingService:
                     RoutingBlockerCode.TASK_DEFINITION_NOT_READY.value
                 )
             if any(
-                edge.depends_on.status
+                edge.depends_on.canceled_at or edge.depends_on.status
                 not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
                 for edge in task.dependencies
             ):
@@ -1122,10 +1132,10 @@ class AgentRoutingService:
                 * (1 - member.operational_utilization / 100)
             )
             committed = allocated_by_member.get(member.id, 0.0)
-            required = max(float(task.effort_days), 0.0)
+            required = max(float(task.effort_days), 0.0) if task.effort_days is not None else None
             ratio = (
                 (committed + required) / available_days
-                if available_days > 0
+                if available_days > 0 and required is not None
                 else math.inf
             )
             vacation_conflict = bool(
@@ -1401,6 +1411,8 @@ class AgentRoutingService:
     ) -> AgentRoutingPreviewResponse:
         from app.services.agent_team_setup_service import AgentTeamSetupService
 
+        if task.iteration_id is None:
+            raise AgentRoutingConflictError("schedule_commitment_required", "Commit this task to an iteration before agent routing.", task_id=task.id)
         topology_boundary = await AgentTeamSetupService(
             self.db
         ).membership_boundary(requesting_actor_id)

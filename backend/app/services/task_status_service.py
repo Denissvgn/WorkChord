@@ -1,5 +1,6 @@
 """Task status transitions, roll-up reconciliation, and status reporting."""
 
+from app.authority import AuthorityError
 from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations
 
 import json
@@ -78,11 +79,13 @@ class TaskStatusService:
         expected_version: Optional[int] = None,
         commit: bool = True,
         reserve_version: bool = True,
+        manual_execution: bool = False,
+        review_evidence: str = "",
+        review_rework: bool = False,
     ) -> tuple[Optional[Task], list[dict], bool]:
         """Apply one valid direct transition and reconcile its ancestor chain."""
         authority = self.db.info.get("authority")
         if authority is not None and authority.kind == "agent":
-            from app.authority import AuthorityError
             if (new_status.value if hasattr(new_status, "value") else str(new_status)) == "closed" and authority.actor_role != "verifier":
                 raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
             if authority.source == "rest":
@@ -91,6 +94,10 @@ class TaskStatusService:
         task = await self.task_service.get_by_id(task_id)
         if task is None:
             return None, [], False
+        if task.canceled_at or task.blocked_reason:
+            raise ValueError("Canceled or blocked work cannot change lifecycle")
+        if manual_execution and authority is not None and authority.kind not in {"human", "local"}:
+            raise AuthorityError("human_execution_required", "Manual execution requires a human identity.")
         if task.is_summary or task.children:
             raise ValueError("Summary lifecycle is derived from its leaf work")
         self.task_service.ensure_expected_version(task, expected_version)
@@ -99,22 +106,29 @@ class TaskStatusService:
             new_status.value if hasattr(new_status, "value") else str(new_status)
         )
         from app.authority import require_project
-        require_project(self.db, task.project_id, "review" if new_status_value == "closed" else "execute")
+        require_project(self.db, task.project_id, "review" if new_status_value == "closed" or review_rework else "execute")
+        if review_rework:
+            if task.status != "resolved" or new_status_value != "active":
+                raise ValueError("Review rework requires a resolved-to-active transition")
+            self.db.info.setdefault("review_rework_tasks", set()).add(task.id)
         if new_status_value not in self.VALID_TRANSITIONS.get(task.status, set()):
             return None, [], False
 
+        if new_status_value == "closed":
+            from app.services.task_brief_service import TaskBriefService
+            await TaskBriefService(self.db).require_review(task, accepting=True)
         ui_language = await resolve_runtime_ui_language(self.db)
         if task.status == TaskStatus.PLANNED.value:
-            if not task.start_date or not task.end_date:
+            if not manual_execution and (not task.start_date or not task.end_date):
                 raise ValueError(task_requires_schedule_message(ui_language))
             for dependency in task.dependencies:
                 dependency_task = await self.task_service.get_by_id(
                     dependency.depends_on_id
                 )
-                if dependency_task and dependency_task.status not in {
+                if dependency_task and (dependency_task.canceled_at or dependency_task.status not in {
                     TaskStatus.RESOLVED.value,
                     TaskStatus.CLOSED.value,
-                }:
+                }):
                     raise ValueError(
                         incomplete_dependency_message(
                             dependency_task.title,
@@ -139,6 +153,9 @@ class TaskStatusService:
             automatic=False,
             reserve_version=reserve_version,
         )
+        if new_status_value == "closed":
+            from app.services.task_brief_service import TaskBriefService
+            await TaskBriefService(self.db).record_review(updated, verdict="accept", reason=reason or "Independent status review", evidence=review_evidence)
         if updated.parent_id is not None:
             await self.reconcile_parent_chain(
                 updated.parent_id,
@@ -189,15 +206,17 @@ class TaskStatusService:
             self.db.info.setdefault("derived_rollups", set()).add(task.id)
             task.is_summary = True
         elif new_status == TaskStatus.ACTIVE.value:
+            task.progress = None
             task.started_at = task.started_at or now
             task.actual_start_date = task.actual_start_date or today
             task.resolved_at = task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
             task.actual_end_date = None
-            if old_status == TaskStatus.PLANNED.value:
+            if old_status == TaskStatus.PLANNED.value and task.execution_mode != "manual":
                 if task.start_date and today > task.start_date and task.end_date:
                     task.end_date += timedelta(days=(today - task.start_date).days)
                 task.start_date = today
-            task.executed_by_principal_id = getattr(authority, "principal_id", None)
+            if task.id not in self.db.info.get("review_rework_tasks", set()):
+                task.executed_by_principal_id = getattr(authority, "principal_id", None)
         elif new_status == TaskStatus.RESOLVED.value:
             task.resolved_at = now
             task.executed_by_principal_id = getattr(authority, "principal_id", None) or task.executed_by_principal_id
@@ -280,7 +299,7 @@ class TaskStatusService:
                 "old_status": old_status,
                 "new_status": new_status,
                 "manager_email": iteration.manager_email if iteration else None,
-                "assignee_email": task.assignee.email if task.assignee else None,
+                "assignee_email": task.owner_profile.email if task.__dict__.get("owner_profile") else task.assignee.email if task.assignee else None,
                 "cascade_updates": cascade_updates,
                 "reason": reason,
             },

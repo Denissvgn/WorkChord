@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.commands import commit_or_flush
+from app.commands import atomic_command, commit_or_flush
 
 import base64
 import binascii
@@ -936,15 +936,7 @@ class AgentWorkService:
 
     async def _lock_task(self, task_id: int) -> Optional[Task]:
         """Lock a task first and then load its complete response relationships."""
-        if self.db.get_bind().dialect.name == "sqlite":
-            # SQLite ignores SELECT ... FOR UPDATE. A no-op write acquires its
-            # database write reservation before any mutable graph state is
-            # evaluated, giving the default deployment the same serialized
-            # command boundary as row-locking databases.
-            await self.db.execute(
-                text("UPDATE tasks SET id = id WHERE id = :task_id"),
-                {"task_id": task_id},
-            )
+        await self.task_service._lock_task_scope(task_id)
         result = await self.db.execute(
             select(Task.id).where(Task.id == task_id).with_for_update()
         )
@@ -1128,6 +1120,7 @@ class AgentWorkService:
             for item in assignments
         ]
 
+    @atomic_command
     async def create_assignment(
         self,
         principal: AgentActor,
@@ -1364,6 +1357,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def update_assignment(
         self,
         assignment_id: int,
@@ -1971,6 +1965,7 @@ class AgentWorkService:
             blocker_codes=sorted(set(definition_blockers + start_blockers)),
         )
 
+    @atomic_command
     async def begin(
         self,
         actor: AgentActor,
@@ -2240,6 +2235,7 @@ class AgentWorkService:
             await self.task_service.reserve_task_version(task, task.version)
         task.claim_generation += 1
         task.claim_id = secrets.token_hex(24)
+        task.execution_mode = "scheduled"
         task.claimed_by = actor.id
         task.claim_expires_at = now + timedelta(seconds=data.lease_seconds)
         assignment.state = "accepted"
@@ -2334,6 +2330,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def submit(
         self,
         actor: AgentActor,
@@ -2349,6 +2346,7 @@ class AgentWorkService:
             success=True,
         )
 
+    @atomic_command
     async def renew_work(
         self,
         actor: AgentActor,
@@ -2464,6 +2462,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def fail(
         self,
         actor: AgentActor,
@@ -2564,6 +2563,11 @@ class AgentWorkService:
         run.summary = data.summary
         run.error = None if success else data.error
         if success:
+            if data.criterion_progress or task.brief:
+                from app.schemas.task_brief import ProgressWrite
+                from app.services.task_brief_service import TaskBriefService
+                await TaskBriefService(self.db).write_progress(task.id, ProgressWrite(expected_version=task.version,
+                    criteria=data.criterion_progress, artifacts=data.artifact_links), fenced_submission=True)
             run.artifact_links = json.dumps(data.artifact_links, ensure_ascii=False)
             run.commit_url = data.commit_url
             run.pr_url = data.pr_url
@@ -2573,7 +2577,7 @@ class AgentWorkService:
                 reason="Agent submitted evidence for verification",
                 actor_type="agent",
                 actor_id=actor.id,
-                expected_version=task.version,
+                expected_version=data.expected_task_version,
                 commit=False,
             )
             if task is None:
@@ -2624,6 +2628,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def review(
         self,
         actor: AgentActor,
@@ -2746,11 +2751,17 @@ class AgentWorkService:
                 rework_worker.id,
             )
             self._validate_assignment_actor(rework_worker, "execution")
+        from app.services.task_brief_service import TaskBriefService
+        await TaskBriefService(self.db).require_review(task, accepting=data.verdict == "pass")
+        if data.verdict == "reject":
+            await TaskBriefService(self.db).record_review(task, verdict="reject", reason=data.reason, evidence=json.dumps(data.evidence, ensure_ascii=False))
         new_status = TaskStatus.CLOSED if data.verdict == "pass" else TaskStatus.ACTIVE
         task, _, _ = await self.task_service.change_status(
             task.id,
             new_status,
             reason=data.reason or f"Verification {data.verdict}",
+            review_evidence=json.dumps(data.evidence, ensure_ascii=False),
+            review_rework=data.verdict == "reject",
             actor_type="agent",
             actor_id=actor.id,
             correlation_id=command.correlation_id,
@@ -3211,6 +3222,7 @@ class AgentWorkService:
         )
         return AgentRecoveryListResponse(items=page, pagination=pagination)
 
+    @atomic_command
     async def requeue_recovery(
         self,
         principal: AgentActor,
@@ -3507,6 +3519,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def create_project_update(
         self,
         actor: AgentActor,
@@ -3593,6 +3606,7 @@ class AgentWorkService:
         await commit_or_flush(self.db)
         return response
 
+    @atomic_command
     async def report_discovery(
         self,
         actor: AgentActor,
@@ -3721,20 +3735,24 @@ class AgentWorkService:
     def _definition_blockers(self, task: Task) -> list[str]:
         brief = parse_task_brief(task.description)
         blockers: list[str] = []
-        if task.status != TaskStatus.PLANNED.value or task.is_deferred:
+        if task.status != TaskStatus.PLANNED.value or task.is_deferred or task.canceled_at or task.blocked_reason:
             blockers.append("definition_status")
-        if task.children:
+        if task.children or task.is_summary:
             blockers.append("composite_task")
         tags = set(_json_loads(task.tags, []))
         if "agent" not in tags or not any(tag.startswith("cap:") for tag in tags):
             blockers.append("agent_capability_labels")
-        for section in REQUIRED_BRIEF_SECTIONS:
-            if not brief.get(section):
-                blockers.append(f"brief_{section.replace(' ', '_')}")
-        open_questions = brief.get("open questions", "").strip().lower()
-        if open_questions and open_questions not in {"none", "- none", "n/a", "- n/a"}:
-            blockers.append("brief_open_questions_unresolved")
-        if task.effort_days <= 0 or not 1 <= task.priority <= 10:
+        if task.brief is not None:
+            from app.services.task_brief_service import brief_definition_blockers
+            blockers.extend(brief_definition_blockers(task.brief))
+        else:
+            for section in REQUIRED_BRIEF_SECTIONS:
+                if not brief.get(section):
+                    blockers.append(f"brief_{section.replace(' ', '_')}")
+            open_questions = brief.get("open questions", "").strip().lower()
+            if open_questions and open_questions not in {"none", "- none", "n/a", "- n/a"}:
+                blockers.append("brief_open_questions_unresolved")
+        if task.effort_days is None or task.effort_days <= 0 or not 1 <= task.priority <= 10:
             blockers.append("effort_priority")
         return blockers
 
@@ -3801,28 +3819,34 @@ class AgentWorkService:
         )
         if task.status != expected_status:
             blockers.append(f"task_status_{expected_status}_required")
-        if task.is_deferred:
+        if task.is_deferred or task.canceled_at or task.blocked_reason:
             blockers.append("task_deferred")
-        if task.children:
+        if task.effort_hours is None or task.effort_hours <= 0:
+            blockers.append("effort_priority")
+        if task.children or task.is_summary:
             blockers.append("composite_task")
-        if task.start_date is None or task.end_date is None:
+        if task.iteration_id is None or task.start_date is None or task.end_date is None:
             blockers.append("schedule_missing")
         elif assignment.queue_class == "normal" and task.start_date > date.today():
             blockers.append("scheduled_start_future")
         for edge in task.dependencies:
             dependency = edge.depends_on
-            if dependency.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
+            if dependency.canceled_at or dependency.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
                 blockers.append(f"dependency_{dependency.id}_unresolved")
         if task.claimed_by is not None:
             if task.claim_expires_at is None or as_utc(task.claim_expires_at) > as_utc(now):
                 blockers.append("foreign_or_unknown_claim")
         brief = parse_task_brief(task.description)
-        for section in REQUIRED_BRIEF_SECTIONS:
-            if not brief.get(section):
-                blockers.append(f"brief_{section.replace(' ', '_')}")
-        open_questions = brief.get("open questions", "").strip().lower()
-        if open_questions and open_questions not in {"none", "- none", "n/a", "- n/a"}:
-            blockers.append("brief_open_questions_unresolved")
+        if task.brief is not None:
+            from app.services.task_brief_service import brief_definition_blockers
+            blockers.extend(brief_definition_blockers(task.brief))
+        else:
+            for section in REQUIRED_BRIEF_SECTIONS:
+                if not brief.get(section):
+                    blockers.append(f"brief_{section.replace(' ', '_')}")
+            open_questions = brief.get("open questions", "").strip().lower()
+            if open_questions and open_questions not in {"none", "- none", "n/a", "- n/a"}:
+                blockers.append("brief_open_questions_unresolved")
         tags = set(_json_loads(task.tags, []))
         if "agent" not in tags or not any(tag.startswith("cap:") for tag in tags):
             blockers.append("agent_capability_labels")

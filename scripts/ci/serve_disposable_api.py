@@ -23,12 +23,12 @@ def main():
             scenario = await seed_delivery_scenario(db)
             if os.environ.get("WORKCHORD_AUTH_MODE") == "managed":
                 from app.models.identity import Principal, IdentitySubject, ProjectMembership, PrincipalProfileLink
-                for index, name in enumerate(["alice", "bob"]):
+                for index, name in enumerate(["alice", "bob", "charlie"]):
                     principal = Principal(kind="human", display_name=name.title())
                     db.add(principal)
                     await db.flush()
                     db.add(IdentitySubject(principal_id=principal.id, issuer="http://oidc:8002", subject=name))
-                    db.add(ProjectMembership(principal_id=principal.id, project_id=scenario.projects[index], role="manager"))
+                    db.add(ProjectMembership(principal_id=principal.id, project_id=scenario.projects[index if index < 2 else 0], role="manager" if index < 2 else "reviewer"))
                     if index == 0:
                         db.add(PrincipalProfileLink(principal_id=principal.id, profile_id=scenario.profile, linked_by_principal_id=principal.id))
                 await db.commit()

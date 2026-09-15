@@ -3,8 +3,9 @@ from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Date, Float, ForeignKey, Integer, String, Text, and_, false
+from sqlalchemy import CheckConstraint, Date, Float, ForeignKey, Integer, JSON, String, Text, and_, false
 from sqlalchemy.orm import Mapped, foreign, mapped_column, relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.database import Base
 from app.models.external_link import ExternalLink
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from app.models.iteration import Iteration
     from app.models.project import Project, ProjectMilestone
     from app.models.request_source import RequestSourceLink
-    from app.models.team_member import TeamMember
+    from app.models.team_member import TeamMember, TeamMemberProfile
     from app.models.task_status_log import TaskStatusLog
 
 
@@ -44,6 +45,12 @@ class TaskStatus(str, Enum):
 class Task(Base):
     """Task model with tree structure and dependencies."""
     __tablename__ = "tasks"
+    __table_args__ = (
+        CheckConstraint("iteration_id IS NOT NULL OR project_id IS NOT NULL", name="ck_tasks_work_scope"),
+        CheckConstraint("effort_hours IS NULL OR effort_hours >= 0", name="ck_tasks_effort_hours"),
+        CheckConstraint("nominal_day_hours > 0 AND nominal_day_hours <= 24", name="ck_tasks_nominal_day_hours"),
+        {"sqlite_autoincrement": True},
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
@@ -62,8 +69,42 @@ class Task(Base):
     priority: Mapped[int] = mapped_column(Integer, default=5)  # 1=highest
 
     # Effort estimation
-    effort_days: Mapped[float] = mapped_column(Float, default=1.0)
-    effort_hours: Mapped[float] = mapped_column(Float, default=8.0)
+    _legacy_effort_days: Mapped[float | None] = mapped_column("effort_days", Float, nullable=True)
+    effort_hours: Mapped[float | None] = mapped_column(Float, nullable=True)
+    nominal_day_hours: Mapped[float] = mapped_column(Float, default=8.0, server_default="8", nullable=False)
+    estimate_provenance: Mapped[str] = mapped_column(String(32), default="unknown", server_default="unknown", nullable=False)
+    legacy_estimate: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    domain_backfill_version: Mapped[int] = mapped_column(Integer, default=1, server_default="0", nullable=False)
+    domain_migration_notes: Mapped[list | None] = mapped_column(JSON)
+
+    @hybrid_property
+    def effort_days(self) -> float | None:
+        return self.effort_hours / (self.nominal_day_hours or 8.0) if self.effort_hours is not None else None
+
+    @effort_days.inplace.setter
+    def _set_effort_days(self, value: float | None) -> None:
+        self._legacy_effort_days = value
+        self.effort_hours = value * (self.nominal_day_hours or 8.0) if value is not None else None
+
+    @effort_days.inplace.expression
+    @classmethod
+    def _effort_days_expression(cls):
+        return cls.effort_hours / cls.nominal_day_hours
+
+    owner_profile_id: Mapped[int | None] = mapped_column(ForeignKey("team_member_profiles.id", ondelete="RESTRICT"), index=True)
+    ownership_provenance: Mapped[str] = mapped_column(String(32), default="unassigned", server_default="unassigned", nullable=False)
+    blocked_reason: Mapped[str | None] = mapped_column(Text)
+    canceled_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    canceled_reason: Mapped[str | None] = mapped_column(Text)
+    canceled_by_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
+    execution_mode: Mapped[str] = mapped_column(String(16), default="scheduled", server_default="scheduled", nullable=False)
+    brief: Mapped[dict | None] = mapped_column(JSON)
+    brief_revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    brief_provenance: Mapped[str] = mapped_column(String(32), default="legacy_text", server_default="legacy_text", nullable=False)
+    legacy_description: Mapped[str | None] = mapped_column(Text)
+    brief_migration_notes: Mapped[list | None] = mapped_column(JSON)
+    artifact_revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    progress: Mapped[dict | None] = mapped_column(JSON)
 
     # Status
     status: Mapped[str] = mapped_column(String(50), default=TaskStatus.PLANNED.value)
@@ -106,8 +147,8 @@ class Task(Base):
     )
 
     # Foreign keys
-    iteration_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("iterations.id"), nullable=False
+    iteration_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("iterations.id"), nullable=True
     )
     project_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("projects.id", ondelete="SET NULL"), nullable=True, index=True
@@ -129,7 +170,8 @@ class Task(Base):
     )
 
     # Relationships
-    iteration: Mapped["Iteration"] = relationship("Iteration", back_populates="tasks")
+    owner_profile: Mapped[Optional["TeamMemberProfile"]] = relationship("TeamMemberProfile")
+    iteration: Mapped[Optional["Iteration"]] = relationship("Iteration", back_populates="tasks")
     project: Mapped[Optional["Project"]] = relationship("Project", back_populates="tasks")
     milestone: Mapped[Optional["ProjectMilestone"]] = relationship(
         "ProjectMilestone",

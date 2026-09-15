@@ -4,8 +4,8 @@ export interface PlanShareTask {
     id: number;
     title: string;
     priority: number;
-    effort_days: number;
-    effort_hours: number;
+    effort_days: number | null;
+    effort_hours: number | null;
     status: string;
     assignee_name?: string | null;
     start_date?: string | null;

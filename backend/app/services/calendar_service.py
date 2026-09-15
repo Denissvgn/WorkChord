@@ -109,6 +109,7 @@ class CalendarService:
         calendar = Calendar(
             name=data.name,
             timezone=data.timezone,
+            nominal_day_hours=data.nominal_day_hours,
             year=data.year,
             holidays=data.holidays,
             weekend_days=data.weekend_days,
@@ -128,6 +129,12 @@ class CalendarService:
         update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         for field, value in update_data.items():
             setattr(calendar, field, value)
+
+        if "nominal_day_hours" in update_data:
+            from app.models.task import Task
+            for task in (await self.db.scalars(select(Task).join(Iteration, Iteration.id == Task.iteration_id).where(Iteration.calendar_id == calendar_id))).all():
+                task.nominal_day_hours = calendar.nominal_day_hours
+                task._legacy_effort_days = task.effort_days
 
         await commit_or_flush(self.db)
         await self.db.refresh(calendar)

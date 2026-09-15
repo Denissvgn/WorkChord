@@ -57,7 +57,7 @@ def seed_legacy_baseline(database_path: Path) -> None:
 
 
 def test_single_head_invariant() -> None:
-    assert head_revision() == "20260915_0037"
+    assert head_revision() == "20260915_0038"
 
 
 @pytest.mark.sqlite
@@ -128,7 +128,9 @@ def test_representative_legacy_sqlite_upgrades_with_explicit_semantics(
             ).one()
         assert calendar == ("[]", "[5, 6]", "[]")
         assert member == (100.0, 1.0, 20.0)
-        assert task == (5, 1.0, 8.0, "planned", 0, 0, 0)
+        assert task == (5, None, None, "planned", 0, 0, 0)
+        with engine.connect() as connection:
+            assert connection.execute(text("SELECT estimate_provenance FROM tasks WHERE id=1")).scalar_one() == "unknown"
         with Session(engine) as session:
             changed_at = session.scalar(
                 select(TaskStatusLog.changed_at).where(TaskStatusLog.id == 1)
