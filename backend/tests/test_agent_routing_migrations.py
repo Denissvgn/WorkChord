@@ -319,4 +319,4 @@ def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> Non
 @pytest.mark.contract
 def test_alembic_reports_exactly_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260915_0038"]
+    assert script.get_heads() == ["20260916_0039"]

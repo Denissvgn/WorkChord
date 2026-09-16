@@ -1,0 +1,65 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
+import { renderWithProviders } from '../../test/renderWithProviders';
+import { TaskForm } from './TaskForm';
+import { emptyTaskBrief } from './taskEditorContract';
+import type { WorkTemplate } from '../../types/template';
+
+const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }));
+vi.mock('../../services/api', () => ({ default: api }));
+
+describe('task template application', () => {
+    beforeEach(() => {
+        api.get.mockReset();
+        api.post.mockReset();
+        api.post.mockResolvedValue({ data: { id: 42 } });
+    });
+
+    const configure = (template: WorkTemplate) => {
+        api.get.mockImplementation(async (path: string) => {
+            if (path.startsWith('/templates')) return { data: [template] };
+            if (path === '/projects') return { data: [{ id: 1, name: 'Project' }] };
+            if (path === '/tasks/owner-options') return { data: { items: [], has_more: false } };
+            if (path === '/tasks/lookup') return { data: { items: [], has_more: false } };
+            return { data: [] };
+        });
+    };
+
+    const template = (payload: WorkTemplate['default_payload'] = {}): WorkTemplate => ({
+        id: 7, name: 'Delivery template', template_type: 'task', default_title: 'New deliverable',
+        default_description: 'Legacy context', default_checklist: [], default_payload: payload,
+        default_labels: [], is_active: true, sort_order: 0, created_at: '', updated_at: '',
+    });
+
+    it('saves the canonical brief instead of overwriting it with legacy defaults', async () => {
+        const brief = { ...emptyTaskBrief(), goal: 'Canonical goal', context: 'Canonical context',
+            scope: 'Bounded delivery', exclusions: 'Excluded work', verification: 'Inspect output', artifact_expectations: 'A report',
+            acceptance_criteria: [{ id: 'template-criterion', revision: 4, text: 'Canonical result', verification: 'Independent check' }] };
+        const source = template({ brief });
+        configure(source);
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
+        expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveValue('Canonical goal');
+        expect(screen.getByRole('textbox', { name: 'Criterion 1' })).toHaveValue('Canonical result');
+        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        const [path, saved] = api.post.mock.calls[0];
+        expect(path).toBe('/projects/1/backlog');
+        expect(saved.brief).toEqual({ ...brief, acceptance_criteria: [
+            { ...brief.acceptance_criteria[0], id: expect.any(String), revision: 1 },
+        ] });
+        expect(saved.brief.acceptance_criteria[0].id).not.toBe('template-criterion');
+        expect(source.default_payload.brief).toEqual(brief);
+    });
+
+    it('adapts a legacy template into the same canonical save contract', async () => {
+        const source = { ...template(), default_checklist: ['Legacy criterion'] };
+        configure(source);
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
+        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        expect(api.post.mock.calls[0][1].brief).toMatchObject({ goal: 'New deliverable', context: 'Legacy context',
+            acceptance_criteria: [{ id: expect.any(String), revision: 1, text: 'Legacy criterion', verification: '' }] });
+    });
+});

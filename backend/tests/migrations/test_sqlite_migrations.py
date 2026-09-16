@@ -57,7 +57,7 @@ def seed_legacy_baseline(database_path: Path) -> None:
 
 
 def test_single_head_invariant() -> None:
-    assert head_revision() == "20260915_0038"
+    assert head_revision() == "20260916_0039"
 
 
 @pytest.mark.sqlite

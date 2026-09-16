@@ -143,7 +143,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     child = t.alias("metric_child")
     tree = tree.union_all(select(child.c.id, child.c.parent_id, child.c.project_id, child.c.iteration_id,
         or_(tree.c.deferred, child.c.is_deferred), or_(tree.c.optional, child.c.is_optional)).join(tree, child.c.parent_id == tree.c.id)
-        .where(child.c.iteration_id == tree.c.iteration_id,
+        .where(child.c.iteration_id.is_not_distinct_from(tree.c.iteration_id),
                or_(child.c.project_id == tree.c.project_id, and_(child.c.project_id.is_(None), tree.c.project_id.is_(None)))))
     visible = select(func.count()).select_from(t)
     if scope is not None:
@@ -181,8 +181,10 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     dependency, target = TaskDependency.__table__, t.alias("metric_dependency")
     visible_ids = select(t.c.id).where(scope) if scope is not None else select(t.c.id)
     visible_ids = visible_ids.correlate(None)
-    blocked = select(dependency.c.id).join(target, target.c.id == dependency.c.depends_on_id).where(dependency.c.task_id == t.c.id,
-        or_(dependency.c.depends_on_id.notin_(visible_ids), target.c.status.notin_(["resolved", "closed"]))).exists()
+    unavailable_dependency = select(dependency.c.id).outerjoin(target, target.c.id == dependency.c.depends_on_id).where(dependency.c.task_id == t.c.id,
+        or_(target.c.id.is_(None), dependency.c.depends_on_id.notin_(visible_ids),
+            target.c.status.notin_(["resolved", "closed"]), target.c.canceled_at.is_not(None))).exists()
+    blocked = or_(and_(t.c.blocked_reason.is_not(None), t.c.blocked_reason != ""), unavailable_dependency)
     def count(predicate, name):
         return func.coalesce(func.sum(case((predicate, 1), else_=0)), 0).label(name)
     columns = [count(included, "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),

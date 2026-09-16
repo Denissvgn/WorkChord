@@ -131,10 +131,9 @@ class CalendarService:
             setattr(calendar, field, value)
 
         if "nominal_day_hours" in update_data:
-            from app.models.task import Task
-            for task in (await self.db.scalars(select(Task).join(Iteration, Iteration.id == Task.iteration_id).where(Iteration.calendar_id == calendar_id))).all():
-                task.nominal_day_hours = calendar.nominal_day_hours
-                task._legacy_effort_days = task.effort_days
+            from app.services.task_domain_service import refresh_nominal_day_hours
+            iteration_ids = select(Iteration.id).where(Iteration.calendar_id == calendar_id)
+            await refresh_nominal_day_hours(self.db, iteration_ids, calendar.nominal_day_hours)
 
         await commit_or_flush(self.db)
         await self.db.refresh(calendar)

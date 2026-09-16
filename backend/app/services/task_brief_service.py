@@ -113,6 +113,12 @@ def clear_acceptance(task: Task) -> None:
     task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
 
 
+def clear_execution_evidence(task: Task) -> None:
+    """A changed execution context needs fresh progress; history remains immutable."""
+    task.progress = None
+    clear_acceptance(task)
+
+
 def brief_from_draft(draft, *, title=None, context=None) -> TaskBrief:
     """Project old draft/template fields into the canonical input contract."""
     from app.schemas.task_brief import BriefCriterion

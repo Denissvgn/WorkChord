@@ -312,11 +312,11 @@ class SnapshotService:
             task = await self.db.get(Task, row["id"])
             if task is not None and task.iteration_id != iteration_id:
                 raise ValueError("Snapshot task ID belongs to another iteration")
+            from app.services.task_recovery_service import reserve_restored_task_version
+            version = await reserve_restored_task_version(self.db, row["id"], task, row.get("version", 1))
             if task is None:
-                task = Task(id=row["id"], iteration_id=iteration_id, version=1)
+                task = Task(id=row["id"], iteration_id=iteration_id, version=version)
                 self.db.add(task)
-            else:
-                await service.reserve_task_version(task, task.version)
             for key in ["title", "description", "priority", "effort_days", "effort_hours", "status", "project_id", "milestone_id", "is_optional", "is_deferred", "sort_order", "external_key", "source", "source_url"]:
                 if key in row:
                     setattr(task, key, row[key])

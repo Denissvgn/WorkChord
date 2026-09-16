@@ -63,7 +63,7 @@ from app.models.triage import (
 )
 from app.models.user_session import UserSession
 from app.models.identity import Principal, IdentitySubject, WorkspaceMembership, ProjectMembership, PrincipalProfileLink, OIDCLoginAttempt, OwnershipTransfer, CommandAudit
-from app.models.recovery import ApplicationSnapshot, LegacySnapshotImport, TaskScheduleBaseline
+from app.models.recovery import ApplicationSnapshot, LegacySnapshotImport, TaskScheduleBaseline, TaskDeletionFence
 
 __all__ = [
     "AgentActor",

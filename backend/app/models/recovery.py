@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from sqlalchemy import ForeignKey, Integer, JSON, String, Text, UniqueConstraint, CheckConstraint, Date
+from sqlalchemy import ForeignKey, Integer, JSON, String, Text, UniqueConstraint, CheckConstraint, Date, case, event, select
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -49,3 +49,32 @@ class TaskScheduleBaseline(Base):
     reason: Mapped[str] = mapped_column(Text, nullable=False)
     principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+
+
+class TaskDeletionFence(Base):
+    """Retain the highest deleted task version independently of task lifetime."""
+    __tablename__ = "task_deletion_fences"
+    __table_args__ = (CheckConstraint("last_version >= 1", name="ck_task_deletion_fence_version"),)
+    original_task_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    last_version: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+def record_task_deletion_fence(_mapper, connection, task):
+    """Join the authorized ORM deletion transaction, including cascaded children."""
+    from app.models.task import Task
+    if connection.dialect.name == "postgresql":
+        from sqlalchemy.dialects.postgresql import insert
+    else:
+        from sqlalchemy.dialects.sqlite import insert
+    persisted = connection.scalar(select(Task.__table__.c.version).where(Task.__table__.c.id == task.id))
+    version = max(task.version, persisted or task.version)
+    table = TaskDeletionFence.__table__
+    statement = insert(table).values(original_task_id=task.id, last_version=version)
+    statement = statement.on_conflict_do_update(index_elements=[table.c.original_task_id], set_={
+        "last_version": case((statement.excluded.last_version > table.c.last_version, statement.excluded.last_version), else_=table.c.last_version),
+    })
+    connection.execute(statement)
+
+
+from app.models.task import Task
+event.listen(Task, "before_delete", record_task_deletion_fence)

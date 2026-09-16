@@ -6,7 +6,7 @@ import json
 from datetime import date
 from typing import Any, Optional, Sequence
 
-from sqlalchemy import select, update as sql_update
+from sqlalchemy import and_, or_, select, update as sql_update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import attributes, selectinload
 
@@ -351,7 +351,9 @@ class TaskService:
                 }
 
             if child_changes:
-                child.version += 1
+                from app.services.task_brief_service import clear_execution_evidence
+                clear_execution_evidence(child)
+                await self.reserve_task_version(child, child.version)
                 changed_ids.append(child.id)
                 await self.record_task_event(
                     child.id,
@@ -837,7 +839,7 @@ class TaskService:
         commit: bool = True,
     ) -> Optional[Task]:
         """Update an existing task."""
-        await self._lock_task_scope(task_id)
+        await self._lock_task_scope(task_id, target_project_id=data.project_id)
         task = await self.get_by_id(task_id)
         if not task:
             return None
@@ -876,6 +878,7 @@ class TaskService:
             if task is None:
                 return None
             self.ensure_expected_version(task, expected_version)
+            task = await self.get_by_id(task_id)
 
         # Create snapshot before modification
         snapshot_service = SnapshotService(self.db)
@@ -921,6 +924,10 @@ class TaskService:
 
         if project_id_was_set:
             if task.project_id != project_id_requested:
+                if task.iteration_id is None:
+                    subtree_ids = await self._task_subtree_ids(task.id)
+                    await self._require_unclaimed_structure(subtree_ids)
+                    await self._require_no_cross_subtree_dependencies(subtree_ids)
                 old_project_id = task.project_id
                 task.project_id = project_id_requested
                 changed_fields["project_id"] = {
@@ -1023,10 +1030,11 @@ class TaskService:
                 child = await self.db.get(Task, child_id)
                 await self.reserve_task_version(child, child.version)
         if changed_fields:
-            from app.services.task_brief_service import clear_acceptance
-            clear_acceptance(task)
+            from app.services.task_brief_service import clear_acceptance, clear_execution_evidence
             if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
-                task.progress = None
+                clear_execution_evidence(task)
+            else:
+                clear_acceptance(task)
             await self.reserve_task_version(task, expected_version)
             await self.record_task_event(
                 task_id,
@@ -1162,6 +1170,8 @@ class TaskService:
 
         dependency = TaskDependency(task_id=task_id, depends_on_id=depends_on_id)
         self.db.add(dependency)
+        from app.services.task_brief_service import clear_execution_evidence
+        clear_execution_evidence(task)
         await self.reserve_task_version(task, task.version)
         await self.record_task_event(
             task_id,
@@ -1198,6 +1208,8 @@ class TaskService:
             return False
 
         await self.db.delete(dependency)
+        from app.services.task_brief_service import clear_execution_evidence
+        clear_execution_evidence(task)
         await self.reserve_task_version(task, task.version)
         await self.record_task_event(
             task_id,
@@ -1434,15 +1446,27 @@ class TaskService:
             await self.status_service.reconcile_parent_chain(old_parent_id, commit=False)
         return [await self.get_by_id(child.id) for child in children]
 
-    async def _lock_task_scope(self, task_id, *, target_iteration_id=None, expected_revisions=None):
-        iteration_id = await self.db.scalar(select(Task.iteration_id).where(Task.id == task_id))
+    async def _lock_task_scope(self, task_id, *, target_iteration_id=None, target_project_id=None, expected_revisions=None):
+        hint = (await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first()
+        if hint is None:
+            return
+        iteration_id, project_id = hint
         if iteration_id is None:
             from app.commands import lock_backlog_project
-            project_id = await self.db.scalar(select(Task.project_id).where(Task.id == task_id))
-            if project_id is not None:
-                await lock_backlog_project(self.db, project_id)
-                from app.services.backlog_snapshot_service import BacklogSnapshotService
-                await BacklogSnapshotService(self.db).capture(project_id, "before_task_change")
+            projects = {project_id}
+            if target_project_id is not None and target_project_id != project_id:
+                require_project(self.db, project_id, "edit")
+                require_project(self.db, target_project_id, "edit")
+                projects.add(target_project_id)
+            for scope in sorted(projects):
+                await lock_backlog_project(self.db, scope)
+            current = (await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first()
+            if current != hint:
+                from app.authority import AuthorityError
+                raise AuthorityError("task_scope_changed", "Task scope changed. Reload before editing.", 409)
+            from app.services.backlog_snapshot_service import BacklogSnapshotService
+            for scope in sorted(projects):
+                await BacklogSnapshotService(self.db).capture(scope, "before_task_change")
         ids = ([iteration_id] if iteration_id is not None else []) + ([target_iteration_id] if target_iteration_id is not None else [])
         await lock_iterations(self.db, ids, expected=expected_revisions)
 
@@ -1474,24 +1498,16 @@ class TaskService:
         self,
         subtree_ids: set[int],
     ) -> None:
-        """Reject moves that would leave dependency edges crossing iterations."""
-        result = await self.db.execute(
-            select(TaskDependency).where(
-                TaskDependency.task_id.in_(subtree_ids),
-                TaskDependency.depends_on_id.notin_(subtree_ids),
-            )
-        )
-        if result.scalars().first() is not None:
-            raise ValueError("Task move would leave dependencies crossing iterations.")
-
-        result = await self.db.execute(
-            select(TaskDependency).where(
-                TaskDependency.depends_on_id.in_(subtree_ids),
-                TaskDependency.task_id.notin_(subtree_ids),
-            )
-        )
-        if result.scalars().first() is not None:
-            raise ValueError("Task move would leave dependencies crossing iterations.")
+        """Reject moves that would leave dependency edges crossing work scopes."""
+        from app.authority import internal_authority
+        # Inspect only edge existence so hidden neighboring work cannot be stranded.
+        with internal_authority(self.db):
+            crossing = await self.db.scalar(select(TaskDependency.id).where(or_(
+                and_(TaskDependency.task_id.in_(subtree_ids), TaskDependency.depends_on_id.notin_(subtree_ids)),
+                and_(TaskDependency.depends_on_id.in_(subtree_ids), TaskDependency.task_id.notin_(subtree_ids)),
+            )).limit(1))
+        if crossing is not None:
+            raise ValueError("Task move would leave dependencies crossing work scopes.")
 
     async def _resolve_project_for_move(
         self,

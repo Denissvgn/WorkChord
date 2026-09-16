@@ -112,7 +112,9 @@ def _scope_conditions(authority):
         c = table.c
         name = table.name
         condition = None
-        if name == "projects":
+        if name == "task_deletion_fences":
+            condition = false()
+        elif name == "projects":
             condition = c.id.in_(projects)
         elif name == "iterations":
             condition = project_condition

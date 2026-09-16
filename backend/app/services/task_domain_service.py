@@ -40,6 +40,14 @@ async def nominal_day_hours(db, iteration_id) -> float:
     return value or 8.0
 
 
+async def refresh_nominal_day_hours(db, iteration_ids, day_hours):
+    """Refresh display units under the caller's planning-input reservations."""
+    tasks = await db.scalars(select(Task).where(Task.iteration_id.in_(iteration_ids)).order_by(Task.id))
+    for task in tasks:
+        task.nominal_day_hours = day_hours
+        task._legacy_effort_days = task.effort_days
+
+
 async def domain_capabilities(db):
     """Advertise adoption only after the installed schema's backfill is complete."""
     if db is None:

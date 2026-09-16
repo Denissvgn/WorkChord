@@ -421,6 +421,10 @@ class IterationService:
         for field, value in update_data.items():
             setattr(iteration, field, value)
 
+        if "calendar_id" in update_data:
+            from app.services.task_domain_service import nominal_day_hours, refresh_nominal_day_hours
+            await refresh_nominal_day_hours(self.db, [iteration_id], await nominal_day_hours(self.db, iteration_id))
+
         if commit:
             await commit_or_flush(self.db)
         else:

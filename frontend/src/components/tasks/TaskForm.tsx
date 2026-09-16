@@ -324,6 +324,7 @@ export const TaskForm = ({
 
     const applyTaskTemplate = (template: WorkTemplate) => {
         const display = templateDisplay(template);
+        const canonical = template.default_payload.brief as import('../../types/task').TaskBrief | undefined;
         setFormData(prev => {
             const effortDays = template.default_effort_days ?? prev.effort_days;
             const source = getPayloadString(template.default_payload, 'source', prev.source ?? null);
@@ -331,7 +332,9 @@ export const TaskForm = ({
             return {
                 ...prev,
                 title: display.default_title ?? prev.title,
-                brief: { ...emptyTaskBrief(), ...(template.default_payload.brief as Partial<import('../../types/task').TaskBrief> | undefined),
+                brief: canonical ? { ...structuredClone(canonical), acceptance_criteria: canonical.acceptance_criteria.map(criterion => ({
+                    ...criterion, id: newCriterion().id, revision: 1,
+                })) } : { ...emptyTaskBrief(),
                     goal: display.default_title ?? prev.title,
                     context: display.default_description ?? prev.description,
                     acceptance_criteria: display.default_checklist.map(text => newCriterion(text)) },

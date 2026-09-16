@@ -16,6 +16,8 @@ Cancellation retains lifecycle history and invalidates agent execution ownership
 
 Unknown effort is `null`; zero is a known zero. `estimate_provenance` distinguishes `unknown`, `assumed` and `estimated`. Forecast scheduling requires a positive estimate and reports unavailable work and prerequisites explicitly. Manual human work can start without an estimate or forecast dates.
 
+Changing an iteration's calendar refreshes the nominal workday and derived days for its tasks while retaining authoritative hours and estimate provenance.
+
 Historical one-day/eight-hour defaults become unknown when no explicit estimate provenance exists. Original quantities remain in `legacy_estimate`. Unambiguous human profile links are retained as ownership with `legacy_capacity_link` provenance; unlinked capacity is reported without inventing a person.
 
 ## Briefs and evidence
@@ -25,6 +27,8 @@ The `brief` object contains a schema version, goal, context, scope, exclusions, 
 `PUT /api/tasks/{task_id}/brief` accepts `{expected_version, brief}`. Legacy descriptions remain editable until deliberately converted. `POST /api/tasks/{task_id}/brief/convert` previews conversion by default; `apply: true` applies it with the supplied version. Supported English and Russian headings and checklist items are parsed conservatively. Original text and unresolved conversion notes remain available. Historical checkmarks do not establish acceptance.
 
 After conversion, Markdown is derived from the canonical brief. A conflicting legacy description write is rejected. AI suggestions and template defaults supply draft fields; the user chooses which fields to apply.
+
+A template's structured brief takes precedence over its legacy description and checklist. Applying it to a new task preserves its content and creates new criterion IDs at revision 1. Dependency changes invalidate current progress and acceptance through both task updates and individual dependency commands; prior evidence remains in history.
 
 `POST /api/tasks/{task_id}/progress` saves criterion states, evidence and artifact links separately from acceptance. It requires the current task version and criterion revisions. An agent supplies criterion progress through its fenced assigned-work submission.
 
@@ -37,6 +41,10 @@ After conversion, Markdown is derived from the canonical brief. A conflicting le
 `GET /api/tasks/review-queue` lists independently reviewable resolved work within the caller's review scope. Owner selectors use `/api/tasks/owner-options`, which returns public display information for eligible human owners.
 
 Project backlog recovery points use the same transactional database snapshot store as iteration recovery. List them at `/api/projects/{project_id}/backlog/snapshots`. Restore with `/api/projects/{project_id}/backlog/snapshots/{snapshot_id}/restore`, supplying the complete current task-version map and a reason. Restore preserves task identity and immutable brief history while invalidating current progress and acceptance. Application snapshots do not replace a complete database backup.
+
+Task deletion retains a durable version fence in the same transaction, including deleted subtasks. Scheduled and backlog restoration allocate versions above the saved task, current task, deletion fence and retained history, so an old editor cannot overwrite restored work. If a task was deleted before its last version was recorded, restoring its ID returns HTTP 409 with code `snapshot_version_history_unknown`. Recover that data from a complete database backup and its matching application image; an application snapshot alone cannot establish a safe version.
+
+Moving backlog work between projects requires edit permission in both projects. The complete subtree must retain all its dependencies within the destination scope; moves that strand incoming or outgoing dependencies are rejected atomically. Project summaries include nested backlog leaves and count explicit blocks as well as unavailable prerequisites.
 
 ## Compatibility and migration
 

@@ -4,14 +4,13 @@ import hashlib
 import json
 from datetime import date, datetime
 
-from sqlalchemy import delete, func, or_, select
+from sqlalchemy import delete, or_, select
 
 from app.authority import AuthorityError, internal_authority, require_project
 from app.commands import atomic_command, current_command, lock_backlog_project
 from app.config import get_settings
 from app.models.recovery import ApplicationSnapshot
 from app.models.task import Task, TaskDependency
-from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.services.snapshot_service import SnapshotService
 from app.services.task_service import TaskService
 from app.utils.time import utc_now
@@ -99,14 +98,11 @@ class BacklogSnapshotService:
         await self.db.flush()
         for row, _ in rows:
             task = await self.db.get(Task, row["id"])
+            from app.services.task_recovery_service import reserve_restored_task_version
+            version = await reserve_restored_task_version(self.db, row["id"], task, row.get("version", 1))
             if task is None:
-                versions = [row.get("version", 1)]
-                for model in (TaskBriefRevision, TaskProgressRecord, TaskReviewRecord):
-                    versions.append(await self.db.scalar(select(func.max(model.task_version)).where(model.original_task_id == row["id"])) or 0)
-                task = Task(id=row["id"], project_id=project_id, version=max(versions) + 1)
+                task = Task(id=row["id"], project_id=project_id, version=version)
                 self.db.add(task)
-            else:
-                await service.reserve_task_version(task, task.version)
             for name in ("title", "description", "priority", "effort_hours", "nominal_day_hours", "estimate_provenance", "owner_profile_id", "ownership_provenance",
                          "status", "is_summary", "is_optional", "is_deferred", "sort_order", "external_key", "source", "source_url", "milestone_id", "blocked_reason", "canceled_reason", "execution_mode"):
                 if name in row:
