@@ -4,7 +4,7 @@
 
 ## Description
 
-Synthetic OIDC issuer confined to the disposable browser network and database.
+Provides a synthetic OIDC issuer against an isolated SQLite database. The issuer is allowlisted to fixture addresses, binds loopback by default, and supports short-lived authorization codes, PKCE, nonce-bound tokens and controlled session expiry. Its fixture accounts and control credential are confined to development verification.
 
 ## Imports
 

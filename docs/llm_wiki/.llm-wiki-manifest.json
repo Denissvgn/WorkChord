@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:88dfab4e76c5cfe8dcd21afb5466164df19ab99e884f00906a35b8884f0ea406",
-    "knowledge_index_hash": "sha256:3a47961e85c151a917494051447b6809ac5e26221dcfc0c0b05dec9cf6a69981",
-    "surface_index_hash": "sha256:2d06e53276ca9e10ecf723ada2beccf74a7de509f0f9f0dbda9c1f16a7e15752"
+    "evaluated_envelope_hash": "sha256:402176e11bd5c7e6b8ddee84be2f53119fab379eb7af3669b32fa7f5a3c54a75",
+    "knowledge_index_hash": "sha256:b2bda86997f0b33836378d80410e16cf89705ebb24c85acad265061ee86d47ce",
+    "surface_index_hash": "sha256:4a3e73e3a31ca9938f21f9280ad6a2c53a2113e986d612343a5e32fb904c2ea3"
   },
   "evidence_baselines": {
     "entities/AccessibleNameViolation.md": {
@@ -1372,6 +1372,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:3de3ea216cea6887ef41243297661a7602df0e431c9a38f9539993ef7ef10a4b",
         "source_path": "backend/app/commands.py"
+      },
+      "state": "known"
+    },
+    "entities/AndroidArtifacts.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c5eef96b4b86c320873cbbe5f99bfc37258b154f3718c5053f123ca10930c5a9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
     },
@@ -4535,6 +4545,16 @@
       },
       "state": "known"
     },
+    "entities/NativeChecks.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:62ad0b345b5664238aa19a01bd9c71c939a032535bb8922d7fb4ccf560fb91a0",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
+      },
+      "state": "known"
+    },
     "entities/NavItem.md": {
       "basis": {
         "concept_observation_hash": "sha256:c5ceff1820f42656014a93df072a1d652874b07d13497b651777168b482d4dff",
@@ -5102,6 +5122,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:80e6ba725b03c5490845d88a321b2373b102ad0e9690c5b08a98fa5d5d72a5c5",
         "source_path": "backend/app/autonomy/contracts/postgresql/loader.py"
+      },
+      "state": "known"
+    },
+    "entities/PostgresOwnership.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0cd0984005dc19ba135eb12f89c6edc9448622b5acf0335beebc8562017f8e60",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
     },
@@ -9132,6 +9162,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:463c2b98b9883fc950991e68d6fd97976965626ce5759b0649ac8664678c2d54",
         "source_path": "backend/app/schemas/template.py"
+      },
+      "state": "known"
+    },
+    "entities/WorkflowContracts.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:aa889a4e367f0c0e57a67bf48ecfe5544b6c1a4bef50c05c202605ee4ef3d814",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
     },
@@ -17815,6 +17855,16 @@
       },
       "state": "known"
     },
+    "modules/postgres_runtime.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:35c4f91ba5c58e5a8d784572a0041e3ea3ec3f7cb25df8d1b64a3e75654950b6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:83ddbf608d5dac71742a17d6d0c4e1d656d7398bfe3350867b17778db3ffa60b",
+        "source_path": "scripts/ci/postgres_runtime.py"
+      },
+      "state": "known"
+    },
     "modules/postgresql___init__.md": {
       "basis": {
         "concept_observation_hash": "sha256:12364e26e70657a1dff592e7566d6a20cd7e4d8785955c88add55f1fe304bd4b",
@@ -18237,20 +18287,20 @@
     },
     "modules/run_android_checks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:3d52def7feaa2ff72287c2216260ff1c4f8d5191df6b1f8f4711903658c6254a",
+        "concept_observation_hash": "sha256:48927e42780110ab441da9080ade5f93c2c74aca7691ca2bfd29743bfdba82a9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:6f86d65a10f70fe66308beca73ba9aa14bcf3115a85d776b68ed374ab0b15aeb",
+        "source_content_hash": "sha256:66d0980f679ff2900a7810af4edd8d173cd30ca308a9c41374a380063f1698cc",
         "source_path": "scripts/ci/run_android_checks.py"
       },
       "state": "known"
     },
     "modules/run_disposable_checks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:5840daf0e20e998429b3be5d252fd0f34705ffd1e2fd264c54c4bc6cd2e501d1",
+        "concept_observation_hash": "sha256:2ce92b94b7a2d9c92ada8bdb709cf1cdc3a33809127686ec62fd968253a8bef1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:72b0dec3be5511f956695e80d3a7a4f3e75afa1caa145ebf631d83d031692aa5",
+        "source_content_hash": "sha256:65d6fae60c164e1850347bb26a056c9cb3fcb27b90d287cff5df790beac7599f",
         "source_path": "scripts/ci/run_disposable_checks.py"
       },
       "state": "known"
@@ -18727,10 +18777,10 @@
     },
     "modules/serve_disposable_api.md": {
       "basis": {
-        "concept_observation_hash": "sha256:ebd99ab381171903ae49fffd5ce2fd4ea7a73088a74ad01918fd56d7d43ace98",
+        "concept_observation_hash": "sha256:8bf77ee05bc5fb3e9de83277109f532a6121ce10ff489bb0b1c9f5cc7a02ddd3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:b1865c97838148a152a7dbd83687ed98445bfdfee08fb43f21e2adfeee5b4144",
+        "source_content_hash": "sha256:d2944e1f81b08f0a390301a7a0acca5d96c2baace427c2f35e5b722d453279f5",
         "source_path": "scripts/ci/serve_disposable_api.py"
       },
       "state": "known"
@@ -18740,7 +18790,7 @@
         "concept_observation_hash": "sha256:17c0baad417dd9262122b9027a76075d7d29eebbea4cc8b17965583cec7cc645",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:47a1ab58ef0061748463dc9f04f61976f6d64341ddc3ea7a223f45067a723f0d",
+        "source_content_hash": "sha256:c9fd374cee0d657fd10203822c93bdee57b6eca6aa205775261551f1d6271503",
         "source_path": "scripts/ci/serve_disposable_oidc.py"
       },
       "state": "known"
@@ -19545,6 +19595,16 @@
       },
       "state": "known"
     },
+    "modules/test_native_runtimes.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:65ef5e048f06260d965aa4ec4ca6ee68120e0692cc2f572adb5b52e93e62fc73",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
+      },
+      "state": "known"
+    },
     "modules/test_observability.md": {
       "basis": {
         "concept_observation_hash": "sha256:ccd8b3fbe5faeeb097b0be35179ee5967b1b2fb8c7c2f263ac6a1d3f51f10404",
@@ -20259,9 +20319,10 @@
   "generation_inputs": {
     "infrastructure": {
       "discovery": {
-        "candidate_count": 15,
+        "candidate_count": 17,
         "roots": [
           ".",
+          ".github/actions/native-postgres",
           ".github/workflows",
           "adapters/codex/workchord-agent-roles/skills/workchord-pm/agents",
           "adapters/codex/workchord-agent-roles/skills/workchord-worker/agents",
@@ -20270,8 +20331,13 @@
           "backend/app/config",
           "scripts/ci"
         ],
-        "supported_count": 10,
+        "supported_count": 11,
         "unsupported_yaml": [
+          {
+            "path": ".github/actions/native-postgres/action.yml",
+            "reason": "unrecognized-yaml",
+            "source_content_hash": "sha256:59005e443de85ba10c68798762eca34fbce305d8b7d5f441ddb36d18e2e8d3be"
+          },
           {
             "path": "adapters/codex/workchord-agent-roles/skills/workchord-pm/agents/openai.yaml",
             "reason": "unrecognized-yaml",
@@ -20298,7 +20364,7 @@
             "source_content_hash": "sha256:9718b4a76ef67ced7d32c86d881331c78992f5fb1e5e37eff32ee1e8a6f81458"
           }
         ],
-        "unsupported_yaml_count": 5
+        "unsupported_yaml_count": 6
       },
       "schema_version": "llm-wiki-infrastructure-sync/v1",
       "sources": {
@@ -20307,12 +20373,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:e50b6db25ea0000c5252a6aeb2b0e1d93535af03c563cf5f7b7c999dffe6a3b1",
-            "source_content_hash": "sha256:fa774559f451a927e5386fbc45c6c364cfd6ee9be309d304b8971e00bf1ebbdf"
+            "observation_hash": "sha256:9a6bfd6acfd0bf93988408ad08d5b106bebdd170209a7c34b77646fd6ef3b3e7",
+            "source_content_hash": "sha256:2deb29a0d92920612d600eb3719f7623f2a6c571b7a6a190eaeac5132d52f156"
           },
-          "observation_hash": "sha256:e50b6db25ea0000c5252a6aeb2b0e1d93535af03c563cf5f7b7c999dffe6a3b1",
+          "observation_hash": "sha256:9a6bfd6acfd0bf93988408ad08d5b106bebdd170209a7c34b77646fd6ef3b3e7",
           "page_path": "infrastructure/_github_workflows_ci_yml.md",
-          "source_content_hash": "sha256:fa774559f451a927e5386fbc45c6c364cfd6ee9be309d304b8971e00bf1ebbdf",
+          "source_content_hash": "sha256:2deb29a0d92920612d600eb3719f7623f2a6c571b7a6a190eaeac5132d52f156",
           "source_path": ".github/workflows/ci.yml",
           "state": "current"
         },
@@ -20321,13 +20387,27 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:f93adc0a934558ec356744ca27def243d53fbf7ac82f1e76928d9e4eff271bd6",
-            "source_content_hash": "sha256:28ebabc8eafe2e013a02c09132c0138bedffb81f94b79cf437dfbd45a9e864a6"
+            "observation_hash": "sha256:a095e7bf1d77866d67574f766693a48ec6e1194d606cdb92beca425856f7fa13",
+            "source_content_hash": "sha256:a3525ce7d5f1628aa1b5a41ce2a654bdab0bfb30c9c7686233adb4985a0a2998"
           },
-          "observation_hash": "sha256:f93adc0a934558ec356744ca27def243d53fbf7ac82f1e76928d9e4eff271bd6",
+          "observation_hash": "sha256:a095e7bf1d77866d67574f766693a48ec6e1194d606cdb92beca425856f7fa13",
           "page_path": "infrastructure/_github_workflows_client-baseline_yml.md",
-          "source_content_hash": "sha256:28ebabc8eafe2e013a02c09132c0138bedffb81f94b79cf437dfbd45a9e864a6",
+          "source_content_hash": "sha256:a3525ce7d5f1628aa1b5a41ce2a654bdab0bfb30c9c7686233adb4985a0a2998",
           "source_path": ".github/workflows/client-baseline.yml",
+          "state": "current"
+        },
+        ".github/workflows/deployment-acceptance.yml": {
+          "adapter": "github_actions",
+          "evidence_basis": {
+            "adapter": "github_actions",
+            "discovery_root": ".",
+            "observation_hash": "sha256:01a375a3f87a23399b22e813b56f616e0020a50839c8a9f821094a5289a67a59",
+            "source_content_hash": "sha256:d01787584bae01510c33ae575a649c268de865eb058f13a94cfb176422fdab1b"
+          },
+          "observation_hash": "sha256:01a375a3f87a23399b22e813b56f616e0020a50839c8a9f821094a5289a67a59",
+          "page_path": "infrastructure/_github_workflows_deployment-acceptance_yml.md",
+          "source_content_hash": "sha256:d01787584bae01510c33ae575a649c268de865eb058f13a94cfb176422fdab1b",
+          "source_path": ".github/workflows/deployment-acceptance.yml",
           "state": "current"
         },
         "Dockerfile.backend": {
@@ -20450,13 +20530,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:7ca8d80a83e5c6427265ed5826b71469b5a1244dd5d3f1c1766fc471a06d50c1",
-      "inventory_hash": "sha256:17ddbea1c281f916fa4aa19e092a36dd8ef5e592d680d2cd930d34afea67c76b",
-      "lifecycle_hash": "sha256:4e7a8cd71dc1546758d4fea0e59483d2b332f157593f4de13fbe4a573da79d84",
-      "markdown_snapshot_hash": "sha256:d1f304b6456e4eead12ae50364b6ecbf7400bce03845a246c1407ba0f298cc28",
-      "observation_inputs_hash": "sha256:f90dd10f1a2635aa47bbd3ad3acb3338c2d830078526dfe2b3194112e342b1be",
-      "repository_hash": "sha256:acc3901bfd36dd6f2564de7ccb315de144b339dba0b47e64a6a228009d9596aa",
+      "inventory_hash": "sha256:1ee010cf82ec2f9a79c41603030072267ca94eff631684f212a10cfd112fc4aa",
+      "lifecycle_hash": "sha256:ee9ff523bc7c241c0bd10c4417d102c4c76d481815c336995924473a9747d98f",
+      "markdown_snapshot_hash": "sha256:0db541e58b315a69ab1aab10ce8335d59d45fd1a11cf94b74302fef45f58e962",
+      "observation_inputs_hash": "sha256:61843a22657dd9547d921dad2c13ab00bd9b4e6e14ac4f31c307159c816976be",
+      "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:bc641eee7574bca6826deeee5ece25071c20d1c19ae837a1c1d6852e7075f69f"
+      "source_snapshot_hash": "sha256:4b9dcbf831e0695c6c587deeadfd7b300951812e5cc1184a80c596319bb71012"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -21286,6 +21366,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/commands.py"
+    },
+    "entities/AndroidArtifacts.md": {
+      "entity_name": "AndroidArtifacts",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
     },
     "entities/ApiErrorKind.md": {
       "entity_name": "ApiErrorKind",
@@ -23183,6 +23269,12 @@
       "scope": "entity",
       "source_path": "backend/app/services/agent_model_catalog_service.py"
     },
+    "entities/NativeChecks.md": {
+      "entity_name": "NativeChecks",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
+    },
     "entities/NavItem.md": {
       "entity_name": "NavItem",
       "occurrence": 1,
@@ -23524,6 +23616,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/autonomy/contracts/postgresql/loader.py"
+    },
+    "entities/PostgresOwnership.md": {
+      "entity_name": "PostgresOwnership",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
     },
     "entities/PostgresTestDatabase.md": {
       "entity_name": "PostgresTestDatabase",
@@ -25942,6 +26040,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/schemas/template.py"
+    },
+    "entities/WorkflowContracts.md": {
+      "entity_name": "WorkflowContracts",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
     },
     "entities/WorkflowFocusIntent.md": {
       "entity_name": "WorkflowFocusIntent",
@@ -30385,6 +30489,10 @@
       "scope": "module",
       "source_path": "frontend/postcss.config.js"
     },
+    "modules/postgres_runtime.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/postgres_runtime.py"
+    },
     "modules/postgresql___init__.md": {
       "scope": "module",
       "source_path": "backend/app/autonomy/contracts/postgresql/__init__.py"
@@ -31076,6 +31184,10 @@
     "modules/test_managed_authority.md": {
       "scope": "module",
       "source_path": "backend/tests/test_managed_authority.py"
+    },
+    "modules/test_native_runtimes.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
     },
     "modules/test_observability.md": {
       "scope": "module",
@@ -74057,6 +74169,25 @@
       "module_page": "installed_wheel_postgresql_qualification",
       "semantic_hash": "sha256:b14de875167247e0f9b19ce78ac5770a8af8f569af5aed7921dbf9f2126c01d3"
     },
+    "scripts/ci/postgres_runtime.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Own an isolated PostgreSQL cluster on a native runner.",
+          "functions": {
+            "main": "—"
+          }
+        }
+      },
+      "hash": "sha256:83ddbf608d5dac71742a17d6d0c4e1d656d7398bfe3350867b17778db3ffa60b",
+      "language": "python",
+      "module_page": "postgres_runtime",
+      "semantic_hash": "sha256:869780aca4510257903b309da2970a593573f6255fc909f82996102c6dcd104d"
+    },
     "scripts/ci/run_android_checks.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -74065,16 +74196,16 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Build Android with JDK 17, SDK 34 and the checksum-pinned Gradle wrapper in Docker.",
+          "description": "Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper.",
           "functions": {
             "main": "—"
           }
         }
       },
-      "hash": "sha256:6f86d65a10f70fe66308beca73ba9aa14bcf3115a85d776b68ed374ab0b15aeb",
+      "hash": "sha256:66d0980f679ff2900a7810af4edd8d173cd30ca308a9c41374a380063f1698cc",
       "language": "python",
       "module_page": "run_android_checks",
-      "semantic_hash": "sha256:131f3a5ebf84002bdcca28e10e959bf0f43e8ea607e0f476c58f097b07337193"
+      "semantic_hash": "sha256:dffe7da9a4615e0cd4645857b483e961104171508b0395fce69e7319000ad82f"
     },
     "scripts/ci/run_disposable_checks.py": {
       "entities": [],
@@ -74084,17 +74215,21 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Run pinned database, frontend, and browser checks without an existing app stack.",
+          "description": "Run database, frontend and browser checks using isolated native processes.",
           "functions": {
             "main": "—",
-            "source_digest": "—"
+            "require_free_browser_ports": "—",
+            "runtime_environment": "Inherit toolchain settings without inheriting an operator's application secrets.",
+            "source_digest": "—",
+            "stop_process_group": "Stop the owned service and its descendants, and always reap the parent.",
+            "validate_admin_url": "Keep libpq connection overrides from escaping the loopback fixture boundary."
           }
         }
       },
-      "hash": "sha256:72b0dec3be5511f956695e80d3a7a4f3e75afa1caa145ebf631d83d031692aa5",
+      "hash": "sha256:65d6fae60c164e1850347bb26a056c9cb3fcb27b90d287cff5df790beac7599f",
       "language": "python",
       "module_page": "run_disposable_checks",
-      "semantic_hash": "sha256:bb56b57c2f92ef7e04fae9ded0a7aef036201fdd2db284ca03a8f3a1efdee549"
+      "semantic_hash": "sha256:9fbfb66b64c8dd1f89208c641129a02158a245853ba0d04d6711aa9c3fbd55a5"
     },
     "scripts/ci/serve_disposable_api.py": {
       "entities": [],
@@ -74110,10 +74245,10 @@
           }
         }
       },
-      "hash": "sha256:b1865c97838148a152a7dbd83687ed98445bfdfee08fb43f21e2adfeee5b4144",
+      "hash": "sha256:d2944e1f81b08f0a390301a7a0acca5d96c2baace427c2f35e5b722d453279f5",
       "language": "python",
       "module_page": "serve_disposable_api",
-      "semantic_hash": "sha256:93f737f50ce939eb9a5504a8abd94466e4a97ef27d3168e965d92068b11d8795"
+      "semantic_hash": "sha256:05c349982d0b7d47fc536974513b33f632b6a821cc9186dd5386d2639cd6db76"
     },
     "scripts/ci/serve_disposable_oidc.py": {
       "entities": [],
@@ -74133,10 +74268,104 @@
           }
         }
       },
-      "hash": "sha256:47a1ab58ef0061748463dc9f04f61976f6d64341ddc3ea7a223f45067a723f0d",
+      "hash": "sha256:c9fd374cee0d657fd10203822c93bdee57b6eca6aa205775261551f1d6271503",
       "language": "python",
       "module_page": "serve_disposable_oidc",
-      "semantic_hash": "sha256:660e23b94ca962cb621f37eacccc8f2fdefe0252f00e3d7b856760b708982548"
+      "semantic_hash": "sha256:e7267c78bc7c01bcfbec27f8333a0a80db00be399abd9b15ca9c0d5be67602b5"
+    },
+    "scripts/ci/tests/test_native_runtimes.py": {
+      "entities": [
+        "WorkflowContracts",
+        "NativeChecks",
+        "PostgresOwnership",
+        "AndroidArtifacts"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "WorkflowContracts",
+          "occurrence": 1,
+          "page": "WorkflowContracts"
+        },
+        {
+          "name": "NativeChecks",
+          "occurrence": 1,
+          "page": "NativeChecks"
+        },
+        {
+          "name": "PostgresOwnership",
+          "occurrence": 1,
+          "page": "PostgresOwnership"
+        },
+        {
+          "name": "AndroidArtifacts",
+          "occurrence": 1,
+          "page": "AndroidArtifacts"
+        }
+      ],
+      "entity_pages": {
+        "AndroidArtifacts": "AndroidArtifacts",
+        "NativeChecks": "NativeChecks",
+        "PostgresOwnership": "PostgresOwnership",
+        "WorkflowContracts": "WorkflowContracts"
+      },
+      "generated_semantics": {
+        "entities": {
+          "AndroidArtifacts": {
+            "attributes": {},
+            "description": "_Auto-generated from `AndroidArtifacts` in `scripts/ci/tests/test_native_runtimes.py`._",
+            "methods": {
+              "check_run": "—",
+              "test_missing_outputs_and_failed_gradle_do_not_pass": "—",
+              "test_native_gradle_keeps_results_and_apk": "—"
+            }
+          },
+          "NativeChecks": {
+            "attributes": {},
+            "description": "_Auto-generated from `NativeChecks` in `scripts/ci/tests/test_native_runtimes.py`._",
+            "methods": {
+              "run_backend": "—",
+              "test_application_secrets_are_not_inherited": "—",
+              "test_both_database_results_are_required_and_recorded": "—",
+              "test_connection_parameters_cannot_override_the_loopback_host": "—",
+              "test_empty_results_cannot_be_reported_as_success": "—",
+              "test_remote_database_is_rejected_before_any_command": "—",
+              "test_service_cleanup_reaps_exited_processes_and_escalates_timeouts": "—"
+            }
+          },
+          "PostgresOwnership": {
+            "attributes": {},
+            "description": "_Auto-generated from `PostgresOwnership` in `scripts/ci/tests/test_native_runtimes.py`._",
+            "methods": {
+              "test_start_uses_builtin_locale_and_removes_password_file": "—",
+              "test_unowned_cluster_cannot_be_stopped": "—"
+            }
+          },
+          "WorkflowContracts": {
+            "attributes": {},
+            "description": "_Auto-generated from `WorkflowContracts` in `scripts/ci/tests/test_native_runtimes.py`._",
+            "methods": {
+              "test_all_workflow_and_composite_scripts_parse_as_bash": "—",
+              "test_android_cleartext_is_restricted_to_debug_loopback_hosts": "—",
+              "test_automatic_workflows_do_not_pull_or_build_images": "—",
+              "test_deployment_acceptance_remains_explicit_and_checks_twice": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "AndroidArtifacts": "—",
+            "NativeChecks": "—",
+            "PostgresOwnership": "—",
+            "WorkflowContracts": "—"
+          },
+          "description": "Native orchestration preserves isolation, real result requirements and cleanup.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+      "language": "python",
+      "module_page": "test_native_runtimes",
+      "semantic_hash": "sha256:c941788d8c5af2219c759b0057192b2a75bd9db743aff4bd88b4cb276c8cbb4d"
     },
     "scripts/generate_agent_team_contract.py": {
       "entities": [],

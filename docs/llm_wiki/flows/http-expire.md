@@ -88,17 +88,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| expire | request.headers.get | 74 | `request.headers.get('X-Fixture-Key')` |
-| expire | HTTPException | 75 | `HTTPException(403)` |
-| expire | request.json | 76 | `request.json(data not statically known)` |
-| expire | hashlib.sha256(…).hexdigest | 77 | `hashlib.sha256(body['token'].encode()).hexdigest(data not statically known)` |
-| expire | hashlib.sha256 | 77 | `hashlib.sha256(...)` |
-| expire | body[…].encode | 77 | `body['token'].encode(data not statically known)` |
-| expire | create_engine | 78 | `create_engine(url.set(...))` |
-| expire | url.set | 78 | `url.set(drivername='sqlite')` |
-| expire | engine.begin | 80 | `engine.begin(data not statically known)` |
-| expire | connection.execute | 81 | `connection.execute(text(...), {...})` |
-| expire | text | 81 | `text("UPDATE user_sessions SET expires_at = '2000-01-01 00:00:00' WHERE session_token_hash = :digest AND principal_id IS NOT NULL")` |
+| expire | request.headers.get | 76 | `request.headers.get('X-Fixture-Key')` |
+| expire | HTTPException | 77 | `HTTPException(403)` |
+| expire | request.json | 78 | `request.json(data not statically known)` |
+| expire | hashlib.sha256(…).hexdigest | 79 | `hashlib.sha256(body['token'].encode()).hexdigest(data not statically known)` |
+| expire | hashlib.sha256 | 79 | `hashlib.sha256(...)` |
+| expire | body[…].encode | 79 | `body['token'].encode(data not statically known)` |
+| expire | create_engine | 80 | `create_engine(url.set(...))` |
+| expire | url.set | 80 | `url.set(drivername='sqlite')` |
+| expire | engine.begin | 82 | `engine.begin(data not statically known)` |
+| expire | connection.execute | 83 | `connection.execute(text(...), {...})` |
+| expire | text | 83 | `text("UPDATE user_sessions SET expires_at = '2000-01-01 00:00:00' WHERE session_token_hash = :digest AND principal_id IS NOT NULL")` |
 
 ### Boundary effects
 
@@ -108,16 +108,16 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `expire` | `request.headers.get` | 74 |
-| external_call | `expire` | `HTTPException` | 75 |
-| unresolved_call | `expire` | `request.json` | 76 |
-| unresolved_call | `expire` | `hashlib.sha256(body['token'].encode()).hexdigest` | 77 |
-| external_call | `expire` | `hashlib.sha256` | 77 |
-| unresolved_call | `expire` | `body['token'].encode` | 77 |
-| external_call | `expire` | `create_engine` | 78 |
-| unresolved_call | `expire` | `engine.begin` | 80 |
-| unresolved_call | `expire` | `connection.execute` | 81 |
-| external_call | `expire` | `text` | 81 |
+| unresolved_call | `expire` | `request.headers.get` | 76 |
+| external_call | `expire` | `HTTPException` | 77 |
+| unresolved_call | `expire` | `request.json` | 78 |
+| unresolved_call | `expire` | `hashlib.sha256(body['token'].encode()).hexdigest` | 79 |
+| external_call | `expire` | `hashlib.sha256` | 79 |
+| unresolved_call | `expire` | `body['token'].encode` | 79 |
+| external_call | `expire` | `create_engine` | 80 |
+| unresolved_call | `expire` | `engine.begin` | 82 |
+| unresolved_call | `expire` | `connection.execute` | 83 |
+| external_call | `expire` | `text` | 83 |
 | step_limit | `expire` | `first 12 steps` | 0 |
 
 ## Behavior

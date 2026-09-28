@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1398,
-      "flows": 488,
+      "entities": 1402,
+      "flows": 490,
       "guides": 0,
       "index": 1,
-      "infrastructure": 10,
+      "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 627,
+      "modules": 629,
       "workflows": 147
     },
     "dependency_architecture": 2,
-    "total": 2674
+    "total": 2683
   },
   "dependency_pages": {
     "count": 2,
@@ -813,7 +813,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 49,
+              "line": 51,
               "step": "authorize",
               "step_index": 1,
               "target": "params.pop"
@@ -822,43 +822,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 47,
+              "line": 49,
               "step": "authorize",
               "target": "params.get"
             },
             {
               "kind": "external_call",
-              "line": 48,
+              "line": 50,
               "step": "authorize",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 51,
+              "line": 53,
               "step": "authorize",
               "target": "''.join"
             },
             {
               "kind": "external_call",
-              "line": 51,
+              "line": 53,
               "step": "authorize",
               "target": "html.escape"
             },
             {
               "kind": "external_call",
-              "line": 51,
+              "line": 53,
               "step": "authorize",
               "target": "urlencode"
             },
             {
               "kind": "unresolved_call",
-              "line": 51,
+              "line": 53,
               "step": "authorize",
               "target": "person.title"
             },
             {
               "kind": "external_call",
-              "line": 52,
+              "line": 54,
               "step": "authorize",
               "target": "HTMLResponse"
             },
@@ -6371,61 +6371,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 76,
               "step": "expire",
               "target": "request.headers.get"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 77,
               "step": "expire",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 76,
+              "line": 78,
               "step": "expire",
               "target": "request.json"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 79,
               "step": "expire",
               "target": "hashlib.sha256(body['token'].encode()).hexdigest"
             },
             {
               "kind": "external_call",
-              "line": 77,
+              "line": 79,
               "step": "expire",
               "target": "hashlib.sha256"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 79,
               "step": "expire",
               "target": "body['token'].encode"
             },
             {
               "kind": "external_call",
-              "line": 78,
+              "line": 80,
               "step": "expire",
               "target": "create_engine"
             },
             {
               "kind": "unresolved_call",
-              "line": 80,
+              "line": 82,
               "step": "expire",
               "target": "engine.begin"
             },
             {
               "kind": "unresolved_call",
-              "line": 81,
+              "line": 83,
               "step": "expire",
               "target": "connection.execute"
             },
             {
               "kind": "external_call",
-              "line": 81,
+              "line": 83,
               "step": "expire",
               "target": "text"
             },
@@ -17584,7 +17584,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 63,
+              "line": 65,
               "step": "token",
               "step_index": 1,
               "target": "grants.pop"
@@ -17593,55 +17593,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 62,
+              "line": 64,
               "step": "token",
               "target": "parse_qs((await request.body()).decode()).items"
             },
             {
               "kind": "external_call",
-              "line": 62,
+              "line": 64,
               "step": "token",
               "target": "parse_qs"
             },
             {
               "kind": "unresolved_call",
-              "line": 62,
+              "line": 64,
               "step": "token",
               "target": "(await request.body()).decode"
             },
             {
               "kind": "unresolved_call",
-              "line": 62,
+              "line": 64,
               "step": "token",
               "target": "request.body"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 66,
               "step": "token",
               "target": "base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 66,
               "step": "token",
               "target": "base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip"
             },
             {
               "kind": "external_call",
-              "line": 64,
+              "line": 66,
               "step": "token",
               "target": "base64.urlsafe_b64encode"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 66,
               "step": "token",
               "target": "hashlib.sha256(params.get('code_verifier', '').encode()).digest"
             },
             {
               "kind": "external_call",
-              "line": 64,
+              "line": 66,
               "step": "token",
               "target": "hashlib.sha256"
             },
@@ -33663,6 +33663,148 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "postgres_runtime",
+        "source_path": "scripts/ci/postgres_runtime.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 33,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.run"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 37,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.check_output"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 40,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 47,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.run"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 51,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.run"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 17,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 18,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 19,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 20,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 21,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 22,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 23,
+              "step": "main",
+              "target": "args.data_dir.resolve"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 24,
+              "step": "main",
+              "target": "args.bin_dir.resolve"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 26,
+              "step": "main",
+              "target": "parser.error"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 28,
+              "step": "main",
+              "target": "(data / MARKER).is_file"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "main",
+              "target": "data.exists"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/postgres_runtime.py"
+          ],
+          "step_count": 39,
+          "truncated": false
+        }
+      },
+      "id": "process-postgres_runtime",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "qualify",
         "source_path": "scripts/load/qualify.py",
         "symbol": "main"
@@ -34001,8 +34143,64 @@
           "boundary_effects": [
             {
               "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 43,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copytree"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 45,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 45,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ[...]"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 46,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.check_output"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 50,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 64,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copytree"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 77,
+              "step": "main",
+              "step_index": 1,
+              "target": "suites.extend"
+            },
+            {
+              "confidence": "unknown",
               "kind": "output",
-              "line": 78,
+              "line": 99,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -34011,61 +34209,61 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 18,
+              "line": 20,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 19,
+              "line": 21,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 20,
+              "line": 22,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "unresolved_call",
-              "line": 21,
+              "line": 23,
               "step": "main",
               "target": "args.output.resolve"
             },
             {
               "kind": "external_call",
-              "line": 21,
+              "line": 23,
               "step": "main",
               "target": "tempfile.mkdtemp"
             },
             {
               "kind": "unresolved_call",
-              "line": 22,
+              "line": 24,
               "step": "main",
               "target": "output.exists"
             },
             {
               "kind": "external_call",
-              "line": 22,
+              "line": 24,
               "step": "main",
               "target": "any"
             },
             {
               "kind": "unresolved_call",
-              "line": 22,
+              "line": 24,
               "step": "main",
               "target": "output.iterdir"
             },
             {
               "kind": "unresolved_call",
-              "line": 23,
+              "line": 25,
               "step": "main",
               "target": "parser.error"
             },
             {
               "kind": "unresolved_call",
-              "line": 24,
+              "line": 26,
               "step": "main",
               "target": "output.mkdir"
             },
@@ -34085,7 +34283,7 @@
           "modules_touched": [
             "scripts/ci/run_android_checks.py"
           ],
-          "step_count": 53,
+          "step_count": 80,
           "truncated": false
         }
       },
@@ -34105,32 +34303,48 @@
           "boundary_effects": [
             {
               "confidence": "unknown",
-              "kind": "process",
-              "line": 84,
-              "step": "main",
-              "step_index": 1,
-              "target": "subprocess.run"
-            },
-            {
-              "confidence": "unknown",
               "kind": "mutation",
-              "line": 107,
+              "line": 142,
               "step": "main",
               "step_index": 1,
               "target": "failures.append"
             },
             {
               "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 146,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copytree"
+            },
+            {
+              "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 153,
               "step": "main",
               "step_index": 1,
               "target": "failures.append"
             },
             {
               "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 159,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copyfile"
+            },
+            {
+              "confidence": "unknown",
               "kind": "mutation",
-              "line": 135,
+              "line": 165,
+              "step": "main",
+              "step_index": 1,
+              "target": "app_env.update"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 172,
               "step": "main",
               "step_index": 1,
               "target": "failures.append"
@@ -34138,7 +34352,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 175,
+              "line": 213,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -34147,61 +34361,61 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 37,
+              "line": 87,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 38,
+              "line": 88,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 39,
+              "line": 89,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 40,
+              "line": 90,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 91,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 42,
+              "line": 92,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 93,
               "step": "main",
               "target": "args.output.resolve"
             },
             {
               "kind": "external_call",
-              "line": 43,
+              "line": 93,
               "step": "main",
               "target": "tempfile.mkdtemp"
             },
             {
               "kind": "unresolved_call",
-              "line": 44,
+              "line": 94,
               "step": "main",
               "target": "output.exists"
             },
             {
               "kind": "external_call",
-              "line": 44,
+              "line": 94,
               "step": "main",
               "target": "any"
             },
@@ -34221,7 +34435,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 88,
+          "step_count": 110,
           "truncated": false
         }
       },
@@ -34466,7 +34680,15 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 38,
+              "line": 39,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 46,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -34474,10 +34696,26 @@
             {
               "confidence": "unknown",
               "kind": "process",
-              "line": 42,
+              "line": 50,
               "step": "main",
               "step_index": 1,
               "target": "subprocess.Popen"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 52,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 57,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
             },
             {
               "confidence": "unknown",
@@ -34550,7 +34788,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 280,
+          "step_count": 283,
           "truncated": true
         }
       },
@@ -34571,21 +34809,27 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 88,
+              "line": 90,
               "step": "__main__",
               "target": "uvicorn.run"
+            },
+            {
+              "kind": "external_call",
+              "line": 90,
+              "step": "__main__",
+              "target": "os.environ.get"
             }
           ],
           "generated": true,
-          "step_count": 2,
-          "transfer_count": 1,
+          "step_count": 3,
+          "transfer_count": 2,
           "truncated": false
         },
         "flow": {
           "modules_touched": [
             "scripts/ci/serve_disposable_oidc.py"
           ],
-          "step_count": 2,
+          "step_count": 3,
           "truncated": false
         }
       },
@@ -34840,6 +35084,41 @@
         }
       },
       "id": "process-setup_agent_team",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "test_native_runtimes",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 228,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_native_runtimes.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_native_runtimes",
       "language": "python"
     },
     {
@@ -35300,6 +35579,7 @@
         "entities/AgentWorkTerminal.md",
         "entities/AgentWorkTerminalResponse.md",
         "entities/AggregateVersionConflict.md",
+        "entities/AndroidArtifacts.md",
         "entities/ApiErrorKind.md",
         "entities/ApiErrorShape.md",
         "entities/ApiFieldError.md",
@@ -35667,6 +35947,7 @@
         "entities/models_triage_TriageItem.md",
         "entities/models_triage_TriageItemStatus.md",
         "entities/MutationResult.md",
+        "entities/NativeChecks.md",
         "entities/NavItem.md",
         "entities/NormalizedApiError.md",
         "entities/NotFoundException.md",
@@ -35730,6 +36011,7 @@
         "entities/PlanShareTask.md",
         "entities/PlanShareTeamMember.md",
         "entities/PositiveRevision.md",
+        "entities/PostgresOwnership.md",
         "entities/PostgreSQLContractBundle.md",
         "entities/PostgreSQLContractManifest.md",
         "entities/PostgresTestDatabase.md",
@@ -36517,6 +36799,7 @@
         "entities/WebIntakeService.md",
         "entities/WebIntakeUnauthorizedError.md",
         "entities/WorkChordException.md",
+        "entities/WorkflowContracts.md",
         "entities/WorkflowFocusIntent.md",
         "entities/WorkflowFocusTarget.md",
         "entities/WorkingDaysRequest.md",
@@ -37007,6 +37290,7 @@
         "flows/process-generate_workchord_keys.md",
         "flows/process-installed_wheel_postgresql_qualification.md",
         "flows/process-mcp_server.md",
+        "flows/process-postgres_runtime.md",
         "flows/process-qualify.md",
         "flows/process-resilience.md",
         "flows/process-run.md",
@@ -37018,10 +37302,12 @@
         "flows/process-serve_disposable_oidc.md",
         "flows/process-server_acceptance.md",
         "flows/process-setup_agent_team.md",
+        "flows/process-test_native_runtimes.md",
         "flows/process-upgrade.md",
         "flows/process-worker.md",
         "infrastructure/_github_workflows_ci_yml.md",
         "infrastructure/_github_workflows_client-baseline_yml.md",
+        "infrastructure/_github_workflows_deployment-acceptance_yml.md",
         "infrastructure/docker-compose_prod_yml.md",
         "infrastructure/docker-compose_rehearsal_yml.md",
         "infrastructure/docker-compose_server_yml.md",
@@ -37338,6 +37624,7 @@
         "modules/PlanSharePage.test.md",
         "modules/planShareService.md",
         "modules/postcss.config.md",
+        "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
         "modules/preflight.md",
@@ -37581,6 +37868,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_postgresql_closeout.md",
@@ -40196,6 +40484,18 @@
       "role": "semantic",
       "source_path": "backend/app/commands.py",
       "title": "AggregateVersionConflict"
+    },
+    {
+      "canonical_path": "entities/AndroidArtifacts.md",
+      "id": "AndroidArtifacts",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AndroidArtifacts",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "AndroidArtifacts"
     },
     {
       "canonical_path": "entities/ApiErrorKind.md",
@@ -45163,6 +45463,18 @@
       "title": "_MutationResult"
     },
     {
+      "canonical_path": "entities/NativeChecks.md",
+      "id": "NativeChecks",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeChecks",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "NativeChecks"
+    },
+    {
       "canonical_path": "entities/NavItem.md",
       "id": "NavItem",
       "kind": "entities",
@@ -45985,6 +46297,18 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
       "title": "PositiveRevision"
+    },
+    {
+      "canonical_path": "entities/PostgresOwnership.md",
+      "id": "PostgresOwnership",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/PostgresOwnership",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "PostgresOwnership"
     },
     {
       "canonical_path": "entities/PostgreSQLContractBundle.md",
@@ -56918,6 +57242,18 @@
       "title": "WorkChordException"
     },
     {
+      "canonical_path": "entities/WorkflowContracts.md",
+      "id": "WorkflowContracts",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/WorkflowContracts",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "WorkflowContracts"
+    },
+    {
       "canonical_path": "entities/WorkflowFocusIntent.md",
       "id": "WorkflowFocusIntent",
       "kind": "entities",
@@ -62219,6 +62555,16 @@
       "title": "postcss.config Module"
     },
     {
+      "canonical_path": "modules/postgres_runtime.md",
+      "id": "postgres_runtime",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/postgres_runtime",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "scripts/ci/postgres_runtime.py",
+      "title": "postgres_runtime Module"
+    },
+    {
       "canonical_path": "modules/postgresql___init__.md",
       "id": "postgresql___init__",
       "kind": "modules",
@@ -64477,6 +64823,7 @@
       "mcp_uri": "llm-wiki://modules/serve_disposable_api",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/app_main.md",
         "modules/delivery.md",
         "modules/models_identity.md",
         "modules/serve_disposable_api.md",
@@ -66599,6 +66946,21 @@
       "role": "semantic",
       "source_path": "backend/tests/test_managed_authority.py",
       "title": "test_managed_authority Module"
+    },
+    {
+      "canonical_path": "modules/test_native_runtimes.md",
+      "id": "test_native_runtimes",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_native_runtimes",
+      "outgoing_internal_links": [
+        "entities/AndroidArtifacts.md",
+        "entities/NativeChecks.md",
+        "entities/PostgresOwnership.md",
+        "entities/WorkflowContracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "test_native_runtimes Module"
     },
     {
       "canonical_path": "modules/test_observability.md",
@@ -77844,6 +78206,18 @@
       "title": "mcp_server"
     },
     {
+      "canonical_path": "flows/process-postgres_runtime.md",
+      "id": "process-postgres_runtime",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-postgres_runtime",
+      "outgoing_internal_links": [
+        "modules/postgres_runtime.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/postgres_runtime.py",
+      "title": "postgres_runtime"
+    },
+    {
       "canonical_path": "flows/process-qualify.md",
       "id": "process-qualify",
       "kind": "flows",
@@ -77950,6 +78324,7 @@
       "mcp_uri": "llm-wiki://flows/process-serve_disposable_api",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/app_main.md",
         "modules/authority.md",
         "modules/calendar_service.md",
         "modules/commands.md",
@@ -78014,6 +78389,18 @@
       "title": "setup_agent_team"
     },
     {
+      "canonical_path": "flows/process-test_native_runtimes.md",
+      "id": "process-test_native_runtimes",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_native_runtimes",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "test_native_runtimes"
+    },
+    {
       "canonical_path": "flows/process-upgrade.md",
       "id": "process-upgrade",
       "kind": "flows",
@@ -78075,6 +78462,16 @@
       "role": "mixed",
       "source_path": ".github/workflows/client-baseline.yml",
       "title": "GitHub Actions: Client and scenario baseline"
+    },
+    {
+      "canonical_path": "infrastructure/_github_workflows_deployment-acceptance_yml.md",
+      "id": "_github_workflows_deployment-acceptance_yml",
+      "kind": "infrastructure",
+      "mcp_uri": "llm-wiki://infrastructure/_github_workflows_deployment-acceptance_yml",
+      "outgoing_internal_links": [],
+      "role": "mixed",
+      "source_path": ".github/workflows/deployment-acceptance.yml",
+      "title": "GitHub Actions: Deployment acceptance"
     },
     {
       "canonical_path": "infrastructure/docker-compose_prod_yml.md",
@@ -78470,6 +78867,7 @@
         "modules/PlanSharePage.test.md",
         "modules/planShareService.md",
         "modules/postcss.config.md",
+        "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
         "modules/preflight.md",
@@ -78713,6 +79111,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_postgresql_closeout.md",
@@ -79108,6 +79507,7 @@
         "modules/PlanSharePage.test.md",
         "modules/planShareService.md",
         "modules/postcss.config.md",
+        "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
         "modules/preflight.md",
@@ -79351,6 +79751,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_postgresql_closeout.md",
@@ -79436,5 +79837,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0494ecc032b2fcc53d736a8565143f3448f656d10d3a9e3606aae2e28a759ec5"
+  "source_hash": "sha256:4a07bcc287100c79afd9d0317bb60a64a4524746f8fd58d993a1b2851c601095"
 }

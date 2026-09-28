@@ -4,7 +4,9 @@
 
 ## Description
 
-Builds the Android source in an isolated Linux amd64 JDK/SDK container using the checked-in, checksum-verified Gradle wrapper. It collects a debug APK and machine-readable execution results, records the source digest before and after execution, and removes the owned container. A build artifact does not establish device behavior or server integration.
+Builds a temporary Android source copy with the configured native JDK 17, SDK 34 and checksum-verified Gradle wrapper. Both debug and release variants must produce successful executed result sets, and the debug APK must be nonempty. Receipts bind artifacts and source stability; a packaged artifact does not establish device or server integration.
+
+The Android client requires HTTPS in release builds and limits debug HTTP to explicit loopback/emulator hosts. NetworkClient disables redirect forwarding and verbose release logging; sensitive headers are redacted and endpoint changes clear credentials. MyWorkViewModel obtains authenticated identity from /api/auth/me and selects loaded leaf work by its linked human owner profile, with no guest-session ownership inference. Its existing iteration selection scope remains unchanged. Kotlin/XML behavior is outside the static extractor coverage and requires direct client-source inspection.
 
 ## Imports
 
@@ -14,11 +16,13 @@ Builds the Android source in an isolated Linux amd64 JDK/SDK container using the
 | `datetime` | `datetime`, `timezone` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
+| `os` | `os` |
 | `pathlib` | `Path` |
+| `re` | `re` |
 | `run_disposable_checks` | `ROOT`, `source_digest` |
+| `shutil` | `shutil` |
 | `subprocess` | `subprocess` |
 | `tempfile` | `tempfile` |
-| `uuid` | `uuid4` |
 | `xml.etree.ElementTree` | `ET` |
 
 ## Local dependency map

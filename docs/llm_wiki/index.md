@@ -6,12 +6,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1398 | [Open section](#entities) |
-| Modules | 627 | [Open section](#modules) |
+| Entities | 1402 | [Open section](#entities) |
+| Modules | 629 | [Open section](#modules) |
 | Workflows | 147 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 488 | [Open section](#entry-point-flows) |
-| Infrastructure | 10 | [Open section](#infrastructure) |
+| Entry-point flows | 490 | [Open section](#entry-point-flows) |
+| Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
 | Log | 1 | [Open log](log.md) |
@@ -155,6 +155,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentWorkTerminal](entities/AgentWorkTerminal.md)
 - [AgentWorkTerminalResponse](entities/AgentWorkTerminalResponse.md)
 - [AggregateVersionConflict](entities/AggregateVersionConflict.md)
+- [AndroidArtifacts](entities/AndroidArtifacts.md)
 - [ApiErrorKind](entities/ApiErrorKind.md)
 - [ApiErrorShape](entities/ApiErrorShape.md)
 - [ApiFieldError](entities/ApiFieldError.md)
@@ -471,6 +472,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ModelLatencyTier](entities/ModelLatencyTier.md)
 - [ModelReasoningTier](entities/ModelReasoningTier.md)
 - [MutationResult](entities/MutationResult.md)
+- [NativeChecks](entities/NativeChecks.md)
 - [NavItem](entities/NavItem.md)
 - [NormalizedApiError](entities/NormalizedApiError.md)
 - [NotFoundException](entities/NotFoundException.md)
@@ -528,6 +530,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PositiveRevision](entities/PositiveRevision.md)
 - [PostgreSQLContractBundle](entities/PostgreSQLContractBundle.md)
 - [PostgreSQLContractManifest](entities/PostgreSQLContractManifest.md)
+- [PostgresOwnership](entities/PostgresOwnership.md)
 - [PostgresTestDatabase](entities/PostgresTestDatabase.md)
 - [PostgresTestDatabaseManager](entities/PostgresTestDatabaseManager.md)
 - [PreflightPredicateResult](entities/PreflightPredicateResult.md)
@@ -931,6 +934,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WorkMetrics](entities/WorkMetrics.md)
 - [WorkPackageContract](entities/WorkPackageContract.md)
 - [WorkTemplateResponse](entities/WorkTemplateResponse.md)
+- [WorkflowContracts](entities/WorkflowContracts.md)
 - [WorkflowFocusIntent](entities/WorkflowFocusIntent.md)
 - [WorkflowFocusTarget](entities/WorkflowFocusTarget.md)
 - [WorkingDaysRequest](entities/WorkingDaysRequest.md)
@@ -1802,6 +1806,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
+- [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
 - [postgresql_migrations_env](modules/postgresql_migrations_env.md) - Minimal Alembic environment used to prove the PostgreSQL test harness.
 - [preflight](modules/preflight.md) - Deterministic autonomous-start gate evaluation.
@@ -1844,8 +1849,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
-- [run_android_checks](modules/run_android_checks.md) - Build Android with JDK 17, SDK 34 and the checksum-pinned Gradle wrapper in Docker.
-- [run_disposable_checks](modules/run_disposable_checks.md) - Run pinned database, frontend, and browser checks without an existing app stack.
+- [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper.
+- [run_disposable_checks](modules/run_disposable_checks.md) - Run database, frontend and browser checks using isolated native processes.
 - [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
 - [safeUrl](modules/safeUrl.md) - `frontend/src/utils/safeUrl.ts`
 - [savedView](modules/savedView.md) - `frontend/src/types/savedView.ts`
@@ -1975,6 +1980,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
@@ -2684,6 +2690,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
 - [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
 - [process-mcp_server](flows/process-mcp_server.md) - entry: `main`
+- [process-postgres_runtime](flows/process-postgres_runtime.md) - entry: `main`
 - [process-qualify](flows/process-qualify.md) - entry: `main`
 - [process-resilience](flows/process-resilience.md) - entry: `main`
 - [process-run](flows/process-run.md) - entry: `main`
@@ -2695,6 +2702,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-serve_disposable_oidc](flows/process-serve_disposable_oidc.md) - entry: `__main__`
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
+- [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`
 - [process-worker](flows/process-worker.md) - entry: `main`
 
@@ -2704,6 +2712,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Dockerfile_frontend](infrastructure/Dockerfile_frontend.md) - dockerfile
 - [GitHub Actions: CI](infrastructure/_github_workflows_ci_yml.md) - github_actions
 - [GitHub Actions: Client and scenario baseline](infrastructure/_github_workflows_client-baseline_yml.md) - github_actions
+- [GitHub Actions: Deployment acceptance](infrastructure/_github_workflows_deployment-acceptance_yml.md) - github_actions
 - [docker-compose_prod_yml](infrastructure/docker-compose_prod_yml.md) - compose
 - [docker-compose_rehearsal_yml](infrastructure/docker-compose_rehearsal_yml.md) - compose
 - [docker-compose_server_yml](infrastructure/docker-compose_server_yml.md) - compose

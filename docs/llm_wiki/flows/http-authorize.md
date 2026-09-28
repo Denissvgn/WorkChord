@@ -96,35 +96,35 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| authorize | dict | 46 | `dict(request.query_params)` |
-| authorize | params.get | 47 | `params.get('redirect_uri')` |
-| authorize | params.get | 47 | `params.get('client_id')` |
-| authorize | params.get | 47 | `params.get('code_challenge_method')` |
-| authorize | HTTPException | 48 | `HTTPException(400, 'Invalid fixture authorization request')` |
-| authorize | params.pop | 49 | `params.pop('fixture_subject', None)` |
-| authorize | ''.join | 51 | `''.join(...)` |
-| authorize | html.escape | 51 | `html.escape(urlencode(...))` |
-| authorize | urlencode | 51 | `urlencode({...})` |
-| authorize | person.title | 51 | `person.title(data not statically known)` |
-| authorize | HTMLResponse | 52 | `HTMLResponse(...)` |
+| authorize | dict | 48 | `dict(request.query_params)` |
+| authorize | params.get | 49 | `params.get('redirect_uri')` |
+| authorize | params.get | 49 | `params.get('client_id')` |
+| authorize | params.get | 49 | `params.get('code_challenge_method')` |
+| authorize | HTTPException | 50 | `HTTPException(400, 'Invalid fixture authorization request')` |
+| authorize | params.pop | 51 | `params.pop('fixture_subject', None)` |
+| authorize | ''.join | 53 | `''.join(...)` |
+| authorize | html.escape | 53 | `html.escape(urlencode(...))` |
+| authorize | urlencode | 53 | `urlencode({...})` |
+| authorize | person.title | 53 | `person.title(data not statically known)` |
+| authorize | HTMLResponse | 54 | `HTMLResponse(...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `params.pop` | `authorize` | 49 |
+| mutation | `params.pop` | `authorize` | 51 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `authorize` | `params.get` | 47 |
-| external_call | `authorize` | `HTTPException` | 48 |
-| unresolved_call | `authorize` | `''.join` | 51 |
-| external_call | `authorize` | `html.escape` | 51 |
-| external_call | `authorize` | `urlencode` | 51 |
-| unresolved_call | `authorize` | `person.title` | 51 |
-| external_call | `authorize` | `HTMLResponse` | 52 |
+| unresolved_call | `authorize` | `params.get` | 49 |
+| external_call | `authorize` | `HTTPException` | 50 |
+| unresolved_call | `authorize` | `''.join` | 53 |
+| external_call | `authorize` | `html.escape` | 53 |
+| external_call | `authorize` | `urlencode` | 53 |
+| unresolved_call | `authorize` | `person.title` | 53 |
+| external_call | `authorize` | `HTMLResponse` | 54 |
 | step_limit | `authorize` | `first 12 steps` | 0 |
 
 ## Behavior

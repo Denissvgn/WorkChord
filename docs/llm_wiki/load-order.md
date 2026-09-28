@@ -615,23 +615,25 @@ Topological module load / startup order and import-time side effects.
 608. [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md)
 609. [check_postgresql_documentation](modules/check_postgresql_documentation.md)
 610. [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md)
-611. [run_android_checks](modules/run_android_checks.md)
-612. [run_disposable_checks](modules/run_disposable_checks.md)
-613. [serve_disposable_api](modules/serve_disposable_api.md)
-614. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
-615. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
-616. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
-617. [generate_client_contract](modules/generate_client_contract.md)
-618. [load_common](modules/load_common.md)
-619. [collect](modules/collect.md)
-620. [result](modules/result.md)
-621. [compare](modules/compare.md)
-622. [finalize](modules/finalize.md)
-623. [qualify](modules/qualify.md)
-624. [resilience](modules/resilience.md)
-625. [run](modules/run.md)
-626. [seal](modules/seal.md)
-627. [seed](modules/seed.md)
+611. [postgres_runtime](modules/postgres_runtime.md)
+612. [run_android_checks](modules/run_android_checks.md)
+613. [run_disposable_checks](modules/run_disposable_checks.md)
+614. [serve_disposable_api](modules/serve_disposable_api.md)
+615. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
+616. [test_native_runtimes](modules/test_native_runtimes.md)
+617. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
+618. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
+619. [generate_client_contract](modules/generate_client_contract.md)
+620. [load_common](modules/load_common.md)
+621. [collect](modules/collect.md)
+622. [result](modules/result.md)
+623. [compare](modules/compare.md)
+624. [finalize](modules/finalize.md)
+625. [qualify](modules/qualify.md)
+626. [resilience](modules/resilience.md)
+627. [run](modules/run.md)
+628. [seal](modules/seal.md)
+629. [seed](modules/seed.md)
 
 ## Module-level side effects
 
@@ -835,7 +837,8 @@ Topological module load / startup order and import-time side effects.
 | [visibleWork.test](modules/visibleWork.test.md) | `it`, `it`, `it` |
 | [build_agent_skills](modules/build_agent_skills.md) | `SEMVER_RE = re.compile`, `SKILL_NAME_RE = re.compile`, `COMPATIBILITY_RE = re.compile`, `MARKDOWN_LINK_RE = re.compile`, `URL_RE = re.compile` |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | `LINK_PATTERN = re.compile`, `SHELL_FENCE_PATTERN = re.compile`, `LIVE_SQLITE_COPY_PATTERN = re.compile` |
-| [serve_disposable_oidc](modules/serve_disposable_oidc.md) | `url = assert_safe_test_database_url`, `key = rsa.generate_private_key`, `jwk = json.loads`, `jwk['kid'] = 'disposable-key'`, `app = FastAPI` |
+| [serve_disposable_oidc](modules/serve_disposable_oidc.md) | `url = assert_safe_test_database_url`, `issuer = os.environ.get`, `key = rsa.generate_private_key`, `jwk = json.loads`, `jwk['kid'] = 'disposable-key'`, `app = FastAPI` |
+| [test_native_runtimes](modules/test_native_runtimes.md) | `sys.path.insert` |
 | [collect](modules/collect.md) | `sys.path.insert` |
 | [compare](modules/compare.md) | `sys.path.insert` |
 | [finalize](modules/finalize.md) | `sys.path.insert` |

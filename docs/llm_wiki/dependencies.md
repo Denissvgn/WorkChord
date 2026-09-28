@@ -71,10 +71,10 @@ flowchart TD
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 15 | 0 |
 | [agent_routing](modules/agent_routing.md) | 15 | 1 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 15 | 0 |
+| [app_main](modules/app_main.md) | 14 | 41 |
 | [models_identity](modules/models_identity.md) | 14 | 2 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 14 | 11 |
 | [tone](modules/tone.md) | 14 | 1 |
-| [app_main](modules/app_main.md) | 13 | 41 |
 | [schemas_triage](modules/schemas_triage.md) | 13 | 3 |
 | [Checkbox](modules/Checkbox.md) | 13 | 0 |
 | [projectService](modules/projectService.md) | 13 | 4 |
@@ -640,10 +640,12 @@ flowchart TD
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
 | [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 13 |
+| [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
-| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 5 |
+| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 6 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
+| [test_native_runtimes](modules/test_native_runtimes.md) | 0 | 0 |
 | [generate_agent_team_contract](modules/generate_agent_team_contract.md) | 0 | 1 |
 | [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) | 0 | 1 |
 | [generate_client_contract](modules/generate_client_contract.md) | 0 | 1 |
@@ -660,8 +662,8 @@ flowchart TD
 
 ### python
 
-- **Used:** `aiosmtplib`, `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
-- ⚠️ **Undeclared:** `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- **Used:** `aiosmtplib`, `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- ⚠️ **Undeclared:** `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
 - **Unused (declared, not imported):** `aiosqlite`, `email-validator`, `psycopg`, `python-dotenv`, `python-multipart`, `uvicorn`
 
 ### typescript

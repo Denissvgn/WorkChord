@@ -108,37 +108,37 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| token | parse_qs(…).items | 62 | `parse_qs((await request.body()).decode()).items(data not statically known)` |
-| token | parse_qs | 62 | `parse_qs(...)` |
-| token | (…).decode | 62 | `(await request.body()).decode(data not statically known)` |
-| token | request.body | 62 | `request.body(data not statically known)` |
-| token | grants.pop | 63 | `grants.pop(params.get(...), None)` |
-| token | params.get | 63 | `params.get('code')` |
-| token | base64.urlsafe_b64encode(…).rstrip(…).decode | 64 | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode(data not statically known)` |
-| token | base64.urlsafe_b64encode(…).rstrip | 64 | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=')` |
-| token | base64.urlsafe_b64encode | 64 | `base64.urlsafe_b64encode(...)` |
-| token | hashlib.sha256(…).digest | 64 | `hashlib.sha256(params.get('code_verifier', '').encode()).digest(data not statically known)` |
-| token | hashlib.sha256 | 64 | `hashlib.sha256(...)` |
+| token | parse_qs(…).items | 64 | `parse_qs((await request.body()).decode()).items(data not statically known)` |
+| token | parse_qs | 64 | `parse_qs(...)` |
+| token | (…).decode | 64 | `(await request.body()).decode(data not statically known)` |
+| token | request.body | 64 | `request.body(data not statically known)` |
+| token | grants.pop | 65 | `grants.pop(params.get(...), None)` |
+| token | params.get | 65 | `params.get('code')` |
+| token | base64.urlsafe_b64encode(…).rstrip(…).decode | 66 | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode(data not statically known)` |
+| token | base64.urlsafe_b64encode(…).rstrip | 66 | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=')` |
+| token | base64.urlsafe_b64encode | 66 | `base64.urlsafe_b64encode(...)` |
+| token | hashlib.sha256(…).digest | 66 | `hashlib.sha256(params.get('code_verifier', '').encode()).digest(data not statically known)` |
+| token | hashlib.sha256 | 66 | `hashlib.sha256(...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `grants.pop` | `token` | 63 |
+| mutation | `grants.pop` | `token` | 65 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `token` | `parse_qs((await request.body()).decode()).items` | 62 |
-| external_call | `token` | `parse_qs` | 62 |
-| unresolved_call | `token` | `(await request.body()).decode` | 62 |
-| unresolved_call | `token` | `request.body` | 62 |
-| unresolved_call | `token` | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode` | 64 |
-| unresolved_call | `token` | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip` | 64 |
-| external_call | `token` | `base64.urlsafe_b64encode` | 64 |
-| unresolved_call | `token` | `hashlib.sha256(params.get('code_verifier', '').encode()).digest` | 64 |
-| external_call | `token` | `hashlib.sha256` | 64 |
+| unresolved_call | `token` | `parse_qs((await request.body()).decode()).items` | 64 |
+| external_call | `token` | `parse_qs` | 64 |
+| unresolved_call | `token` | `(await request.body()).decode` | 64 |
+| unresolved_call | `token` | `request.body` | 64 |
+| unresolved_call | `token` | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode` | 66 |
+| unresolved_call | `token` | `base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip` | 66 |
+| external_call | `token` | `base64.urlsafe_b64encode` | 66 |
+| unresolved_call | `token` | `hashlib.sha256(params.get('code_verifier', '').encode()).digest` | 66 |
+| external_call | `token` | `hashlib.sha256` | 66 |
 | step_limit | `token` | `first 12 steps` | 0 |
 
 ## Behavior

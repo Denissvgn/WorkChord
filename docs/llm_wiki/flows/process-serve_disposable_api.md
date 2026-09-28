@@ -23,11 +23,12 @@
 - [template_service](../modules/template_service.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), [support_database](../modules/support_database.md), and 1 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), and 2 more
 
 **Complete related modules:**
 
 - [app_database](../modules/app_database.md)
+- [app_main](../modules/app_main.md)
 - [delivery](../modules/delivery.md)
 - [models_identity](../modules/models_identity.md)
 - [support_database](../modules/support_database.md)
@@ -95,7 +96,7 @@ sequenceDiagram
     p22->>p24: DatabaseConfigurationError
 ```
 
-> Call sequence diagram shows 30 of 279 interactions; 249 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 282 interactions; 252 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -131,10 +132,16 @@ flowchart LR
     s1 -. "environment_read os.environ[...]" .-> b0
     b1["environment_read os.environ.get"]
     s1 -. "environment_read os.environ.get" .-> b1
-    b2["process subprocess.Popen"]
-    s1 -. "process subprocess.Popen" .-> b2
-    b3["environment_read os.environ.get"]
-    s3 -. "environment_read os.environ.get" .-> b3
+    b2["environment_read os.environ.get"]
+    s1 -. "environment_read os.environ.get" .-> b2
+    b3["process subprocess.Popen"]
+    s1 -. "process subprocess.Popen" .-> b3
+    b4["environment_read os.environ.get"]
+    s1 -. "environment_read os.environ.get" .-> b4
+    b5["environment_read os.environ.get"]
+    s1 -. "environment_read os.environ.get" .-> b5
+    b6["environment_read os.environ.get"]
+    s3 -. "environment_read os.environ.get" .-> b6
     click s1 "../modules/serve_disposable_api.md"
     click s2 "../modules/support_database.md"
     click s3 "../modules/support_database.md"
@@ -146,6 +153,9 @@ flowchart LR
     class b1 boundary
     class b2 boundary
     class b3 boundary
+    class b4 boundary
+    class b5 boundary
+    class b6 boundary
 ```
 
 ### Step data
@@ -186,8 +196,11 @@ flowchart LR
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.environ[...]` | `main` | 13 |
-| environment_read | `os.environ.get` | `main` | 38 |
-| process | `subprocess.Popen` | `main` | 42 |
+| environment_read | `os.environ.get` | `main` | 39 |
+| environment_read | `os.environ.get` | `main` | 46 |
+| process | `subprocess.Popen` | `main` | 50 |
+| environment_read | `os.environ.get` | `main` | 52 |
+| environment_read | `os.environ.get` | `main` | 57 |
 | environment_read | `os.environ.get` | `_deployment_environment` | 32 |
 
 ### Static analysis gaps

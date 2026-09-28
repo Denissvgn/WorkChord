@@ -359,3 +359,32 @@ Task recovery now preserves deleted-version fences, dependency mutations invalid
 - Pages deprecated: 0
 - Semantic fields preserved: 59
 - Moved entities: none
+
+## 2026-09-28
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4b9dcbf831e0695c6c587deeadfd7b300951812e5cc1184a80c596319bb71012`
+- Pages created: 9
+- Pages updated: 16
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2649
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 2 (process=2)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 1
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+## 2026-09-28 — Native automation and Android identity boundaries
+
+Automatic integration workflows now use native tools and isolated loopback services; full Compose deployment acceptance is explicitly dispatched. The Android client enforces release HTTPS, restricts debug plaintext, redacts credentials and scopes personal work through authenticated profile ownership.
