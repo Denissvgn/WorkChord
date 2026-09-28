@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Build Android with JDK 17, SDK 34 and the checksum-pinned Gradle wrapper in Docker."""
+"""Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper."""
 
 import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
+import re
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
-from uuid import uuid4
 import xml.etree.ElementTree as ET
 
 from run_disposable_checks import ROOT, source_digest
@@ -22,39 +24,61 @@ def main():
     if output.exists() and any(output.iterdir()):
         parser.error("Output must be a new or empty directory")
     output.mkdir(parents=True, exist_ok=True)
-    container = f"workchord-android-{uuid4().hex}"
-    image = f"workchord-android-checks:{uuid4().hex}"
+    workspace = tempfile.TemporaryDirectory(prefix="workchord-android-runtime-")
+    project = Path(workspace.name) / "project"
     receipt = {"revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                "source_sha256": source_digest(), "started_at": datetime.now(timezone.utc).isoformat(),
-               "environment": "disposable-linux-amd64-container", "commands": [],
-               "integration_coverage": False, "image": image}
+               "environment": "native-processes", "commands": [],
+               "integration_coverage": False}
 
     def run(label, command):
         print(label, flush=True)
         with (output / f"{label}.log").open("w") as log:
-            result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+            result = subprocess.run(command, cwd=project, stdout=log, stderr=subprocess.STDOUT)
         receipt["commands"].append({"label": label, "argv": command, "exit_code": result.returncode})
         return result.returncode
 
-    created = False
     success = False
     try:
-        if run("build-image", ["docker", "build", "--platform", "linux/amd64", "-f", "scripts/ci/Dockerfile.android",
-                               "-t", image, "android-companion"]):
-            raise RuntimeError("Android image build failed")
-        if run("create", ["docker", "create", "--platform", "linux/amd64", "--name", container, image]):
-            raise RuntimeError("Android container creation failed")
-        created = True
-        result = run("gradle", ["docker", "start", "-a", container])
-        for label, path in (("unit-results", "/workspace/app/build/test-results/testDebugUnitTest"),
-                            ("unit-report", "/workspace/app/build/reports/tests/testDebugUnitTest"),
-                            ("apk", "/workspace/app/build/outputs/apk/debug")):
-            run(f"copy-{label}", ["docker", "cp", f"{container}:{path}", str(output / label)])
-        suites = [ET.parse(path).getroot() for path in (output / "unit-results").glob("TEST-*.xml")]
+        shutil.copytree(ROOT / "android-companion", project,
+            ignore=shutil.ignore_patterns("build", ".gradle", ".idea", ".kotlin", "local.properties"))
+        java = Path(os.environ["JAVA_HOME"]) / "bin/java" if os.environ.get("JAVA_HOME") else Path("java")
+        version = subprocess.check_output([str(java), "-version"], stderr=subprocess.STDOUT, text=True)
+        (output / "java-version.log").write_text(version)
+        if not re.search(r'version "17[.\"]', version):
+            raise RuntimeError("JDK 17 is required")
+        sdk = Path(os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT") or "")
+        if not (sdk / "platforms/android-34/android.jar").is_file() or not (sdk / "build-tools/34.0.0").is_dir():
+            raise RuntimeError("Install Android SDK platform 34 and build-tools 34.0.0")
+        wrapper = project / "gradle/wrapper/gradle-wrapper.jar"
+        if hashlib.sha256(wrapper.read_bytes()).hexdigest() != "cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8":
+            raise RuntimeError("Gradle wrapper checksum mismatch")
+        result = run("gradle", [str(project / "gradlew"), "--no-daemon", "--max-workers=2",
+            "--project-cache-dir", str(Path(workspace.name) / "gradle-project-cache"), "testDebugUnitTest", "testReleaseUnitTest", "assembleDebug"])
+        for label, relative in (("unit-results", "app/build/test-results/testDebugUnitTest"),
+                                ("release-unit-results", "app/build/test-results/testReleaseUnitTest"),
+                                ("unit-report", "app/build/reports/tests/testDebugUnitTest"),
+                                ("release-unit-report", "app/build/reports/tests/testReleaseUnitTest"),
+                                ("apk", "app/build/outputs/apk/debug")):
+            if (project / relative).is_dir():
+                shutil.copytree(project / relative, output / label)
+        suites = []
+        receipt["junit_variants"] = {}
+        for directory in ("unit-results", "release-unit-results"):
+            files = list((output / directory).glob("TEST-*.xml"))
+            if not files:
+                raise RuntimeError(f"Missing executed Android results: {directory}")
+            variant = [ET.parse(path).getroot() for path in files]
+            counts = {key: sum(int(suite.get(key, 0)) for suite in variant)
+                      for key in ("tests", "failures", "errors", "skipped")}
+            receipt["junit_variants"][directory] = counts
+            if counts["tests"] <= counts["skipped"] or counts["failures"] or counts["errors"]:
+                raise RuntimeError(f"Android variant requires successful executed results: {directory}")
+            suites.extend(variant)
         counts = {key: sum(int(suite.get(key, 0)) for suite in suites)
                   for key in ("tests", "failures", "errors", "skipped")}
         receipt["junit"] = counts
-        receipt["toolchain"] = {"jdk": "17.0.16+8", "gradle": "8.7", "agp": "8.5.2", "compile_sdk": 34, "build_tools": "34.0.0"}
+        receipt["toolchain"] = {"jdk": version.strip(), "gradle": "8.7", "agp": "8.5.2", "compile_sdk": 34, "build_tools": "34.0.0"}
         apks = list((output / "apk").glob("*.apk"))
         success = result == 0 and counts["tests"] > counts["skipped"] and not counts["failures"] and not counts["errors"] and len(apks) == 1 and apks[0].stat().st_size > 0
         if not success:
@@ -62,10 +86,7 @@ def main():
     except Exception as exc:
         receipt["error"] = str(exc)
     finally:
-        if created:
-            if run("cleanup", ["docker", "rm", "-f", "-v", container]):
-                success = False
-                receipt["cleanup_error"] = "The disposable Android container could not be removed"
+        workspace.cleanup()
         receipt["source_sha256_after"] = source_digest()
         if receipt["source_sha256_after"] != receipt["source_sha256"]:
             success = False

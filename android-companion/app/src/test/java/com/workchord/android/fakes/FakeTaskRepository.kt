@@ -1,5 +1,6 @@
 package com.workchord.android.fakes
 
+import com.workchord.android.data.models.Identity
 import com.workchord.android.data.models.Session
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
@@ -23,6 +24,10 @@ class FakeTaskRepository(
     } else {
         Result.failure(Exception("Not logged in"))
     }
+
+    var identityResult: Result<Identity> = Result.success(Identity())
+
+    override suspend fun getIdentity(): Result<Identity> = identityResult
 
     var fetchTasksResult: Result<List<Task>>? = null
     var getTaskByIdResult: Result<Task>? = null

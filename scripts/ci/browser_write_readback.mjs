@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { chromium } from 'playwright';
 
 const baseURL = process.env.BROWSER_BASE_URL;
-if (baseURL !== 'http://frontend:4173') throw new Error('Only the disposable frontend is allowed');
+const artifacts = process.env.BROWSER_ARTIFACTS_DIR || '/artifacts';
+if (!['http://localhost:4173', 'http://frontend:4173'].includes(baseURL)) throw new Error('Only the disposable frontend is allowed');
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ baseURL, locale: 'en-US' });
 const page = await context.newPage();
@@ -19,6 +21,10 @@ try {
       if (attempt === 59) throw error;
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  if (process.env.WORKCHORD_FIXTURE_NONCE) {
+    const fixture = await context.request.get('/api/auth/me');
+    assert.equal(fixture.headers()['x-workchord-fixture'], process.env.WORKCHORD_FIXTURE_NONCE);
   }
   await page.goto('/projects');
   await page.getByRole('heading', { name: 'Projects', exact: true }).waitFor();
@@ -42,16 +48,16 @@ try {
   await other.getByRole('link', { name, exact: true }).waitFor();
   await other.reload();
   await other.getByRole('link', { name, exact: true }).waitFor();
-  await other.screenshot({ path: '/artifacts/browser-readback.png', fullPage: true });
+  await other.screenshot({ path: join(artifacts, 'browser-readback.png'), fullPage: true });
   assert.deepEqual(errors, []);
-  await writeFile('/artifacts/browser.json', JSON.stringify({
+  await writeFile(join(artifacts, 'browser.json'), JSON.stringify({
     status: 'passed', browser: browser.version(), node: process.version,
     renderedFixtureProjects: ['Orchard', 'Harbor'], createdProject: created.id,
     writeStatus: response.status(), independentReadStatus: readback.status(), reloadVerified: true,
   }, null, 2));
   await independent.close();
 } catch (error) {
-  await page.screenshot({ path: '/artifacts/browser-failure.png', fullPage: true }).catch(() => {});
+  await page.screenshot({ path: join(artifacts, 'browser-failure.png'), fullPage: true }).catch(() => {});
   throw error;
 } finally {
   await browser.close();

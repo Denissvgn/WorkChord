@@ -3,11 +3,13 @@ package com.workchord.android.data.repository
 import com.workchord.android.data.api.TokenManager
 import com.workchord.android.data.api.WorkChordApi
 import com.workchord.android.data.models.Session
+import com.workchord.android.data.models.Identity
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.data.models.TaskStatusChangeRequest
 import com.workchord.android.data.models.TaskUpdateRequest
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +21,7 @@ import kotlinx.coroutines.withContext
 interface TaskRepository {
     val cachedTasks: Flow<List<Task>>
     suspend fun getWhoAmI(): Result<Session>
+    suspend fun getIdentity(): Result<Identity>
     suspend fun fetchTasks(iterationId: Int = 1): Result<List<Task>>
     suspend fun getTaskById(taskId: Int): Result<Task>
     suspend fun updateTaskStatus(
@@ -42,6 +45,25 @@ class TaskRepositoryImpl(
 
     private val _tasksFlow = MutableStateFlow<List<Task>>(emptyList())
     override val cachedTasks: Flow<List<Task>> = _tasksFlow.asStateFlow()
+    private val cacheLock = Any()
+    private var cacheGeneration = 0L
+
+    override suspend fun getIdentity(): Result<Identity> = withContext(ioDispatcher) {
+        synchronized(cacheLock) {
+            cacheGeneration++
+            _tasksFlow.value = emptyList()
+        }
+        try {
+            val response = api.getIdentity()
+            val identity = response.body()
+            if (response.isSuccessful && identity != null) Result.success(identity)
+            else Result.failure(Exception("Failed to verify identity: ${response.code()}"))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     override suspend fun getWhoAmI(): Result<Session> = withContext(ioDispatcher) {
         try {
@@ -57,12 +79,19 @@ class TaskRepositoryImpl(
     }
 
     override suspend fun fetchTasks(iterationId: Int): Result<List<Task>> = withContext(ioDispatcher) {
+        val generation = synchronized(cacheLock) { cacheGeneration }
         try {
             val response = api.getIterationTasks(iterationId)
             if (response.isSuccessful && response.body() != null) {
                 val tasks = response.body()!!
-                _tasksFlow.value = tasks
-                Result.success(tasks)
+                synchronized(cacheLock) {
+                    if (generation != cacheGeneration) {
+                        Result.failure(Exception("Identity changed. Reload your work."))
+                    } else {
+                        _tasksFlow.value = tasks
+                        Result.success(tasks)
+                    }
+                }
             } else {
                 Result.failure(Exception("Failed to fetch tasks: ${response.code()} ${response.message()}"))
             }

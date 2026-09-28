@@ -2,6 +2,7 @@ package com.workchord.android.data.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.workchord.android.BuildConfig
 
 open class TokenManager(context: Context? = null) {
     private val prefs: SharedPreferences? = try {
@@ -31,6 +32,10 @@ open class TokenManager(context: Context? = null) {
     open var baseUrl: String
         get() = prefs?.getString(KEY_BASE_URL, DEFAULT_BASE_URL) ?: inMemoryBaseUrl
         set(value) {
+            if (baseUrl.trimEnd('/') != value.trimEnd('/')) {
+                sessionToken = null
+                agentApiKey = null
+            }
             prefs?.edit()?.putString(KEY_BASE_URL, value)?.apply()
             inMemoryBaseUrl = value
         }
@@ -47,6 +52,6 @@ open class TokenManager(context: Context? = null) {
         private const val KEY_SESSION_TOKEN = "key_session_token"
         private const val KEY_AGENT_API_KEY = "key_agent_api_key"
         private const val KEY_BASE_URL = "key_base_url"
-        const val DEFAULT_BASE_URL = "http://10.0.2.2/" // Android emulator loopback to host
+        val DEFAULT_BASE_URL = if (BuildConfig.DEBUG) "http://10.0.2.2/" else "https://localhost/"
     }
 }

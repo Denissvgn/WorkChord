@@ -1,5 +1,8 @@
 package com.workchord.android
 
+import com.workchord.android.data.models.Identity
+import com.workchord.android.data.models.IdentityPrincipal
+import com.workchord.android.data.models.IdentityProfile
 import com.workchord.android.data.models.Session
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
@@ -68,7 +71,7 @@ class MyWorkViewModelTest {
             priority = 4,
             version = 3
         )
-    )
+    ).map { it.copy(ownerProfileId = 7) }
 
     private val sampleSession = Session(
         id = 3,
@@ -81,7 +84,7 @@ class MyWorkViewModelTest {
         fakeRepository = FakeTaskRepository(
             initialTasks = sampleTasks,
             initialSession = sampleSession
-        )
+        ).apply { identityResult = Result.success(Identity(true, IdentityPrincipal(3, "human"), IdentityProfile(7))) }
     }
 
     @Test
@@ -221,4 +224,50 @@ class MyWorkViewModelTest {
         assertTrue(state.resolvedTasks.isEmpty())
         assertNull(state.errorMessage)
     }
+    @Test
+    fun onlyTheAuthenticatedLinkedOwnerIsShownIncludingNestedWork() = runTest {
+        fakeRepository.setTasks(sampleTasks + listOf(
+            Task(id = 20, title = "Other owner", ownerProfileId = 8),
+            Task(id = 21, title = "Unowned"),
+            Task(id = 22, title = "Guest ID is not ownership", ownerProfileId = sampleSession.id),
+            Task(id = 23, title = "Group", children = listOf(Task(id = 24, title = "Owned child", ownerProfileId = 7))),
+            Task(id = 25, title = "Canceled", ownerProfileId = 7, canceledAt = "2026-01-01T00:00:00Z")
+        ))
+        val model = MyWorkViewModel(fakeRepository)
+        assertEquals(setOf(1, 2, 3, 4, 5, 24), model.uiState.value.allTasks.map { it.id }.toSet())
+        fakeRepository.identityResult = Result.success(Identity(true, IdentityPrincipal(9, "human"), IdentityProfile(8)))
+        model.refresh()
+        assertEquals(listOf(20), model.uiState.value.allTasks.map { it.id })
+    }
+
+    @Test
+    fun failedIdentityAndUnlinkedGuestsNeverReuseCachedTasks() = runTest {
+        val model = MyWorkViewModel(fakeRepository)
+        assertEquals(5, model.uiState.value.allTasks.size)
+        fakeRepository.identityResult = Result.failure(Exception("Session expired"))
+        model.refresh()
+        assertEquals("Session expired", model.uiState.value.errorMessage)
+        assertTrue(model.uiState.value.allTasks.isEmpty())
+        assertNull(model.uiState.value.session)
+        fakeRepository.setTasks(sampleTasks.map { it.copy(title = "Changed while signed out") })
+        assertTrue(model.uiState.value.allTasks.isEmpty())
+        fakeRepository.identityResult = Result.success(Identity())
+        model.refresh()
+        assertTrue(model.uiState.value.allTasks.isEmpty())
+        assertNotNull(model.uiState.value.errorMessage)
+        assertEquals(1, fakeRepository.fetchTasksCallCount)
+    }
+
+    @Test
+    fun absentProfileAndAgentIdentityDoNotGrantHumanOwnership() = runTest {
+        for (identity in listOf(Identity(true, IdentityPrincipal(3, "human")),
+            Identity(true, IdentityPrincipal(3, "agent"), IdentityProfile(7)))) {
+            fakeRepository.identityResult = Result.success(identity)
+            val model = MyWorkViewModel(fakeRepository)
+            assertTrue(model.uiState.value.allTasks.isEmpty())
+            assertNotNull(model.uiState.value.errorMessage)
+        }
+        assertEquals(0, fakeRepository.fetchTasksCallCount)
+    }
+
 }

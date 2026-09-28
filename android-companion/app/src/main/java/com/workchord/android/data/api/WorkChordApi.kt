@@ -1,6 +1,7 @@
 package com.workchord.android.data.api
 
 import com.workchord.android.data.models.Iteration
+import com.workchord.android.data.models.Identity
 import com.workchord.android.data.models.Project
 import com.workchord.android.data.models.Session
 import com.workchord.android.data.models.Task
@@ -14,6 +15,9 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface WorkChordApi {
+
+    @GET("api/auth/me")
+    suspend fun getIdentity(): Response<Identity>
 
     @GET("api/session/whoami")
     suspend fun getSessionWhoami(): Response<Session>

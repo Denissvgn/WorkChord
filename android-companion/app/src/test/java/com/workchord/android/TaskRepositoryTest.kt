@@ -486,4 +486,18 @@ class TaskRepositoryTest {
         // Verify new cookie token was persisted in tokenManager
         assertEquals("new_refreshed_token_abc", tokenManager.sessionToken)
     }
+    @Test
+    fun identityComesFromAuthenticatedEndpointAndClearsPriorCache() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("[{\"id\":1,\"title\":\"Old work\",\"status\":\"planned\"}]"))
+        repository.fetchTasks(1)
+        mockWebServer.takeRequest()
+        mockWebServer.enqueue(MockResponse().setBody("""
+            {"authenticated":true,"principal":{"id":19,"kind":"human","display_name":"Person"},"profile":{"id":7}}
+        """.trimIndent()))
+        val identity = repository.getIdentity().getOrThrow()
+        assertEquals("/api/auth/me", mockWebServer.takeRequest().path)
+        assertEquals(7, identity.humanOwnerProfileId)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+    }
+
 }

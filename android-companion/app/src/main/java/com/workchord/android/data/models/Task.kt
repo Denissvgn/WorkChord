@@ -27,6 +27,14 @@ data class Task(
     val project: Project? = null,
     @SerializedName("assignee")
     val assignee: Assignee? = null,
+    @SerializedName("owner_profile_id")
+    val ownerProfileId: Int? = null,
+    @SerializedName("children")
+    val children: List<Task>? = null,
+    @SerializedName("is_composite")
+    val isComposite: Boolean = false,
+    @SerializedName("canceled_at")
+    val canceledAt: String? = null,
     @SerializedName("status")
     val statusRaw: String = "planned",
     @SerializedName("start_date")

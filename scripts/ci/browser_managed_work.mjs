@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { chromium } from 'playwright';
 
 const baseURL = process.env.BROWSER_BASE_URL;
+const artifacts = process.env.BROWSER_ARTIFACTS_DIR || '/artifacts';
+const issuer = process.env.WORKCHORD_FIXTURE_ISSUER || 'http://oidc:8002';
+if (!['http://localhost:8002', 'http://oidc:8002'].includes(issuer)) throw new Error('Only the fixture issuer is allowed');
 if (baseURL !== 'http://localhost:4173') throw new Error('Only the disposable managed frontend is allowed');
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ baseURL, locale: 'en-US', viewport: { width: 1440, height: 1000 } });
@@ -43,6 +47,10 @@ try {
     } catch { /* Wait only for this disposable application. */ }
     if (attempt === 89) throw new Error('Disposable application did not start');
     await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  if (process.env.WORKCHORD_FIXTURE_NONCE) {
+    const fixture = await context.request.get('/api/auth/me');
+    assert.equal(fixture.headers()['x-workchord-fixture'], process.env.WORKCHORD_FIXTURE_NONCE);
   }
   assert.equal((await context.request.get('/api/projects')).status(), 401);
   await page.goto('/tasks');
@@ -100,15 +108,15 @@ try {
   await page.getByRole('button', { name: 'Open task: Nested leaf', exact: true }).waitFor();
   await page.getByRole('button', { name: 'Move task: Nested leaf', exact: true }).focus();
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Move task: Nested leaf');
-  await page.screenshot({ path: '/artifacts/managed-board-desktop.png', fullPage: true });
+  await page.screenshot({ path: join(artifacts, 'managed-board-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await openNested();
   await page.getByRole('textbox', { name: 'Description', exact: true }).scrollIntoViewIfNeeded();
-  await page.screenshot({ path: '/artifacts/managed-editor-mobile.png', fullPage: true });
+  await page.screenshot({ path: join(artifacts, 'managed-editor-mobile.png'), fullPage: true });
   const mobileDescription = page.getByRole('textbox', { name: 'Description', exact: true });
   await mobileDescription.fill('Recover this draft after session expiry');
   const cookie = (await context.cookies()).find(cookie => cookie.name === 'workchord_session');
-  const expired = await context.request.post('http://oidc:8002/control/expire', { headers: { 'X-Fixture-Key': 'disposable-browser-control' }, data: { token: cookie.value } });
+  const expired = await context.request.post(`${issuer}/control/expire`, { headers: { 'X-Fixture-Key': 'disposable-browser-control' }, data: { token: cookie.value } });
   assert.equal((await expired.json()).expired, 1);
   await page.getByRole('button', { name: 'Update Task', exact: true }).click();
   await page.getByText('Your session expired. Sign in again to continue.', { exact: false }).first().waitFor();
@@ -141,10 +149,10 @@ try {
   await page.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).waitFor();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).scrollIntoViewIfNeeded();
-  await page.screenshot({ path: '/artifacts/canonical-brief-desktop.png', fullPage: true });
+  await page.screenshot({ path: join(artifacts, 'canonical-brief-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('textbox', { name: 'Criterion 1', exact: true }).scrollIntoViewIfNeeded();
-  await page.screenshot({ path: '/artifacts/canonical-brief-mobile.png', fullPage: true });
+  await page.screenshot({ path: join(artifacts, 'canonical-brief-mobile.png'), fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   await page.setViewportSize({ width: 1440, height: 1000 });
   const workCommand = async action => {
@@ -191,7 +199,7 @@ try {
   assert.equal((await verdict.json()).is_accepted, true);
   await reviewerPage.getByRole('dialog').getByText('Accepted', { exact: true }).waitFor();
   await reviewerPage.getByText('Loading data...', { exact: true }).waitFor({ state: 'hidden' });
-  await reviewerPage.screenshot({ path: '/artifacts/canonical-review-desktop.png', fullPage: true });
+  await reviewerPage.screenshot({ path: join(artifacts, 'canonical-review-desktop.png'), fullPage: true });
   await reviewerContext.close();
   check('Unestimated backlog capture, durable owner, structured criteria, manual execution, persisted evidence, and independent human acceptance');
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
@@ -226,9 +234,9 @@ try {
   assert.equal(await page.evaluate(() => Object.keys(sessionStorage).some(key => key.startsWith('workchord-draft:') && sessionStorage.getItem(key)?.includes('Recover this draft'))), false);
   assert.deepEqual(errors, []);
   check('Sign-out/account switch clears private work and rejects the previous project');
-  await writeFile('/artifacts/managed-browser.json', JSON.stringify({ status: 'passed', browser: browser.version(), node: process.version, steps, pageErrors: errors, issuer: 'disposable-synthetic-oidc', realProviderPilot: false }, null, 2));
+  await writeFile(join(artifacts, 'managed-browser.json'), JSON.stringify({ status: 'passed', browser: browser.version(), node: process.version, steps, pageErrors: errors, issuer: 'disposable-synthetic-oidc', realProviderPilot: false }, null, 2));
 } catch (error) {
-  await page.screenshot({ path: '/artifacts/managed-browser-failure.png', fullPage: true }).catch(() => {});
-  await writeFile('/artifacts/managed-browser-failure.json', JSON.stringify({ steps, pageErrors: errors, error: String(error) }, null, 2));
+  await page.screenshot({ path: join(artifacts, 'managed-browser-failure.png'), fullPage: true }).catch(() => {});
+  await writeFile(join(artifacts, 'managed-browser-failure.json'), JSON.stringify({ steps, pageErrors: errors, error: String(error) }, null, 2));
   throw error;
 } finally { await browser.close(); }

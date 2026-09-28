@@ -77,7 +77,7 @@ fun MyWorkScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        uiState.session?.let { session ->
+                        (uiState.identity?.principal?.displayName ?: uiState.session?.displayName)?.let { displayName ->
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
@@ -85,7 +85,7 @@ fun MyWorkScreen(
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
-                                    text = session.displayName,
+                                    text = displayName,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -227,7 +227,7 @@ private fun MyWorkContent(
                     }
                 }
 
-                if (uiState.allTasks.isEmpty()) {
+                if (uiState.allTasks.isEmpty() && uiState.errorMessage == null) {
                     item {
                         EmptyStateView(message = "No tasks found in current iteration")
                     }
@@ -235,7 +235,7 @@ private fun MyWorkContent(
             }
 
             TaskFilter.ACTIVE -> {
-                if (uiState.activeTasks.isEmpty()) {
+                if (uiState.activeTasks.isEmpty() && uiState.errorMessage == null) {
                     item {
                         EmptyStateView(message = "No tasks currently in progress")
                     }
@@ -250,7 +250,7 @@ private fun MyWorkContent(
             }
 
             TaskFilter.QUEUED -> {
-                if (uiState.assignedQueue.isEmpty()) {
+                if (uiState.assignedQueue.isEmpty() && uiState.errorMessage == null) {
                     item {
                         EmptyStateView(message = "No queued tasks assigned")
                     }
@@ -265,7 +265,7 @@ private fun MyWorkContent(
             }
 
             TaskFilter.RESOLVED -> {
-                if (uiState.resolvedTasks.isEmpty()) {
+                if (uiState.resolvedTasks.isEmpty() && uiState.errorMessage == null) {
                     item {
                         EmptyStateView(message = "No resolved tasks yet")
                     }

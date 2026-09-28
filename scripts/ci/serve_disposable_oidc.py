@@ -22,7 +22,9 @@ from tests.support.database import assert_safe_test_database_url
 url = assert_safe_test_database_url(os.environ["DATABASE_URL"])
 if url.get_backend_name() != "sqlite" or os.environ.get("DEPLOYMENT_ENVIRONMENT") != "test":
     raise RuntimeError("The synthetic issuer requires an isolated test database")
-issuer = "http://oidc:8002"
+issuer = os.environ.get("WORKCHORD_FIXTURE_ISSUER", "http://oidc:8002")
+if issuer not in {"http://localhost:8002", "http://oidc:8002"}:
+    raise RuntimeError("Only an isolated fixture issuer is allowed")
 redirect_uri = "http://localhost:4173/api/auth/callback"
 key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 jwk = json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(key.public_key()))
@@ -85,4 +87,4 @@ async def expire(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8002, access_log=False)
+    uvicorn.run(app, host=os.environ.get("WORKCHORD_FIXTURE_BIND", "127.0.0.1"), port=8002, access_log=False)
