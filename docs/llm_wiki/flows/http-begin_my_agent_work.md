@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| begin_my_agent_work | service.begin | 853 | `service.begin(actor, data, idempotency_key=idempotency_key)` |
-| begin_my_agent_work | _handle_agent_error | 859 | `_handle_agent_error(exc, structured=True)` |
+| begin_my_agent_work | service.begin | 855 | `service.begin(actor, data, idempotency_key=idempotency_key)` |
+| begin_my_agent_work | _handle_agent_error | 861 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `begin_my_agent_work` | `service.begin` | 853 |
+| unresolved_call | `begin_my_agent_work` | `service.begin` | 855 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

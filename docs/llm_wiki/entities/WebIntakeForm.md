@@ -11,11 +11,11 @@ _Auto-generated from `WebIntakeForm` in `frontend/src/components/settings/Runtim
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | *required* | — |
-| `clear_token` | `boolean` | *required* | — |
-| `rate_limit_per_minute` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `token` | `string` | Yes | — | — |
+| `clear_token` | `boolean` | Yes | — | — |
+| `rate_limit_per_minute` | `string` | Yes | — | — |
 
 ## Methods
 

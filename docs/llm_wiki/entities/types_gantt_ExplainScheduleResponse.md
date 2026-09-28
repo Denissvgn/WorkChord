@@ -11,18 +11,18 @@ _Auto-generated from `ExplainScheduleResponse` in `frontend/src/types/gantt.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `summary` | `string` | *required* | — |
-| `decisions` | `ScheduleDecisionExplanation[]` | *required* | — |
-| `workload_analysis` | `WorkloadAnalysis` | *required* | — |
-| `provider` | `string \| null` | *required* | — |
-| `model` | `string \| null` | *required* | — |
-| `language` | `'en' \| 'ru'` | *required* | — |
-| `is_fallback` | `boolean` | *required* | — |
-| `finish_reason` | `string \| null` | *required* | — |
-| `is_truncated` | `boolean` | *required* | — |
-| `warnings` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `summary` | `string` | Yes | — | — |
+| `decisions` | `ScheduleDecisionExplanation[]` | Yes | — | — |
+| `workload_analysis` | `WorkloadAnalysis` | Yes | — | — |
+| `provider` | `string \| null` | No | — | — |
+| `model` | `string \| null` | No | — | — |
+| `language` | `'en' \| 'ru'` | No | — | — |
+| `is_fallback` | `boolean` | No | — | — |
+| `finish_reason` | `string \| null` | No | — | — |
+| `is_truncated` | `boolean` | No | — | — |
+| `warnings` | `string[]` | No | — | — |
 
 ## Methods
 

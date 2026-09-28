@@ -66,4 +66,4 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 341 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1312 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1329 | — | Handles incremental rescheduling when a single task changes. |

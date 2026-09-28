@@ -57,11 +57,11 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CalendarCreate](../entities/schemas_calendar_CalendarCreate.md) | 10 | `PlanningInputRevisions` | Schema for creating a calendar. |
-| [CalendarUpdate](../entities/schemas_calendar_CalendarUpdate.md) | 21 | `PlanningInputRevisions` | Schema for updating a calendar. |
-| [CalendarResponse](../entities/CalendarResponse.md) | 32 | `BaseModel` | Schema for calendar response. |
-| [CalendarImportError](../entities/schemas_calendar_CalendarImportError.md) | 47 | `BaseModel` | One calendar import row that could not be applied. |
-| [CalendarImportRequest](../entities/CalendarImportRequest.md) | 53 | `BaseModel` | Request for importing calendar holidays from a public source or CSV text. |
-| [CalendarImportResponse](../entities/schemas_calendar_CalendarImportResponse.md) | 61 | `BaseModel` | Summary of imported calendar holidays. |
-| [WorkingDaysRequest](../entities/WorkingDaysRequest.md) | 69 | `BaseModel` | Request for calculating working days. |
-| [WorkingDaysResponse](../entities/schemas_calendar_WorkingDaysResponse.md) | 75 | `BaseModel` | Response with working days calculation. |
-| [HolidayImportRequest](../entities/HolidayImportRequest.md) | 85 | `BaseModel` | Request for importing holidays from external source. |
+| [CalendarUpdate](../entities/schemas_calendar_CalendarUpdate.md) | 22 | `PlanningInputRevisions` | Schema for updating a calendar. |
+| [CalendarResponse](../entities/CalendarResponse.md) | 34 | `BaseModel` | Schema for calendar response. |
+| [CalendarImportError](../entities/schemas_calendar_CalendarImportError.md) | 50 | `BaseModel` | One calendar import row that could not be applied. |
+| [CalendarImportRequest](../entities/CalendarImportRequest.md) | 56 | `BaseModel` | Request for importing calendar holidays from a public source or CSV text. |
+| [CalendarImportResponse](../entities/schemas_calendar_CalendarImportResponse.md) | 64 | `BaseModel` | Summary of imported calendar holidays. |
+| [WorkingDaysRequest](../entities/WorkingDaysRequest.md) | 72 | `BaseModel` | Request for calculating working days. |
+| [WorkingDaysResponse](../entities/schemas_calendar_WorkingDaysResponse.md) | 78 | `BaseModel` | Response with working days calculation. |
+| [HolidayImportRequest](../entities/HolidayImportRequest.md) | 88 | `BaseModel` | Request for importing holidays from external source. |

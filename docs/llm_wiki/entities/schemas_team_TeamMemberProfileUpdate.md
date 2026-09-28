@@ -20,7 +20,7 @@ Schema for updating a reusable team-member profile.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `display_name` | `Optional[str]` | `display_name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `display_name` | `Optional[str]` | `display_name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `email` | `Optional[str]` | `email` | No | Yes | `None` | max_length=255 | — | — |
 | `headline` | `Optional[str]` | `headline` | No | Yes | `None` | max_length=255 | — | — |
 | `summary` | `Optional[str]` | `summary` | No | Yes | `None` | — | — | — |

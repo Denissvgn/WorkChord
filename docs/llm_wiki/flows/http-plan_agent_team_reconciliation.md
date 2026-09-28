@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| plan_agent_team_reconciliation | service.plan | 435 | `service.plan(actor, data)` |
-| plan_agent_team_reconciliation | _handle_agent_error | 437 | `_handle_agent_error(exc, structured=True)` |
+| plan_agent_team_reconciliation | service.plan | 437 | `service.plan(actor, data)` |
+| plan_agent_team_reconciliation | _handle_agent_error | 439 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `plan_agent_team_reconciliation` | `service.plan` | 435 |
+| unresolved_call | `plan_agent_team_reconciliation` | `service.plan` | 437 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

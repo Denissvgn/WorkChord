@@ -11,15 +11,15 @@ _Auto-generated from `OutboundWebhookEvent` in `frontend/src/types/outboundWebho
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `event_id` | `string` | *required* | — |
-| `event_type` | `string` | *required* | — |
-| `entity_type` | `string` | *required* | — |
-| `entity_id` | `number \| null` | *required* | — |
-| `payload_json` | `Record<string, unknown>` | *required* | — |
-| `occurred_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `event_id` | `string` | Yes | — | — |
+| `event_type` | `string` | Yes | — | — |
+| `entity_type` | `string` | Yes | — | — |
+| `entity_id` | `number \| null` | No | — | — |
+| `payload_json` | `Record<string, unknown>` | Yes | — | — |
+| `occurred_at` | `string` | Yes | — | — |
 
 ## Methods
 

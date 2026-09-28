@@ -1,6 +1,6 @@
 # AgentWorkTerminal
 
-**Location:** `backend/app/schemas/agent.py:945`
+**Location:** `backend/app/schemas/agent.py:949`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -27,7 +27,7 @@ Atomically fail or cancel an active assignment.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `status` | `Literal['failed', 'canceled']` | `status` | Yes | No | — | — | — | — |

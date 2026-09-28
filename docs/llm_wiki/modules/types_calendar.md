@@ -40,8 +40,8 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [Calendar](../entities/types_calendar_Calendar.md) | Class | 1 | — | — |
-| [CalendarCreate](../entities/types_calendar_CalendarCreate.md) | Class | 10 | — | — |
-| [CalendarUpdate](../entities/types_calendar_CalendarUpdate.md) | Class | 18 | — | — |
-| [WorkingDaysResponse](../entities/types_calendar_WorkingDaysResponse.md) | Class | 26 | — | — |
-| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Class | 33 | — | — |
-| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Class | 38 | — | — |
+| [CalendarCreate](../entities/types_calendar_CalendarCreate.md) | Class | 11 | — | — |
+| [CalendarUpdate](../entities/types_calendar_CalendarUpdate.md) | Class | 19 | — | — |
+| [WorkingDaysResponse](../entities/types_calendar_WorkingDaysResponse.md) | Class | 27 | — | — |
+| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Class | 34 | — | — |
+| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Class | 39 | — | — |

@@ -11,12 +11,12 @@ _Auto-generated from `ScheduleDecisionExplanation` in `frontend/src/types/gantt.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `task_title` | `string` | *required* | — |
-| `decision_type` | `string` | *required* | — |
-| `explanation` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `task_title` | `string` | Yes | — | — |
+| `decision_type` | `string` | Yes | — | — |
+| `explanation` | `string` | Yes | — | — |
 
 ## Methods
 

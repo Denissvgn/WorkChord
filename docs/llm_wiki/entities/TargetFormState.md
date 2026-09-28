@@ -11,16 +11,16 @@ _Auto-generated from `TargetFormState` in `frontend/src/components/settings/Outb
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `url` | `string` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `subscribedEvents` | `string[]` | *required* | — |
-| `secret` | `string` | *required* | — |
-| `clearSecret` | `boolean` | *required* | — |
-| `headersJson` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `url` | `string` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `subscribedEvents` | `string[]` | Yes | — | — |
+| `secret` | `string` | Yes | — | — |
+| `clearSecret` | `boolean` | Yes | — | — |
+| `headersJson` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TriageLifecycleAction
 
-**Location:** `frontend/src/pages/TriagePage.tsx:399`
+**Location:** `frontend/src/pages/TriagePage.tsx:401`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

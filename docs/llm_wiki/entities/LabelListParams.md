@@ -11,11 +11,11 @@ _Auto-generated from `LabelListParams` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `group_key` | `string` | *required* | — |
-| `include_inactive` | `boolean` | *required* | — |
-| `q` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `group_key` | `string` | No | — | — |
+| `include_inactive` | `boolean` | No | — | — |
+| `q` | `string` | No | — | — |
 
 ## Methods
 

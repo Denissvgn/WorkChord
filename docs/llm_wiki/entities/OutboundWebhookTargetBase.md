@@ -28,9 +28,9 @@ Shared target configuration fields.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
-| `url` | `str` | `url` | Yes | No | — | min_length=1; max_length=1000 | — | — |
+| `url` | `str` | `url` | Yes | No | — | max_length=1000; min_length=1 | — | — |
 | `enabled` | `bool` | `enabled` | No | No | `True` | — | — | — |
 | `subscribed_events_json` | `list[str]` | `subscribed_events_json` | No | No | factory: `list` | — | — | — |
 | `secret` | `Optional[str]` | `secret` | No | Yes | `None` | max_length=500 | — | — |

@@ -11,10 +11,10 @@ _Auto-generated from `TaskAssignee` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
 
 ## Methods
 

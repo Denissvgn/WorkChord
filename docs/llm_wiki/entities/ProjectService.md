@@ -138,4 +138,4 @@ flowchart LR
 | `create_project_update` | type_reference | [projects](../modules/projects.md) | — |
 | `delete_initiative` | type_reference | [projects](../modules/projects.md) | — |
 
-> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.
+> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.

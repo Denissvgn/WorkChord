@@ -8,12 +8,15 @@ Explicit transaction ownership shared by HTTP, MCP and service commands.
 
 One command owns its transaction, original iteration/task revisions, and at most one pre-change snapshot per iteration. Apply commits at the owner; preview rolls back all database effects. Locks are acquired by sorted iteration ID before task context. Supplied stale revisions fail; missing versions remain an observed compatibility path. Planning-input edits reserve every affected scheduling aggregate.
 
+Explicit command ownership keeps domain state, history, revisions and outbound intents atomic. Nested services flush; previews roll back. Iteration and project-backlog reservations serialize the relevant graph edits, and a command retains at most one recovery point per affected scope.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `AuthorityError`, `internal_authority` |
+| `app.authority` | `internal_authority`, `require_project`, `AuthorityError`, `internal_authority` |
 | `app.models.iteration` | `Iteration`, `Iteration` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
 | `app.runtime_telemetry` | `metrics` |
@@ -46,8 +49,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (53) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (60) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
@@ -55,15 +58,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 58 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 21 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 32 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 22 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 33 | `RuntimeError` | — |
 
 ## Functions
 
@@ -74,5 +77,6 @@ flowchart LR
 | `command_transaction` | *(async)* `(db: AsyncSession, *, mode = 'apply', commit = True)` | `@asynccontextmanager` | — |
 | `atomic_command` | `(function)` | — | Give standalone service commands an owner without committing inside another command. |
 | `preview_command` | `(function)` | — | Give a calculation a rollback boundary in every transport and direct invocation. |
+| `lock_backlog_project` | *(async)* `(db, project_id)` | — | Serialize unscheduled hierarchy writes without manufacturing an iteration. |
 | `lock_iterations` | *(async)* `(db: AsyncSession, iteration_ids, *, expected = None) -> dict[int, int]` | — | Acquire aggregate locks in ascending ID order, then task locks in ascending ID order. |
 | `schedule_input_command` | `(kind)` | — | Capture and revise every affected iteration before editing shared planning inputs. |

@@ -1,6 +1,6 @@
 # DuplicateActionDefaults
 
-**Location:** `frontend/src/pages/TriagePage.tsx:401`
+**Location:** `frontend/src/pages/TriagePage.tsx:403`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,12 +11,12 @@ _Auto-generated from `DuplicateActionDefaults` in `frontend/src/pages/TriagePage
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `targetType` | `'triage' \| 'task'` | *required* | — |
-| `targetId` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `iterationId` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `targetType` | `'triage' \| 'task'` | Yes | — | — |
+| `targetId` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `iterationId` | `number \| null` | No | — | — |
 
 ## Methods
 

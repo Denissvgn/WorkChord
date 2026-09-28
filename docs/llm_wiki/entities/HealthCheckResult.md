@@ -11,10 +11,10 @@ _Auto-generated from `HealthCheckResult` in `frontend/src/services/healthService
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `state` | `'healthy' \| 'unhealthy' \| 'unavailable'` | *required* | — |
-| `statusCode` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `state` | `'healthy' \| 'unhealthy' \| 'unavailable'` | Yes | — | — |
+| `statusCode` | `number \| null` | Yes | — | — |
 
 ## Methods
 

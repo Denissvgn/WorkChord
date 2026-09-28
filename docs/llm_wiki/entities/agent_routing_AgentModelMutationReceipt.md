@@ -13,13 +13,13 @@ Durable, replay-safe receipt for an operator model mutation.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `operation` | `str` | `operation` | Yes | No | — | min_length=1; max_length=100 | — | — |
+| `operation` | `str` | `operation` | Yes | No | — | max_length=100; min_length=1 | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
 | `target_type` | `Literal['model_catalog', 'model_binding']` | `target_type` | Yes | No | — | — | — | — |
 | `target_id` | `int` | `target_id` | Yes | No | — | ge=1 | — | — |
-| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
-| `correlation_id` | `str` | `correlation_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
+| `correlation_id` | `str` | `correlation_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `authoritative_revision` | `PositiveRevision` | `authoritative_revision` | Yes | No | — | — | — | — |
 | `invalidated_assignment_ids` | `list[int]` | `invalidated_assignment_ids` | No | No | factory: `list` | — | — | — |
 | `audit_event_ids` | `list[int]` | `audit_event_ids` | No | No | factory: `list` | — | — | — |

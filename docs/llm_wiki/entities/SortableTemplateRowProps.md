@@ -11,12 +11,12 @@ _Auto-generated from `SortableTemplateRowProps` in `frontend/src/components/sett
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `isBusy` | `boolean` | *required* | — |
-| `template` | `WorkTemplate` | *required* | — |
-| `onEdit` | `(template: WorkTemplate) => void` | *required* | — |
-| `onToggleActive` | `(template: WorkTemplate) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `isBusy` | `boolean` | Yes | — | — |
+| `template` | `WorkTemplate` | Yes | — | — |
+| `onEdit` | `(template: WorkTemplate) => void` | Yes | — | — |
+| `onToggleActive` | `(template: WorkTemplate) => void` | Yes | — | — |
 
 ## Methods
 

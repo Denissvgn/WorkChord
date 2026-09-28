@@ -21,26 +21,26 @@ Expiring non-dispatch result over a digest-bound routing input snapshot.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `preview_id` | `str` | `preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `preview_id` | `str` | `preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `preview_digest` | `RoutingDigest` | `preview_digest` | Yes | No | — | — | — | — |
 | `input_digest` | `RoutingDigest` | `input_digest` | Yes | No | — | — | — | — |
-| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | min_length=1; max_length=100 | — | — |
-| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | max_length=100; min_length=1 | — | — |
+| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `purpose` | `Literal['execution', 'verification']` | `purpose` | Yes | No | — | — | — | — |
-| `assessment_id` | `int` | `assessment_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
-| `current_task_version` | `int` | `current_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `current_task_version` | `int` | `current_task_version` | Yes | No | — | ge=1; strict=True | — | — |
 | `policy_version` | `Literal['model-aware-routing-v1']` | `policy_version` | No | No | `ROUTING_POLICY_VERSION` | — | — | — |
 | `review_mode` | `TaskReviewMode` | `review_mode` | Yes | No | — | — | — | — |
-| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `generated_at` | `datetime` | `generated_at` | Yes | No | — | — | — | — |
 | `expires_at` | `datetime` | `expires_at` | Yes | No | — | — | — | — |
 | `recommended_candidate` | `AgentRoutingCandidate \| None` | `recommended_candidate` | No | Yes | `None` | — | — | — |
 | `eligible_candidates` | `list[AgentRoutingCandidate]` | `eligible_candidates` | No | No | factory: `list` | max_length=unknown (MAX_ROUTING_CANDIDATES) | — | — |
 | `exclusions` | `list[AgentRoutingExclusion]` | `exclusions` | No | No | factory: `list` | max_length=unknown (MAX_ROUTING_EXCLUSIONS) | — | — |
-| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
-| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
+| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | ge=0; strict=True | — | — |
+| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | ge=0; strict=True | — | — |
 | `hard_blocker_codes` | `list[RoutingBlockerCode]` | `hard_blocker_codes` | No | No | factory: `list` | — | — | — |
 
 ## Methods

@@ -11,11 +11,11 @@ _Auto-generated from `AgentTeamSkillPackage` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `version` | `string` | *required* | — |
-| `sha256` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `version` | `string` | Yes | — | — |
+| `sha256` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_capabilities_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 10 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 12 more
 
 **Complete modules touched:**
 
@@ -12,6 +12,7 @@
 - [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
@@ -19,6 +20,7 @@
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [task_domain_service](../modules/task_domain_service.md)
 
 ## Call sequence
 
@@ -84,7 +86,7 @@ sequenceDiagram
     p20-->>p25: RuntimeError
 ```
 
-> Call sequence diagram shows 30 of 135 interactions; 105 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 143 interactions; 113 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -146,7 +148,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_capabilities_resource | _json_resource | 2118 | `_json_resource(None, ...)` |
+| agent_capabilities_resource | _json_resource | 2148 | `_json_resource(None, ...)` |
 | _json_resource | _tool_call | 330 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

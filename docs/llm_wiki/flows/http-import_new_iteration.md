@@ -77,7 +77,7 @@ sequenceDiagram
     p19-->>p22: member_data.get
 ```
 
-> Call sequence diagram shows 30 of 114 interactions; 84 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 115 interactions; 85 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -132,7 +132,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_new_iteration | _read_json_upload | 232 | `_read_json_upload(file)` |
+| import_new_iteration | _read_json_upload | 247 | `_read_json_upload(file)` |
 | _read_json_upload | file.read | 38 | `file.read(...)` |
 | _read_json_upload | len | 39 | `len(content)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 40 | `HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')` |
@@ -142,7 +142,7 @@ flowchart LR
 | _read_json_upload | str (backend/app/routers/export.py:_read_json_upload) | 49 | `str(e)` |
 | _read_json_upload | isinstance (backend/app/routers/export.py:_read_json_upload) | 51 | `isinstance(data, dict)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 52 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Import file must contain a JSON object')` |
-| import_new_iteration | HTTPException (backend/app/routers/export.py:import_new_iteration) | 236 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Missing iteration data in export file')` |
+| import_new_iteration | HTTPException (backend/app/routers/export.py:import_new_iteration) | 251 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Missing iteration data in export file')` |
 
 ### Boundary effects
 
@@ -159,7 +159,7 @@ flowchart LR
 | external_call | `_read_json_upload` | `HTTPException` | 47 |
 | external_call | `_read_json_upload` | `isinstance` | 51 |
 | external_call | `_read_json_upload` | `HTTPException` | 52 |
-| external_call | `import_new_iteration` | `HTTPException` | 236 |
+| external_call | `import_new_iteration` | `HTTPException` | 251 |
 | step_limit | `import_new_iteration` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -11,14 +11,14 @@ _Auto-generated from `LabelGroupCreate` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `color` | `string` | No | — | — |
+| `is_active` | `boolean` | No | — | — |
+| `sort_order` | `number` | No | — | — |
 
 ## Methods
 

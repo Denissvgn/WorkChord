@@ -1,6 +1,6 @@
 # TaskDependencySelectorProps
 
-**Location:** `frontend/src/components/tasks/TaskDependencySelector.tsx:9`
+**Location:** `frontend/src/components/tasks/TaskDependencySelector.tsx:11`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskDependencySelector](../modules/TaskDependencySelector.md)
@@ -11,12 +11,13 @@ _Auto-generated from `TaskDependencySelectorProps` in `frontend/src/components/t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `currentTaskId` | `number` | *required* | — |
-| `selectedIds` | `number[]` | *required* | — |
-| `onChange` | `(ids: number[]) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number \| null` | Yes | — | — |
+| `projectId` | `number \| null` | No | — | — |
+| `currentTaskId` | `number` | No | — | — |
+| `selectedIds` | `number[]` | Yes | — | — |
+| `onChange` | `(ids: number[]) => void` | Yes | — | — |
 
 ## Methods
 
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskDependencySelector](../modules/TaskDependencySelector.md) | 0 | `currentTaskId`, `iterationId`, `onChange`, `selectedIds` |
+| [TaskDependencySelector](../modules/TaskDependencySelector.md) | 0 | `currentTaskId`, `iterationId`, `onChange`, `projectId`, `selectedIds` |
 
 ### References
 

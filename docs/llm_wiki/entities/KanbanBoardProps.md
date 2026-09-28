@@ -11,10 +11,10 @@ _Auto-generated from `KanbanBoardProps` in `frontend/src/components/tasks/Kanban
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `filters` | `TaskFilters` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `filters` | `TaskFilters` | No | — | — |
 
 ## Methods
 

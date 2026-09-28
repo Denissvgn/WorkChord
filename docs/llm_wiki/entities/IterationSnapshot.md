@@ -11,12 +11,12 @@ _Auto-generated from `IterationSnapshot` in `frontend/src/services/snapshotServi
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `filename` | `string` | *required* | — |
-| `created_at` | `string \| null` | *required* | — |
-| `reason` | `string` | *required* | — |
-| `size_bytes` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `filename` | `string` | Yes | — | — |
+| `created_at` | `string \| null` | Yes | — | — |
+| `reason` | `string` | Yes | — | — |
+| `size_bytes` | `number` | Yes | — | — |
 
 ## Methods
 

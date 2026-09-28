@@ -1,7 +1,7 @@
 # AgentWorkService__terminal_work
 
 **Entry point:** `agent_work_service.AgentWorkService._terminal_work`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [schemas_agent](../modules/schemas_agent.md), [schemas_task_brief](../modules/schemas_task_brief.md), [task_brief_service](../modules/task_brief_service.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -18,9 +18,11 @@
 10. `agent_service.AgentConflictError`
 11. `task_service.TaskVersionConflictError`
 12. `time.utc_now`
-13. `agent_service.AgentConflictError`
-14. `schemas_agent.AgentWorkTerminalResponse`
-15. `commands.commit_or_flush`
+13. `task_brief_service.TaskBriefService`
+14. `schemas_task_brief.ProgressWrite`
+15. `agent_service.AgentConflictError`
+16. `schemas_agent.AgentWorkTerminalResponse`
+17. `commands.commit_or_flush`
 
 ## Touches
 
@@ -28,6 +30,8 @@
 - [agent_work_service](../modules/agent_work_service.md)
 - [commands](../modules/commands.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [schemas_task_brief](../modules/schemas_task_brief.md)
+- [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 

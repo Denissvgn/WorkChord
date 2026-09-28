@@ -11,14 +11,14 @@ _Auto-generated from `ProjectMilestoneUpdateRequest` in `frontend/src/types/proj
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `completed_at` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `status` | `ProjectMilestoneStatus` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | No | — | — |
+| `description` | `string \| null` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `completed_at` | `string \| null` | No | — | — |
+| `sort_order` | `number` | No | — | — |
+| `status` | `ProjectMilestoneStatus` | No | — | — |
 
 ## Methods
 

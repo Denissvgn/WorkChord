@@ -1,6 +1,6 @@
 # TriageClassificationSuggestion
 
-**Location:** `frontend/src/types/triage.ts:91`
+**Location:** `frontend/src/types/triage.ts:93`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,26 +11,26 @@ _Auto-generated from `TriageClassificationSuggestion` in `frontend/src/types/tri
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `triage_item_id` | `number` | *required* | — |
-| `suggested_type_label_slug` | `string \| null` | *required* | — |
-| `suggested_area_label_slug` | `string \| null` | *required* | — |
-| `suggested_priority` | `number \| null` | *required* | — |
-| `suggested_label_slugs` | `string[]` | *required* | — |
-| `unmatched_label_text` | `string[]` | *required* | — |
-| `suggested_assignee_id` | `number \| null` | *required* | — |
-| `suggested_assignee_hint` | `string \| null` | *required* | — |
-| `suggested_project_id` | `number \| null` | *required* | — |
-| `duplicate_candidates` | `Array<Record<string, unknown>>` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `rationale` | `string \| null` | *required* | — |
-| `language` | `string \| null` | *required* | — |
-| `provider` | `string \| null` | *required* | — |
-| `model` | `string \| null` | *required* | — |
-| `is_fallback` | `boolean` | *required* | — |
-| `created_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `triage_item_id` | `number` | Yes | — | — |
+| `suggested_type_label_slug` | `string \| null` | No | — | — |
+| `suggested_area_label_slug` | `string \| null` | No | — | — |
+| `suggested_priority` | `number \| null` | No | — | — |
+| `suggested_label_slugs` | `string[]` | Yes | — | — |
+| `unmatched_label_text` | `string[]` | Yes | — | — |
+| `suggested_assignee_id` | `number \| null` | No | — | — |
+| `suggested_assignee_hint` | `string \| null` | No | — | — |
+| `suggested_project_id` | `number \| null` | No | — | — |
+| `duplicate_candidates` | `Array<Record<string, unknown>>` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `rationale` | `string \| null` | No | — | — |
+| `language` | `string \| null` | No | — | — |
+| `provider` | `string \| null` | No | — | — |
+| `model` | `string \| null` | No | — | — |
+| `is_fallback` | `boolean` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
 
 ## Methods
 

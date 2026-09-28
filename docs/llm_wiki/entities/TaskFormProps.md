@@ -1,6 +1,6 @@
 # TaskFormProps
 
-**Location:** `frontend/src/components/tasks/TaskForm.tsx:47`
+**Location:** `frontend/src/components/tasks/TaskForm.tsx:49`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskForm](../modules/TaskForm.md)
@@ -11,22 +11,22 @@ _Auto-generated from `TaskFormProps` in `frontend/src/components/tasks/TaskForm.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `initialData` | `Task` | *required* | — |
-| `parentId` | `number \| null` | *required* | — |
-| `parentPriority` | `number` | *required* | — |
-| `parentProjectId` | `number \| null` | *required* | — |
-| `parentMilestoneId` | `number \| null` | *required* | — |
-| `onSuccess` | `() => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
-| `mode` | `'direct' \| 'sandbox'` | *required* | — |
-| `onSaveSandbox` | `(update: TaskUpdate) => void` | *required* | — |
-| `onDirtyChange` | `(dirty: boolean) => void` | *required* | — |
-| `onPendingChange` | `(pending: boolean) => void` | *required* | — |
-| `onDiscardReady` | `(handler: (() => void) \| null) => void` | *required* | — |
-| `confirmUnsavedOnCancel` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number \| null` | Yes | — | — |
+| `initialData` | `Task` | No | — | — |
+| `parentId` | `number \| null` | No | — | — |
+| `parentPriority` | `number` | No | — | — |
+| `parentProjectId` | `number \| null` | No | — | — |
+| `parentMilestoneId` | `number \| null` | No | — | — |
+| `onSuccess` | `() => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
+| `mode` | `'direct' \| 'sandbox'` | No | — | — |
+| `onSaveSandbox` | `(update: TaskUpdate) => void` | No | — | — |
+| `onDirtyChange` | `(dirty: boolean) => void` | No | — | — |
+| `onPendingChange` | `(pending: boolean) => void` | No | — | — |
+| `onDiscardReady` | `(handler: (() => void) \| null) => void` | No | — | — |
+| `confirmUnsavedOnCancel` | `boolean` | No | — | — |
 
 ## Methods
 

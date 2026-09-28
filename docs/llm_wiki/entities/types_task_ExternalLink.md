@@ -1,6 +1,6 @@
 # ExternalLink
 
-**Location:** `frontend/src/types/task.ts:47`
+**Location:** `frontend/src/types/task.ts:48`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,20 +11,20 @@ _Auto-generated from `ExternalLink` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number \| null` | *required* | — |
-| `entity_type` | `'task' \| 'project' \| 'release' \| string` | *required* | — |
-| `entity_id` | `number` | *required* | — |
-| `provider` | `ExternalLinkProvider` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `url` | `string \| null` | *required* | — |
-| `title` | `string \| null` | *required* | — |
-| `status` | `string \| null` | *required* | — |
-| `metadata_json` | `Record<string, unknown>` | *required* | — |
-| `is_legacy` | `boolean` | *required* | — |
-| `created_at` | `string \| null` | *required* | — |
-| `updated_at` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number \| null` | No | — | — |
+| `entity_type` | `'task' \| 'project' \| 'release' \| string` | Yes | — | — |
+| `entity_id` | `number` | Yes | — | — |
+| `provider` | `ExternalLinkProvider` | Yes | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `url` | `string \| null` | No | — | — |
+| `title` | `string \| null` | No | — | — |
+| `status` | `string \| null` | No | — | — |
+| `metadata_json` | `Record<string, unknown>` | Yes | — | — |
+| `is_legacy` | `boolean` | Yes | — | — |
+| `created_at` | `string \| null` | No | — | — |
+| `updated_at` | `string \| null` | No | — | — |
 
 ## Methods
 

@@ -22,7 +22,7 @@ _Auto-generated from `ExecutionWindow` in `backend/app/autonomy/contracts/charte
 | `logical_key` | `str` | `logical_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `starts_at` | `datetime` | `starts_at` | Yes | No | — | — | — | — |
 | `ends_at` | `datetime` | `ends_at` | Yes | No | — | — | — | — |
-| `permitted_stages` | `tuple[str, ...]` | `permitted_stages` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `permitted_stages` | `tuple[str, ...]` | `permitted_stages` | Yes | No | — | max_length=256; min_length=1 | — | — |
 
 ## Methods
 

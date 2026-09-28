@@ -11,9 +11,9 @@ _Auto-generated from `IterationListProps` in `frontend/src/components/iteration/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `onEdit` | `(iteration: Iteration) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `onEdit` | `(iteration: Iteration) => void` | No | — | — |
 
 ## Methods
 

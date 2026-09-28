@@ -11,10 +11,10 @@ _Auto-generated from `VacationRow` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `member` | `TeamMember` | *required* | — |
-| `vacation` | `Vacation` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `member` | `TeamMember` | Yes | — | — |
+| `vacation` | `Vacation` | Yes | — | — |
 
 ## Methods
 

@@ -26,6 +26,7 @@ End-to-end service coverage for authoritative Wave 3 routing.
 | `pytest` | `pytest` |
 | `sqlalchemy` | `select` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
+| `tests.support.transactions` | `reload_session_fixture` |
 | `types` | `SimpleNamespace` |
 
 ## Local dependency map
@@ -42,7 +43,8 @@ flowchart LR
     n6["backend/app/services/agent_routing_rollout.py"]
     n7["backend/app/services/agent_routing_service.py"]
     n8["backend/app/services/agent_work_service.py"]
-    n9["backend/tests/test_agent_routing_service.py"]
+    n9["backend/tests/support/transactions.py"]
+    n10["backend/tests/test_agent_routing_service.py"]
     n0 --> n1
     n1 --> n0
     n2 --> n4
@@ -60,15 +62,16 @@ flowchart LR
     n8 --> n3
     n8 --> n5
     n8 --> n6
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n7
-    n9 --> n8
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    n10 --> n8
+    n10 --> n9
     click n0 "../modules/models_agent.md"
     click n1 "../modules/team_member.md"
     click n2 "../modules/schemas_agent.md"
@@ -78,7 +81,8 @@ flowchart LR
     click n6 "../modules/agent_routing_rollout.md"
     click n7 "../modules/agent_routing_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/test_agent_routing_service.md"
+    click n9 "../modules/transactions.md"
+    click n10 "../modules/test_agent_routing_service.md"
 ```
 
 ### Internal neighbors
@@ -94,6 +98,7 @@ flowchart LR
 | Outbound | [agent_routing_rollout](../modules/agent_routing_rollout.md) |
 | Outbound | [agent_routing_service](../modules/agent_routing_service.md) |
 | Outbound | [agent_work_service](../modules/agent_work_service.md) |
+| Outbound | [transactions](../modules/transactions.md) |
 
 ### External packages
 

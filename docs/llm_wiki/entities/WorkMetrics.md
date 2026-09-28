@@ -11,21 +11,21 @@ _Auto-generated from `WorkMetrics` in `frontend/src/types/workMetrics.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `metric_contract_version` | `number` | *required* | — |
-| `total_tasks` | `number` | *required* | — |
-| `required_tasks` | `number` | *required* | — |
-| `optional_tasks` | `number` | *required* | — |
-| `structural_tasks` | `number` | *required* | — |
-| `implemented_tasks` | `number` | *required* | — |
-| `accepted_tasks` | `number` | *required* | — |
-| `overdue_tasks` | `number` | *required* | — |
-| `late_start_tasks` | `number` | *required* | — |
-| `iteration_overflow_tasks` | `number` | *required* | — |
-| `project_target_overflow_tasks` | `number` | *required* | — |
-| `acceptance_unknown_tasks` | `number` | *required* | — |
-| `accepted_percent` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `metric_contract_version` | `number` | No | — | — |
+| `total_tasks` | `number` | No | — | — |
+| `required_tasks` | `number` | No | — | — |
+| `optional_tasks` | `number` | No | — | — |
+| `structural_tasks` | `number` | No | — | — |
+| `implemented_tasks` | `number` | No | — | — |
+| `accepted_tasks` | `number` | No | — | — |
+| `overdue_tasks` | `number` | No | — | — |
+| `late_start_tasks` | `number` | No | — | — |
+| `iteration_overflow_tasks` | `number` | No | — | — |
+| `project_target_overflow_tasks` | `number` | No | — | — |
+| `acceptance_unknown_tasks` | `number` | No | — | — |
+| `accepted_percent` | `number` | No | — | — |
 
 ## Methods
 

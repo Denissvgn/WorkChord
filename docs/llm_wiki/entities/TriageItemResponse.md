@@ -1,6 +1,6 @@
 # TriageItemResponse
 
-**Location:** `backend/app/schemas/triage.py:79`
+**Location:** `backend/app/schemas/triage.py:105`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)
@@ -42,7 +42,9 @@ Schema for triage item response.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `brief` | `() -> Optional[TaskBrief]` | `@computed_field`, `@property` | — |
 
 ## Relationships
 
@@ -98,7 +100,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_triage](../modules/schemas_triage.md) | 0 | `assignee_hint`, `converted_task_id`, `created_at`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `id`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint` |
+| [schemas_triage](../modules/schemas_triage.md) | 1 | `assignee_hint`, `converted_task_id`, `created_at`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `id`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint` |
 
 ### Structure
 
@@ -124,4 +126,4 @@ flowchart LR
 | `decline_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `get_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

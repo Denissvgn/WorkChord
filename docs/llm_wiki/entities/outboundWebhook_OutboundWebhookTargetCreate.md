@@ -11,15 +11,15 @@ _Auto-generated from `OutboundWebhookTargetCreate` in `frontend/src/types/outbou
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `url` | `string` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `subscribed_events_json` | `string[]` | *required* | — |
-| `secret` | `string \| null` | *required* | — |
-| `headers_json` | `Record<string, string>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `url` | `string` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `subscribed_events_json` | `string[]` | Yes | — | — |
+| `secret` | `string \| null` | No | — | — |
+| `headers_json` | `Record<string, string>` | No | — | — |
 
 ## Methods
 

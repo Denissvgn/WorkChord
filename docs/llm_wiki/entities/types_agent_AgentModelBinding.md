@@ -11,24 +11,24 @@ _Auto-generated from `AgentModelBinding` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `model_catalog_id` | `number` | *required* | — |
-| `is_default` | `boolean` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `tool_tags` | `string[]` | *required* | — |
-| `data_policy_tags` | `string[]` | *required* | — |
-| `revision` | `number` | *required* | — |
-| `model_catalog_key` | `string \| null` | *required* | — |
-| `selectable` | `boolean` | *required* | — |
-| `model_catalog` | `AgentModelCatalogEntry \| null` | *required* | — |
-| `live_assignment_count` | `number` | *required* | — |
-| `historical_assignment_count` | `number` | *required* | — |
-| `run_reference_count` | `number` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `model_catalog_id` | `number` | Yes | — | — |
+| `is_default` | `boolean` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `tool_tags` | `string[]` | Yes | — | — |
+| `data_policy_tags` | `string[]` | Yes | — | — |
+| `revision` | `number` | Yes | — | — |
+| `model_catalog_key` | `string \| null` | Yes | — | — |
+| `selectable` | `boolean` | Yes | — | — |
+| `model_catalog` | `AgentModelCatalogEntry \| null` | Yes | — | — |
+| `live_assignment_count` | `number` | Yes | — | — |
+| `historical_assignment_count` | `number` | Yes | — | — |
+| `run_reference_count` | `number` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

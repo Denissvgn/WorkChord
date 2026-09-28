@@ -11,21 +11,21 @@ _Auto-generated from `AgentTeamStatus` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-status-v1'` | *required* | — |
-| `topology_key` | `string \| null` | *required* | — |
-| `topology_revision` | `number \| null` | *required* | — |
-| `manifest_digest` | `string \| null` | *required* | — |
-| `topology_state` | `'absent' \| 'configured' \| 'onboarding' \| 'runtime_ready' \| 'blocked' \| 'disabled'` | *required* | — |
-| `runtime_ready` | `boolean` | *required* | — |
-| `availability` | `'availability_unknown'` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
-| `steps` | `AgentTeamSetupStep[]` | *required* | — |
-| `members` | `AgentTeamMemberStatus[]` | *required* | — |
-| `pending_action_ids` | `string[]` | *required* | — |
-| `can_mutate` | `boolean` | *required* | — |
-| `next_action` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-status-v1'` | Yes | — | — |
+| `topology_key` | `string \| null` | Yes | — | — |
+| `topology_revision` | `number \| null` | Yes | — | — |
+| `manifest_digest` | `string \| null` | Yes | — | — |
+| `topology_state` | `'absent' \| 'configured' \| 'onboarding' \| 'runtime_ready' \| 'blocked' \| 'disabled'` | Yes | — | — |
+| `runtime_ready` | `boolean` | Yes | — | — |
+| `availability` | `'availability_unknown'` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
+| `steps` | `AgentTeamSetupStep[]` | Yes | — | — |
+| `members` | `AgentTeamMemberStatus[]` | Yes | — | — |
+| `pending_action_ids` | `string[]` | Yes | — | — |
+| `can_mutate` | `boolean` | Yes | — | — |
+| `next_action` | `string \| null` | Yes | — | — |
 
 ## Methods
 

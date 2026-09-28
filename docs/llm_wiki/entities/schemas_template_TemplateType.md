@@ -1,6 +1,6 @@
 # TemplateType
 
-**Location:** `backend/app/schemas/template.py:9`
+**Location:** `backend/app/schemas/template.py:16`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_template](../modules/schemas_template.md)

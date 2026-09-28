@@ -11,12 +11,12 @@ _Auto-generated from `ImportTeamModalProps` in `frontend/src/components/team/Imp
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `onSuccess` | `() => void` | *required* | — |
-| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `onSuccess` | `() => void` | No | — | — |
+| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | No | — | — |
 
 ## Methods
 

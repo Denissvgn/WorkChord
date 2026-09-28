@@ -11,14 +11,14 @@ _Auto-generated from `FrontendLabelService` in `frontend/src/services/labelServi
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `getGroups` | `(params?: LabelGroupListParams) => Promise<LabelGroup[]>` | *required* | — |
-| `getLabels` | `(params?: LabelListParams) => Promise<Label[]>` | *required* | — |
-| `createGroup` | `(data: LabelGroupCreate) => Promise<LabelGroup>` | *required* | — |
-| `updateGroup` | `(groupId: number, data: LabelGroupUpdate) => Promise<LabelGroup>` | *required* | — |
-| `createLabel` | `(data: LabelCreate) => Promise<Label>` | *required* | — |
-| `updateLabel` | `(labelId: number, data: LabelUpdate) => Promise<Label>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `getGroups` | `(params?: LabelGroupListParams) => Promise<LabelGroup[]>` | Yes | — | — |
+| `getLabels` | `(params?: LabelListParams) => Promise<Label[]>` | Yes | — | — |
+| `createGroup` | `(data: LabelGroupCreate) => Promise<LabelGroup>` | Yes | — | — |
+| `updateGroup` | `(groupId: number, data: LabelGroupUpdate) => Promise<LabelGroup>` | Yes | — | — |
+| `createLabel` | `(data: LabelCreate) => Promise<Label>` | Yes | — | — |
+| `updateLabel` | `(labelId: number, data: LabelUpdate) => Promise<Label>` | Yes | — | — |
 
 ## Methods
 

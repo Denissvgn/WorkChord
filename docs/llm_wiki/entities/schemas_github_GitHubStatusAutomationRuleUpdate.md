@@ -13,7 +13,7 @@ Update a GitHub status automation rule.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `enabled` | `Optional[bool]` | `enabled` | No | Yes | `None` | — | — | — |
 | `github_event_type` | `Optional[GitHubAutomationEventType]` | `github_event_type` | No | Yes | `None` | — | — | — |

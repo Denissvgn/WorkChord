@@ -11,14 +11,14 @@ _Auto-generated from `RequestSourceLink` in `frontend/src/types/requestSource.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `request_source_id` | `number` | *required* | — |
-| `triage_item_id` | `number \| null` | *required* | — |
-| `task_id` | `number \| null` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `request_source_id` | `number` | Yes | — | — |
+| `triage_item_id` | `number \| null` | No | — | — |
+| `task_id` | `number \| null` | No | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TriageItemCreate
 
-**Location:** `backend/app/schemas/triage.py:21`
+**Location:** `backend/app/schemas/triage.py:33`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)
@@ -19,13 +19,14 @@ Schema for creating a triage item.
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `validate_brief_metadata` | field | metadata_json | after | — |
 | `validate_duplicate_target` | model | — | after | — |
 
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `title` | `str` | `title` | Yes | No | — | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `source` | `Optional[str]` | `source` | No | Yes | `None` | max_length=100 | — | — |
 | `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | max_length=1000 | — | — |
@@ -46,6 +47,7 @@ Schema for creating a triage item.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `validate_brief_metadata` | `(value)` | `@field_validator('metadata_json')`, `@classmethod` | — |
 | `validate_duplicate_target` | `()` | `@model_validator(mode='after')` | Reject ambiguous duplicate targets. |
 
 ## Relationships
@@ -63,6 +65,7 @@ flowchart LR
     n7["GitHubWebhookService._create_or_get_triage_item (backend/app/services/github_webhook_service.py)"]
     n8["TriageService.create (backend/app/services/triage_service.py)"]
     n9["WebIntakeService.create_triage_item (backend/app/services/web_intake_service.py)"]
+    n10["test_triage_handoff_preserves_canonical_fields_and_criterion_ids (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -72,6 +75,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_triage.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
@@ -81,13 +85,14 @@ flowchart LR
     click n7 "../modules/github_webhook_service.md"
     click n8 "../modules/triage_service.md"
     click n9 "../modules/web_intake_service.md"
+    click n10 "../modules/test_task_domain.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_triage](../modules/schemas_triage.md) | 1 | `assignee_hint`, `converted_task_id`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint`, `project_hint_id`, `snoozed_until` |
+| [schemas_triage](../modules/schemas_triage.md) | 2 | `assignee_hint`, `converted_task_id`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint`, `project_hint_id`, `snoozed_until` |
 
 ### Structure
 
@@ -107,3 +112,4 @@ flowchart LR
 | `GitHubWebhookService._create_or_get_triage_item` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
 | `TriageService.create` | type_reference | [triage_service](../modules/triage_service.md) | — |
 | `WebIntakeService.create_triage_item` | call | [web_intake_service](../modules/web_intake_service.md) | 1 |
+| `test_triage_handoff_preserves_canonical_fields_and_criterion_ids` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

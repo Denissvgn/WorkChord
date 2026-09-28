@@ -11,19 +11,19 @@ _Auto-generated from `AgentModelCatalogUpdate` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_revision` | `number` | *required* | — |
-| `provider` | `string` | *required* | — |
-| `configured_model_alias` | `string` | *required* | — |
-| `reasoning_tier` | `ModelReasoningTier` | *required* | — |
-| `context_tier` | `ModelContextTier` | *required* | — |
-| `modality_tags` | `string[]` | *required* | — |
-| `cost_tier` | `ModelCostTier` | *required* | — |
-| `latency_tier` | `ModelLatencyTier` | *required* | — |
-| `enabled` | `true` | *required* | — |
-| `last_verified_at` | `string \| null` | *required* | — |
-| `reconcile_live_assignments` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_revision` | `number` | Yes | — | — |
+| `provider` | `string` | No | — | — |
+| `configured_model_alias` | `string` | No | — | — |
+| `reasoning_tier` | `ModelReasoningTier` | No | — | — |
+| `context_tier` | `ModelContextTier` | No | — | — |
+| `modality_tags` | `string[]` | No | — | — |
+| `cost_tier` | `ModelCostTier` | No | — | — |
+| `latency_tier` | `ModelLatencyTier` | No | — | — |
+| `enabled` | `true` | No | — | — |
+| `last_verified_at` | `string \| null` | No | — | — |
+| `reconcile_live_assignments` | `boolean` | No | — | — |
 
 ## Methods
 

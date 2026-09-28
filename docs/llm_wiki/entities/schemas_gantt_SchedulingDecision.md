@@ -15,7 +15,7 @@ Explanation for a scheduling decision.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
 | `task_title` | `str` | `task_title` | Yes | No | — | — | — | — |
-| `decision_type` | `Literal['scheduled', 'reordered', 'delayed', 'overdue']` | `decision_type` | Yes | No | — | — | — | — |
+| `decision_type` | `Literal['scheduled', 'reordered', 'delayed', 'overdue', 'unavailable']` | `decision_type` | Yes | No | — | — | — | — |
 | `reason` | `str` | `reason` | Yes | No | — | — | — | — |
 | `affected_tasks` | `list[int]` | `affected_tasks` | No | No | `[]` | — | — | — |
 
@@ -89,3 +89,5 @@ flowchart LR
 | `SchedulerService._schedule_leaf_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._update_composite_task_dates` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SchedulerService._update_composite_task_dates` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

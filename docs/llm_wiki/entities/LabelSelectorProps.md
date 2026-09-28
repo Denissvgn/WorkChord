@@ -11,14 +11,14 @@ _Auto-generated from `LabelSelectorProps` in `frontend/src/components/labels/Lab
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string[]` | *required* | — |
-| `onChange` | `(labels: string[]) => void` | *required* | — |
-| `label` | `string` | *required* | — |
-| `placeholder` | `string` | *required* | — |
-| `allowCustom` | `boolean` | *required* | — |
-| `className` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `value` | `string[]` | Yes | — | — |
+| `onChange` | `(labels: string[]) => void` | Yes | — | — |
+| `label` | `string` | No | — | — |
+| `placeholder` | `string` | No | — | — |
+| `allowCustom` | `boolean` | No | — | — |
+| `className` | `string` | No | — | — |
 
 ## Methods
 

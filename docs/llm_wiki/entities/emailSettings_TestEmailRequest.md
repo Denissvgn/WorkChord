@@ -11,9 +11,9 @@ _Auto-generated from `TestEmailRequest` in `frontend/src/types/emailSettings.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `recipient` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `recipient` | `string` | Yes | — | — |
 
 ## Methods
 

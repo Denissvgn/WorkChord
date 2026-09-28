@@ -125,9 +125,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_triage_assignee_recommendations | service.recommend_for_triage | 183 | `service.recommend_for_triage(triage_item_id, iteration_id=iteration_id)` |
-| get_triage_assignee_recommendations | _bad_request | 188 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(service.db)` |
+| get_triage_assignee_recommendations | service.recommend_for_triage | 184 | `service.recommend_for_triage(triage_item_id, iteration_id=iteration_id)` |
+| get_triage_assignee_recommendations | _bad_request | 189 | `_bad_request(service, e)` |
+| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,7 +145,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_triage_assignee_recommendations` | `service.recommend_for_triage` | 183 |
+| unresolved_call | `get_triage_assignee_recommendations` | `service.recommend_for_triage` | 184 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

@@ -19,8 +19,8 @@ Schema for updating a governed label group.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `key` | `Optional[str]` | `key` | No | Yes | `None` | min_length=1; max_length=100; pattern=unknown (GROUP_KEY_PATTERN) | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `key` | `Optional[str]` | `key` | No | Yes | `None` | max_length=100; min_length=1; pattern=unknown (GROUP_KEY_PATTERN) | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `color` | `Optional[str]` | `color` | No | Yes | `None` | pattern=unknown (HEX_COLOR_PATTERN) | — | — |
 | `is_active` | `Optional[bool]` | `is_active` | No | Yes | `None` | — | — | — |

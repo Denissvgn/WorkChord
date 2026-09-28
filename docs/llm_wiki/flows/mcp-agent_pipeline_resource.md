@@ -140,7 +140,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_pipeline_resource | _json_resource | 2185 | `_json_resource('planning:read', ...)` |
+| agent_pipeline_resource | _json_resource | 2215 | `_json_resource('planning:read', ...)` |
 | _json_resource | _tool_call | 330 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

@@ -29,19 +29,24 @@ flowchart LR
     n1["backend/app/services/upgrade_service.py"]
     n2["backend/app/utils/time.py"]
     n3["backend/tests/test_authority_migrations.py"]
+    n4["backend/tests/test_task_domain_migrations.py"]
     n3 --> n0
     n3 --> n1
     n3 --> n2
+    n4 --> n2
+    n4 --> n3
     click n0 "../modules/catalog.md"
     click n1 "../modules/upgrade_service.md"
     click n2 "../modules/time.md"
     click n3 "../modules/test_authority_migrations.md"
+    click n4 "../modules/test_task_domain_migrations.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [test_task_domain_migrations](../modules/test_task_domain_migrations.md) |
 | Outbound | [catalog](../modules/catalog.md) |
 | Outbound | [upgrade_service](../modules/upgrade_service.md) |
 | Outbound | [time](../modules/time.md) |

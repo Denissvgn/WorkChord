@@ -141,7 +141,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_routing_assessment_resource | _json_resource | 2145 | `_json_resource(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
+| task_routing_assessment_resource | _json_resource | 2175 | `_json_resource(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
 | _json_resource | _tool_call | 330 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

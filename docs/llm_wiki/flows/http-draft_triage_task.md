@@ -123,8 +123,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| draft_triage_task | service.draft_task | 231 | `service.draft_task(triage_item_id, data, llm_service=llm_service)` |
-| draft_triage_task | resolve_runtime_ui_language | 237 | `resolve_runtime_ui_language(service.db)` |
+| draft_triage_task | service.draft_task | 232 | `service.draft_task(triage_item_id, data, llm_service=llm_service)` |
+| draft_triage_task | resolve_runtime_ui_language | 238 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -143,7 +143,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `draft_triage_task` | `service.draft_task` | 231 |
+| unresolved_call | `draft_triage_task` | `service.draft_task` | 232 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

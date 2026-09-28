@@ -1,6 +1,6 @@
 # TaskFormalizeResponse
 
-**Location:** `frontend/src/types/task.ts:193`
+**Location:** `frontend/src/types/task.ts:214`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,14 +11,14 @@ _Auto-generated from `TaskFormalizeResponse` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `original_title` | `string` | *required* | — |
-| `formalized_title` | `string` | *required* | — |
-| `suggested_description` | `string` | *required* | — |
-| `language` | `'en' \| 'ru'` | *required* | — |
-| `suggested_effort_days` | `number \| null` | *required* | — |
-| `suggested_subtasks` | `SuggestedSubtask[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `original_title` | `string` | Yes | — | — |
+| `formalized_title` | `string` | Yes | — | — |
+| `suggested_description` | `string` | Yes | — | — |
+| `language` | `'en' \| 'ru'` | No | — | — |
+| `suggested_effort_days` | `number \| null` | No | — | — |
+| `suggested_subtasks` | `SuggestedSubtask[]` | Yes | — | — |
 
 ## Methods
 

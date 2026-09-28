@@ -1,6 +1,6 @@
 # CalendarCreate
 
-**Location:** `frontend/src/types/calendar.ts:10`
+**Location:** `frontend/src/types/calendar.ts:11`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
@@ -11,13 +11,13 @@ _Auto-generated from `CalendarCreate` in `frontend/src/types/calendar.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `year` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekend_days` | `number[]` | *required* | — |
-| `short_days` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `year` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekend_days` | `number[]` | Yes | — | — |
+| `short_days` | `string[]` | Yes | — | — |
 
 ## Methods
 

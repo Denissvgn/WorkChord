@@ -11,13 +11,13 @@ _Auto-generated from `TaskBulkOperationsPanelProps` in `frontend/src/components/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `selectedTasks` | `Task[]` | *required* | — |
-| `selectedTaskIds` | `number[]` | *required* | — |
-| `onClearSelection` | `() => void` | *required* | — |
-| `onApplied` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `selectedTasks` | `Task[]` | Yes | — | — |
+| `selectedTaskIds` | `number[]` | Yes | — | — |
+| `onClearSelection` | `() => void` | Yes | — | — |
+| `onApplied` | `() => void` | Yes | — | — |
 
 ## Methods
 

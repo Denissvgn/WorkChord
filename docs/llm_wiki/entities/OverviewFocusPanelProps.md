@@ -11,14 +11,14 @@ _Auto-generated from `OverviewFocusPanelProps` in `frontend/src/pages/OverviewPa
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `attentionItems` | `AttentionItem[]` | *required* | — |
-| `planReady` | `{ done: number; total: number; pct: number }` | *required* | — |
-| `planNextId` | `string` | *required* | — |
-| `remainingExceptionCount` | `number` | *required* | — |
-| `iterationDetailsOpen` | `boolean` | *required* | — |
-| `onRevealIterationDetails` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `attentionItems` | `AttentionItem[]` | Yes | — | — |
+| `planReady` | `{ done: number; total: number; pct: number }` | Yes | — | — |
+| `planNextId` | `string` | Yes | — | — |
+| `remainingExceptionCount` | `number` | Yes | — | — |
+| `iterationDetailsOpen` | `boolean` | Yes | — | — |
+| `onRevealIterationDetails` | `() => void` | Yes | — | — |
 
 ## Methods
 

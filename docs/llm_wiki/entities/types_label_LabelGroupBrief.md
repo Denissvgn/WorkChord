@@ -11,13 +11,13 @@ _Auto-generated from `LabelGroupBrief` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `key` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `key` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `color` | `string` | Yes | — | — |
+| `is_active` | `boolean` | Yes | — | — |
 
 ## Methods
 

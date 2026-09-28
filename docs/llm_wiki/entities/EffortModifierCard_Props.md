@@ -11,11 +11,11 @@ _Auto-generated from `Props` in `frontend/src/components/settings/EffortModifier
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `modifier` | `EffortModifier` | *required* | — |
-| `onChange` | `(modifier: EffortModifier) => void` | *required* | — |
-| `onRemove` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `modifier` | `EffortModifier` | Yes | — | — |
+| `onChange` | `(modifier: EffortModifier) => void` | Yes | — | — |
+| `onRemove` | `() => void` | Yes | — | — |
 
 ## Methods
 

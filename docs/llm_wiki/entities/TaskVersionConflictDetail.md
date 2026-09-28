@@ -1,6 +1,6 @@
 # TaskVersionConflictDetail
 
-**Location:** `frontend/src/types/task.ts:181`
+**Location:** `frontend/src/types/task.ts:202`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,12 +11,12 @@ _Auto-generated from `TaskVersionConflictDetail` in `frontend/src/types/task.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `code` | `'task_version_conflict'` | *required* | — |
-| `message` | `string` | *required* | — |
-| `expected_version` | `number` | *required* | — |
-| `current_task` | `Pick<Task, 'id' \| 'version' \| 'title' \| 'status' \| 'updated_at'>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `code` | `'task_version_conflict'` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
+| `expected_version` | `number` | Yes | — | — |
+| `current_task` | `Pick<Task, 'id' \| 'version' \| 'title' \| 'status' \| 'updated_at'>` | Yes | — | — |
 
 ## Methods
 

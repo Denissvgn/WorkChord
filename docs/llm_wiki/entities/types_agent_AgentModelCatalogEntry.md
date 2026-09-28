@@ -11,22 +11,22 @@ _Auto-generated from `AgentModelCatalogEntry` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `key` | `string` | *required* | — |
-| `provider` | `string` | *required* | — |
-| `configured_model_alias` | `string` | *required* | — |
-| `reasoning_tier` | `ModelReasoningTier` | *required* | — |
-| `context_tier` | `ModelContextTier` | *required* | — |
-| `modality_tags` | `string[]` | *required* | — |
-| `cost_tier` | `ModelCostTier` | *required* | — |
-| `latency_tier` | `ModelLatencyTier` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `revision` | `number` | *required* | — |
-| `last_verified_at` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `key` | `string` | Yes | — | — |
+| `provider` | `string` | Yes | — | — |
+| `configured_model_alias` | `string` | Yes | — | — |
+| `reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `context_tier` | `ModelContextTier` | Yes | — | — |
+| `modality_tags` | `string[]` | Yes | — | — |
+| `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `latency_tier` | `ModelLatencyTier` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `revision` | `number` | Yes | — | — |
+| `last_verified_at` | `string \| null` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

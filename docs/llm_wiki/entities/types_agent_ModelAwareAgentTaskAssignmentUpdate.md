@@ -11,20 +11,20 @@ _Auto-generated from `ModelAwareAgentTaskAssignmentUpdate` in `frontend/src/type
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_queue_revision` | `number` | *required* | — |
-| `assessment_id` | `number` | *required* | — |
-| `model_binding_id` | `number` | *required* | — |
-| `model_binding_revision` | `number` | *required* | — |
-| `routing_preview_id` | `string` | *required* | — |
-| `routing_preview_digest` | `string` | *required* | — |
-| `actor_id` | `number \| null` | *required* | — |
-| `reviewer_profile_id` | `number \| null` | *required* | — |
-| `queue_rank` | `number \| null` | *required* | — |
-| `not_before` | `string \| null` | *required* | — |
-| `state` | `'queued' \| 'cancelled' \| null` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_queue_revision` | `number` | Yes | — | — |
+| `assessment_id` | `number` | Yes | — | — |
+| `model_binding_id` | `number` | Yes | — | — |
+| `model_binding_revision` | `number` | Yes | — | — |
+| `routing_preview_id` | `string` | Yes | — | — |
+| `routing_preview_digest` | `string` | Yes | — | — |
+| `actor_id` | `number \| null` | No | — | — |
+| `reviewer_profile_id` | `number \| null` | No | — | — |
+| `queue_rank` | `number \| null` | No | — | — |
+| `not_before` | `string \| null` | No | — | — |
+| `state` | `'queued' \| 'cancelled' \| null` | No | — | — |
+| `reason` | `string \| null` | No | — | — |
 
 ## Methods
 

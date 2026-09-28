@@ -1,6 +1,6 @@
 # WorkTemplateUpdate
 
-**Location:** `backend/app/schemas/template.py:34`
+**Location:** `backend/app/schemas/template.py:47`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_template](../modules/schemas_template.md)
@@ -15,14 +15,20 @@ Schema for updating a reusable work template.
 |---------|-------|--------|
 | `extra` | `'forbid'` | model_config |
 
+## Validators
+
+| Method | Scope | Fields | Mode | Options |
+|--------|-------|--------|------|---------|
+| `validate_brief_payload` | field | default_payload | after | — |
+
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `template_type` | `Optional[TemplateType]` | `template_type` | No | Yes | `None` | — | — | — |
-| `default_title` | `Optional[str]` | `default_title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
+| `default_title` | `Optional[str]` | `default_title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
 | `default_description` | `Optional[str]` | `default_description` | No | Yes | `None` | — | — | — |
 | `default_priority` | `Optional[int]` | `default_priority` | No | Yes | `None` | ge=1; le=10 | — | — |
 | `default_effort_days` | `Optional[float]` | `default_effort_days` | No | Yes | `None` | ge=0.1 | — | — |
@@ -34,7 +40,9 @@ Schema for updating a reusable work template.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `validate_brief_payload` | `(value)` | `@field_validator('default_payload')`, `@classmethod` | — |
 
 ## Relationships
 
@@ -60,7 +68,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_template](../modules/schemas_template.md) | 0 | `default_checklist`, `default_description`, `default_effort_days`, `default_labels`, `default_payload`, `default_priority`, `default_title`, `description`, `is_active`, `name`, `sort_order`, `template_type` |
+| [schemas_template](../modules/schemas_template.md) | 1 | `default_checklist`, `default_description`, `default_effort_days`, `default_labels`, `default_payload`, `default_priority`, `default_title`, `description`, `is_active`, `name`, `sort_order`, `template_type` |
 
 ### Structure
 

@@ -11,10 +11,10 @@ _Auto-generated from `DndContextMockProps` in `frontend/src/components/tasks/Kan
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | *required* | — |
-| `onDragEnd` | `(event: unknown) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `children` | `ReactNode` | Yes | — | — |
+| `onDragEnd` | `(event: unknown) => void` | No | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `PlanShareTeamMember` in `frontend/src/services/planShareSe
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `position` | `string` | *required* | — |
-| `availability_percent` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `position` | `string` | Yes | — | — |
+| `availability_percent` | `number` | Yes | — | — |
 
 ## Methods
 

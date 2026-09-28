@@ -1,6 +1,6 @@
 # TaskTimelineResponse
 
-**Location:** `frontend/src/types/task.ts:365`
+**Location:** `frontend/src/types/task.ts:387`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TaskTimelineResponse` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `items` | `TaskTimelineItem[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `items` | `TaskTimelineItem[]` | Yes | — | — |
 
 ## Methods
 

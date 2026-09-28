@@ -20,6 +20,10 @@ _Auto-generated from `AgentWorkPackageResponse` in `backend/app/schemas/autonomy
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `task_context_version` | `int \| None` | `task_context_version` | No | Yes | `None` | — | — | — |
+| `task_brief_revision` | `int \| None` | `task_brief_revision` | No | Yes | `None` | — | — | — |
+| `task_artifact_revision` | `int \| None` | `task_artifact_revision` | No | Yes | `None` | — | — | — |
+| `task_brief_digest` | `str \| None` | `task_brief_digest` | No | Yes | `None` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `package_key` | `str` | `package_key` | Yes | No | — | — | — | — |
 | `package_version` | `int` | `package_version` | Yes | No | — | — | — | — |

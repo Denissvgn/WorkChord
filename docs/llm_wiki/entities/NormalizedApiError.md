@@ -11,14 +11,14 @@ _Auto-generated from `NormalizedApiError` in `frontend/src/utils/apiError.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `kind` | `ApiErrorKind` | *required* | — |
-| `status` | `number` | *required* | — |
-| `code` | `string` | *required* | — |
-| `message` | `string` | *required* | — |
-| `fieldErrors` | `ApiFieldError[]` | *required* | — |
-| `details` | `unknown` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `kind` | `ApiErrorKind` | Yes | — | — |
+| `status` | `number` | No | — | — |
+| `code` | `string` | No | — | — |
+| `message` | `string` | Yes | — | — |
+| `fieldErrors` | `ApiFieldError[]` | Yes | — | — |
+| `details` | `unknown` | No | — | — |
 
 ## Methods
 

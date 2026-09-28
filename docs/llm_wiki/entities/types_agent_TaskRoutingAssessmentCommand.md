@@ -11,17 +11,17 @@ _Auto-generated from `TaskRoutingAssessmentCommand` in `frontend/src/types/agent
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_task_version` | `number` | *required* | — |
-| `band` | `TaskDifficultyBand` | *required* | — |
-| `axes` | `TaskDifficultyAxes` | *required* | — |
-| `required_skill_levels` | `Record<string, TaskSkillLevel>` | *required* | — |
-| `required_model` | `RequiredModelEnvelope` | *required* | — |
-| `review_mode` | `TaskReviewMode` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `reason_codes` | `AssessmentReasonCode[]` | *required* | — |
-| `rationale` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_task_version` | `number` | Yes | — | — |
+| `band` | `TaskDifficultyBand` | Yes | — | — |
+| `axes` | `TaskDifficultyAxes` | Yes | — | — |
+| `required_skill_levels` | `Record<string, TaskSkillLevel>` | Yes | — | — |
+| `required_model` | `RequiredModelEnvelope` | Yes | — | — |
+| `review_mode` | `TaskReviewMode` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `reason_codes` | `AssessmentReasonCode[]` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
 
 ## Methods
 

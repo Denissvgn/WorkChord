@@ -11,46 +11,46 @@ _Auto-generated from `AgentRoutingCandidate` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actor_id` | `number` | *required* | — |
-| `actor_revision` | `number` | *required* | — |
-| `actor_queue_revision` | `number` | *required* | — |
-| `profile_id` | `number` | *required* | — |
-| `profile_revision` | `string` | *required* | — |
-| `capacity_owner_id` | `number \| null` | *required* | — |
-| `capacity_owner_profile_id` | `number \| null` | *required* | — |
-| `model_binding_id` | `number` | *required* | — |
-| `model_binding_revision` | `number` | *required* | — |
-| `model_catalog_id` | `number` | *required* | — |
-| `model_catalog_key` | `string` | *required* | — |
-| `model_catalog_revision` | `number` | *required* | — |
-| `configured_model_alias` | `string` | *required* | — |
-| `eligible` | `true` | *required* | — |
-| `hard_blocker_codes` | `RoutingBlockerCode[]` | *required* | — |
-| `matched_skill_levels` | `Record<string, TaskSkillLevel>` | *required* | — |
-| `missing_skill_keys` | `string[]` | *required* | — |
-| `blocking_weakness_keys` | `string[]` | *required* | — |
-| `reasoning_tier` | `ModelReasoningTier` | *required* | — |
-| `context_tier` | `ModelContextTier` | *required* | — |
-| `modality_tags` | `string[]` | *required* | — |
-| `tool_tags` | `string[]` | *required* | — |
-| `data_policy_tags` | `string[]` | *required* | — |
-| `cost_tier` | `ModelCostTier` | *required* | — |
-| `latency_tier` | `ModelLatencyTier` | *required* | — |
-| `available_capacity_days` | `number` | *required* | — |
-| `committed_effort_days` | `number` | *required* | — |
-| `workload_ratio` | `number` | *required* | — |
-| `vacation_conflict` | `false` | *required* | — |
-| `queued_assignments` | `number` | *required* | — |
-| `accepted_assignments` | `number` | *required* | — |
-| `running_runs` | `number` | *required* | — |
-| `schedule_delay_days` | `number` | *required* | — |
-| `schedule_eligible` | `true` | *required* | — |
-| `adequacy_class` | `number` | *required* | — |
-| `rank` | `number` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `rationale` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actor_id` | `number` | Yes | — | — |
+| `actor_revision` | `number` | Yes | — | — |
+| `actor_queue_revision` | `number` | Yes | — | — |
+| `profile_id` | `number` | Yes | — | — |
+| `profile_revision` | `string` | Yes | — | — |
+| `capacity_owner_id` | `number \| null` | Yes | — | — |
+| `capacity_owner_profile_id` | `number \| null` | Yes | — | — |
+| `model_binding_id` | `number` | Yes | — | — |
+| `model_binding_revision` | `number` | Yes | — | — |
+| `model_catalog_id` | `number` | Yes | — | — |
+| `model_catalog_key` | `string` | Yes | — | — |
+| `model_catalog_revision` | `number` | Yes | — | — |
+| `configured_model_alias` | `string` | Yes | — | — |
+| `eligible` | `true` | Yes | — | — |
+| `hard_blocker_codes` | `RoutingBlockerCode[]` | Yes | — | — |
+| `matched_skill_levels` | `Record<string, TaskSkillLevel>` | Yes | — | — |
+| `missing_skill_keys` | `string[]` | Yes | — | — |
+| `blocking_weakness_keys` | `string[]` | Yes | — | — |
+| `reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `context_tier` | `ModelContextTier` | Yes | — | — |
+| `modality_tags` | `string[]` | Yes | — | — |
+| `tool_tags` | `string[]` | Yes | — | — |
+| `data_policy_tags` | `string[]` | Yes | — | — |
+| `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `latency_tier` | `ModelLatencyTier` | Yes | — | — |
+| `available_capacity_days` | `number` | Yes | — | — |
+| `committed_effort_days` | `number` | Yes | — | — |
+| `workload_ratio` | `number` | Yes | — | — |
+| `vacation_conflict` | `false` | Yes | — | — |
+| `queued_assignments` | `number` | Yes | — | — |
+| `accepted_assignments` | `number` | Yes | — | — |
+| `running_runs` | `number` | Yes | — | — |
+| `schedule_delay_days` | `number` | Yes | — | — |
+| `schedule_eligible` | `true` | Yes | — | — |
+| `adequacy_class` | `number` | Yes | — | — |
+| `rank` | `number` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
 
 ## Methods
 

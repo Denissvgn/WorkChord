@@ -11,17 +11,17 @@ _Auto-generated from `MasterStepDef` in `frontend/src/features/planningMasters/m
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `desc` | `string` | *required* | — |
-| `why` | `string` | *required* | — |
-| `primary` | `string` | *required* | — |
-| `secondary` | `string` | *required* | — |
-| `expert` | `string` | *required* | — |
-| `route` | `string` | *required* | — |
-| `secondaryRoute` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `string` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `desc` | `string` | Yes | — | — |
+| `why` | `string` | Yes | — | — |
+| `primary` | `string` | Yes | — | — |
+| `secondary` | `string` | Yes | — | — |
+| `expert` | `string` | Yes | — | — |
+| `route` | `string` | Yes | — | — |
+| `secondaryRoute` | `string` | No | — | — |
 
 ## Methods
 

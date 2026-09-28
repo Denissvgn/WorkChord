@@ -29,9 +29,12 @@ the same audited command and read-model paths.
 | `app.schemas.request_source` | `RequestSourceLinkCreateRequest`, `RequestSourceLinkWithSourceResponse`, `RequestSourceResponse` |
 | `app.schemas.saved_view` | `SavedViewType` |
 | `app.schemas.system_settings` | `SystemSettingsResponse` |
+| `app.schemas.task` | `TaskCreate` |
+| `app.schemas.task_brief` | `BriefWrite` |
+| `app.schemas.task_domain` | `TaskActionRequest` |
 | `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
-| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest` |
+| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
@@ -50,7 +53,10 @@ the same audited command and read-model paths.
 | `app.services.request_source_service` | `RequestSourceConflictError`, `RequestSourceService` |
 | `app.services.saved_view_service` | `SavedViewService` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
+| `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_context_revision_service` | `TaskContextVersionConflictError`, `lock_task_context` |
+| `app.services.task_detail_service` | `TaskDetailService` |
+| `app.services.task_domain_service` | `domain_capabilities`, `TaskDomainService`, `TaskDomainService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `app.services.template_service` | `TemplateService` |
@@ -87,8 +93,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
-| Outbound | `backend` (42) |
+| Inbound | `backend` (9) |
+| Outbound | `backend` (48) |
 
 ### External packages
 
@@ -96,7 +102,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 50 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 57 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -240,3 +246,9 @@ flowchart LR
 | `recommend_assignees_for_task` | *(async)* `(db: AsyncSession, task_id: int) -> list[dict[str, Any]] \| None` | — | MCP handler: recommend assignees for a task. |
 | `recommend_assignees_for_triage` | *(async)* `(db: AsyncSession, triage_item_id: int, iteration_id: Optional[int] = None) -> list[dict[str, Any]] \| None` | — | MCP handler: recommend assignees for triage intake. |
 | `system_runtime_config_status` | *(async)* `(db: AsyncSession) -> dict[str, Any]` | — | MCP handler: return redacted runtime config status. |
+| `get_task_actions` | *(async)* `(db, actor, task_id)` | — | Return the shared principal-specific command availability. |
+| `get_task_detail` | *(async)* `(db, actor, task_id, limit = 50)` | — | Return bounded UI context, explicitly separate from execution context. |
+| `apply_task_command` | *(async)* `(db, actor, task_id, payload)` | — | Apply the same guarded domain command exposed over REST. |
+| `create_project_backlog_task` | *(async)* `(db, actor, project_id, payload)` | — | Capture durable project work without scheduling or capacity fabrication. |
+| `write_task_brief` | *(async)* `(db, actor, task_id, payload)` | — | Write canonical fields using the shared task context version. |
+| `convert_triage_to_backlog` | *(async)* `(db, actor, triage_item_id, payload)` | — | Use an explicit project backlog destination while preserving legacy conversion. |

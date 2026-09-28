@@ -11,15 +11,15 @@ _Auto-generated from `ConfirmationRequest` in `frontend/src/components/common/us
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `ReactNode` | *required* | — |
-| `description` | `ReactNode` | *required* | — |
-| `confirmLabel` | `string` | *required* | — |
-| `cancelLabel` | `string` | *required* | — |
-| `closeLabel` | `string` | *required* | — |
-| `onConfirm` | `() => Promise<unknown> \| unknown` | *required* | — |
-| `tone` | `ConfirmDialogTone` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `ReactNode` | Yes | — | — |
+| `description` | `ReactNode` | Yes | — | — |
+| `confirmLabel` | `string` | Yes | — | — |
+| `cancelLabel` | `string` | Yes | — | — |
+| `closeLabel` | `string` | Yes | — | — |
+| `onConfirm` | `() => Promise<unknown> \| unknown` | Yes | — | — |
+| `tone` | `ConfirmDialogTone` | No | — | — |
 
 ## Methods
 

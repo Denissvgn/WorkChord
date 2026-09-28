@@ -11,13 +11,13 @@ _Auto-generated from `SystemSettings` in `frontend/src/types/systemSettings.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `app` | `AppRuntimeSettings` | *required* | — |
-| `llm` | `LLMRuntimeSettings` | *required* | — |
-| `github` | `GitHubRuntimeSettings` | *required* | — |
-| `web_intake` | `WebIntakeRuntimeSettings` | *required* | — |
-| `restart_required` | `RestartRequiredSetting[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `app` | `AppRuntimeSettings` | Yes | — | — |
+| `llm` | `LLMRuntimeSettings` | Yes | — | — |
+| `github` | `GitHubRuntimeSettings` | Yes | — | — |
+| `web_intake` | `WebIntakeRuntimeSettings` | Yes | — | — |
+| `restart_required` | `RestartRequiredSetting[]` | Yes | — | — |
 
 ## Methods
 

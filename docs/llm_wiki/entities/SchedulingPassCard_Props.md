@@ -11,12 +11,12 @@ _Auto-generated from `Props` in `frontend/src/components/settings/SchedulingPass
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `pass` | `SchedulingPass` | *required* | — |
-| `sortableId` | `string` | *required* | — |
-| `onChange` | `(pass: SchedulingPass) => void` | *required* | — |
-| `onRemove` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `pass` | `SchedulingPass` | Yes | — | — |
+| `sortableId` | `string` | Yes | — | — |
+| `onChange` | `(pass: SchedulingPass) => void` | Yes | — | — |
+| `onRemove` | `() => void` | Yes | — | — |
 
 ## Methods
 

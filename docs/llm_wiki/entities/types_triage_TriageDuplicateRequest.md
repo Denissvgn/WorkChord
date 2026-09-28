@@ -1,6 +1,6 @@
 # TriageDuplicateRequest
 
-**Location:** `frontend/src/types/triage.ts:62`
+**Location:** `frontend/src/types/triage.ts:64`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,12 +11,12 @@ _Auto-generated from `TriageDuplicateRequest` in `frontend/src/types/triage.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `duplicate_of_id` | `number \| null` | *required* | — |
-| `duplicate_task_id` | `number \| null` | *required* | — |
-| `link_request_to_duplicate_task` | `boolean` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `duplicate_of_id` | `number \| null` | No | — | — |
+| `duplicate_task_id` | `number \| null` | No | — | — |
+| `link_request_to_duplicate_task` | `boolean` | No | — | — |
+| `reason` | `string \| null` | No | — | — |
 
 ## Methods
 

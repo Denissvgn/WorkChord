@@ -11,14 +11,14 @@ _Auto-generated from `TaskEditModalProps` in `frontend/src/components/gantt/Task
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `GanttTask \| null` | *required* | — |
-| `iterationId` | `number` | *required* | — |
-| `isOpen` | `boolean` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `sandboxMode` | `boolean` | *required* | — |
-| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `GanttTask \| null` | Yes | — | — |
+| `iterationId` | `number` | Yes | — | — |
+| `isOpen` | `boolean` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `sandboxMode` | `boolean` | No | — | — |
+| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | No | — | — |
 
 ## Methods
 

@@ -11,14 +11,14 @@ _Auto-generated from `KanbanColumnProps` in `frontend/src/components/tasks/Kanba
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `tasks` | `Task[]` | *required* | — |
-| `count` | `number` | *required* | — |
-| `tone` | `PillTone` | *required* | — |
-| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `string` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `tasks` | `Task[]` | Yes | — | — |
+| `count` | `number` | Yes | — | — |
+| `tone` | `PillTone` | Yes | — | — |
+| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | No | — | — |
 
 ## Methods
 

@@ -11,14 +11,15 @@ _Auto-generated from `Calendar` in `frontend/src/types/calendar.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `year` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekend_days` | `number[]` | *required* | — |
-| `short_days` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `nominal_day_hours` | `number` | No | — | — |
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `year` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekend_days` | `number[]` | Yes | — | — |
+| `short_days` | `string[]` | Yes | — | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `id`, `name`, `short_days`, `weekend_days`, `year` |
+| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `id`, `name`, `nominal_day_hours`, `short_days`, `weekend_days`, `year` |
 
 ### References
 

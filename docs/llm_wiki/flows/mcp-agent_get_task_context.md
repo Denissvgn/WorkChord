@@ -139,7 +139,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_task_context | _tool_call | 963 | `_tool_call('tasks:read', ...)` |
+| agent_get_task_context | _tool_call | 993 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |

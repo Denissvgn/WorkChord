@@ -11,43 +11,43 @@ _Auto-generated from `ProjectSummary` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `status` | `ProjectStatus` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner` | `ProjectOwner \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `owner_profile` | `ProjectProfileOwner \| null` | *required* | — |
-| `initiative_id` | `number \| null` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `completed_at` | `string \| null` | *required* | — |
-| `total_tasks` | `number` | *required* | — |
-| `completed_tasks` | `number` | *required* | — |
-| `completion_percent` | `number` | *required* | — |
-| `active_tasks` | `number` | *required* | — |
-| `blocked_tasks` | `number` | *required* | — |
-| `overdue_tasks` | `number` | *required* | — |
-| `target_date_risk` | `ProjectTargetDateRisk` | *required* | — |
-| `target_date_risk_reason` | `string \| null` | *required* | — |
-| `target_date_slip_days` | `number` | *required* | — |
-| `days_until_target` | `number \| null` | *required* | — |
-| `status_counts` | `Record<string, number>` | *required* | — |
-| `total_effort_days` | `number` | *required* | — |
-| `remaining_effort_days` | `number` | *required* | — |
-| `milestone_groups` | `ProjectMilestoneTaskGroup[]` | *required* | — |
-| `request_count` | `number` | *required* | — |
-| `task_start_date` | `string \| null` | *required* | — |
-| `task_end_date` | `string \| null` | *required* | — |
-| `latest_update` | `ProjectUpdateEntry \| null` | *required* | — |
-| `latest_update_at` | `string \| null` | *required* | — |
-| `days_since_latest_update` | `number \| null` | *required* | — |
-| `update_freshness` | `ProjectUpdateFreshness` | *required* | — |
-| `is_update_stale` | `boolean` | *required* | — |
-| `stale_update_threshold_days` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `status` | `ProjectStatus` | Yes | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `owner_id` | `number \| null` | Yes | — | — |
+| `owner` | `ProjectOwner \| null` | Yes | — | — |
+| `owner_profile_id` | `number \| null` | Yes | — | — |
+| `owner_profile` | `ProjectProfileOwner \| null` | Yes | — | — |
+| `initiative_id` | `number \| null` | No | — | — |
+| `start_date` | `string \| null` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `completed_at` | `string \| null` | No | — | — |
+| `total_tasks` | `number` | Yes | — | — |
+| `completed_tasks` | `number` | Yes | — | — |
+| `completion_percent` | `number` | Yes | — | — |
+| `active_tasks` | `number` | Yes | — | — |
+| `blocked_tasks` | `number` | Yes | — | — |
+| `overdue_tasks` | `number` | Yes | — | — |
+| `target_date_risk` | `ProjectTargetDateRisk` | Yes | — | — |
+| `target_date_risk_reason` | `string \| null` | No | — | — |
+| `target_date_slip_days` | `number` | Yes | — | — |
+| `days_until_target` | `number \| null` | No | — | — |
+| `status_counts` | `Record<string, number>` | Yes | — | — |
+| `total_effort_days` | `number` | Yes | — | — |
+| `remaining_effort_days` | `number` | Yes | — | — |
+| `milestone_groups` | `ProjectMilestoneTaskGroup[]` | Yes | — | — |
+| `request_count` | `number` | Yes | — | — |
+| `task_start_date` | `string \| null` | No | — | — |
+| `task_end_date` | `string \| null` | No | — | — |
+| `latest_update` | `ProjectUpdateEntry \| null` | No | — | — |
+| `latest_update_at` | `string \| null` | No | — | — |
+| `days_since_latest_update` | `number \| null` | No | — | — |
+| `update_freshness` | `ProjectUpdateFreshness` | Yes | — | — |
+| `is_update_stale` | `boolean` | Yes | — | — |
+| `stale_update_threshold_days` | `number` | Yes | — | — |
 
 ## Methods
 

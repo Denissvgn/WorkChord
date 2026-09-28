@@ -11,25 +11,25 @@ _Auto-generated from `SavedView` in `frontend/src/types/savedView.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `seed_key` | `string \| null` | *required* | — |
-| `view_type` | `SavedViewType` | *required* | — |
-| `scope` | `SavedViewScope` | *required* | — |
-| `filters_json` | `Record<string, unknown>` | *required* | — |
-| `sort_json` | `Record<string, unknown>` | *required* | — |
-| `columns_json` | `Record<string, unknown>` | *required* | — |
-| `created_by_session_id` | `number \| null` | *required* | — |
-| `schema_version` | `number` | *required* | — |
-| `metric_migration_note` | `string \| null` | *required* | — |
-| `owner_principal_id` | `number \| null` | *required* | — |
-| `is_valid` | `boolean` | *required* | — |
-| `invalid_reason` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `seed_key` | `string \| null` | No | — | — |
+| `view_type` | `SavedViewType` | Yes | — | — |
+| `scope` | `SavedViewScope` | Yes | — | — |
+| `filters_json` | `Record<string, unknown>` | Yes | — | — |
+| `sort_json` | `Record<string, unknown>` | Yes | — | — |
+| `columns_json` | `Record<string, unknown>` | Yes | — | — |
+| `created_by_session_id` | `number \| null` | No | — | — |
+| `schema_version` | `number` | Yes | — | — |
+| `metric_migration_note` | `string \| null` | No | — | — |
+| `owner_principal_id` | `number \| null` | No | — | — |
+| `is_valid` | `boolean` | Yes | — | — |
+| `invalid_reason` | `string \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

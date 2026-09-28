@@ -7,7 +7,7 @@
 
 ## Description
 
-Schema for iteration response.
+_Auto-generated from `IterationResponse` in `backend/app/schemas/iteration.py`._
 
 ## Model Configuration
 
@@ -19,6 +19,7 @@ Schema for iteration response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `nominal_day_hours` | `float` | `nominal_day_hours` | No | No | `8` | — | — | — |
 | `revision` | `int` | `revision` | No | No | `1` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
@@ -76,7 +77,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
 
 ### Structure
 

@@ -11,10 +11,10 @@ _Auto-generated from `TemplateListParams` in `frontend/src/types/template.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `template_type` | `TemplateType` | *required* | — |
-| `include_inactive` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `template_type` | `TemplateType` | No | — | — |
+| `include_inactive` | `boolean` | No | — | — |
 
 ## Methods
 

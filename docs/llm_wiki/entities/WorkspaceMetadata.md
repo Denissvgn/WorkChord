@@ -11,16 +11,16 @@ _Auto-generated from `WorkspaceMetadata` in `frontend/src/navigation/workspaces.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `WorkspaceKey` | *required* | — |
-| `labelKey` | `string` | *required* | — |
-| `defaultLabel` | `string` | *required* | — |
-| `descriptionKey` | `string` | *required* | — |
-| `defaultDescription` | `string` | *required* | — |
-| `icon` | `LucideIcon` | *required* | — |
-| `defaultPath` | `string` | *required* | — |
-| `items` | `NavItem[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `WorkspaceKey` | Yes | — | — |
+| `labelKey` | `string` | Yes | — | — |
+| `defaultLabel` | `string` | Yes | — | — |
+| `descriptionKey` | `string` | Yes | — | — |
+| `defaultDescription` | `string` | Yes | — | — |
+| `icon` | `LucideIcon` | Yes | — | — |
+| `defaultPath` | `string` | Yes | — | — |
+| `items` | `NavItem[]` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # IterationPlanningReadinessSummary
 
-**Location:** `frontend/src/types/iteration.ts:73`
+**Location:** `frontend/src/types/iteration.ts:74`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -11,17 +11,17 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iteration_id` | `number` | *required* | — |
-| `team_member_count` | `number` | *required* | — |
-| `team_capacity_hours` | `number` | *required* | — |
-| `team_members_no_capacity` | `number` | *required* | — |
-| `task_count` | `number` | *required* | — |
-| `tasks_without_assignee` | `number` | *required* | — |
-| `tasks_without_effort` | `number` | *required* | — |
-| `has_schedule` | `boolean` | *required* | — |
-| `risk_count` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iteration_id` | `number` | Yes | — | — |
+| `team_member_count` | `number` | Yes | — | — |
+| `team_capacity_hours` | `number` | Yes | — | — |
+| `team_members_no_capacity` | `number` | Yes | — | — |
+| `task_count` | `number` | Yes | — | — |
+| `tasks_without_assignee` | `number` | Yes | — | — |
+| `tasks_without_effort` | `number` | Yes | — | — |
+| `has_schedule` | `boolean` | Yes | — | — |
+| `risk_count` | `number` | Yes | — | — |
 
 ## Methods
 

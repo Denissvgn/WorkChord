@@ -15,8 +15,8 @@ _Auto-generated from `StatusRule` in `backend/app/autonomy/status.py`._
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `id` | `str` | `id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `implementation` | `Literal['implemented_local'] \| None` | `implementation` | No | Yes | `None` | — | — | — |
-| `required_evidence` | `tuple[str, ...]` | `required_evidence` | Yes | No | — | min_length=1; max_length=128 | — | — |
-| `next_tasks` | `tuple[str, ...]` | `next_tasks` | Yes | No | — | min_length=1; max_length=32 | — | — |
+| `required_evidence` | `tuple[str, ...]` | `required_evidence` | Yes | No | — | max_length=128; min_length=1 | — | — |
+| `next_tasks` | `tuple[str, ...]` | `next_tasks` | Yes | No | — | max_length=32; min_length=1 | — | — |
 | `terminal_boundary` | `Literal['manual_external', 'external_post_publication'] \| None` | `terminal_boundary` | No | Yes | `None` | — | — | — |
 
 ## Methods

@@ -11,14 +11,14 @@ _Auto-generated from `AssigneeRecommendationsPanelProps` in `frontend/src/compon
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `targetType` | `'task' \| 'triage'` | *required* | — |
-| `taskId` | `number` | *required* | — |
-| `triageItemId` | `number` | *required* | — |
-| `iterationId` | `number \| null` | *required* | — |
-| `selectedAssigneeId` | `number \| null` | *required* | — |
-| `onSelectAssignee` | `(teamMemberId: number) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `targetType` | `'task' \| 'triage'` | Yes | — | — |
+| `taskId` | `number` | No | — | — |
+| `triageItemId` | `number` | No | — | — |
+| `iterationId` | `number \| null` | No | — | — |
+| `selectedAssigneeId` | `number \| null` | No | — | — |
+| `onSelectAssignee` | `(teamMemberId: number) => void` | Yes | — | — |
 
 ## Methods
 

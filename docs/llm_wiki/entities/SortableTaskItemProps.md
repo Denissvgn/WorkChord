@@ -11,11 +11,11 @@ _Auto-generated from `SortableTaskItemProps` in `frontend/src/components/tasks/S
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `children` | `ReactNode` | *required* | — |
-| `disabled` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `children` | `ReactNode` | Yes | — | — |
+| `disabled` | `boolean` | No | — | — |
 
 ## Methods
 

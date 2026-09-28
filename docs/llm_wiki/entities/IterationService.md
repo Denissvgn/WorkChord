@@ -9,6 +9,8 @@
 
 Service for iteration operations.
 
+Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
+
 ## Attributes
 
 *No annotated attributes found.*
@@ -107,4 +109,4 @@ flowchart LR
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `create_iteration_series` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.

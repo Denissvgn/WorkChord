@@ -19,7 +19,7 @@ Public API payload for updating a saved view.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `view_type` | `Optional[SavedViewType]` | `view_type` | No | Yes | `None` | — | — | — |
 | `scope` | `Optional[SavedViewScope]` | `scope` | No | Yes | `None` | — | — | — |

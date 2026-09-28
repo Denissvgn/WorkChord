@@ -1,6 +1,6 @@
 # TriageSnoozeRequest
 
-**Location:** `frontend/src/types/triage.ts:57`
+**Location:** `frontend/src/types/triage.ts:59`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TriageSnoozeRequest` in `frontend/src/types/triage.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `snoozed_until` | `string` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `snoozed_until` | `string` | Yes | — | — |
+| `reason` | `string \| null` | No | — | — |
 
 ## Methods
 

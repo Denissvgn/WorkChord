@@ -11,17 +11,17 @@ _Auto-generated from `QueryErrorStateProps` in `frontend/src/components/feedback
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `error` | `unknown` | *required* | — |
-| `fallback` | `string` | *required* | — |
-| `headingLevel` | `2 \| 3` | *required* | — |
-| `isRetrying` | `boolean` | *required* | — |
-| `message` | `string` | *required* | — |
-| `onRetry` | `() => void` | *required* | — |
-| `retryButtonRef` | `Ref<HTMLButtonElement>` | *required* | — |
-| `retryLabel` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `error` | `unknown` | No | — | — |
+| `fallback` | `string` | No | — | — |
+| `headingLevel` | `2 \| 3` | No | — | — |
+| `isRetrying` | `boolean` | No | — | — |
+| `message` | `string` | No | — | — |
+| `onRetry` | `() => void` | No | — | — |
+| `retryButtonRef` | `Ref<HTMLButtonElement>` | No | — | — |
+| `retryLabel` | `string` | No | — | — |
+| `title` | `string` | No | — | — |
 
 ## Methods
 

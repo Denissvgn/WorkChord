@@ -11,19 +11,19 @@ _Auto-generated from `AgentModelCatalogCreate` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `string` | *required* | — |
-| `provider` | `string` | *required* | — |
-| `configured_model_alias` | `string` | *required* | — |
-| `reasoning_tier` | `ModelReasoningTier` | *required* | — |
-| `context_tier` | `ModelContextTier` | *required* | — |
-| `modality_tags` | `string[]` | *required* | — |
-| `cost_tier` | `ModelCostTier` | *required* | — |
-| `latency_tier` | `ModelLatencyTier` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `revision` | `1` | *required* | — |
-| `last_verified_at` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | — | — |
+| `provider` | `string` | Yes | — | — |
+| `configured_model_alias` | `string` | Yes | — | — |
+| `reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `context_tier` | `ModelContextTier` | Yes | — | — |
+| `modality_tags` | `string[]` | No | — | — |
+| `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `latency_tier` | `ModelLatencyTier` | Yes | — | — |
+| `enabled` | `boolean` | No | — | — |
+| `revision` | `1` | No | — | — |
+| `last_verified_at` | `string \| null` | No | — | — |
 
 ## Methods
 

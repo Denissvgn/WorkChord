@@ -1,6 +1,6 @@
 # IterationPlanningReadinessSummary
 
-**Location:** `backend/app/schemas/iteration.py:109`
+**Location:** `backend/app/schemas/iteration.py:110`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)

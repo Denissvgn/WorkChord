@@ -11,13 +11,13 @@ _Auto-generated from `SchedulingPass` in `frontend/src/types/schedulingRules.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `filter` | `FilterConfig` | *required* | — |
-| `sort` | `SortCriterion[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `filter` | `FilterConfig` | Yes | — | — |
+| `sort` | `SortCriterion[]` | Yes | — | — |
 
 ## Methods
 

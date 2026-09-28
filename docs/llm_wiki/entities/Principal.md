@@ -35,14 +35,14 @@ flowchart LR
     n3["backend/app/models/__init__.py"]
     n4["backend/app/models/user_session.py"]
     n5["recover_principal (backend/app/routers/identity.py)"]
-    n6["AgentService.create_actor (backend/app/services/agent_service.py)"]
-    n7["AgentTeamSetupService.acknowledge_runtime (backend/app/services/agent_team_setup_service.py)"]
-    n8["IdentityService.actor_context (backend/app/services/identity_service.py)"]
-    n9["IdentityService.context (backend/app/services/identity_service.py)"]
-    n10["IdentityService.finish_login (backend/app/services/identity_service.py)"]
-    n11["initialize_control_plane (backend/app/services/identity_service.py)"]
-    n12["backend/tests/test_agent_team_setup.py"]
-    n13["backend/tests/test_identity_lifecycle.py"]
+    n6["backend/app/routers/task_domain.py"]
+    n7["AgentService.create_actor (backend/app/services/agent_service.py)"]
+    n8["AgentTeamSetupService.acknowledge_runtime (backend/app/services/agent_team_setup_service.py)"]
+    n9["IdentityService.actor_context (backend/app/services/identity_service.py)"]
+    n10["IdentityService.context (backend/app/services/identity_service.py)"]
+    n11["IdentityService.finish_login (backend/app/services/identity_service.py)"]
+    n12["initialize_control_plane (backend/app/services/identity_service.py)"]
+    n13["backend/app/services/task_domain_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -62,14 +62,14 @@ flowchart LR
     click n3 "../modules/models___init__.md"
     click n4 "../modules/user_session.md"
     click n5 "../modules/routers_identity.md"
-    click n6 "../modules/agent_service.md"
-    click n7 "../modules/agent_team_setup_service.md"
-    click n8 "../modules/identity_service.md"
+    click n6 "../modules/routers_task_domain.md"
+    click n7 "../modules/agent_service.md"
+    click n8 "../modules/agent_team_setup_service.md"
     click n9 "../modules/identity_service.md"
     click n10 "../modules/identity_service.md"
     click n11 "../modules/identity_service.md"
-    click n12 "../modules/test_agent_team_setup.md"
-    click n13 "../modules/test_identity_lifecycle.md"
+    click n12 "../modules/identity_service.md"
+    click n13 "../modules/task_domain_service.md"
 ```
 
 ### Summary
@@ -92,13 +92,13 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `user_session` | import | [user_session](../modules/user_session.md) | — |
 | `recover_principal` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
+| `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService.acknowledge_runtime` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `IdentityService.actor_context` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | type_reference | [identity_service](../modules/identity_service.md) | — |
 | `IdentityService.finish_login` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `initialize_control_plane` | call | [identity_service](../modules/identity_service.md) | 1 |
-| `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
-| `test_identity_lifecycle` | import | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | — |
+| `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

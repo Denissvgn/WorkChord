@@ -1,6 +1,6 @@
 # AgentVerificationEvent
 
-**Location:** `backend/app/models/autonomy.py:269`
+**Location:** `backend/app/models/autonomy.py:273`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_autonomy](../modules/models_autonomy.md)

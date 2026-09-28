@@ -14,7 +14,8 @@ Schema for creating a calendar.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `nominal_day_hours` | `float` | `nominal_day_hours` | No | No | `8` | allow_inf_nan=False; gt=0; le=24 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `year` | `int` | `year` | Yes | No | — | ge=2000; le=2100 | — | — |
 | `holidays` | `list[str]` | `holidays` | No | No | factory: `list` | — | — | ISO date strings |
 | `weekend_days` | `list[int]` | `weekend_days` | No | No | `[5, 6]` | — | — | 0=Mon, 6=Sun |
@@ -49,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `short_days`, `timezone`, `weekend_days`, `year` |
+| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `nominal_day_hours`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### Structure
 

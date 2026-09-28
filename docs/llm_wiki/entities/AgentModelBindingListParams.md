@@ -11,10 +11,10 @@ _Auto-generated from `AgentModelBindingListParams` in `frontend/src/types/agent.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actorId` | `number` | *required* | — |
-| `includeDisabled` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actorId` | `number` | No | — | — |
+| `includeDisabled` | `boolean` | No | — | — |
 
 ## Methods
 

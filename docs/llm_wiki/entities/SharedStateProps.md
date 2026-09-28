@@ -11,9 +11,9 @@ _Auto-generated from `SharedStateProps` in `frontend/src/components/feedback/Que
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `className` | `string` | No | — | — |
 
 ## Methods
 

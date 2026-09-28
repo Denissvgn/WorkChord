@@ -11,22 +11,22 @@ _Auto-generated from `AgentTeamPlanAction` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `action_id` | `string` | *required* | — |
-| `action_digest` | `string` | *required* | — |
-| `reconciliation_class` | `AgentTeamReconciliationClass` | *required* | — |
-| `operation` | `string` | *required* | — |
-| `actor_key` | `string` | *required* | — |
-| `target_actor_id` | `number \| null` | *required* | — |
-| `expected_object_revision` | `number \| null` | *required* | — |
-| `expected_actor_revision` | `number \| null` | *required* | — |
-| `before` | `Record<string, JsonValue> \| null` | *required* | — |
-| `after` | `Record<string, JsonValue> \| null` | *required* | — |
-| `preconditions` | `Record<string, JsonValue>` | *required* | — |
-| `blocker_code` | `string \| null` | *required* | — |
-| `requires_explicit_confirmation` | `boolean` | *required* | — |
-| `authority_change` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `action_id` | `string` | Yes | — | — |
+| `action_digest` | `string` | Yes | — | — |
+| `reconciliation_class` | `AgentTeamReconciliationClass` | Yes | — | — |
+| `operation` | `string` | Yes | — | — |
+| `actor_key` | `string` | Yes | — | — |
+| `target_actor_id` | `number \| null` | Yes | — | — |
+| `expected_object_revision` | `number \| null` | Yes | — | — |
+| `expected_actor_revision` | `number \| null` | Yes | — | — |
+| `before` | `Record<string, JsonValue> \| null` | Yes | — | — |
+| `after` | `Record<string, JsonValue> \| null` | Yes | — | — |
+| `preconditions` | `Record<string, JsonValue>` | Yes | — | — |
+| `blocker_code` | `string \| null` | Yes | — | — |
+| `requires_explicit_confirmation` | `boolean` | Yes | — | — |
+| `authority_change` | `boolean` | Yes | — | — |
 
 ## Methods
 

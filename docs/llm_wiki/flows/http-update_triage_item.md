@@ -129,9 +129,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_triage_item | service.update | 261 | `service.update(triage_item_id, data)` |
-| update_triage_item | _bad_request | 263 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(service.db)` |
+| update_triage_item | service.update | 262 | `service.update(triage_item_id, data)` |
+| update_triage_item | _bad_request | 264 | `_bad_request(service, e)` |
+| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,7 +145,7 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_triage_item` | 261 |
+| mutation | `service.update` | `update_triage_item` | 262 |
 
 ### Static analysis gaps
 

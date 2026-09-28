@@ -11,9 +11,9 @@ _Auto-generated from `LabelGroupListParams` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `include_inactive` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `include_inactive` | `boolean` | No | — | — |
 
 ## Methods
 

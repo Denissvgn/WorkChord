@@ -1,6 +1,6 @@
 # TaskDependency
 
-**Location:** `backend/app/models/task.py:215`
+**Location:** `backend/app/models/task.py:257`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)
@@ -37,11 +37,11 @@ flowchart LR
     n6["evaluate_agent_readiness (backend/app/services/agent_readiness.py)"]
     n7["backend/app/services/agent_service.py"]
     n8["backend/app/services/agent_work_service.py"]
-    n9["backend/app/services/project_service.py"]
-    n10["backend/app/services/scheduler_service.py"]
-    n11["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
-    n12["TaskService.add_dependency (backend/app/services/task_service.py)"]
-    n13["TaskService.create (backend/app/services/task_service.py)"]
+    n9["BacklogSnapshotService.restore (backend/app/services/backlog_snapshot_service.py)"]
+    n10["backend/app/services/project_service.py"]
+    n11["backend/app/services/scheduler_service.py"]
+    n12["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
+    n13["backend/app/services/task_detail_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -64,11 +64,11 @@ flowchart LR
     click n6 "../modules/agent_readiness.md"
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/project_service.md"
-    click n10 "../modules/scheduler_service.md"
-    click n11 "../modules/snapshot_service.md"
-    click n12 "../modules/task_service.md"
-    click n13 "../modules/task_service.md"
+    click n9 "../modules/backlog_snapshot_service.md"
+    click n10 "../modules/project_service.md"
+    click n11 "../modules/scheduler_service.md"
+    click n12 "../modules/snapshot_service.md"
+    click n13 "../modules/task_detail_service.md"
 ```
 
 ### Summary
@@ -94,10 +94,10 @@ flowchart LR
 | `evaluate_agent_readiness` | type_reference | [agent_readiness](../modules/agent_readiness.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 | `agent_work_service` | import | [agent_work_service](../modules/agent_work_service.md) | — |
+| `BacklogSnapshotService.restore` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
-| `TaskService.add_dependency` | call | [task_service](../modules/task_service.md) | 1 |
-| `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
+| `task_detail_service` | import | [task_detail_service](../modules/task_detail_service.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

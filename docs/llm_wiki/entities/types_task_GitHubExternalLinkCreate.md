@@ -1,6 +1,6 @@
 # GitHubExternalLinkCreate
 
-**Location:** `frontend/src/types/task.ts:71`
+**Location:** `frontend/src/types/task.ts:72`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,9 +11,9 @@ _Auto-generated from `GitHubExternalLinkCreate` in `frontend/src/types/task.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `url` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `url` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -11,18 +11,18 @@ _Auto-generated from `ConfirmDialogProps` in `frontend/src/components/common/Con
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | *required* | — |
-| `title` | `ReactNode` | *required* | — |
-| `description` | `ReactNode` | *required* | — |
-| `confirmLabel` | `string` | *required* | — |
-| `cancelLabel` | `string` | *required* | — |
-| `closeLabel` | `string` | *required* | — |
-| `onConfirm` | `() => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
-| `tone` | `ConfirmDialogTone` | *required* | — |
-| `pending` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `open` | `boolean` | Yes | — | — |
+| `title` | `ReactNode` | Yes | — | — |
+| `description` | `ReactNode` | Yes | — | — |
+| `confirmLabel` | `string` | Yes | — | — |
+| `cancelLabel` | `string` | Yes | — | — |
+| `closeLabel` | `string` | Yes | — | — |
+| `onConfirm` | `() => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
+| `tone` | `ConfirmDialogTone` | No | — | — |
+| `pending` | `boolean` | No | — | — |
 
 ## Methods
 

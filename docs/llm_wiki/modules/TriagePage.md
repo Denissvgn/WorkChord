@@ -17,7 +17,9 @@ _Auto-generated from `frontend/src/pages/TriagePage.tsx`._
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/labels/LabelSelector` | `LabelSelector` |
 | `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
+| `../components/tasks/TaskBriefEditor` | `TaskBriefEditor` |
 | `../components/tasks/TaskDependencySelector` | `TaskDependencySelector` |
+| `../components/tasks/taskEditorContract` | `emptyTaskBrief`, `newCriterion` |
 | `../components/team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` |
 | `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout` |
 | `../i18n/i18n` | `i18n` |
@@ -73,7 +75,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (31) |
+| Outbound | `frontend` (33) |
 
 ### External packages
 
@@ -81,23 +83,23 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListOption](../entities/TaskListOption.md) | Class | 176 | — | — |
-| [ModalFrameProps](../entities/ModalFrameProps.md) | Class | 204 | — | — |
-| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Class | 227 | — | — |
-| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Class | 401 | — | — |
-| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Class | 408 | — | — |
-| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Class | 702 | — | — |
-| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Class | 1246 | — | — |
-| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Class | 1450 | — | — |
-| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Class | 1514 | — | — |
-| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Class | 1574 | — | — |
-| [TriageRowProps](../entities/TriageRowProps.md) | Class | 1699 | — | — |
-| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Class | 1781 | — | — |
-| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 399 | — | — |
-| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1775 | — | — |
+| [TaskListOption](../entities/TaskListOption.md) | Class | 178 | — | — |
+| [ModalFrameProps](../entities/ModalFrameProps.md) | Class | 206 | — | — |
+| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Class | 229 | — | — |
+| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Class | 403 | — | — |
+| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Class | 410 | — | — |
+| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Class | 704 | — | — |
+| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Class | 1263 | — | — |
+| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Class | 1467 | — | — |
+| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Class | 1531 | — | — |
+| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Class | 1591 | — | — |
+| [TriageRowProps](../entities/TriageRowProps.md) | Class | 1716 | — | — |
+| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Class | 1798 | — | — |
+| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 401 | — | — |
+| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1792 | — | — |

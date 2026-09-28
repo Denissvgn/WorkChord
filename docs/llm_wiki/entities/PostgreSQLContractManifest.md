@@ -21,8 +21,8 @@ _Auto-generated from `PostgreSQLContractManifest` in `backend/app/autonomy/contr
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-postgresql-contract-manifest-v1']` | `schema_version` | Yes | No | — | — | — | — |
 | `bundle_state` | `Literal['implementation-seed-external-archive-required']` | `bundle_state` | Yes | No | — | — | — | — |
-| `source_inputs` | `tuple[ContractSourceInput, ...]` | `source_inputs` | Yes | No | — | min_length=1; max_length=256 | — | — |
-| `machine_members` | `tuple[ContractMachineMember, ...]` | `machine_members` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `source_inputs` | `tuple[ContractSourceInput, ...]` | `source_inputs` | Yes | No | — | max_length=256; min_length=1 | — | — |
+| `machine_members` | `tuple[ContractMachineMember, ...]` | `machine_members` | Yes | No | — | max_length=256; min_length=1 | — | — |
 | `trace` | `ContractTrace` | `trace` | Yes | No | — | — | — | — |
 
 ## Methods

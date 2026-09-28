@@ -11,14 +11,14 @@ _Auto-generated from `RequestSourceLinksPanelProps` in `frontend/src/components/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `targetType` | `RequestSourceTargetType` | *required* | — |
-| `targetId` | `number` | *required* | — |
-| `initialCount` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `compact` | `boolean` | *required* | — |
-| `onChanged` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `targetType` | `RequestSourceTargetType` | Yes | — | — |
+| `targetId` | `number` | Yes | — | — |
+| `initialCount` | `number` | No | — | — |
+| `title` | `string` | No | — | — |
+| `compact` | `boolean` | No | — | — |
+| `onChanged` | `() => void` | No | — | — |
 
 ## Methods
 

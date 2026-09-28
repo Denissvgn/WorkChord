@@ -1,6 +1,6 @@
 # TaskBatchUpdateResponse
 
-**Location:** `frontend/src/types/task.ts:388`
+**Location:** `frontend/src/types/task.ts:410`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TaskBatchUpdateResponse` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `results` | `TaskBatchUpdateResponseItem[]` | *required* | — |
-| `updated_tasks` | `Task[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `results` | `TaskBatchUpdateResponseItem[]` | Yes | — | — |
+| `updated_tasks` | `Task[]` | Yes | — | — |
 
 ## Methods
 

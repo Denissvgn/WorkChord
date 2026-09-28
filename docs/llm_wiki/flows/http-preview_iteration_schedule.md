@@ -41,14 +41,14 @@ sequenceDiagram
     participant p16 as lock_iterations
     participant p17 as RuntimeError (backend/app/commands.py:lock_iterations)
     participant p18 as sorted (backend/app/commands.py:lock_iterations)
-    participant p19 as set (backend/app/commands.py:lock_iterations)
-    participant p20 as AggregateVersionConflict
-    participant p21 as db.scalar
-    participant p22 as select(…).where(…).with_for_update
-    participant p23 as select(…).where (backend/app/commands.py:lock_iterations)
-    participant p24 as select
-    participant p25 as ValueError (backend/app/commands.py:lock_iterations)
-    participant p26 as db.info.get (backend/app/commands.py:lock_iterations)
+    participant p19 as AggregateVersionConflict
+    participant p20 as db.scalar
+    participant p21 as select(…).where(…).with_for_update
+    participant p22 as select(…).where (backend/app/commands.py:lock_iterations)
+    participant p23 as select
+    participant p24 as ValueError (backend/app/commands.py:lock_iterations)
+    participant p25 as db.info.get (backend/app/commands.py:lock_iterations)
+    participant p26 as internal_authority
     p0->>p1: IterationService
     p0->>p2: TaskService
     p0-->>p3: iteration_service.get_by_id
@@ -71,17 +71,17 @@ sequenceDiagram
     p16->>p6: current_command
     p16-->>p17: RuntimeError (backend/app/commands.py:lock_iterations)
     p16-->>p18: sorted (backend/app/commands.py:lock_iterations)
-    p16-->>p19: set (backend/app/commands.py:lock_iterations)
-    p16->>p20: AggregateVersionConflict
-    p16-->>p21: db.scalar
-    p16-->>p22: select(…).where(…).with_for_update
-    p16-->>p23: select(…).where (backend/app/commands.py:lock_iterations)
-    p16-->>p24: select
-    p16-->>p25: ValueError (backend/app/commands.py:lock_iterations)
-    p16-->>p26: db.info.get (backend/app/commands.py:lock_iterations)
+    p16->>p19: AggregateVersionConflict
+    p16-->>p20: db.scalar
+    p16-->>p21: select(…).where(…).with_for_update
+    p16-->>p22: select(…).where (backend/app/commands.py:lock_iterations)
+    p16-->>p23: select
+    p16-->>p24: ValueError (backend/app/commands.py:lock_iterations)
+    p16-->>p25: db.info.get (backend/app/commands.py:lock_iterations)
+    p16->>p26: internal_authority
 ```
 
-> Call sequence diagram shows 30 of 140 interactions; 110 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 141 interactions; 111 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -155,20 +155,20 @@ flowchart LR
 | preview_iteration_schedule | iteration_service.get_by_id | 74 | `iteration_service.get_by_id(iteration_id)` |
 | preview_iteration_schedule | HTTPException | 76 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | preview_iteration_schedule | command_transaction | 81 | `command_transaction(db, mode='preview')` |
-| command_transaction | current_command | 52 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 38 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 39 | `isinstance(info, dict)` |
-| current_command | info.get | 39 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 55 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 62 | `CommandState(mode=mode)` |
+| command_transaction | current_command | 53 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 39 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 40 | `isinstance(info, dict)` |
+| current_command | info.get | 40 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 56 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 63 | `CommandState(mode=mode)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | mutation | `gantt_tasks.append` | `preview_iteration_schedule` | 100 |
-| mutation | `db.info.pop` | `command_transaction` | 78 |
-| mutation | `db.info.pop` | `command_transaction` | 80 |
+| mutation | `db.info.pop` | `command_transaction` | 79 |
+| mutation | `db.info.pop` | `command_transaction` | 81 |
 
 ### Static analysis gaps
 
@@ -176,10 +176,10 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `preview_iteration_schedule` | `iteration_service.get_by_id` | 74 |
 | external_call | `preview_iteration_schedule` | `HTTPException` | 76 |
-| external_call | `current_command` | `getattr` | 38 |
-| external_call | `current_command` | `isinstance` | 39 |
-| unresolved_call | `current_command` | `info.get` | 39 |
-| external_call | `command_transaction` | `RuntimeError` | 55 |
+| external_call | `current_command` | `getattr` | 39 |
+| external_call | `current_command` | `isinstance` | 40 |
+| unresolved_call | `current_command` | `info.get` | 40 |
+| external_call | `command_transaction` | `RuntimeError` | 56 |
 | step_limit | `preview_iteration_schedule` | `first 12 steps` | 0 |
 
 ## Behavior

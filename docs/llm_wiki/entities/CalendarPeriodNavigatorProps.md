@@ -11,15 +11,15 @@ _Auto-generated from `CalendarPeriodNavigatorProps` in `frontend/src/components/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `year` | `number` | *required* | — |
-| `month` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekendDays` | `number[]` | *required* | — |
-| `onYearChange` | `(year: number) => void` | *required* | — |
-| `onMonthChange` | `(month: number) => void` | *required* | — |
-| `className` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `year` | `number` | Yes | — | — |
+| `month` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekendDays` | `number[]` | Yes | — | — |
+| `onYearChange` | `(year: number) => void` | Yes | — | — |
+| `onMonthChange` | `(month: number) => void` | Yes | — | — |
+| `className` | `string` | No | — | — |
 
 ## Methods
 

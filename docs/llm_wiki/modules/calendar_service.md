@@ -6,6 +6,8 @@
 
 Calendar service with business logic.
 
+Nominal-workday edits use the same task-unit refresh helper as iteration calendar reassignment, within the existing planning-input transaction.
+
 ## Imports
 
 | Source | Symbols |

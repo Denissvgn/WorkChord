@@ -1,6 +1,6 @@
 # TriageItem
 
-**Location:** `frontend/src/types/triage.ts:5`
+**Location:** `frontend/src/types/triage.ts:6`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,28 +11,29 @@ _Auto-generated from `TriageItem` in `frontend/src/types/triage.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `status` | `TriageItemStatus` | *required* | — |
-| `priority_hint` | `number \| null` | *required* | — |
-| `assignee_hint` | `string \| null` | *required* | — |
-| `project_hint_id` | `number \| null` | *required* | — |
-| `iteration_hint_id` | `number \| null` | *required* | — |
-| `labels` | `string[]` | *required* | — |
-| `metadata_json` | `Record<string, unknown>` | *required* | — |
-| `snoozed_until` | `string \| null` | *required* | — |
-| `duplicate_of_id` | `number \| null` | *required* | — |
-| `duplicate_task_id` | `number \| null` | *required* | — |
-| `converted_task_id` | `number \| null` | *required* | — |
-| `request_count` | `number` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `brief` | `TaskBrief \| null` | No | — | — |
+| `id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `source` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `status` | `TriageItemStatus` | Yes | — | — |
+| `priority_hint` | `number \| null` | No | — | — |
+| `assignee_hint` | `string \| null` | No | — | — |
+| `project_hint_id` | `number \| null` | No | — | — |
+| `iteration_hint_id` | `number \| null` | No | — | — |
+| `labels` | `string[]` | Yes | — | — |
+| `metadata_json` | `Record<string, unknown>` | Yes | — | — |
+| `snoozed_until` | `string \| null` | No | — | — |
+| `duplicate_of_id` | `number \| null` | No | — | — |
+| `duplicate_task_id` | `number \| null` | No | — | — |
+| `converted_task_id` | `number \| null` | No | — | — |
+| `request_count` | `number` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 
@@ -60,7 +61,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_triage](../modules/types_triage.md) | 0 | `assignee_hint`, `converted_task_id`, `created_at`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `id`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint` |
+| [types_triage](../modules/types_triage.md) | 0 | `assignee_hint`, `brief`, `converted_task_id`, `created_at`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `id`, `iteration_hint_id`, `labels`, `metadata_json` |
 
 ### References
 

@@ -11,10 +11,10 @@ _Auto-generated from `BreadcrumbsProps` in `frontend/src/components/layout/Bread
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `BreadcrumbItem[]` | *required* | — |
-| `label` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `items` | `BreadcrumbItem[]` | Yes | — | — |
+| `label` | `string` | No | — | — |
 
 ## Methods
 

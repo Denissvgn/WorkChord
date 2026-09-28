@@ -14,6 +14,7 @@ Agent integration API schemas.
 | `app.schemas.project` | `ProjectHealth`, `ProjectUpdateEntryResponse` |
 | `app.schemas.request_source` | `RequestSourceLinkWithSourceResponse` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse`, `TaskStatus`, `TaskUpdate` |
+| `app.schemas.task_brief` | `CriterionProgress` |
 | `app.schemas.triage` | `TriageItemResponse` |
 | `app.services.agent_routing_policy` | `SERVER_OWNED_ROUTING_SNAPSHOT_SCHEMAS`, `assignment_intent`, `validate_routing_packet_size` |
 | `app.utils.url_policy` | `URLPolicyError`, `normalize_stored_display_url` |
@@ -41,8 +42,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (19) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
@@ -50,7 +51,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -102,19 +103,19 @@ flowchart LR
 | [ModelAwareAgentWorkBegin](../entities/ModelAwareAgentWorkBegin.md) | Pydantic model | 853 | `BaseModel` | Atomically begin only the model binding selected by routing. |
 | [AgentWorkBeginResponse](../entities/AgentWorkBeginResponse.md) | Pydantic model | 884 | `BaseModel` | Atomic begin result containing all new authoritative state. |
 | [AgentWorkRenew](../entities/AgentWorkRenew.md) | Pydantic model | 896 | `BaseModel` | Renew the live fence for one accepted assignment and running run. |
-| [AgentWorkSubmit](../entities/AgentWorkSubmit.md) | Pydantic model | 909 | `BaseModel` | Atomically submit an active assignment for verification. |
-| [AgentWorkTerminal](../entities/AgentWorkTerminal.md) | Pydantic model | 945 | `BaseModel` | Atomically fail or cancel an active assignment. |
-| [AgentWorkTerminalResponse](../entities/AgentWorkTerminalResponse.md) | Pydantic model | 968 | `BaseModel` | Atomic submit/fail result. |
-| [AgentReviewVerdict](../entities/AgentReviewVerdict.md) | Pydantic model | 977 | `BaseModel` | Verifier-scoped pass or rejection command. |
-| [AgentReviewVerdictResponse](../entities/AgentReviewVerdictResponse.md) | Pydantic model | 999 | `BaseModel` | Verification result plus optional rework assignment. |
-| [AgentRecoveryRequeue](../entities/AgentRecoveryRequeue.md) | Pydantic model | 1007 | `BaseModel` | PM command to replace stale execution ownership with recovery work. |
-| [AgentRecoveryItem](../entities/AgentRecoveryItem.md) | Pydantic model | 1021 | `BaseModel` | Typed PM recovery diagnosis and optimistic ownership tuple. |
-| [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1036 | `BaseModel` | Paginated PM recovery projection. |
-| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1043 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
-| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1052 | `BaseModel` | Agent-authored append-only project status report. |
-| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1076 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
-| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1080 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
-| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1105 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
+| [AgentWorkSubmit](../entities/AgentWorkSubmit.md) | Pydantic model | 912 | `BaseModel` | Atomically submit an active assignment for verification. |
+| [AgentWorkTerminal](../entities/AgentWorkTerminal.md) | Pydantic model | 949 | `BaseModel` | Atomically fail or cancel an active assignment. |
+| [AgentWorkTerminalResponse](../entities/AgentWorkTerminalResponse.md) | Pydantic model | 972 | `BaseModel` | Atomic submit/fail result. |
+| [AgentReviewVerdict](../entities/AgentReviewVerdict.md) | Pydantic model | 981 | `BaseModel` | Verifier-scoped pass or rejection command. |
+| [AgentReviewVerdictResponse](../entities/AgentReviewVerdictResponse.md) | Pydantic model | 1003 | `BaseModel` | Verification result plus optional rework assignment. |
+| [AgentRecoveryRequeue](../entities/AgentRecoveryRequeue.md) | Pydantic model | 1011 | `BaseModel` | PM command to replace stale execution ownership with recovery work. |
+| [AgentRecoveryItem](../entities/AgentRecoveryItem.md) | Pydantic model | 1025 | `BaseModel` | Typed PM recovery diagnosis and optimistic ownership tuple. |
+| [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1040 | `BaseModel` | Paginated PM recovery projection. |
+| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1047 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
+| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1056 | `BaseModel` | Agent-authored append-only project status report. |
+| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1080 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
+| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1084 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
+| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1109 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
 
 ## Functions
 

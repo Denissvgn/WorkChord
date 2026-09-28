@@ -11,10 +11,10 @@ _Auto-generated from `QueryStaleStateProps` in `frontend/src/components/feedback
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `message` | `string` | *required* | — |
-| `onRetry` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `message` | `string` | Yes | — | — |
+| `onRetry` | `() => void` | Yes | — | — |
 
 ## Methods
 

@@ -77,15 +77,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reorder_tasks | service.reorder_tasks | 660 | `service.reorder_tasks(data.task_ids, iteration_id=data.iteration_id, parent_id=data.parent_id, expected_revision=data.expected_revision)` |
-| reorder_tasks | HTTPException | 667 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| reorder_tasks | str | 667 | `str(e)` |
-| reorder_tasks | current_command | 669 | `current_command(service.db)` |
-| current_command | getattr | 38 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 39 | `isinstance(info, dict)` |
-| current_command | info.get | 39 | `info.get('command')` |
-| reorder_tasks | str | 671 | `str(...)` |
-| reorder_tasks | MessageResponse | 672 | `MessageResponse(message='Tasks reordered', success=True)` |
+| reorder_tasks | service.reorder_tasks | 662 | `service.reorder_tasks(data.task_ids, iteration_id=data.iteration_id, parent_id=data.parent_id, expected_revision=data.expected_revision)` |
+| reorder_tasks | HTTPException | 669 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| reorder_tasks | str | 669 | `str(e)` |
+| reorder_tasks | current_command | 671 | `current_command(service.db)` |
+| current_command | getattr | 39 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 40 | `isinstance(info, dict)` |
+| current_command | info.get | 40 | `info.get('command')` |
+| reorder_tasks | str | 673 | `str(...)` |
+| reorder_tasks | MessageResponse | 674 | `MessageResponse(message='Tasks reordered', success=True)` |
 
 ### Boundary effects
 
@@ -95,11 +95,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `reorder_tasks` | `service.reorder_tasks` | 660 |
-| external_call | `reorder_tasks` | `HTTPException` | 667 |
-| external_call | `current_command` | `getattr` | 38 |
-| external_call | `current_command` | `isinstance` | 39 |
-| unresolved_call | `current_command` | `info.get` | 39 |
+| unresolved_call | `reorder_tasks` | `service.reorder_tasks` | 662 |
+| external_call | `reorder_tasks` | `HTTPException` | 669 |
+| external_call | `current_command` | `getattr` | 39 |
+| external_call | `current_command` | `isinstance` | 40 |
+| unresolved_call | `current_command` | `info.get` | 40 |
 
 ## Behavior
 

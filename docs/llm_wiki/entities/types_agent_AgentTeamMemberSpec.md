@@ -11,20 +11,20 @@ _Auto-generated from `AgentTeamMemberSpec` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actor_key` | `string` | *required* | — |
-| `actor_name` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `role` | `AgentTeamRole` | *required* | — |
-| `scope_preset` | `'pm-v1' \| 'worker-v1' \| 'verifier-v1'` | *required* | — |
-| `profile_key` | `string` | *required* | — |
-| `skill_package` | `AgentTeamSkillPackage` | *required* | — |
-| `assignment_modes` | `string[]` | *required* | — |
-| `model_binding_keys` | `string[]` | *required* | — |
-| `default_model_binding_key` | `string` | *required* | — |
-| `runtime_ref` | `string` | *required* | — |
-| `credential_ref` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actor_key` | `string` | Yes | — | — |
+| `actor_name` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `role` | `AgentTeamRole` | Yes | — | — |
+| `scope_preset` | `'pm-v1' \| 'worker-v1' \| 'verifier-v1'` | Yes | — | — |
+| `profile_key` | `string` | Yes | — | — |
+| `skill_package` | `AgentTeamSkillPackage` | Yes | — | — |
+| `assignment_modes` | `string[]` | Yes | — | — |
+| `model_binding_keys` | `string[]` | Yes | — | — |
+| `default_model_binding_key` | `string` | Yes | — | — |
+| `runtime_ref` | `string` | Yes | — | — |
+| `credential_ref` | `string` | Yes | — | — |
 
 ## Methods
 

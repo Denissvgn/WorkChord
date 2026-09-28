@@ -110,3 +110,5 @@ flowchart LR
 This flow starts at `restore_snapshot` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
 
 Requires operator authority and explicit restore confirmation. Checks the observed revision and captured provenance before restoring supported IDs and planning state, recording a pre-restore point and invalidating current acceptance.
+
+Scheduled and backlog restoration share a version allocator under the owning scope lock. It advances above the saved version, live task, retained history and durable deletion fence. Current progress and acceptance are cleared; immutable history survives. A deleted task without a reliable deletion fence returns snapshot_version_history_unknown (409), requiring recovery from a complete matching database backup.

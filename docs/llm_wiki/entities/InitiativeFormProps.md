@@ -11,11 +11,11 @@ _Auto-generated from `InitiativeFormProps` in `frontend/src/components/projects/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `initialData` | `Initiative` | *required* | — |
-| `onSuccess` | `(initiative: Initiative) => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialData` | `Initiative` | No | — | — |
+| `onSuccess` | `(initiative: Initiative) => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
 
 ## Methods
 

@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_assignment | service.create_assignment | 672 | `service.create_assignment(actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| create_agent_assignment | _handle_agent_error | 680 | `_handle_agent_error(exc, structured=True)` |
+| create_agent_assignment | service.create_assignment | 674 | `service.create_assignment(actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| create_agent_assignment | _handle_agent_error | 682 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_agent_assignment` | `service.create_assignment` | 672 |
+| unresolved_call | `create_agent_assignment` | `service.create_assignment` | 674 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

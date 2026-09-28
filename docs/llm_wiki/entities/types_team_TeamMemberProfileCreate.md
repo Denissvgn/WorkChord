@@ -11,17 +11,17 @@ _Auto-generated from `TeamMemberProfileCreate` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `seed_key` | `string \| null` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `email` | `string \| null` | *required* | — |
-| `headline` | `string \| null` | *required* | — |
-| `summary` | `string \| null` | *required* | — |
-| `notes` | `string \| null` | *required* | — |
-| `automation_enabled` | `boolean` | *required* | — |
-| `profile_kind` | `TeamMemberProfileKind` | *required* | — |
-| `assignment_modes` | `TeamMemberAssignmentMode[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `seed_key` | `string \| null` | No | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `email` | `string \| null` | No | — | — |
+| `headline` | `string \| null` | No | — | — |
+| `summary` | `string \| null` | No | — | — |
+| `notes` | `string \| null` | No | — | — |
+| `automation_enabled` | `boolean` | Yes | — | — |
+| `profile_kind` | `TeamMemberProfileKind` | Yes | — | — |
+| `assignment_modes` | `TeamMemberAssignmentMode[]` | Yes | — | — |
 
 ## Methods
 

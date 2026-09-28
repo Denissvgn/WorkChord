@@ -11,12 +11,12 @@ _Auto-generated from `TaskAgentReadinessCriterion` in `frontend/src/types/task.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `string` | *required* | — |
-| `label` | `string` | *required* | — |
-| `passed` | `boolean` | *required* | — |
-| `reason` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `passed` | `boolean` | Yes | — | — |
+| `reason` | `string` | Yes | — | — |
 
 ## Methods
 

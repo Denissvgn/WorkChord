@@ -11,12 +11,12 @@ _Auto-generated from `CalendarDraft` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `year` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekend_days` | `number[]` | *required* | — |
-| `short_days` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `year` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekend_days` | `number[]` | Yes | — | — |
+| `short_days` | `string[]` | Yes | — | — |
 
 ## Methods
 

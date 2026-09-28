@@ -11,13 +11,13 @@ _Auto-generated from `TaskMilestone` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `project_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `status` | `string` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `project_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `status` | `string` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
 
 ## Methods
 

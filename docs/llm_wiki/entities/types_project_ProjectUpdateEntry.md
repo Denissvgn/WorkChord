@@ -11,18 +11,18 @@ _Auto-generated from `ProjectUpdateEntry` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `project_id` | `number` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `summary` | `string` | *required* | — |
-| `progress_text` | `string \| null` | *required* | — |
-| `risks_text` | `string \| null` | *required* | — |
-| `decisions_text` | `string \| null` | *required* | — |
-| `next_steps_text` | `string \| null` | *required* | — |
-| `created_by_session_id` | `number \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `project_id` | `number` | Yes | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `summary` | `string` | Yes | — | — |
+| `progress_text` | `string \| null` | No | — | — |
+| `risks_text` | `string \| null` | No | — | — |
+| `decisions_text` | `string \| null` | No | — | — |
+| `next_steps_text` | `string \| null` | No | — | — |
+| `created_by_session_id` | `number \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
 
 ## Methods
 

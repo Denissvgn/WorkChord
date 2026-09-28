@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_actors | service.list_actor_roster | 588 | `service.list_actor_roster(actor, include_disabled=include_disabled)` |
-| list_agent_actors | _handle_agent_error | 593 | `_handle_agent_error(exc, structured=True)` |
+| list_agent_actors | service.list_actor_roster | 590 | `service.list_actor_roster(actor, include_disabled=include_disabled)` |
+| list_agent_actors | _handle_agent_error | 595 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_agent_actors` | `service.list_actor_roster` | 588 |
+| unresolved_call | `list_agent_actors` | `service.list_actor_roster` | 590 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

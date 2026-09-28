@@ -1,6 +1,6 @@
 # TriageDuplicateSuggestionsResponse
 
-**Location:** `frontend/src/types/triage.ts:85`
+**Location:** `frontend/src/types/triage.ts:87`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,11 +11,11 @@ _Auto-generated from `TriageDuplicateSuggestionsResponse` in `frontend/src/types
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `triage_item_id` | `number` | *required* | — |
-| `triage_items` | `TriageDuplicateSuggestion[]` | *required* | — |
-| `tasks` | `TriageDuplicateSuggestion[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `triage_item_id` | `number` | Yes | — | — |
+| `triage_items` | `TriageDuplicateSuggestion[]` | Yes | — | — |
+| `tasks` | `TriageDuplicateSuggestion[]` | Yes | — | — |
 
 ## Methods
 

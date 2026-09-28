@@ -11,14 +11,14 @@ _Auto-generated from `GitHubStatusAutomationResult` in `frontend/src/types/githu
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `rule_id` | `number` | *required* | — |
-| `outcome` | `GitHubAutomationOutcome` | *required* | — |
-| `from_status` | `string` | *required* | — |
-| `target_status` | `string` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
-| `error` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `rule_id` | `number` | Yes | — | — |
+| `outcome` | `GitHubAutomationOutcome` | Yes | — | — |
+| `from_status` | `string` | Yes | — | — |
+| `target_status` | `string` | Yes | — | — |
+| `reason` | `string \| null` | No | — | — |
+| `error` | `string \| null` | No | — | — |
 
 ## Methods
 

@@ -77,7 +77,7 @@ sequenceDiagram
     p22-->>p23: stack.pop (backend/app/routers/expor…validate_import_task_tree)
 ```
 
-> Call sequence diagram shows 30 of 106 interactions; 76 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 107 interactions; 77 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -133,7 +133,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_iteration | _read_json_upload | 370 | `_read_json_upload(file)` |
+| import_iteration | _read_json_upload | 385 | `_read_json_upload(file)` |
 | _read_json_upload | file.read | 38 | `file.read(...)` |
 | _read_json_upload | len | 39 | `len(content)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 40 | `HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')` |
@@ -143,7 +143,7 @@ flowchart LR
 | _read_json_upload | str (backend/app/routers/export.py:_read_json_upload) | 49 | `str(e)` |
 | _read_json_upload | isinstance (backend/app/routers/export.py:_read_json_upload) | 51 | `isinstance(data, dict)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 52 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Import file must contain a JSON object')` |
-| import_iteration | IterationService | 372 | `IterationService(db)` |
+| import_iteration | IterationService | 387 | `IterationService(db)` |
 
 ### Boundary effects
 

@@ -11,9 +11,9 @@ _Auto-generated from `SystemLanguageProviderProps` in `frontend/src/i18n/SystemL
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `children` | `ReactNode` | Yes | — | — |
 
 ## Methods
 

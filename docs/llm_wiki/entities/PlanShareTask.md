@@ -11,22 +11,22 @@ _Auto-generated from `PlanShareTask` in `frontend/src/services/planShareService.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `status` | `string` | *required* | — |
-| `assignee_name` | `string \| null` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `end_date` | `string \| null` | *required* | — |
-| `is_optional` | `boolean` | *required* | — |
-| `is_deferred` | `boolean` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `dependencies` | `number[]` | *required* | — |
-| `children` | `PlanShareTask[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `priority` | `number` | Yes | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | Yes | — | — |
+| `status` | `string` | Yes | — | — |
+| `assignee_name` | `string \| null` | No | — | — |
+| `start_date` | `string \| null` | No | — | — |
+| `end_date` | `string \| null` | No | — | — |
+| `is_optional` | `boolean` | Yes | — | — |
+| `is_deferred` | `boolean` | Yes | — | — |
+| `tags` | `string[]` | Yes | — | — |
+| `dependencies` | `number[]` | Yes | — | — |
+| `children` | `PlanShareTask[]` | Yes | — | — |
 
 ## Methods
 

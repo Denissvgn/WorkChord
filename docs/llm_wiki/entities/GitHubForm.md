@@ -11,15 +11,15 @@ _Auto-generated from `GitHubForm` in `frontend/src/components/settings/RuntimeCo
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `api_url` | `string` | *required* | — |
-| `token` | `string` | *required* | — |
-| `clear_token` | `boolean` | *required* | — |
-| `request_timeout_seconds` | `string` | *required* | — |
-| `webhook_secret` | `string` | *required* | — |
-| `clear_webhook_secret` | `boolean` | *required* | — |
-| `webhook_create_triage_for_unmatched` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `api_url` | `string` | Yes | — | — |
+| `token` | `string` | Yes | — | — |
+| `clear_token` | `boolean` | Yes | — | — |
+| `request_timeout_seconds` | `string` | Yes | — | — |
+| `webhook_secret` | `string` | Yes | — | — |
+| `clear_webhook_secret` | `boolean` | Yes | — | — |
+| `webhook_create_triage_for_unmatched` | `boolean` | Yes | — | — |
 
 ## Methods
 

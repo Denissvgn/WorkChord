@@ -11,11 +11,11 @@ _Auto-generated from `TaskClaimedBy` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
 
 ## Methods
 

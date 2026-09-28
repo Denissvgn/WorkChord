@@ -21,11 +21,11 @@ Externally established authority consumed by the autonomous program.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-postgresql-autonomy-charter-v1']` | `schema_version` | No | No | `'workchord-postgresql-autonomy-charter-v1'` | — | — | — |
 | `charter_id` | `str` | `charter_id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `issuer` | `str` | `issuer` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `issuer` | `str` | `issuer` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `subject` | `Literal['workchord-postgresql-autonomous-migration']` | `subject` | Yes | No | — | — | — | — |
 | `repository` | `str` | `repository` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `candidate_branch` | `str` | `candidate_branch` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `push_policy` | `str` | `push_policy` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `candidate_branch` | `str` | `candidate_branch` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `push_policy` | `str` | `push_policy` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `project_ref` | `str` | `project_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `iteration_ref` | `str` | `iteration_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `task_graph_digest` | `str` | `task_graph_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
@@ -37,10 +37,10 @@ Externally established authority consumed by the autonomous program.
 | `revocation_source_ref` | `str` | `revocation_source_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `revocation_max_age_seconds` | `int` | `revocation_max_age_seconds` | Yes | No | — | ge=1; le=3600 | — | — |
 | `production_mutation_allowed` | `bool` | `production_mutation_allowed` | Yes | No | — | — | — | — |
-| `resources` | `tuple[ExactResourceBinding, ...]` | `resources` | Yes | No | — | min_length=1; max_length=256 | — | — |
-| `immutable_inputs` | `tuple[ImmutableInputBinding, ...]` | `immutable_inputs` | Yes | No | — | min_length=1; max_length=256 | — | — |
-| `trusted_keys` | `tuple[TrustedKeyBinding, ...]` | `trusted_keys` | Yes | No | — | min_length=1; max_length=64 | — | — |
-| `execution_windows` | `tuple[ExecutionWindow, ...]` | `execution_windows` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `resources` | `tuple[ExactResourceBinding, ...]` | `resources` | Yes | No | — | max_length=256; min_length=1 | — | — |
+| `immutable_inputs` | `tuple[ImmutableInputBinding, ...]` | `immutable_inputs` | Yes | No | — | max_length=256; min_length=1 | — | — |
+| `trusted_keys` | `tuple[TrustedKeyBinding, ...]` | `trusted_keys` | Yes | No | — | max_length=64; min_length=1 | — | — |
+| `execution_windows` | `tuple[ExecutionWindow, ...]` | `execution_windows` | Yes | No | — | max_length=256; min_length=1 | — | — |
 | `budget` | `ExecutionBudget` | `budget` | Yes | No | — | — | — | — |
 | `migration_policy` | `MigrationPolicy` | `migration_policy` | Yes | No | — | — | — | — |
 

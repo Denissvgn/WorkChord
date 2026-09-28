@@ -11,10 +11,10 @@ _Auto-generated from `QueryEmptyStateProps` in `frontend/src/components/feedback
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | No | — | — |
 
 ## Methods
 

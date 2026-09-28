@@ -11,25 +11,25 @@ _Auto-generated from `Project` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `status` | `ProjectStatus` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner` | `ProjectOwner \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `owner_profile` | `ProjectProfileOwner \| null` | *required* | — |
-| `initiative_id` | `number \| null` | *required* | — |
-| `initiative` | `ProjectInitiativeSummary \| null` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `completed_at` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `status` | `ProjectStatus` | Yes | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `owner_id` | `number \| null` | Yes | — | — |
+| `owner` | `ProjectOwner \| null` | Yes | — | — |
+| `owner_profile_id` | `number \| null` | Yes | — | — |
+| `owner_profile` | `ProjectProfileOwner \| null` | Yes | — | — |
+| `initiative_id` | `number \| null` | No | — | — |
+| `initiative` | `ProjectInitiativeSummary \| null` | No | — | — |
+| `start_date` | `string \| null` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `completed_at` | `string \| null` | No | — | — |
+| `sort_order` | `number` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `CollapsibleSectionProps` in `frontend/src/components/commo
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `defaultOpen` | `boolean` | *required* | — |
-| `children` | `React.ReactNode` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `defaultOpen` | `boolean` | No | — | — |
+| `children` | `React.ReactNode` | Yes | — | — |
 
 ## Methods
 

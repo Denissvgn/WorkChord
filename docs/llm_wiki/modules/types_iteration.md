@@ -47,10 +47,10 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [IterationProject](../entities/IterationProject.md) | Class | 2 | — | — |
 | [Iteration](../entities/types_iteration_Iteration.md) | Class | 9 | — | — |
-| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Class | 22 | — | — |
-| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Class | 31 | — | — |
-| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Class | 44 | — | — |
-| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Class | 54 | — | — |
-| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Class | 58 | `WorkMetrics` | — |
-| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Class | 73 | — | — |
-| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 40 | — | — |
+| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Class | 23 | — | — |
+| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Class | 32 | — | — |
+| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Class | 45 | — | — |
+| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Class | 55 | — | — |
+| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Class | 59 | `WorkMetrics` | — |
+| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Class | 74 | — | — |
+| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 41 | — | — |

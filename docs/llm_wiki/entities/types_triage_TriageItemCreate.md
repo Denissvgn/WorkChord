@@ -1,6 +1,6 @@
 # TriageItemCreate
 
-**Location:** `frontend/src/types/triage.ts:28`
+**Location:** `frontend/src/types/triage.ts:30`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,19 +11,19 @@ _Auto-generated from `TriageItemCreate` in `frontend/src/types/triage.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `priority_hint` | `number \| null` | *required* | — |
-| `assignee_hint` | `string \| null` | *required* | — |
-| `project_hint_id` | `number \| null` | *required* | — |
-| `iteration_hint_id` | `number \| null` | *required* | — |
-| `labels` | `string[]` | *required* | — |
-| `metadata_json` | `Record<string, unknown>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `source` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `priority_hint` | `number \| null` | No | — | — |
+| `assignee_hint` | `string \| null` | No | — | — |
+| `project_hint_id` | `number \| null` | No | — | — |
+| `iteration_hint_id` | `number \| null` | No | — | — |
+| `labels` | `string[]` | No | — | — |
+| `metadata_json` | `Record<string, unknown>` | No | — | — |
 
 ## Methods
 

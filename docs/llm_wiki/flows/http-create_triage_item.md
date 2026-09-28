@@ -125,9 +125,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_triage_item | service.create | 108 | `service.create(data)` |
-| create_triage_item | _bad_request | 110 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(service.db)` |
+| create_triage_item | service.create | 109 | `service.create(data)` |
+| create_triage_item | _bad_request | 111 | `_bad_request(service, e)` |
+| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,7 +145,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_triage_item` | `service.create` | 108 |
+| unresolved_call | `create_triage_item` | `service.create` | 109 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

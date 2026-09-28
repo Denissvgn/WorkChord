@@ -11,10 +11,10 @@ _Auto-generated from `VacationManagerProps` in `frontend/src/components/team/Vac
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `member` | `TeamMember` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `member` | `TeamMember` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
 
 ## Methods
 

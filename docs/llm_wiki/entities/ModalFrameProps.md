@@ -1,6 +1,6 @@
 # ModalFrameProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:204`
+**Location:** `frontend/src/pages/TriagePage.tsx:206`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,12 +11,12 @@ _Auto-generated from `ModalFrameProps` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `children` | `ReactNode` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `size` | `'md' \| 'lg' \| 'xl'` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `children` | `ReactNode` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `size` | `'md' \| 'lg' \| 'xl'` | No | — | — |
 
 ## Methods
 

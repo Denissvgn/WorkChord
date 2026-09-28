@@ -1,6 +1,6 @@
 # TaskImportDestination
 
-**Location:** `backend/app/schemas/task.py:302`
+**Location:** `backend/app/schemas/task.py:325`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_task](../modules/schemas_task.md)

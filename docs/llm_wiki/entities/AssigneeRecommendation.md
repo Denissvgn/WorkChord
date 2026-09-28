@@ -11,18 +11,18 @@ _Auto-generated from `AssigneeRecommendation` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `team_member_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `position` | `string` | *required* | — |
-| `profile_id` | `number \| null` | *required* | — |
-| `score` | `number` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `matched_skills` | `string[]` | *required* | — |
-| `weakness_matches` | `string[]` | *required* | — |
-| `workload_warnings` | `string[]` | *required* | — |
-| `rationale` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `team_member_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `position` | `string` | Yes | — | — |
+| `profile_id` | `number \| null` | No | — | — |
+| `score` | `number` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `matched_skills` | `string[]` | Yes | — | — |
+| `weakness_matches` | `string[]` | Yes | — | — |
+| `workload_warnings` | `string[]` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -50,20 +50,38 @@ flowchart LR
     n3["bind_verified_system (backend/app/services/identity_service.py)"]
     n4["IdentityService.context (backend/app/services/identity_service.py)"]
     n5["test_worker_bulk_sql_cannot_bypass_review_authority (backend/tests/test_managed_authority.py)"]
-    n6["test_repair_is_dry_by_default_and_does_not_invent_acceptance (backend/tests/test_work_correctness.py)"]
+    n6["human_context (backend/tests/test_task_domain.py)"]
+    n7["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n8["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n9["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n10["test_blocked_metrics_do_not_hide_inaccessible_prerequisites (backend/tests/test_task_domain_integrity.py)"]
+    n11["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n12["test_repair_is_dry_by_default_and_does_not_invent_acceptance (backend/tests/test_work_correctness.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/authority.md"
     click n1 "../modules/http_authority.md"
     click n2 "../modules/routers_identity.md"
     click n3 "../modules/identity_service.md"
     click n4 "../modules/identity_service.md"
     click n5 "../modules/test_managed_authority.md"
-    click n6 "../modules/test_work_correctness.md"
+    click n6 "../modules/test_task_domain.md"
+    click n7 "../modules/test_task_domain.md"
+    click n8 "../modules/test_task_domain.md"
+    click n9 "../modules/test_task_domain.md"
+    click n10 "../modules/test_task_domain_integrity.md"
+    click n11 "../modules/test_task_domain_integrity.md"
+    click n12 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -81,4 +99,10 @@ flowchart LR
 | `bind_verified_system` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `test_worker_bulk_sql_cannot_bypass_review_authority` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `human_context` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
+| `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `test_blocked_metrics_do_not_hide_inaccessible_prerequisites` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+| `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
 | `test_repair_is_dry_by_default_and_does_not_invent_acceptance` | call | [test_work_correctness](../modules/test_work_correctness.md) | 1 |

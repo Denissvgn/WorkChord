@@ -11,13 +11,13 @@ _Auto-generated from `DateChipProps` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `dateKey` | `string` | *required* | — |
-| `locale` | `Locale` | *required* | — |
-| `iconTone` | `'red' \| 'amber'` | *required* | — |
-| `label` | `string` | *required* | — |
-| `onRemove` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `dateKey` | `string` | Yes | — | — |
+| `locale` | `Locale` | Yes | — | — |
+| `iconTone` | `'red' \| 'amber'` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `onRemove` | `() => void` | Yes | — | — |
 
 ## Methods
 

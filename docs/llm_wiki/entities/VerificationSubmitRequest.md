@@ -23,7 +23,7 @@ _Auto-generated from `VerificationSubmitRequest` in `backend/app/schemas/autonom
 | `expected_lease_generation` | `int` | `expected_lease_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_lease_digest` | `str` | `expected_lease_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `artifact_set_digest` | `str` | `artifact_set_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `criterion_results` | `tuple[VerificationCriterionResult, ...]` | `criterion_results` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `criterion_results` | `tuple[VerificationCriterionResult, ...]` | `criterion_results` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `evaluator_attestation_digest` | `str` | `evaluator_attestation_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `external_journal_revision` | `int` | `external_journal_revision` | Yes | No | — | ge=1 | — | — |
 | `external_journal_head_digest` | `str` | `external_journal_head_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |

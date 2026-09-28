@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `frontend/src/types/task.ts:168`
+**Location:** `frontend/src/types/task.ts:189`
 **Kind:** Class
 **Bases:** `Partial`
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TaskUpdate` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `status` | `string` | *required* | — |
-| `expected_version` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `status` | `string` | No | — | — |
+| `expected_version` | `number` | No | — | — |
 
 ## Methods
 

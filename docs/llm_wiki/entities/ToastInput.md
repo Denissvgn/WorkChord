@@ -11,15 +11,15 @@ _Auto-generated from `ToastInput` in `frontend/src/components/feedback/toast.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `message` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `tone` | `ToastTone` | *required* | — |
-| `dedupeKey` | `string` | *required* | — |
-| `durationMs` | `number` | *required* | — |
-| `actionLabel` | `string` | *required* | — |
-| `onAction` | `() => void \| Promise<void>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `message` | `string` | Yes | — | — |
+| `title` | `string` | No | — | — |
+| `tone` | `ToastTone` | No | — | — |
+| `dedupeKey` | `string` | No | — | — |
+| `durationMs` | `number` | No | — | — |
+| `actionLabel` | `string` | No | — | — |
+| `onAction` | `() => void \| Promise<void>` | No | — | — |
 
 ## Methods
 

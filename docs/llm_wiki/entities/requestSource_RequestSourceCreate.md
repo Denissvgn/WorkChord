@@ -11,15 +11,15 @@ _Auto-generated from `RequestSourceCreate` in `frontend/src/types/requestSource.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `source_type` | `RequestSourceType` | *required* | — |
-| `source_name` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `priority_hint` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `source_type` | `RequestSourceType` | Yes | — | — |
+| `source_name` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `priority_hint` | `number \| null` | No | — | — |
 
 ## Methods
 

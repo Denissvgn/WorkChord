@@ -59,4 +59,4 @@ flowchart LR
 | [VerificationSubmitRequest](../entities/VerificationSubmitRequest.md) | 118 | `AutonomySchema` | — |
 | [VerificationRequirementResponse](../entities/VerificationRequirementResponse.md) | 141 | `AutonomySchema` | — |
 | [AgentWorkPackageResponse](../entities/AgentWorkPackageResponse.md) | 166 | `AutonomySchema` | — |
-| [VerificationTransitionResponse](../entities/VerificationTransitionResponse.md) | 185 | `AutonomySchema` | — |
+| [VerificationTransitionResponse](../entities/VerificationTransitionResponse.md) | 189 | `AutonomySchema` | — |

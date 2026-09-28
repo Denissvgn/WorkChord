@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| submit_my_agent_review_verdict | service.review | 944 | `service.review(actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| submit_my_agent_review_verdict | _handle_agent_error | 952 | `_handle_agent_error(exc, structured=True)` |
+| submit_my_agent_review_verdict | service.review | 946 | `service.review(actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| submit_my_agent_review_verdict | _handle_agent_error | 954 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `submit_my_agent_review_verdict` | `service.review` | 944 |
+| unresolved_call | `submit_my_agent_review_verdict` | `service.review` | 946 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

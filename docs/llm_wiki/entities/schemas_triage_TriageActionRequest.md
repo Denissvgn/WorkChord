@@ -1,6 +1,6 @@
 # TriageActionRequest
 
-**Location:** `backend/app/schemas/triage.py:106`
+**Location:** `backend/app/schemas/triage.py:137`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

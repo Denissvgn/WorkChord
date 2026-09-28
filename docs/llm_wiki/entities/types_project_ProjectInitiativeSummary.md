@@ -11,16 +11,16 @@ _Auto-generated from `ProjectInitiativeSummary` in `frontend/src/types/project.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner` | `ProjectOwner \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `owner_profile` | `ProjectProfileOwner \| null` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `owner_id` | `number \| null` | Yes | — | — |
+| `owner` | `ProjectOwner \| null` | Yes | — | — |
+| `owner_profile_id` | `number \| null` | Yes | — | — |
+| `owner_profile` | `ProjectProfileOwner \| null` | Yes | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
 
 ## Methods
 

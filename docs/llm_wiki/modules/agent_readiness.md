@@ -13,6 +13,7 @@ Deterministic task readiness evaluation for agent handoff.
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.schemas.task` | `TaskAgentReadiness`, `TaskAgentReadinessCriterion` |
 | `app.services.agent_routing_policy` | `CAPABILITY_LABEL_SKILL_KEYS` |
+| `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
 | `re` | `re` |
@@ -29,28 +30,32 @@ flowchart LR
     n2["backend/app/services/agent_readiness.py"]
     n3["backend/app/services/agent_routing_policy.py"]
     n4["backend/app/services/agent_service.py"]
-    n5["backend/app/services/task_service.py"]
-    n6["backend/app/utils/time.py"]
-    n0 --> n6
+    n5["backend/app/services/task_brief_service.py"]
+    n6["backend/app/services/task_service.py"]
+    n7["backend/app/utils/time.py"]
+    n0 --> n7
     n2 --> n0
     n2 --> n1
     n2 --> n3
-    n2 --> n6
+    n2 --> n5
+    n2 --> n7
     n4 --> n0
     n4 --> n1
     n4 --> n2
-    n4 --> n5
     n4 --> n6
+    n4 --> n7
     n5 --> n0
-    n5 --> n1
-    n5 --> n2
+    n6 --> n0
+    n6 --> n1
+    n6 --> n2
     click n0 "../modules/models_task.md"
     click n1 "../modules/schemas_task.md"
     click n2 "../modules/agent_readiness.md"
     click n3 "../modules/agent_routing_policy.md"
     click n4 "../modules/agent_service.md"
-    click n5 "../modules/task_service.md"
-    click n6 "../modules/time.md"
+    click n5 "../modules/task_brief_service.md"
+    click n6 "../modules/task_service.md"
+    click n7 "../modules/time.md"
 ```
 
 ### Internal neighbors
@@ -62,6 +67,7 @@ flowchart LR
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |
 | Outbound | [agent_routing_policy](../modules/agent_routing_policy.md) |
+| Outbound | [task_brief_service](../modules/task_brief_service.md) |
 | Outbound | [time](../modules/time.md) |
 
 ### External packages

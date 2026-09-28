@@ -11,13 +11,13 @@ _Auto-generated from `TaskRoutingAssessmentHistory` in `frontend/src/types/agent
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `current_task_version` | `number` | *required* | — |
-| `assessments` | `TaskRoutingAssessment[]` | *required* | — |
-| `total_count` | `number` | *required* | — |
-| `omitted_count` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `current_task_version` | `number` | Yes | — | — |
+| `assessments` | `TaskRoutingAssessment[]` | Yes | — | — |
+| `total_count` | `number` | Yes | — | — |
+| `omitted_count` | `number` | Yes | — | — |
 
 ## Methods
 

@@ -11,16 +11,16 @@ _Auto-generated from `AgentPipeline` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `needs_definition` | `Task[]` | *required* | — |
-| `ready_for_agent` | `Task[]` | *required* | — |
-| `definition_ready_unassigned` | `Task[]` | *required* | — |
-| `assigned_waiting` | `Task[]` | *required* | — |
-| `start_ready` | `Task[]` | *required* | — |
-| `executing` | `Task[]` | *required* | — |
-| `verification_required` | `Task[]` | *required* | — |
-| `recovery_required` | `Task[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `needs_definition` | `Task[]` | Yes | — | — |
+| `ready_for_agent` | `Task[]` | Yes | — | — |
+| `definition_ready_unassigned` | `Task[]` | Yes | — | — |
+| `assigned_waiting` | `Task[]` | Yes | — | — |
+| `start_ready` | `Task[]` | Yes | — | — |
+| `executing` | `Task[]` | Yes | — | — |
+| `verification_required` | `Task[]` | Yes | — | — |
+| `recovery_required` | `Task[]` | Yes | — | — |
 
 ## Methods
 

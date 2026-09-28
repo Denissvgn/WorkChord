@@ -11,9 +11,9 @@ _Auto-generated from `RequestSourceLinkWithSource` in `frontend/src/types/reques
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `request_source` | `RequestSource` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `request_source` | `RequestSource` | Yes | — | — |
 
 ## Methods
 

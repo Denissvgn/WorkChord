@@ -131,11 +131,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_tasks_text | IterationService | 805 | `IterationService(db)` |
-| get_tasks_text | iteration_service.get_by_id | 806 | `iteration_service.get_by_id(iteration_id)` |
-| get_tasks_text | HTTPException | 809 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_tasks_text | _not_found_detail | 811 | `_not_found_detail(db, 'iteration', iteration_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(db)` |
+| get_tasks_text | IterationService | 807 | `IterationService(db)` |
+| get_tasks_text | iteration_service.get_by_id | 808 | `iteration_service.get_by_id(iteration_id)` |
+| get_tasks_text | HTTPException | 811 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_tasks_text | _not_found_detail | 813 | `_not_found_detail(db, 'iteration', iteration_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 68 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -151,8 +151,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_tasks_text` | `iteration_service.get_by_id` | 806 |
-| external_call | `get_tasks_text` | `HTTPException` | 809 |
+| unresolved_call | `get_tasks_text` | `iteration_service.get_by_id` | 808 |
+| external_call | `get_tasks_text` | `HTTPException` | 811 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

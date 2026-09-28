@@ -14,7 +14,7 @@ Schema for creating a project.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `ProjectStatus` | `status` | No | No | `ProjectStatus.PLANNED` | — | — | — |
 | `health` | `ProjectHealth` | `health` | No | No | `ProjectHealth.UNKNOWN` | — | — | — |

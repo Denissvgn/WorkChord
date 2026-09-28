@@ -1,6 +1,6 @@
 # CreateTriageModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:227`
+**Location:** `frontend/src/pages/TriagePage.tsx:229`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,14 +11,14 @@ _Auto-generated from `CreateTriageModalProps` in `frontend/src/pages/TriagePage.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `projects` | `Project[]` | *required* | — |
-| `iterations` | `Iteration[]` | *required* | — |
-| `isSubmitting` | `boolean` | *required* | — |
-| `error` | `string \| null` | *required* | — |
-| `onSubmit` | `(payload: TriageItemCreate) => void` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `projects` | `Project[]` | Yes | — | — |
+| `iterations` | `Iteration[]` | Yes | — | — |
+| `isSubmitting` | `boolean` | Yes | — | — |
+| `error` | `string \| null` | No | — | — |
+| `onSubmit` | `(payload: TriageItemCreate) => void` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `OutboundWebhookDeliveryListParams` in `frontend/src/types/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `target_id` | `number \| null` | *required* | — |
-| `status` | `OutboundWebhookDeliveryStatus \| null` | *required* | — |
-| `limit` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `target_id` | `number \| null` | No | — | — |
+| `status` | `OutboundWebhookDeliveryStatus \| null` | No | — | — |
+| `limit` | `number` | No | — | — |
 
 ## Methods
 

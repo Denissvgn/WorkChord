@@ -1,6 +1,6 @@
 # TriageSnoozeRequest
 
-**Location:** `backend/app/schemas/triage.py:111`
+**Location:** `backend/app/schemas/triage.py:142`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

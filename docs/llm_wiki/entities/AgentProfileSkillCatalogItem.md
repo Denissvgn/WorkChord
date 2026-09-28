@@ -11,12 +11,12 @@ _Auto-generated from `AgentProfileSkillCatalogItem` in `frontend/src/types/agent
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `skill_key` | `string` | *required* | — |
-| `skill_name` | `string` | *required* | — |
-| `category` | `string` | *required* | — |
-| `keywords` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `skill_key` | `string` | Yes | — | — |
+| `skill_name` | `string` | Yes | — | — |
+| `category` | `string` | Yes | — | — |
+| `keywords` | `string[]` | Yes | — | — |
 
 ## Methods
 

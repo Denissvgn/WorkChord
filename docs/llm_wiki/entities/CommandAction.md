@@ -11,17 +11,17 @@ _Auto-generated from `CommandAction` in `frontend/src/components/layout/CommandM
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | *required* | — |
-| `group` | `CommandGroup` | *required* | — |
-| `label` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `keywords` | `string[]` | *required* | — |
-| `icon` | `LucideIcon` | *required* | — |
-| `shortcut` | `string` | *required* | — |
-| `ariaShortcut` | `string` | *required* | — |
-| `to` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `string` | Yes | — | — |
+| `group` | `CommandGroup` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `keywords` | `string[]` | No | — | — |
+| `icon` | `LucideIcon` | Yes | — | — |
+| `shortcut` | `string` | No | — | — |
+| `ariaShortcut` | `string` | No | — | — |
+| `to` | `string` | Yes | — | — |
 
 ## Methods
 

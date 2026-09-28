@@ -11,13 +11,13 @@ _Auto-generated from `ToastRecord` in `frontend/src/components/feedback/ToastPro
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `key` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `actionLabel` | `string` | *required* | — |
-| `onAction` | `() => void \| Promise<void>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `key` | `string` | Yes | — | — |
+| `title` | `string` | No | — | — |
+| `actionLabel` | `string` | No | — | — |
+| `onAction` | `() => void \| Promise<void>` | No | — | — |
 
 ## Methods
 

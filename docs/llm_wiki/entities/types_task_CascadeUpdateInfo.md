@@ -1,6 +1,6 @@
 # CascadeUpdateInfo
 
-**Location:** `frontend/src/types/task.ts:322`
+**Location:** `frontend/src/types/task.ts:344`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,14 +11,14 @@ _Auto-generated from `CascadeUpdateInfo` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `task_title` | `string` | *required* | — |
-| `old_start_date` | `string \| null` | *required* | — |
-| `new_start_date` | `string \| null` | *required* | — |
-| `old_end_date` | `string \| null` | *required* | — |
-| `new_end_date` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `task_title` | `string` | Yes | — | — |
+| `old_start_date` | `string \| null` | Yes | — | — |
+| `new_start_date` | `string \| null` | Yes | — | — |
+| `old_end_date` | `string \| null` | Yes | — | — |
+| `new_end_date` | `string \| null` | Yes | — | — |
 
 ## Methods
 

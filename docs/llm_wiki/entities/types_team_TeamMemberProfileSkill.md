@@ -11,20 +11,20 @@ _Auto-generated from `TeamMemberProfileSkill` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `profile_id` | `number` | *required* | — |
-| `skill_key` | `string` | *required* | — |
-| `skill_name` | `string` | *required* | — |
-| `category` | `string \| null` | *required* | — |
-| `level` | `number` | *required* | — |
-| `interest` | `number` | *required* | — |
-| `is_weakness` | `boolean` | *required* | — |
-| `keywords_json` | `string[]` | *required* | — |
-| `notes` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `profile_id` | `number` | Yes | — | — |
+| `skill_key` | `string` | Yes | — | — |
+| `skill_name` | `string` | Yes | — | — |
+| `category` | `string \| null` | No | — | — |
+| `level` | `number` | Yes | — | — |
+| `interest` | `number` | Yes | — | — |
+| `is_weakness` | `boolean` | Yes | — | — |
+| `keywords_json` | `string[]` | Yes | — | — |
+| `notes` | `string \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

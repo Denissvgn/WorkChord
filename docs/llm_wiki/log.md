@@ -263,3 +263,99 @@ Added schema-derived client contract export and isolated HTTP/build runners with
 - Pages deprecated: 0
 - Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-09-15
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.1.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:77bd90976f7190f179fafe05c04ad09091ef4ca7eed7d329771cc15b2c21cfe8`
+- Pages created: 86
+- Pages updated: 553
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2020
+- Pages deprecated: 0
+- Semantic fields preserved: 16
+- Moved entities: none
+- Flow pages initialized: 25 (http=19, mcp=6)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Task domain and compatible collaboration contracts
+
+Added project backlog scope, durable human ownership, explicit estimates and workflow facets, canonical briefs with immutable progress/review history, bounded task detail, and project backlog recovery. Shared REST/MCP policy and transaction ownership preserve assigned-agent fences and independent acceptance. Native source extraction remains bounded; unsupported language/infrastructure observations remain explicit.
+
+## 2026-09-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.1.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bc641eee7574bca6826deeee5ece25071c20d1c19ae837a1c1d6852e7075f69f`
+- Pages created: 8
+- Pages updated: 65
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2594
+- Pages deprecated: 0
+- Semantic fields preserved: 13
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-09-16 — Task context and recovery integrity
+
+Task recovery now preserves deleted-version fences, dependency mutations invalidate current evidence consistently, and backlog project moves reserve both scopes. Project metrics include nullable backlog ancestry and explicit blocks. Calendar changes refresh effort units, and structured template application preserves canonical content with fresh criterion identities.
+
+## 2026-09-28
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bc641eee7574bca6826deeee5ece25071c20d1c19ae837a1c1d6852e7075f69f`
+- Pages created: 0
+- Pages updated: 533
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2146
+- Pages deprecated: 0
+- Semantic fields preserved: 59
+- Moved entities: none
+
+## 2026-09-28
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bc641eee7574bca6826deeee5ece25071c20d1c19ae837a1c1d6852e7075f69f`
+- Pages created: 0
+- Pages updated: 32
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2647
+- Pages deprecated: 0
+- Semantic fields preserved: 59
+- Moved entities: none
+
+## 2026-09-28
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bc641eee7574bca6826deeee5ece25071c20d1c19ae837a1c1d6852e7075f69f`
+- Pages created: 0
+- Pages updated: 32
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2647
+- Pages deprecated: 0
+- Semantic fields preserved: 59
+- Moved entities: none

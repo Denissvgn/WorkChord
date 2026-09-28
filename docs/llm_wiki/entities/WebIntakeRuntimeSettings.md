@@ -11,11 +11,11 @@ _Auto-generated from `WebIntakeRuntimeSettings` in `frontend/src/types/systemSet
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `rate_limit_per_minute` | `number` | *required* | — |
-| `has_token` | `boolean` | *required* | — |
-| `field_sources` | `Record<string, RuntimeSettingSource>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `rate_limit_per_minute` | `number` | Yes | — | — |
+| `has_token` | `boolean` | Yes | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | Yes | — | — |
 
 ## Methods
 

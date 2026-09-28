@@ -108,10 +108,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_triage_duplicate_suggestions | service.get_duplicate_suggestions | 139 | `service.get_duplicate_suggestions(triage_item_id, limit_per_type=limit_per_type, min_score=min_score)` |
-| get_triage_duplicate_suggestions | HTTPException | 145 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_triage_duplicate_suggestions | _not_found_detail | 147 | `_not_found_detail(service, triage_item_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 72 | `resolve_runtime_ui_language(service.db)` |
+| get_triage_duplicate_suggestions | service.get_duplicate_suggestions | 140 | `service.get_duplicate_suggestions(triage_item_id, limit_per_type=limit_per_type, min_score=min_score)` |
+| get_triage_duplicate_suggestions | HTTPException | 146 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_triage_duplicate_suggestions | _not_found_detail | 148 | `_not_found_detail(service, triage_item_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -128,8 +128,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_triage_duplicate_suggestions` | `service.get_duplicate_suggestions` | 139 |
-| external_call | `get_triage_duplicate_suggestions` | `HTTPException` | 145 |
+| unresolved_call | `get_triage_duplicate_suggestions` | `service.get_duplicate_suggestions` | 140 |
+| external_call | `get_triage_duplicate_suggestions` | `HTTPException` | 146 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

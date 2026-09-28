@@ -140,7 +140,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_skill_entrypoint_resource | _tool_call | 2245 | `_tool_call(_skill_bundle_scope_requirement(...), ...)` |
+| agent_skill_entrypoint_resource | _tool_call | 2275 | `_tool_call(_skill_bundle_scope_requirement(...), ...)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |

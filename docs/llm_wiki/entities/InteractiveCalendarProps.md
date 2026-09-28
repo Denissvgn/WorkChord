@@ -11,20 +11,20 @@ _Auto-generated from `InteractiveCalendarProps` in `frontend/src/components/cale
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `year` | `number` | *required* | — |
-| `month` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `shortDays` | `string[]` | *required* | — |
-| `weekendDays` | `number[]` | *required* | — |
-| `onYearChange` | `(year: number) => void` | *required* | — |
-| `onMonthChange` | `(month: number) => void` | *required* | — |
-| `onAddHoliday` | `(date: string) => void` | *required* | — |
-| `onRemoveHoliday` | `(date: string) => void` | *required* | — |
-| `onAddShortDay` | `(date: string) => void` | *required* | — |
-| `onRemoveShortDay` | `(date: string) => void` | *required* | — |
-| `onToggleWeekend` | `(day: number) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `year` | `number` | Yes | — | — |
+| `month` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `shortDays` | `string[]` | Yes | — | — |
+| `weekendDays` | `number[]` | Yes | — | — |
+| `onYearChange` | `(year: number) => void` | Yes | — | — |
+| `onMonthChange` | `(month: number) => void` | Yes | — | — |
+| `onAddHoliday` | `(date: string) => void` | Yes | — | — |
+| `onRemoveHoliday` | `(date: string) => void` | Yes | — | — |
+| `onAddShortDay` | `(date: string) => void` | Yes | — | — |
+| `onRemoveShortDay` | `(date: string) => void` | Yes | — | — |
+| `onToggleWeekend` | `(day: number) => void` | Yes | — | — |
 
 ## Methods
 

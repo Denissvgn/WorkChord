@@ -2,7 +2,7 @@
 
 **Entry point:** `get_agent_capabilities` (`http`)
 **Source:** [routers_agent](../modules/routers_agent.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 4 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 6 more
 
 **Complete modules touched:**
 
@@ -10,9 +10,11 @@
 - [agent_routing_rollout](../modules/agent_routing_rollout.md)
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
+- [authority](../modules/authority.md)
 - [config](../modules/config.md)
 - [routers_agent](../modules/routers_agent.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [task_domain_service](../modules/task_domain_service.md)
 
 ## Call sequence
 
@@ -29,20 +31,25 @@ sequenceDiagram
     participant p7 as ValueError
     participant p8 as features.insert
     participant p9 as features.index
-    participant p10 as get_settings
-    participant p11 as Settings
-    participant p12 as actor_has_scope
-    participant p13 as actor_scopes
-    participant p14 as json.loads
-    participant p15 as isinstance
-    participant p16 as SkillBundleCatalogResponse.model_validate_json
-    participant p17 as bundle_service.catalog_payload
-    participant p18 as logger.warning
-    participant p19 as features.append
-    participant p20 as settings.api_prefix.rstrip
-    participant p21 as AgentCapabilitiesResponse
-    participant p22 as service.actor_response
-    participant p23 as rollout_status.as_dict
+    participant p10 as features.extend
+    participant p11 as domain_capabilities
+    participant p12 as internal_authority
+    participant p13 as db.info.get
+    participant p14 as db.scalar
+    participant p15 as select(…).where(…).limit
+    participant p16 as select(…).where
+    participant p17 as select
+    participant p18 as getattr
+    participant p19 as get_settings
+    participant p20 as Settings
+    participant p21 as actor_has_scope
+    participant p22 as actor_scopes
+    participant p23 as json.loads
+    participant p24 as isinstance
+    participant p25 as SkillBundleCatalogResponse.model_validate_json
+    participant p26 as bundle_service.catalog_payload
+    participant p27 as logger.warning
+    participant p28 as features.append
     p0-->>p1: AgentRoutingRolloutService().status
     p0->>p2: AgentRoutingRolloutService
     p0-->>p3: AgentTeamSetupService(…).routing_readiness
@@ -54,22 +61,28 @@ sequenceDiagram
     p6-->>p7: ValueError
     p6-->>p8: features.insert
     p6-->>p9: features.index
-    p0->>p10: get_settings
-    p10->>p11: Settings
-    p0->>p12: actor_has_scope
-    p12->>p13: actor_scopes
-    p13-->>p14: json.loads
-    p13-->>p15: isinstance
-    p0-->>p16: SkillBundleCatalogResponse.model_validate_json
-    p0-->>p17: bundle_service.catalog_payload
-    p0-->>p18: logger.warning
-    p0-->>p19: features.append
-    p0-->>p20: settings.api_prefix.rstrip
-    p0->>p21: AgentCapabilitiesResponse
-    p0-->>p22: service.actor_response
-    p0->>p13: actor_scopes
-    p0-->>p23: rollout_status.as_dict
+    p0-->>p10: features.extend
+    p0->>p11: domain_capabilities
+    p11->>p12: internal_authority
+    p12-->>p13: db.info.get
+    p11-->>p14: db.scalar
+    p11-->>p15: select(…).where(…).limit
+    p11-->>p16: select(…).where
+    p11-->>p17: select
+    p0-->>p18: getattr
+    p0->>p19: get_settings
+    p19->>p20: Settings
+    p0->>p21: actor_has_scope
+    p21->>p22: actor_scopes
+    p22-->>p23: json.loads
+    p22-->>p24: isinstance
+    p0-->>p25: SkillBundleCatalogResponse.model_validate_json
+    p0-->>p26: bundle_service.catalog_payload
+    p0-->>p27: logger.warning
+    p0-->>p28: features.append
 ```
+
+> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -99,10 +112,12 @@ flowchart LR
     s9 -. "ValueError('Unsupported model-aware routing mode')" .-> s10
     s9 -. "features.insert(..., MODEL_AWARE_ROUTING_FEATURE)" .-> s11
     s9 -. "features.index('actor-roster-v1')" .-> s12
-    b0["mutation features.append"]
-    s1 -. "mutation features.append" .-> b0
-    b1["mutation features.insert"]
-    s9 -. "mutation features.insert" .-> b1
+    b0["mutation features.extend"]
+    s1 -. "mutation features.extend" .-> b0
+    b1["mutation features.append"]
+    s1 -. "mutation features.append" .-> b1
+    b2["mutation features.insert"]
+    s9 -. "mutation features.insert" .-> b2
     click s1 "../modules/routers_agent.md"
     click s3 "../modules/agent_routing_rollout.md"
     click s5 "../modules/agent_team_setup_service.md"
@@ -112,6 +127,7 @@ flowchart LR
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
+    class b2 boundary
 ```
 
 ### Step data
@@ -151,7 +167,8 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `features.append` | `get_agent_capabilities` | 370 |
+| mutation | `features.extend` | `get_agent_capabilities` | 355 |
+| mutation | `features.append` | `get_agent_capabilities` | 372 |
 | mutation | `features.insert` | `agent_contract_features` | 49 |
 
 ### Static analysis gaps

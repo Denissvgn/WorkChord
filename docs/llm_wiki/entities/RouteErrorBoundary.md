@@ -11,9 +11,9 @@ _Auto-generated from `RouteErrorBoundary` in `frontend/src/components/layout/Rou
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `state` | `RouteErrorBoundaryState` | `{ error: null }` | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `state` | `RouteErrorBoundaryState` | Yes | `{ error: null }` | — |
 
 ## Methods
 

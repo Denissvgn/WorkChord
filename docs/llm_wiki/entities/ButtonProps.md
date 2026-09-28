@@ -11,11 +11,11 @@ _Auto-generated from `ButtonProps` in `frontend/src/components/common/Button.tsx
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'primary' \| 'secondary' \| 'danger' \| 'warning' \| 'ghost' \| 'outline'` | *required* | — |
-| `size` | `'sm' \| 'md' \| 'lg'` | *required* | — |
-| `isLoading` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `variant` | `'primary' \| 'secondary' \| 'danger' \| 'warning' \| 'ghost' \| 'outline'` | No | — | — |
+| `size` | `'sm' \| 'md' \| 'lg'` | No | — | — |
+| `isLoading` | `boolean` | No | — | — |
 
 ## Methods
 

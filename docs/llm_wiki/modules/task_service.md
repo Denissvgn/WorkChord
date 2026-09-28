@@ -8,6 +8,10 @@ Task service with business logic.
 
 Task and aggregate versions fence edits and structural commands. Merge/unmerge reconcile old/new ancestors with leaf-only effort and lower-number-is-higher priority; claimed descendants require recovery. Pure rearrangement preserves valid accepted leaf evidence and effective optional/deferred meaning with audit, while content changes invalidate old acceptance. An empty summary remains structural rather than becoming invented leaf work.
 
+Task commands share transaction ownership and task/iteration version fences. Unscheduled project work uses a project lock and transactional backlog recovery points. Human ownership survives schedule moves while capacity is cleared when the iteration changes. The complete graph loader remains authoritative for execution and structural mutation; bounded UI detail is a separate service. Public owner names are projected only through authorized task scope.
+
+Backlog project changes require edit permission in both scopes. Project locks are acquired in ascending ID order and the task scope is rechecked before writing. The complete subtree must have no incoming or outgoing dependency across its boundary. Both backlogs receive transactional recovery points, descendants reserve one version per command, and rejected moves roll everything back. Actual dependency changes invalidate current progress and acceptance through general updates and individual add/remove commands. Immutable evidence history remains available, a command reserves one task version, and no-op dependency requests retain their current version. Locked graph relationships are loaded explicitly before applying a dependency update.
+
 ## Imports
 
 | Source | Symbols |
@@ -30,7 +34,7 @@ Task and aggregate versions fence edits and structural commands. Merge/unmerge r
 | `app.services.snapshot_service` | `SnapshotService` |
 | `datetime` | `date` |
 | `json` | `json` |
-| `sqlalchemy` | `select`, `update` |
+| `sqlalchemy` | `and_`, `or_`, `select`, `update` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `attributes`, `selectinload` |
 | `typing` | `Any`, `Optional`, `Sequence` |
@@ -53,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (31) |
+| Inbound | `backend` (36) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -62,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

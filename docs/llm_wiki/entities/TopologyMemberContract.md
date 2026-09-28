@@ -26,15 +26,15 @@ _Auto-generated from `TopologyMemberContract` in `backend/app/autonomy/contracts
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `primary_controller` | `bool` | `primary_controller` | No | No | `False` | — | — | — |
 | `scope_preset` | `Literal['postgresql-pm-v1', 'postgresql-worker-v1', 'postgresql-verifier-v1']` | `scope_preset` | Yes | No | — | — | — | — |
-| `scopes` | `tuple[str, ...]` | `scopes` | Yes | No | — | min_length=1; max_length=64 | — | — |
+| `scopes` | `tuple[str, ...]` | `scopes` | Yes | No | — | max_length=64; min_length=1 | — | — |
 | `profile_key` | `str` | `profile_key` | Yes | No | — | pattern=unknown (LOGICAL_KEY_PATTERN) | — | — |
 | `profile_revision` | `int` | `profile_revision` | Yes | No | — | ge=1 | — | — |
 | `skill_requirements` | `dict[str, int]` | `skill_requirements` | No | No | factory: `dict` | max_length=128 | — | — |
-| `model_bindings` | `tuple[ModelBindingContract, ...]` | `model_bindings` | Yes | No | — | min_length=1; max_length=32 | — | — |
+| `model_bindings` | `tuple[ModelBindingContract, ...]` | `model_bindings` | Yes | No | — | max_length=32; min_length=1 | — | — |
 | `role_package` | `RolePackageContract` | `role_package` | Yes | No | — | — | — | — |
 | `runtime` | `RuntimeContract` | `runtime` | Yes | No | — | — | — | — |
 | `independence_group` | `str` | `independence_group` | Yes | No | — | pattern=unknown (LOGICAL_KEY_PATTERN) | — | — |
-| `workload_identity_subject` | `str` | `workload_identity_subject` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `workload_identity_subject` | `str` | `workload_identity_subject` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `kms_key_ref` | `str` | `kms_key_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `external_lease_classes` | `tuple[str, ...]` | `external_lease_classes` | No | No | `()` | max_length=128 | — | — |
 | `work_policy` | `Literal['assigned_only']` | `work_policy` | No | No | `'assigned_only'` | — | — | — |

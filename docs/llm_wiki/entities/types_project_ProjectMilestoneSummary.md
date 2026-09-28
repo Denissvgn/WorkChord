@@ -11,14 +11,14 @@ _Auto-generated from `ProjectMilestoneSummary` in `frontend/src/types/project.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `project_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `status` | `ProjectMilestoneStatus` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `project_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `status` | `ProjectMilestoneStatus` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `sort_order` | `number` | Yes | — | — |
 
 ## Methods
 

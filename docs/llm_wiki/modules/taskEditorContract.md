@@ -10,14 +10,14 @@ _Auto-generated from `frontend/src/components/tasks/taskEditorContract.ts`._
 
 | Source | Symbols |
 |--------|---------|
-| `../../types/task` | `Task`, `TaskCreate`, `TaskStatus`, `TaskUpdate` |
+| `../../types/task` | `Task`, `TaskBrief`, `TaskCreate`, `TaskStatus`, `TaskUpdate` |
 | `../../utils/apiError` | `getApiErrorMessage` |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `TASK_EDITOR_FIELD_SCHEMA`, `TaskConflictMetadata`, `TaskEditorAvailability`, `TaskEditorSection`, `TaskEditorServerError`, `TaskEditorValidationCode`, `TaskEditorValidationIssue`, `TaskEditorValues`, `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor` |
+| Exports | `TASK_EDITOR_FIELD_SCHEMA`, `TaskConflictMetadata`, `TaskEditorAvailability`, `TaskEditorSection`, `TaskEditorServerError`, `TaskEditorValidationCode`, `TaskEditorValidationIssue`, `TaskEditorValues`, `buildTaskEditorDefaults`, `emptyTaskBrief`, `mapTaskEditorServerError`, `newCriterion`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor` |
 | Constants | `TASK_EDITOR_FIELD_SCHEMA` |
 
 ## Local dependency map
@@ -25,31 +25,59 @@ _Auto-generated from `frontend/src/components/tasks/taskEditorContract.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/taskDraftStorage.ts"]
-    n1["frontend/src/components/tasks/taskEditorContract.ts"]
-    n2["frontend/src/components/tasks/TaskForm.tsx"]
-    n3["frontend/src/types/task.ts"]
-    n4["frontend/src/utils/apiError.ts"]
+    n0["frontend/src/components/tasks/TaskBriefEditor.test.tsx"]
+    n1["frontend/src/components/tasks/TaskBriefEditor.tsx"]
+    n2["frontend/src/components/tasks/taskDraftStorage.ts"]
+    n3["frontend/src/components/tasks/taskEditorContract.ts"]
+    n4["frontend/src/components/tasks/TaskForm.test.tsx"]
+    n5["frontend/src/components/tasks/TaskForm.tsx"]
+    n6["frontend/src/components/tasks/TaskWorkPanel.test.tsx"]
+    n7["frontend/src/pages/TriagePage.tsx"]
+    n8["frontend/src/types/task.ts"]
+    n9["frontend/src/utils/apiError.ts"]
     n0 --> n1
+    n0 --> n3
     n1 --> n3
-    n1 --> n4
-    n2 --> n0
-    n2 --> n1
+    n1 --> n8
     n2 --> n3
-    n2 --> n4
-    click n0 "../modules/taskDraftStorage.md"
-    click n1 "../modules/taskEditorContract.md"
-    click n2 "../modules/TaskForm.md"
-    click n3 "../modules/types_task.md"
-    click n4 "../modules/apiError.md"
+    n3 --> n8
+    n3 --> n9
+    n4 --> n3
+    n4 --> n5
+    n5 --> n1
+    n5 --> n2
+    n5 --> n3
+    n5 --> n8
+    n5 --> n9
+    n6 --> n3
+    n6 --> n8
+    n7 --> n1
+    n7 --> n3
+    n7 --> n8
+    n7 --> n9
+    click n0 "../modules/TaskBriefEditor.test.md"
+    click n1 "../modules/TaskBriefEditor.md"
+    click n2 "../modules/taskDraftStorage.md"
+    click n3 "../modules/taskEditorContract.md"
+    click n4 "../modules/TaskForm.test.md"
+    click n5 "../modules/TaskForm.md"
+    click n6 "../modules/TaskWorkPanel.test.md"
+    click n7 "../modules/TriagePage.md"
+    click n8 "../modules/types_task.md"
+    click n9 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [TaskBriefEditor.test](../modules/TaskBriefEditor.test.md) |
+| Inbound | [TaskBriefEditor](../modules/TaskBriefEditor.md) |
 | Inbound | [taskDraftStorage](../modules/taskDraftStorage.md) |
+| Inbound | [TaskForm.test](../modules/TaskForm.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TaskWorkPanel.test](../modules/TaskWorkPanel.test.md) |
+| Inbound | [TriagePage](../modules/TriagePage.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 | Outbound | [apiError](../modules/apiError.md) |
 
@@ -58,21 +86,23 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskEditorValues](../entities/TaskEditorValues.md) | Class | 10 | — | — |
-| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Class | 33 | — | — |
-| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Class | 41 | — | — |
-| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Class | 185 | — | — |
-| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Class | 251 | — | — |
+| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Class | 36 | — | — |
+| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Class | 44 | — | — |
+| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Class | 194 | — | — |
+| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Class | 263 | — | — |
 | [TaskEditorSection](../entities/TaskEditorSection.md) | Type alias | 4 | — | — |
 | [TaskEditorAvailability](../entities/TaskEditorAvailability.md) | Type alias | 5 | — | — |
-| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 178 | — | — |
-| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 259 | — | — |
+| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 187 | — | — |
+| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 271 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `emptyTaskBrief` | `() -> TaskBrief` | — | — |
 | `buildTaskEditorDefaults` | `(context: TaskEditorDefaultsContext = {}) -> TaskEditorValues` | — | — |
 | `validateTaskEditor` | `(values: TaskEditorValues, iterationAssigneeIds: ReadonlySet<number>) -> TaskEditorValidationIssue[]` | — | — |
 | `toTaskCreate` | `(values: TaskEditorValues) -> TaskCreate` | — | — |
 | `toTaskUpdate` | `(values: TaskEditorValues, options: { includeStatus?: boolean } = {}) -> TaskUpdate` | — | — |
 | `mapTaskEditorServerError` | `(error: unknown, fallback: string) -> TaskEditorServerError` | — | — |
+| `newCriterion` | `(text = '')` | — | — |

@@ -11,10 +11,10 @@ _Auto-generated from `TaskAgentReadinessBadgeProps` in `frontend/src/components/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `readiness` | `TaskAgentReadiness` | *required* | — |
-| `mode` | `'compact' \| 'panel'` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `readiness` | `TaskAgentReadiness` | Yes | — | — |
+| `mode` | `'compact' \| 'panel'` | No | — | — |
 
 ## Methods
 

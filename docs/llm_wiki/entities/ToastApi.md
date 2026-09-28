@@ -11,13 +11,13 @@ _Auto-generated from `ToastApi` in `frontend/src/components/feedback/toast.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `showToast` | `(input: ToastInput) => number` | *required* | — |
-| `success` | `(message: string, options?: ToneToastOptions) => number` | *required* | — |
-| `error` | `(message: string, options?: ToneToastOptions) => number` | *required* | — |
-| `info` | `(message: string, options?: ToneToastOptions) => number` | *required* | — |
-| `dismiss` | `(id: number) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `showToast` | `(input: ToastInput) => number` | Yes | — | — |
+| `success` | `(message: string, options?: ToneToastOptions) => number` | Yes | — | — |
+| `error` | `(message: string, options?: ToneToastOptions) => number` | Yes | — | — |
+| `info` | `(message: string, options?: ToneToastOptions) => number` | Yes | — | — |
+| `dismiss` | `(id: number) => void` | Yes | — | — |
 
 ## Methods
 

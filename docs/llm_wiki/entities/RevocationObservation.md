@@ -23,7 +23,7 @@ Source-derived revocation result; never a caller-authored bare Boolean.
 | `state` | `Literal['active', 'revoked', 'unknown']` | `state` | Yes | No | — | — | — | — |
 | `observed_at` | `datetime` | `observed_at` | Yes | No | — | — | — | — |
 | `source_ref` | `str` | `source_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `source_generation` | `str` | `source_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `source_generation` | `str` | `source_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `source_receipt_digest` | `str` | `source_receipt_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods

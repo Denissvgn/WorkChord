@@ -11,12 +11,13 @@ _Auto-generated from `TaskAgentReadiness` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `is_ready` | `boolean` | *required* | — |
-| `blockers` | `string[]` | *required* | — |
-| `warnings` | `string[]` | *required* | — |
-| `criteria` | `TaskAgentReadinessCriterion[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `blocker_codes` | `string[]` | No | — | — |
+| `is_ready` | `boolean` | Yes | — | — |
+| `blockers` | `string[]` | Yes | — | — |
+| `warnings` | `string[]` | Yes | — | — |
+| `criteria` | `TaskAgentReadinessCriterion[]` | Yes | — | — |
 
 ## Methods
 
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `blockers`, `criteria`, `is_ready`, `warnings` |
+| [types_task](../modules/types_task.md) | 0 | `blocker_codes`, `blockers`, `criteria`, `is_ready`, `warnings` |
 
 ### References
 

@@ -11,20 +11,20 @@ _Auto-generated from `AgentTeamApplyResponse` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-apply-receipt-v1'` | *required* | — |
-| `apply_id` | `string` | *required* | — |
-| `topology_key` | `string` | *required* | — |
-| `manifest_digest` | `string` | *required* | — |
-| `plan_digest` | `string` | *required* | — |
-| `expected_topology_revision` | `number` | *required* | — |
-| `resulting_topology_revision` | `number` | *required* | — |
-| `status` | `'completed' \| 'partial' \| 'blocked'` | *required* | — |
-| `replayed` | `boolean` | *required* | — |
-| `receipts` | `AgentTeamActionReceipt[]` | *required* | — |
-| `pending_action_ids` | `string[]` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-apply-receipt-v1'` | Yes | — | — |
+| `apply_id` | `string` | Yes | — | — |
+| `topology_key` | `string` | Yes | — | — |
+| `manifest_digest` | `string` | Yes | — | — |
+| `plan_digest` | `string` | Yes | — | — |
+| `expected_topology_revision` | `number` | Yes | — | — |
+| `resulting_topology_revision` | `number` | Yes | — | — |
+| `status` | `'completed' \| 'partial' \| 'blocked'` | Yes | — | — |
+| `replayed` | `boolean` | Yes | — | — |
+| `receipts` | `AgentTeamActionReceipt[]` | Yes | — | — |
+| `pending_action_ids` | `string[]` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
 
 ## Methods
 

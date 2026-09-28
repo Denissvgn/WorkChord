@@ -6,6 +6,8 @@
 
 Models package.
 
+Importing the recovery models registers the transactional task deletion hook alongside the model registry.
+
 ## Imports
 
 | Source | Symbols |
@@ -22,12 +24,13 @@ Models package.
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
-| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport`, `TaskScheduleBaseline` |
+| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport`, `TaskScheduleBaseline`, `TaskDeletionFence` |
 | `app.models.release` | `Release`, `ReleaseStatus`, `release_tasks` |
 | `app.models.request_source` | `RequestSource`, `RequestSourceLink`, `RequestSourceType` |
 | `app.models.saved_view` | `SavedView`, `SavedViewScope`, `SavedViewType` |
 | `app.models.system_settings` | `SystemSetting` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
+| `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
 | `app.models.template` | `TemplateType`, `WorkTemplate` |
@@ -53,6 +56,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (23) |
+| Outbound | `backend` (24) |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

@@ -11,10 +11,10 @@ _Auto-generated from `TeamListProps` in `frontend/src/components/team/TeamList.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `onEdit` | `(member: TeamMember) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `onEdit` | `(member: TeamMember) => void` | Yes | — | — |
 
 ## Methods
 

@@ -11,10 +11,10 @@ _Auto-generated from `NotificationsPanelProps` in `frontend/src/components/notif
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `className` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `className` | `string` | No | — | — |
 
 ## Methods
 

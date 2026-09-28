@@ -1,6 +1,6 @@
 # ScenarioBase
 
-**Location:** `backend/tests/test_agent_routing_wave6_qualification.py:85`
+**Location:** `backend/tests/test_agent_routing_wave6_qualification.py:86`
 **Kind:** Class
 **Bases:** —
 **Module:** [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md)

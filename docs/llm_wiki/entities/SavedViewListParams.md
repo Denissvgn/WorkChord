@@ -11,9 +11,9 @@ _Auto-generated from `SavedViewListParams` in `frontend/src/types/savedView.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `view_type` | `SavedViewType` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `view_type` | `SavedViewType` | Yes | — | — |
 
 ## Methods
 

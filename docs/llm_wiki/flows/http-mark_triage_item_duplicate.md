@@ -125,9 +125,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| mark_triage_item_duplicate | service.mark_duplicate | 333 | `service.mark_duplicate(triage_item_id, data)` |
-| mark_triage_item_duplicate | _bad_request | 335 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 64 | `resolve_runtime_ui_language(service.db)` |
+| mark_triage_item_duplicate | service.mark_duplicate | 334 | `service.mark_duplicate(triage_item_id, data)` |
+| mark_triage_item_duplicate | _bad_request | 336 | `_bad_request(service, e)` |
+| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,7 +145,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `mark_triage_item_duplicate` | `service.mark_duplicate` | 333 |
+| unresolved_call | `mark_triage_item_duplicate` | `service.mark_duplicate` | 334 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

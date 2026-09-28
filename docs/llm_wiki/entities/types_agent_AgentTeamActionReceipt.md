@@ -11,19 +11,19 @@ _Auto-generated from `AgentTeamActionReceipt` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `action_id` | `string` | *required* | — |
-| `action_digest` | `string` | *required* | — |
-| `reconciliation_class` | `AgentTeamReconciliationClass` | *required* | — |
-| `operation` | `string` | *required* | — |
-| `actor_key` | `string` | *required* | — |
-| `status` | `'pending' \| 'applied' \| 'no_change' \| 'blocked'` | *required* | — |
-| `target_actor_id` | `number \| null` | *required* | — |
-| `before_revision` | `number \| null` | *required* | — |
-| `after_revision` | `number \| null` | *required* | — |
-| `blocker_code` | `string \| null` | *required* | — |
-| `next_action` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `action_id` | `string` | Yes | — | — |
+| `action_digest` | `string` | Yes | — | — |
+| `reconciliation_class` | `AgentTeamReconciliationClass` | Yes | — | — |
+| `operation` | `string` | Yes | — | — |
+| `actor_key` | `string` | Yes | — | — |
+| `status` | `'pending' \| 'applied' \| 'no_change' \| 'blocked'` | Yes | — | — |
+| `target_actor_id` | `number \| null` | Yes | — | — |
+| `before_revision` | `number \| null` | Yes | — | — |
+| `after_revision` | `number \| null` | Yes | — | — |
+| `blocker_code` | `string \| null` | Yes | — | — |
+| `next_action` | `string \| null` | Yes | — | — |
 
 ## Methods
 

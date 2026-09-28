@@ -11,23 +11,23 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-runtime-handoff-v1'` | *required* | — |
-| `topology_key` | `string` | *required* | — |
-| `topology_revision` | `number` | *required* | — |
-| `actor_key` | `string` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `role` | `AgentTeamRole` | *required* | — |
-| `server_url` | `string` | *required* | — |
-| `required_server_features` | `string[]` | *required* | — |
-| `skill_package` | `AgentTeamSkillPackage` | *required* | — |
-| `profile_key` | `string` | *required* | — |
-| `profile_revision` | `string` | *required* | — |
-| `model_binding_revisions` | `Record<string, number>` | *required* | — |
-| `supported_assignment_modes` | `string[]` | *required* | — |
-| `startup_instructions` | `string[]` | *required* | — |
-| `credential_ref` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-runtime-handoff-v1'` | Yes | — | — |
+| `topology_key` | `string` | Yes | — | — |
+| `topology_revision` | `number` | Yes | — | — |
+| `actor_key` | `string` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `role` | `AgentTeamRole` | Yes | — | — |
+| `server_url` | `string` | Yes | — | — |
+| `required_server_features` | `string[]` | Yes | — | — |
+| `skill_package` | `AgentTeamSkillPackage` | Yes | — | — |
+| `profile_key` | `string` | Yes | — | — |
+| `profile_revision` | `string` | Yes | — | — |
+| `model_binding_revisions` | `Record<string, number>` | Yes | — | — |
+| `supported_assignment_modes` | `string[]` | Yes | — | — |
+| `startup_instructions` | `string[]` | Yes | — | — |
+| `credential_ref` | `string` | Yes | — | — |
 
 ## Methods
 

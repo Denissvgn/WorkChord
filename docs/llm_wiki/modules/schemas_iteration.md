@@ -34,7 +34,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
+| Inbound | `backend` (11) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -43,7 +43,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -54,7 +54,7 @@ flowchart LR
 | [IterationSeriesStop](../entities/schemas_iteration_IterationSeriesStop.md) | 32 | `BaseModel` | Stop rule for generating a back-to-back iteration series. |
 | [IterationSeriesCreate](../entities/schemas_iteration_IterationSeriesCreate.md) | 48 | `BaseModel` | Schema for creating multiple back-to-back iterations. |
 | [IterationProjectSummary](../entities/IterationProjectSummary.md) | 59 | `BaseModel` | Compact project identity embedded in iteration responses. |
-| [IterationResponse](../entities/IterationResponse.md) | 70 | `BaseModel` | Schema for iteration response. |
-| [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 88 | `BaseModel` | Response returned after creating an iteration series. |
-| [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 93 | `WorkMetricSummary` | Summary statistics for an iteration. |
-| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 109 | `BaseModel` | Compact planning inputs used by persistent navigation. |
+| [IterationResponse](../entities/IterationResponse.md) | 70 | `BaseModel` | — |
+| [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 89 | `BaseModel` | Response returned after creating an iteration series. |
+| [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
+| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 110 | `BaseModel` | Compact planning inputs used by persistent navigation. |

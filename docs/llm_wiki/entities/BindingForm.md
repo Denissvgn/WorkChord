@@ -11,15 +11,15 @@ _Auto-generated from `BindingForm` in `frontend/src/components/settings/AgentMod
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number \| null` | *required* | — |
-| `revision` | `number \| null` | *required* | — |
-| `actorId` | `number \| null` | *required* | — |
-| `modelCatalogId` | `number \| null` | *required* | — |
-| `isDefault` | `boolean` | *required* | — |
-| `toolTags` | `string` | *required* | — |
-| `dataPolicyTags` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number \| null` | Yes | — | — |
+| `revision` | `number \| null` | Yes | — | — |
+| `actorId` | `number \| null` | Yes | — | — |
+| `modelCatalogId` | `number \| null` | Yes | — | — |
+| `isDefault` | `boolean` | Yes | — | — |
+| `toolTags` | `string` | Yes | — | — |
+| `dataPolicyTags` | `string` | Yes | — | — |
 
 ## Methods
 

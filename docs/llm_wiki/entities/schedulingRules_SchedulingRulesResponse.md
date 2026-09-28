@@ -11,10 +11,10 @@ _Auto-generated from `SchedulingRulesResponse` in `frontend/src/types/scheduling
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `rules` | `SchedulingRules` | *required* | — |
-| `source` | `'yaml' \| 'database' \| 'defaults'` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `rules` | `SchedulingRules` | Yes | — | — |
+| `source` | `'yaml' \| 'database' \| 'defaults'` | Yes | — | — |
 
 ## Methods
 

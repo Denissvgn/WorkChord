@@ -11,11 +11,11 @@ _Auto-generated from `AgentTeamStepDefinition` in `frontend/src/features/agentTe
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `AgentTeamStepId` | *required* | — |
-| `titleKey` | `string` | *required* | — |
-| `descriptionKey` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `AgentTeamStepId` | Yes | — | — |
+| `titleKey` | `string` | Yes | — | — |
+| `descriptionKey` | `string` | Yes | — | — |
 
 ## Methods
 

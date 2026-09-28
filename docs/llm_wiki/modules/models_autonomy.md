@@ -73,10 +73,10 @@ flowchart LR
 | [AgentAutonomyTopology](../entities/AgentAutonomyTopology.md) | 25 | `Base` | Applied secret-free topology projection; external receipts stay authoritative. |
 | [AgentAutonomyTopologyMember](../entities/AgentAutonomyTopologyMember.md) | 71 | `Base` | Stable logical-key to actor mapping and non-secret runtime readiness. |
 | [AgentWorkPackage](../entities/AgentWorkPackage.md) | 128 | `Base` | Package aggregation is separate from the mutable execution task. |
-| [AgentVerificationRequirement](../entities/AgentVerificationRequirement.md) | 183 | `Base` | One independently claimable verifier slot with a fenced lifecycle. |
-| [AgentVerificationEvent](../entities/AgentVerificationEvent.md) | 269 | `Base` | Append-only verifier-slot event projection. |
-| [AgentObservationJob](../entities/AgentObservationJob.md) | 310 | `Base` | Restart-safe bounded observation/retention job projection. |
-| [ImmutableAutonomyEventError](../entities/ImmutableAutonomyEventError.md) | 368 | `RuntimeError` | — |
+| [AgentVerificationRequirement](../entities/AgentVerificationRequirement.md) | 187 | `Base` | One independently claimable verifier slot with a fenced lifecycle. |
+| [AgentVerificationEvent](../entities/AgentVerificationEvent.md) | 273 | `Base` | Append-only verifier-slot event projection. |
+| [AgentObservationJob](../entities/AgentObservationJob.md) | 314 | `Base` | Restart-safe bounded observation/retention job projection. |
+| [ImmutableAutonomyEventError](../entities/ImmutableAutonomyEventError.md) | 372 | `RuntimeError` | — |
 
 ## Functions
 

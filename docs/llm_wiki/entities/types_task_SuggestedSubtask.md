@@ -1,6 +1,6 @@
 # SuggestedSubtask
 
-**Location:** `frontend/src/types/task.ts:188`
+**Location:** `frontend/src/types/task.ts:209`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `SuggestedSubtask` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `effort_days` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `effort_days` | `number` | Yes | — | — |
 
 ## Methods
 

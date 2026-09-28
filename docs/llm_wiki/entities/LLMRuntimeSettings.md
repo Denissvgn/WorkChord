@@ -11,15 +11,15 @@ _Auto-generated from `LLMRuntimeSettings` in `frontend/src/types/systemSettings.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `provider` | `LLMProvider` | *required* | — |
-| `api_url` | `string` | *required* | — |
-| `model` | `string` | *required* | — |
-| `temperature` | `number` | *required* | — |
-| `max_output_tokens` | `number` | *required* | — |
-| `has_api_key` | `boolean` | *required* | — |
-| `field_sources` | `Record<string, RuntimeSettingSource>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `LLMProvider` | Yes | — | — |
+| `api_url` | `string` | Yes | — | — |
+| `model` | `string` | Yes | — | — |
+| `temperature` | `number` | Yes | — | — |
+| `max_output_tokens` | `number` | Yes | — | — |
+| `has_api_key` | `boolean` | Yes | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | Yes | — | — |
 
 ## Methods
 

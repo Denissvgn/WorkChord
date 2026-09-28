@@ -11,9 +11,9 @@ _Auto-generated from `AppForm` in `frontend/src/components/settings/RuntimeConfi
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `ai_language_mode` | `AILanguageMode` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `ai_language_mode` | `AILanguageMode` | Yes | — | — |
 
 ## Methods
 

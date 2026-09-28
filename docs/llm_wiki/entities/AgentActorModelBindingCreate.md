@@ -26,7 +26,7 @@ Secret-free model binding optionally created with a new actor.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `model_catalog_key` | `str` | `model_catalog_key` | Yes | No | — | min_length=1; max_length=120 | — | — |
+| `model_catalog_key` | `str` | `model_catalog_key` | Yes | No | — | max_length=120; min_length=1 | — | — |
 | `is_default` | `bool` | `is_default` | No | No | `True` | — | — | — |
 | `tool_tags` | `list[str]` | `tool_tags` | No | No | factory: `list` | max_length=32 | — | — |
 | `data_policy_tags` | `list[str]` | `data_policy_tags` | No | No | factory: `list` | max_length=32 | — | — |

@@ -11,20 +11,20 @@ _Auto-generated from `TemplateFormState` in `frontend/src/components/settings/Te
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `template_type` | `TemplateType` | *required* | — |
-| `default_title` | `string` | *required* | — |
-| `default_description` | `string` | *required* | — |
-| `default_priority` | `string` | *required* | — |
-| `default_effort_days` | `string` | *required* | — |
-| `default_labels` | `string[]` | *required* | — |
-| `default_checklist` | `string` | *required* | — |
-| `default_payload` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `template_type` | `TemplateType` | Yes | — | — |
+| `default_title` | `string` | Yes | — | — |
+| `default_description` | `string` | Yes | — | — |
+| `default_priority` | `string` | Yes | — | — |
+| `default_effort_days` | `string` | Yes | — | — |
+| `default_labels` | `string[]` | Yes | — | — |
+| `default_checklist` | `string` | Yes | — | — |
+| `default_payload` | `string` | Yes | — | — |
+| `is_active` | `boolean` | Yes | — | — |
+| `sort_order` | `number` | Yes | — | — |
 
 ## Methods
 

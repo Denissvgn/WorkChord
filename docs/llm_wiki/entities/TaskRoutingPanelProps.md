@@ -11,10 +11,10 @@ _Auto-generated from `TaskRoutingPanelProps` in `frontend/src/components/agent/T
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `onAssigned` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
+| `onAssigned` | `() => void` | No | — | — |
 
 ## Methods
 

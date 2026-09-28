@@ -1,6 +1,6 @@
 # TaskStatus
 
-**Location:** `backend/app/schemas/task.py:26`
+**Location:** `backend/app/schemas/task.py:27`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_task](../modules/schemas_task.md)

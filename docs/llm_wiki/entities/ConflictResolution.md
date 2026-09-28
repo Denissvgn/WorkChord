@@ -11,10 +11,10 @@ _Auto-generated from `ConflictResolution` in `frontend/src/components/settings/A
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `scope` | `'catalog' \| 'binding'` | *required* | — |
-| `currentRevision` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `scope` | `'catalog' \| 'binding'` | Yes | — | — |
+| `currentRevision` | `number` | Yes | — | — |
 
 ## Methods
 

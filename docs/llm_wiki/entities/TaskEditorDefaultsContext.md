@@ -1,6 +1,6 @@
 # TaskEditorDefaultsContext
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:33`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:36`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
@@ -11,13 +11,13 @@ _Auto-generated from `TaskEditorDefaultsContext` in `frontend/src/components/tas
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `parentId` | `number \| null` | *required* | — |
-| `parentPriority` | `number` | *required* | — |
-| `parentProjectId` | `number \| null` | *required* | — |
-| `parentMilestoneId` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | No | — | — |
+| `parentId` | `number \| null` | No | — | — |
+| `parentPriority` | `number` | No | — | — |
+| `parentProjectId` | `number \| null` | No | — | — |
+| `parentMilestoneId` | `number \| null` | No | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TaskEditorFieldDefinition
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:41`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:44`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
@@ -11,11 +11,11 @@ _Auto-generated from `TaskEditorFieldDefinition` in `frontend/src/components/tas
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `section` | `TaskEditorSection` | *required* | — |
-| `availability` | `TaskEditorAvailability` | *required* | — |
-| `defaultValue` | `(context: TaskEditorDefaultsContext) => TaskEditorValues[K]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `section` | `TaskEditorSection` | Yes | — | — |
+| `availability` | `TaskEditorAvailability` | Yes | — | — |
+| `defaultValue` | `(context: TaskEditorDefaultsContext) => TaskEditorValues[K]` | Yes | — | — |
 
 ## Methods
 

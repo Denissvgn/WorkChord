@@ -26,10 +26,10 @@ _Auto-generated from `AgentTeamRuntimeAcknowledgement` in `backend/app/schemas/a
 | `actor_key` | `str` | `actor_key` | Yes | No | — | pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `skill_package` | `AgentTeamSkillPackage` | `skill_package` | Yes | No | — | — | — | — |
-| `profile_revision` | `str` | `profile_revision` | Yes | No | — | min_length=1; max_length=128 | — | — |
-| `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | min_length=1; max_length=16 | — | — |
-| `server_features` | `tuple[str, ...]` | `server_features` | Yes | No | — | min_length=1; max_length=64 | — | — |
-| `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | min_length=1; max_length=4 | — | — |
+| `profile_revision` | `str` | `profile_revision` | Yes | No | — | max_length=128; min_length=1 | — | — |
+| `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | max_length=16; min_length=1 | — | — |
+| `server_features` | `tuple[str, ...]` | `server_features` | Yes | No | — | max_length=64; min_length=1 | — | — |
+| `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | max_length=4; min_length=1 | — | — |
 
 ## Methods
 

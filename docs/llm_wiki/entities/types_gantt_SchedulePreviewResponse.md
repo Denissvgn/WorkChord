@@ -11,12 +11,12 @@ Server dry-run of sandbox edits through the real scheduler (nothing persisted).
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `input_revision` | `number` | *required* | — |
-| `tasks` | `GanttTask[]` | *required* | — |
-| `overdue_task_ids` | `number[]` | *required* | — |
-| `schedule_result` | `ScheduleResult \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `input_revision` | `number` | Yes | — | — |
+| `tasks` | `GanttTask[]` | Yes | — | — |
+| `overdue_task_ids` | `number[]` | Yes | — | — |
+| `schedule_result` | `ScheduleResult \| null` | No | — | — |
 
 ## Methods
 

@@ -41,12 +41,11 @@ sequenceDiagram
     participant p18 as select (backend/app/authority.py:_scope_conditions)
     participant p19 as and_ (backend/app/authority.py:_scope_conditions)
     participant p20 as task.c.iteration_id.in_
-    participant p21 as task.c.project_id.in_
-    participant p22 as task.c.project_id.is_
-    participant p23 as select(…).where (backend/app/authority.py:_scope_conditions, 3)
-    participant p24 as c.id.in_
-    participant p25 as c.task_id.in_
-    participant p26 as c.depends_on_id.in_
+    participant p21 as task.c.iteration_id.is_
+    participant p22 as task.c.project_id.in_
+    participant p23 as task.c.project_id.is_
+    participant p24 as select(…).where (backend/app/authority.py:_scope_conditions, 3)
+    participant p25 as false (backend/app/authority.py:_scope_conditions)
     p0->>p1: IterationService
     p0-->>p2: iteration_service.get_by_id
     p0-->>p3: HTTPException
@@ -66,20 +65,20 @@ sequenceDiagram
     p11-->>p17: select(…).where (backend/app/authority.py:_scope_conditions, 1)
     p11-->>p18: select (backend/app/authority.py:_scope_conditions)
     p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
+    p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
     p11-->>p20: task.c.iteration_id.in_
-    p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p21: task.c.project_id.in_
-    p11-->>p22: task.c.project_id.is_
-    p11-->>p23: select(…).where (backend/app/authority.py:_scope_conditions, 3)
-    p11-->>p18: select (backend/app/authority.py:_scope_conditions)
-    p11-->>p24: c.id.in_
     p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p25: c.task_id.in_
-    p11-->>p26: c.depends_on_id.in_
+    p11-->>p21: task.c.iteration_id.is_
+    p11-->>p22: task.c.project_id.in_
     p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
+    p11-->>p22: task.c.project_id.in_
+    p11-->>p23: task.c.project_id.is_
+    p11-->>p24: select(…).where (backend/app/authority.py:_scope_conditions, 3)
+    p11-->>p18: select (backend/app/authority.py:_scope_conditions)
+    p11-->>p25: false (backend/app/authority.py:_scope_conditions)
 ```
 
-> Call sequence diagram shows 30 of 262 interactions; 232 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 276 interactions; 246 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -162,19 +161,19 @@ flowchart LR
 | export_iteration | TeamService | 97 | `TeamService(db)` |
 | export_iteration | team_service.get_by_iteration | 98 | `team_service.get_by_iteration(iteration_id)` |
 | export_iteration | aggregate_metrics | 130 | `aggregate_metrics(db, iteration_id=iteration_id)` |
-| aggregate_metrics | db.info.get | 128 | `db.info.get('authority')` |
-| aggregate_metrics | _scope_conditions(…).get | 129 | `_scope_conditions(authority).get(Task)` |
-| aggregate_metrics | _scope_conditions | 129 | `_scope_conditions(authority)` |
+| aggregate_metrics | db.info.get | 130 | `db.info.get('authority')` |
+| aggregate_metrics | _scope_conditions(…).get | 131 | `_scope_conditions(authority).get(Task)` |
+| aggregate_metrics | _scope_conditions | 131 | `_scope_conditions(authority)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `columns.insert` | `aggregate_metrics` | 201 |
-| mutation | `values.pop` | `aggregate_metrics` | 215 |
-| mutation | `values.pop` | `aggregate_metrics` | 218 |
-| mutation | `values.pop` | `aggregate_metrics` | 220 |
-| mutation | `results.append` | `aggregate_metrics` | 225 |
+| mutation | `columns.insert` | `aggregate_metrics` | 205 |
+| mutation | `values.pop` | `aggregate_metrics` | 219 |
+| mutation | `values.pop` | `aggregate_metrics` | 222 |
+| mutation | `values.pop` | `aggregate_metrics` | 224 |
+| mutation | `results.append` | `aggregate_metrics` | 229 |
 
 ### Static analysis gaps
 
@@ -184,8 +183,8 @@ flowchart LR
 | external_call | `export_iteration` | `HTTPException` | 86 |
 | unresolved_call | `export_iteration` | `task_service.get_by_iteration` | 92 |
 | unresolved_call | `export_iteration` | `team_service.get_by_iteration` | 98 |
-| unresolved_call | `aggregate_metrics` | `db.info.get` | 128 |
-| unresolved_call | `aggregate_metrics` | `_scope_conditions(authority).get` | 129 |
+| unresolved_call | `aggregate_metrics` | `db.info.get` | 130 |
+| unresolved_call | `aggregate_metrics` | `_scope_conditions(authority).get` | 131 |
 | step_limit | `export_iteration` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -11,12 +11,12 @@ _Auto-generated from `FrontendTemplateService` in `frontend/src/services/templat
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `getAll` | `(params?: TemplateListParams) => Promise<WorkTemplate[]>` | *required* | — |
-| `getById` | `(templateId: number) => Promise<WorkTemplate>` | *required* | — |
-| `create` | `(data: WorkTemplateCreate) => Promise<WorkTemplate>` | *required* | — |
-| `update` | `(templateId: number, data: WorkTemplateUpdate) => Promise<WorkTemplate>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `getAll` | `(params?: TemplateListParams) => Promise<WorkTemplate[]>` | Yes | — | — |
+| `getById` | `(templateId: number) => Promise<WorkTemplate>` | Yes | — | — |
+| `create` | `(data: WorkTemplateCreate) => Promise<WorkTemplate>` | Yes | — | — |
+| `update` | `(templateId: number, data: WorkTemplateUpdate) => Promise<WorkTemplate>` | Yes | — | — |
 
 ## Methods
 

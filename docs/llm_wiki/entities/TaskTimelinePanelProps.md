@@ -11,9 +11,9 @@ _Auto-generated from `TaskTimelinePanelProps` in `frontend/src/components/tasks/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
 
 ## Methods
 

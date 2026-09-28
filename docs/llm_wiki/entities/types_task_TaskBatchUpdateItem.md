@@ -1,6 +1,6 @@
 # TaskBatchUpdateItem
 
-**Location:** `frontend/src/types/task.ts:370`
+**Location:** `frontend/src/types/task.ts:392`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,12 +11,12 @@ _Auto-generated from `TaskBatchUpdateItem` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `update` | `TaskUpdate` | *required* | — |
-| `status_reason` | `string \| null` | *required* | — |
-| `expected_version` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `update` | `TaskUpdate` | Yes | — | — |
+| `status_reason` | `string \| null` | No | — | — |
+| `expected_version` | `number` | No | — | — |
 
 ## Methods
 

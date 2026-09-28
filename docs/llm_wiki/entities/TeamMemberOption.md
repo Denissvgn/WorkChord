@@ -11,14 +11,14 @@ _Auto-generated from `TeamMemberOption` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `iteration_id` | `number \| null` | *required* | — |
-| `iteration_name` | `string \| null` | *required* | — |
-| `name` | `string` | *required* | — |
-| `position` | `string` | *required* | — |
-| `email` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `iteration_id` | `number \| null` | No | — | — |
+| `iteration_name` | `string \| null` | No | — | — |
+| `name` | `string` | Yes | — | — |
+| `position` | `string` | Yes | — | — |
+| `email` | `string \| null` | No | — | — |
 
 ## Methods
 

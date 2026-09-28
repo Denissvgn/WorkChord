@@ -1,6 +1,6 @@
 # TriageListParams
 
-**Location:** `frontend/src/types/triage.ts:44`
+**Location:** `frontend/src/types/triage.ts:46`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,14 +11,14 @@ _Auto-generated from `TriageListParams` in `frontend/src/types/triage.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `active` | `boolean` | *required* | — |
-| `statuses` | `TriageItemStatus[]` | *required* | — |
-| `q` | `string` | *required* | — |
-| `source` | `string` | *required* | — |
-| `limit` | `number` | *required* | — |
-| `offset` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `active` | `boolean` | No | — | — |
+| `statuses` | `TriageItemStatus[]` | No | — | — |
+| `q` | `string` | No | — | — |
+| `source` | `string` | No | — | — |
+| `limit` | `number` | No | — | — |
+| `offset` | `number` | No | — | — |
 
 ## Methods
 

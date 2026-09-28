@@ -140,7 +140,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_project_updates | _tool_call | 1645 | `_tool_call((...), ...)` |
+| workspace_list_project_updates | _tool_call | 1675 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |

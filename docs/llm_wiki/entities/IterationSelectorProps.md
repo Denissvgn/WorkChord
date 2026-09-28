@@ -11,11 +11,11 @@ _Auto-generated from `IterationSelectorProps` in `frontend/src/components/iterat
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | *required* | — |
-| `onChange` | `(iterationId: number) => void` | *required* | — |
-| `showLabel` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `className` | `string` | No | — | — |
+| `onChange` | `(iterationId: number) => void` | No | — | — |
+| `showLabel` | `boolean` | No | — | — |
 
 ## Methods
 

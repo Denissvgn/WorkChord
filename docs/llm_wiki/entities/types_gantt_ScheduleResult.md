@@ -11,12 +11,12 @@ _Auto-generated from `ScheduleResult` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `success` | `boolean` | *required* | — |
-| `decisions` | `SchedulingDecision[]` | *required* | — |
-| `workload_balanced` | `boolean` | *required* | — |
-| `workload_issues` | `WorkloadIssue[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `success` | `boolean` | Yes | — | — |
+| `decisions` | `SchedulingDecision[]` | Yes | — | — |
+| `workload_balanced` | `boolean` | Yes | — | — |
+| `workload_issues` | `WorkloadIssue[]` | Yes | — | — |
 
 ## Methods
 

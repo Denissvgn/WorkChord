@@ -11,19 +11,19 @@ _Auto-generated from `AssessmentDraft` in `frontend/src/components/agent/TaskRou
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `axes` | `TaskDifficultyAxes` | *required* | — |
-| `requiredSkillLevels` | `Record<string, TaskSkillLevel>` | *required* | — |
-| `minimumReasoningTier` | `ModelReasoningTier` | *required* | — |
-| `minimumContextTier` | `ModelContextTier` | *required* | — |
-| `modalityTags` | `string` | *required* | — |
-| `toolTags` | `string` | *required* | — |
-| `dataPolicyTags` | `string` | *required* | — |
-| `reviewMode` | `TaskReviewMode` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `reasonCodes` | `AssessmentReasonCode[]` | *required* | — |
-| `rationale` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `axes` | `TaskDifficultyAxes` | Yes | — | — |
+| `requiredSkillLevels` | `Record<string, TaskSkillLevel>` | Yes | — | — |
+| `minimumReasoningTier` | `ModelReasoningTier` | Yes | — | — |
+| `minimumContextTier` | `ModelContextTier` | Yes | — | — |
+| `modalityTags` | `string` | Yes | — | — |
+| `toolTags` | `string` | Yes | — | — |
+| `dataPolicyTags` | `string` | Yes | — | — |
+| `reviewMode` | `TaskReviewMode` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `reasonCodes` | `AssessmentReasonCode[]` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
 
 ## Methods
 

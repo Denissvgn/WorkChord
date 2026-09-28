@@ -1,6 +1,6 @@
 # TriageItemStatus
 
-**Location:** `backend/app/schemas/triage.py:11`
+**Location:** `backend/app/schemas/triage.py:12`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

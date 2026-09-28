@@ -11,15 +11,15 @@ _Auto-generated from `LabelCreate` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `slug` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `group_id` | `number` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `slug` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `group_id` | `number` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `color` | `string` | No | — | — |
+| `is_active` | `boolean` | No | — | — |
+| `sort_order` | `number` | No | — | — |
 
 ## Methods
 

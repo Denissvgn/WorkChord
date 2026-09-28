@@ -11,24 +11,24 @@ _Auto-generated from `PlanReadiness` in `frontend/src/features/planningMasters/m
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationCount` | `number` | *required* | — |
-| `hasCurrentIteration` | `boolean` | *required* | — |
-| `currentIterationName` | `string` | *required* | — |
-| `currentIterationStart` | `string` | *required* | — |
-| `currentIterationEnd` | `string` | *required* | — |
-| `currentIterationDays` | `number` | *required* | — |
-| `teamMemberCount` | `number` | *required* | — |
-| `teamCapacity` | `number` | *required* | — |
-| `teamMembersNoCap` | `number` | *required* | — |
-| `taskCount` | `number` | *required* | — |
-| `tasksWithoutAssignee` | `number` | *required* | — |
-| `tasksWithoutEffort` | `number` | *required* | — |
-| `hasGanttSchedule` | `boolean` | *required* | — |
-| `ganttLastBuilt` | `string` | *required* | — |
-| `riskCount` | `number` | *required* | — |
-| `inboxCount` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationCount` | `number` | Yes | — | — |
+| `hasCurrentIteration` | `boolean` | Yes | — | — |
+| `currentIterationName` | `string` | Yes | — | — |
+| `currentIterationStart` | `string` | Yes | — | — |
+| `currentIterationEnd` | `string` | Yes | — | — |
+| `currentIterationDays` | `number` | Yes | — | — |
+| `teamMemberCount` | `number` | Yes | — | — |
+| `teamCapacity` | `number` | Yes | — | — |
+| `teamMembersNoCap` | `number` | Yes | — | — |
+| `taskCount` | `number` | Yes | — | — |
+| `tasksWithoutAssignee` | `number` | Yes | — | — |
+| `tasksWithoutEffort` | `number` | Yes | — | — |
+| `hasGanttSchedule` | `boolean` | Yes | — | — |
+| `ganttLastBuilt` | `string` | Yes | — | — |
+| `riskCount` | `number` | Yes | — | — |
+| `inboxCount` | `number` | Yes | — | — |
 
 ## Methods
 

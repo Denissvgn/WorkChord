@@ -11,12 +11,12 @@ _Auto-generated from `ProjectIterationsSectionProps` in `frontend/src/components
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `projectId` | `number` | *required* | — |
-| `projectName` | `string` | *required* | — |
-| `iterations` | `Iteration[]` | *required* | — |
-| `isLoading` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `projectId` | `number` | Yes | — | — |
+| `projectName` | `string` | Yes | — | — |
+| `iterations` | `Iteration[]` | Yes | — | — |
+| `isLoading` | `boolean` | Yes | — | — |
 
 ## Methods
 

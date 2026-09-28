@@ -21,17 +21,17 @@ Separately credentialed read-only provider/audit observation.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-provider-audit-observation-v1']` | `schema_version` | No | No | `'workchord-provider-audit-observation-v1'` | — | — | — |
 | `collector_identity` | `Literal['pg-source-collector']` | `collector_identity` | No | No | `'pg-source-collector'` | — | — | — |
-| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | min_length=1; max_length=512 | — | — |
-| `provider_event_id` | `str` | `provider_event_id` | Yes | No | — | min_length=1; max_length=512 | — | — |
-| `operation` | `str` | `operation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | max_length=512; min_length=1 | — | — |
+| `provider_event_id` | `str` | `provider_event_id` | Yes | No | — | max_length=512; min_length=1 | — | — |
+| `operation` | `str` | `operation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `observed_at` | `datetime` | `observed_at` | Yes | No | — | — | — | — |
 | `source_query_digest` | `str` | `source_query_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `raw_audit_uri` | `str` | `raw_audit_uri` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `raw_audit_sha256` | `str` | `raw_audit_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `source_generation` | `str` | `source_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `source_generation` | `str` | `source_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

@@ -11,15 +11,15 @@ _Auto-generated from `LabelFormState` in `frontend/src/components/settings/Templ
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `slug` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `group_id` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `slug` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `group_id` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `color` | `string` | Yes | — | — |
+| `is_active` | `boolean` | Yes | — | — |
+| `sort_order` | `number` | Yes | — | — |
 
 ## Methods
 

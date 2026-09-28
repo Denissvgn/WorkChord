@@ -11,11 +11,11 @@ _Auto-generated from `ProjectMilestoneDeleteResponse` in `frontend/src/types/pro
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `success` | `boolean` | *required* | — |
-| `message` | `string` | *required* | — |
-| `detached_task_count` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `success` | `boolean` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
+| `detached_task_count` | `number` | Yes | — | — |
 
 ## Methods
 

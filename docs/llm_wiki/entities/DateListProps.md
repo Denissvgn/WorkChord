@@ -11,13 +11,13 @@ _Auto-generated from `DateListProps` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `holidays` | `string[]` | *required* | — |
-| `shortDays` | `string[]` | *required* | — |
-| `locale` | `Locale` | *required* | — |
-| `onRemoveHoliday` | `(dateKey: string) => void` | *required* | — |
-| `onRemoveShortDay` | `(dateKey: string) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `holidays` | `string[]` | Yes | — | — |
+| `shortDays` | `string[]` | Yes | — | — |
+| `locale` | `Locale` | Yes | — | — |
+| `onRemoveHoliday` | `(dateKey: string) => void` | Yes | — | — |
+| `onRemoveShortDay` | `(dateKey: string) => void` | Yes | — | — |
 
 ## Methods
 

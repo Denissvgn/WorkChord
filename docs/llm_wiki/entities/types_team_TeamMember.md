@@ -11,19 +11,19 @@ _Auto-generated from `TeamMember` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `iteration_id` | `number` | *required* | — |
-| `profile_id` | `number \| null` | *required* | — |
-| `name` | `string` | *required* | — |
-| `position` | `string` | *required* | — |
-| `email` | `string` | *required* | — |
-| `availability_percent` | `number` | *required* | — |
-| `professionalism_coefficient` | `number` | *required* | — |
-| `operational_utilization` | `number` | *required* | — |
-| `profile` | `TeamMemberProfileCompact \| null` | *required* | — |
-| `vacations` | `Vacation[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `iteration_id` | `number` | Yes | — | — |
+| `profile_id` | `number \| null` | No | — | — |
+| `name` | `string` | Yes | — | — |
+| `position` | `string` | Yes | — | — |
+| `email` | `string` | No | — | — |
+| `availability_percent` | `number` | Yes | — | — |
+| `professionalism_coefficient` | `number` | Yes | — | — |
+| `operational_utilization` | `number` | Yes | — | — |
+| `profile` | `TeamMemberProfileCompact \| null` | No | — | — |
+| `vacations` | `Vacation[]` | Yes | — | — |
 
 ## Methods
 

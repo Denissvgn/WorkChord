@@ -11,12 +11,12 @@ _Auto-generated from `TeamProfileManagerProps` in `frontend/src/components/team/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `currentIterationId` | `number \| null` | *required* | — |
-| `currentIterationName` | `string \| null` | *required* | — |
-| `assignedProfileIds` | `number[]` | *required* | — |
-| `onAssignProfile` | `(profile: TeamMemberProfile) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `currentIterationId` | `number \| null` | No | — | — |
+| `currentIterationName` | `string \| null` | No | — | — |
+| `assignedProfileIds` | `number[]` | No | — | — |
+| `onAssignProfile` | `(profile: TeamMemberProfile) => void` | No | — | — |
 
 ## Methods
 

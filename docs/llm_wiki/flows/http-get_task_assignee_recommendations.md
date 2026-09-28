@@ -41,8 +41,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_assignee_recommendations | service.recommend_for_task | 309 | `service.recommend_for_task(task_id)` |
-| get_task_assignee_recommendations | HTTPException | 311 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task_assignee_recommendations | service.recommend_for_task | 311 | `service.recommend_for_task(task_id)` |
+| get_task_assignee_recommendations | HTTPException | 313 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -52,8 +52,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task_assignee_recommendations` | `service.recommend_for_task` | 309 |
-| external_call | `get_task_assignee_recommendations` | `HTTPException` | 311 |
+| unresolved_call | `get_task_assignee_recommendations` | `service.recommend_for_task` | 311 |
+| external_call | `get_task_assignee_recommendations` | `HTTPException` | 313 |
 
 ## Behavior
 

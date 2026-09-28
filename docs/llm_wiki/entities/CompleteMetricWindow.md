@@ -24,7 +24,7 @@ _Auto-generated from `CompleteMetricWindow` in `backend/app/autonomy/providers.p
 | `ends_at` | `datetime` | `ends_at` | Yes | No | — | — | — | — |
 | `expected_interval_seconds` | `int` | `expected_interval_seconds` | Yes | No | — | ge=1; le=3600 | — | — |
 | `maximum_gap_seconds` | `int` | `maximum_gap_seconds` | Yes | No | — | ge=1; le=7200 | — | — |
-| `samples` | `tuple[MetricSample, ...]` | `samples` | Yes | No | — | min_length=2; max_length=2000000 | — | — |
+| `samples` | `tuple[MetricSample, ...]` | `samples` | Yes | No | — | max_length=2000000; min_length=2 | — | — |
 
 ## Methods
 

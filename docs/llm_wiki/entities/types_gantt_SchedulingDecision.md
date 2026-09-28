@@ -11,13 +11,13 @@ _Auto-generated from `SchedulingDecision` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `task_title` | `string` | *required* | — |
-| `decision_type` | `'scheduled' \| 'reordered' \| 'delayed' \| 'overdue'` | *required* | — |
-| `reason` | `string` | *required* | — |
-| `affected_tasks` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `task_title` | `string` | Yes | — | — |
+| `decision_type` | `'scheduled' \| 'reordered' \| 'delayed' \| 'overdue'` | Yes | — | — |
+| `reason` | `string` | Yes | — | — |
+| `affected_tasks` | `number[]` | Yes | — | — |
 
 ## Methods
 

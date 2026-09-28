@@ -11,11 +11,11 @@ _Auto-generated from `SettingsGroup` in `frontend/src/pages/SettingsPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `SettingsGroupId` | *required* | — |
-| `labelKey` | `string` | *required* | — |
-| `items` | `SettingsDestination[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `SettingsGroupId` | Yes | — | — |
+| `labelKey` | `string` | Yes | — | — |
+| `items` | `SettingsDestination[]` | Yes | — | — |
 
 ## Methods
 

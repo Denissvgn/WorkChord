@@ -11,23 +11,23 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `planningIssue` | `PlanningTaskIssue \| null` | *required* | — |
-| `assigneeId` | `number \| null` | *required* | — |
-| `projectId` | `number \| null` | *required* | — |
-| `priority` | `number \| null` | *required* | — |
-| `status` | `string \| null` | *required* | — |
-| `hasDependency` | `boolean \| null` | *required* | — |
-| `isOverdue` | `boolean \| null` | *required* | — |
-| `isIterationOverflow` | `boolean \| null` | *required* | — |
-| `agentReady` | `boolean \| null` | *required* | — |
-| `startDateFrom` | `string` | *required* | — |
-| `startDateTo` | `string` | *required* | — |
-| `endDateFrom` | `string` | *required* | — |
-| `endDateTo` | `string` | *required* | — |
-| `labelSlugs` | `string[]` | *required* | — |
-| `labelGroupKeys` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `planningIssue` | `PlanningTaskIssue \| null` | Yes | — | — |
+| `assigneeId` | `number \| null` | Yes | — | — |
+| `projectId` | `number \| null` | Yes | — | — |
+| `priority` | `number \| null` | Yes | — | — |
+| `status` | `string \| null` | Yes | — | — |
+| `hasDependency` | `boolean \| null` | Yes | — | — |
+| `isOverdue` | `boolean \| null` | Yes | — | — |
+| `isIterationOverflow` | `boolean \| null` | No | — | — |
+| `agentReady` | `boolean \| null` | Yes | — | — |
+| `startDateFrom` | `string` | Yes | — | — |
+| `startDateTo` | `string` | Yes | — | — |
+| `endDateFrom` | `string` | Yes | — | — |
+| `endDateTo` | `string` | Yes | — | — |
+| `labelSlugs` | `string[]` | Yes | — | — |
+| `labelGroupKeys` | `string[]` | Yes | — | — |
 
 ## Methods
 

@@ -37,13 +37,13 @@ flowchart LR
     n4["upgrade (backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py)"]
     n5["upgrade (backend/app/migrations/versions/20260802_0036_add_plan_shares.py)"]
     n6["upgrade (backend/app/migrations/versions/20260915_0037_add_authority_and_recovery.py)"]
-    n7["backend/app/models/agent.py"]
-    n8["backend/app/models/autonomy.py"]
-    n9["backend/app/models/database_migration.py"]
-    n10["backend/app/models/external_link.py"]
-    n11["backend/app/models/github.py"]
-    n12["backend/app/models/identity.py"]
-    n13["backend/app/models/label.py"]
+    n7["_expand (backend/app/migrations/versions/20260915_0038_canonical_task_domain.py)"]
+    n8["backend/app/models/agent.py"]
+    n9["backend/app/models/autonomy.py"]
+    n10["backend/app/models/database_migration.py"]
+    n11["backend/app/models/external_link.py"]
+    n12["backend/app/models/github.py"]
+    n13["backend/app/models/identity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,13 +63,13 @@ flowchart LR
     click n4 "../modules/20260728_0035_add_agent_team_setup.md"
     click n5 "../modules/20260802_0036_add_plan_shares.md"
     click n6 "../modules/20260915_0037_add_authority_and_recovery.md"
-    click n7 "../modules/models_agent.md"
-    click n8 "../modules/models_autonomy.md"
-    click n9 "../modules/models_database_migration.md"
-    click n10 "../modules/models_external_link.md"
-    click n11 "../modules/models_github.md"
-    click n12 "../modules/models_identity.md"
-    click n13 "../modules/models_label.md"
+    click n7 "../modules/20260915_0038_canonical_task_domain.md"
+    click n8 "../modules/models_agent.md"
+    click n9 "../modules/models_autonomy.md"
+    click n10 "../modules/models_database_migration.md"
+    click n11 "../modules/models_external_link.md"
+    click n12 "../modules/models_github.md"
+    click n13 "../modules/models_identity.md"
 ```
 
 ### Summary
@@ -93,12 +93,12 @@ flowchart LR
 | `upgrade` | call | [20260728_0035_add_agent_team_setup](../modules/20260728_0035_add_agent_team_setup.md) | 11 |
 | `upgrade` | call | [20260802_0036_add_plan_shares](../modules/20260802_0036_add_plan_shares.md) | 2 |
 | `upgrade` | call | [20260915_0037_add_authority_and_recovery](../modules/20260915_0037_add_authority_and_recovery.md) | 17 |
+| `_expand` | call | [20260915_0038_canonical_task_domain](../modules/20260915_0038_canonical_task_domain.md) | 2 |
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
 | `autonomy` | import | [models_autonomy](../modules/models_autonomy.md) | — |
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
 | `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
 | `github` | import | [models_github](../modules/models_github.md) | — |
 | `identity` | import | [models_identity](../modules/models_identity.md) | — |
-| `label` | import | [models_label](../modules/models_label.md) | — |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

@@ -132,13 +132,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_task | IterationService | 143 | `IterationService(db)` |
-| create_task | iteration_service.get_by_id | 144 | `iteration_service.get_by_id(iteration_id)` |
-| create_task | HTTPException | 147 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_task | service.create | 153 | `service.create(iteration_id, data)` |
-| create_task | HTTPException | 155 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| create_task | _localized_detail | 157 | `_localized_detail(db, str(...))` |
-| _localized_detail | resolve_runtime_ui_language | 61 | `resolve_runtime_ui_language(db)` |
+| create_task | IterationService | 145 | `IterationService(db)` |
+| create_task | iteration_service.get_by_id | 146 | `iteration_service.get_by_id(iteration_id)` |
+| create_task | HTTPException | 149 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_task | service.create | 155 | `service.create(iteration_id, data)` |
+| create_task | HTTPException | 157 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| create_task | _localized_detail | 159 | `_localized_detail(db, str(...))` |
+| _localized_detail | resolve_runtime_ui_language | 63 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -152,10 +152,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_task` | `iteration_service.get_by_id` | 144 |
-| external_call | `create_task` | `HTTPException` | 147 |
-| unresolved_call | `create_task` | `service.create` | 153 |
-| external_call | `create_task` | `HTTPException` | 155 |
+| unresolved_call | `create_task` | `iteration_service.get_by_id` | 146 |
+| external_call | `create_task` | `HTTPException` | 149 |
+| unresolved_call | `create_task` | `service.create` | 155 |
+| external_call | `create_task` | `HTTPException` | 157 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | step_limit | `create_task` | `first 12 steps` | 0 |

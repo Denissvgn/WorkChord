@@ -1,6 +1,6 @@
 # TriageDetailPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1246`
+**Location:** `frontend/src/pages/TriagePage.tsx:1263`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,16 +11,16 @@ _Auto-generated from `TriageDetailPanelProps` in `frontend/src/pages/TriagePage.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `item` | `TriageItem \| null` | *required* | — |
-| `projectsById` | `Record<number, string>` | *required* | — |
-| `iterationsById` | `Record<number, string>` | *required* | — |
-| `canConvert` | `boolean` | *required* | — |
-| `onAction` | `(action: TriageLifecycleAction, item: TriageItem) => void` | *required* | — |
-| `onMarkSuggestion` | `(item: TriageItem, suggestion: TriageDuplicateSuggestion) => void` | *required* | — |
-| `onConvert` | `(item: TriageItem) => void` | *required* | — |
-| `onRequestLinksChanged` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `item` | `TriageItem \| null` | Yes | — | — |
+| `projectsById` | `Record<number, string>` | Yes | — | — |
+| `iterationsById` | `Record<number, string>` | Yes | — | — |
+| `canConvert` | `boolean` | Yes | — | — |
+| `onAction` | `(action: TriageLifecycleAction, item: TriageItem) => void` | Yes | — | — |
+| `onMarkSuggestion` | `(item: TriageItem, suggestion: TriageDuplicateSuggestion) => void` | Yes | — | — |
+| `onConvert` | `(item: TriageItem) => void` | Yes | — | — |
+| `onRequestLinksChanged` | `() => void` | Yes | — | — |
 
 ## Methods
 

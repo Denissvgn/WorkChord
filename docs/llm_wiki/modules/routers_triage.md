@@ -10,9 +10,11 @@ Triage API router.
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `command_transaction` |
 | `app.database` | `get_db` |
+| `app.routers.task_domain` | `domain_result` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
-| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestionsResponse`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse` |
+| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToBacklogRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestionsResponse`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
 | `app.services.language_service` | `backend_error_message`, `entity_not_found_message`, `resolve_runtime_ui_language` |
 | `app.services.llm_service` | `LLMService` |
@@ -26,41 +28,52 @@ Triage API router.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/database.py"]
-    n1["backend/app/main.py"]
-    n2["backend/app/routers/__init__.py"]
-    n3["backend/app/routers/triage.py"]
-    n4["backend/app/schemas/team.py"]
-    n5["backend/app/schemas/triage.py"]
-    n6["backend/app/services/assignee_recommendation_service.py"]
-    n7["backend/app/services/language_service.py"]
-    n8["backend/app/services/llm_service.py"]
-    n9["backend/app/services/triage_service.py"]
+    n0["backend/app/commands.py"]
+    n1["backend/app/database.py"]
+    n2["backend/app/main.py"]
+    n3["backend/app/routers/__init__.py"]
+    n4["backend/app/routers/task_domain.py"]
+    n5["backend/app/routers/triage.py"]
+    n6["backend/app/schemas/team.py"]
+    n7["backend/app/schemas/triage.py"]
+    n8["backend/app/services/assignee_recommendation_service.py"]
+    n9["backend/app/services/language_service.py"]
+    n10["backend/app/services/llm_service.py"]
+    n11["backend/app/services/triage_service.py"]
     n1 --> n0
-    n1 --> n3
-    n2 --> n3
-    n3 --> n0
-    n3 --> n4
+    n2 --> n0
+    n2 --> n1
+    n2 --> n4
+    n2 --> n5
     n3 --> n5
-    n3 --> n6
-    n3 --> n7
-    n3 --> n8
-    n3 --> n9
-    n6 --> n4
-    n8 --> n5
-    n8 --> n7
-    n9 --> n5
-    n9 --> n8
-    click n0 "../modules/app_database.md"
-    click n1 "../modules/app_main.md"
-    click n2 "../modules/routers___init__.md"
-    click n3 "../modules/routers_triage.md"
-    click n4 "../modules/schemas_team.md"
-    click n5 "../modules/schemas_triage.md"
-    click n6 "../modules/assignee_recommendation_service.md"
-    click n7 "../modules/language_service.md"
-    click n8 "../modules/llm_service.md"
-    click n9 "../modules/triage_service.md"
+    n4 --> n1
+    n5 --> n0
+    n5 --> n1
+    n5 --> n4
+    n5 --> n6
+    n5 --> n7
+    n5 --> n8
+    n5 --> n9
+    n5 --> n10
+    n5 --> n11
+    n8 --> n6
+    n10 --> n7
+    n10 --> n9
+    n11 --> n0
+    n11 --> n7
+    n11 --> n10
+    click n0 "../modules/commands.md"
+    click n1 "../modules/app_database.md"
+    click n2 "../modules/app_main.md"
+    click n3 "../modules/routers___init__.md"
+    click n4 "../modules/routers_task_domain.md"
+    click n5 "../modules/routers_triage.md"
+    click n6 "../modules/schemas_team.md"
+    click n7 "../modules/schemas_triage.md"
+    click n8 "../modules/assignee_recommendation_service.md"
+    click n9 "../modules/language_service.md"
+    click n10 "../modules/llm_service.md"
+    click n11 "../modules/triage_service.md"
 ```
 
 ### Internal neighbors
@@ -69,7 +82,9 @@ flowchart LR
 |---|---|
 | Inbound | [app_main](../modules/app_main.md) |
 | Inbound | [routers___init__](../modules/routers___init__.md) |
+| Outbound | [commands](../modules/commands.md) |
 | Outbound | [app_database](../modules/app_database.md) |
+| Outbound | [routers_task_domain](../modules/routers_task_domain.md) |
 | Outbound | [schemas_team](../modules/schemas_team.md) |
 | Outbound | [schemas_triage](../modules/schemas_triage.md) |
 | Outbound | [assignee_recommendation_service](../modules/assignee_recommendation_service.md) |
@@ -106,3 +121,4 @@ flowchart LR
 | `snooze_triage_item` | *(async)* `(triage_item_id: int, data: TriageSnoozeRequest, service: Annotated[TriageService, Depends(get_triage_service)])` | `@router.post('/triage/{triage_item_id}/snooze', response_model=TriageItemResponse)` | Snooze a triage item. |
 | `mark_triage_item_duplicate` | *(async)* `(triage_item_id: int, data: TriageDuplicateRequest, service: Annotated[TriageService, Depends(get_triage_service)])` | `@router.post('/triage/{triage_item_id}/mark-duplicate', response_model=TriageItemResponse)` | Mark a triage item as duplicate. |
 | `convert_triage_item_to_task` | *(async)* `(triage_item_id: int, data: TriageConvertToTaskRequest, service: Annotated[TriageService, Depends(get_triage_service)])` | `@router.post('/triage/{triage_item_id}/convert-to-task', response_model=TriageConvertToTaskResponse)` | Convert a triage item to a planned task. |
+| `convert_triage_item_to_backlog` | *(async)* `(triage_item_id: int, data: TriageConvertToBacklogRequest, service: Annotated[TriageService, Depends(get_triage_service)])` | `@router.post('/triage/{triage_item_id}/convert-to-backlog', response_model=TriageConvertToTaskResponse)` | Convert to a durable project task without scheduling it. |

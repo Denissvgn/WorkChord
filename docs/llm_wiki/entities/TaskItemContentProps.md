@@ -1,6 +1,6 @@
 # TaskItemContentProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:781`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:782`
 **Kind:** Class
 **Bases:** `TaskItemProps`
 **Module:** [TaskList](../modules/TaskList.md)
@@ -11,9 +11,9 @@ _Auto-generated from `TaskItemContentProps` in `frontend/src/components/tasks/Ta
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `dragHandleProps` | `Record<string, unknown>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `dragHandleProps` | `Record<string, unknown>` | No | — | — |
 
 ## Methods
 

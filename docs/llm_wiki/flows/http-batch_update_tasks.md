@@ -27,15 +27,15 @@ sequenceDiagram
     participant p15 as lock_iterations
     participant p16 as RuntimeError (backend/app/commands.py:lock_iterations)
     participant p17 as sorted
-    participant p18 as set
-    participant p19 as AggregateVersionConflict
-    participant p20 as db.scalar
-    participant p21 as select(…).where(…).with_for_update
-    participant p22 as select(…).where (backend/app/commands.py:lock_iterations)
-    participant p23 as select
-    participant p24 as ValueError (backend/app/commands.py:lock_iterations)
-    participant p25 as db.info.get (backend/app/commands.py:lock_iterations)
-    participant p26 as internal_authority
+    participant p18 as AggregateVersionConflict
+    participant p19 as db.scalar
+    participant p20 as select(…).where(…).with_for_update
+    participant p21 as select(…).where (backend/app/commands.py:lock_iterations)
+    participant p22 as select
+    participant p23 as ValueError (backend/app/commands.py:lock_iterations)
+    participant p24 as db.info.get (backend/app/commands.py:lock_iterations)
+    participant p25 as internal_authority
+    participant p26 as db.info.get (backend/app/authority.py:internal_authority)
     p0->>p1: IterationService
     p0-->>p2: iteration_service.get_by_id
     p0-->>p3: HTTPException (backend/app/routers/tasks.py:batch_update_tasks)
@@ -57,18 +57,18 @@ sequenceDiagram
     p15->>p5: current_command
     p15-->>p16: RuntimeError (backend/app/commands.py:lock_iterations)
     p15-->>p17: sorted
-    p15-->>p18: set
-    p15->>p19: AggregateVersionConflict
-    p15-->>p20: db.scalar
-    p15-->>p21: select(…).where(…).with_for_update
-    p15-->>p22: select(…).where (backend/app/commands.py:lock_iterations)
-    p15-->>p23: select
-    p15-->>p24: ValueError (backend/app/commands.py:lock_iterations)
-    p15-->>p25: db.info.get (backend/app/commands.py:lock_iterations)
-    p15->>p26: internal_authority
+    p15->>p18: AggregateVersionConflict
+    p15-->>p19: db.scalar
+    p15-->>p20: select(…).where(…).with_for_update
+    p15-->>p21: select(…).where (backend/app/commands.py:lock_iterations)
+    p15-->>p22: select
+    p15-->>p23: ValueError (backend/app/commands.py:lock_iterations)
+    p15-->>p24: db.info.get (backend/app/commands.py:lock_iterations)
+    p15->>p25: internal_authority
+    p25-->>p26: db.info.get (backend/app/authority.py:internal_authority)
 ```
 
-> Call sequence diagram shows 30 of 86 interactions; 56 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 85 interactions; 55 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -133,36 +133,36 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| batch_update_tasks | IterationService | 238 | `IterationService(db)` |
-| batch_update_tasks | iteration_service.get_by_id | 239 | `iteration_service.get_by_id(iteration_id)` |
-| batch_update_tasks | HTTPException (backend/app/routers/tasks.py:batch_update_tasks) | 241 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| batch_update_tasks | command_transaction | 247 | `command_transaction(db)` |
-| command_transaction | current_command | 52 | `current_command(db)` |
-| current_command | getattr | 38 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 39 | `isinstance(info, dict)` |
-| current_command | info.get | 39 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 55 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 62 | `CommandState(mode=mode)` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 67 | `RuntimeError('A failed nested command cannot commit')` |
+| batch_update_tasks | IterationService | 240 | `IterationService(db)` |
+| batch_update_tasks | iteration_service.get_by_id | 241 | `iteration_service.get_by_id(iteration_id)` |
+| batch_update_tasks | HTTPException (backend/app/routers/tasks.py:batch_update_tasks) | 243 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| batch_update_tasks | command_transaction | 249 | `command_transaction(db)` |
+| command_transaction | current_command | 53 | `current_command(db)` |
+| current_command | getattr | 39 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 40 | `isinstance(info, dict)` |
+| current_command | info.get | 40 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 56 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 63 | `CommandState(mode=mode)` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 68 | `RuntimeError('A failed nested command cannot commit')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 78 |
-| mutation | `db.info.pop` | `command_transaction` | 80 |
+| mutation | `db.info.pop` | `command_transaction` | 79 |
+| mutation | `db.info.pop` | `command_transaction` | 81 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `batch_update_tasks` | `iteration_service.get_by_id` | 239 |
-| external_call | `batch_update_tasks` | `HTTPException` | 241 |
-| external_call | `current_command` | `getattr` | 38 |
-| external_call | `current_command` | `isinstance` | 39 |
-| unresolved_call | `current_command` | `info.get` | 39 |
-| external_call | `command_transaction` | `RuntimeError` | 55 |
-| external_call | `command_transaction` | `RuntimeError` | 67 |
+| unresolved_call | `batch_update_tasks` | `iteration_service.get_by_id` | 241 |
+| external_call | `batch_update_tasks` | `HTTPException` | 243 |
+| external_call | `current_command` | `getattr` | 39 |
+| external_call | `current_command` | `isinstance` | 40 |
+| unresolved_call | `current_command` | `info.get` | 40 |
+| external_call | `command_transaction` | `RuntimeError` | 56 |
+| external_call | `command_transaction` | `RuntimeError` | 68 |
 | step_limit | `batch_update_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

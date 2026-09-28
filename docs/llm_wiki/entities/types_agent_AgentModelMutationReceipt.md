@@ -11,19 +11,19 @@ _Auto-generated from `AgentModelMutationReceipt` in `frontend/src/types/agent.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `operation` | `string` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `target_type` | `'model_catalog' \| 'model_binding'` | *required* | — |
-| `target_id` | `number` | *required* | — |
-| `idempotency_key` | `string` | *required* | — |
-| `rationale` | `string` | *required* | — |
-| `correlation_id` | `string` | *required* | — |
-| `authoritative_revision` | `number` | *required* | — |
-| `invalidated_assignment_ids` | `number[]` | *required* | — |
-| `audit_event_ids` | `number[]` | *required* | — |
-| `result` | `TResult` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `operation` | `string` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `target_type` | `'model_catalog' \| 'model_binding'` | Yes | — | — |
+| `target_id` | `number` | Yes | — | — |
+| `idempotency_key` | `string` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
+| `correlation_id` | `string` | Yes | — | — |
+| `authoritative_revision` | `number` | Yes | — | — |
+| `invalidated_assignment_ids` | `number[]` | Yes | — | — |
+| `audit_event_ids` | `number[]` | Yes | — | — |
+| `result` | `TResult` | Yes | — | — |
 
 ## Methods
 

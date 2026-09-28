@@ -11,14 +11,14 @@ _Auto-generated from `IterationFormProps` in `frontend/src/components/iteration/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `initialData` | `Iteration` | *required* | — |
-| `lockedProject` | `{         id: number;         name: string;     }` | *required* | — |
-| `hideProjectScope` | `boolean` | *required* | — |
-| `onSuccess` | `(iteration?: Iteration, iterations?: Iteration[]) => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
-| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialData` | `Iteration` | No | — | — |
+| `lockedProject` | `{         id: number;         name: string;     }` | No | — | — |
+| `hideProjectScope` | `boolean` | No | — | — |
+| `onSuccess` | `(iteration?: Iteration, iterations?: Iteration[]) => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
+| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | No | — | — |
 
 ## Methods
 

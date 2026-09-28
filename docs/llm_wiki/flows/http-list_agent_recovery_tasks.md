@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_recovery_tasks | service.list_recovery_tasks | 964 | `service.list_recovery_tasks(actor, limit=limit, cursor=cursor)` |
-| list_agent_recovery_tasks | _handle_agent_error | 966 | `_handle_agent_error(exc, structured=True)` |
+| list_agent_recovery_tasks | service.list_recovery_tasks | 966 | `service.list_recovery_tasks(actor, limit=limit, cursor=cursor)` |
+| list_agent_recovery_tasks | _handle_agent_error | 968 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_agent_recovery_tasks` | `service.list_recovery_tasks` | 964 |
+| unresolved_call | `list_agent_recovery_tasks` | `service.list_recovery_tasks` | 966 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

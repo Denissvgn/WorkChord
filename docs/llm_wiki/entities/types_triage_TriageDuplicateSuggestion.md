@@ -1,6 +1,6 @@
 # TriageDuplicateSuggestion
 
-**Location:** `frontend/src/types/triage.ts:69`
+**Location:** `frontend/src/types/triage.ts:71`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,21 +11,21 @@ _Auto-generated from `TriageDuplicateSuggestion` in `frontend/src/types/triage.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `target_type` | `'triage_item' \| 'task'` | *required* | — |
-| `target_id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `status` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `labels` | `string[]` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `iteration_id` | `number \| null` | *required* | — |
-| `score` | `number` | *required* | — |
-| `signals` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `target_type` | `'triage_item' \| 'task'` | Yes | — | — |
+| `target_id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `status` | `string \| null` | No | — | — |
+| `source` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `labels` | `string[]` | Yes | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `iteration_id` | `number \| null` | No | — | — |
+| `score` | `number` | Yes | — | — |
+| `signals` | `string[]` | Yes | — | — |
 
 ## Methods
 

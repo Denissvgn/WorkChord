@@ -11,11 +11,11 @@ _Auto-generated from `AgentTeamStatusScopes` in `frontend/src/features/agentTeam
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `topology` | `TopologyConfigurationState` | *required* | — |
-| `authority` | `SessionAuthorityState` | *required* | — |
-| `runtime` | `RuntimeReadinessState` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `topology` | `TopologyConfigurationState` | Yes | — | — |
+| `authority` | `SessionAuthorityState` | Yes | — | — |
+| `runtime` | `RuntimeReadinessState` | Yes | — | — |
 
 ## Methods
 

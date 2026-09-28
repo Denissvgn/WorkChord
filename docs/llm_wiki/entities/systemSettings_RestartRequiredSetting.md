@@ -11,10 +11,10 @@ _Auto-generated from `RestartRequiredSetting` in `frontend/src/types/systemSetti
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `backend/app/schemas/task.py:66`
+**Location:** `backend/app/schemas/task.py:70`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -20,11 +20,14 @@ Schema for updating a task.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_version` | `Optional[int]` | `expected_version` | No | Yes | `None` | ge=1 | — | — |
-| `title` | `Optional[str]` | `title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
+| `title` | `Optional[str]` | `title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `priority` | `Optional[int]` | `priority` | No | Yes | `None` | ge=1; le=10 | — | — |
-| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | ge=0.1 | — | — |
-| `effort_hours` | `Optional[float]` | `effort_hours` | No | Yes | `None` | — | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | allow_inf_nan=False; ge=0 | — | — |
+| `effort_hours` | `Optional[float]` | `effort_hours` | No | Yes | `None` | allow_inf_nan=False; ge=0 | — | — |
+| `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | ge=1 | — | — |
+| `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
+| `estimate_provenance` | `Optional[Literal['unknown', 'assumed', 'estimated']]` | `estimate_provenance` | No | Yes | `None` | — | — | — |
 | `assignee_id` | `Optional[int]` | `assignee_id` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `milestone_id` | `Optional[int]` | `milestone_id` | No | Yes | `None` | — | — | — |
@@ -63,8 +66,8 @@ flowchart LR
     n9["TaskBulkOperationService._build_update (backend/app/services/task_bulk_operation_service.py)"]
     n10["TaskBulkOperationService._changes_for_update (backend/app/services/task_bulk_operation_service.py)"]
     n11["TaskBulkOperationService._validate_update (backend/app/services/task_bulk_operation_service.py)"]
-    n12["TaskService.update (backend/app/services/task_service.py)"]
-    n13["backend/tests/test_client_contract.py"]
+    n12["TaskImportService.bulk_update_tasks_from_text (backend/app/services/task_import_service.py)"]
+    n13["TaskService.update (backend/app/services/task_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -89,15 +92,15 @@ flowchart LR
     click n9 "../modules/task_bulk_operation_service.md"
     click n10 "../modules/task_bulk_operation_service.md"
     click n11 "../modules/task_bulk_operation_service.md"
-    click n12 "../modules/task_service.md"
-    click n13 "../modules/test_client_contract.md"
+    click n12 "../modules/task_import_service.md"
+    click n13 "../modules/task_service.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 1 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `expected_version`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
+| [schemas_task](../modules/schemas_task.md) | 1 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `estimate_provenance`, `expected_version`, `external_key`, `is_deferred`, `is_optional`, `max_end_date` |
 
 ### Structure
 
@@ -120,7 +123,7 @@ flowchart LR
 | `TaskBulkOperationService._build_update` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 | `TaskBulkOperationService._changes_for_update` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 | `TaskBulkOperationService._validate_update` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
+| `TaskImportService.bulk_update_tasks_from_text` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskService.update` | type_reference | [task_service](../modules/task_service.md) | — |
-| `test_client_contract` | import | [test_client_contract](../modules/test_client_contract.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

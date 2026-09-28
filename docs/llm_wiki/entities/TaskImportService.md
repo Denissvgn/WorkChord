@@ -1,6 +1,6 @@
 # TaskImportService
 
-**Location:** `backend/app/services/task_import_service.py:19`
+**Location:** `backend/app/services/task_import_service.py:20`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_import_service](../modules/task_import_service.md)
@@ -22,7 +22,7 @@ Own task text parsing, assignee resolution, and import persistence.
 | `_normalize_import_assignee_name` | `(value: Optional[str]) -> Optional[str]` | `@staticmethod` | Normalize assignee tokens from task text imports. |
 | `_get_team_member_lookup` | *(async)* `(iteration_id: int) -> tuple[dict[str, int], set[str]]` | — | Build a team member name to ID lookup for imports. |
 | `_resolve_import_assignee_id` | `(assignee_name: Optional[str], name_to_member_id: dict[str, int], ambiguous_names: set[str], *, line_label: str) -> Optional[int]` | — | Resolve an executable task import assignee inside the target iteration. |
-| `_task_from_parsed_import` | `(iteration_id: int, parsed_task, assignee_id: Optional[int], sort_order: int, project_id: Optional[int] = None) -> Task` | `@staticmethod` | Build a task model from parsed import data. |
+| `_task_from_parsed_import` | `(iteration_id: int, parsed_task, assignee_id: Optional[int], sort_order: int, project_id: Optional[int] = None, nominal_day_hours: float = 8) -> Task` | `@staticmethod` | Build a task model from parsed import data. |
 | `_triage_item_from_parsed_import` | `(iteration_id: int, parsed_task, source: str, labels: list[str]) -> TriageItem` | `@staticmethod` | Build a triage item model from parsed import data. |
 | `_record_triage_import_events` | *(async)* `(triage_items: list[TriageItem]) -> None` | — | Record audit events for triage items created from task import paths. |
 | `import_tasks` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks') -> tuple[list[Task], list[TriageItem]]` | — | Import task text into executable tasks, triage items, or both by policy. |

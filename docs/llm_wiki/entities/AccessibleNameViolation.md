@@ -11,10 +11,10 @@ _Auto-generated from `AccessibleNameViolation` in `frontend/src/test/accessibili
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `names` | `string[]` | *required* | — |
-| `role` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `names` | `string[]` | Yes | — | — |
+| `role` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -11,10 +11,10 @@ _Auto-generated from `TaskTimelineResponse` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `items` | `TaskTimelineItem[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `items` | `TaskTimelineItem[]` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # VerificationTransitionResponse
 
-**Location:** `backend/app/schemas/autonomy.py:185`
+**Location:** `backend/app/schemas/autonomy.py:189`
 **Kind:** Pydantic model
 **Bases:** `AutonomySchema`
 **Module:** [schemas_autonomy](../modules/schemas_autonomy.md)

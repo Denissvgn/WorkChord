@@ -11,16 +11,16 @@ _Auto-generated from `TeamMemberProfileUpdate` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `display_name` | `string` | *required* | — |
-| `email` | `string \| null` | *required* | — |
-| `headline` | `string \| null` | *required* | — |
-| `summary` | `string \| null` | *required* | — |
-| `notes` | `string \| null` | *required* | — |
-| `automation_enabled` | `boolean` | *required* | — |
-| `profile_kind` | `TeamMemberProfileKind` | *required* | — |
-| `assignment_modes` | `TeamMemberAssignmentMode[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `display_name` | `string` | No | — | — |
+| `email` | `string \| null` | No | — | — |
+| `headline` | `string \| null` | No | — | — |
+| `summary` | `string \| null` | No | — | — |
+| `notes` | `string \| null` | No | — | — |
+| `automation_enabled` | `boolean` | No | — | — |
+| `profile_kind` | `TeamMemberProfileKind` | No | — | — |
+| `assignment_modes` | `TeamMemberAssignmentMode[]` | No | — | — |
 
 ## Methods
 

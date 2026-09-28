@@ -1,6 +1,6 @@
 # IterationSeriesResponse
 
-**Location:** `frontend/src/types/iteration.ts:54`
+**Location:** `frontend/src/types/iteration.ts:55`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -11,9 +11,9 @@ _Auto-generated from `IterationSeriesResponse` in `frontend/src/types/iteration.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterations` | `Iteration[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterations` | `Iteration[]` | Yes | — | — |
 
 ## Methods
 

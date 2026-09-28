@@ -11,11 +11,11 @@ _Auto-generated from `WorkspaceAttention` in `frontend/src/components/layout/App
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `badge` | `string` | *required* | — |
-| `label` | `string` | *required* | — |
-| `isError` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `badge` | `string` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `isError` | `boolean` | No | — | — |
 
 ## Methods
 

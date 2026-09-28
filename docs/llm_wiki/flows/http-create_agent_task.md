@@ -98,8 +98,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_task | service.create_task | 1113 | `service.create_task(iteration_id, actor, data, idempotency_key)` |
-| create_agent_task | _handle_agent_error | 1115 | `_handle_agent_error(exc)` |
+| create_agent_task | service.create_task | 1115 | `service.create_task(iteration_id, actor, data, idempotency_key)` |
+| create_agent_task | _handle_agent_error | 1117 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -118,7 +118,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_agent_task` | `service.create_task` | 1113 |
+| unresolved_call | `create_agent_task` | `service.create_task` | 1115 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

@@ -14,12 +14,12 @@ _Auto-generated from `HandoffEvidenceReference` in `backend/app/autonomy/handoff
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `fact_kind` | `str` | `fact_kind` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `immutable_uri` | `str` | `immutable_uri` | Yes | No | — | min_length=1; max_length=2048 | — | — |
+| `immutable_uri` | `str` | `immutable_uri` | Yes | No | — | max_length=2048; min_length=1 | — | — |
 | `object_digest` | `str` | `object_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `issuer_workload_identity` | `str` | `issuer_workload_identity` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `issuer_workload_identity` | `str` | `issuer_workload_identity` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `issuer_role` | `str` | `issuer_role` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `source_system` | `str` | `source_system` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `source_generation` | `str` | `source_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `source_generation` | `str` | `source_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

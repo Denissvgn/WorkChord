@@ -11,16 +11,16 @@ _Auto-generated from `OverviewDeliverySnapshotProps` in `frontend/src/pages/Over
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `planReady` | `{ done: number; total: number; pct: number }` | *required* | — |
-| `completionPercent` | `number \| null` | *required* | — |
-| `shippedTasks` | `number \| null` | *required* | — |
-| `totalTasks` | `number \| null` | *required* | — |
-| `planningDataAvailable` | `boolean` | *required* | — |
-| `deliveryDataAvailable` | `boolean` | *required* | — |
-| `progress` | `{ dayNo: number; daysLeft: number; percent: number }` | *required* | — |
-| `workingDays` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `planReady` | `{ done: number; total: number; pct: number }` | Yes | — | — |
+| `completionPercent` | `number \| null` | Yes | — | — |
+| `shippedTasks` | `number \| null` | Yes | — | — |
+| `totalTasks` | `number \| null` | Yes | — | — |
+| `planningDataAvailable` | `boolean` | Yes | — | — |
+| `deliveryDataAvailable` | `boolean` | Yes | — | — |
+| `progress` | `{ dayNo: number; daysLeft: number; percent: number }` | Yes | — | — |
+| `workingDays` | `number` | Yes | — | — |
 
 ## Methods
 

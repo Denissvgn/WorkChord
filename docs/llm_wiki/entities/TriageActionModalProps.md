@@ -1,6 +1,6 @@
 # TriageActionModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:408`
+**Location:** `frontend/src/pages/TriagePage.tsx:410`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,19 +11,19 @@ _Auto-generated from `TriageActionModalProps` in `frontend/src/pages/TriagePage.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `action` | `TriageLifecycleAction` | *required* | — |
-| `item` | `TriageItem` | *required* | — |
-| `allTriageItems` | `TriageItem[]` | *required* | — |
-| `iterations` | `Iteration[]` | *required* | — |
-| `selectedIterationId` | `number` | *required* | — |
-| `defaultSnooze` | `string` | *required* | — |
-| `defaultDuplicate` | `DuplicateActionDefaults` | *required* | — |
-| `isSubmitting` | `boolean` | *required* | — |
-| `error` | `string \| null` | *required* | — |
-| `onSubmit` | `(payload: TriageActionRequest \| TriageSnoozeRequest \| TriageDuplicateRequest) => void` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `action` | `TriageLifecycleAction` | Yes | — | — |
+| `item` | `TriageItem` | Yes | — | — |
+| `allTriageItems` | `TriageItem[]` | Yes | — | — |
+| `iterations` | `Iteration[]` | Yes | — | — |
+| `selectedIterationId` | `number` | Yes | — | — |
+| `defaultSnooze` | `string` | Yes | — | — |
+| `defaultDuplicate` | `DuplicateActionDefaults` | No | — | — |
+| `isSubmitting` | `boolean` | Yes | — | — |
+| `error` | `string \| null` | No | — | — |
+| `onSubmit` | `(payload: TriageActionRequest \| TriageSnoozeRequest \| TriageDuplicateRequest) => void` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
 
 ## Methods
 

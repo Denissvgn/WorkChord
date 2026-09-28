@@ -9,6 +9,8 @@
 
 Package aggregation is separate from the mutable execution task.
 
+Packages associated with canonical tasks capture task/brief/artifact revisions and the brief digest. These pins complement the existing trusted artifact, lease, evaluator and verifier-independence requirements; ordinary task review cannot substitute for package verification.
+
 ## Attributes
 
 | Name | Type | Default | Description |
@@ -17,6 +19,10 @@ Package aggregation is separate from the mutable execution task.
 | `package_key` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `package_version` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
 | `execution_task_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('tasks.id', ondelete='RESTRICT'), nullable=True, index=True)` | — |
+| `task_context_version` | `Mapped[int \| None]` | `mapped_column(Integer)` | — |
+| `task_brief_revision` | `Mapped[int \| None]` | `mapped_column(Integer)` | — |
+| `task_artifact_revision` | `Mapped[int \| None]` | `mapped_column(Integer)` | — |
+| `task_brief_digest` | `Mapped[str \| None]` | `mapped_column(String(64))` | — |
 | `predecessor_package_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('agent_work_packages.id', ondelete='RESTRICT'), nullable=True)` | — |
 | `state` | `Mapped[str]` | `mapped_column(String(30), default='planned', nullable=False)` | — |
 | `artifact_set_digest` | `Mapped[str]` | `mapped_column(String(64), nullable=False)` | — |

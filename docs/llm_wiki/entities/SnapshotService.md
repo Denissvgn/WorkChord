@@ -11,6 +11,8 @@ Service for creating and managing iteration snapshots.
 
 Stores bounded, checksummed pre-command points transactionally in the database; preview and failed commands cannot publish or evict them. Captured project scopes gate payload reads. Restore preserves supported IDs, recovers captured iteration dates and absences, records baseline restoration, and invalidates current acceptance. Ambiguous legacy files remain quarantined provenance records. Global configuration and external side effects require separate recovery.
 
+Scheduled and backlog restoration share a version allocator under the owning scope lock. It advances above the saved version, live task, retained history and durable deletion fence. Current progress and acceptance are cleared; immutable history survives. A deleted task without a reliable deletion fence returns snapshot_version_history_unknown (409), requiring recovery from a complete matching database backup.
+
 ## Attributes
 
 *No annotated attributes found.*
@@ -47,13 +49,13 @@ flowchart LR
     n3["list_snapshots (backend/app/routers/snapshots.py)"]
     n4["read_snapshot (backend/app/routers/snapshots.py)"]
     n5["restore_snapshot (backend/app/routers/snapshots.py)"]
-    n6["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
-    n7["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
-    n8["PlanShareService.create (backend/app/services/plan_share_service.py)"]
-    n9["reserve_task_context_revision (backend/app/services/task_context_revision_service.py)"]
-    n10["TaskImportService.bulk_update_tasks_from_text (backend/app/services/task_import_service.py)"]
-    n11["TaskImportService.import_tasks (backend/app/services/task_import_service.py)"]
-    n12["TaskService.create (backend/app/services/task_service.py)"]
+    n6["BacklogSnapshotService.capture (backend/app/services/backlog_snapshot_service.py)"]
+    n7["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
+    n8["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n9["PlanShareService.create (backend/app/services/plan_share_service.py)"]
+    n10["TaskBriefService._locked (backend/app/services/task_brief_service.py)"]
+    n11["reserve_task_context_revision (backend/app/services/task_context_revision_service.py)"]
+    n12["TaskDomainService.command (backend/app/services/task_domain_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -72,13 +74,13 @@ flowchart LR
     click n3 "../modules/snapshots.md"
     click n4 "../modules/snapshots.md"
     click n5 "../modules/snapshots.md"
-    click n6 "../modules/hierarchy_repair_service.md"
-    click n7 "../modules/iteration_service.md"
-    click n8 "../modules/plan_share_service.md"
-    click n9 "../modules/task_context_revision_service.md"
-    click n10 "../modules/task_import_service.md"
-    click n11 "../modules/task_import_service.md"
-    click n12 "../modules/task_service.md"
+    click n6 "../modules/backlog_snapshot_service.md"
+    click n7 "../modules/hierarchy_repair_service.md"
+    click n8 "../modules/iteration_service.md"
+    click n9 "../modules/plan_share_service.md"
+    click n10 "../modules/task_brief_service.md"
+    click n11 "../modules/task_context_revision_service.md"
+    click n12 "../modules/task_domain_service.md"
 ```
 
 ### Summary
@@ -96,12 +98,12 @@ flowchart LR
 | `list_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `read_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `restore_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
+| `BacklogSnapshotService.capture` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 | `HierarchyRepairService.repair` | call | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) | 1 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
+| `TaskBriefService._locked` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `reserve_task_context_revision` | call | [task_context_revision_service](../modules/task_context_revision_service.md) | 1 |
-| `TaskImportService.bulk_update_tasks_from_text` | call | [task_import_service](../modules/task_import_service.md) | 1 |
-| `TaskImportService.import_tasks` | call | [task_import_service](../modules/task_import_service.md) | 1 |
-| `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
+| `TaskDomainService.command` | call | [task_domain_service](../modules/task_domain_service.md) | 1 |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

@@ -6,6 +6,8 @@
 
 Fenced, package-level autonomous verification lifecycle service.
 
+Autonomous package verification keeps its signed lease, evaluator, artifact and independence requirements. A package associated with a canonical task also captures the task, brief and artifact revisions and the canonical brief digest, so later task edits cannot reuse verification for older context.
+
 ## Imports
 
 | Source | Symbols |

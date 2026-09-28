@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_get_capabilities` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 10 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 12 more
 
 **Complete modules touched:**
 
@@ -12,6 +12,7 @@
 - [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
@@ -19,6 +20,7 @@
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [task_domain_service](../modules/task_domain_service.md)
 
 ## Call sequence
 
@@ -84,7 +86,7 @@ sequenceDiagram
     p19-->>p26: db.rollback
 ```
 
-> Call sequence diagram shows 30 of 132 interactions; 102 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 140 interactions; 110 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

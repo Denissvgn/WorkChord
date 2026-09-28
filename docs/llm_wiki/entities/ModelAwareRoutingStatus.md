@@ -11,13 +11,13 @@ _Auto-generated from `ModelAwareRoutingStatus` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `configured_mode` | `ModelAwareRoutingMode` | *required* | — |
-| `effective_mode` | `ModelAwareRoutingMode` | *required* | — |
-| `feature_advertised` | `boolean` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
-| `topology_readiness` | `ModelAwareRoutingTopologyReadiness` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `configured_mode` | `ModelAwareRoutingMode` | Yes | — | — |
+| `effective_mode` | `ModelAwareRoutingMode` | Yes | — | — |
+| `feature_advertised` | `boolean` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
+| `topology_readiness` | `ModelAwareRoutingTopologyReadiness` | Yes | — | — |
 
 ## Methods
 

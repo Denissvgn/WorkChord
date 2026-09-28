@@ -1,6 +1,6 @@
 # AgentObservationJob
 
-**Location:** `backend/app/models/autonomy.py:310`
+**Location:** `backend/app/models/autonomy.py:314`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_autonomy](../modules/models_autonomy.md)

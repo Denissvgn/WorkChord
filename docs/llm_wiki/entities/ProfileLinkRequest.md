@@ -14,7 +14,7 @@ _Auto-generated from `ProfileLinkRequest` in `backend/app/routers/identity.py`._
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `profile_id` | `int` | `profile_id` | Yes | No | — | ge=1 | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=8; max_length=2000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=2000; min_length=8 | — | — |
 
 ## Methods
 

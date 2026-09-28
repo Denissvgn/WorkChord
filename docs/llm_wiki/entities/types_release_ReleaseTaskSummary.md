@@ -11,12 +11,12 @@ _Auto-generated from `ReleaseTaskSummary` in `frontend/src/types/release.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `status` | `TaskStatus \| string` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `status` | `TaskStatus \| string` | Yes | — | — |
+| `project_id` | `number \| null` | No | — | — |
 
 ## Methods
 

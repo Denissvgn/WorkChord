@@ -1,6 +1,6 @@
 # TaskBulkOperationRequest
 
-**Location:** `frontend/src/types/task.ts:293`
+**Location:** `frontend/src/types/task.ts:315`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,14 +11,14 @@ _Auto-generated from `TaskBulkOperationRequest` in `frontend/src/types/task.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_versions` | `Record<number, number>` | *required* | — |
-| `expected_revisions` | `Record<number, number>` | *required* | — |
-| `task_ids` | `number[]` | *required* | — |
-| `action` | `TaskBulkAction` | *required* | — |
-| `payload` | `Record<string, unknown>` | *required* | — |
-| `dry_run` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_versions` | `Record<number, number>` | No | — | — |
+| `expected_revisions` | `Record<number, number>` | No | — | — |
+| `task_ids` | `number[]` | Yes | — | — |
+| `action` | `TaskBulkAction` | Yes | — | — |
+| `payload` | `Record<string, unknown>` | No | — | — |
+| `dry_run` | `boolean` | No | — | — |
 
 ## Methods
 

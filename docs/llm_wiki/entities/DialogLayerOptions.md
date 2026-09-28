@@ -11,13 +11,13 @@ _Auto-generated from `DialogLayerOptions` in `frontend/src/components/common/dia
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `initialFocusRef` | `RefObject<HTMLElement \| null>` | *required* | — |
-| `restoreFocusRef` | `RefObject<HTMLElement \| null>` | *required* | — |
-| `closeDisabled` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `open` | `boolean` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `initialFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
+| `restoreFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
+| `closeDisabled` | `boolean` | No | — | — |
 
 ## Methods
 

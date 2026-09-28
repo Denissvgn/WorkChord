@@ -11,15 +11,15 @@ _Auto-generated from `AgentActorRosterItem` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actor_revision` | `number` | *required* | — |
-| `profile_revision` | `string \| null` | *required* | — |
-| `profile` | `AgentActorRosterProfile \| null` | *required* | — |
-| `eligible_model_bindings` | `AgentModelBinding[]` | *required* | — |
-| `queued_assignments` | `number` | *required* | — |
-| `accepted_assignments` | `number` | *required* | — |
-| `running_runs` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actor_revision` | `number` | Yes | — | — |
+| `profile_revision` | `string \| null` | Yes | — | — |
+| `profile` | `AgentActorRosterProfile \| null` | Yes | — | — |
+| `eligible_model_bindings` | `AgentModelBinding[]` | Yes | — | — |
+| `queued_assignments` | `number` | Yes | — | — |
+| `accepted_assignments` | `number` | Yes | — | — |
+| `running_runs` | `number` | Yes | — | — |
 
 ## Methods
 

@@ -11,9 +11,9 @@ _Auto-generated from `OutboundWebhookRetryResponse` in `frontend/src/types/outbo
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `delivery` | `OutboundWebhookDelivery` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `delivery` | `OutboundWebhookDelivery` | Yes | — | — |
 
 ## Methods
 

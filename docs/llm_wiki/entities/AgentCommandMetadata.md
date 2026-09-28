@@ -11,11 +11,11 @@ _Auto-generated from `AgentCommandMetadata` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `idempotencyKey` | `string` | *required* | — |
-| `rationale` | `string` | *required* | — |
-| `correlationId` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `idempotencyKey` | `string` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
+| `correlationId` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -47,4 +47,4 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `readTaskDraft` | `(key: string \| null, defaults: TaskEditorValues) -> TaskEditorValues \| null` | — | — |
 | `writeTaskDraft` | `(key: string \| null, values: TaskEditorValues)` | — | — |
-| `removeTaskDraft` | `(key: string \| null)` | — | — |
+| `removeTaskDraft` | `(key: string \| null, includeProgress = false)` | — | — |

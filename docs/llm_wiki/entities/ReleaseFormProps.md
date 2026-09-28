@@ -11,12 +11,12 @@ _Auto-generated from `ReleaseFormProps` in `frontend/src/components/releases/Rel
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `projectId` | `number` | *required* | — |
-| `initialData` | `Release` | *required* | — |
-| `onSuccess` | `(release: Release) => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `projectId` | `number` | Yes | — | — |
+| `initialData` | `Release` | No | — | — |
+| `onSuccess` | `(release: Release) => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
 
 ## Methods
 

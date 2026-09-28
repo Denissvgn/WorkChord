@@ -11,14 +11,14 @@ _Auto-generated from `ModelAwareRoutingTopologyReadiness` in `frontend/src/types
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'model-aware-routing-topology-readiness-v1'` | *required* | — |
-| `status` | `ModelAwareRoutingTopologyStatus` | *required* | — |
-| `source` | `ModelAwareRoutingTopologySource` | *required* | — |
-| `topology_id` | `string \| null` | *required* | — |
-| `topology_revision` | `number \| null` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'model-aware-routing-topology-readiness-v1'` | Yes | — | — |
+| `status` | `ModelAwareRoutingTopologyStatus` | Yes | — | — |
+| `source` | `ModelAwareRoutingTopologySource` | Yes | — | — |
+| `topology_id` | `string \| null` | Yes | — | — |
+| `topology_revision` | `number \| null` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
 
 ## Methods
 

@@ -56,11 +56,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| add_dependency | service.add_dependency | 613 | `service.add_dependency(task_id, data.depends_on_id)` |
-| add_dependency | HTTPException | 615 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| add_dependency | str | 617 | `str(e)` |
-| add_dependency | HTTPException | 620 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
-| add_dependency | MessageResponse | 624 | `MessageResponse(message=..., success=True)` |
+| add_dependency | service.add_dependency | 615 | `service.add_dependency(task_id, data.depends_on_id)` |
+| add_dependency | HTTPException | 617 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| add_dependency | str | 619 | `str(e)` |
+| add_dependency | HTTPException | 622 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
+| add_dependency | MessageResponse | 626 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -70,10 +70,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `add_dependency` | `service.add_dependency` | 613 |
-| external_call | `add_dependency` | `HTTPException` | 615 |
-| external_call | `add_dependency` | `HTTPException` | 620 |
+| unresolved_call | `add_dependency` | `service.add_dependency` | 615 |
+| external_call | `add_dependency` | `HTTPException` | 617 |
+| external_call | `add_dependency` | `HTTPException` | 622 |
 
 ## Behavior
 
 This flow starts at `add_dependency` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+
+Actual dependency changes invalidate current progress and acceptance through general updates and individual add/remove commands. Immutable evidence history remains available, a command reserves one task version, and no-op dependency requests retain their current version. Locked graph relationships are loaded explicitly before applying a dependency update.

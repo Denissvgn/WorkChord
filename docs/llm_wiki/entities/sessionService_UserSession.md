@@ -11,15 +11,15 @@ _Auto-generated from `UserSession` in `frontend/src/services/sessionService.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `principal_id` | `number \| null` | *required* | — |
-| `authenticated` | `boolean` | *required* | — |
-| `id` | `number` | *required* | — |
-| `public_id` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `last_seen_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `principal_id` | `number \| null` | No | — | — |
+| `authenticated` | `boolean` | No | — | — |
+| `id` | `number` | Yes | — | — |
+| `public_id` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `last_seen_at` | `string` | Yes | — | — |
 
 ## Methods
 

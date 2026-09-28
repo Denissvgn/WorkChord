@@ -11,11 +11,11 @@ _Auto-generated from `WorkloadIssue` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `member_id` | `number` | *required* | — |
-| `member_name` | `string` | *required* | — |
-| `issue` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `member_id` | `number` | Yes | — | — |
+| `member_name` | `string` | Yes | — | — |
+| `issue` | `string` | Yes | — | — |
 
 ## Methods
 

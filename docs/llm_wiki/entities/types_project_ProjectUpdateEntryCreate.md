@@ -11,14 +11,14 @@ _Auto-generated from `ProjectUpdateEntryCreate` in `frontend/src/types/project.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `health` | `ProjectHealth` | *required* | — |
-| `summary` | `string` | *required* | — |
-| `progress_text` | `string \| null` | *required* | — |
-| `risks_text` | `string \| null` | *required* | — |
-| `decisions_text` | `string \| null` | *required* | — |
-| `next_steps_text` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `health` | `ProjectHealth` | Yes | — | — |
+| `summary` | `string` | Yes | — | — |
+| `progress_text` | `string \| null` | No | — | — |
+| `risks_text` | `string \| null` | No | — | — |
+| `decisions_text` | `string \| null` | No | — | — |
+| `next_steps_text` | `string \| null` | No | — | — |
 
 ## Methods
 

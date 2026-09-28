@@ -11,20 +11,20 @@ _Auto-generated from `WorkTemplateCreate` in `frontend/src/types/template.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `template_type` | `TemplateType` | *required* | — |
-| `default_title` | `string \| null` | *required* | — |
-| `default_description` | `string \| null` | *required* | — |
-| `default_priority` | `number \| null` | *required* | — |
-| `default_effort_days` | `number \| null` | *required* | — |
-| `default_labels` | `string[]` | *required* | — |
-| `default_checklist` | `string[]` | *required* | — |
-| `default_payload` | `Record<string, unknown>` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `template_type` | `TemplateType` | Yes | — | — |
+| `default_title` | `string \| null` | No | — | — |
+| `default_description` | `string \| null` | No | — | — |
+| `default_priority` | `number \| null` | No | — | — |
+| `default_effort_days` | `number \| null` | No | — | — |
+| `default_labels` | `string[]` | No | — | — |
+| `default_checklist` | `string[]` | No | — | — |
+| `default_payload` | `Record<string, unknown>` | No | — | — |
+| `is_active` | `boolean` | No | — | — |
+| `sort_order` | `number` | No | — | — |
 
 ## Methods
 

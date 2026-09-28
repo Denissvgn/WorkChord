@@ -11,11 +11,11 @@ _Auto-generated from `AppRuntimeSettings` in `frontend/src/types/systemSettings.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `ui_language` | `LanguageCode` | *required* | — |
-| `ai_language_mode` | `AILanguageMode` | *required* | — |
-| `field_sources` | `Record<string, RuntimeSettingSource>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `ui_language` | `LanguageCode` | Yes | — | — |
+| `ai_language_mode` | `AILanguageMode` | Yes | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | Yes | — | — |
 
 ## Methods
 

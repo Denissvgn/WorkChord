@@ -11,10 +11,10 @@ _Auto-generated from `CheckboxProps` in `frontend/src/components/common/Checkbox
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | *required* | — |
-| `onChange` | `(checked: boolean) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `label` | `string` | No | — | — |
+| `onChange` | `(checked: boolean) => void` | No | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TaskAssignee
 
-**Location:** `backend/app/schemas/task.py:118`
+**Location:** `backend/app/schemas/task.py:125`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -56,4 +56,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TaskService.task_to_response` | call | [task_service](../modules/task_service.md) | 1 |
+| `TaskService.task_to_response` | call | [task_service](../modules/task_service.md) | 2 |

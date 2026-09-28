@@ -1,6 +1,6 @@
 # ClassificationPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1574`
+**Location:** `frontend/src/pages/TriagePage.tsx:1591`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,16 +11,16 @@ _Auto-generated from `ClassificationPanelProps` in `frontend/src/pages/TriagePag
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `suggestions` | `TriageClassificationSuggestion[]` | *required* | — |
-| `isLoading` | `boolean` | *required* | — |
-| `isError` | `boolean` | *required* | — |
-| `error` | `unknown` | *required* | — |
-| `onRetry` | `() => void` | *required* | — |
-| `onClassify` | `() => void` | *required* | — |
-| `isClassifying` | `boolean` | *required* | — |
-| `classifyError` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `suggestions` | `TriageClassificationSuggestion[]` | No | — | — |
+| `isLoading` | `boolean` | Yes | — | — |
+| `isError` | `boolean` | Yes | — | — |
+| `error` | `unknown` | No | — | — |
+| `onRetry` | `() => void` | Yes | — | — |
+| `onClassify` | `() => void` | Yes | — | — |
+| `isClassifying` | `boolean` | Yes | — | — |
+| `classifyError` | `string \| null` | Yes | — | — |
 
 ## Methods
 

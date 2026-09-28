@@ -31,14 +31,14 @@ flowchart LR
     n3["backend/app/routers/agent.py"]
     n4["backend/app/routers/agent_planning.py"]
     n5["backend/app/routers/gantt.py"]
-    n6["_raise_task_version_conflict (backend/app/routers/tasks.py)"]
-    n7["AgentRoutingService._build_preview (backend/app/services/agent_routing_service.py)"]
-    n8["AgentRoutingService.create_assessment (backend/app/services/agent_routing_service.py)"]
-    n9["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
-    n10["AgentWorkService.begin (backend/app/services/agent_work_service.py)"]
-    n11["AgentWorkService.create_assignment (backend/app/services/agent_work_service.py)"]
-    n12["AgentWorkService.renew_work (backend/app/services/agent_work_service.py)"]
-    n13["AgentWorkService.report_discovery (backend/app/services/agent_work_service.py)"]
+    n6["backend/app/routers/task_domain.py"]
+    n7["_raise_task_version_conflict (backend/app/routers/tasks.py)"]
+    n8["AgentRoutingService._build_preview (backend/app/services/agent_routing_service.py)"]
+    n9["AgentRoutingService.create_assessment (backend/app/services/agent_routing_service.py)"]
+    n10["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
+    n11["AgentWorkService.begin (backend/app/services/agent_work_service.py)"]
+    n12["AgentWorkService.create_assignment (backend/app/services/agent_work_service.py)"]
+    n13["AgentWorkService.renew_work (backend/app/services/agent_work_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,10 +57,10 @@ flowchart LR
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/routers_agent_planning.md"
     click n5 "../modules/routers_gantt.md"
-    click n6 "../modules/tasks.md"
-    click n7 "../modules/agent_routing_service.md"
+    click n6 "../modules/routers_task_domain.md"
+    click n7 "../modules/tasks.md"
     click n8 "../modules/agent_routing_service.md"
-    click n9 "../modules/agent_work_service.md"
+    click n9 "../modules/agent_routing_service.md"
     click n10 "../modules/agent_work_service.md"
     click n11 "../modules/agent_work_service.md"
     click n12 "../modules/agent_work_service.md"
@@ -87,6 +87,7 @@ flowchart LR
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
 | `agent_planning` | import | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `gantt` | import | [routers_gantt](../modules/routers_gantt.md) | — |
+| `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `_raise_task_version_conflict` | type_reference | [tasks](../modules/tasks.md) | — |
 | `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `AgentRoutingService.create_assessment` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
@@ -94,6 +95,5 @@ flowchart LR
 | `AgentWorkService.begin` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.create_assignment` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.renew_work` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
-| `AgentWorkService.report_discovery` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

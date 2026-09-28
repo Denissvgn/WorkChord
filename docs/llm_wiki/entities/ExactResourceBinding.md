@@ -22,10 +22,10 @@ One charter-pinned external system/resource generation.
 | `logical_key` | `str` | `logical_key` | Yes | No | — | max_length=255; pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `system` | `Literal['source-database', 'target-database', 'git', 'ci', 'registry', 'deployment', 'scheduler', 'gateway', 'dns', 'identity', 'kms', 'worm', 'control-journal', 'observability', 'backup', 'clock', 'sanitizer']` | `system` | Yes | No | — | — | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `generation` | `str` | `generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `generation` | `str` | `generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `account_ref` | `str` | `account_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `region` | `str` | `region` | Yes | No | — | min_length=1; max_length=128 | — | — |
-| `allowed_operations` | `tuple[str, ...]` | `allowed_operations` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `region` | `str` | `region` | Yes | No | — | max_length=128; min_length=1 | — | — |
+| `allowed_operations` | `tuple[str, ...]` | `allowed_operations` | Yes | No | — | max_length=256; min_length=1 | — | — |
 | `compatibility_rule` | `str \| None` | `compatibility_rule` | No | Yes | `None` | max_length=512 | — | — |
 
 ## Methods

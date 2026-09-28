@@ -1,6 +1,6 @@
 # CalendarImportError
 
-**Location:** `frontend/src/types/calendar.ts:33`
+**Location:** `frontend/src/types/calendar.ts:34`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
@@ -11,10 +11,10 @@ _Auto-generated from `CalendarImportError` in `frontend/src/types/calendar.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `row` | `number` | *required* | — |
-| `message` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `row` | `number` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
 
 ## Methods
 

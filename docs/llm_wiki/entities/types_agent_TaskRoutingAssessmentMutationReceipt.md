@@ -11,19 +11,19 @@ _Auto-generated from `TaskRoutingAssessmentMutationReceipt` in `frontend/src/typ
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `operation` | `'routing.assessment.create'` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `target_type` | `'task_routing_assessment'` | *required* | — |
-| `target_id` | `number` | *required* | — |
-| `task_id` | `number` | *required* | — |
-| `idempotency_key` | `string` | *required* | — |
-| `rationale` | `string` | *required* | — |
-| `correlation_id` | `string` | *required* | — |
-| `authoritative_task_version` | `number` | *required* | — |
-| `assessment` | `TaskRoutingAssessment` | *required* | — |
-| `audit_event_ids` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `operation` | `'routing.assessment.create'` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `target_type` | `'task_routing_assessment'` | Yes | — | — |
+| `target_id` | `number` | Yes | — | — |
+| `task_id` | `number` | Yes | — | — |
+| `idempotency_key` | `string` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
+| `correlation_id` | `string` | Yes | — | — |
+| `authoritative_task_version` | `number` | Yes | — | — |
+| `assessment` | `TaskRoutingAssessment` | Yes | — | — |
+| `audit_event_ids` | `number[]` | Yes | — | — |
 
 ## Methods
 

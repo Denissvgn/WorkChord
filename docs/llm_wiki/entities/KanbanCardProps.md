@@ -11,10 +11,10 @@ _Auto-generated from `KanbanCardProps` in `frontend/src/components/tasks/KanbanB
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
+| `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | No | — | — |
 
 ## Methods
 

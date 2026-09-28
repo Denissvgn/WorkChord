@@ -66,13 +66,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_subtask | service.create_subtask | 566 | `service.create_subtask(task_id, data)` |
-| create_subtask | HTTPException | 568 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_subtask | str | 570 | `str(e)` |
-| create_subtask | HTTPException | 573 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_subtask | IterationService | 578 | `IterationService(db)` |
-| create_subtask | iteration_service.get_by_id | 579 | `iteration_service.get_by_id(task.iteration_id)` |
-| create_subtask | service.task_to_response | 581 | `service.task_to_response(task, ...)` |
+| create_subtask | service.create_subtask | 568 | `service.create_subtask(task_id, data)` |
+| create_subtask | HTTPException | 570 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_subtask | str | 572 | `str(e)` |
+| create_subtask | HTTPException | 575 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_subtask | IterationService | 580 | `IterationService(db)` |
+| create_subtask | iteration_service.get_by_id | 581 | `iteration_service.get_by_id(task.iteration_id)` |
+| create_subtask | service.task_to_response | 583 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -82,11 +82,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_subtask` | `service.create_subtask` | 566 |
-| external_call | `create_subtask` | `HTTPException` | 568 |
-| external_call | `create_subtask` | `HTTPException` | 573 |
-| unresolved_call | `create_subtask` | `iteration_service.get_by_id` | 579 |
-| unresolved_call | `create_subtask` | `service.task_to_response` | 581 |
+| unresolved_call | `create_subtask` | `service.create_subtask` | 568 |
+| external_call | `create_subtask` | `HTTPException` | 570 |
+| external_call | `create_subtask` | `HTTPException` | 575 |
+| unresolved_call | `create_subtask` | `iteration_service.get_by_id` | 581 |
+| unresolved_call | `create_subtask` | `service.task_to_response` | 583 |
 
 ## Behavior
 

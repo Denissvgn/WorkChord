@@ -11,17 +11,17 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `mode` | `'managed' \| 'trusted_local'` | *required* | — |
-| `authenticated` | `boolean` | *required* | — |
-| `configured` | `boolean` | *required* | — |
-| `principal` | `{ id: number; kind: 'human' \| 'agent' \| 'system'; display_name: string } \| null` | *required* | — |
-| `profile` | `{ id: number; display_name: string } \| null` | *required* | — |
-| `workspace_role` | `'owner' \| 'operator' \| 'member' \| null` | *required* | — |
-| `projects` | `Record<string, string>` | *required* | — |
-| `csrf_token` | `string \| null` | *required* | — |
-| `authentication_error` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `mode` | `'managed' \| 'trusted_local'` | Yes | — | — |
+| `authenticated` | `boolean` | Yes | — | — |
+| `configured` | `boolean` | Yes | — | — |
+| `principal` | `{ id: number; kind: 'human' \| 'agent' \| 'system'; display_name: string } \| null` | Yes | — | — |
+| `profile` | `{ id: number; display_name: string } \| null` | Yes | — | — |
+| `workspace_role` | `'owner' \| 'operator' \| 'member' \| null` | Yes | — | — |
+| `projects` | `Record<string, string>` | Yes | — | — |
+| `csrf_token` | `string \| null` | Yes | — | — |
+| `authentication_error` | `string \| null` | No | — | — |
 
 ## Methods
 

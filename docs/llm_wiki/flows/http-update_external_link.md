@@ -64,27 +64,27 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_external_link | ExternalLinkUpdate.model_validate | 522 | `ExternalLinkUpdate.model_validate(raw_data)` |
-| update_external_link | HTTPException | 524 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_external_link | str | 526 | `str(e)` |
-| update_external_link | link_service.update | 529 | `link_service.update(link_id, data)` |
-| update_external_link | HTTPException | 531 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| update_external_link | link_service.link_to_response | 535 | `link_service.link_to_response(link)` |
+| update_external_link | ExternalLinkUpdate.model_validate | 524 | `ExternalLinkUpdate.model_validate(raw_data)` |
+| update_external_link | HTTPException | 526 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_external_link | str | 528 | `str(e)` |
+| update_external_link | link_service.update | 531 | `link_service.update(link_id, data)` |
+| update_external_link | HTTPException | 533 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_external_link | link_service.link_to_response | 537 | `link_service.link_to_response(link)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `link_service.update` | `update_external_link` | 529 |
+| mutation | `link_service.update` | `update_external_link` | 531 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_external_link` | `ExternalLinkUpdate.model_validate` | 522 |
-| external_call | `update_external_link` | `HTTPException` | 524 |
-| external_call | `update_external_link` | `HTTPException` | 531 |
-| unresolved_call | `update_external_link` | `link_service.link_to_response` | 535 |
+| unresolved_call | `update_external_link` | `ExternalLinkUpdate.model_validate` | 524 |
+| external_call | `update_external_link` | `HTTPException` | 526 |
+| external_call | `update_external_link` | `HTTPException` | 533 |
+| unresolved_call | `update_external_link` | `link_service.link_to_response` | 537 |
 
 ## Behavior
 

@@ -1,6 +1,6 @@
 # TriageTaskDraftResponse
 
-**Location:** `frontend/src/types/triage.ts:119`
+**Location:** `frontend/src/types/triage.ts:121`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,28 +11,29 @@ _Auto-generated from `TriageTaskDraftResponse` in `frontend/src/types/triage.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `triage_item_id` | `number` | *required* | — |
-| `suggested_title` | `string` | *required* | — |
-| `suggested_description` | `string` | *required* | — |
-| `suggested_checklist` | `string[]` | *required* | — |
-| `acceptance_criteria` | `string[]` | *required* | — |
-| `risks` | `string[]` | *required* | — |
-| `template_id` | `number \| null` | *required* | — |
-| `classification_suggestion_id` | `number \| null` | *required* | — |
-| `is_fallback` | `boolean` | *required* | — |
-| `provider` | `string \| null` | *required* | — |
-| `model` | `string \| null` | *required* | — |
-| `language` | `'en' \| 'ru'` | *required* | — |
-| `finish_reason` | `string \| null` | *required* | — |
-| `is_truncated` | `boolean` | *required* | — |
-| `grounded_facts` | `Array<{ claim: string; source: string }>` | *required* | — |
-| `implementation_notes` | `string[]` | *required* | — |
-| `open_questions` | `string[]` | *required* | — |
-| `ungrounded_suggestions` | `string[]` | *required* | — |
-| `warnings` | `string[]` | *required* | — |
-| `rationale` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `brief` | `TaskBrief` | No | — | — |
+| `triage_item_id` | `number` | Yes | — | — |
+| `suggested_title` | `string` | Yes | — | — |
+| `suggested_description` | `string` | Yes | — | — |
+| `suggested_checklist` | `string[]` | Yes | — | — |
+| `acceptance_criteria` | `string[]` | Yes | — | — |
+| `risks` | `string[]` | Yes | — | — |
+| `template_id` | `number \| null` | No | — | — |
+| `classification_suggestion_id` | `number \| null` | No | — | — |
+| `is_fallback` | `boolean` | Yes | — | — |
+| `provider` | `string \| null` | No | — | — |
+| `model` | `string \| null` | No | — | — |
+| `language` | `'en' \| 'ru'` | No | — | — |
+| `finish_reason` | `string \| null` | No | — | — |
+| `is_truncated` | `boolean` | No | — | — |
+| `grounded_facts` | `Array<{ claim: string; source: string }>` | No | — | — |
+| `implementation_notes` | `string[]` | No | — | — |
+| `open_questions` | `string[]` | No | — | — |
+| `ungrounded_suggestions` | `string[]` | No | — | — |
+| `warnings` | `string[]` | No | — | — |
+| `rationale` | `string \| null` | No | — | — |
 
 ## Methods
 
@@ -57,7 +58,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_triage](../modules/types_triage.md) | 0 | `acceptance_criteria`, `classification_suggestion_id`, `finish_reason`, `grounded_facts`, `implementation_notes`, `is_fallback`, `is_truncated`, `language`, `model`, `open_questions`, `provider`, `rationale` |
+| [types_triage](../modules/types_triage.md) | 0 | `acceptance_criteria`, `brief`, `classification_suggestion_id`, `finish_reason`, `grounded_facts`, `implementation_notes`, `is_fallback`, `is_truncated`, `language`, `model`, `open_questions`, `provider` |
 
 ### References
 

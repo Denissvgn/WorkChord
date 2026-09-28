@@ -1,6 +1,6 @@
 # WorkTemplateResponse
 
-**Location:** `backend/app/schemas/template.py:52`
+**Location:** `backend/app/schemas/template.py:71`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_template](../modules/schemas_template.md)

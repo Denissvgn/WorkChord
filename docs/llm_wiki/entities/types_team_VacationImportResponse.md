@@ -11,12 +11,12 @@ _Auto-generated from `VacationImportResponse` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `imported_count` | `number` | *required* | — |
-| `skipped_count` | `number` | *required* | — |
-| `errors` | `VacationImportError[]` | *required* | — |
-| `vacations` | `Vacation[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `imported_count` | `number` | Yes | — | — |
+| `skipped_count` | `number` | Yes | — | — |
+| `errors` | `VacationImportError[]` | Yes | — | — |
+| `vacations` | `Vacation[]` | Yes | — | — |
 
 ## Methods
 

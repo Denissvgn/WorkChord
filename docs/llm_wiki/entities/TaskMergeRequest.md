@@ -1,6 +1,6 @@
 # TaskMergeRequest
 
-**Location:** `frontend/src/types/task.ts:269`
+**Location:** `frontend/src/types/task.ts:291`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,12 +11,12 @@ _Auto-generated from `TaskMergeRequest` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_revision` | `number` | *required* | — |
-| `task_ids` | `number[]` | *required* | — |
-| `parent_title` | `string` | *required* | — |
-| `parent_description` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_revision` | `number` | No | — | — |
+| `task_ids` | `number[]` | Yes | — | — |
+| `parent_title` | `string` | Yes | — | — |
+| `parent_description` | `string` | No | — | — |
 
 ## Methods
 

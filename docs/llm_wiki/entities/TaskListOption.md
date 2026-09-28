@@ -1,6 +1,6 @@
 # TaskListOption
 
-**Location:** `frontend/src/pages/TriagePage.tsx:176`
+**Location:** `frontend/src/pages/TriagePage.tsx:178`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,11 +11,11 @@ _Auto-generated from `TaskListOption` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `depth` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `depth` | `number` | Yes | — | — |
 
 ## Methods
 

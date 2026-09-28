@@ -11,13 +11,13 @@ _Auto-generated from `AdminAccessGateProps` in `frontend/src/components/settings
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | *required* | — |
-| `showPanel` | `boolean` | *required* | — |
-| `recovery` | `ReactNode` | *required* | — |
-| `accessGranted` | `boolean` | *required* | — |
-| `headingLevel` | `2 \| 3` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `children` | `ReactNode` | Yes | — | — |
+| `showPanel` | `boolean` | No | — | — |
+| `recovery` | `ReactNode` | No | — | — |
+| `accessGranted` | `boolean` | No | — | — |
+| `headingLevel` | `2 \| 3` | No | — | — |
 
 ## Methods
 

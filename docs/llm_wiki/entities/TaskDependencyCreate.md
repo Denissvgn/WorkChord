@@ -1,6 +1,6 @@
 # TaskDependencyCreate
 
-**Location:** `backend/app/schemas/task.py:95`
+**Location:** `backend/app/schemas/task.py:102`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

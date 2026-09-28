@@ -11,15 +11,15 @@ _Auto-generated from `AgentModelBindingCreate` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actor_id` | `number` | *required* | — |
-| `model_catalog_id` | `number` | *required* | — |
-| `is_default` | `boolean` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `tool_tags` | `string[]` | *required* | — |
-| `data_policy_tags` | `string[]` | *required* | — |
-| `revision` | `1` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actor_id` | `number` | Yes | — | — |
+| `model_catalog_id` | `number` | Yes | — | — |
+| `is_default` | `boolean` | No | — | — |
+| `enabled` | `boolean` | No | — | — |
+| `tool_tags` | `string[]` | No | — | — |
+| `data_policy_tags` | `string[]` | No | — | — |
+| `revision` | `1` | No | — | — |
 
 ## Methods
 

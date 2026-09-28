@@ -60,12 +60,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_task_external_link | TaskExternalLinkCreate.model_validate | 434 | `TaskExternalLinkCreate.model_validate(raw_data)` |
-| create_task_external_link | HTTPException | 436 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_task_external_link | str | 438 | `str(e)` |
-| create_task_external_link | link_service.create_task_link | 441 | `link_service.create_task_link(task_id, data)` |
-| create_task_external_link | HTTPException | 443 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_task_external_link | link_service.link_to_response | 447 | `link_service.link_to_response(link)` |
+| create_task_external_link | TaskExternalLinkCreate.model_validate | 436 | `TaskExternalLinkCreate.model_validate(raw_data)` |
+| create_task_external_link | HTTPException | 438 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_task_external_link | str | 440 | `str(e)` |
+| create_task_external_link | link_service.create_task_link | 443 | `link_service.create_task_link(task_id, data)` |
+| create_task_external_link | HTTPException | 445 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_task_external_link | link_service.link_to_response | 449 | `link_service.link_to_response(link)` |
 
 ### Boundary effects
 
@@ -75,11 +75,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_task_external_link` | `TaskExternalLinkCreate.model_validate` | 434 |
-| external_call | `create_task_external_link` | `HTTPException` | 436 |
-| unresolved_call | `create_task_external_link` | `link_service.create_task_link` | 441 |
-| external_call | `create_task_external_link` | `HTTPException` | 443 |
-| unresolved_call | `create_task_external_link` | `link_service.link_to_response` | 447 |
+| unresolved_call | `create_task_external_link` | `TaskExternalLinkCreate.model_validate` | 436 |
+| external_call | `create_task_external_link` | `HTTPException` | 438 |
+| unresolved_call | `create_task_external_link` | `link_service.create_task_link` | 443 |
+| external_call | `create_task_external_link` | `HTTPException` | 445 |
+| unresolved_call | `create_task_external_link` | `link_service.link_to_response` | 449 |
 
 ## Behavior
 

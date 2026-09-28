@@ -11,10 +11,10 @@ _Auto-generated from `TaskTimelineDates` in `frontend/src/components/gantt/Gantt
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `start` | `string \| null` | *required* | — |
-| `end` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `start` | `string \| null` | Yes | — | — |
+| `end` | `string \| null` | Yes | — | — |
 
 ## Methods
 

@@ -11,16 +11,16 @@ _Auto-generated from `AgentActorRosterProfileSkill` in `frontend/src/types/agent
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `skill_key` | `string` | *required* | — |
-| `skill_name` | `string` | *required* | — |
-| `category` | `string \| null` | *required* | — |
-| `level` | `number` | *required* | — |
-| `interest` | `number` | *required* | — |
-| `is_weakness` | `boolean` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `skill_key` | `string` | Yes | — | — |
+| `skill_name` | `string` | Yes | — | — |
+| `category` | `string \| null` | Yes | — | — |
+| `level` | `number` | Yes | — | — |
+| `interest` | `number` | Yes | — | — |
+| `is_weakness` | `boolean` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

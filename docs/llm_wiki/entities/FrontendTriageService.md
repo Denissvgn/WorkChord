@@ -11,22 +11,22 @@ _Auto-generated from `FrontendTriageService` in `frontend/src/services/triageSer
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `getAll` | `(params?: TriageListParams) => Promise<TriageItem[]>` | *required* | — |
-| `create` | `(data: TriageItemCreate) => Promise<TriageItem>` | *required* | — |
-| `getById` | `(triageItemId: number) => Promise<TriageItem>` | *required* | — |
-| `update` | `(triageItemId: number, data: TriageItemUpdate) => Promise<TriageItem>` | *required* | — |
-| `accept` | `(triageItemId: number, data?: TriageActionRequest) => Promise<TriageItem>` | *required* | — |
-| `decline` | `(triageItemId: number, data?: TriageActionRequest) => Promise<TriageItem>` | *required* | — |
-| `snooze` | `(triageItemId: number, data: TriageSnoozeRequest) => Promise<TriageItem>` | *required* | — |
-| `markDuplicate` | `(triageItemId: number, data: TriageDuplicateRequest) => Promise<TriageItem>` | *required* | — |
-| `getDuplicateSuggestions` | `(         triageItemId: number,         params?: { limitPerType?: number; minScore?: number }     ) => Promise<TriageDuplicateSuggestionsResponse>` | *required* | — |
-| `getAssigneeRecommendations` | `(         triageItemId: number,         iterationId?: number \| null     ) => Promise<AssigneeRecommendation[]>` | *required* | — |
-| `getClassificationSuggestions` | `(         triageItemId: number,         limit?: number     ) => Promise<TriageClassificationSuggestion[]>` | *required* | — |
-| `classify` | `(triageItemId: number) => Promise<TriageClassificationSuggestion>` | *required* | — |
-| `draftTask` | `(triageItemId: number, data?: TriageTaskDraftRequest) => Promise<TriageTaskDraftResponse>` | *required* | — |
-| `convertToTask` | `(triageItemId: number, data: TriageConvertToTaskRequest) => Promise<TriageConvertToTaskResponse>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `getAll` | `(params?: TriageListParams) => Promise<TriageItem[]>` | Yes | — | — |
+| `create` | `(data: TriageItemCreate) => Promise<TriageItem>` | Yes | — | — |
+| `getById` | `(triageItemId: number) => Promise<TriageItem>` | Yes | — | — |
+| `update` | `(triageItemId: number, data: TriageItemUpdate) => Promise<TriageItem>` | Yes | — | — |
+| `accept` | `(triageItemId: number, data?: TriageActionRequest) => Promise<TriageItem>` | Yes | — | — |
+| `decline` | `(triageItemId: number, data?: TriageActionRequest) => Promise<TriageItem>` | Yes | — | — |
+| `snooze` | `(triageItemId: number, data: TriageSnoozeRequest) => Promise<TriageItem>` | Yes | — | — |
+| `markDuplicate` | `(triageItemId: number, data: TriageDuplicateRequest) => Promise<TriageItem>` | Yes | — | — |
+| `getDuplicateSuggestions` | `(         triageItemId: number,         params?: { limitPerType?: number; minScore?: number }     ) => Promise<TriageDuplicateSuggestionsResponse>` | Yes | — | — |
+| `getAssigneeRecommendations` | `(         triageItemId: number,         iterationId?: number \| null     ) => Promise<AssigneeRecommendation[]>` | Yes | — | — |
+| `getClassificationSuggestions` | `(         triageItemId: number,         limit?: number     ) => Promise<TriageClassificationSuggestion[]>` | Yes | — | — |
+| `classify` | `(triageItemId: number) => Promise<TriageClassificationSuggestion>` | Yes | — | — |
+| `draftTask` | `(triageItemId: number, data?: TriageTaskDraftRequest) => Promise<TriageTaskDraftResponse>` | Yes | — | — |
+| `convertToTask` | `(triageItemId: number, data: TriageConvertToTaskRequest) => Promise<TriageConvertToTaskResponse>` | Yes | — | — |
 
 ## Methods
 

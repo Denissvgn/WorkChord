@@ -1,6 +1,6 @@
 # TriageItemUpdate
 
-**Location:** `frontend/src/types/triage.ts:42`
+**Location:** `frontend/src/types/triage.ts:44`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)

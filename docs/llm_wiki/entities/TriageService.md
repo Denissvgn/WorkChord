@@ -76,16 +76,16 @@ flowchart LR
     n0["TriageService (backend/app/services/triage_service.py)"]
     n1["_mutate_triage_item (backend/app/mcp_agent_tools.py)"]
     n2["classify_triage_item (backend/app/mcp_agent_tools.py)"]
-    n3["convert_triage_to_task (backend/app/mcp_agent_tools.py)"]
-    n4["create_triage_item (backend/app/mcp_agent_tools.py)"]
-    n5["draft_triage_task (backend/app/mcp_agent_tools.py)"]
-    n6["get_triage_item (backend/app/mcp_agent_tools.py)"]
-    n7["list_triage_items (backend/app/mcp_agent_tools.py)"]
-    n8["accept_triage_item (backend/app/routers/triage.py)"]
-    n9["classify_triage_item (backend/app/routers/triage.py)"]
-    n10["convert_triage_item_to_task (backend/app/routers/triage.py)"]
-    n11["create_triage_item (backend/app/routers/triage.py)"]
-    n12["decline_triage_item (backend/app/routers/triage.py)"]
+    n3["convert_triage_to_backlog (backend/app/mcp_agent_tools.py)"]
+    n4["convert_triage_to_task (backend/app/mcp_agent_tools.py)"]
+    n5["create_triage_item (backend/app/mcp_agent_tools.py)"]
+    n6["draft_triage_task (backend/app/mcp_agent_tools.py)"]
+    n7["get_triage_item (backend/app/mcp_agent_tools.py)"]
+    n8["list_triage_items (backend/app/mcp_agent_tools.py)"]
+    n9["accept_triage_item (backend/app/routers/triage.py)"]
+    n10["classify_triage_item (backend/app/routers/triage.py)"]
+    n11["convert_triage_item_to_backlog (backend/app/routers/triage.py)"]
+    n12["convert_triage_item_to_task (backend/app/routers/triage.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -106,7 +106,7 @@ flowchart LR
     click n5 "../modules/mcp_agent_tools.md"
     click n6 "../modules/mcp_agent_tools.md"
     click n7 "../modules/mcp_agent_tools.md"
-    click n8 "../modules/routers_triage.md"
+    click n8 "../modules/mcp_agent_tools.md"
     click n9 "../modules/routers_triage.md"
     click n10 "../modules/routers_triage.md"
     click n11 "../modules/routers_triage.md"
@@ -125,6 +125,7 @@ flowchart LR
 |---|---|---|---:|
 | `_mutate_triage_item` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `classify_triage_item` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `convert_triage_to_backlog` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `convert_triage_to_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_triage_item` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `draft_triage_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
@@ -132,8 +133,7 @@ flowchart LR
 | `list_triage_items` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `accept_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `classify_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
+| `convert_triage_item_to_backlog` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `convert_triage_item_to_task` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
-| `create_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
-| `decline_triage_item` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

@@ -21,8 +21,8 @@ _Auto-generated from `LockedAcceptanceObject` in `backend/app/autonomy/server_ac
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `implementation` | `Literal['minio-s3-object-lock']` | `implementation` | No | No | `'minio-s3-object-lock'` | — | — | — |
 | `bucket` | `str` | `bucket` | Yes | No | — | pattern='^[a-z0-9][a-z0-9.-]{1,62}$' | — | — |
-| `object_key` | `str` | `object_key` | Yes | No | — | min_length=1; max_length=1024 | — | — |
-| `version_id` | `str` | `version_id` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `object_key` | `str` | `object_key` | Yes | No | — | max_length=1024; min_length=1 | — | — |
+| `version_id` | `str` | `version_id` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 | `object_sha256` | `str` | `object_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `lock_mode` | `Literal['COMPLIANCE']` | `lock_mode` | Yes | No | — | — | — | — |
 | `retain_until` | `datetime` | `retain_until` | Yes | No | — | — | — | — |

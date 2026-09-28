@@ -11,15 +11,15 @@ _Auto-generated from `GanttResponse` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iteration` | `Iteration` | *required* | — |
-| `tasks` | `GanttTask[]` | *required* | — |
-| `overdue_task_ids` | `number[]` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekends` | `string[]` | *required* | — |
-| `member_vacations` | `Record<number, string[]>` | *required* | — |
-| `schedule_result` | `ScheduleResult \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iteration` | `Iteration` | Yes | — | — |
+| `tasks` | `GanttTask[]` | Yes | — | — |
+| `overdue_task_ids` | `number[]` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekends` | `string[]` | Yes | — | — |
+| `member_vacations` | `Record<number, string[]>` | Yes | — | — |
+| `schedule_result` | `ScheduleResult \| null` | No | — | — |
 
 ## Methods
 

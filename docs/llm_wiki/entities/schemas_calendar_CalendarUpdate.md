@@ -1,6 +1,6 @@
 # CalendarUpdate
 
-**Location:** `backend/app/schemas/calendar.py:21`
+**Location:** `backend/app/schemas/calendar.py:22`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)
@@ -14,7 +14,8 @@ Schema for updating a calendar.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `nominal_day_hours` | `float \| None` | `nominal_day_hours` | No | Yes | `None` | allow_inf_nan=False; gt=0; le=24 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `year` | `Optional[int]` | `year` | No | Yes | `None` | ge=2000; le=2100 | — | — |
 | `holidays` | `Optional[list[str]]` | `holidays` | No | Yes | `None` | — | — | — |
 | `weekend_days` | `Optional[list[int]]` | `weekend_days` | No | Yes | `None` | — | — | — |
@@ -49,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `short_days`, `timezone`, `weekend_days`, `year` |
+| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `holidays`, `name`, `nominal_day_hours`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### Structure
 

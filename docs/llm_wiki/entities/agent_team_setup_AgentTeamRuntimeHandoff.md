@@ -32,8 +32,8 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `backend/app/schemas/agent_tea
 | `profile_revision` | `str` | `profile_revision` | Yes | No | — | — | — | — |
 | `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | — | — | — |
 | `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | — | — | — |
-| `startup_instructions` | `tuple[str, ...]` | `startup_instructions` | Yes | No | — | min_length=1; max_length=16 | — | — |
-| `credential_ref` | `str` | `credential_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `startup_instructions` | `tuple[str, ...]` | `startup_instructions` | Yes | No | — | max_length=16; min_length=1 | — | — |
+| `credential_ref` | `str` | `credential_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 
 ## Methods
 

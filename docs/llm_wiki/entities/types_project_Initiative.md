@@ -11,19 +11,19 @@ _Auto-generated from `Initiative` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner` | `ProjectOwner \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `owner_profile` | `ProjectProfileOwner \| null` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `owner_id` | `number \| null` | Yes | — | — |
+| `owner` | `ProjectOwner \| null` | Yes | — | — |
+| `owner_profile_id` | `number \| null` | Yes | — | — |
+| `owner_profile` | `ProjectProfileOwner \| null` | Yes | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

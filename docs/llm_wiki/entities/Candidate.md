@@ -1,6 +1,6 @@
 # Candidate
 
-**Location:** `backend/tests/test_agent_routing_wave6_qualification.py:93`
+**Location:** `backend/tests/test_agent_routing_wave6_qualification.py:94`
 **Kind:** Class
 **Bases:** —
 **Module:** [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md)

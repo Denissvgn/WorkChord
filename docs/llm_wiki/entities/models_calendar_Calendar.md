@@ -18,6 +18,7 @@ Stores holidays and weekend days configuration for a year.
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `timezone` | `Mapped[str]` | `mapped_column(String(64), default='UTC', server_default='UTC', nullable=False)` | — |
+| `nominal_day_hours` | `Mapped[float]` | `mapped_column(Float, default=8.0, server_default='8', nullable=False)` | — |
 | `year` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
 | `holidays` | `Mapped[list[str]]` | `mapped_column(JSON, default=list)` | — |
 | `weekend_days` | `Mapped[list[int]]` | `mapped_column(JSON, default=[5, 6])` | — |
@@ -76,7 +77,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_calendar](../modules/models_calendar.md) | 1 | `holidays`, `id`, `iterations`, `name`, `short_days`, `timezone`, `weekend_days`, `year` |
+| [models_calendar](../modules/models_calendar.md) | 1 | `holidays`, `id`, `iterations`, `name`, `nominal_day_hours`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### Structure
 
@@ -101,4 +102,4 @@ flowchart LR
 | `CalendarService.get_or_create_default` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 | `CalendarService.get_working_dates` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

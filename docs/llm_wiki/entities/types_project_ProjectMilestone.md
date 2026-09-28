@@ -11,18 +11,18 @@ _Auto-generated from `ProjectMilestone` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `project_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `completed_at` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `status` | `ProjectMilestoneStatus` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `project_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `completed_at` | `string \| null` | No | — | — |
+| `sort_order` | `number` | Yes | — | — |
+| `status` | `ProjectMilestoneStatus` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

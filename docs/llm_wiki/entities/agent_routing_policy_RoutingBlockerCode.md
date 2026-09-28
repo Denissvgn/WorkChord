@@ -21,6 +21,9 @@ Stable hard blockers shared by preview and assignment enforcement.
 | `TASK_DEFINITION_NOT_READY` | `'task_definition_not_ready'` | — |
 | `TASK_STATUS_INCOMPATIBLE` | `'task_status_incompatible'` | — |
 | `TASK_DEFERRED` | `'task_deferred'` | — |
+| `TASK_CANCELED` | `'task_canceled'` | — |
+| `TASK_BLOCKED` | `'task_blocked'` | — |
+| `TASK_UNSCHEDULED` | `'task_unscheduled'` | — |
 | `TASK_COMPOSITE` | `'task_composite'` | — |
 | `TASK_DEPENDENCY_UNRESOLVED` | `'task_dependency_unresolved'` | — |
 | `ACTOR_DISABLED` | `'actor_disabled'` | — |

@@ -19,8 +19,8 @@ Schema for creating a governed label.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `slug` | `str` | `slug` | Yes | No | — | min_length=1; max_length=100; pattern=unknown (LABEL_SLUG_PATTERN) | — | — |
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `slug` | `str` | `slug` | Yes | No | — | max_length=100; min_length=1; pattern=unknown (LABEL_SLUG_PATTERN) | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `group_id` | `int` | `group_id` | Yes | No | — | — | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `color` | `str` | `color` | No | No | `'#64748b'` | pattern=unknown (HEX_COLOR_PATTERN) | — | — |

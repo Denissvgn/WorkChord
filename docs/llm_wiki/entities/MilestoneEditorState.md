@@ -1,6 +1,6 @@
 # MilestoneEditorState
 
-**Location:** `frontend/src/pages/ProjectDetailPage.tsx:178`
+**Location:** `frontend/src/pages/ProjectDetailPage.tsx:179`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)

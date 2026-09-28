@@ -1,6 +1,6 @@
 # TasksImportResponse
 
-**Location:** `frontend/src/types/task.ts:261`
+**Location:** `frontend/src/types/task.ts:283`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,13 +11,13 @@ _Auto-generated from `TasksImportResponse` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `imported_count` | `number` | *required* | — |
-| `task_count` | `number` | *required* | — |
-| `triage_count` | `number` | *required* | — |
-| `tasks` | `Task[]` | *required* | — |
-| `triage_items` | `TriageItem[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `imported_count` | `number` | Yes | — | — |
+| `task_count` | `number` | Yes | — | — |
+| `triage_count` | `number` | Yes | — | — |
+| `tasks` | `Task[]` | Yes | — | — |
+| `triage_items` | `TriageItem[]` | Yes | — | — |
 
 ## Methods
 

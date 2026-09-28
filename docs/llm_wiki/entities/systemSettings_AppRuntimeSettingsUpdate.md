@@ -11,11 +11,11 @@ _Auto-generated from `AppRuntimeSettingsUpdate` in `frontend/src/types/systemSet
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `ui_language` | `LanguageCode` | *required* | — |
-| `ai_language_mode` | `AILanguageMode` | *required* | — |
-| `reset_fields` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `ui_language` | `LanguageCode` | No | — | — |
+| `ai_language_mode` | `AILanguageMode` | No | — | — |
+| `reset_fields` | `string[]` | No | — | — |
 
 ## Methods
 

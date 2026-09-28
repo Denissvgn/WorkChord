@@ -13,7 +13,7 @@ Schema for updating an iteration.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `Optional[date]` | `start_date` | No | Yes | `None` | — | — | — |
@@ -37,6 +37,7 @@ flowchart LR
     n5["backend/app/schemas/__init__.py"]
     n6["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
     n7["IterationService.update (backend/app/services/iteration_service.py)"]
+    n8["test_calendar_switch_preserves_hours_and_refreshes_day_units (backend/tests/test_task_domain_integrity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -44,6 +45,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_iteration.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -52,6 +54,7 @@ flowchart LR
     click n5 "../modules/schemas___init__.md"
     click n6 "../modules/agent_planning_service.md"
     click n7 "../modules/iteration_service.md"
+    click n8 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -76,3 +79,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `IterationService.update` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
+| `test_calendar_switch_preserves_hours_and_refreshes_day_units` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |

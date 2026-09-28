@@ -25,7 +25,7 @@ Schema for creating a request source.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `title` | `str` | `title` | Yes | No | — | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `source_type` | `RequestSourceType` | `source_type` | Yes | No | — | — | — | — |
 | `source_name` | `Optional[str]` | `source_name` | No | Yes | `None` | max_length=255 | — | — |

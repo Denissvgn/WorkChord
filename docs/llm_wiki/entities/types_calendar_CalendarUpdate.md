@@ -1,6 +1,6 @@
 # CalendarUpdate
 
-**Location:** `frontend/src/types/calendar.ts:18`
+**Location:** `frontend/src/types/calendar.ts:19`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
@@ -11,13 +11,13 @@ _Auto-generated from `CalendarUpdate` in `frontend/src/types/calendar.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `year` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekend_days` | `number[]` | *required* | — |
-| `short_days` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | No | — | — |
+| `year` | `number` | No | — | — |
+| `holidays` | `string[]` | No | — | — |
+| `weekend_days` | `number[]` | No | — | — |
+| `short_days` | `string[]` | No | — | — |
 
 ## Methods
 

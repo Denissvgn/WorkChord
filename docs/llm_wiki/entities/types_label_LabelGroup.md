@@ -11,19 +11,19 @@ _Auto-generated from `LabelGroup` in `frontend/src/types/label.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `key` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `seed_key` | `string \| null` | *required* | — |
-| `labels` | `Label[]` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `key` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `color` | `string` | Yes | — | — |
+| `is_active` | `boolean` | Yes | — | — |
+| `sort_order` | `number` | Yes | — | — |
+| `seed_key` | `string \| null` | No | — | — |
+| `labels` | `Label[]` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

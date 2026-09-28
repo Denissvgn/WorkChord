@@ -1,6 +1,6 @@
 # ProjectTaskTreeProps
 
-**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:17`
+**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:19`
 **Kind:** Class
 **Bases:** —
 **Module:** [ProjectTaskTree](../modules/ProjectTaskTree.md)
@@ -11,9 +11,9 @@ _Auto-generated from `ProjectTaskTreeProps` in `frontend/src/components/projects
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `tasks` | `Task[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tasks` | `Task[]` | Yes | — | — |
 
 ## Methods
 

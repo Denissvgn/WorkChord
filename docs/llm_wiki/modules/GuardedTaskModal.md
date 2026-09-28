@@ -33,7 +33,8 @@ flowchart LR
     n3["frontend/src/components/tasks/TaskForm.tsx"]
     n4["frontend/src/components/tasks/TaskList.tsx"]
     n5["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n6["frontend/src/pages/TasksPage.tsx"]
+    n6["frontend/src/pages/ProjectDetailPage.tsx"]
+    n7["frontend/src/pages/TasksPage.tsx"]
     n1 --> n5
     n2 --> n0
     n2 --> n1
@@ -41,15 +42,18 @@ flowchart LR
     n2 --> n5
     n4 --> n0
     n4 --> n2
+    n6 --> n0
     n6 --> n2
-    n6 --> n4
+    n7 --> n2
+    n7 --> n4
     click n0 "../modules/Modal.md"
     click n1 "../modules/DraftDismissalDialog.md"
     click n2 "../modules/GuardedTaskModal.md"
     click n3 "../modules/TaskForm.md"
     click n4 "../modules/TaskList.md"
     click n5 "../modules/useDraftDismissal.md"
-    click n6 "../modules/TasksPage.md"
+    click n6 "../modules/ProjectDetailPage.md"
+    click n7 "../modules/TasksPage.md"
 ```
 
 ### Internal neighbors
@@ -57,6 +61,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [TaskList](../modules/TaskList.md) |
+| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
 | Inbound | [TasksPage](../modules/TasksPage.md) |
 | Outbound | [Modal](../modules/Modal.md) |
 | Outbound | [DraftDismissalDialog](../modules/DraftDismissalDialog.md) |

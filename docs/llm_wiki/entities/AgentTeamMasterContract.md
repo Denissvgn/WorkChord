@@ -25,7 +25,7 @@ Portable desired state for the PostgreSQL PM/worker/verifier topology.
 | `charter_digest` | `str` | `charter_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `model_catalog_revision` | `int` | `model_catalog_revision` | Yes | No | — | ge=1 | — | — |
 | `credential_sink_ref` | `str` | `credential_sink_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `members` | `tuple[TopologyMemberContract, ...]` | `members` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `members` | `tuple[TopologyMemberContract, ...]` | `members` | Yes | No | — | max_length=256; min_length=1 | — | — |
 
 ## Methods
 

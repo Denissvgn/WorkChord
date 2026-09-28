@@ -8,10 +8,13 @@ Task status transitions, roll-up reconciliation, and status reporting.
 
 Retains planned/active/resolved/closed transitions while separating actual UTC start/resolve/accept events from forecast dates and committed baselines. Acceptance requires review authority and is bound to the current task revision; automatic parent roll-up cannot fabricate independent leaf acceptance.
 
+Direct lifecycle changes retain planned, active, resolved and closed values; summaries derive status from children. Human manual starts preserve forecast dates while recording actual UTC events. Independent acceptance is checked before closure. A review-authorized rejection returns work to active without attributing execution to the reviewer and requires fresh progress for subsequent acceptance.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `app.authority` | `AuthorityError` |
 | `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
@@ -32,52 +35,59 @@ Retains planned/active/resolved/closed transitions while separating actual UTC s
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/models/iteration.py"]
-    n2["backend/app/models/task.py"]
-    n3["backend/app/models/task_status_log.py"]
-    n4["backend/app/query_limits.py"]
-    n5["backend/app/services/hierarchy_repair_service.py"]
-    n6["backend/app/services/language_service.py"]
-    n7["backend/app/services/outbound_webhook_service.py"]
-    n8["backend/app/services/task_service.py"]
-    n9["backend/app/services/task_status_service.py"]
-    n0 --> n1
-    n0 --> n2
-    n0 --> n8
+    n0["backend/app/authority.py"]
+    n1["backend/app/commands.py"]
+    n2["backend/app/models/iteration.py"]
+    n3["backend/app/models/task.py"]
+    n4["backend/app/models/task_status_log.py"]
+    n5["backend/app/query_limits.py"]
+    n6["backend/app/services/hierarchy_repair_service.py"]
+    n7["backend/app/services/language_service.py"]
+    n8["backend/app/services/outbound_webhook_service.py"]
+    n9["backend/app/services/task_service.py"]
+    n10["backend/app/services/task_status_service.py"]
+    n0 --> n3
+    n1 --> n0
     n1 --> n2
-    n2 --> n1
+    n1 --> n3
+    n1 --> n9
     n2 --> n3
     n3 --> n2
-    n5 --> n0
-    n5 --> n2
-    n5 --> n8
-    n5 --> n9
-    n7 --> n0
-    n8 --> n0
+    n3 --> n4
+    n4 --> n3
+    n6 --> n0
+    n6 --> n1
+    n6 --> n3
+    n6 --> n9
+    n6 --> n10
     n8 --> n1
-    n8 --> n2
-    n8 --> n4
-    n8 --> n6
-    n8 --> n7
     n9 --> n0
     n9 --> n1
     n9 --> n2
     n9 --> n3
-    n9 --> n4
-    n9 --> n6
+    n9 --> n5
     n9 --> n7
     n9 --> n8
-    click n0 "../modules/commands.md"
-    click n1 "../modules/models_iteration.md"
-    click n2 "../modules/models_task.md"
-    click n3 "../modules/task_status_log.md"
-    click n4 "../modules/query_limits.md"
-    click n5 "../modules/hierarchy_repair_service.md"
-    click n6 "../modules/language_service.md"
-    click n7 "../modules/outbound_webhook_service.md"
-    click n8 "../modules/task_service.md"
-    click n9 "../modules/task_status_service.md"
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n7
+    n10 --> n8
+    n10 --> n9
+    click n0 "../modules/authority.md"
+    click n1 "../modules/commands.md"
+    click n2 "../modules/models_iteration.md"
+    click n3 "../modules/models_task.md"
+    click n4 "../modules/task_status_log.md"
+    click n5 "../modules/query_limits.md"
+    click n6 "../modules/hierarchy_repair_service.md"
+    click n7 "../modules/language_service.md"
+    click n8 "../modules/outbound_webhook_service.md"
+    click n9 "../modules/task_service.md"
+    click n10 "../modules/task_status_service.md"
 ```
 
 ### Internal neighbors
@@ -85,6 +95,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) |
+| Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |
 | Outbound | [models_task](../modules/models_task.md) |
@@ -104,4 +115,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskStatusService](../entities/TaskStatusService.md) | 29 | — | Own status transitions, dependent cascades, and parent reconciliation. |
+| [TaskStatusService](../entities/TaskStatusService.md) | 30 | — | Own status transitions, dependent cascades, and parent reconciliation. |

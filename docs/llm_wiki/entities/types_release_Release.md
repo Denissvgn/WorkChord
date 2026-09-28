@@ -11,21 +11,21 @@ _Auto-generated from `Release` in `frontend/src/types/release.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `project_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `status` | `ReleaseStatus` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `shipped_at` | `string \| null` | *required* | — |
-| `version` | `string \| null` | *required* | — |
-| `environment` | `string \| null` | *required* | — |
-| `task_ids` | `number[]` | *required* | — |
-| `tasks` | `ReleaseTaskSummary[]` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `project_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `status` | `ReleaseStatus` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `shipped_at` | `string \| null` | No | — | — |
+| `version` | `string \| null` | No | — | — |
+| `environment` | `string \| null` | No | — | — |
+| `task_ids` | `number[]` | Yes | — | — |
+| `tasks` | `ReleaseTaskSummary[]` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `ShareFocusIntent` in `frontend/src/pages/PlanMasterPage.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `origin` | `HTMLElement \| null` | *required* | — |
-| `target` | `ShareFocusTarget` | *required* | — |
-| `token` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `origin` | `HTMLElement \| null` | Yes | — | — |
+| `target` | `ShareFocusTarget` | Yes | — | — |
+| `token` | `number` | Yes | — | — |
 
 ## Methods
 

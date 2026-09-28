@@ -11,13 +11,13 @@ _Auto-generated from `AgentTeamValidation` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-validation-v1'` | *required* | — |
-| `valid` | `boolean` | *required* | — |
-| `manifest_digest` | `string` | *required* | — |
-| `normalized_manifest` | `AgentTeamMaster` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-validation-v1'` | Yes | — | — |
+| `valid` | `boolean` | Yes | — | — |
+| `manifest_digest` | `string` | Yes | — | — |
+| `normalized_manifest` | `AgentTeamMaster` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
 
 ## Methods
 

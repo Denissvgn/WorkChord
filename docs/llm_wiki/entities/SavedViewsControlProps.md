@@ -11,13 +11,13 @@ _Auto-generated from `SavedViewsControlProps` in `frontend/src/components/tasks/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `filters` | `TaskFilters` | *required* | — |
-| `sortKey` | `SortKey` | *required* | — |
-| `selectedViewId` | `number \| null` | *required* | — |
-| `onSelectedViewIdChange` | `(viewId: number \| null) => void` | *required* | — |
-| `onApplyView` | `(view: SavedView) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `filters` | `TaskFilters` | Yes | — | — |
+| `sortKey` | `SortKey` | Yes | — | — |
+| `selectedViewId` | `number \| null` | Yes | — | — |
+| `onSelectedViewIdChange` | `(viewId: number \| null) => void` | Yes | — | — |
+| `onApplyView` | `(view: SavedView) => void` | Yes | — | — |
 
 ## Methods
 

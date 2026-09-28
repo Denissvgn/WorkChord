@@ -11,10 +11,10 @@ _Auto-generated from `ThemeState` in `frontend/src/store/themeStore.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `theme` | `Theme` | *required* | — |
-| `setTheme` | `(theme: Theme) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `theme` | `Theme` | Yes | — | — |
+| `setTheme` | `(theme: Theme) => void` | Yes | — | — |
 
 ## Methods
 

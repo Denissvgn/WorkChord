@@ -30,6 +30,7 @@ Agent integration API router.
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
+| `app.services.task_domain_service` | `domain_capabilities` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.utils.time` | `utc_now` |
 | `fastapi` | `APIRouter`, `Depends`, `Header`, `HTTPException`, `Query`, `Request`, `Response`, `status` |
@@ -57,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (22) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -65,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

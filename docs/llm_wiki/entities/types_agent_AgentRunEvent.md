@@ -11,18 +11,18 @@ _Auto-generated from `AgentRunEvent` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `run_id` | `number` | *required* | — |
-| `event_type` | `string` | *required* | — |
-| `message` | `string \| null` | *required* | — |
-| `payload` | `JsonObject` | *required* | — |
-| `trace_id` | `string \| null` | *required* | — |
-| `span_id` | `string \| null` | *required* | — |
-| `correlation_id` | `string \| null` | *required* | — |
-| `idempotency_key` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `run_id` | `number` | Yes | — | — |
+| `event_type` | `string` | Yes | — | — |
+| `message` | `string \| null` | No | — | — |
+| `payload` | `JsonObject` | Yes | — | — |
+| `trace_id` | `string \| null` | No | — | — |
+| `span_id` | `string \| null` | No | — | — |
+| `correlation_id` | `string \| null` | No | — | — |
+| `idempotency_key` | `string \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -8,6 +8,8 @@ Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 
 Python projections and the recursive SQL aggregate distinguish required/optional/deferred leaves, implemented work, current accepted work, unknown historic acceptance, late start, overdue open delivery and forecast overflow. Working dates use project or calendar zones. Structural parents do not inflate delivery denominators, and unresolved hierarchy cannot be silently treated as complete input.
 
+Nullable scheduling is compared safely when traversing backlog ancestry, retaining project boundaries and complete leaf accounting. Blocked counts include an explicit block or an unavailable prerequisite, including a canceled, missing or inaccessible target, while excluding ineligible leaves.
+
 ## Imports
 
 | Source | Symbols |
@@ -42,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
+| Inbound | `backend` (6) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -51,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

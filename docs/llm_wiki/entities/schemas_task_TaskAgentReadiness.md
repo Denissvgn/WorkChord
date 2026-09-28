@@ -1,6 +1,6 @@
 # TaskAgentReadiness
 
-**Location:** `backend/app/schemas/task.py:168`
+**Location:** `backend/app/schemas/task.py:175`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -35,14 +35,17 @@ flowchart LR
     n2["backend/app/schemas/__init__.py"]
     n3["_add_criterion (backend/app/services/agent_readiness.py)"]
     n4["evaluate_agent_readiness (backend/app/services/agent_readiness.py)"]
+    n5["TaskDetailService.detail (backend/app/services/task_detail_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_task.md"
     click n2 "../modules/schemas___init__.md"
     click n3 "../modules/agent_readiness.md"
     click n4 "../modules/agent_readiness.md"
+    click n5 "../modules/task_detail_service.md"
 ```
 
 ### Summary
@@ -65,3 +68,4 @@ flowchart LR
 | `_add_criterion` | type_reference | [agent_readiness](../modules/agent_readiness.md) | — |
 | `evaluate_agent_readiness` | call | [agent_readiness](../modules/agent_readiness.md) | 1 |
 | `evaluate_agent_readiness` | type_reference | [agent_readiness](../modules/agent_readiness.md) | — |
+| `TaskDetailService.detail` | call | [task_detail_service](../modules/task_detail_service.md) | 1 |

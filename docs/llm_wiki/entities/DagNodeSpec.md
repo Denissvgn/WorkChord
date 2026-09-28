@@ -28,7 +28,7 @@ _Auto-generated from `DagNodeSpec` in `backend/app/autonomy/orchestration.py`._
 | `maximum_attempts` | `int` | `maximum_attempts` | Yes | No | — | ge=1; le=100 | — | — |
 | `retry_classes` | `tuple[str, ...]` | `retry_classes` | No | No | `()` | max_length=128 | — | — |
 | `maximum_cost_minor_units` | `int` | `maximum_cost_minor_units` | Yes | No | — | ge=0 | — | — |
-| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `source_contract_digest` | `str` | `source_contract_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods

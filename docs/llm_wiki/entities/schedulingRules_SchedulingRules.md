@@ -11,12 +11,12 @@ _Auto-generated from `SchedulingRules` in `frontend/src/types/schedulingRules.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `string` | *required* | — |
-| `effort_modifiers` | `EffortModifier[]` | *required* | — |
-| `scheduling_passes` | `SchedulingPass[]` | *required* | — |
-| `constraints` | `Constraints` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `string` | Yes | — | — |
+| `effort_modifiers` | `EffortModifier[]` | Yes | — | — |
+| `scheduling_passes` | `SchedulingPass[]` | Yes | — | — |
+| `constraints` | `Constraints` | Yes | — | — |
 
 ## Methods
 

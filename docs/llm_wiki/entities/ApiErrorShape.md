@@ -11,11 +11,11 @@ _Auto-generated from `ApiErrorShape` in `frontend/src/utils/apiError.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `response` | `{         status?: unknown;         data?: unknown;     }` | *required* | — |
-| `request` | `unknown` | *required* | — |
-| `code` | `unknown` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `response` | `{         status?: unknown;         data?: unknown;     }` | No | — | — |
+| `request` | `unknown` | No | — | — |
+| `code` | `unknown` | No | — | — |
 
 ## Methods
 

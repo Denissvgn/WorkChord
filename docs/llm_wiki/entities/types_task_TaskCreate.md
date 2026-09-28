@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `frontend/src/types/task.ts:145`
+**Location:** `frontend/src/types/task.ts:163`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,28 +11,31 @@ _Auto-generated from `TaskCreate` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_revision` | `number` | *required* | — |
-| `parent_id` | `number \| null` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `assignee_id` | `number \| null` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `milestone_id` | `number \| null` | *required* | — |
-| `depends_on` | `number[]` | *required* | — |
-| `is_optional` | `boolean` | *required* | — |
-| `is_deferred` | `boolean` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `min_start_date` | `string \| null` | *required* | — |
-| `max_end_date` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `owner_profile_id` | `number \| null` | No | — | — |
+| `brief` | `TaskBrief` | No | — | — |
+| `estimate_provenance` | `"unknown" \| "assumed" \| "estimated"` | No | — | — |
+| `expected_revision` | `number` | No | — | — |
+| `parent_id` | `number \| null` | No | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | No | — | — |
+| `priority` | `number` | Yes | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | No | — | — |
+| `assignee_id` | `number \| null` | No | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `milestone_id` | `number \| null` | No | — | — |
+| `depends_on` | `number[]` | Yes | — | — |
+| `is_optional` | `boolean` | No | — | — |
+| `is_deferred` | `boolean` | No | — | — |
+| `tags` | `string[]` | No | — | — |
+| `sort_order` | `number` | No | — | — |
+| `min_start_date` | `string \| null` | No | — | — |
+| `max_end_date` | `string \| null` | No | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `source` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
 
 ## Methods
 
@@ -60,7 +63,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `expected_revision`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
+| [types_task](../modules/types_task.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `estimate_provenance`, `expected_revision`, `external_key`, `is_deferred`, `is_optional`, `max_end_date` |
 
 ### References
 

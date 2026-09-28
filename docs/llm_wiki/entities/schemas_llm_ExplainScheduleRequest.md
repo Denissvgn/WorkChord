@@ -1,6 +1,6 @@
 # ExplainScheduleRequest
 
-**Location:** `backend/app/schemas/llm.py:99`
+**Location:** `backend/app/schemas/llm.py:103`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_llm](../modules/schemas_llm.md)

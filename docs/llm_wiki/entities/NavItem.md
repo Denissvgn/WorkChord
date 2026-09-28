@@ -11,13 +11,13 @@ _Auto-generated from `NavItem` in `frontend/src/navigation/workspaces.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `to` | `string` | *required* | — |
-| `labelKey` | `string` | *required* | — |
-| `defaultLabel` | `string` | *required* | — |
-| `icon` | `LucideIcon` | *required* | — |
-| `secondary` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `to` | `string` | Yes | — | — |
+| `labelKey` | `string` | Yes | — | — |
+| `defaultLabel` | `string` | Yes | — | — |
+| `icon` | `LucideIcon` | Yes | — | — |
+| `secondary` | `boolean` | No | — | — |
 
 ## Methods
 

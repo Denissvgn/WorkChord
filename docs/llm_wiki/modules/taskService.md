@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/services/taskService.ts`._
 
 | Source | Symbols |
 |--------|---------|
-| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse` |
+| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskActions`, `TaskCommand`, `TaskDetail`, `TaskBrief`, `CriterionProgress`, `TaskReferencePage` |
 | `../types/team` | `AssigneeRecommendation` |
 | `./api` | `api` |
 
@@ -39,7 +39,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (18) |
+| Inbound | `frontend` (20) |
 | Outbound | `frontend` (3) |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

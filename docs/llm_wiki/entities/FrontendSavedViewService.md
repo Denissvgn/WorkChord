@@ -11,15 +11,15 @@ _Auto-generated from `FrontendSavedViewService` in `frontend/src/services/savedV
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `getAll` | `(params: SavedViewListParams) => Promise<SavedView[]>` | *required* | — |
-| `getById` | `(savedViewId: number) => Promise<SavedView>` | *required* | — |
-| `getDashboardCards` | `(iterationId: number) => Promise<SavedViewDashboardCard[]>` | *required* | — |
-| `create` | `(data: SavedViewCreate) => Promise<SavedView>` | *required* | — |
-| `update` | `(savedViewId: number, data: SavedViewUpdate) => Promise<SavedView>` | *required* | — |
-| `delete` | `(savedViewId: number) => Promise<void>` | *required* | — |
-| `duplicate` | `(savedViewId: number, data?: SavedViewDuplicate) => Promise<SavedView>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `getAll` | `(params: SavedViewListParams) => Promise<SavedView[]>` | Yes | — | — |
+| `getById` | `(savedViewId: number) => Promise<SavedView>` | Yes | — | — |
+| `getDashboardCards` | `(iterationId: number) => Promise<SavedViewDashboardCard[]>` | Yes | — | — |
+| `create` | `(data: SavedViewCreate) => Promise<SavedView>` | Yes | — | — |
+| `update` | `(savedViewId: number, data: SavedViewUpdate) => Promise<SavedView>` | Yes | — | — |
+| `delete` | `(savedViewId: number) => Promise<void>` | Yes | — | — |
+| `duplicate` | `(savedViewId: number, data?: SavedViewDuplicate) => Promise<SavedView>` | Yes | — | — |
 
 ## Methods
 

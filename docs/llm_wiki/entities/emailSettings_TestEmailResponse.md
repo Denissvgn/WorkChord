@@ -11,10 +11,10 @@ _Auto-generated from `TestEmailResponse` in `frontend/src/types/emailSettings.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `success` | `boolean` | *required* | — |
-| `message` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `success` | `boolean` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
 
 ## Methods
 

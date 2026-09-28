@@ -11,21 +11,21 @@ _Auto-generated from `TeamMemberProfile` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `seed_key` | `string \| null` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `email` | `string \| null` | *required* | — |
-| `headline` | `string \| null` | *required* | — |
-| `summary` | `string \| null` | *required* | — |
-| `notes` | `string \| null` | *required* | — |
-| `automation_enabled` | `boolean` | *required* | — |
-| `profile_kind` | `TeamMemberProfileKind` | *required* | — |
-| `assignment_modes` | `TeamMemberAssignmentMode[]` | *required* | — |
-| `skills` | `TeamMemberProfileSkill[]` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `seed_key` | `string \| null` | No | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `email` | `string \| null` | No | — | — |
+| `headline` | `string \| null` | No | — | — |
+| `summary` | `string \| null` | No | — | — |
+| `notes` | `string \| null` | No | — | — |
+| `automation_enabled` | `boolean` | Yes | — | — |
+| `profile_kind` | `TeamMemberProfileKind` | Yes | — | — |
+| `assignment_modes` | `TeamMemberAssignmentMode[]` | Yes | — | — |
+| `skills` | `TeamMemberProfileSkill[]` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

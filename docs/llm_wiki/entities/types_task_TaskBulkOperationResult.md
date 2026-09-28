@@ -1,6 +1,6 @@
 # TaskBulkOperationResult
 
-**Location:** `frontend/src/types/task.ts:302`
+**Location:** `frontend/src/types/task.ts:324`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,15 +11,15 @@ _Auto-generated from `TaskBulkOperationResult` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `outcome` | `TaskBulkOutcome` | *required* | — |
-| `changes` | `Record<string, { old: unknown; new: unknown } \| unknown>` | *required* | — |
-| `warnings` | `string[]` | *required* | — |
-| `error` | `string \| null` | *required* | — |
-| `task` | `Task \| null` | *required* | — |
-| `assignee_recommendation` | `AssigneeRecommendation \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `outcome` | `TaskBulkOutcome` | Yes | — | — |
+| `changes` | `Record<string, { old: unknown; new: unknown } \| unknown>` | Yes | — | — |
+| `warnings` | `string[]` | Yes | — | — |
+| `error` | `string \| null` | No | — | — |
+| `task` | `Task \| null` | No | — | — |
+| `assignee_recommendation` | `AssigneeRecommendation \| null` | No | — | — |
 
 ## Methods
 

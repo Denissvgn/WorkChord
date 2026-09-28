@@ -11,10 +11,10 @@ _Auto-generated from `RenderWithProvidersOptions` in `frontend/src/test/renderWi
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `initialEntries` | `string[]` | *required* | — |
-| `queryClient` | `QueryClient` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialEntries` | `string[]` | No | — | — |
+| `queryClient` | `QueryClient` | No | — | — |
 
 ## Methods
 

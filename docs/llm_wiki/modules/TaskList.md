@@ -76,9 +76,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Class | 66 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 729 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 781 | `TaskItemProps` | — |
+| [TaskListProps](../entities/TaskListProps.md) | Class | 67 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Class | 730 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 782 | `TaskItemProps` | — |
 | [SortKey](../entities/SortKey.md) | Type alias | 45 | — | — |
 | [TaskMode](../entities/TaskMode.md) | Type alias | 46 | — | — |
 | [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 47 | — | — |

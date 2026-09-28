@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `frontend/src/types/task.ts:312`
+**Location:** `frontend/src/types/task.ts:334`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,15 +11,15 @@ _Auto-generated from `TaskBulkOperationResponse` in `frontend/src/types/task.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `input_revisions` | `Record<number, number>` | *required* | — |
-| `task_versions` | `Record<number, number>` | *required* | — |
-| `requested_count` | `number` | *required* | — |
-| `succeeded_count` | `number` | *required* | — |
-| `failed_count` | `number` | *required* | — |
-| `dry_run` | `boolean` | *required* | — |
-| `results` | `TaskBulkOperationResult[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `input_revisions` | `Record<number, number>` | No | — | — |
+| `task_versions` | `Record<number, number>` | No | — | — |
+| `requested_count` | `number` | Yes | — | — |
+| `succeeded_count` | `number` | Yes | — | — |
+| `failed_count` | `number` | Yes | — | — |
+| `dry_run` | `boolean` | Yes | — | — |
+| `results` | `TaskBulkOperationResult[]` | Yes | — | — |
 
 ## Methods
 

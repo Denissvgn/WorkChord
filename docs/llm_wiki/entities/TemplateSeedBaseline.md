@@ -11,13 +11,13 @@ _Auto-generated from `TemplateSeedBaseline` in `frontend/src/i18n/seedDisplay.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `default_title` | `string` | *required* | — |
-| `default_description` | `string` | *required* | — |
-| `default_checklist` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `default_title` | `string` | Yes | — | — |
+| `default_description` | `string` | Yes | — | — |
+| `default_checklist` | `string[]` | Yes | — | — |
 
 ## Methods
 

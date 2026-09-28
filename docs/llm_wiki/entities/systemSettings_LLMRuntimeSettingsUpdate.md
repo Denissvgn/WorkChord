@@ -11,16 +11,16 @@ _Auto-generated from `LLMRuntimeSettingsUpdate` in `frontend/src/types/systemSet
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `provider` | `LLMProvider` | *required* | — |
-| `api_url` | `string` | *required* | — |
-| `model` | `string` | *required* | — |
-| `temperature` | `number` | *required* | — |
-| `max_output_tokens` | `number` | *required* | — |
-| `api_key` | `string \| null` | *required* | — |
-| `clear_api_key` | `boolean` | *required* | — |
-| `reset_fields` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `LLMProvider` | No | — | — |
+| `api_url` | `string` | No | — | — |
+| `model` | `string` | No | — | — |
+| `temperature` | `number` | No | — | — |
+| `max_output_tokens` | `number` | No | — | — |
+| `api_key` | `string \| null` | No | — | — |
+| `clear_api_key` | `boolean` | No | — | — |
+| `reset_fields` | `string[]` | No | — | — |
 
 ## Methods
 

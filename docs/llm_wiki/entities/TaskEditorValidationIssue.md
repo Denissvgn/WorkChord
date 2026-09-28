@@ -1,6 +1,6 @@
 # TaskEditorValidationIssue
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:185`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:194`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TaskEditorValidationIssue` in `frontend/src/components/tas
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `keyof TaskEditorValues` | *required* | — |
-| `code` | `TaskEditorValidationCode` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `field` | `keyof TaskEditorValues` | Yes | — | — |
+| `code` | `TaskEditorValidationCode` | Yes | — | — |
 
 ## Methods
 

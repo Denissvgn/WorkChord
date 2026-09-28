@@ -11,11 +11,11 @@ _Auto-generated from `AdminAccessErrorMessages` in `frontend/src/utils/adminAcce
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `missingOrInvalid` | `string` | *required* | — |
-| `backendNotConfigured` | `string` | *required* | — |
-| `fallback` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `missingOrInvalid` | `string` | Yes | — | — |
+| `backendNotConfigured` | `string` | Yes | — | — |
+| `fallback` | `string` | Yes | — | — |
 
 ## Methods
 

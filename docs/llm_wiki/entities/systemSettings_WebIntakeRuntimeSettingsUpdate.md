@@ -11,12 +11,12 @@ _Auto-generated from `WebIntakeRuntimeSettingsUpdate` in `frontend/src/types/sys
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string \| null` | *required* | — |
-| `clear_token` | `boolean` | *required* | — |
-| `rate_limit_per_minute` | `number` | *required* | — |
-| `reset_fields` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `token` | `string \| null` | No | — | — |
+| `clear_token` | `boolean` | No | — | — |
+| `rate_limit_per_minute` | `number` | No | — | — |
+| `reset_fields` | `string[]` | No | — | — |
 
 ## Methods
 

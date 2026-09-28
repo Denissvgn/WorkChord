@@ -11,19 +11,19 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/settings/AgentMod
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number \| null` | *required* | — |
-| `revision` | `number \| null` | *required* | — |
-| `key` | `string` | *required* | — |
-| `provider` | `string` | *required* | — |
-| `configuredModelAlias` | `string` | *required* | — |
-| `reasoningTier` | `1 \| 2 \| 3` | *required* | — |
-| `contextTier` | `'small' \| 'medium' \| 'large'` | *required* | — |
-| `modalityTags` | `string` | *required* | — |
-| `costTier` | `'low' \| 'medium' \| 'high'` | *required* | — |
-| `latencyTier` | `'fast' \| 'balanced' \| 'slow'` | *required* | — |
-| `lastVerifiedAt` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number \| null` | Yes | — | — |
+| `revision` | `number \| null` | Yes | — | — |
+| `key` | `string` | Yes | — | — |
+| `provider` | `string` | Yes | — | — |
+| `configuredModelAlias` | `string` | Yes | — | — |
+| `reasoningTier` | `1 \| 2 \| 3` | Yes | — | — |
+| `contextTier` | `'small' \| 'medium' \| 'large'` | Yes | — | — |
+| `modalityTags` | `string` | Yes | — | — |
+| `costTier` | `'low' \| 'medium' \| 'high'` | Yes | — | — |
+| `latencyTier` | `'fast' \| 'balanced' \| 'slow'` | Yes | — | — |
+| `lastVerifiedAt` | `string` | Yes | — | — |
 
 ## Methods
 

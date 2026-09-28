@@ -1,6 +1,6 @@
 # IterationSummary
 
-**Location:** `frontend/src/types/iteration.ts:58`
+**Location:** `frontend/src/types/iteration.ts:59`
 **Kind:** Class
 **Bases:** `WorkMetrics`
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -11,20 +11,20 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `project` | `IterationProject \| null` | *required* | — |
-| `start_date` | `string` | *required* | — |
-| `end_date` | `string` | *required* | — |
-| `working_days` | `number` | *required* | — |
-| `total_tasks` | `number` | *required* | — |
-| `completed_tasks` | `number` | *required* | — |
-| `total_effort_days` | `number` | *required* | — |
-| `team_capacity_days` | `number` | *required* | — |
-| `overdue_tasks_count` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `project` | `IterationProject \| null` | No | — | — |
+| `start_date` | `string` | Yes | — | — |
+| `end_date` | `string` | Yes | — | — |
+| `working_days` | `number` | Yes | — | — |
+| `total_tasks` | `number` | Yes | — | — |
+| `completed_tasks` | `number` | Yes | — | — |
+| `total_effort_days` | `number` | Yes | — | — |
+| `team_capacity_days` | `number` | Yes | — | — |
+| `overdue_tasks_count` | `number` | Yes | — | — |
 
 ## Methods
 

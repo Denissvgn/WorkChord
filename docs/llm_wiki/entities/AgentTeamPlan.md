@@ -11,15 +11,15 @@ _Auto-generated from `AgentTeamPlan` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-reconciliation-plan-v1'` | *required* | — |
-| `topology_key` | `string` | *required* | — |
-| `expected_topology_revision` | `number` | *required* | — |
-| `manifest_digest` | `string` | *required* | — |
-| `plan_digest` | `string` | *required* | — |
-| `actions` | `AgentTeamPlanAction[]` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-reconciliation-plan-v1'` | Yes | — | — |
+| `topology_key` | `string` | Yes | — | — |
+| `expected_topology_revision` | `number` | Yes | — | — |
+| `manifest_digest` | `string` | Yes | — | — |
+| `plan_digest` | `string` | Yes | — | — |
+| `actions` | `AgentTeamPlanAction[]` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
 
 ## Methods
 

@@ -11,14 +11,14 @@ _Auto-generated from `ControlledFileReader` in `frontend/src/components/team/Imp
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `instances` | `ControlledFileReader[]` | `[]` | — |
-| `readyState` | — | `0` | — |
-| `result` | `string \| ArrayBuffer \| null` | `null` | — |
-| `onload` | `(() => void) \| null` | `null` | — |
-| `onerror` | `(() => void) \| null` | `null` | — |
-| `onabort` | `(() => void) \| null` | `null` | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `instances` | `ControlledFileReader[]` | Yes | `[]` | — |
+| `readyState` | — | Yes | `0` | — |
+| `result` | `string \| ArrayBuffer \| null` | Yes | `null` | — |
+| `onload` | `(() => void) \| null` | Yes | `null` | — |
+| `onerror` | `(() => void) \| null` | Yes | `null` | — |
+| `onabort` | `(() => void) \| null` | Yes | `null` | — |
 
 ## Methods
 

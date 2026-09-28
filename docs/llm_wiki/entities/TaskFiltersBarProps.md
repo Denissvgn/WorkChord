@@ -11,11 +11,11 @@ _Auto-generated from `TaskFiltersBarProps` in `frontend/src/components/tasks/Tas
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `filters` | `TaskFilters` | *required* | — |
-| `onFiltersChange` | `(filters: TaskFilters) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `filters` | `TaskFilters` | Yes | — | — |
+| `onFiltersChange` | `(filters: TaskFilters) => void` | Yes | — | — |
 
 ## Methods
 

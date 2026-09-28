@@ -11,18 +11,19 @@ _Auto-generated from `Iteration` in `frontend/src/types/iteration.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `revision` | `number` | *required* | — |
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `calendar_id` | `number` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `project` | `IterationProject \| null` | *required* | — |
-| `start_date` | `string` | *required* | — |
-| `end_date` | `string` | *required* | — |
-| `manager_email` | `string` | *required* | — |
-| `working_days` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `nominal_day_hours` | `number` | No | — | — |
+| `revision` | `number` | No | — | — |
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `calendar_id` | `number` | Yes | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `project` | `IterationProject \| null` | No | — | — |
+| `start_date` | `string` | Yes | — | — |
+| `end_date` | `string` | Yes | — | — |
+| `manager_email` | `string` | No | — | — |
+| `working_days` | `number` | Yes | — | — |
 
 ## Methods
 
@@ -77,7 +78,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
 
 ### References
 

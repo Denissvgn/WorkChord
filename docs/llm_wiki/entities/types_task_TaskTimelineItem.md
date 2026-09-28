@@ -1,6 +1,6 @@
 # TaskTimelineItem
 
-**Location:** `frontend/src/types/task.ts:355`
+**Location:** `frontend/src/types/task.ts:377`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,15 +11,15 @@ _Auto-generated from `TaskTimelineItem` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `item_type` | `'task_event' \| 'status_log' \| 'agent_run' \| 'agent_run_event'` | *required* | — |
-| `timestamp` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `payload` | `Record<string, unknown>` | *required* | — |
-| `actor_type` | `string \| null` | *required* | — |
-| `actor_id` | `number \| null` | *required* | — |
-| `trace_id` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `item_type` | `'task_event' \| 'status_log' \| 'agent_run' \| 'agent_run_event'` | Yes | — | — |
+| `timestamp` | `string` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `payload` | `Record<string, unknown>` | Yes | — | — |
+| `actor_type` | `string \| null` | No | — | — |
+| `actor_id` | `number \| null` | No | — | — |
+| `trace_id` | `string \| null` | No | — | — |
 
 ## Methods
 

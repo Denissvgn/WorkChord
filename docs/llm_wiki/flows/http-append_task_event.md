@@ -104,8 +104,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| append_task_event | service.append_task_event | 1147 | `service.append_task_event(task_id, actor, data, idempotency_key)` |
-| append_task_event | _handle_agent_error | 1149 | `_handle_agent_error(exc)` |
+| append_task_event | service.append_task_event | 1149 | `service.append_task_event(task_id, actor, data, idempotency_key)` |
+| append_task_event | _handle_agent_error | 1151 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -124,7 +124,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `append_task_event` | `service.append_task_event` | 1147 |
+| unresolved_call | `append_task_event` | `service.append_task_event` | 1149 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

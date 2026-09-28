@@ -1,6 +1,6 @@
 # CalendarImportResponse
 
-**Location:** `frontend/src/types/calendar.ts:38`
+**Location:** `frontend/src/types/calendar.ts:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
@@ -11,12 +11,12 @@ _Auto-generated from `CalendarImportResponse` in `frontend/src/types/calendar.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `calendar` | `Calendar` | *required* | — |
-| `imported_count` | `number` | *required* | — |
-| `skipped_count` | `number` | *required* | — |
-| `errors` | `CalendarImportError[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `calendar` | `Calendar` | Yes | — | — |
+| `imported_count` | `number` | Yes | — | — |
+| `skipped_count` | `number` | Yes | — | — |
+| `errors` | `CalendarImportError[]` | Yes | — | — |
 
 ## Methods
 

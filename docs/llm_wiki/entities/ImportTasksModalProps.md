@@ -11,10 +11,10 @@ _Auto-generated from `ImportTasksModalProps` in `frontend/src/components/tasks/I
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
 
 ## Methods
 

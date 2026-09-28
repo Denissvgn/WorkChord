@@ -11,18 +11,18 @@ _Auto-generated from `GanttChartProps` in `frontend/src/components/gantt/GanttCh
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `iterationRevision` | `number` | *required* | — |
-| `startDate` | `string` | *required* | — |
-| `endDate` | `string` | *required* | — |
-| `tasks` | `GanttTask[]` | *required* | — |
-| `weekends` | `string[]` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `memberVacations` | `Record<number, string[]>` | *required* | — |
-| `sandboxMode` | `boolean` | *required* | — |
-| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `iterationRevision` | `number` | No | — | — |
+| `startDate` | `string` | Yes | — | — |
+| `endDate` | `string` | Yes | — | — |
+| `tasks` | `GanttTask[]` | Yes | — | — |
+| `weekends` | `string[]` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `memberVacations` | `Record<number, string[]>` | Yes | — | — |
+| `sandboxMode` | `boolean` | No | — | — |
+| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | No | — | — |
 
 ## Methods
 

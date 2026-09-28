@@ -1,6 +1,6 @@
 # ExternalLinkCreate
 
-**Location:** `frontend/src/types/task.ts:62`
+**Location:** `frontend/src/types/task.ts:63`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,14 +11,14 @@ _Auto-generated from `ExternalLinkCreate` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `provider` | `ExternalLinkProvider` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `url` | `string \| null` | *required* | — |
-| `title` | `string \| null` | *required* | — |
-| `status` | `string \| null` | *required* | — |
-| `metadata_json` | `Record<string, unknown>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `ExternalLinkProvider` | Yes | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `url` | `string \| null` | No | — | — |
+| `title` | `string \| null` | No | — | — |
+| `status` | `string \| null` | No | — | — |
+| `metadata_json` | `Record<string, unknown>` | No | — | — |
 
 ## Methods
 

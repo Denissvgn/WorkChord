@@ -11,10 +11,10 @@ _Auto-generated from `WorkloadAnalysis` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `balanced` | `boolean` | *required* | — |
-| `issues` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `balanced` | `boolean` | Yes | — | — |
+| `issues` | `string[]` | Yes | — | — |
 
 ## Methods
 

@@ -11,16 +11,16 @@ _Auto-generated from `GitHubStatusAutomationRuleCreate` in `frontend/src/types/g
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `github_event_type` | `GitHubAutomationEventType` | *required* | — |
-| `from_status` | `TaskStatus \| null` | *required* | — |
-| `target_status` | `GitHubAutomationTargetStatus` | *required* | — |
-| `reason_template` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `github_event_type` | `GitHubAutomationEventType` | Yes | — | — |
+| `from_status` | `TaskStatus \| null` | No | — | — |
+| `target_status` | `GitHubAutomationTargetStatus` | Yes | — | — |
+| `reason_template` | `string \| null` | No | — | — |
+| `sort_order` | `number` | Yes | — | — |
 
 ## Methods
 

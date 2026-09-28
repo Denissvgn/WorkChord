@@ -1,6 +1,6 @@
 # DuplicateSuggestionGroupProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1514`
+**Location:** `frontend/src/pages/TriagePage.tsx:1531`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,13 +11,13 @@ _Auto-generated from `DuplicateSuggestionGroupProps` in `frontend/src/pages/Tria
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `suggestions` | `TriageDuplicateSuggestion[]` | *required* | — |
-| `projectsById` | `Record<number, string>` | *required* | — |
-| `iterationsById` | `Record<number, string>` | *required* | — |
-| `onMarkSuggestion` | `(suggestion: TriageDuplicateSuggestion) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `suggestions` | `TriageDuplicateSuggestion[]` | Yes | — | — |
+| `projectsById` | `Record<number, string>` | Yes | — | — |
+| `iterationsById` | `Record<number, string>` | Yes | — | — |
+| `onMarkSuggestion` | `(suggestion: TriageDuplicateSuggestion) => void` | Yes | — | — |
 
 ## Methods
 

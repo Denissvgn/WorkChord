@@ -11,15 +11,15 @@ _Auto-generated from `TeamMemberCreate` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `position` | `string` | *required* | — |
-| `email` | `string` | *required* | — |
-| `profile_id` | `number \| null` | *required* | — |
-| `availability_percent` | `number` | *required* | — |
-| `professionalism_coefficient` | `number` | *required* | — |
-| `operational_utilization` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `position` | `string` | Yes | — | — |
+| `email` | `string` | No | — | — |
+| `profile_id` | `number \| null` | No | — | — |
+| `availability_percent` | `number` | Yes | — | — |
+| `professionalism_coefficient` | `number` | Yes | — | — |
+| `operational_utilization` | `number` | Yes | — | — |
 
 ## Methods
 

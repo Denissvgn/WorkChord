@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `frontend/src/types/task.ts:84`
+**Location:** `frontend/src/types/task.ts:85`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,65 +11,82 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iteration_revision` | `number` | *required* | — |
-| `effective_is_deferred` | `boolean` | *required* | — |
-| `effective_is_optional` | `boolean` | *required* | — |
-| `metric_contract_version` | `number` | *required* | — |
-| `is_late_start` | `boolean` | *required* | — |
-| `is_iteration_overflow` | `boolean` | *required* | — |
-| `is_project_target_overflow` | `boolean` | *required* | — |
-| `is_implemented` | `boolean` | *required* | — |
-| `is_accepted` | `boolean` | *required* | — |
-| `acceptance_unknown` | `boolean` | *required* | — |
-| `baseline_start_date` | `string \| null` | *required* | — |
-| `baseline_end_date` | `string \| null` | *required* | — |
-| `baseline_revision` | `number` | *required* | — |
-| `baseline_provenance` | `string` | *required* | — |
-| `started_at` | `string \| null` | *required* | — |
-| `resolved_at` | `string \| null` | *required* | — |
-| `accepted_at` | `string \| null` | *required* | — |
-| `id` | `number` | *required* | — |
-| `iteration_id` | `number` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `milestone_id` | `number \| null` | *required* | — |
-| `parent_id` | `number \| null` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `project` | `TaskProject \| null` | *required* | — |
-| `milestone` | `TaskMilestone \| null` | *required* | — |
-| `assignee` | `TaskAssignee \| null` | *required* | — |
-| `status` | `TaskStatus` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `end_date` | `string \| null` | *required* | — |
-| `actual_start_date` | `string \| null` | *required* | — |
-| `actual_end_date` | `string \| null` | *required* | — |
-| `min_start_date` | `string \| null` | *required* | — |
-| `max_end_date` | `string \| null` | *required* | — |
-| `is_overdue` | `boolean` | *required* | — |
-| `is_delayed` | `boolean` | *required* | — |
-| `is_composite` | `boolean` | *required* | — |
-| `is_optional` | `boolean` | *required* | — |
-| `is_deferred` | `boolean` | *required* | — |
-| `is_outside_constraints` | `boolean` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `sort_order` | `number` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `external_links` | `ExternalLink[]` | *required* | — |
-| `request_count` | `number` | *required* | — |
-| `agent_readiness` | `TaskAgentReadiness` | *required* | — |
-| `version` | `number` | *required* | — |
-| `claimed_by` | `TaskClaimedBy \| null` | *required* | — |
-| `claim_expires_at` | `string \| null` | *required* | — |
-| `updated_at` | `string \| null` | *required* | — |
-| `children` | `Task[]` | *required* | — |
-| `dependencies` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iteration_revision` | `number` | No | — | — |
+| `effective_is_deferred` | `boolean` | No | — | — |
+| `effective_is_optional` | `boolean` | No | — | — |
+| `metric_contract_version` | `number` | No | — | — |
+| `is_late_start` | `boolean` | No | — | — |
+| `is_iteration_overflow` | `boolean` | No | — | — |
+| `is_project_target_overflow` | `boolean` | No | — | — |
+| `is_implemented` | `boolean` | No | — | — |
+| `is_accepted` | `boolean` | No | — | — |
+| `acceptance_unknown` | `boolean` | No | — | — |
+| `owner_profile_id` | `number \| null` | No | — | — |
+| `owner` | `TaskAssignee \| null` | No | — | — |
+| `ownership_provenance` | `string` | No | — | — |
+| `nominal_day_hours` | `number` | No | — | — |
+| `estimate_provenance` | `string` | No | — | — |
+| `brief` | `TaskBrief \| null` | No | — | — |
+| `brief_revision` | `number` | No | — | — |
+| `brief_provenance` | `string` | No | — | — |
+| `legacy_description` | `string \| null` | No | — | — |
+| `brief_migration_notes` | `string[]` | No | — | — |
+| `progress` | `TaskProgress \| null` | No | — | — |
+| `artifact_revision` | `number` | No | — | — |
+| `execution_mode` | `'manual' \| 'scheduled'` | No | — | — |
+| `blocked_reason` | `string \| null` | No | — | — |
+| `canceled_at` | `string \| null` | No | — | — |
+| `canceled_reason` | `string \| null` | No | — | — |
+| `detail_context` | `TaskDetail` | No | — | — |
+| `baseline_start_date` | `string \| null` | No | — | — |
+| `baseline_end_date` | `string \| null` | No | — | — |
+| `baseline_revision` | `number` | No | — | — |
+| `baseline_provenance` | `string` | No | — | — |
+| `started_at` | `string \| null` | No | — | — |
+| `resolved_at` | `string \| null` | No | — | — |
+| `accepted_at` | `string \| null` | No | — | — |
+| `id` | `number` | Yes | — | — |
+| `iteration_id` | `number \| null` | Yes | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `milestone_id` | `number \| null` | No | — | — |
+| `parent_id` | `number \| null` | No | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | No | — | — |
+| `priority` | `number` | Yes | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | Yes | — | — |
+| `project` | `TaskProject \| null` | No | — | — |
+| `milestone` | `TaskMilestone \| null` | No | — | — |
+| `assignee` | `TaskAssignee \| null` | No | — | — |
+| `status` | `TaskStatus` | Yes | — | — |
+| `start_date` | `string \| null` | No | — | — |
+| `end_date` | `string \| null` | No | — | — |
+| `actual_start_date` | `string \| null` | No | — | — |
+| `actual_end_date` | `string \| null` | No | — | — |
+| `min_start_date` | `string \| null` | No | — | — |
+| `max_end_date` | `string \| null` | No | — | — |
+| `is_overdue` | `boolean` | Yes | — | — |
+| `is_delayed` | `boolean` | Yes | — | — |
+| `is_composite` | `boolean` | Yes | — | — |
+| `is_optional` | `boolean` | Yes | — | — |
+| `is_deferred` | `boolean` | Yes | — | — |
+| `is_outside_constraints` | `boolean` | No | — | — |
+| `tags` | `string[]` | Yes | — | — |
+| `sort_order` | `number` | Yes | — | — |
+| `external_key` | `string \| null` | No | — | — |
+| `source` | `string \| null` | No | — | — |
+| `source_url` | `string \| null` | No | — | — |
+| `external_links` | `ExternalLink[]` | Yes | — | — |
+| `request_count` | `number` | Yes | — | — |
+| `agent_readiness` | `TaskAgentReadiness` | Yes | — | — |
+| `version` | `number` | Yes | — | — |
+| `claimed_by` | `TaskClaimedBy \| null` | No | — | — |
+| `claim_expires_at` | `string \| null` | No | — | — |
+| `updated_at` | `string \| null` | No | — | — |
+| `children` | `Task[]` | Yes | — | — |
+| `dependencies` | `number[]` | Yes | — | — |
 
 ## Methods
 
@@ -92,7 +109,7 @@ flowchart LR
     n9["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
     n10["frontend/src/components/tasks/StatusChangeControl.tsx"]
     n11["TaskBulkOperationsPanel (frontend/src/components/tasks/TaskBulkOperationsPanel.tsx)"]
-    n12["TaskDependencySelector (frontend/src/components/tasks/TaskDependencySelector.tsx)"]
+    n12["buildTaskEditorDefaults (frontend/src/components/tasks/taskEditorContract.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -117,14 +134,14 @@ flowchart LR
     click n9 "../modules/KanbanColumn.md"
     click n10 "../modules/StatusChangeControl.md"
     click n11 "../modules/TaskBulkOperationsPanel.md"
-    click n12 "../modules/TaskDependencySelector.md"
+    click n12 "../modules/taskEditorContract.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `children`, `claim_expires_at` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason` |
 
 ### References
 
@@ -141,6 +158,6 @@ flowchart LR
 | `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
 | `StatusChangeControl` | import | [StatusChangeControl](../modules/StatusChangeControl.md) | — |
 | `TaskBulkOperationsPanel` | type_reference | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
-| `TaskDependencySelector` | type_reference | [TaskDependencySelector](../modules/TaskDependencySelector.md) | — |
+| `buildTaskEditorDefaults` | type_reference | [taskEditorContract](../modules/taskEditorContract.md) | — |
 
-> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.

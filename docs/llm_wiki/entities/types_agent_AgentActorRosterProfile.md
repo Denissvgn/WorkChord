@@ -11,16 +11,16 @@ _Auto-generated from `AgentActorRosterProfile` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `revision` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `automation_enabled` | `boolean` | *required* | — |
-| `profile_kind` | `string` | *required* | — |
-| `assignment_modes` | `string[]` | *required* | — |
-| `skills` | `AgentActorRosterProfileSkill[]` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `revision` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `automation_enabled` | `boolean` | Yes | — | — |
+| `profile_kind` | `string` | Yes | — | — |
+| `assignment_modes` | `string[]` | Yes | — | — |
+| `skills` | `AgentActorRosterProfileSkill[]` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

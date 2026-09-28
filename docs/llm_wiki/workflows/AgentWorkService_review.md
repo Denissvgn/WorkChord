@@ -1,7 +1,7 @@
 # AgentWorkService_review
 
 **Entry point:** `agent_work_service.AgentWorkService.review`
-**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [schemas_agent](../modules/schemas_agent.md), [task_brief_service](../modules/task_brief_service.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Apply an independent verification verdict and optional rework handback.
 
@@ -28,14 +28,16 @@
 18. `agent_service.AgentConflictError`
 19. `agent_service.AgentConflictError`
 20. `task_service.TaskVersionConflictError`
-21. `agent_service.AgentConflictError`
-22. `models_agent.AgentTaskAssignment`
-23. `schemas_agent.AgentReviewVerdictResponse`
-24. `agent_routing_policy.canonical_routing_json_bytes`
-25. `agent_routing_policy.canonical_routing_json_bytes`
-26. `agent_routing_observability.record_routing_operational_event`
-27. `agent_routing_observability.record_routing_operational_event`
-28. `commands.commit_or_flush`
+21. `task_brief_service.TaskBriefService`
+22. `task_brief_service.TaskBriefService`
+23. `agent_service.AgentConflictError`
+24. `models_agent.AgentTaskAssignment`
+25. `schemas_agent.AgentReviewVerdictResponse`
+26. `agent_routing_policy.canonical_routing_json_bytes`
+27. `agent_routing_policy.canonical_routing_json_bytes`
+28. `agent_routing_observability.record_routing_operational_event`
+29. `agent_routing_observability.record_routing_operational_event`
+30. `commands.commit_or_flush`
 
 ## Touches
 
@@ -47,6 +49,7 @@
 - [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 

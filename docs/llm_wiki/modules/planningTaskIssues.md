@@ -93,6 +93,6 @@ flowchart LR
 | `parsePlanningTaskIssue` | `(value: unknown) -> PlanningTaskIssue \| null` | — | — |
 | `parsePlanningIterationId` | `(value: unknown) -> number \| null` | — | — |
 | `isPlanningLeafTask` | `(task: Task)` | — | — |
-| `hasPositivePlanningEffort` | `(value: number)` | — | — |
+| `hasPositivePlanningEffort` | `(value: number \| null) -> value is number` | — | — |
 | `taskMatchesPlanningIssue` | `(task: Task, issue: PlanningTaskIssue)` | — | — |
 | `planningIssueTasksHref` | `({     issue,     iterationId,     returnStepId, }: {     issue: PlanningTaskIssue;     iterationId: number;     returnStepId: PlanningStepId; })` | — | — |

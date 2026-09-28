@@ -11,14 +11,14 @@ _Auto-generated from `ScheduleExplanationDetailsProps` in `frontend/src/componen
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `decisions` | `ScheduleDecisionExplanation[]` | *required* | — |
-| `taskLookup` | `Map<number, GanttTask>` | *required* | — |
-| `memberVacations` | `Record<number, string[]>` | *required* | — |
-| `workloadBalanced` | `boolean` | *required* | — |
-| `workloadIssues` | `string[]` | *required* | — |
-| `onOpenTask` | `(task: GanttTask) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `decisions` | `ScheduleDecisionExplanation[]` | Yes | — | — |
+| `taskLookup` | `Map<number, GanttTask>` | Yes | — | — |
+| `memberVacations` | `Record<number, string[]>` | Yes | — | — |
+| `workloadBalanced` | `boolean` | Yes | — | — |
+| `workloadIssues` | `string[]` | Yes | — | — |
+| `onOpenTask` | `(task: GanttTask) => void` | Yes | — | — |
 
 ## Methods
 

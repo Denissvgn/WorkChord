@@ -11,11 +11,11 @@ _Auto-generated from `Vacation` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `start_date` | `string` | *required* | — |
-| `end_date` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `start_date` | `string` | Yes | — | — |
+| `end_date` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -11,16 +11,16 @@ _Auto-generated from `GitHubRuntimeSettingsUpdate` in `frontend/src/types/system
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `api_url` | `string` | *required* | — |
-| `token` | `string \| null` | *required* | — |
-| `clear_token` | `boolean` | *required* | — |
-| `request_timeout_seconds` | `number` | *required* | — |
-| `webhook_secret` | `string \| null` | *required* | — |
-| `clear_webhook_secret` | `boolean` | *required* | — |
-| `webhook_create_triage_for_unmatched` | `boolean` | *required* | — |
-| `reset_fields` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `api_url` | `string` | No | — | — |
+| `token` | `string \| null` | No | — | — |
+| `clear_token` | `boolean` | No | — | — |
+| `request_timeout_seconds` | `number` | No | — | — |
+| `webhook_secret` | `string \| null` | No | — | — |
+| `clear_webhook_secret` | `boolean` | No | — | — |
+| `webhook_create_triage_for_unmatched` | `boolean` | No | — | — |
+| `reset_fields` | `string[]` | No | — | — |
 
 ## Methods
 

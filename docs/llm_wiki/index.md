@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1361 | [Open section](#entities) |
-| Modules | 605 | [Open section](#modules) |
-| Workflows | 137 | [Open section](#workflows) |
+| Entities | 1398 | [Open section](#entities) |
+| Modules | 627 | [Open section](#modules) |
+| Workflows | 147 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 463 | [Open section](#entry-point-flows) |
+| Entry-point flows | 488 | [Open section](#entry-point-flows) |
 | Infrastructure | 10 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -191,6 +191,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AvailabilityState](entities/AvailabilityState.md)
 - [BM25Similarity](entities/BM25Similarity.md)
 - [BackendBuildIdentity](entities/BackendBuildIdentity.md)
+- [BacklogRestoreRequest](entities/BacklogRestoreRequest.md)
+- [BacklogSnapshotService](entities/BacklogSnapshotService.md)
 - [BalanceWorkload](entities/BalanceWorkload.md)
 - [BalanceWorkloadSchema](entities/BalanceWorkloadSchema.md)
 - [Base](entities/Base.md)
@@ -202,6 +204,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [BootstrapOwner](entities/BootstrapOwner.md)
 - [BreadcrumbItem](entities/BreadcrumbItem.md)
 - [BreadcrumbsProps](entities/BreadcrumbsProps.md)
+- [BriefConvert](entities/BriefConvert.md)
+- [BriefWrite](entities/BriefWrite.md)
 - [BuildIdentity](entities/BuildIdentity.md)
 - [ButtonProps](entities/ButtonProps.md)
 - [CachedRelease](entities/CachedRelease.md)
@@ -258,6 +262,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [CurrentTopologyMember](entities/CurrentTopologyMember.md)
 - [CurrentTopologySnapshot](entities/CurrentTopologySnapshot.md)
 - [CutoverEvidenceError](entities/CutoverEvidenceError.md)
+- [DB](entities/DB.md)
 - [DagController](entities/DagController.md)
 - [DagJournalEntry](entities/DagJournalEntry.md)
 - [DagJournalSnapshot](entities/DagJournalSnapshot.md)
@@ -531,6 +536,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PrincipalRecoveryRequest](entities/PrincipalRecoveryRequest.md)
 - [ProfileLinkRequest](entities/ProfileLinkRequest.md)
 - [ProgramDecision](entities/ProgramDecision.md)
+- [ProgressWrite](entities/ProgressWrite.md)
 - [ProjectFormProps](entities/ProjectFormProps.md)
 - [ProjectIterationsSectionProps](entities/ProjectIterationsSectionProps.md)
 - [ProjectMembership](entities/ProjectMembership.md)
@@ -749,19 +755,32 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Tab](entities/Tab.md)
 - [TargetFormErrors](entities/TargetFormErrors.md)
 - [TargetFormState](entities/TargetFormState.md)
+- [TaskAction](entities/TaskAction.md)
+- [TaskActionBlocker](entities/TaskActionBlocker.md)
+- [TaskActionRequest](entities/TaskActionRequest.md)
+- [TaskActions](entities/TaskActions.md)
+- [TaskActionsResponse](entities/TaskActionsResponse.md)
 - [TaskAgentReadinessBadgeProps](entities/TaskAgentReadinessBadgeProps.md)
+- [TaskBriefRevision](entities/TaskBriefRevision.md)
+- [TaskBriefService](entities/TaskBriefService.md)
 - [TaskBulkOperationService](entities/TaskBulkOperationService.md)
 - [TaskBulkOperationsPanelProps](entities/TaskBulkOperationsPanelProps.md)
 - [TaskChange](entities/TaskChange.md)
 - [TaskClaimRequest](entities/TaskClaimRequest.md)
 - [TaskClaimResponse](entities/TaskClaimResponse.md)
+- [TaskCommand](entities/TaskCommand.md)
 - [TaskConflictMetadata](entities/TaskConflictMetadata.md)
 - [TaskContextVersionConflictError](entities/TaskContextVersionConflictError.md)
+- [TaskDeletionFence](entities/TaskDeletionFence.md)
 - [TaskDependency](entities/TaskDependency.md)
 - [TaskDependencyCreate](entities/TaskDependencyCreate.md)
 - [TaskDependencySelectorProps](entities/TaskDependencySelectorProps.md)
+- [TaskDetail](entities/TaskDetail.md)
+- [TaskDetailResponse](entities/TaskDetailResponse.md)
+- [TaskDetailService](entities/TaskDetailService.md)
 - [TaskDifficultyBand](entities/TaskDifficultyBand.md)
 - [TaskDifficultyScore](entities/TaskDifficultyScore.md)
+- [TaskDomainService](entities/TaskDomainService.md)
 - [TaskEditModalContentProps](entities/TaskEditModalContentProps.md)
 - [TaskEditModalProps](entities/TaskEditModalProps.md)
 - [TaskEditorAvailability](entities/TaskEditorAvailability.md)
@@ -792,9 +811,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskMetricSignals](entities/TaskMetricSignals.md)
 - [TaskMode](entities/TaskMode.md)
 - [TaskOrderRequest](entities/TaskOrderRequest.md)
+- [TaskProgress](entities/TaskProgress.md)
+- [TaskProgressRecord](entities/TaskProgressRecord.md)
 - [TaskReorder](entities/TaskReorder.md)
 - [TaskResponse](entities/TaskResponse.md)
 - [TaskReviewMode](entities/TaskReviewMode.md)
+- [TaskReviewRecord](entities/TaskReviewRecord.md)
+- [TaskReviewResponse](entities/TaskReviewResponse.md)
+- [TaskReviewWrite](entities/TaskReviewWrite.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
 - [TaskRoutingAssessmentFields](entities/TaskRoutingAssessmentFields.md)
 - [TaskRoutingAssessmentHistory](entities/TaskRoutingAssessmentHistory.md)
@@ -855,6 +879,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageClassificationDraft](entities/TriageClassificationDraft.md)
 - [TriageClassificationSuggestionResponse](entities/TriageClassificationSuggestionResponse.md)
 - [TriageConflictError](entities/TriageConflictError.md)
+- [TriageConvertToBacklogRequest](entities/TriageConvertToBacklogRequest.md)
 - [TriageDetailPanelProps](entities/TriageDetailPanelProps.md)
 - [TriageDraftNotFoundError](entities/TriageDraftNotFoundError.md)
 - [TriageItemResponse](entities/TriageItemResponse.md)
@@ -1152,6 +1177,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_task_TaskUpdate](entities/schemas_task_TaskUpdate.md)
 - [schemas_task_TasksImportRequest](entities/schemas_task_TasksImportRequest.md)
 - [schemas_task_TasksImportResponse](entities/schemas_task_TasksImportResponse.md)
+- [schemas_task_brief_BriefCriterion](entities/schemas_task_brief_BriefCriterion.md)
+- [schemas_task_brief_CriterionProgress](entities/schemas_task_brief_CriterionProgress.md)
+- [schemas_task_brief_TaskBrief](entities/schemas_task_brief_TaskBrief.md)
+- [schemas_task_domain_TaskActionAvailability](entities/schemas_task_domain_TaskActionAvailability.md)
 - [schemas_team_MemberCapacity](entities/schemas_team_MemberCapacity.md)
 - [schemas_team_MemberWorkload](entities/schemas_team_MemberWorkload.md)
 - [schemas_team_TeamMemberCreate](entities/schemas_team_TeamMemberCreate.md)
@@ -1191,6 +1220,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [systemSettings_RuntimeSettingSource](entities/systemSettings_RuntimeSettingSource.md)
 - [systemSettings_WebIntakeRuntimeSettingsUpdate](entities/systemSettings_WebIntakeRuntimeSettingsUpdate.md)
 - [system_settings_service_RuntimeSettingSource](entities/system_settings_service_RuntimeSettingSource.md)
+- [task_detail_TaskReference](entities/task_detail_TaskReference.md)
+- [task_detail_TaskReferencePage](entities/task_detail_TaskReferencePage.md)
 - [task_status_log_TaskStatusLog](entities/task_status_log_TaskStatusLog.md)
 - [team_member_TeamMember](entities/team_member_TeamMember.md)
 - [team_member_TeamMemberProfile](entities/team_member_TeamMemberProfile.md)
@@ -1307,7 +1338,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_release_ReleaseStatus](entities/types_release_ReleaseStatus.md)
 - [types_release_ReleaseTaskSummary](entities/types_release_ReleaseTaskSummary.md)
 - [types_release_ReleaseUpdateRequest](entities/types_release_ReleaseUpdateRequest.md)
+- [types_task_BriefCriterion](entities/types_task_BriefCriterion.md)
 - [types_task_CascadeUpdateInfo](entities/types_task_CascadeUpdateInfo.md)
+- [types_task_CriterionProgress](entities/types_task_CriterionProgress.md)
 - [types_task_ExternalLink](entities/types_task_ExternalLink.md)
 - [types_task_ExternalLinkCreate](entities/types_task_ExternalLinkCreate.md)
 - [types_task_ExternalLinkProvider](entities/types_task_ExternalLinkProvider.md)
@@ -1318,6 +1351,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_SuggestedSubtask](entities/types_task_SuggestedSubtask.md)
 - [types_task_Task](entities/types_task_Task.md)
 - [types_task_TaskAISuggestRequest](entities/types_task_TaskAISuggestRequest.md)
+- [types_task_TaskActionAvailability](entities/types_task_TaskActionAvailability.md)
 - [types_task_TaskAgentReadiness](entities/types_task_TaskAgentReadiness.md)
 - [types_task_TaskAgentReadinessCriterion](entities/types_task_TaskAgentReadinessCriterion.md)
 - [types_task_TaskAssignee](entities/types_task_TaskAssignee.md)
@@ -1325,6 +1359,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskBatchUpdateRequest](entities/types_task_TaskBatchUpdateRequest.md)
 - [types_task_TaskBatchUpdateResponse](entities/types_task_TaskBatchUpdateResponse.md)
 - [types_task_TaskBatchUpdateResponseItem](entities/types_task_TaskBatchUpdateResponseItem.md)
+- [types_task_TaskBrief](entities/types_task_TaskBrief.md)
 - [types_task_TaskBulkAction](entities/types_task_TaskBulkAction.md)
 - [types_task_TaskBulkOperationRequest](entities/types_task_TaskBulkOperationRequest.md)
 - [types_task_TaskBulkOperationResponse](entities/types_task_TaskBulkOperationResponse.md)
@@ -1336,6 +1371,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskMilestone](entities/types_task_TaskMilestone.md)
 - [types_task_TaskMoveRequest](entities/types_task_TaskMoveRequest.md)
 - [types_task_TaskProject](entities/types_task_TaskProject.md)
+- [types_task_TaskReference](entities/types_task_TaskReference.md)
+- [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
 - [types_task_TaskStatus](entities/types_task_TaskStatus.md)
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
@@ -1421,6 +1458,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20260728_0035_add_agent_team_setup](modules/20260728_0035_add_agent_team_setup.md) - Add operator-owned agent-team setup and onboarding state.
 - [20260802_0036_add_plan_shares](modules/20260802_0036_add_plan_shares.md) - Add immutable, revocable plan shares.
 - [20260915_0037_add_authority_and_recovery](modules/20260915_0037_add_authority_and_recovery.md) - Add durable authority, application snapshots and explicit schedule commitments.
+- [20260915_0038_canonical_task_domain](modules/20260915_0038_canonical_task_domain.md) - Expand task ownership, backlog, effort and canonical brief history.
+- [20260916_0039_task_deletion_fences](modules/20260916_0039_task_deletion_fences.md) - Retain deletion versions for safe task identity restoration.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1553,12 +1592,16 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SystemLanguageProvider](modules/SystemLanguageProvider.md) - `frontend/src/i18n/SystemLanguageProvider.tsx`
 - [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) - `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx`
 - [TaskAgentReadinessBadge.test](modules/TaskAgentReadinessBadge.test.md) - `frontend/src/components/tasks/TaskAgentReadinessBadge.test.tsx`
+- [TaskBriefEditor](modules/TaskBriefEditor.md) - `frontend/src/components/tasks/TaskBriefEditor.tsx`
+- [TaskBriefEditor.test](modules/TaskBriefEditor.test.md) - `frontend/src/components/tasks/TaskBriefEditor.test.tsx`
 - [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) - `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
+- [TaskContextSummary](modules/TaskContextSummary.md) - `frontend/src/components/tasks/TaskContextSummary.tsx`
 - [TaskDependencySelector](modules/TaskDependencySelector.md) - `frontend/src/components/tasks/TaskDependencySelector.tsx`
 - [TaskEditModal](modules/TaskEditModal.md) - `frontend/src/components/gantt/TaskEditModal.tsx`
 - [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
 - [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
 - [TaskForm](modules/TaskForm.md) - `frontend/src/components/tasks/TaskForm.tsx`
+- [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
@@ -1567,6 +1610,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskTextEditorModal](modules/TaskTextEditorModal.md) - `frontend/src/components/tasks/TaskTextEditorModal.tsx`
 - [TaskTimelinePanel](modules/TaskTimelinePanel.md) - `frontend/src/components/tasks/TaskTimelinePanel.tsx`
 - [TaskTimelinePanel.test](modules/TaskTimelinePanel.test.md) - `frontend/src/components/tasks/TaskTimelinePanel.test.tsx`
+- [TaskWorkPanel](modules/TaskWorkPanel.md) - `frontend/src/components/tasks/TaskWorkPanel.tsx`
+- [TaskWorkPanel.test](modules/TaskWorkPanel.test.md) - `frontend/src/components/tasks/TaskWorkPanel.test.tsx`
 - [TaskWorkflowGuide](modules/TaskWorkflowGuide.md) - `frontend/src/components/tasks/TaskWorkflowGuide.tsx`
 - [TasksPage](modules/TasksPage.md) - `frontend/src/pages/TasksPage.tsx`
 - [TasksPage.test](modules/TasksPage.test.md) - `frontend/src/pages/TasksPage.test.tsx`
@@ -1625,6 +1670,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [autonomy_canonical](modules/autonomy_canonical.md) - Canonical serialization and secret-boundary helpers.
 - [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) - Container-backed acceptance for a self-hosted WorkChord server.
 - [autonomy_work_package_service](modules/autonomy_work_package_service.md) - Fenced, package-level autonomous verification lifecycle service.
+- [backlog_snapshot_service](modules/backlog_snapshot_service.md) - Project backlog recovery using the shared transactional snapshot store.
 - [build_agent_skills](modules/build_agent_skills.md) - Validate and reproducibly package WorkChord role skills.
 - [build_identity](modules/build_identity.md) - Revision-bound identity baked into WorkChord container images.
 - [calendarService](modules/calendarService.md) - `frontend/src/services/calendarService.ts`
@@ -1732,6 +1778,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_saved_view](modules/models_saved_view.md) - Saved view model for reusable list and dashboard filters.
 - [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
 - [models_task](modules/models_task.md) - Task model.
+- [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_triage](modules/models_triage.md) - Triage item model.
 - [notification_service](modules/notification_service.md) - Email notification service for task status changes.
@@ -1793,6 +1840,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [routers_scheduling_rules](modules/routers_scheduling_rules.md) - Scheduling rules API router.
 - [routers_session](modules/routers_session.md) - Browser identity lifecycle API.
 - [routers_system_settings](modules/routers_system_settings.md) - Runtime system settings API router.
+- [routers_task_domain](modules/routers_task_domain.md) - Compatible domain commands, canonical briefs and bounded task reads.
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
@@ -1834,6 +1882,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_session](modules/schemas_session.md) - `backend/app/schemas/session.py`
 - [schemas_system_settings](modules/schemas_system_settings.md) - Schemas for runtime system settings.
 - [schemas_task](modules/schemas_task.md) - Task schemas.
+- [schemas_task_brief](modules/schemas_task_brief.md) - Canonical brief inputs and separate execution evidence/review contracts.
+- [schemas_task_domain](modules/schemas_task_domain.md) - Explicit task commands and typed action availability.
 - [schemas_team](modules/schemas_team.md) - Team member schemas.
 - [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
 - [schemas_triage](modules/schemas_triage.md) - Triage item schemas.
@@ -1874,9 +1924,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
 - [taskFilters.test](modules/taskFilters.test.md) - `frontend/src/utils/taskFilters.test.ts`
 - [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [task_brief_service](modules/task_brief_service.md) - Canonical brief rendering, conservative legacy conversion and evidence commands.
 - [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.
 - [task_context_revision_service](modules/task_context_revision_service.md) - Atomic task-version fencing for relationship-backed execution context.
+- [task_detail](modules/task_detail.md) - Bounded UI projections with explicit completeness and deterministic cursors.
+- [task_detail_service](modules/task_detail_service.md) - Small UI reads, independent of the complete authoritative execution graph.
+- [task_domain_service](modules/task_domain_service.md) - Durable ownership, normalized effort and explicit task-domain commands.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
+- [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_service](modules/task_service.md) - Task service with business logic.
 - [task_status_log](modules/task_status_log.md) - Task status log model for audit trail.
 - [task_status_service](modules/task_status_service.md) - Task status transitions, roll-up reconciliation, and status reporting.
@@ -1937,6 +1992,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh/legacy/inspection migration matrix.
+- [test_task_domain](modules/test_task_domain.md) - Domain commands preserve identity, evidence independence and bounded read contracts.
+- [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
+- [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Nonempty upgrade preservation and resumable task-domain backfill evidence.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
@@ -1947,6 +2005,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [tone](modules/tone.md) - `frontend/src/components/ui/tone.ts`
 - [tone.test](modules/tone.test.md) - `frontend/src/components/ui/tone.test.ts`
 - [topology](modules/topology.md) - Secret-free agent-team topology and deterministic reconciliation contract.
+- [transactions](modules/transactions.md) - Explicit persisted-state reads after rollback in multi-command scenarios.
 - [transfer](modules/transfer.md) - Catalogued PostgreSQL loading, repairs, and two-phase reconciliation.
 - [triageService](modules/triageService.md) - `frontend/src/services/triageService.ts`
 - [triage_service](modules/triage_service.md) - Triage service with inbox, lifecycle, and conversion logic.
@@ -2032,6 +2091,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AutonomyWorkPackageService_claim_requirement](workflows/AutonomyWorkPackageService_claim_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.claim_requirement`
 - [AutonomyWorkPackageService_create_package](workflows/AutonomyWorkPackageService_create_package.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.create_package`
 - [AutonomyWorkPackageService_submit_requirement](workflows/AutonomyWorkPackageService_submit_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.submit_requirement`
+- [BacklogSnapshotService_capture](workflows/BacklogSnapshotService_capture.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.capture`
+- [BacklogSnapshotService_restore](workflows/BacklogSnapshotService_restore.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.restore`
 - [ExternalLinkService_create](workflows/ExternalLinkService_create.md) - entry: `external_link_service.ExternalLinkService.create`
 - [ExternalLinkService_create_task_github_link](workflows/ExternalLinkService_create_task_github_link.md) - entry: `external_link_service.ExternalLinkService.create_task_github_link`
 - [ExternalLinkService_delete_link](workflows/ExternalLinkService_delete_link.md) - entry: `external_link_service.ExternalLinkService.delete_link`
@@ -2067,8 +2128,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SnapshotService_create_snapshot](workflows/SnapshotService_create_snapshot.md) - entry: `snapshot_service.SnapshotService.create_snapshot`
 - [SnapshotService_restore](workflows/SnapshotService_restore.md) - entry: `snapshot_service.SnapshotService.restore`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
+- [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
+- [TaskDomainService_allowed_actions](workflows/TaskDomainService_allowed_actions.md) - entry: `task_domain_service.TaskDomainService.allowed_actions`
+- [TaskDomainService_command](workflows/TaskDomainService_command.md) - entry: `task_domain_service.TaskDomainService.command`
 - [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`
 - [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
+- [TaskService__lock_task_scope](workflows/TaskService__lock_task_scope.md) - entry: `task_service.TaskService._lock_task_scope`
+- [TaskService_add_dependency](workflows/TaskService_add_dependency.md) - entry: `task_service.TaskService.add_dependency`
 - [TaskService_create](workflows/TaskService_create.md) - entry: `task_service.TaskService.create`
 - [TaskService_delete](workflows/TaskService_delete.md) - entry: `task_service.TaskService.delete`
 - [TaskService_merge_tasks](workflows/TaskService_merge_tasks.md) - entry: `task_service.TaskService.merge_tasks`
@@ -2089,9 +2155,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`
 - [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
+- [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
+- [evaluate_agent_readiness](workflows/evaluate_agent_readiness.md) - entry: `agent_readiness.evaluate_agent_readiness`
 - [export_iteration](workflows/export_iteration.md) - entry: `export.export_iteration`
 - [final_table_results](workflows/final_table_results.md) - entry: `transfer._final_table_results`
 - [get_agent_capabilities](workflows/get_agent_capabilities.md) - entry: `agent.get_agent_capabilities`
@@ -2116,6 +2184,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
+- [reserve_restored_task_version](workflows/reserve_restored_task_version.md) - entry: `task_recovery_service.reserve_restored_task_version`
 - [reserve_task_context_revision](workflows/reserve_task_context_revision.md) - entry: `task_context_revision_service.reserve_task_context_revision`
 - [resolve_http_identity](workflows/resolve_http_identity.md) - entry: `http_authority.resolve_http_identity`
 - [restore_staged_references](workflows/restore_staged_references.md) - entry: `transfer._restore_staged_references`
@@ -2146,6 +2215,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
 - [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
 - [http-authorize](flows/http-authorize.md) - entry: `authorize`
+- [http-backlog_snapshots](flows/http-backlog_snapshots.md) - entry: `backlog_snapshots`
 - [http-batch_update_tasks](flows/http-batch_update_tasks.md) - entry: `batch_update_tasks`
 - [http-begin_my_agent_work](flows/http-begin_my_agent_work.md) - entry: `begin_my_agent_work`
 - [http-bootstrap](flows/http-bootstrap.md) - entry: `bootstrap`
@@ -2159,6 +2229,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-cleanup](flows/http-cleanup.md) - entry: `cleanup`
 - [http-configuration](flows/http-configuration.md) - entry: `configuration`
 - [http-convert_planning_triage_item_to_task](flows/http-convert_planning_triage_item_to_task.md) - entry: `convert_planning_triage_item_to_task`
+- [http-convert_task_brief](flows/http-convert_task_brief.md) - entry: `convert_task_brief`
+- [http-convert_triage_item_to_backlog](flows/http-convert_triage_item_to_backlog.md) - entry: `convert_triage_item_to_backlog`
 - [http-convert_triage_item_to_task](flows/http-convert_triage_item_to_task.md) - entry: `convert_triage_item_to_task`
 - [http-create_agent_actor](flows/http-create_agent_actor.md) - entry: `create_agent_actor`
 - [http-create_agent_assignment](flows/http-create_agent_assignment.md) - entry: `create_agent_assignment`
@@ -2166,6 +2238,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-create_agent_model_catalog_entry](flows/http-create_agent_model_catalog_entry.md) - entry: `create_agent_model_catalog_entry`
 - [http-create_agent_project_update](flows/http-create_agent_project_update.md) - entry: `create_agent_project_update`
 - [http-create_agent_task](flows/http-create_agent_task.md) - entry: `create_agent_task`
+- [http-create_backlog_task](flows/http-create_backlog_task.md) - entry: `create_backlog_task`
 - [http-create_calendar](flows/http-create_calendar.md) - entry: `create_calendar`
 - [http-create_github_status_automation_rule](flows/http-create_github_status_automation_rule.md) - entry: `create_github_status_automation_rule`
 - [http-create_initiative](flows/http-create_initiative.md) - entry: `create_initiative`
@@ -2336,6 +2409,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-liveness_check](flows/http-liveness_check.md) - entry: `liveness_check`
 - [http-login](flows/http-login.md) - entry: `login`
 - [http-logout](flows/http-logout.md) - entry: `logout`
+- [http-lookup_tasks](flows/http-lookup_tasks.md) - entry: `lookup_tasks`
 - [http-mark_planning_triage_item_duplicate](flows/http-mark_planning_triage_item_duplicate.md) - entry: `mark_planning_triage_item_duplicate`
 - [http-mark_triage_item_duplicate](flows/http-mark_triage_item_duplicate.md) - entry: `mark_triage_item_duplicate`
 - [http-me](flows/http-me.md) - entry: `me`
@@ -2355,6 +2429,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-read_snapshot](flows/http-read_snapshot.md) - entry: `read_snapshot`
 - [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
 - [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`
+- [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-recover_principal](flows/http-recover_principal.md) - entry: `recover_principal`
 - [http-refresh_github_external_link](flows/http-refresh_github_external_link.md) - entry: `refresh_github_external_link`
 - [http-release_task_claim](flows/http-release_task_claim.md) - entry: `release_task_claim`
@@ -2366,8 +2441,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-report_agent_discovery](flows/http-report_agent_discovery.md) - entry: `report_agent_discovery`
 - [http-requeue_agent_recovery_task](flows/http-requeue_agent_recovery_task.md) - entry: `requeue_agent_recovery_task`
 - [http-reset_scheduling_rules](flows/http-reset_scheduling_rules.md) - entry: `reset_scheduling_rules`
+- [http-restore_backlog](flows/http-restore_backlog.md) - entry: `restore_backlog`
 - [http-restore_snapshot](flows/http-restore_snapshot.md) - entry: `restore_snapshot`
 - [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
+- [http-review_task](flows/http-review_task.md) - entry: `review_task`
 - [http-revoke_owned_session](flows/http-revoke_owned_session.md) - entry: `revoke_owned_session`
 - [http-revoke_plan_share](flows/http-revoke_plan_share.md) - entry: `revoke_plan_share`
 - [http-revoke_session](flows/http-revoke_session.md) - entry: `revoke_session`
@@ -2383,6 +2460,16 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-submit_my_agent_work](flows/http-submit_my_agent_work.md) - entry: `submit_my_agent_work`
 - [http-suggest_existing_task](flows/http-suggest_existing_task.md) - entry: `suggest_existing_task`
 - [http-suggest_task_draft](flows/http-suggest_task_draft.md) - entry: `suggest_task_draft`
+- [http-task_actions](flows/http-task_actions.md) - entry: `task_actions`
+- [http-task_brief_history](flows/http-task_brief_history.md) - entry: `task_brief_history`
+- [http-task_capabilities](flows/http-task_capabilities.md) - entry: `task_capabilities`
+- [http-task_command](flows/http-task_command.md) - entry: `task_command`
+- [http-task_detail](flows/http-task_detail.md) - entry: `task_detail`
+- [http-task_migration_diagnostics](flows/http-task_migration_diagnostics.md) - entry: `task_migration_diagnostics`
+- [http-task_owner_options](flows/http-task_owner_options.md) - entry: `task_owner_options`
+- [http-task_progress_history](flows/http-task_progress_history.md) - entry: `task_progress_history`
+- [http-task_review_queue](flows/http-task_review_queue.md) - entry: `task_review_queue`
+- [http-task_reviews](flows/http-task_reviews.md) - entry: `task_reviews`
 - [http-test_email_settings](flows/http-test_email_settings.md) - entry: `test_email_settings`
 - [http-test_outbound_webhook_target](flows/http-test_outbound_webhook_target.md) - entry: `test_outbound_webhook_target`
 - [http-token](flows/http-token.md) - entry: `token`
@@ -2426,6 +2513,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-validate_agent_team_master](flows/http-validate_agent_team_master.md) - entry: `validate_agent_team_master`
 - [http-whoami](flows/http-whoami.md) - entry: `whoami`
 - [http-workspace_member](flows/http-workspace_member.md) - entry: `workspace_member`
+- [http-write_task_brief](flows/http-write_task_brief.md) - entry: `write_task_brief`
 
 **mcp**
 
@@ -2433,10 +2521,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-agent_append_run_event](flows/mcp-agent_append_run_event.md) - entry: `agent_append_run_event`
 - [mcp-agent_append_task_event](flows/mcp-agent_append_task_event.md) - entry: `agent_append_task_event`
 - [mcp-agent_apply_schedule](flows/mcp-agent_apply_schedule.md) - entry: `agent_apply_schedule`
+- [mcp-agent_apply_task_command](flows/mcp-agent_apply_task_command.md) - entry: `agent_apply_task_command`
 - [mcp-agent_begin_my_work](flows/mcp-agent_begin_my_work.md) - entry: `agent_begin_my_work`
 - [mcp-agent_capabilities_resource](flows/mcp-agent_capabilities_resource.md) - entry: `agent_capabilities_resource`
 - [mcp-agent_claim_task](flows/mcp-agent_claim_task.md) - entry: `agent_claim_task`
+- [mcp-agent_convert_triage_to_backlog](flows/mcp-agent_convert_triage_to_backlog.md) - entry: `agent_convert_triage_to_backlog`
 - [mcp-agent_create_assignment](flows/mcp-agent_create_assignment.md) - entry: `agent_create_assignment`
+- [mcp-agent_create_backlog_task](flows/mcp-agent_create_backlog_task.md) - entry: `agent_create_backlog_task`
 - [mcp-agent_create_iteration](flows/mcp-agent_create_iteration.md) - entry: `agent_create_iteration`
 - [mcp-agent_create_model_binding](flows/mcp-agent_create_model_binding.md) - entry: `agent_create_model_binding`
 - [mcp-agent_create_model_catalog_entry](flows/mcp-agent_create_model_catalog_entry.md) - entry: `agent_create_model_catalog_entry`
@@ -2462,7 +2553,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-agent_get_my_work](flows/mcp-agent_get_my_work.md) - entry: `agent_get_my_work`
 - [mcp-agent_get_pipeline](flows/mcp-agent_get_pipeline.md) - entry: `agent_get_pipeline`
 - [mcp-agent_get_run_detail](flows/mcp-agent_get_run_detail.md) - entry: `agent_get_run_detail`
+- [mcp-agent_get_task_actions](flows/mcp-agent_get_task_actions.md) - entry: `agent_get_task_actions`
 - [mcp-agent_get_task_context](flows/mcp-agent_get_task_context.md) - entry: `agent_get_task_context`
+- [mcp-agent_get_task_detail](flows/mcp-agent_get_task_detail.md) - entry: `agent_get_task_detail`
 - [mcp-agent_get_task_routing_assessment](flows/mcp-agent_get_task_routing_assessment.md) - entry: `agent_get_task_routing_assessment`
 - [mcp-agent_get_team_setup_status](flows/mcp-agent_get_team_setup_status.md) - entry: `agent_get_team_setup_status`
 - [mcp-agent_list_actor_roster](flows/mcp-agent_list_actor_roster.md) - entry: `agent_list_actor_roster`
@@ -2505,6 +2598,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-agent_update_team_profile](flows/mcp-agent_update_team_profile.md) - entry: `agent_update_team_profile`
 - [mcp-agent_update_vacation](flows/mcp-agent_update_vacation.md) - entry: `agent_update_vacation`
 - [mcp-agent_work_resource](flows/mcp-agent_work_resource.md) - entry: `agent_work_resource`
+- [mcp-agent_write_task_brief](flows/mcp-agent_write_task_brief.md) - entry: `agent_write_task_brief`
 - [mcp-blocker_explanation](flows/mcp-blocker_explanation.md) - entry: `blocker_explanation`
 - [mcp-complete_task_context_resource](flows/mcp-complete_task_context_resource.md) - entry: `complete_task_context_resource`
 - [mcp-iteration_resource](flows/mcp-iteration_resource.md) - entry: `iteration_resource`

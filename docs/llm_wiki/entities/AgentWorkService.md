@@ -51,23 +51,23 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_validate_assignment_actor` | `(actor: AgentActor, purpose: str) -> None` | `@staticmethod` | Require authority before separate profile/model compatibility evidence. |
 | `_validate_assignment_context` | *(async)* `(task: Task, *, team_member_id: Optional[int], reviewer_profile_id: Optional[int]) -> None` | — | Validate optional capacity and reviewer references against live records. |
 | `list_assignments` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentTaskAssignmentResponse]` | — | Return a secret-free durable assignment projection for restart-safe reads. |
-| `create_assignment` | *(async)* `(principal: AgentActor, data: AgentTaskAssignmentCreate \| ModelAwareAgentTaskAssignmentCreate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | — | Dispatch one task to one provisioned actor. |
-| `update_assignment` | *(async)* `(assignment_id: int, principal: AgentActor, data: AgentTaskAssignmentUpdate \| ModelAwareAgentTaskAssignmentUpdate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | — | Reassign, reorder, or cancel queued work. |
+| `create_assignment` | *(async)* `(principal: AgentActor, data: AgentTaskAssignmentCreate \| ModelAwareAgentTaskAssignmentCreate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Dispatch one task to one provisioned actor. |
+| `update_assignment` | *(async)* `(assignment_id: int, principal: AgentActor, data: AgentTaskAssignmentUpdate \| ModelAwareAgentTaskAssignmentUpdate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Reassign, reorder, or cancel queued work. |
 | `get_work` | *(async)* `(actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None) -> AgentWorkDecisionResponse` | — | Return the authoritative resume/begin/wait/recovery decision. |
 | `get_reviews` | *(async)* `(actor: AgentActor, *, limit: int = 50, cursor: Optional[str] = None) -> AgentReviewQueueResponse` | — | Return the separate verifier-assignment queue. |
 | `get_task_context` | *(async)* `(actor: AgentActor, task_id: int, *, assignment_id: Optional[int] = None) -> AgentTaskContextResponse` | — | Return complete worker context with brief and dependency states. |
-| `begin` | *(async)* `(actor: AgentActor, data: AgentWorkBegin \| ModelAwareAgentWorkBegin, *, idempotency_key: str) -> AgentWorkBeginResponse` | — | Atomically accept, fence, claim, run, and activate selected work. |
-| `submit` | *(async)* `(actor: AgentActor, data: AgentWorkSubmit, *, idempotency_key: str) -> AgentWorkTerminalResponse` | — | Atomically finish, resolve, fulfill, and release assigned work. |
-| `renew_work` | *(async)* `(actor: AgentActor, data: AgentWorkRenew, *, idempotency_key: str) -> AgentWorkBeginResponse` | — | Atomically renew an accepted assignment's live claim and heartbeat. |
-| `fail` | *(async)* `(actor: AgentActor, data: AgentWorkTerminal, *, idempotency_key: str) -> AgentWorkTerminalResponse` | — | Atomically finish failure, release the fence, and signal recovery. |
+| `begin` | *(async)* `(actor: AgentActor, data: AgentWorkBegin \| ModelAwareAgentWorkBegin, *, idempotency_key: str) -> AgentWorkBeginResponse` | `@atomic_command` | Atomically accept, fence, claim, run, and activate selected work. |
+| `submit` | *(async)* `(actor: AgentActor, data: AgentWorkSubmit, *, idempotency_key: str) -> AgentWorkTerminalResponse` | `@atomic_command` | Atomically finish, resolve, fulfill, and release assigned work. |
+| `renew_work` | *(async)* `(actor: AgentActor, data: AgentWorkRenew, *, idempotency_key: str) -> AgentWorkBeginResponse` | `@atomic_command` | Atomically renew an accepted assignment's live claim and heartbeat. |
+| `fail` | *(async)* `(actor: AgentActor, data: AgentWorkTerminal, *, idempotency_key: str) -> AgentWorkTerminalResponse` | `@atomic_command` | Atomically finish failure, release the fence, and signal recovery. |
 | `_terminal_work` | *(async)* `(actor: AgentActor, data: AgentWorkSubmit \| AgentWorkTerminal, *, idempotency_key: str, success: bool) -> AgentWorkTerminalResponse` | — | — |
-| `review` | *(async)* `(actor: AgentActor, data: AgentReviewVerdict, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentReviewVerdictResponse` | — | Apply an independent verification verdict and optional rework handback. |
+| `review` | *(async)* `(actor: AgentActor, data: AgentReviewVerdict, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentReviewVerdictResponse` | `@atomic_command` | Apply an independent verification verdict and optional rework handback. |
 | `list_my_claims` | *(async)* `(actor: AgentActor) -> list[dict[str, Any]]` | — | Return current claims owned by an actor. |
 | `list_my_runs` | *(async)* `(actor: AgentActor, *, limit: int = 50) -> list[AgentRunResponse]` | — | Return recent runs owned by an actor. |
 | `list_recovery_tasks` | *(async)* `(actor: AgentActor, *, limit: int = 50, cursor: Optional[str] = None) -> AgentRecoveryListResponse` | — | Return typed active/resolved recovery diagnoses and ownership tuples. |
-| `requeue_recovery` | *(async)* `(principal: AgentActor, task_id: int, data: AgentRecoveryRequeue, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentRecoveryRequeueResponse` | — | Cancel stale ownership and create one ordered recovery assignment. |
-| `create_project_update` | *(async)* `(actor: AgentActor, project_id: int, data: AgentProjectUpdateCreate, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentProjectUpdateResponse` | — | Append one evidence-backed project update with agent attribution. |
-| `report_discovery` | *(async)* `(actor: AgentActor, data: AgentDiscoveryTriageCreate, *, idempotency_key: str) -> AgentDiscoveryTriageResponse` | — | Create one claim-bound discovery Triage item without expanding scope. |
+| `requeue_recovery` | *(async)* `(principal: AgentActor, task_id: int, data: AgentRecoveryRequeue, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentRecoveryRequeueResponse` | `@atomic_command` | Cancel stale ownership and create one ordered recovery assignment. |
+| `create_project_update` | *(async)* `(actor: AgentActor, project_id: int, data: AgentProjectUpdateCreate, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentProjectUpdateResponse` | `@atomic_command` | Append one evidence-backed project update with agent attribution. |
+| `report_discovery` | *(async)* `(actor: AgentActor, data: AgentDiscoveryTriageCreate, *, idempotency_key: str) -> AgentDiscoveryTriageResponse` | `@atomic_command` | Create one claim-bound discovery Triage item without expanding scope. |
 | `_definition_blockers` | `(task: Task) -> list[str]` | — | — |
 | `_start_blockers` | *(async)* `(task: Task, assignment: Optional[AgentTaskAssignment], now: datetime) -> list[str]` | — | — |
 | `_work_item` | *(async)* `(assignment: AgentTaskAssignment, position: int, now: datetime, *, running: Optional[Iterable[AgentRun]] = None) -> AgentWorkItem` | — | — |
@@ -160,4 +160,4 @@ flowchart LR
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_my_claims` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 66 logical references; 54 omitted by the 12-row generated summary limit.
+> References: showing 12 of 68 logical references; 56 omitted by the 12-row generated summary limit.

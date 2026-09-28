@@ -11,10 +11,10 @@ _Auto-generated from `VacationCreate` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `start_date` | `string` | *required* | — |
-| `end_date` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `start_date` | `string` | Yes | — | — |
+| `end_date` | `string` | Yes | — | — |
 
 ## Methods
 

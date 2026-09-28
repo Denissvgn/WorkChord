@@ -11,14 +11,14 @@ _Auto-generated from `PlanningRecoveryAction` in `frontend/src/features/planning
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `kind` | `PlanningRecoveryKind` | *required* | — |
-| `ownerStep` | `PlanningStepId` | *required* | — |
-| `route` | `string` | *required* | — |
-| `count` | `number` | *required* | — |
-| `planningIssue` | `PlanningTaskIssue` | *required* | — |
-| `query` | `Record<string, string>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `kind` | `PlanningRecoveryKind` | Yes | — | — |
+| `ownerStep` | `PlanningStepId` | Yes | — | — |
+| `route` | `string` | Yes | — | — |
+| `count` | `number` | No | — | — |
+| `planningIssue` | `PlanningTaskIssue` | No | — | — |
+| `query` | `Record<string, string>` | No | — | — |
 
 ## Methods
 

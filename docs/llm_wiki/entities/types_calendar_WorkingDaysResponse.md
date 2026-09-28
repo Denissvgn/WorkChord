@@ -1,6 +1,6 @@
 # WorkingDaysResponse
 
-**Location:** `frontend/src/types/calendar.ts:26`
+**Location:** `frontend/src/types/calendar.ts:27`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
@@ -11,12 +11,12 @@ _Auto-generated from `WorkingDaysResponse` in `frontend/src/types/calendar.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `total_days` | `number` | *required* | — |
-| `working_days` | `number` | *required* | — |
-| `holidays` | `string[]` | *required* | — |
-| `weekends` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `total_days` | `number` | Yes | — | — |
+| `working_days` | `number` | Yes | — | — |
+| `holidays` | `string[]` | Yes | — | — |
+| `weekends` | `string[]` | Yes | — | — |
 
 ## Methods
 

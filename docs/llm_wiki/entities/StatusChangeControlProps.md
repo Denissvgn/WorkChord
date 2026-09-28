@@ -11,12 +11,12 @@ _Auto-generated from `StatusChangeControlProps` in `frontend/src/components/task
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `iterationId` | `number` | *required* | — |
-| `onStatusChanged` | `() => void` | *required* | — |
-| `onPendingChange` | `(pending: boolean) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
+| `iterationId` | `number` | Yes | — | — |
+| `onStatusChanged` | `() => void` | No | — | — |
+| `onPendingChange` | `(pending: boolean) => void` | No | — | — |
 
 ## Methods
 

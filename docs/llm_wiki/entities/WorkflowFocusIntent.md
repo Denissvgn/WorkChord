@@ -11,11 +11,11 @@ _Auto-generated from `WorkflowFocusIntent` in `frontend/src/pages/AgentTeamSetup
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `origin` | `HTMLElement \| null` | *required* | — |
-| `target` | `WorkflowFocusTarget` | *required* | — |
-| `token` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `origin` | `HTMLElement \| null` | Yes | — | — |
+| `target` | `WorkflowFocusTarget` | Yes | — | — |
+| `token` | `number` | Yes | — | — |
 
 ## Methods
 

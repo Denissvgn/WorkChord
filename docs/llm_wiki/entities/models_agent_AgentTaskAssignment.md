@@ -50,18 +50,18 @@ Durable delegation of task execution or verification to one actor.
 flowchart LR
     n0["AgentTaskAssignment (backend/app/models/agent.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/models/__init__.py"]
-    n3["backend/app/models/task.py"]
-    n4["AgentModelCatalogService._invalidation_events (backend/app/services/agent_model_catalog_service.py)"]
-    n5["AgentModelCatalogService._live_assignments (backend/app/services/agent_model_catalog_service.py)"]
-    n6["AgentModelCatalogService._require_reconciliation (backend/app/services/agent_model_catalog_service.py)"]
-    n7["AgentRoutingService._completed_prior_lineage (backend/app/services/agent_routing_service.py)"]
-    n8["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
-    n9["AgentRoutingService._routing_input_evidence (backend/app/services/agent_routing_service.py)"]
-    n10["AgentRoutingService._task_global_blockers (backend/app/services/agent_routing_service.py)"]
-    n11["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
-    n12["backend/app/services/agent_service.py"]
-    n13["backend/app/services/agent_team_setup_service.py"]
+    n2["backend/app/authority.py"]
+    n3["backend/app/models/__init__.py"]
+    n4["backend/app/models/task.py"]
+    n5["AgentModelCatalogService._invalidation_events (backend/app/services/agent_model_catalog_service.py)"]
+    n6["AgentModelCatalogService._live_assignments (backend/app/services/agent_model_catalog_service.py)"]
+    n7["AgentModelCatalogService._require_reconciliation (backend/app/services/agent_model_catalog_service.py)"]
+    n8["AgentRoutingService._completed_prior_lineage (backend/app/services/agent_routing_service.py)"]
+    n9["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
+    n10["AgentRoutingService._routing_input_evidence (backend/app/services/agent_routing_service.py)"]
+    n11["AgentRoutingService._task_global_blockers (backend/app/services/agent_routing_service.py)"]
+    n12["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
+    n13["backend/app/services/agent_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -77,18 +77,18 @@ flowchart LR
     n13 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_task.md"
-    click n4 "../modules/agent_model_catalog_service.md"
+    click n2 "../modules/authority.md"
+    click n3 "../modules/models___init__.md"
+    click n4 "../modules/models_task.md"
     click n5 "../modules/agent_model_catalog_service.md"
     click n6 "../modules/agent_model_catalog_service.md"
-    click n7 "../modules/agent_routing_service.md"
+    click n7 "../modules/agent_model_catalog_service.md"
     click n8 "../modules/agent_routing_service.md"
     click n9 "../modules/agent_routing_service.md"
     click n10 "../modules/agent_routing_service.md"
     click n11 "../modules/agent_routing_service.md"
-    click n12 "../modules/agent_service.md"
-    click n13 "../modules/agent_team_setup_service.md"
+    click n12 "../modules/agent_routing_service.md"
+    click n13 "../modules/agent_service.md"
 ```
 
 ### Summary
@@ -107,6 +107,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `authority` | import | [authority](../modules/authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
 | `AgentModelCatalogService._invalidation_events` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
@@ -118,6 +119,5 @@ flowchart LR
 | `AgentRoutingService._task_global_blockers` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService.validate_assignment_selection` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
-| `agent_team_setup_service` | import | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.

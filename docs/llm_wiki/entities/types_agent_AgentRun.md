@@ -11,33 +11,33 @@ _Auto-generated from `AgentRun` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `task_id` | `number \| null` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `assignment_id` | `number \| null` | *required* | — |
-| `claim_generation` | `number \| null` | *required* | — |
-| `status` | `'running' \| 'succeeded' \| 'failed' \| 'canceled' \| string` | *required* | — |
-| `trace_id` | `string \| null` | *required* | — |
-| `model_binding_id` | `number \| null` | *required* | — |
-| `model_binding_revision` | `number \| null` | *required* | — |
-| `configured_model_alias` | `string \| null` | *required* | — |
-| `resolved_model_id` | `string \| null` | *required* | — |
-| `model_trust_state` | `AgentModelTrustState` | *required* | — |
-| `model_match_basis` | `AgentModelMatchBasis \| null` | *required* | — |
-| `model` | `string \| null` | *required* | — |
-| `tool_name` | `string \| null` | *required* | — |
-| `metadata` | `JsonObject` | *required* | — |
-| `artifact_links` | `string[]` | *required* | — |
-| `commit_url` | `string \| null` | *required* | — |
-| `pr_url` | `string \| null` | *required* | — |
-| `summary` | `string \| null` | *required* | — |
-| `error` | `string \| null` | *required* | — |
-| `started_at` | `string` | *required* | — |
-| `ended_at` | `string \| null` | *required* | — |
-| `heartbeat_at` | `string \| null` | *required* | — |
-| `events` | `AgentRunEvent[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `task_id` | `number \| null` | No | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `assignment_id` | `number \| null` | No | — | — |
+| `claim_generation` | `number \| null` | No | — | — |
+| `status` | `'running' \| 'succeeded' \| 'failed' \| 'canceled' \| string` | Yes | — | — |
+| `trace_id` | `string \| null` | No | — | — |
+| `model_binding_id` | `number \| null` | No | — | — |
+| `model_binding_revision` | `number \| null` | No | — | — |
+| `configured_model_alias` | `string \| null` | No | — | — |
+| `resolved_model_id` | `string \| null` | No | — | — |
+| `model_trust_state` | `AgentModelTrustState` | Yes | — | — |
+| `model_match_basis` | `AgentModelMatchBasis \| null` | No | — | — |
+| `model` | `string \| null` | No | — | — |
+| `tool_name` | `string \| null` | No | — | — |
+| `metadata` | `JsonObject` | Yes | — | — |
+| `artifact_links` | `string[]` | Yes | — | — |
+| `commit_url` | `string \| null` | No | — | — |
+| `pr_url` | `string \| null` | No | — | — |
+| `summary` | `string \| null` | No | — | — |
+| `error` | `string \| null` | No | — | — |
+| `started_at` | `string` | Yes | — | — |
+| `ended_at` | `string \| null` | No | — | — |
+| `heartbeat_at` | `string \| null` | No | — | — |
+| `events` | `AgentRunEvent[]` | No | — | — |
 
 ## Methods
 

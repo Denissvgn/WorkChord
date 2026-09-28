@@ -11,12 +11,12 @@ _Auto-generated from `PlanShareSnapshot` in `frontend/src/services/planShareServ
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iteration` | `{         id: number;         name: string;         start_date: string;         end_date: string;     }` | *required* | — |
-| `tasks` | `PlanShareTask[]` | *required* | — |
-| `team_members` | `PlanShareTeamMember[]` | *required* | — |
-| `snapshot_info` | `{         created_at: string;         reason: string;     }` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iteration` | `{         id: number;         name: string;         start_date: string;         end_date: string;     }` | Yes | — | — |
+| `tasks` | `PlanShareTask[]` | Yes | — | — |
+| `team_members` | `PlanShareTeamMember[]` | Yes | — | — |
+| `snapshot_info` | `{         created_at: string;         reason: string;     }` | Yes | — | — |
 
 ## Methods
 

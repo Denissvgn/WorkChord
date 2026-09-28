@@ -1,6 +1,6 @@
 # TaskItemProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:729`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:730`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -11,28 +11,28 @@ _Auto-generated from `TaskItemProps` in `frontend/src/components/tasks/TaskList.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `onEdit` | `(t: Task) => void` | *required* | — |
-| `onAddSubtask` | `(id: number) => void` | *required* | — |
-| `onDelete` | `(task: Task) => void` | *required* | — |
-| `onUnmerge` | `(taskId: number) => void` | *required* | — |
-| `isUnmergePending` | `boolean` | *required* | — |
-| `level` | `number` | *required* | — |
-| `sensors` | `ReturnType<typeof useSensors>` | *required* | — |
-| `onChildDragEnd` | `(parent: Task, event: DragEndEvent) => void` | *required* | — |
-| `isDraggingEnabled` | `boolean` | *required* | — |
-| `taskMap` | `Map<number, Task>` | *required* | — |
-| `isMergeMode` | `boolean` | *required* | — |
-| `selectedTaskIds` | `Set<number>` | *required* | — |
-| `canSelectForMerge` | `(task: Task) => boolean` | *required* | — |
-| `toggleTaskSelection` | `(taskId: number) => void` | *required* | — |
-| `isBulkMode` | `boolean` | *required* | — |
-| `selectedBulkTaskIds` | `Set<number>` | *required* | — |
-| `toggleBulkTaskSelection` | `(taskId: number) => void` | *required* | — |
-| `labelsBySlug` | `Map<string, Label>` | *required* | — |
-| `nowMs` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
+| `onEdit` | `(t: Task) => void` | Yes | — | — |
+| `onAddSubtask` | `(id: number) => void` | Yes | — | — |
+| `onDelete` | `(task: Task) => void` | Yes | — | — |
+| `onUnmerge` | `(taskId: number) => void` | Yes | — | — |
+| `isUnmergePending` | `boolean` | Yes | — | — |
+| `level` | `number` | Yes | — | — |
+| `sensors` | `ReturnType<typeof useSensors>` | Yes | — | — |
+| `onChildDragEnd` | `(parent: Task, event: DragEndEvent) => void` | Yes | — | — |
+| `isDraggingEnabled` | `boolean` | Yes | — | — |
+| `taskMap` | `Map<number, Task>` | Yes | — | — |
+| `isMergeMode` | `boolean` | Yes | — | — |
+| `selectedTaskIds` | `Set<number>` | Yes | — | — |
+| `canSelectForMerge` | `(task: Task) => boolean` | Yes | — | — |
+| `toggleTaskSelection` | `(taskId: number) => void` | Yes | — | — |
+| `isBulkMode` | `boolean` | Yes | — | — |
+| `selectedBulkTaskIds` | `Set<number>` | Yes | — | — |
+| `toggleBulkTaskSelection` | `(taskId: number) => void` | Yes | — | — |
+| `labelsBySlug` | `Map<string, Label>` | Yes | — | — |
+| `nowMs` | `number` | Yes | — | — |
 
 ## Methods
 

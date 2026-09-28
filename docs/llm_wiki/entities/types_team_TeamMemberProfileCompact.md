@@ -11,16 +11,16 @@ _Auto-generated from `TeamMemberProfileCompact` in `frontend/src/types/team.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `email` | `string \| null` | *required* | — |
-| `headline` | `string \| null` | *required* | — |
-| `automation_enabled` | `boolean` | *required* | — |
-| `profile_kind` | `TeamMemberProfileKind` | *required* | — |
-| `assignment_modes` | `TeamMemberAssignmentMode[]` | *required* | — |
-| `skills` | `TeamMemberProfileSkill[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `email` | `string \| null` | No | — | — |
+| `headline` | `string \| null` | No | — | — |
+| `automation_enabled` | `boolean` | Yes | — | — |
+| `profile_kind` | `TeamMemberProfileKind` | Yes | — | — |
+| `assignment_modes` | `TeamMemberAssignmentMode[]` | Yes | — | — |
+| `skills` | `TeamMemberProfileSkill[]` | Yes | — | — |
 
 ## Methods
 

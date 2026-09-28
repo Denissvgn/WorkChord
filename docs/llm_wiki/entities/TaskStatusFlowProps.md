@@ -11,9 +11,9 @@ _Auto-generated from `TaskStatusFlowProps` in `frontend/src/components/analytics
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `logs` | `TaskStatusLog[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `logs` | `TaskStatusLog[]` | Yes | — | — |
 
 ## Methods
 

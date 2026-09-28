@@ -11,14 +11,14 @@ _Auto-generated from `RouteErrorBoundaryProps` in `frontend/src/components/layou
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | *required* | — |
-| `resetKey` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `refreshLabel` | `string` | *required* | — |
-| `homeLabel` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `children` | `ReactNode` | Yes | — | — |
+| `resetKey` | `string` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `refreshLabel` | `string` | Yes | — | — |
+| `homeLabel` | `string` | Yes | — | — |
 
 ## Methods
 

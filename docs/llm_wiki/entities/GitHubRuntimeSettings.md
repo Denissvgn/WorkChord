@@ -11,14 +11,14 @@ _Auto-generated from `GitHubRuntimeSettings` in `frontend/src/types/systemSettin
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `api_url` | `string` | *required* | — |
-| `request_timeout_seconds` | `number` | *required* | — |
-| `webhook_create_triage_for_unmatched` | `boolean` | *required* | — |
-| `has_token` | `boolean` | *required* | — |
-| `has_webhook_secret` | `boolean` | *required* | — |
-| `field_sources` | `Record<string, RuntimeSettingSource>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `api_url` | `string` | Yes | — | — |
+| `request_timeout_seconds` | `number` | Yes | — | — |
+| `webhook_create_triage_for_unmatched` | `boolean` | Yes | — | — |
+| `has_token` | `boolean` | Yes | — | — |
+| `has_webhook_secret` | `boolean` | Yes | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | Yes | — | — |
 
 ## Methods
 

@@ -11,9 +11,9 @@ _Auto-generated from `FilterConfig` in `frontend/src/types/schedulingRules.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `all` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `all` | `string[]` | Yes | — | — |
 
 ## Methods
 

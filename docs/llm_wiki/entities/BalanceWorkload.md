@@ -11,10 +11,10 @@ _Auto-generated from `BalanceWorkload` in `frontend/src/types/schedulingRules.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `enabled` | `boolean` | *required* | — |
-| `max_overload_percent` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `enabled` | `boolean` | Yes | — | — |
+| `max_overload_percent` | `number` | Yes | — | — |
 
 ## Methods
 

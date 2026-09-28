@@ -1,6 +1,6 @@
 # ImmutableAutonomyEventError
 
-**Location:** `backend/app/models/autonomy.py:368`
+**Location:** `backend/app/models/autonomy.py:372`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [models_autonomy](../modules/models_autonomy.md)

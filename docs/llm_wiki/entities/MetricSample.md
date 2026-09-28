@@ -21,7 +21,7 @@ _Auto-generated from `MetricSample` in `backend/app/autonomy/providers.py`._
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `sampled_at` | `datetime` | `sampled_at` | Yes | No | — | — | — | — |
 | `value` | `float` | `value` | Yes | No | — | — | — | — |
-| `counter_generation` | `str` | `counter_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `counter_generation` | `str` | `counter_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

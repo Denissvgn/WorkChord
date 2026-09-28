@@ -1,6 +1,6 @@
 # TaskScheduleBaseline
 
-**Location:** `backend/app/models/recovery.py:37`
+**Location:** `backend/app/models/recovery.py:40`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [recovery](../modules/recovery.md)

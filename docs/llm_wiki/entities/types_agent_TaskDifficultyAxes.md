@@ -11,13 +11,13 @@ _Auto-generated from `TaskDifficultyAxes` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `reasoning` | `TaskDifficultyScore` | *required* | — |
-| `ambiguity` | `TaskDifficultyScore` | *required* | — |
-| `context_breadth` | `TaskDifficultyScore` | *required* | — |
-| `risk` | `TaskDifficultyScore` | *required* | — |
-| `verification_burden` | `TaskDifficultyScore` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `reasoning` | `TaskDifficultyScore` | Yes | — | — |
+| `ambiguity` | `TaskDifficultyScore` | Yes | — | — |
+| `context_breadth` | `TaskDifficultyScore` | Yes | — | — |
+| `risk` | `TaskDifficultyScore` | Yes | — | — |
+| `verification_burden` | `TaskDifficultyScore` | Yes | — | — |
 
 ## Methods
 

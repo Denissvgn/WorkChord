@@ -1,6 +1,6 @@
 # WorkloadAnalysis
 
-**Location:** `backend/app/schemas/llm.py:112`
+**Location:** `backend/app/schemas/llm.py:116`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_llm](../modules/schemas_llm.md)

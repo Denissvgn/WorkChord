@@ -6,6 +6,8 @@
 
 Task model.
 
+Tasks retain the four lifecycle values and a valid project or iteration scope. Durable human ownership is separate from iteration capacity and execution principals. Hours are the authoritative nullable estimate; display days derive from the nominal calendar day. Blocking, cancellation, manual execution, canonical briefs and current evidence are explicit projections, while accepted work remains tied to its task version.
+
 ## Imports
 
 | Source | Symbols |
@@ -17,11 +19,12 @@ Task model.
 | `app.models.project` | `Project`, `ProjectMilestone` |
 | `app.models.request_source` | `RequestSourceLink` |
 | `app.models.task_status_log` | `TaskStatusLog` |
-| `app.models.team_member` | `TeamMember` |
+| `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `date`, `datetime` |
 | `enum` | `Enum` |
-| `sqlalchemy` | `Date`, `Float`, `ForeignKey`, `Integer`, `String`, `Text`, `and_`, `false` |
+| `sqlalchemy` | `CheckConstraint`, `Date`, `Float`, `ForeignKey`, `Integer`, `JSON`, `String`, `Text`, `and_`, `false` |
+| `sqlalchemy.ext.hybrid` | `hybrid_property` |
 | `sqlalchemy.orm` | `Mapped`, `foreign`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Optional` |
 
@@ -45,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (51) |
+| Inbound | `backend` (60) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -55,12 +58,12 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 64 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskStatus](../entities/models_task_TaskStatus.md) | Enum | 29 | `str`, `Enum` | Task status enumeration for work tracking. |
-| [Task](../entities/models_task_Task.md) | Class | 44 | `Base` | Task model with tree structure and dependencies. |
-| [TaskDependency](../entities/TaskDependency.md) | Class | 215 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |
+| [TaskStatus](../entities/models_task_TaskStatus.md) | Enum | 30 | `str`, `Enum` | Task status enumeration for work tracking. |
+| [Task](../entities/models_task_Task.md) | Class | 45 | `Base` | Task model with tree structure and dependencies. |
+| [TaskDependency](../entities/TaskDependency.md) | Class | 257 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |

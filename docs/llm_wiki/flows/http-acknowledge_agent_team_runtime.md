@@ -100,9 +100,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| acknowledge_agent_team_runtime | HTTPException (backend/app/routers/agent…owledge_agent_team_runtime) | 528 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
-| acknowledge_agent_team_runtime | service.acknowledge_runtime | 533 | `service.acknowledge_runtime(api_key, data)` |
-| acknowledge_agent_team_runtime | _handle_agent_error | 535 | `_handle_agent_error(exc, structured=True)` |
+| acknowledge_agent_team_runtime | HTTPException (backend/app/routers/agent…owledge_agent_team_runtime) | 530 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
+| acknowledge_agent_team_runtime | service.acknowledge_runtime | 535 | `service.acknowledge_runtime(api_key, data)` |
+| acknowledge_agent_team_runtime | _handle_agent_error | 537 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -120,8 +120,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `acknowledge_agent_team_runtime` | `HTTPException` | 528 |
-| unresolved_call | `acknowledge_agent_team_runtime` | `service.acknowledge_runtime` | 533 |
+| external_call | `acknowledge_agent_team_runtime` | `HTTPException` | 530 |
+| unresolved_call | `acknowledge_agent_team_runtime` | `service.acknowledge_runtime` | 535 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

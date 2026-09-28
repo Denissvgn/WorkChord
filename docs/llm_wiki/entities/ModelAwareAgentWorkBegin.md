@@ -30,7 +30,7 @@ Atomically begin only the model binding selected by routing.
 | `queue_revision` | `int` | `queue_revision` | Yes | No | — | ge=1 | — | — |
 | `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_revision` | `int` | `model_binding_revision` | Yes | No | — | ge=1 | — | — |
-| `resolved_model_id` | `str` | `resolved_model_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `resolved_model_id` | `str` | `resolved_model_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `lease_seconds` | `int` | `lease_seconds` | No | No | `3600` | ge=60; le=86400 | — | — |
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | max_length=255 | — | — |
 | `tool_name` | `Optional[str]` | `tool_name` | No | Yes | `None` | max_length=255 | — | — |

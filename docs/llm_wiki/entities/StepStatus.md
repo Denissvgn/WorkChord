@@ -11,11 +11,11 @@ _Auto-generated from `StepStatus` in `frontend/src/features/planningMasters/mast
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `state` | `StepState` | *required* | — |
-| `summary` | `string` | *required* | — |
-| `missing` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `state` | `StepState` | Yes | — | — |
+| `summary` | `string` | No | — | — |
+| `missing` | `string[]` | No | — | — |
 
 ## Methods
 

@@ -11,12 +11,12 @@ _Auto-generated from `AgentTeamSetupStep` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `'authority' \| 'master' \| 'controller' \| 'workers' \| 'bindings' \| 'verifier' \| 'review'` | *required* | — |
-| `state` | `AgentTeamStepState` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
-| `next_action` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `'authority' \| 'master' \| 'controller' \| 'workers' \| 'bindings' \| 'verifier' \| 'review'` | Yes | — | — |
+| `state` | `AgentTeamStepState` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
+| `next_action` | `string \| null` | Yes | — | — |
 
 ## Methods
 

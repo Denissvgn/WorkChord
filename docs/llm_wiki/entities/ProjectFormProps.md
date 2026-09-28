@@ -11,11 +11,11 @@ _Auto-generated from `ProjectFormProps` in `frontend/src/components/projects/Pro
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `initialData` | `Project` | *required* | — |
-| `onSuccess` | `(project: Project) => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialData` | `Project` | No | — | — |
+| `onSuccess` | `(project: Project) => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
 
 ## Methods
 

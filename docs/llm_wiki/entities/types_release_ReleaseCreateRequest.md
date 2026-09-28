@@ -11,16 +11,16 @@ _Auto-generated from `ReleaseCreateRequest` in `frontend/src/types/release.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `status` | `ReleaseStatus` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `shipped_at` | `string \| null` | *required* | — |
-| `version` | `string \| null` | *required* | — |
-| `environment` | `string \| null` | *required* | — |
-| `task_ids` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `status` | `ReleaseStatus` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `shipped_at` | `string \| null` | No | — | — |
+| `version` | `string \| null` | No | — | — |
+| `environment` | `string \| null` | No | — | — |
+| `task_ids` | `number[]` | No | — | — |
 
 ## Methods
 

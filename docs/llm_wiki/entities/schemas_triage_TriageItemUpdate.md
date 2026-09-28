@@ -1,6 +1,6 @@
 # TriageItemUpdate
 
-**Location:** `backend/app/schemas/triage.py:50`
+**Location:** `backend/app/schemas/triage.py:69`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)
@@ -19,13 +19,14 @@ Schema for updating a triage item.
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `validate_brief_metadata` | field | metadata_json | after | — |
 | `validate_duplicate_target` | model | — | after | — |
 
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `title` | `Optional[str]` | `title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
+| `title` | `Optional[str]` | `title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `source` | `Optional[str]` | `source` | No | Yes | `None` | max_length=100 | — | — |
 | `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | max_length=1000 | — | — |
@@ -46,6 +47,7 @@ Schema for updating a triage item.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `validate_brief_metadata` | `(value)` | `@field_validator('metadata_json')`, `@classmethod` | — |
 | `validate_duplicate_target` | `()` | `@model_validator(mode='after')` | Reject ambiguous duplicate targets. |
 
 ## Relationships
@@ -78,7 +80,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_triage](../modules/schemas_triage.md) | 1 | `assignee_hint`, `converted_task_id`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint`, `project_hint_id`, `snoozed_until` |
+| [schemas_triage](../modules/schemas_triage.md) | 2 | `assignee_hint`, `converted_task_id`, `description`, `duplicate_of_id`, `duplicate_task_id`, `external_key`, `iteration_hint_id`, `labels`, `metadata_json`, `priority_hint`, `project_hint_id`, `snoozed_until` |
 
 ### Structure
 

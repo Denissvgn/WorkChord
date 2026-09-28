@@ -11,14 +11,14 @@ _Auto-generated from `SnapshotRestoreResponse` in `frontend/src/services/snapsho
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `message` | `string` | *required* | — |
-| `success` | `boolean` | *required* | — |
-| `source_snapshot` | `string` | *required* | — |
-| `pre_restore_snapshot` | `string` | *required* | — |
-| `restored_count` | `number` | *required* | — |
-| `audit_event_id` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `message` | `string` | Yes | — | — |
+| `success` | `boolean` | Yes | — | — |
+| `source_snapshot` | `string` | Yes | — | — |
+| `pre_restore_snapshot` | `string` | Yes | — | — |
+| `restored_count` | `number` | Yes | — | — |
+| `audit_event_id` | `number` | Yes | — | — |
 
 ## Methods
 

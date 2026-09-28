@@ -11,17 +11,17 @@ _Auto-generated from `AgentTeamMaster` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema_version` | `'agent-team-master-v1'` | *required* | — |
-| `topology_key` | `string` | *required* | — |
-| `server_url` | `string` | *required* | — |
-| `credential_sink_ref` | `string` | *required* | — |
-| `required_server_features` | `string[]` | *required* | — |
-| `controller` | `AgentTeamMemberSpec` | *required* | — |
-| `workers` | `AgentTeamMemberSpec[]` | *required* | — |
-| `verifiers` | `AgentTeamMemberSpec[]` | *required* | — |
-| `readiness_policy` | `{         minimum_execution_workers: number;         require_independent_verifier_when_assessed: boolean;         maximum_runtime_staleness_seconds: number;     }` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `schema_version` | `'agent-team-master-v1'` | Yes | — | — |
+| `topology_key` | `string` | Yes | — | — |
+| `server_url` | `string` | Yes | — | — |
+| `credential_sink_ref` | `string` | Yes | — | — |
+| `required_server_features` | `string[]` | Yes | — | — |
+| `controller` | `AgentTeamMemberSpec` | Yes | — | — |
+| `workers` | `AgentTeamMemberSpec[]` | Yes | — | — |
+| `verifiers` | `AgentTeamMemberSpec[]` | Yes | — | — |
+| `readiness_policy` | `{         minimum_execution_workers: number;         require_independent_verifier_when_assessed: boolean;         maximum_runtime_staleness_seconds: number;     }` | Yes | — | — |
 
 ## Methods
 

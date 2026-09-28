@@ -1,6 +1,6 @@
 # AgentVerificationRequirement
 
-**Location:** `backend/app/models/autonomy.py:183`
+**Location:** `backend/app/models/autonomy.py:187`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_autonomy](../modules/models_autonomy.md)

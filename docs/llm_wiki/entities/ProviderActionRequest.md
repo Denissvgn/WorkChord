@@ -20,9 +20,9 @@ Exact mutation request; adapter selection remains charter-owned.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `domain` | `Literal['platform', 'database', 'application', 'security', 'sanitization', 'retention']` | `domain` | Yes | No | — | — | — | — |
-| `operation` | `str` | `operation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `operation` | `str` | `operation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `resource_generation` | `str` | `resource_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `resource_generation` | `str` | `resource_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `environment` | `Literal['ephemeral', 'rehearsal', 'production']` | `environment` | Yes | No | — | — | — | — |
 | `destructive` | `bool` | `destructive` | No | No | `False` | — | — | — |
 | `exact_object_digest` | `str \| None` | `exact_object_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |

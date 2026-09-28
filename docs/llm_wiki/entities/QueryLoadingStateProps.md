@@ -11,9 +11,9 @@ _Auto-generated from `QueryLoadingStateProps` in `frontend/src/components/feedba
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `message` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `message` | `string` | No | — | — |
 
 ## Methods
 

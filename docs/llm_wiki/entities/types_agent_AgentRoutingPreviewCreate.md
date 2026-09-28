@@ -11,12 +11,12 @@ _Auto-generated from `AgentRoutingPreviewCreate` in `frontend/src/types/agent.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `purpose` | `AgentAssignmentPurpose` | *required* | — |
-| `assessment_id` | `number` | *required* | — |
-| `expected_task_version` | `number` | *required* | — |
-| `reviewer_profile_id` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `purpose` | `AgentAssignmentPurpose` | Yes | — | — |
+| `assessment_id` | `number` | Yes | — | — |
+| `expected_task_version` | `number` | Yes | — | — |
+| `reviewer_profile_id` | `number \| null` | No | — | — |
 
 ## Methods
 

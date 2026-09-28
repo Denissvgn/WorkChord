@@ -11,14 +11,14 @@ _Auto-generated from `AgentModelBindingUpdate` in `frontend/src/types/agent.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_revision` | `number` | *required* | — |
-| `is_default` | `boolean` | *required* | — |
-| `enabled` | `true` | *required* | — |
-| `tool_tags` | `string[]` | *required* | — |
-| `data_policy_tags` | `string[]` | *required* | — |
-| `reconcile_live_assignments` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_revision` | `number` | Yes | — | — |
+| `is_default` | `boolean` | No | — | — |
+| `enabled` | `true` | No | — | — |
+| `tool_tags` | `string[]` | No | — | — |
+| `data_policy_tags` | `string[]` | No | — | — |
+| `reconcile_live_assignments` | `boolean` | No | — | — |
 
 ## Methods
 

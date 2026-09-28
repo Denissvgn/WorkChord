@@ -11,18 +11,18 @@ _Auto-generated from `SavedViewDashboardCard` in `frontend/src/types/savedView.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `saved_view_id` | `number` | *required* | — |
-| `seed_key` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `view_type` | `SavedViewType` | *required* | — |
-| `scope` | `SavedViewScope` | *required* | — |
-| `count` | `number` | *required* | — |
-| `target_path` | `string` | *required* | — |
-| `is_valid` | `boolean` | *required* | — |
-| `invalid_reason` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `saved_view_id` | `number` | Yes | — | — |
+| `seed_key` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `view_type` | `SavedViewType` | Yes | — | — |
+| `scope` | `SavedViewScope` | Yes | — | — |
+| `count` | `number` | Yes | — | — |
+| `target_path` | `string` | Yes | — | — |
+| `is_valid` | `boolean` | Yes | — | — |
+| `invalid_reason` | `string \| null` | No | — | — |
 
 ## Methods
 

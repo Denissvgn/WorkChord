@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/types/triage.ts`._
 
 | Source | Symbols |
 |--------|---------|
-| `./task` | `Task` |
+| `./task` | `TaskBrief`, `Task` |
 
 ## Module Signals
 
@@ -59,18 +59,18 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TriageItem](../entities/types_triage_TriageItem.md) | Class | 5 | — | — |
-| [TriageItemCreate](../entities/types_triage_TriageItemCreate.md) | Class | 28 | — | — |
-| [TriageListParams](../entities/TriageListParams.md) | Class | 44 | — | — |
-| [TriageActionRequest](../entities/types_triage_TriageActionRequest.md) | Class | 53 | — | — |
-| [TriageSnoozeRequest](../entities/types_triage_TriageSnoozeRequest.md) | Class | 57 | — | — |
-| [TriageDuplicateRequest](../entities/types_triage_TriageDuplicateRequest.md) | Class | 62 | — | — |
-| [TriageDuplicateSuggestion](../entities/types_triage_TriageDuplicateSuggestion.md) | Class | 69 | — | — |
-| [TriageDuplicateSuggestionsResponse](../entities/types_triage_TriageDuplicateSuggestionsResponse.md) | Class | 85 | — | — |
-| [TriageClassificationSuggestion](../entities/types_triage_TriageClassificationSuggestion.md) | Class | 91 | — | — |
-| [TriageTaskDraftRequest](../entities/types_triage_TriageTaskDraftRequest.md) | Class | 112 | — | — |
-| [TriageTaskDraftResponse](../entities/types_triage_TriageTaskDraftResponse.md) | Class | 119 | — | — |
-| [TriageConvertToTaskRequest](../entities/types_triage_TriageConvertToTaskRequest.md) | Class | 142 | — | — |
-| [TriageConvertToTaskResponse](../entities/types_triage_TriageConvertToTaskResponse.md) | Class | 155 | — | — |
-| [TriageItemStatus](../entities/types_triage_TriageItemStatus.md) | Type alias | 3 | — | — |
-| [TriageItemUpdate](../entities/types_triage_TriageItemUpdate.md) | Type alias | 42 | — | — |
+| [TriageItem](../entities/types_triage_TriageItem.md) | Class | 6 | — | — |
+| [TriageItemCreate](../entities/types_triage_TriageItemCreate.md) | Class | 30 | — | — |
+| [TriageListParams](../entities/TriageListParams.md) | Class | 46 | — | — |
+| [TriageActionRequest](../entities/types_triage_TriageActionRequest.md) | Class | 55 | — | — |
+| [TriageSnoozeRequest](../entities/types_triage_TriageSnoozeRequest.md) | Class | 59 | — | — |
+| [TriageDuplicateRequest](../entities/types_triage_TriageDuplicateRequest.md) | Class | 64 | — | — |
+| [TriageDuplicateSuggestion](../entities/types_triage_TriageDuplicateSuggestion.md) | Class | 71 | — | — |
+| [TriageDuplicateSuggestionsResponse](../entities/types_triage_TriageDuplicateSuggestionsResponse.md) | Class | 87 | — | — |
+| [TriageClassificationSuggestion](../entities/types_triage_TriageClassificationSuggestion.md) | Class | 93 | — | — |
+| [TriageTaskDraftRequest](../entities/types_triage_TriageTaskDraftRequest.md) | Class | 114 | — | — |
+| [TriageTaskDraftResponse](../entities/types_triage_TriageTaskDraftResponse.md) | Class | 121 | — | — |
+| [TriageConvertToTaskRequest](../entities/types_triage_TriageConvertToTaskRequest.md) | Class | 145 | — | — |
+| [TriageConvertToTaskResponse](../entities/types_triage_TriageConvertToTaskResponse.md) | Class | 160 | — | — |
+| [TriageItemStatus](../entities/types_triage_TriageItemStatus.md) | Type alias | 4 | — | — |
+| [TriageItemUpdate](../entities/types_triage_TriageItemUpdate.md) | Type alias | 44 | — | — |

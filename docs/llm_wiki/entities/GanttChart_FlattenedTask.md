@@ -11,9 +11,9 @@ _Auto-generated from `FlattenedTask` in `frontend/src/components/gantt/GanttChar
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `depth` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `depth` | `number` | Yes | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `SavedViewDuplicate` in `frontend/src/types/savedView.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `scope` | `Exclude<SavedViewScope, 'system'>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | No | — | — |
+| `description` | `string \| null` | No | — | — |
+| `scope` | `Exclude<SavedViewScope, 'system'>` | No | — | — |
 
 ## Methods
 

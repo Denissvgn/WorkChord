@@ -11,14 +11,14 @@ _Auto-generated from `LabelGroupFormState` in `frontend/src/components/settings/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `key` | `string` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `color` | `string` | *required* | — |
-| `is_active` | `boolean` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `color` | `string` | Yes | — | — |
+| `is_active` | `boolean` | Yes | — | — |
+| `sort_order` | `number` | Yes | — | — |
 
 ## Methods
 

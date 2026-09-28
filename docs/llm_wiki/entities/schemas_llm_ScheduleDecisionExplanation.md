@@ -1,6 +1,6 @@
 # ScheduleDecisionExplanation
 
-**Location:** `backend/app/schemas/llm.py:104`
+**Location:** `backend/app/schemas/llm.py:108`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_llm](../modules/schemas_llm.md)

@@ -11,18 +11,18 @@ _Auto-generated from `OutboundWebhookTarget` in `frontend/src/types/outboundWebh
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `url` | `string` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `subscribed_events_json` | `string[]` | *required* | — |
-| `has_secret` | `boolean` | *required* | — |
-| `headers_json` | `Record<string, string>` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `url` | `string` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `subscribed_events_json` | `string[]` | Yes | — | — |
+| `has_secret` | `boolean` | Yes | — | — |
+| `headers_json` | `Record<string, string>` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

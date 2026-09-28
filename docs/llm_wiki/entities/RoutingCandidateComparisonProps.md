@@ -11,13 +11,13 @@ _Auto-generated from `RoutingCandidateComparisonProps` in `frontend/src/componen
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `preview` | `AgentRoutingPreviewResponse` | *required* | — |
-| `roster` | `AgentActorRosterItem[]` | *required* | — |
-| `selectedCandidateKey` | `string \| null` | *required* | — |
-| `onSelectCandidate` | `(candidate: AgentRoutingCandidate) => void` | *required* | — |
-| `selectionDisabled` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `preview` | `AgentRoutingPreviewResponse` | Yes | — | — |
+| `roster` | `AgentActorRosterItem[]` | Yes | — | — |
+| `selectedCandidateKey` | `string \| null` | Yes | — | — |
+| `onSelectCandidate` | `(candidate: AgentRoutingCandidate) => void` | Yes | — | — |
+| `selectionDisabled` | `boolean` | No | — | — |
 
 ## Methods
 

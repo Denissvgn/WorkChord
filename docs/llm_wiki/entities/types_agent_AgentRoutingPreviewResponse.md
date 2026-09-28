@@ -11,29 +11,29 @@ _Auto-generated from `AgentRoutingPreviewResponse` in `frontend/src/types/agent.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `preview_id` | `string` | *required* | — |
-| `preview_digest` | `string` | *required* | — |
-| `input_digest` | `string` | *required* | — |
-| `task_id` | `number` | *required* | — |
-| `topology_key` | `string \| null` | *required* | — |
-| `topology_revision` | `number \| null` | *required* | — |
-| `purpose` | `AgentAssignmentPurpose` | *required* | — |
-| `assessment_id` | `number` | *required* | — |
-| `assessment_task_version` | `number` | *required* | — |
-| `current_task_version` | `number` | *required* | — |
-| `policy_version` | `'model-aware-routing-v1'` | *required* | — |
-| `review_mode` | `TaskReviewMode` | *required* | — |
-| `reviewer_profile_id` | `number \| null` | *required* | — |
-| `generated_at` | `string` | *required* | — |
-| `expires_at` | `string` | *required* | — |
-| `recommended_candidate` | `AgentRoutingCandidate \| null` | *required* | — |
-| `eligible_candidates` | `AgentRoutingCandidate[]` | *required* | — |
-| `exclusions` | `AgentRoutingExclusion[]` | *required* | — |
-| `eligible_candidates_omitted` | `number` | *required* | — |
-| `exclusions_omitted` | `number` | *required* | — |
-| `hard_blocker_codes` | `RoutingBlockerCode[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `preview_id` | `string` | Yes | — | — |
+| `preview_digest` | `string` | Yes | — | — |
+| `input_digest` | `string` | Yes | — | — |
+| `task_id` | `number` | Yes | — | — |
+| `topology_key` | `string \| null` | Yes | — | — |
+| `topology_revision` | `number \| null` | Yes | — | — |
+| `purpose` | `AgentAssignmentPurpose` | Yes | — | — |
+| `assessment_id` | `number` | Yes | — | — |
+| `assessment_task_version` | `number` | Yes | — | — |
+| `current_task_version` | `number` | Yes | — | — |
+| `policy_version` | `'model-aware-routing-v1'` | Yes | — | — |
+| `review_mode` | `TaskReviewMode` | Yes | — | — |
+| `reviewer_profile_id` | `number \| null` | Yes | — | — |
+| `generated_at` | `string` | Yes | — | — |
+| `expires_at` | `string` | Yes | — | — |
+| `recommended_candidate` | `AgentRoutingCandidate \| null` | Yes | — | — |
+| `eligible_candidates` | `AgentRoutingCandidate[]` | Yes | — | — |
+| `exclusions` | `AgentRoutingExclusion[]` | Yes | — | — |
+| `eligible_candidates_omitted` | `number` | Yes | — | — |
+| `exclusions_omitted` | `number` | Yes | — | — |
+| `hard_blocker_codes` | `RoutingBlockerCode[]` | Yes | — | — |
 
 ## Methods
 

@@ -11,16 +11,16 @@ _Auto-generated from `SavedViewCreate` in `frontend/src/types/savedView.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `view_type` | `SavedViewType` | *required* | — |
-| `scope` | `Exclude<SavedViewScope, 'system'>` | *required* | — |
-| `filters_json` | `Record<string, unknown>` | *required* | — |
-| `sort_json` | `Record<string, unknown>` | *required* | — |
-| `columns_json` | `Record<string, unknown>` | *required* | — |
-| `schema_version` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `view_type` | `SavedViewType` | Yes | — | — |
+| `scope` | `Exclude<SavedViewScope, 'system'>` | No | — | — |
+| `filters_json` | `Record<string, unknown>` | No | — | — |
+| `sort_json` | `Record<string, unknown>` | No | — | — |
+| `columns_json` | `Record<string, unknown>` | No | — | — |
+| `schema_version` | `number` | No | — | — |
 
 ## Methods
 

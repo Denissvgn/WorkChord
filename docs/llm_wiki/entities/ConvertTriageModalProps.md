@@ -1,6 +1,6 @@
 # ConvertTriageModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:702`
+**Location:** `frontend/src/pages/TriagePage.tsx:704`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,16 +11,16 @@ _Auto-generated from `ConvertTriageModalProps` in `frontend/src/pages/TriagePage
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `item` | `TriageItem` | *required* | — |
-| `projects` | `Project[]` | *required* | — |
-| `iterations` | `Iteration[]` | *required* | — |
-| `selectedIterationId` | `number` | *required* | — |
-| `isSubmitting` | `boolean` | *required* | — |
-| `error` | `string \| null` | *required* | — |
-| `onSubmit` | `(payload: TriageConvertToTaskRequest) => void` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `item` | `TriageItem` | Yes | — | — |
+| `projects` | `Project[]` | Yes | — | — |
+| `iterations` | `Iteration[]` | Yes | — | — |
+| `selectedIterationId` | `number` | Yes | — | — |
+| `isSubmitting` | `boolean` | Yes | — | — |
+| `error` | `string \| null` | No | — | — |
+| `onSubmit` | `(payload: TriageConvertToTaskRequest) => void` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
 
 ## Methods
 

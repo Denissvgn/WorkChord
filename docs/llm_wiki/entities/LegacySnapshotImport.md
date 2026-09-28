@@ -1,6 +1,6 @@
 # LegacySnapshotImport
 
-**Location:** `backend/app/models/recovery.py:27`
+**Location:** `backend/app/models/recovery.py:30`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [recovery](../modules/recovery.md)

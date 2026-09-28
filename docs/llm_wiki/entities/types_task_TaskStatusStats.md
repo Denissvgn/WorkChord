@@ -1,6 +1,6 @@
 # TaskStatusStats
 
-**Location:** `frontend/src/types/task.ts:349`
+**Location:** `frontend/src/types/task.ts:371`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,11 +11,11 @@ _Auto-generated from `TaskStatusStats` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `from_status` | `TaskStatus` | *required* | — |
-| `to_status` | `TaskStatus` | *required* | — |
-| `count` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `from_status` | `TaskStatus` | Yes | — | — |
+| `to_status` | `TaskStatus` | Yes | — | — |
+| `count` | `number` | Yes | — | — |
 
 ## Methods
 

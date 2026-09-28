@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `backend/app/models/task.py:44`
+**Location:** `backend/app/models/task.py:45`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Task model with tree structure and dependencies.
+
+A durable work item has either iteration scope or explicit project backlog scope. Human ownership, capacity, execution identity, estimate provenance and acceptance are distinct fields. Current acceptance is valid only for its task version; cancellation and summary status do not create delivered leaf work.
 
 ## Attributes
 
@@ -28,8 +30,27 @@ Task model with tree structure and dependencies.
 | `accepted_by_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
 | `description` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `priority` | `Mapped[int]` | `mapped_column(Integer, default=5)` | — |
-| `effort_days` | `Mapped[float]` | `mapped_column(Float, default=1.0)` | — |
-| `effort_hours` | `Mapped[float]` | `mapped_column(Float, default=8.0)` | — |
+| `_legacy_effort_days` | `Mapped[float \| None]` | `mapped_column('effort_days', Float, nullable=True)` | — |
+| `effort_hours` | `Mapped[float \| None]` | `mapped_column(Float, nullable=True)` | — |
+| `nominal_day_hours` | `Mapped[float]` | `mapped_column(Float, default=8.0, server_default='8', nullable=False)` | — |
+| `estimate_provenance` | `Mapped[str]` | `mapped_column(String(32), default='unknown', server_default='unknown', nullable=False)` | — |
+| `legacy_estimate` | `Mapped[dict \| None]` | `mapped_column(JSON, nullable=True)` | — |
+| `domain_backfill_version` | `Mapped[int]` | `mapped_column(Integer, default=1, server_default='0', nullable=False)` | — |
+| `domain_migration_notes` | `Mapped[list \| None]` | `mapped_column(JSON)` | — |
+| `owner_profile_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('team_member_profiles.id', ondelete='RESTRICT'), index=True)` | — |
+| `ownership_provenance` | `Mapped[str]` | `mapped_column(String(32), default='unassigned', server_default='unassigned', nullable=False)` | — |
+| `blocked_reason` | `Mapped[str \| None]` | `mapped_column(Text)` | — |
+| `canceled_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `canceled_reason` | `Mapped[str \| None]` | `mapped_column(Text)` | — |
+| `canceled_by_principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
+| `execution_mode` | `Mapped[str]` | `mapped_column(String(16), default='scheduled', server_default='scheduled', nullable=False)` | — |
+| `brief` | `Mapped[dict \| None]` | `mapped_column(JSON)` | — |
+| `brief_revision` | `Mapped[int]` | `mapped_column(Integer, default=0, server_default='0', nullable=False)` | — |
+| `brief_provenance` | `Mapped[str]` | `mapped_column(String(32), default='legacy_text', server_default='legacy_text', nullable=False)` | — |
+| `legacy_description` | `Mapped[str \| None]` | `mapped_column(Text)` | — |
+| `brief_migration_notes` | `Mapped[list \| None]` | `mapped_column(JSON)` | — |
+| `artifact_revision` | `Mapped[int]` | `mapped_column(Integer, default=0, server_default='0', nullable=False)` | — |
+| `progress` | `Mapped[dict \| None]` | `mapped_column(JSON)` | — |
 | `status` | `Mapped[str]` | `mapped_column(String(50), default=TaskStatus.PLANNED.value)` | — |
 | `start_date` | `Mapped[Optional[date]]` | `mapped_column(Date, nullable=True)` | — |
 | `end_date` | `Mapped[Optional[date]]` | `mapped_column(Date, nullable=True)` | — |
@@ -50,13 +71,14 @@ Task model with tree structure and dependencies.
 | `claim_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True, index=True)` | — |
 | `claim_generation` | `Mapped[int]` | `mapped_column(Integer, default=0, nullable=False)` | — |
 | `updated_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, onupdate=utc_now, nullable=False)` | — |
-| `iteration_id` | `Mapped[int]` | `mapped_column(Integer, ForeignKey('iterations.id'), nullable=False)` | — |
+| `iteration_id` | `Mapped[int \| None]` | `mapped_column(Integer, ForeignKey('iterations.id'), nullable=True)` | — |
 | `project_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('projects.id', ondelete='SET NULL'), nullable=True, index=True)` | — |
 | `milestone_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('project_milestones.id', ondelete='SET NULL'), nullable=True, index=True)` | — |
 | `parent_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('tasks.id'), nullable=True)` | — |
 | `assignee_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('team_members.id'), nullable=True)` | — |
 | `claimed_by` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('agent_actors.id'), nullable=True)` | — |
-| `iteration` | `Mapped['Iteration']` | `relationship('Iteration', back_populates='tasks')` | — |
+| `owner_profile` | `Mapped[Optional['TeamMemberProfile']]` | `relationship('TeamMemberProfile')` | — |
+| `iteration` | `Mapped[Optional['Iteration']]` | `relationship('Iteration', back_populates='tasks')` | — |
 | `project` | `Mapped[Optional['Project']]` | `relationship('Project', back_populates='tasks')` | — |
 | `milestone` | `Mapped[Optional['ProjectMilestone']]` | `relationship('ProjectMilestone', back_populates='tasks')` | — |
 | `assignee` | `Mapped[Optional['TeamMember']]` | `relationship('TeamMember', back_populates='tasks')` | — |
@@ -75,7 +97,11 @@ Task model with tree structure and dependencies.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `effort_days` | `() -> float \| None` | `@hybrid_property` | — |
+| `_set_effort_days` | `(value: float \| None) -> None` | `@effort_days.inplace.setter` | — |
+| `_effort_days_expression` | `()` | `@effort_days.inplace.expression`, `@classmethod` | — |
 
 ## Relationships
 
@@ -91,11 +117,11 @@ flowchart LR
     n6["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
     n7["backend/app/models/iteration.py"]
     n8["backend/app/models/project.py"]
-    n9["backend/app/models/release.py"]
-    n10["backend/app/models/request_source.py"]
-    n11["backend/app/models/task_status_log.py"]
-    n12["backend/app/models/team_member.py"]
-    n13["backend/app/models/triage.py"]
+    n9["backend/app/models/recovery.py"]
+    n10["backend/app/models/release.py"]
+    n11["backend/app/models/request_source.py"]
+    n12["backend/app/models/task_status_log.py"]
+    n13["backend/app/models/team_member.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -118,18 +144,18 @@ flowchart LR
     click n6 "../modules/models_agent.md"
     click n7 "../modules/models_iteration.md"
     click n8 "../modules/models_project.md"
-    click n9 "../modules/models_release.md"
-    click n10 "../modules/models_request_source.md"
-    click n11 "../modules/task_status_log.md"
-    click n12 "../modules/team_member.md"
-    click n13 "../modules/models_triage.md"
+    click n9 "../modules/recovery.md"
+    click n10 "../modules/models_release.md"
+    click n11 "../modules/models_request_source.md"
+    click n12 "../modules/task_status_log.md"
+    click n13 "../modules/team_member.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task](../modules/models_task.md) | 0 | `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `assignee`, `assignee_id`, `baseline_end_date`, `baseline_provenance`, `baseline_revision` |
+| [models_task](../modules/models_task.md) | 3 | `_legacy_effort_days`, `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `artifact_revision`, `assignee`, `assignee_id`, `baseline_end_date` |
 
 ### Structure
 
@@ -148,10 +174,10 @@ flowchart LR
 | `_reject_routing_assessment_mutation` | type_reference | [models_agent](../modules/models_agent.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
+| `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 | `request_source` | import | [models_request_source](../modules/models_request_source.md) | — |
 | `task_status_log` | import | [task_status_log](../modules/task_status_log.md) | — |
 | `team_member` | import | [team_member](../modules/team_member.md) | — |
-| `triage` | import | [models_triage](../modules/models_triage.md) | — |
 
-> References: showing 12 of 175 logical references; 163 omitted by the 12-row generated summary limit.
+> References: showing 12 of 228 logical references; 216 omitted by the 12-row generated summary limit.

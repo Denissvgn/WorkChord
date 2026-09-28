@@ -1,6 +1,6 @@
 # TaskResponse
 
-**Location:** `backend/app/schemas/task.py:179`
+**Location:** `backend/app/schemas/task.py:186`
 **Kind:** Pydantic model
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -28,15 +28,31 @@ Schema for task response.
 | `resolved_at` | `Optional[datetime]` | `resolved_at` | No | Yes | `None` | — | — | — |
 | `accepted_at` | `Optional[datetime]` | `accepted_at` | No | Yes | `None` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
-| `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
+| `iteration_id` | `Optional[int]` | `iteration_id` | Yes | Yes | — | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `milestone_id` | `Optional[int]` | `milestone_id` | No | Yes | `None` | — | — | — |
 | `parent_id` | `Optional[int]` | `parent_id` | Yes | Yes | — | — | — | — |
 | `title` | `str` | `title` | Yes | No | — | — | — | — |
 | `description` | `Optional[str]` | `description` | Yes | Yes | — | — | — | — |
 | `priority` | `int` | `priority` | Yes | No | — | — | — | — |
-| `effort_days` | `float` | `effort_days` | Yes | No | — | — | — | — |
-| `effort_hours` | `float` | `effort_hours` | Yes | No | — | — | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | Yes | Yes | — | — | — | — |
+| `effort_hours` | `Optional[float]` | `effort_hours` | Yes | Yes | — | — | — | — |
+| `nominal_day_hours` | `float` | `nominal_day_hours` | No | No | `8` | — | — | — |
+| `estimate_provenance` | `str` | `estimate_provenance` | No | No | `'unknown'` | — | — | — |
+| `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | — | — | — |
+| `owner` | `Optional[TaskAssignee]` | `owner` | No | Yes | `None` | — | — | — |
+| `ownership_provenance` | `str` | `ownership_provenance` | No | No | `'unassigned'` | — | — | — |
+| `blocked_reason` | `Optional[str]` | `blocked_reason` | No | Yes | `None` | — | — | — |
+| `canceled_at` | `Optional[datetime]` | `canceled_at` | No | Yes | `None` | — | — | — |
+| `canceled_reason` | `Optional[str]` | `canceled_reason` | No | Yes | `None` | — | — | — |
+| `execution_mode` | `str` | `execution_mode` | No | No | `'scheduled'` | — | — | — |
+| `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
+| `brief_revision` | `int` | `brief_revision` | No | No | `0` | — | — | — |
+| `brief_provenance` | `str` | `brief_provenance` | No | No | `'legacy_text'` | — | — | — |
+| `legacy_description` | `Optional[str]` | `legacy_description` | No | Yes | `None` | — | — | — |
+| `brief_migration_notes` | `list[str]` | `brief_migration_notes` | No | No | factory: `list` | — | — | — |
+| `artifact_revision` | `int` | `artifact_revision` | No | No | `0` | — | — | — |
+| `progress` | `Optional[dict[str, Any]]` | `progress` | No | Yes | `None` | — | — | — |
 | `project` | `Optional[TaskProject]` | `project` | No | Yes | `None` | — | — | — |
 | `milestone` | `Optional[TaskMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
 | `assignee` | `Optional[TaskAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
@@ -84,13 +100,13 @@ flowchart LR
     n4["patch_agent_task (backend/app/routers/agent.py)"]
     n5["release_task_claim (backend/app/routers/agent.py)"]
     n6["get_project_tasks (backend/app/routers/projects.py)"]
-    n7["apply_batch_update_items (backend/app/routers/tasks.py)"]
-    n8["create_subtask (backend/app/routers/tasks.py)"]
-    n9["create_task (backend/app/routers/tasks.py)"]
-    n10["get_overdue_tasks (backend/app/routers/tasks.py)"]
-    n11["get_subtasks (backend/app/routers/tasks.py)"]
-    n12["get_task (backend/app/routers/tasks.py)"]
-    n13["get_tasks (backend/app/routers/tasks.py)"]
+    n7["create_backlog_task (backend/app/routers/task_domain.py)"]
+    n8["record_task_progress (backend/app/routers/task_domain.py)"]
+    n9["restore_backlog (backend/app/routers/task_domain.py)"]
+    n10["review_task (backend/app/routers/task_domain.py)"]
+    n11["task_command (backend/app/routers/task_domain.py)"]
+    n12["write_task_brief (backend/app/routers/task_domain.py)"]
+    n13["apply_batch_update_items (backend/app/routers/tasks.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -111,12 +127,12 @@ flowchart LR
     click n4 "../modules/routers_agent.md"
     click n5 "../modules/routers_agent.md"
     click n6 "../modules/projects.md"
-    click n7 "../modules/tasks.md"
-    click n8 "../modules/tasks.md"
-    click n9 "../modules/tasks.md"
-    click n10 "../modules/tasks.md"
-    click n11 "../modules/tasks.md"
-    click n12 "../modules/tasks.md"
+    click n7 "../modules/routers_task_domain.md"
+    click n8 "../modules/routers_task_domain.md"
+    click n9 "../modules/routers_task_domain.md"
+    click n10 "../modules/routers_task_domain.md"
+    click n11 "../modules/routers_task_domain.md"
+    click n12 "../modules/routers_task_domain.md"
     click n13 "../modules/tasks.md"
 ```
 
@@ -124,7 +140,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `children`, `claim_expires_at`, `claimed_by` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason`, `brief` |
 
 ### Structure
 
@@ -141,12 +157,12 @@ flowchart LR
 | `patch_agent_task` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `release_task_claim` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_project_tasks` | type_reference | [projects](../modules/projects.md) | — |
+| `create_backlog_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `restore_backlog` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `review_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `task_command` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `write_task_brief` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `apply_batch_update_items` | type_reference | [tasks](../modules/tasks.md) | — |
-| `create_subtask` | type_reference | [tasks](../modules/tasks.md) | — |
-| `create_task` | type_reference | [tasks](../modules/tasks.md) | — |
-| `get_overdue_tasks` | type_reference | [tasks](../modules/tasks.md) | — |
-| `get_subtasks` | type_reference | [tasks](../modules/tasks.md) | — |
-| `get_task` | type_reference | [tasks](../modules/tasks.md) | — |
-| `get_tasks` | type_reference | [tasks](../modules/tasks.md) | — |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

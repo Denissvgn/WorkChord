@@ -11,12 +11,12 @@ _Auto-generated from `TaskTextEditorBodyProps` in `frontend/src/components/tasks
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `initialText` | `string` | *required* | — |
-| `isLoading` | `boolean` | *required* | — |
-| `queryError` | `unknown` | *required* | — |
-| `onRetry` | `() => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialText` | `string` | Yes | — | — |
+| `isLoading` | `boolean` | Yes | — | — |
+| `queryError` | `unknown` | Yes | — | — |
+| `onRetry` | `() => void` | Yes | — | — |
 
 ## Methods
 

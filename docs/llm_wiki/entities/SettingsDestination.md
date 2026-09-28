@@ -11,12 +11,12 @@ _Auto-generated from `SettingsDestination` in `frontend/src/pages/SettingsPage.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `SettingsTab` | *required* | — |
-| `labelKey` | `string` | *required* | — |
-| `descriptionKey` | `string` | *required* | — |
-| `icon` | `LucideIcon` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `SettingsTab` | Yes | — | — |
+| `labelKey` | `string` | Yes | — | — |
+| `descriptionKey` | `string` | Yes | — | — |
+| `icon` | `LucideIcon` | Yes | — | — |
 
 ## Methods
 

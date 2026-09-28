@@ -11,16 +11,16 @@ _Auto-generated from `TeamMemberProfileSkillCreate` in `frontend/src/types/team.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `skill_key` | `string` | *required* | — |
-| `skill_name` | `string` | *required* | — |
-| `category` | `string \| null` | *required* | — |
-| `level` | `number` | *required* | — |
-| `interest` | `number` | *required* | — |
-| `is_weakness` | `boolean` | *required* | — |
-| `keywords_json` | `string[]` | *required* | — |
-| `notes` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `skill_key` | `string` | Yes | — | — |
+| `skill_name` | `string` | Yes | — | — |
+| `category` | `string \| null` | No | — | — |
+| `level` | `number` | Yes | — | — |
+| `interest` | `number` | Yes | — | — |
+| `is_weakness` | `boolean` | Yes | — | — |
+| `keywords_json` | `string[]` | No | — | — |
+| `notes` | `string \| null` | No | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TaskImproveDescriptionResponse
 
-**Location:** `frontend/src/types/task.ts:202`
+**Location:** `frontend/src/types/task.ts:223`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TaskImproveDescriptionResponse` in `frontend/src/types/tas
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `improved_description` | `string` | *required* | — |
-| `language` | `'en' \| 'ru'` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `improved_description` | `string` | Yes | — | — |
+| `language` | `'en' \| 'ru'` | No | — | — |
 
 ## Methods
 

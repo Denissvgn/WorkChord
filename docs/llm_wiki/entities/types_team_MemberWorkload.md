@@ -11,15 +11,15 @@ _Auto-generated from `MemberWorkload` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `team_member_id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `capacity_days` | `number` | *required* | — |
-| `allocated_days` | `number` | *required* | — |
-| `free_days` | `number` | *required* | — |
-| `workload_status` | `'green' \| 'yellow' \| 'red'` | *required* | — |
-| `workload_percent` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `team_member_id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `capacity_days` | `number` | Yes | — | — |
+| `allocated_days` | `number` | Yes | — | — |
+| `free_days` | `number` | Yes | — | — |
+| `workload_status` | `'green' \| 'yellow' \| 'red'` | Yes | — | — |
+| `workload_percent` | `number` | Yes | — | — |
 
 ## Methods
 

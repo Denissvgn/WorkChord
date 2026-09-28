@@ -11,14 +11,14 @@ _Auto-generated from `EffortModifier` in `frontend/src/types/schedulingRules.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `formula` | `string \| null` | *required* | — |
-| `operation` | `'ceil' \| 'floor' \| 'round' \| null` | *required* | — |
-| `fallback` | `string` | *required* | — |
-| `min_value` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `string` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `formula` | `string \| null` | No | — | — |
+| `operation` | `'ceil' \| 'floor' \| 'round' \| null` | No | — | — |
+| `fallback` | `string` | Yes | — | — |
+| `min_value` | `number \| null` | No | — | — |
 
 ## Methods
 

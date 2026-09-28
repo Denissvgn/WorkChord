@@ -1,6 +1,6 @@
 # ConvertMutationInput
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1781`
+**Location:** `frontend/src/pages/TriagePage.tsx:1798`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,10 +11,10 @@ _Auto-generated from `ConvertMutationInput` in `frontend/src/pages/TriagePage.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `itemId` | `number` | *required* | — |
-| `payload` | `TriageConvertToTaskRequest` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `itemId` | `number` | Yes | — | — |
+| `payload` | `TriageConvertToTaskRequest` | Yes | — | — |
 
 ## Methods
 

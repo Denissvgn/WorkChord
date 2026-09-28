@@ -11,13 +11,13 @@ _Auto-generated from `RequiredModelEnvelope` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `minimum_reasoning_tier` | `ModelReasoningTier` | *required* | — |
-| `minimum_context_tier` | `ModelContextTier` | *required* | — |
-| `modality_tags` | `string[]` | *required* | — |
-| `tool_tags` | `string[]` | *required* | — |
-| `data_policy_tags` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `minimum_reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `minimum_context_tier` | `ModelContextTier` | Yes | — | — |
+| `modality_tags` | `string[]` | Yes | — | — |
+| `tool_tags` | `string[]` | Yes | — | — |
+| `data_policy_tags` | `string[]` | Yes | — | — |
 
 ## Methods
 

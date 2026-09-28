@@ -11,21 +11,21 @@ _Auto-generated from `AgentActor` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `scopes` | `string[]` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `lifecycle_state` | `'active' \| 'onboarding' \| 'disabled'` | *required* | — |
-| `role` | `AgentActorRole \| string` | *required* | — |
-| `profile_id` | `number \| null` | *required* | — |
-| `work_policy` | `string` | *required* | — |
-| `max_parallel_work` | `number` | *required* | — |
-| `queue_revision` | `number` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `last_seen_at` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `scopes` | `string[]` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `lifecycle_state` | `'active' \| 'onboarding' \| 'disabled'` | No | — | — |
+| `role` | `AgentActorRole \| string` | Yes | — | — |
+| `profile_id` | `number \| null` | Yes | — | — |
+| `work_policy` | `string` | Yes | — | — |
+| `max_parallel_work` | `number` | Yes | — | — |
+| `queue_revision` | `number` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `last_seen_at` | `string \| null` | Yes | — | — |
 
 ## Methods
 

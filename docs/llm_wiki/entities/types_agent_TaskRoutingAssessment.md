@@ -11,25 +11,25 @@ _Auto-generated from `TaskRoutingAssessment` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `task_id` | `number` | *required* | — |
-| `task_version` | `number` | *required* | — |
-| `policy_version` | `'model-aware-routing-v1'` | *required* | — |
-| `band` | `TaskDifficultyBand` | *required* | — |
-| `axes` | `TaskDifficultyAxes` | *required* | — |
-| `required_skill_levels` | `Record<string, number>` | *required* | — |
-| `required_model` | `RequiredModelEnvelope` | *required* | — |
-| `review_mode` | `TaskReviewMode` | *required* | — |
-| `confidence` | `number` | *required* | — |
-| `reason_codes` | `string[]` | *required* | — |
-| `rationale` | `string` | *required* | — |
-| `assessor` | `string` | *required* | — |
-| `assessor_actor_id` | `number \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `policy_conformant` | `boolean` | *required* | — |
-| `is_current` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `task_id` | `number` | Yes | — | — |
+| `task_version` | `number` | Yes | — | — |
+| `policy_version` | `'model-aware-routing-v1'` | Yes | — | — |
+| `band` | `TaskDifficultyBand` | Yes | — | — |
+| `axes` | `TaskDifficultyAxes` | Yes | — | — |
+| `required_skill_levels` | `Record<string, number>` | Yes | — | — |
+| `required_model` | `RequiredModelEnvelope` | Yes | — | — |
+| `review_mode` | `TaskReviewMode` | Yes | — | — |
+| `confidence` | `number` | Yes | — | — |
+| `reason_codes` | `string[]` | Yes | — | — |
+| `rationale` | `string` | Yes | — | — |
+| `assessor` | `string` | Yes | — | — |
+| `assessor_actor_id` | `number \| null` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `policy_conformant` | `boolean` | Yes | — | — |
+| `is_current` | `boolean` | Yes | — | — |
 
 ## Methods
 

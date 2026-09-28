@@ -11,24 +11,24 @@ _Auto-generated from `OutboundWebhookDelivery` in `frontend/src/types/outboundWe
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `target_id` | `number \| null` | *required* | — |
-| `event_id` | `number` | *required* | — |
-| `target_name` | `string \| null` | *required* | — |
-| `target_url` | `string \| null` | *required* | — |
-| `status` | `OutboundWebhookDeliveryStatus` | *required* | — |
-| `attempt_count` | `number` | *required* | — |
-| `last_http_status` | `number \| null` | *required* | — |
-| `last_error` | `string \| null` | *required* | — |
-| `last_response_body` | `string \| null` | *required* | — |
-| `last_attempt_at` | `string \| null` | *required* | — |
-| `next_retry_at` | `string \| null` | *required* | — |
-| `delivered_at` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
-| `event` | `OutboundWebhookEvent` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `target_id` | `number \| null` | No | — | — |
+| `event_id` | `number` | Yes | — | — |
+| `target_name` | `string \| null` | No | — | — |
+| `target_url` | `string \| null` | No | — | — |
+| `status` | `OutboundWebhookDeliveryStatus` | Yes | — | — |
+| `attempt_count` | `number` | Yes | — | — |
+| `last_http_status` | `number \| null` | No | — | — |
+| `last_error` | `string \| null` | No | — | — |
+| `last_response_body` | `string \| null` | No | — | — |
+| `last_attempt_at` | `string \| null` | No | — | — |
+| `next_retry_at` | `string \| null` | No | — | — |
+| `delivered_at` | `string \| null` | No | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
+| `event` | `OutboundWebhookEvent` | Yes | — | — |
 
 ## Methods
 

@@ -11,10 +11,10 @@ _Auto-generated from `RoadmapMilestonePage` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `ProjectMilestone[]` | *required* | — |
-| `next_cursor` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `items` | `ProjectMilestone[]` | Yes | — | — |
+| `next_cursor` | `number \| null` | Yes | — | — |
 
 ## Methods
 

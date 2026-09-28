@@ -1,6 +1,6 @@
 # DuplicateSuggestionsPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1450`
+**Location:** `frontend/src/pages/TriagePage.tsx:1467`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,16 +11,16 @@ _Auto-generated from `DuplicateSuggestionsPanelProps` in `frontend/src/pages/Tri
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `suggestions` | `TriageDuplicateSuggestionsResponse` | *required* | — |
-| `isLoading` | `boolean` | *required* | — |
-| `isError` | `boolean` | *required* | — |
-| `error` | `unknown` | *required* | — |
-| `onRetry` | `() => void` | *required* | — |
-| `projectsById` | `Record<number, string>` | *required* | — |
-| `iterationsById` | `Record<number, string>` | *required* | — |
-| `onMarkSuggestion` | `(suggestion: TriageDuplicateSuggestion) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `suggestions` | `TriageDuplicateSuggestionsResponse` | No | — | — |
+| `isLoading` | `boolean` | Yes | — | — |
+| `isError` | `boolean` | Yes | — | — |
+| `error` | `unknown` | No | — | — |
+| `onRetry` | `() => void` | Yes | — | — |
+| `projectsById` | `Record<number, string>` | Yes | — | — |
+| `iterationsById` | `Record<number, string>` | Yes | — | — |
+| `onMarkSuggestion` | `(suggestion: TriageDuplicateSuggestion) => void` | Yes | — | — |
 
 ## Methods
 

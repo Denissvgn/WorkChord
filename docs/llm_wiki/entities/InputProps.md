@@ -11,10 +11,10 @@ _Auto-generated from `InputProps` in `frontend/src/components/common/Input.tsx`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | *required* | — |
-| `error` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `label` | `string` | No | — | — |
+| `error` | `string` | No | — | — |
 
 ## Methods
 

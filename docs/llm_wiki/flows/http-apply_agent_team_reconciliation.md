@@ -101,9 +101,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| apply_agent_team_reconciliation | AgentPlanningCommandContext | 457 | `AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| apply_agent_team_reconciliation | service.apply | 462 | `service.apply(actor, data, command=command)` |
-| apply_agent_team_reconciliation | _handle_agent_error | 464 | `_handle_agent_error(exc, structured=True)` |
+| apply_agent_team_reconciliation | AgentPlanningCommandContext | 459 | `AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| apply_agent_team_reconciliation | service.apply | 464 | `service.apply(actor, data, command=command)` |
+| apply_agent_team_reconciliation | _handle_agent_error | 466 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 254 | `str(exc)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
@@ -121,7 +121,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `apply_agent_team_reconciliation` | `service.apply` | 462 |
+| unresolved_call | `apply_agent_team_reconciliation` | `service.apply` | 464 |
 | external_call | `_handle_agent_error` | `isinstance` | 252 |
 | external_call | `_handle_agent_error` | `HTTPException` | 258 |
 | external_call | `_handle_agent_error` | `isinstance` | 259 |

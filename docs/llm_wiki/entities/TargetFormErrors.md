@@ -11,12 +11,12 @@ _Auto-generated from `TargetFormErrors` in `frontend/src/components/settings/Out
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `url` | `string` | *required* | — |
-| `subscribedEvents` | `string` | *required* | — |
-| `headersJson` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | No | — | — |
+| `url` | `string` | No | — | — |
+| `subscribedEvents` | `string` | No | — | — |
+| `headersJson` | `string` | No | — | — |
 
 ## Methods
 

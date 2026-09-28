@@ -11,13 +11,13 @@ _Auto-generated from `AgentAssignmentListParams` in `frontend/src/types/agent.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `taskId` | `number` | *required* | — |
-| `actorId` | `number` | *required* | — |
-| `purpose` | `AgentAssignmentPurpose` | *required* | — |
-| `state` | `AgentAssignmentState` | *required* | — |
-| `limit` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `taskId` | `number` | No | — | — |
+| `actorId` | `number` | No | — | — |
+| `purpose` | `AgentAssignmentPurpose` | No | — | — |
+| `state` | `AgentAssignmentState` | No | — | — |
+| `limit` | `number` | No | — | — |
 
 ## Methods
 

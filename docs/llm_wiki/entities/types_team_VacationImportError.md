@@ -11,10 +11,10 @@ _Auto-generated from `VacationImportError` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `row` | `number` | *required* | — |
-| `message` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `row` | `number` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
 
 ## Methods
 

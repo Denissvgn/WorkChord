@@ -1,6 +1,6 @@
 # TaskConflictMetadata
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:251`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:263`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
@@ -11,13 +11,13 @@ _Auto-generated from `TaskConflictMetadata` in `frontend/src/components/tasks/ta
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `version` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `status` | `TaskStatus` | *required* | — |
-| `updated_at` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `version` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `status` | `TaskStatus` | Yes | — | — |
+| `updated_at` | `string \| null` | Yes | — | — |
 
 ## Methods
 

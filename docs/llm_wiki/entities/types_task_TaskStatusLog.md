@@ -1,6 +1,6 @@
 # TaskStatusLog
 
-**Location:** `frontend/src/types/task.ts:337`
+**Location:** `frontend/src/types/task.ts:359`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,17 +11,17 @@ _Auto-generated from `TaskStatusLog` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `task_id` | `number` | *required* | — |
-| `task_title` | `string` | *required* | — |
-| `from_status` | `TaskStatus` | *required* | — |
-| `to_status` | `TaskStatus` | *required* | — |
-| `changed_at` | `string` | *required* | — |
-| `reason` | `string` | *required* | — |
-| `triggered_by` | `string` | *required* | — |
-| `affected_task_ids` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `task_id` | `number` | Yes | — | — |
+| `task_title` | `string` | No | — | — |
+| `from_status` | `TaskStatus` | Yes | — | — |
+| `to_status` | `TaskStatus` | Yes | — | — |
+| `changed_at` | `string` | Yes | — | — |
+| `reason` | `string` | No | — | — |
+| `triggered_by` | `string` | Yes | — | — |
+| `affected_task_ids` | `number[]` | Yes | — | — |
 
 ## Methods
 

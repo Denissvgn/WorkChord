@@ -1,6 +1,6 @@
 # GroundedAISuggestionResponse
 
-**Location:** `frontend/src/types/task.ts:236`
+**Location:** `frontend/src/types/task.ts:258`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,23 +11,23 @@ _Auto-generated from `GroundedAISuggestionResponse` in `frontend/src/types/task.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `provider` | `string \| null` | *required* | — |
-| `model` | `string \| null` | *required* | — |
-| `language` | `'en' \| 'ru'` | *required* | — |
-| `is_fallback` | `boolean` | *required* | — |
-| `finish_reason` | `string \| null` | *required* | — |
-| `is_truncated` | `boolean` | *required* | — |
-| `suggested_title` | `string \| null` | *required* | — |
-| `suggested_description` | `string` | *required* | — |
-| `acceptance_criteria` | `string[]` | *required* | — |
-| `implementation_notes` | `string[]` | *required* | — |
-| `risks` | `string[]` | *required* | — |
-| `open_questions` | `string[]` | *required* | — |
-| `grounded_facts` | `GroundedFact[]` | *required* | — |
-| `ungrounded_suggestions` | `string[]` | *required* | — |
-| `warnings` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `string \| null` | No | — | — |
+| `model` | `string \| null` | No | — | — |
+| `language` | `'en' \| 'ru'` | No | — | — |
+| `is_fallback` | `boolean` | Yes | — | — |
+| `finish_reason` | `string \| null` | No | — | — |
+| `is_truncated` | `boolean` | Yes | — | — |
+| `suggested_title` | `string \| null` | No | — | — |
+| `suggested_description` | `string` | Yes | — | — |
+| `acceptance_criteria` | `string[]` | Yes | — | — |
+| `implementation_notes` | `string[]` | Yes | — | — |
+| `risks` | `string[]` | Yes | — | — |
+| `open_questions` | `string[]` | Yes | — | — |
+| `grounded_facts` | `GroundedFact[]` | Yes | — | — |
+| `ungrounded_suggestions` | `string[]` | Yes | — | — |
+| `warnings` | `string[]` | Yes | — | — |
 
 ## Methods
 

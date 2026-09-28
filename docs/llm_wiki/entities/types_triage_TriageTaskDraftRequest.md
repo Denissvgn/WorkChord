@@ -1,6 +1,6 @@
 # TriageTaskDraftRequest
 
-**Location:** `frontend/src/types/triage.ts:112`
+**Location:** `frontend/src/types/triage.ts:114`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,12 +11,12 @@ _Auto-generated from `TriageTaskDraftRequest` in `frontend/src/types/triage.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `template_id` | `number \| null` | *required* | — |
-| `classification_suggestion_id` | `number \| null` | *required* | — |
-| `current_title` | `string \| null` | *required* | — |
-| `current_description` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `template_id` | `number \| null` | No | — | — |
+| `classification_suggestion_id` | `number \| null` | No | — | — |
+| `current_title` | `string \| null` | No | — | — |
+| `current_description` | `string \| null` | No | — | — |
 
 ## Methods
 

@@ -11,41 +11,41 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `milestone_id` | `number \| null` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `end_date` | `string \| null` | *required* | — |
-| `actual_start_date` | `string \| null` | *required* | — |
-| `actual_end_date` | `string \| null` | *required* | — |
-| `min_start_date` | `string \| null` | *required* | — |
-| `max_end_date` | `string \| null` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `calculated_effort_days` | `number \| null` | *required* | — |
-| `progress` | `number` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `status` | `'planned' \| 'active' \| 'resolved' \| 'closed'` | *required* | — |
-| `is_composite` | `boolean` | *required* | — |
-| `is_overdue` | `boolean` | *required* | — |
-| `is_delayed` | `boolean` | *required* | — |
-| `is_optional` | `boolean` | *required* | — |
-| `is_deferred` | `boolean` | *required* | — |
-| `is_outside_constraints` | `boolean` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `milestone` | `{         id: number;         project_id: number;         name: string;         status: string;         target_date?: string \| null;     } \| null` | *required* | — |
-| `assignee` | `{ id: number; name: string } \| null` | *required* | — |
-| `assignees` | `Array<{ id: number; name: string }>` | *required* | — |
-| `children` | `GanttTask[]` | *required* | — |
-| `dependencies` | `number[]` | *required* | — |
-| `version` | `number` | *required* | — |
-| `sandbox_update` | `TaskUpdate` | *required* | — |
-| `isSandboxModified` | `boolean` | *required* | — |
-| `schedule_result` | `{         scheduled_start: string;         scheduled_end: string;         issues: Array<{             is_overload: boolean;             description: string;         }>;     }` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | No | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `milestone_id` | `number \| null` | No | — | — |
+| `start_date` | `string \| null` | Yes | — | — |
+| `end_date` | `string \| null` | Yes | — | — |
+| `actual_start_date` | `string \| null` | No | — | — |
+| `actual_end_date` | `string \| null` | No | — | — |
+| `min_start_date` | `string \| null` | No | — | — |
+| `max_end_date` | `string \| null` | No | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | No | — | — |
+| `calculated_effort_days` | `number \| null` | Yes | — | — |
+| `progress` | `number` | Yes | — | — |
+| `priority` | `number` | Yes | — | — |
+| `status` | `'planned' \| 'active' \| 'resolved' \| 'closed'` | Yes | — | — |
+| `is_composite` | `boolean` | Yes | — | — |
+| `is_overdue` | `boolean` | Yes | — | — |
+| `is_delayed` | `boolean` | Yes | — | — |
+| `is_optional` | `boolean` | Yes | — | — |
+| `is_deferred` | `boolean` | No | — | — |
+| `is_outside_constraints` | `boolean` | Yes | — | — |
+| `tags` | `string[]` | Yes | — | — |
+| `milestone` | `{         id: number;         project_id: number;         name: string;         status: string;         target_date?: string \| null;     } \| null` | No | — | — |
+| `assignee` | `{ id: number; name: string } \| null` | No | — | — |
+| `assignees` | `Array<{ id: number; name: string }>` | Yes | — | — |
+| `children` | `GanttTask[]` | Yes | — | — |
+| `dependencies` | `number[]` | Yes | — | — |
+| `version` | `number` | No | — | — |
+| `sandbox_update` | `TaskUpdate` | No | — | — |
+| `isSandboxModified` | `boolean` | No | — | — |
+| `schedule_result` | `{         scheduled_start: string;         scheduled_end: string;         issues: Array<{             is_overload: boolean;             description: string;         }>;     }` | No | — | — |
 
 ## Methods
 

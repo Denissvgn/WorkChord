@@ -11,14 +11,14 @@ _Auto-generated from `Constraints` in `frontend/src/types/schedulingRules.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `sequential_per_assignee` | `boolean` | *required* | — |
-| `respect_dependencies` | `boolean` | *required* | — |
-| `min_start_date` | `boolean` | *required* | — |
-| `max_finish_date` | `boolean` | *required* | — |
-| `prefer_uninterrupted` | `boolean` | *required* | — |
-| `balance_workload` | `BalanceWorkload \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `sequential_per_assignee` | `boolean` | Yes | — | — |
+| `respect_dependencies` | `boolean` | Yes | — | — |
+| `min_start_date` | `boolean` | Yes | — | — |
+| `max_finish_date` | `boolean` | Yes | — | — |
+| `prefer_uninterrupted` | `boolean` | Yes | — | — |
+| `balance_workload` | `BalanceWorkload \| null` | No | — | — |
 
 ## Methods
 

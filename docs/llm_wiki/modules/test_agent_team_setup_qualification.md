@@ -30,6 +30,7 @@ Live topology, recovery, redaction, and compatibility qualification.
 | `sqlalchemy` | `func`, `select` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
+| `tests.support.transactions` | `reload_session_fixture` |
 | `tests.test_agent_routing_wave6_qualification` | `Candidate`, `ScenarioBase`, `_TASK_BRIEF`, `_assessment_command`, `_create_assessment_with_parity`, `_dispatch`, `_exclusion`, `_preview_with_parity` |
 | `tests.test_agent_team_setup` | `CapturingCredentialSink`, `example_payload`, `operator` |
 | `typing` | `Any` |
@@ -39,85 +40,19 @@ Live topology, recovery, redaction, and compatibility qualification.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/config.py"]
-    n1["backend/app/models/agent.py"]
-    n2["backend/app/schemas/agent.py"]
-    n3["backend/app/schemas/agent_planning.py"]
-    n4["backend/app/schemas/agent_team_setup.py"]
-    n5["backend/app/services/agent_routing_service.py"]
-    n6["backend/app/services/agent_service.py"]
-    n7["backend/app/services/agent_team_setup_service.py"]
-    n8["backend/app/services/agent_work_service.py"]
-    n9["backend/tests/test_agent_routing_wave6_qualification.py"]
-    n10["backend/tests/test_agent_team_setup.py"]
-    n11["backend/tests/test_agent_team_setup_qualification.py"]
-    n5 --> n0
-    n5 --> n1
-    n5 --> n3
-    n5 --> n6
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n7 --> n0
-    n7 --> n1
-    n7 --> n3
-    n7 --> n4
-    n7 --> n6
-    n8 --> n1
-    n8 --> n2
-    n8 --> n3
-    n8 --> n6
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n5
-    n9 --> n8
-    n10 --> n0
-    n10 --> n1
-    n10 --> n3
-    n10 --> n4
-    n10 --> n6
-    n10 --> n7
-    n11 --> n0
-    n11 --> n1
-    n11 --> n2
-    n11 --> n3
-    n11 --> n4
-    n11 --> n5
-    n11 --> n6
-    n11 --> n7
-    n11 --> n8
-    n11 --> n9
-    n11 --> n10
-    click n0 "../modules/config.md"
-    click n1 "../modules/models_agent.md"
-    click n2 "../modules/schemas_agent.md"
-    click n3 "../modules/schemas_agent_planning.md"
-    click n4 "../modules/agent_team_setup.md"
-    click n5 "../modules/agent_routing_service.md"
-    click n6 "../modules/agent_service.md"
-    click n7 "../modules/agent_team_setup_service.md"
-    click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/test_agent_routing_wave6_qualification.md"
-    click n10 "../modules/test_agent_team_setup.md"
-    click n11 "../modules/test_agent_team_setup_qualification.md"
+    n0["backend"]
+    n1["backend/tests/test_agent_team_setup_qualification.py"]
+    n1 --> n0
+    click n1 "../modules/test_agent_team_setup_qualification.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [config](../modules/config.md) |
-| Outbound | [models_agent](../modules/models_agent.md) |
-| Outbound | [schemas_agent](../modules/schemas_agent.md) |
-| Outbound | [schemas_agent_planning](../modules/schemas_agent_planning.md) |
-| Outbound | [agent_team_setup](../modules/agent_team_setup.md) |
-| Outbound | [agent_routing_service](../modules/agent_routing_service.md) |
-| Outbound | [agent_service](../modules/agent_service.md) |
-| Outbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |
-| Outbound | [agent_work_service](../modules/agent_work_service.md) |
-| Outbound | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) |
-| Outbound | [test_agent_team_setup](../modules/test_agent_team_setup.md) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -125,11 +60,13 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ReadyTopology](../entities/ReadyTopology.md) | 328 | — | — |
+| [ReadyTopology](../entities/ReadyTopology.md) | 329 | — | — |
 
 ## Functions
 

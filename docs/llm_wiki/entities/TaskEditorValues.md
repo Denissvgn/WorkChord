@@ -11,28 +11,31 @@ _Auto-generated from `TaskEditorValues` in `frontend/src/components/tasks/taskEd
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | *required* | — |
-| `description` | `string` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `assignee_id` | `number \| null` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `milestone_id` | `number \| null` | *required* | — |
-| `parent_id` | `number \| null` | *required* | — |
-| `depends_on` | `number[]` | *required* | — |
-| `is_optional` | `boolean` | *required* | — |
-| `is_deferred` | `boolean` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `min_start_date` | `string \| null` | *required* | — |
-| `max_end_date` | `string \| null` | *required* | — |
-| `external_key` | `string \| null` | *required* | — |
-| `source` | `string \| null` | *required* | — |
-| `source_url` | `string \| null` | *required* | — |
-| `status` | `TaskStatus` | *required* | — |
-| `expected_version` | `number \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | Yes | — | — |
+| `description` | `string` | Yes | — | — |
+| `priority` | `number` | Yes | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | Yes | — | — |
+| `owner_profile_id` | `number \| null` | Yes | — | — |
+| `brief` | `TaskBrief \| null` | Yes | — | — |
+| `estimate_provenance` | `"unknown" \| "assumed" \| "estimated"` | Yes | — | — |
+| `assignee_id` | `number \| null` | Yes | — | — |
+| `project_id` | `number \| null` | Yes | — | — |
+| `milestone_id` | `number \| null` | Yes | — | — |
+| `parent_id` | `number \| null` | Yes | — | — |
+| `depends_on` | `number[]` | Yes | — | — |
+| `is_optional` | `boolean` | Yes | — | — |
+| `is_deferred` | `boolean` | Yes | — | — |
+| `tags` | `string[]` | Yes | — | — |
+| `min_start_date` | `string \| null` | Yes | — | — |
+| `max_end_date` | `string \| null` | Yes | — | — |
+| `external_key` | `string \| null` | Yes | — | — |
+| `source` | `string \| null` | Yes | — | — |
+| `source_url` | `string \| null` | Yes | — | — |
+| `status` | `TaskStatus` | Yes | — | — |
+| `expected_version` | `number \| null` | Yes | — | — |
 
 ## Methods
 
@@ -72,7 +75,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [taskEditorContract](../modules/taskEditorContract.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `expected_version`, `external_key`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
+| [taskEditorContract](../modules/taskEditorContract.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `estimate_provenance`, `expected_version`, `external_key`, `is_deferred`, `is_optional`, `max_end_date` |
 
 ### References
 

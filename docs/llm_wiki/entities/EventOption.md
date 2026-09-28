@@ -11,10 +11,10 @@ _Auto-generated from `EventOption` in `frontend/src/components/settings/Outbound
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | *required* | — |
-| `labelKey` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `value` | `string` | Yes | — | — |
+| `labelKey` | `string` | Yes | — | — |
 
 ## Methods
 

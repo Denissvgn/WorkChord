@@ -11,17 +11,21 @@
 sequenceDiagram
     participant p0 as get_task_timeline
     participant p1 as AgentService
-    participant p2 as agent_service.task_service.get_by_id
-    participant p3 as HTTPException
-    participant p4 as agent_service.get_task_timeline
-    participant p5 as TaskTimelineResponse
-    participant p6 as TaskTimelineItem
+    participant p2 as db.scalar
+    participant p3 as select(…).where
+    participant p4 as select
+    participant p5 as HTTPException
+    participant p6 as agent_service.get_task_timeline
+    participant p7 as TaskTimelineResponse
+    participant p8 as TaskTimelineItem
     p0->>p1: AgentService
-    p0-->>p2: agent_service.task_service.get_by_id
-    p0-->>p3: HTTPException
-    p0-->>p4: agent_service.get_task_timeline
-    p0->>p5: TaskTimelineResponse
-    p0->>p6: TaskTimelineItem
+    p0-->>p2: db.scalar
+    p0-->>p3: select(…).where
+    p0-->>p4: select
+    p0-->>p5: HTTPException
+    p0-->>p6: agent_service.get_task_timeline
+    p0->>p7: TaskTimelineResponse
+    p0->>p8: TaskTimelineItem
 ```
 
 ## Data flow
@@ -31,30 +35,36 @@ sequenceDiagram
 flowchart LR
     s1["1. get_task_timeline"]
     s2["2. AgentService"]
-    s3["3. agent_service.task_service.get_by_id"]
-    s4["4. HTTPException"]
-    s5["5. agent_service.get_task_timeline"]
-    s6["6. TaskTimelineResponse"]
-    s7["7. TaskTimelineItem"]
+    s3["3. db.scalar"]
+    s4["4. select(…).where"]
+    s5["5. select"]
+    s6["6. HTTPException"]
+    s7["7. agent_service.get_task_timeline"]
+    s8["8. TaskTimelineResponse"]
+    s9["9. TaskTimelineItem"]
     s1 -->|"AgentService(db)"| s2
-    s1 -. "agent_service.task_service.get_by_id(task_id)" .-> s3
-    s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s4
-    s1 -. "agent_service.get_task_timeline(task_id)" .-> s5
-    s1 -->|"TaskTimelineResponse(task_id=task_id, items=...)"| s6
-    s1 -->|"TaskTimelineItem(**=item)"| s7
+    s1 -. "db.scalar(...)" .-> s3
+    s1 -. "select(…).where(...)" .-> s4
+    s1 -. "select(Task.id)" .-> s5
+    s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s6
+    s1 -. "agent_service.get_task_timeline(task_id)" .-> s7
+    s1 -->|"TaskTimelineResponse(task_id=task_id, items=...)"| s8
+    s1 -->|"TaskTimelineItem(**=item)"| s9
     click s1 "../modules/tasks.md"
     click s2 "../modules/agent_service.md"
-    click s6 "../modules/schemas_agent.md"
-    click s7 "../modules/schemas_agent.md"
+    click s8 "../modules/schemas_agent.md"
+    click s9 "../modules/schemas_agent.md"
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_task_timeline` | `task_id: int`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | - | `TaskTimelineResponse(...)` |
+| `get_task_timeline` | `task_id: int`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `Task`, `status` | - | `TaskTimelineResponse(...)` |
 | `AgentService` | - | - | - | - |
-| `agent_service.task_service.get_by_id` | - | - | - | - |
+| `db.scalar` | - | - | - | - |
+| `select(…).where` | - | - | - | - |
+| `select` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `agent_service.get_task_timeline` | - | - | - | - |
 | `TaskTimelineResponse` | - | - | - | - |
@@ -64,12 +74,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_timeline | AgentService | 975 | `AgentService(db)` |
-| get_task_timeline | agent_service.task_service.get_by_id | 976 | `agent_service.task_service.get_by_id(task_id)` |
-| get_task_timeline | HTTPException | 978 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task_timeline | agent_service.get_task_timeline | 983 | `agent_service.get_task_timeline(task_id)` |
-| get_task_timeline | TaskTimelineResponse | 984 | `TaskTimelineResponse(task_id=task_id, items=...)` |
-| get_task_timeline | TaskTimelineItem | 986 | `TaskTimelineItem(**=item)` |
+| get_task_timeline | AgentService | 977 | `AgentService(db)` |
+| get_task_timeline | db.scalar | 978 | `db.scalar(...)` |
+| get_task_timeline | select(…).where | 978 | `select(Task.id).where(...)` |
+| get_task_timeline | select | 978 | `select(Task.id)` |
+| get_task_timeline | HTTPException | 980 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task_timeline | agent_service.get_task_timeline | 985 | `agent_service.get_task_timeline(task_id)` |
+| get_task_timeline | TaskTimelineResponse | 986 | `TaskTimelineResponse(task_id=task_id, items=...)` |
+| get_task_timeline | TaskTimelineItem | 988 | `TaskTimelineItem(**=item)` |
 
 ### Boundary effects
 
@@ -79,9 +91,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task_timeline` | `agent_service.task_service.get_by_id` | 976 |
-| external_call | `get_task_timeline` | `HTTPException` | 978 |
-| unresolved_call | `get_task_timeline` | `agent_service.get_task_timeline` | 983 |
+| unresolved_call | `get_task_timeline` | `db.scalar` | 978 |
+| unresolved_call | `get_task_timeline` | `select(Task.id).where` | 978 |
+| external_call | `get_task_timeline` | `select` | 978 |
+| external_call | `get_task_timeline` | `HTTPException` | 980 |
+| unresolved_call | `get_task_timeline` | `agent_service.get_task_timeline` | 985 |
 
 ## Behavior
 

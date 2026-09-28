@@ -1,6 +1,6 @@
 # TriageRowProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1699`
+**Location:** `frontend/src/pages/TriagePage.tsx:1716`
 **Kind:** Class
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -11,13 +11,13 @@ _Auto-generated from `TriageRowProps` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `item` | `TriageItem` | *required* | — |
-| `isSelected` | `boolean` | *required* | — |
-| `projectsById` | `Record<number, string>` | *required* | — |
-| `iterationsById` | `Record<number, string>` | *required* | — |
-| `onSelect` | `(id: number) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `item` | `TriageItem` | Yes | — | — |
+| `isSelected` | `boolean` | Yes | — | — |
+| `projectsById` | `Record<number, string>` | Yes | — | — |
+| `iterationsById` | `Record<number, string>` | Yes | — | — |
+| `onSelect` | `(id: number) => void` | Yes | — | — |
 
 ## Methods
 

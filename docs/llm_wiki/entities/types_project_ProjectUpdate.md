@@ -11,19 +11,19 @@ _Auto-generated from `ProjectUpdate` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `status` | `ProjectStatus` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `initiative_id` | `number \| null` | *required* | — |
-| `start_date` | `string \| null` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
-| `completed_at` | `string \| null` | *required* | — |
-| `sort_order` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | No | — | — |
+| `description` | `string \| null` | No | — | — |
+| `status` | `ProjectStatus` | No | — | — |
+| `health` | `ProjectHealth` | No | — | — |
+| `owner_id` | `number \| null` | No | — | — |
+| `owner_profile_id` | `number \| null` | No | — | — |
+| `initiative_id` | `number \| null` | No | — | — |
+| `start_date` | `string \| null` | No | — | — |
+| `target_date` | `string \| null` | No | — | — |
+| `completed_at` | `string \| null` | No | — | — |
+| `sort_order` | `number` | No | — | — |
 
 ## Methods
 

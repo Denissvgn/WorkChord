@@ -11,9 +11,9 @@ _Auto-generated from `ExplainScheduleRequest` in `frontend/src/types/gantt.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `detail_level` | `ExplainScheduleDetailLevel` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `detail_level` | `ExplainScheduleDetailLevel` | No | — | — |
 
 ## Methods
 

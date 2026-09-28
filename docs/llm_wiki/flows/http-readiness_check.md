@@ -140,7 +140,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| readiness_check | readiness_snapshot | 239 | `readiness_snapshot(data not statically known)` |
+| readiness_check | readiness_snapshot | 240 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |
 | readiness_snapshot | head_revision | 253 | `head_revision(data not statically known)` |

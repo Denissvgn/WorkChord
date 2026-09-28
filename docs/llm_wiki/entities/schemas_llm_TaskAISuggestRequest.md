@@ -1,6 +1,6 @@
 # TaskAISuggestRequest
 
-**Location:** `backend/app/schemas/llm.py:73`
+**Location:** `backend/app/schemas/llm.py:76`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_llm](../modules/schemas_llm.md)
@@ -13,6 +13,7 @@ Request for grounded advisory task AI suggestions.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
 | `title` | `str` | `title` | No | No | `''` | max_length=500 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `priority` | `Optional[int]` | `priority` | No | Yes | `None` | ge=1; le=10 | — | — |
@@ -66,7 +67,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_llm](../modules/schemas_llm.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `external_key`, `extra_context`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id`, `min_start_date` |
+| [schemas_llm](../modules/schemas_llm.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `external_key`, `extra_context`, `is_deferred`, `is_optional`, `max_end_date`, `milestone_id` |
 
 ### Structure
 

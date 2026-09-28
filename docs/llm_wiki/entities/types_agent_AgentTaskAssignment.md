@@ -11,28 +11,28 @@ _Auto-generated from `AgentTaskAssignment` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `task_id` | `number` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `team_member_id` | `number \| null` | *required* | — |
-| `purpose` | `AgentAssignmentPurpose \| string` | *required* | — |
-| `queue_class` | `AgentAssignmentQueueClass \| string` | *required* | — |
-| `state` | `AgentAssignmentState \| string` | *required* | — |
-| `queue_rank` | `number` | *required* | — |
-| `not_before` | `string \| null` | *required* | — |
-| `assigned_by_actor_id` | `number \| null` | *required* | — |
-| `reviewer_profile_id` | `number \| null` | *required* | — |
-| `task_version` | `number` | *required* | — |
-| `model_binding_id` | `number \| null` | *required* | — |
-| `model_binding_revision` | `number \| null` | *required* | — |
-| `model_binding_status` | `AgentModelBindingStatus` | *required* | — |
-| `model_binding_stale_reasons` | `string[]` | *required* | — |
-| `routing_snapshot` | `JsonObject` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `updated_at` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `task_id` | `number` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `team_member_id` | `number \| null` | Yes | — | — |
+| `purpose` | `AgentAssignmentPurpose \| string` | Yes | — | — |
+| `queue_class` | `AgentAssignmentQueueClass \| string` | Yes | — | — |
+| `state` | `AgentAssignmentState \| string` | Yes | — | — |
+| `queue_rank` | `number` | Yes | — | — |
+| `not_before` | `string \| null` | Yes | — | — |
+| `assigned_by_actor_id` | `number \| null` | Yes | — | — |
+| `reviewer_profile_id` | `number \| null` | Yes | — | — |
+| `task_version` | `number` | Yes | — | — |
+| `model_binding_id` | `number \| null` | Yes | — | — |
+| `model_binding_revision` | `number \| null` | Yes | — | — |
+| `model_binding_status` | `AgentModelBindingStatus` | Yes | — | — |
+| `model_binding_stale_reasons` | `string[]` | Yes | — | — |
+| `routing_snapshot` | `JsonObject` | Yes | — | — |
+| `reason` | `string \| null` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `updated_at` | `string` | Yes | — | — |
 
 ## Methods
 

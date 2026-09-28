@@ -11,9 +11,11 @@
 1. `iteration_service.IterationService`
 2. `commands.lock_iterations`
 3. `schemas_gantt.ScheduleResult`
-4. `recovery.TaskScheduleBaseline`
-5. `commands.commit_or_flush`
-6. `schemas_gantt.ScheduleResult`
+4. `schemas_gantt.SchedulingDecision`
+5. `schemas_gantt.SchedulingDecision`
+6. `recovery.TaskScheduleBaseline`
+7. `commands.commit_or_flush`
+8. `schemas_gantt.ScheduleResult`
 
 ## Touches
 

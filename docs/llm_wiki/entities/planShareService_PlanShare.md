@@ -11,16 +11,16 @@ _Auto-generated from `PlanShare` in `frontend/src/services/planShareService.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `public_id` | `string` | *required* | — |
-| `iteration_id` | `number` | *required* | — |
-| `iteration_name` | `string` | *required* | — |
-| `created_by_display` | `string` | *required* | — |
-| `snapshot_data` | `PlanShareSnapshot` | *required* | — |
-| `created_at` | `string` | *required* | — |
-| `revoked_at` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `public_id` | `string` | Yes | — | — |
+| `iteration_id` | `number` | Yes | — | — |
+| `iteration_name` | `string` | Yes | — | — |
+| `created_by_display` | `string` | Yes | — | — |
+| `snapshot_data` | `PlanShareSnapshot` | Yes | — | — |
+| `created_at` | `string` | Yes | — | — |
+| `revoked_at` | `string \| null` | No | — | — |
 
 ## Methods
 

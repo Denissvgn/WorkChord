@@ -11,17 +11,17 @@ _Auto-generated from `EmailSettingsUpdate` in `frontend/src/types/emailSettings.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `enabled` | `boolean` | *required* | — |
-| `smtp_host` | `string` | *required* | — |
-| `smtp_port` | `number` | *required* | — |
-| `smtp_user` | `string` | *required* | — |
-| `smtp_password` | `string \| null` | *required* | — |
-| `smtp_from_email` | `string` | *required* | — |
-| `smtp_use_tls` | `boolean` | *required* | — |
-| `clear_smtp_password` | `boolean` | *required* | — |
-| `reset_fields` | `string[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `enabled` | `boolean` | Yes | — | — |
+| `smtp_host` | `string` | Yes | — | — |
+| `smtp_port` | `number` | Yes | — | — |
+| `smtp_user` | `string` | Yes | — | — |
+| `smtp_password` | `string \| null` | No | — | — |
+| `smtp_from_email` | `string` | Yes | — | — |
+| `smtp_use_tls` | `boolean` | Yes | — | — |
+| `clear_smtp_password` | `boolean` | No | — | — |
+| `reset_fields` | `string[]` | No | — | — |
 
 ## Methods
 

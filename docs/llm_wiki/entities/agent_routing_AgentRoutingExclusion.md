@@ -23,19 +23,19 @@ Bounded reason evidence for one ineligible actor/binding pair.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
 | `actor_revision` | `PositiveRevision` | `actor_revision` | Yes | No | — | — | — | — |
 | `actor_queue_revision` | `PositiveRevision` | `actor_queue_revision` | Yes | No | — | — | — | — |
-| `profile_id` | `int \| None` | `profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `profile_revision` | `str \| None` | `profile_revision` | No | Yes | `None` | min_length=1; max_length=120 | — | — |
-| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `model_binding_id` | `int \| None` | `model_binding_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `profile_id` | `int \| None` | `profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `profile_revision` | `str \| None` | `profile_revision` | No | Yes | `None` | max_length=120; min_length=1 | — | — |
+| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `model_binding_id` | `int \| None` | `model_binding_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `model_binding_revision` | `PositiveRevision \| None` | `model_binding_revision` | No | Yes | `None` | — | — | — |
-| `model_catalog_id` | `int \| None` | `model_catalog_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `model_catalog_id` | `int \| None` | `model_catalog_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `model_catalog_key` | `RoutingKey \| None` | `model_catalog_key` | No | Yes | `None` | — | — | — |
 | `model_catalog_revision` | `PositiveRevision \| None` | `model_catalog_revision` | No | Yes | `None` | — | — | — |
-| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `eligible` | `Literal[False]` | `eligible` | No | No | `False` | — | — | — |
 | `hard_blocker_codes` | `list[RoutingBlockerCode]` | `hard_blocker_codes` | Yes | No | — | min_length=1; max_length=unknown (len(RoutingBlockerCode)) | — | — |
 | `matched_skill_levels` | `dict[str, SkillLevel]` | `matched_skill_levels` | No | No | factory: `dict` | — | — | — |
@@ -53,12 +53,12 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `committed_effort_days` | `float \| None` | `committed_effort_days` | No | Yes | `None` | ge=0 | — | — |
 | `workload_ratio` | `float \| None` | `workload_ratio` | No | Yes | `None` | ge=0 | — | — |
 | `vacation_conflict` | `bool \| None` | `vacation_conflict` | No | Yes | `None` | — | — | — |
-| `queued_assignments` | `int \| None` | `queued_assignments` | No | Yes | `None` | strict=True; ge=0 | — | — |
-| `accepted_assignments` | `int \| None` | `accepted_assignments` | No | Yes | `None` | strict=True; ge=0 | — | — |
-| `running_runs` | `int \| None` | `running_runs` | No | Yes | `None` | strict=True; ge=0 | — | — |
+| `queued_assignments` | `int \| None` | `queued_assignments` | No | Yes | `None` | ge=0; strict=True | — | — |
+| `accepted_assignments` | `int \| None` | `accepted_assignments` | No | Yes | `None` | ge=0; strict=True | — | — |
+| `running_runs` | `int \| None` | `running_runs` | No | Yes | `None` | ge=0; strict=True | — | — |
 | `schedule_delay_days` | `float \| None` | `schedule_delay_days` | No | Yes | `None` | ge=0 | — | — |
 | `schedule_eligible` | `bool \| None` | `schedule_eligible` | No | Yes | `None` | — | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
 
 ## Methods
 

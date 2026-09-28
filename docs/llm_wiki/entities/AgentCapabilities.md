@@ -11,20 +11,20 @@ _Auto-generated from `AgentCapabilities` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `server_version` | `string` | *required* | — |
-| `api_contract` | `string` | *required* | — |
-| `actor` | `AgentActor` | *required* | — |
-| `scopes` | `string[]` | *required* | — |
-| `lease_limits` | `Record<string, number>` | *required* | — |
-| `features` | `string[]` | *required* | — |
-| `model_aware_routing` | `ModelAwareRoutingStatus` | *required* | — |
-| `recommended_skills` | `Record<string, string>` | *required* | — |
-| `lifecycle_actions` | `string[]` | *required* | — |
-| `skill_catalog_version` | `string \| null` | *required* | — |
-| `skill_catalog_url` | `string \| null` | *required* | — |
-| `skill_discovery_url` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `server_version` | `string` | Yes | — | — |
+| `api_contract` | `string` | Yes | — | — |
+| `actor` | `AgentActor` | Yes | — | — |
+| `scopes` | `string[]` | Yes | — | — |
+| `lease_limits` | `Record<string, number>` | Yes | — | — |
+| `features` | `string[]` | Yes | — | — |
+| `model_aware_routing` | `ModelAwareRoutingStatus` | Yes | — | — |
+| `recommended_skills` | `Record<string, string>` | Yes | — | — |
+| `lifecycle_actions` | `string[]` | Yes | — | — |
+| `skill_catalog_version` | `string \| null` | Yes | — | — |
+| `skill_catalog_url` | `string \| null` | Yes | — | — |
+| `skill_discovery_url` | `string \| null` | Yes | — | — |
 
 ## Methods
 

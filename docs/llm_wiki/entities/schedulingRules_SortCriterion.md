@@ -12,10 +12,10 @@ Mirrors backend SchedulingRulesSchema structure
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `string` | *required* | — |
-| `order` | `'asc' \| 'desc'` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `field` | `string` | Yes | — | — |
+| `order` | `'asc' \| 'desc'` | Yes | — | — |
 
 ## Methods
 

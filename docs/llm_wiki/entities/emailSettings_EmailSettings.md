@@ -11,18 +11,18 @@ _Auto-generated from `EmailSettings` in `frontend/src/types/emailSettings.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `enabled` | `boolean` | *required* | — |
-| `smtp_host` | `string` | *required* | — |
-| `smtp_port` | `number` | *required* | — |
-| `smtp_user` | `string` | *required* | — |
-| `smtp_from_email` | `string` | *required* | — |
-| `smtp_use_tls` | `boolean` | *required* | — |
-| `has_password` | `boolean` | *required* | — |
-| `smtp_password` | `string` | *required* | — |
-| `clear_smtp_password` | `boolean` | *required* | — |
-| `field_sources` | `Record<string, RuntimeSettingSource>` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `enabled` | `boolean` | Yes | — | — |
+| `smtp_host` | `string` | Yes | — | — |
+| `smtp_port` | `number` | Yes | — | — |
+| `smtp_user` | `string` | Yes | — | — |
+| `smtp_from_email` | `string` | Yes | — | — |
+| `smtp_use_tls` | `boolean` | Yes | — | — |
+| `has_password` | `boolean` | Yes | — | — |
+| `smtp_password` | `string` | No | — | — |
+| `clear_smtp_password` | `boolean` | No | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | No | — | — |
 
 ## Methods
 

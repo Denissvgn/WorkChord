@@ -11,11 +11,11 @@ _Auto-generated from `SavedViewDashboardCardsProps` in `frontend/src/components/
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `className` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `title` | `string` | No | — | — |
+| `className` | `string` | No | — | — |
 
 ## Methods
 

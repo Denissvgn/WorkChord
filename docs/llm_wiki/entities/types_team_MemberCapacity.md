@@ -11,15 +11,15 @@ Detailed capacity breakdown from GET /team-members/{id}/capacity.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `team_member_id` | `number` | *required* | — |
-| `working_days` | `number` | *required* | — |
-| `vacation_days` | `number` | *required* | — |
-| `available_days` | `number` | *required* | — |
-| `effective_days` | `number` | *required* | — |
-| `adjusted_days` | `number` | *required* | — |
-| `hours` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `team_member_id` | `number` | Yes | — | — |
+| `working_days` | `number` | Yes | — | — |
+| `vacation_days` | `number` | Yes | — | — |
+| `available_days` | `number` | Yes | — | — |
+| `effective_days` | `number` | Yes | — | — |
+| `adjusted_days` | `number` | Yes | — | — |
+| `hours` | `number` | Yes | — | — |
 
 ## Methods
 

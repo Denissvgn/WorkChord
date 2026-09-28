@@ -1,7 +1,7 @@
 # TaskService_create
 
 **Entry point:** `task_service.TaskService.create`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [models_task](../modules/models_task.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [snapshot_service](../modules/snapshot_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), [commands](../modules/commands.md), [models_task](../modules/models_task.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_service](../modules/task_service.md)
 
 > Create a new task.
 
@@ -9,20 +9,29 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `commands.lock_iterations`
-2. `authority.require_project`
-3. `snapshot_service.SnapshotService`
-4. `models_task.Task`
-5. `models_task.TaskDependency`
-6. `outbound_webhook_service.emit_outbound_webhook_event`
-7. `commands.commit_or_flush`
+2. `commands.lock_backlog_project`
+3. `backlog_snapshot_service.BacklogSnapshotService`
+4. `authority.require_project`
+5. `task_domain_service.nominal_day_hours`
+6. `task_domain_service.normalize_effort`
+7. `task_domain_service.require_owner`
+8. `snapshot_service.SnapshotService`
+9. `models_task.Task`
+10. `task_brief_service.TaskBriefService`
+11. `models_task.TaskDependency`
+12. `outbound_webhook_service.emit_outbound_webhook_event`
+13. `commands.commit_or_flush`
 
 ## Touches
 
 - [authority](../modules/authority.md)
+- [backlog_snapshot_service](../modules/backlog_snapshot_service.md)
 - [commands](../modules/commands.md)
 - [models_task](../modules/models_task.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [snapshot_service](../modules/snapshot_service.md)
+- [task_brief_service](../modules/task_brief_service.md)
+- [task_domain_service](../modules/task_domain_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Behavior

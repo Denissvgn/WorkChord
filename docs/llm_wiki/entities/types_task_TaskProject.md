@@ -11,12 +11,12 @@ _Auto-generated from `TaskProject` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `number` | *required* | — |
-| `name` | `string` | *required* | — |
-| `status` | `string` | *required* | — |
-| `health` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `id` | `number` | Yes | — | — |
+| `name` | `string` | Yes | — | — |
+| `status` | `string` | Yes | — | — |
+| `health` | `string` | Yes | — | — |
 
 ## Methods
 

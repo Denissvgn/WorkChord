@@ -11,12 +11,12 @@ _Auto-generated from `RecoveryFocusIntent` in `frontend/src/pages/PlanMasterPage
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `origin` | `HTMLElement \| null` | *required* | — |
-| `stepId` | `string` | *required* | — |
-| `target` | `RecoveryFocusTarget` | *required* | — |
-| `token` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `origin` | `HTMLElement \| null` | Yes | — | — |
+| `stepId` | `string` | No | — | — |
+| `target` | `RecoveryFocusTarget` | Yes | — | — |
+| `token` | `number` | Yes | — | — |
 
 ## Methods
 

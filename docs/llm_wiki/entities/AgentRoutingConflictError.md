@@ -88,7 +88,7 @@ flowchart LR
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
 | `agent_planning` | import | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `AgentRoutingService._assessment_replay` | call | [agent_routing_service](../modules/agent_routing_service.md) | 2 |
-| `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 4 |
+| `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 5 |
 | `AgentRoutingService._completed_prior_lineage` | call | [agent_routing_service](../modules/agent_routing_service.md) | 2 |
 | `AgentRoutingService._parse_preview_id` | call | [agent_routing_service](../modules/agent_routing_service.md) | 3 |
 | `AgentRoutingService._preview_context` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |

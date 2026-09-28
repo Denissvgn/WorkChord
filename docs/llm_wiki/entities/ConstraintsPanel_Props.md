@@ -11,10 +11,10 @@ _Auto-generated from `Props` in `frontend/src/components/settings/ConstraintsPan
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `constraints` | `Constraints` | *required* | — |
-| `onChange` | `(constraints: Constraints) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `constraints` | `Constraints` | Yes | — | — |
+| `onChange` | `(constraints: Constraints) => void` | Yes | — | — |
 
 ## Methods
 

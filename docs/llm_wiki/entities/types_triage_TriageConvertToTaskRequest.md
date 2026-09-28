@@ -1,6 +1,6 @@
 # TriageConvertToTaskRequest
 
-**Location:** `frontend/src/types/triage.ts:142`
+**Location:** `frontend/src/types/triage.ts:145`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,18 +11,20 @@ _Auto-generated from `TriageConvertToTaskRequest` in `frontend/src/types/triage.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iteration_id` | `number` | *required* | — |
-| `title` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `assignee_id` | `number \| null` | *required* | — |
-| `priority` | `number` | *required* | — |
-| `tags` | `string[]` | *required* | — |
-| `effort_days` | `number` | *required* | — |
-| `effort_hours` | `number` | *required* | — |
-| `depends_on` | `number[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `brief` | `TaskBrief` | No | — | — |
+| `destination` | `"iteration" \| "project_backlog"` | No | — | — |
+| `iteration_id` | `number \| null` | Yes | — | — |
+| `title` | `string` | No | — | — |
+| `description` | `string \| null` | No | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `assignee_id` | `number \| null` | No | — | — |
+| `priority` | `number` | No | — | — |
+| `tags` | `string[]` | No | — | — |
+| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | No | — | — |
+| `depends_on` | `number[]` | Yes | — | — |
 
 ## Methods
 
@@ -47,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_triage](../modules/types_triage.md) | 0 | `assignee_id`, `depends_on`, `description`, `effort_days`, `effort_hours`, `iteration_id`, `priority`, `project_id`, `tags`, `title` |
+| [types_triage](../modules/types_triage.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `destination`, `effort_days`, `effort_hours`, `iteration_id`, `priority`, `project_id`, `tags`, `title` |
 
 ### References
 

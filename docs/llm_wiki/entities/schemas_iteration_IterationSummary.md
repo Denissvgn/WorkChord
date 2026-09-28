@@ -1,6 +1,6 @@
 # IterationSummary
 
-**Location:** `backend/app/schemas/iteration.py:93`
+**Location:** `backend/app/schemas/iteration.py:94`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)

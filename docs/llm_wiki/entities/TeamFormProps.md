@@ -11,14 +11,14 @@ _Auto-generated from `TeamFormProps` in `frontend/src/components/team/TeamForm.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `initialData` | `TeamMember` | *required* | — |
-| `initialProfile` | `TeamMemberProfile` | *required* | — |
-| `onSuccess` | `() => void` | *required* | — |
-| `onCancel` | `() => void` | *required* | — |
-| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `initialData` | `TeamMember` | No | — | — |
+| `initialProfile` | `TeamMemberProfile` | No | — | — |
+| `onSuccess` | `() => void` | Yes | — | — |
+| `onCancel` | `() => void` | Yes | — | — |
+| `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | No | — | — |
 
 ## Methods
 

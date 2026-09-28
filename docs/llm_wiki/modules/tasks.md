@@ -12,6 +12,7 @@ Task API router.
 |--------|---------|
 | `app.commands` | `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command` |
 | `app.database` | `get_db` |
+| `app.models.task` | `Task` |
 | `app.schemas.agent` | `TaskTimelineResponse`, `TaskTimelineItem` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.external_link` | `ExternalLinkResponse`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `TaskExternalLinkCreate` |
@@ -30,6 +31,7 @@ Task API router.
 | `json` | `json`, `json` |
 | `logging` | `logging` |
 | `pydantic` | `ValidationError` |
+| `sqlalchemy` | `select` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated` |
 
@@ -52,7 +54,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (16) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

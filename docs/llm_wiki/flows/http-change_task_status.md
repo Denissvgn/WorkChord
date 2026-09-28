@@ -134,13 +134,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| change_task_status | service.change_status | 889 | `service.change_status(task_id=task_id, new_status=data.status, reason=data.reason, expected_version=data.expected_version)` |
-| change_task_status | _raise_task_version_conflict | 896 | `_raise_task_version_conflict(exc)` |
-| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…ise_task_version_conflict) | 54 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _raise_task_version_conflict | exc.detail | 56 | `exc.detail(data not statically known)` |
-| change_task_status | HTTPException (backend/app/routers/tasks.py:change_task_status) | 898 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| change_task_status | _localized_detail | 900 | `_localized_detail(db, str(...))` |
-| _localized_detail | resolve_runtime_ui_language | 61 | `resolve_runtime_ui_language(db)` |
+| change_task_status | service.change_status | 891 | `service.change_status(task_id=task_id, new_status=data.status, reason=data.reason, expected_version=data.expected_version)` |
+| change_task_status | _raise_task_version_conflict | 898 | `_raise_task_version_conflict(exc)` |
+| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…ise_task_version_conflict) | 56 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _raise_task_version_conflict | exc.detail | 58 | `exc.detail(data not statically known)` |
+| change_task_status | HTTPException (backend/app/routers/tasks.py:change_task_status) | 900 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| change_task_status | _localized_detail | 902 | `_localized_detail(db, str(...))` |
+| _localized_detail | resolve_runtime_ui_language | 63 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -154,10 +154,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `change_task_status` | `service.change_status` | 889 |
-| external_call | `_raise_task_version_conflict` | `HTTPException` | 54 |
-| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 56 |
-| external_call | `change_task_status` | `HTTPException` | 898 |
+| unresolved_call | `change_task_status` | `service.change_status` | 891 |
+| external_call | `_raise_task_version_conflict` | `HTTPException` | 56 |
+| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 58 |
+| external_call | `change_task_status` | `HTTPException` | 900 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | step_limit | `change_task_status` | `first 12 steps` | 0 |

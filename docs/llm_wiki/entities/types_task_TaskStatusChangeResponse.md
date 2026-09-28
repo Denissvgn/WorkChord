@@ -1,6 +1,6 @@
 # TaskStatusChangeResponse
 
-**Location:** `frontend/src/types/task.ts:331`
+**Location:** `frontend/src/types/task.ts:353`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,11 +11,11 @@ _Auto-generated from `TaskStatusChangeResponse` in `frontend/src/types/task.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `Task` | *required* | — |
-| `cascade_updates` | `CascadeUpdateInfo[]` | *required* | — |
-| `notifications_sent` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `Task` | Yes | — | — |
+| `cascade_updates` | `CascadeUpdateInfo[]` | Yes | — | — |
+| `notifications_sent` | `boolean` | Yes | — | — |
 
 ## Methods
 

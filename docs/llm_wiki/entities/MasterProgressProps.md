@@ -11,13 +11,13 @@ _Auto-generated from `MasterProgressProps` in `frontend/src/components/ui/Master
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | *required* | — |
-| `completed` | `number` | *required* | — |
-| `label` | `string` | *required* | — |
-| `total` | `number` | *required* | — |
-| `valueText` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `className` | `string` | No | — | — |
+| `completed` | `number` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `total` | `number` | Yes | — | — |
+| `valueText` | `string` | Yes | — | — |
 
 ## Methods
 

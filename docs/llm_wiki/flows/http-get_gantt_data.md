@@ -80,7 +80,7 @@ sequenceDiagram
     p15-->>p26: task.__dict__.get (backend/app/services/work_metrics.py:task_signals)
 ```
 
-> Call sequence diagram shows 30 of 74 interactions; 44 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 76 interactions; 46 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

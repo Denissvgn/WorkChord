@@ -19,8 +19,8 @@ Schema for creating a governed label group.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `key` | `str` | `key` | Yes | No | — | min_length=1; max_length=100; pattern=unknown (GROUP_KEY_PATTERN) | — | — |
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `key` | `str` | `key` | Yes | No | — | max_length=100; min_length=1; pattern=unknown (GROUP_KEY_PATTERN) | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `color` | `str` | `color` | No | No | `'#64748b'` | pattern=unknown (HEX_COLOR_PATTERN) | — | — |
 | `is_active` | `bool` | `is_active` | No | No | `True` | — | — | — |

@@ -1,6 +1,6 @@
 # TriageConvertToTaskResponse
 
-**Location:** `frontend/src/types/triage.ts:155`
+**Location:** `frontend/src/types/triage.ts:160`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TriageConvertToTaskResponse` in `frontend/src/types/triage
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `triage_item` | `TriageItem` | *required* | — |
-| `task` | `Task` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `triage_item` | `TriageItem` | Yes | — | — |
+| `task` | `Task` | Yes | — | — |
 
 ## Methods
 

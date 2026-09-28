@@ -1,6 +1,6 @@
 # TasksImportRequest
 
-**Location:** `frontend/src/types/task.ts:256`
+**Location:** `frontend/src/types/task.ts:278`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -11,10 +11,10 @@ _Auto-generated from `TasksImportRequest` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `text` | `string` | *required* | — |
-| `destination` | `TaskImportDestination` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `text` | `string` | Yes | — | — |
+| `destination` | `TaskImportDestination` | No | — | — |
 
 ## Methods
 

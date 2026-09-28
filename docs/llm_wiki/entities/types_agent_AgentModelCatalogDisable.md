@@ -11,10 +11,10 @@ _Auto-generated from `AgentModelCatalogDisable` in `frontend/src/types/agent.ts`
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `expected_revision` | `number` | *required* | — |
-| `reconcile_live_assignments` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `expected_revision` | `number` | Yes | — | — |
+| `reconcile_live_assignments` | `boolean` | No | — | — |
 
 ## Methods
 

@@ -11,11 +11,11 @@ _Auto-generated from `SidebarAttentionAction` in `frontend/src/components/layout
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `to` | `string` | *required* | — |
-| `label` | `string` | *required* | — |
-| `isError` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `to` | `string` | Yes | — | — |
+| `label` | `string` | Yes | — | — |
+| `isError` | `boolean` | No | — | — |
 
 ## Methods
 

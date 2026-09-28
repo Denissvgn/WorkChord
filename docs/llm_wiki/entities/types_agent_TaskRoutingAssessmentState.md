@@ -11,12 +11,12 @@ _Auto-generated from `TaskRoutingAssessmentState` in `frontend/src/types/agent.t
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `current_task_version` | `number` | *required* | — |
-| `state` | `'none' \| 'current' \| 'stale'` | *required* | — |
-| `assessment` | `TaskRoutingAssessment \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `current_task_version` | `number` | Yes | — | — |
+| `state` | `'none' \| 'current' \| 'stale'` | Yes | — | — |
+| `assessment` | `TaskRoutingAssessment \| null` | Yes | — | — |
 
 ## Methods
 

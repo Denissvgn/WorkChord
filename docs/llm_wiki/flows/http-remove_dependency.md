@@ -47,9 +47,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| remove_dependency | service.remove_dependency | 640 | `service.remove_dependency(task_id, depends_on_id)` |
-| remove_dependency | HTTPException | 642 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| remove_dependency | MessageResponse | 646 | `MessageResponse(message=..., success=True)` |
+| remove_dependency | service.remove_dependency | 642 | `service.remove_dependency(task_id, depends_on_id)` |
+| remove_dependency | HTTPException | 644 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| remove_dependency | MessageResponse | 648 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,9 +59,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `remove_dependency` | `service.remove_dependency` | 640 |
-| external_call | `remove_dependency` | `HTTPException` | 642 |
+| unresolved_call | `remove_dependency` | `service.remove_dependency` | 642 |
+| external_call | `remove_dependency` | `HTTPException` | 644 |
 
 ## Behavior
 
 This flow starts at `remove_dependency` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+
+Actual dependency changes invalidate current progress and acceptance through general updates and individual add/remove commands. Immutable evidence history remains available, a command reserves one task version, and no-op dependency requests retain their current version. Locked graph relationships are loaded explicitly before applying a dependency update.

@@ -57,11 +57,11 @@ flowchart LR
 | [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 160 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
 | [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 177 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
 | [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 186 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
-| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 455 | — | Minimum band/review requirements attached to one governed reason. |
-| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 528 | — | Secret-free profile evidence used by compatibility decisions. |
-| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 540 | — | Separated authority/compatibility evidence for one candidate. |
-| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 613 | — | Deterministic required-skill evidence for one profile. |
-| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 628 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 458 | — | Minimum band/review requirements attached to one governed reason. |
+| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 531 | — | Secret-free profile evidence used by compatibility decisions. |
+| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 543 | — | Separated authority/compatibility evidence for one candidate. |
+| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 616 | — | Deterministic required-skill evidence for one profile. |
+| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 631 | — | Deterministic binding/catalog capability evidence for one candidate. |
 
 ## Functions
 

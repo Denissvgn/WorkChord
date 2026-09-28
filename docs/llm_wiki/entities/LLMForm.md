@@ -11,15 +11,15 @@ _Auto-generated from `LLMForm` in `frontend/src/components/settings/RuntimeConfi
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `provider` | `LLMProvider` | *required* | — |
-| `api_url` | `string` | *required* | — |
-| `model` | `string` | *required* | — |
-| `temperature` | `string` | *required* | — |
-| `max_output_tokens` | `string` | *required* | — |
-| `api_key` | `string` | *required* | — |
-| `clear_api_key` | `boolean` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `LLMProvider` | Yes | — | — |
+| `api_url` | `string` | Yes | — | — |
+| `model` | `string` | Yes | — | — |
+| `temperature` | `string` | Yes | — | — |
+| `max_output_tokens` | `string` | Yes | — | — |
+| `api_key` | `string` | Yes | — | — |
+| `clear_api_key` | `boolean` | Yes | — | — |
 
 ## Methods
 

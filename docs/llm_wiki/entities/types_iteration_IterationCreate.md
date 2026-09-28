@@ -1,6 +1,6 @@
 # IterationCreate
 
-**Location:** `frontend/src/types/iteration.ts:22`
+**Location:** `frontend/src/types/iteration.ts:23`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -11,14 +11,14 @@ _Auto-generated from `IterationCreate` in `frontend/src/types/iteration.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `calendar_id` | `number \| null` | *required* | — |
-| `project_id` | `number \| null` | *required* | — |
-| `start_date` | `string` | *required* | — |
-| `end_date` | `string` | *required* | — |
-| `manager_email` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `calendar_id` | `number \| null` | No | — | — |
+| `project_id` | `number \| null` | No | — | — |
+| `start_date` | `string` | Yes | — | — |
+| `end_date` | `string` | Yes | — | — |
+| `manager_email` | `string` | No | — | — |
 
 ## Methods
 

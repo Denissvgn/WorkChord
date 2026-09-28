@@ -29,9 +29,9 @@ Task representation for Gantt chart.
 | `assignees` | `list[GanttAssignee]` | `assignees` | No | No | `[]` | — | — | — |
 | `priority` | `int` | `priority` | Yes | No | — | — | — | — |
 | `progress` | `float` | `progress` | No | No | `0.0` | — | — | — |
-| `effort_days` | `float` | `effort_days` | Yes | No | — | — | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | Yes | Yes | — | — | — | — |
 | `calculated_effort_days` | `Optional[float]` | `calculated_effort_days` | No | Yes | `None` | — | — | — |
-| `effort_hours` | `float` | `effort_hours` | Yes | No | — | — | — | — |
+| `effort_hours` | `Optional[float]` | `effort_hours` | Yes | Yes | — | — | — | — |
 | `version` | `int` | `version` | No | No | `1` | — | — | — |
 | `is_overdue` | `bool` | `is_overdue` | No | No | `False` | — | — | — |
 | `is_delayed` | `bool` | `is_delayed` | No | No | `False` | — | — | — |

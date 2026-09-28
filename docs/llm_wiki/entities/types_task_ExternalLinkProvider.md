@@ -1,6 +1,6 @@
 # ExternalLinkProvider
 
-**Location:** `frontend/src/types/task.ts:45`
+**Location:** `frontend/src/types/task.ts:46`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

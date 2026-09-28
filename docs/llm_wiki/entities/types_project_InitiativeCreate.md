@@ -11,14 +11,14 @@ _Auto-generated from `InitiativeCreate` in `frontend/src/types/project.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | *required* | — |
-| `description` | `string \| null` | *required* | — |
-| `owner_id` | `number \| null` | *required* | — |
-| `owner_profile_id` | `number \| null` | *required* | — |
-| `health` | `ProjectHealth` | *required* | — |
-| `target_date` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | `string` | Yes | — | — |
+| `description` | `string \| null` | No | — | — |
+| `owner_id` | `number \| null` | No | — | — |
+| `owner_profile_id` | `number \| null` | No | — | — |
+| `health` | `ProjectHealth` | Yes | — | — |
+| `target_date` | `string \| null` | No | — | — |
 
 ## Methods
 

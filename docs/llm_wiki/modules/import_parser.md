@@ -45,6 +45,6 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `parse_tasks_text` | `(text: str) -> list[ParsedTask]` | — | Parse tasks from text format. |
-| `_validate_task_fields` | `(line_num: int, priority: int, effort: float)` | — | — |
+| `_validate_task_fields` | `(line_num: int, priority: int, effort: float \| None)` | — | — |
 | `serialize_tasks_to_text` | `(tasks: List[Task]) -> str` | — | Convert a list of tasks into the editable text format. |
 | `parse_team_members_text` | `(text: str) -> list[ParsedTeamMember]` | — | Parse team members from text format. |

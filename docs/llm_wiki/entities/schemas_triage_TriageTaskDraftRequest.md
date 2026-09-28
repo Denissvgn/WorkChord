@@ -1,6 +1,6 @@
 # TriageTaskDraftRequest
 
-**Location:** `backend/app/schemas/triage.py:203`
+**Location:** `backend/app/schemas/triage.py:234`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

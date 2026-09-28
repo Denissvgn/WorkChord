@@ -11,15 +11,15 @@ _Auto-generated from `TaskTimelineItem` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `item_type` | `'task_event' \| 'status_log' \| 'agent_run' \| 'agent_run_event'` | *required* | — |
-| `timestamp` | `string` | *required* | — |
-| `title` | `string` | *required* | — |
-| `payload` | `JsonObject` | *required* | — |
-| `actor_type` | `string \| null` | *required* | — |
-| `actor_id` | `number \| null` | *required* | — |
-| `trace_id` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `item_type` | `'task_event' \| 'status_log' \| 'agent_run' \| 'agent_run_event'` | Yes | — | — |
+| `timestamp` | `string` | Yes | — | — |
+| `title` | `string` | Yes | — | — |
+| `payload` | `JsonObject` | Yes | — | — |
+| `actor_type` | `string \| null` | No | — | — |
+| `actor_id` | `number \| null` | No | — | — |
+| `trace_id` | `string \| null` | No | — | — |
 
 ## Methods
 

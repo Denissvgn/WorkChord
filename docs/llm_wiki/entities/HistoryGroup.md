@@ -11,10 +11,10 @@ _Auto-generated from `HistoryGroup` in `frontend/src/pages/AnalyticsPage.tsx`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `taskTitle` | `string` | *required* | — |
-| `logs` | `TaskStatusLog[]` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `taskTitle` | `string` | Yes | — | — |
+| `logs` | `TaskStatusLog[]` | Yes | — | — |
 
 ## Methods
 

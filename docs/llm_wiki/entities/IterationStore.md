@@ -11,10 +11,10 @@ _Auto-generated from `IterationStore` in `frontend/src/store/iterationStore.ts`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `selectedIterationId` | `number` | *required* | — |
-| `setSelectedIterationId` | `(id: number) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `selectedIterationId` | `number` | Yes | — | — |
+| `setSelectedIterationId` | `(id: number) => void` | Yes | — | — |
 
 ## Methods
 

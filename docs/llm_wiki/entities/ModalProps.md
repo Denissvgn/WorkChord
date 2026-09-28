@@ -11,21 +11,21 @@ _Auto-generated from `ModalProps` in `frontend/src/components/common/Modal.tsx`.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | *required* | — |
-| `title` | `ReactNode` | *required* | — |
-| `description` | `ReactNode` | *required* | — |
-| `children` | `ReactNode` | *required* | — |
-| `footer` | `ReactNode` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `closeLabel` | `string` | *required* | — |
-| `initialFocusRef` | `RefObject<HTMLElement \| null>` | *required* | — |
-| `closeOnBackdropClick` | `boolean` | *required* | — |
-| `closeDisabled` | `boolean` | *required* | — |
-| `fullScreen` | `boolean` | *required* | — |
-| `className` | `string` | *required* | — |
-| `contentClassName` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `open` | `boolean` | Yes | — | — |
+| `title` | `ReactNode` | Yes | — | — |
+| `description` | `ReactNode` | No | — | — |
+| `children` | `ReactNode` | No | — | — |
+| `footer` | `ReactNode` | No | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `closeLabel` | `string` | Yes | — | — |
+| `initialFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
+| `closeOnBackdropClick` | `boolean` | No | — | — |
+| `closeDisabled` | `boolean` | No | — | — |
+| `fullScreen` | `boolean` | No | — | — |
+| `className` | `string` | No | — | — |
+| `contentClassName` | `string` | No | — | — |
 
 ## Methods
 

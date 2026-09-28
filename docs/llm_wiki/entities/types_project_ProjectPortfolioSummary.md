@@ -11,16 +11,16 @@ _Auto-generated from `ProjectPortfolioSummary` in `frontend/src/types/project.ts
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `project_id` | `number` | *required* | — |
-| `total_tasks` | `number` | *required* | — |
-| `completed_tasks` | `number` | *required* | — |
-| `total_effort_days` | `number` | *required* | — |
-| `remaining_effort_days` | `number` | *required* | — |
-| `blocked_tasks` | `number` | *required* | — |
-| `overdue_tasks` | `number` | *required* | — |
-| `target_date_risk` | `ProjectTargetDateRisk` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `project_id` | `number` | Yes | — | — |
+| `total_tasks` | `number` | Yes | — | — |
+| `completed_tasks` | `number` | Yes | — | — |
+| `total_effort_days` | `number` | Yes | — | — |
+| `remaining_effort_days` | `number` | Yes | — | — |
+| `blocked_tasks` | `number` | Yes | — | — |
+| `overdue_tasks` | `number` | Yes | — | — |
+| `target_date_risk` | `ProjectTargetDateRisk` | Yes | — | — |
 
 ## Methods
 

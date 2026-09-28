@@ -1,6 +1,6 @@
 # TriageDuplicateRequest
 
-**Location:** `backend/app/schemas/triage.py:117`
+**Location:** `backend/app/schemas/triage.py:148`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

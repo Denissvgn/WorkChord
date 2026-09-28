@@ -87,7 +87,7 @@ sequenceDiagram
     p19-->>p26: db.rollback
 ```
 
-> Call sequence diagram shows 30 of 174 interactions; 144 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 176 interactions; 146 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -148,7 +148,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration_gantt | _tool_call | 1501 | `_tool_call((...), ...)` |
+| workspace_get_iteration_gantt | _tool_call | 1531 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |

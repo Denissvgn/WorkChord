@@ -11,17 +11,17 @@ _Auto-generated from `ProjectMilestoneTaskGroup` in `frontend/src/types/project.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `milestone_id` | `number \| null` | *required* | — |
-| `milestone` | `ProjectMilestoneSummary \| null` | *required* | — |
-| `name` | `string` | *required* | — |
-| `task_count` | `number` | *required* | — |
-| `completed_tasks` | `number` | *required* | — |
-| `completion_percent` | `number` | *required* | — |
-| `status_counts` | `Record<string, number>` | *required* | — |
-| `total_effort_days` | `number` | *required* | — |
-| `remaining_effort_days` | `number` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `milestone_id` | `number \| null` | No | — | — |
+| `milestone` | `ProjectMilestoneSummary \| null` | No | — | — |
+| `name` | `string` | Yes | — | — |
+| `task_count` | `number` | Yes | — | — |
+| `completed_tasks` | `number` | Yes | — | — |
+| `completion_percent` | `number` | Yes | — | — |
+| `status_counts` | `Record<string, number>` | Yes | — | — |
+| `total_effort_days` | `number` | Yes | — | — |
+| `remaining_effort_days` | `number` | Yes | — | — |
 
 ## Methods
 

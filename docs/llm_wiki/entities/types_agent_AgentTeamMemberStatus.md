@@ -11,32 +11,32 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `actor_key` | `string` | *required* | — |
-| `actor_id` | `number \| null` | *required* | — |
-| `actor_name` | `string` | *required* | — |
-| `display_name` | `string` | *required* | — |
-| `role` | `AgentTeamRole` | *required* | — |
-| `desired` | `boolean` | *required* | — |
-| `configured` | `boolean` | *required* | — |
-| `lifecycle_state` | `AgentTeamLifecycle` | *required* | — |
-| `enabled` | `boolean` | *required* | — |
-| `profile_key` | `string` | *required* | — |
-| `profile_revision` | `string \| null` | *required* | — |
-| `binding_revisions` | `Record<string, number>` | *required* | — |
-| `skill_package` | `AgentTeamSkillPackage` | *required* | — |
-| `package_acknowledged` | `boolean` | *required* | — |
-| `credential_delivery_state` | `'pending' \| 'delivered' \| 'uncertain' \| 'not_required'` | *required* | — |
-| `connection_state` | `'unobserved' \| 'observed' \| 'stale'` | *required* | — |
-| `last_seen_at` | `string \| null` | *required* | — |
-| `queued_assignments` | `number \| null` | *required* | — |
-| `accepted_assignments` | `number \| null` | *required* | — |
-| `running_runs` | `number \| null` | *required* | — |
-| `runtime_ready` | `boolean` | *required* | — |
-| `availability` | `'availability_unknown'` | *required* | — |
-| `blocker_codes` | `string[]` | *required* | — |
-| `handoff` | `AgentTeamRuntimeHandoff \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `actor_key` | `string` | Yes | — | — |
+| `actor_id` | `number \| null` | Yes | — | — |
+| `actor_name` | `string` | Yes | — | — |
+| `display_name` | `string` | Yes | — | — |
+| `role` | `AgentTeamRole` | Yes | — | — |
+| `desired` | `boolean` | Yes | — | — |
+| `configured` | `boolean` | Yes | — | — |
+| `lifecycle_state` | `AgentTeamLifecycle` | Yes | — | — |
+| `enabled` | `boolean` | Yes | — | — |
+| `profile_key` | `string` | Yes | — | — |
+| `profile_revision` | `string \| null` | Yes | — | — |
+| `binding_revisions` | `Record<string, number>` | Yes | — | — |
+| `skill_package` | `AgentTeamSkillPackage` | Yes | — | — |
+| `package_acknowledged` | `boolean` | Yes | — | — |
+| `credential_delivery_state` | `'pending' \| 'delivered' \| 'uncertain' \| 'not_required'` | Yes | — | — |
+| `connection_state` | `'unobserved' \| 'observed' \| 'stale'` | Yes | — | — |
+| `last_seen_at` | `string \| null` | Yes | — | — |
+| `queued_assignments` | `number \| null` | Yes | — | — |
+| `accepted_assignments` | `number \| null` | Yes | — | — |
+| `running_runs` | `number \| null` | Yes | — | — |
+| `runtime_ready` | `boolean` | Yes | — | — |
+| `availability` | `'availability_unknown'` | Yes | — | — |
+| `blocker_codes` | `string[]` | Yes | — | — |
+| `handoff` | `AgentTeamRuntimeHandoff \| null` | Yes | — | — |
 
 ## Methods
 

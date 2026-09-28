@@ -1,6 +1,6 @@
 # TaskListProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:66`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:67`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -11,18 +11,18 @@ _Auto-generated from `TaskListProps` in `frontend/src/components/tasks/TaskList.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `iterationId` | `number` | *required* | — |
-| `filters` | `TaskFilters` | *required* | — |
-| `sortKey` | `SortKey` | *required* | — |
-| `onSortKeyChange` | `(sortKey: SortKey) => void` | *required* | — |
-| `hasActiveFilters` | `boolean` | *required* | — |
-| `activeViewName` | `string` | *required* | — |
-| `onClearFilters` | `() => void` | *required* | — |
-| `onCreateTask` | `() => void` | *required* | — |
-| `requestedMode` | `TaskMode \| null` | *required* | — |
-| `onModeChange` | `(mode: TaskMode \| null) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `iterationId` | `number` | Yes | — | — |
+| `filters` | `TaskFilters` | No | — | — |
+| `sortKey` | `SortKey` | Yes | — | — |
+| `onSortKeyChange` | `(sortKey: SortKey) => void` | Yes | — | — |
+| `hasActiveFilters` | `boolean` | No | — | — |
+| `activeViewName` | `string` | No | — | — |
+| `onClearFilters` | `() => void` | No | — | — |
+| `onCreateTask` | `() => void` | No | — | — |
+| `requestedMode` | `TaskMode \| null` | No | — | — |
+| `onModeChange` | `(mode: TaskMode \| null) => void` | No | — | — |
 
 ## Methods
 

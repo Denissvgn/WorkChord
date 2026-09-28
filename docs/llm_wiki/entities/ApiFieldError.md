@@ -11,10 +11,10 @@ _Auto-generated from `ApiFieldError` in `frontend/src/utils/apiError.ts`._
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `string \| null` | *required* | — |
-| `message` | `string` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `field` | `string \| null` | Yes | — | — |
+| `message` | `string` | Yes | — | — |
 
 ## Methods
 

@@ -1,6 +1,6 @@
 # TriageClassificationSuggestionResponse
 
-**Location:** `backend/app/schemas/triage.py:178`
+**Location:** `backend/app/schemas/triage.py:209`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)

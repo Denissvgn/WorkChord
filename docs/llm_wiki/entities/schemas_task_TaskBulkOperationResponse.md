@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `backend/app/schemas/task.py:291`
+**Location:** `backend/app/schemas/task.py:314`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

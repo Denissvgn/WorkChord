@@ -11,23 +11,23 @@ _Auto-generated from `ModelAwareAgentTaskAssignmentCreate` in `frontend/src/type
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task_id` | `number` | *required* | — |
-| `actor_id` | `number` | *required* | — |
-| `expected_task_version` | `number` | *required* | — |
-| `purpose` | `AgentAssignmentPurpose` | *required* | — |
-| `assessment_id` | `number` | *required* | — |
-| `model_binding_id` | `number` | *required* | — |
-| `model_binding_revision` | `number` | *required* | — |
-| `routing_preview_id` | `string` | *required* | — |
-| `routing_preview_digest` | `string` | *required* | — |
-| `team_member_id` | `number \| null` | *required* | — |
-| `reviewer_profile_id` | `number \| null` | *required* | — |
-| `queue_class` | `AgentAssignmentQueueClass` | *required* | — |
-| `queue_rank` | `number` | *required* | — |
-| `not_before` | `string \| null` | *required* | — |
-| `reason` | `string \| null` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task_id` | `number` | Yes | — | — |
+| `actor_id` | `number` | Yes | — | — |
+| `expected_task_version` | `number` | Yes | — | — |
+| `purpose` | `AgentAssignmentPurpose` | Yes | — | — |
+| `assessment_id` | `number` | Yes | — | — |
+| `model_binding_id` | `number` | Yes | — | — |
+| `model_binding_revision` | `number` | Yes | — | — |
+| `routing_preview_id` | `string` | Yes | — | — |
+| `routing_preview_digest` | `string` | Yes | — | — |
+| `team_member_id` | `number \| null` | No | — | — |
+| `reviewer_profile_id` | `number \| null` | No | — | — |
+| `queue_class` | `AgentAssignmentQueueClass` | No | — | — |
+| `queue_rank` | `number` | No | — | — |
+| `not_before` | `string \| null` | No | — | — |
+| `reason` | `string \| null` | No | — | — |
 
 ## Methods
 

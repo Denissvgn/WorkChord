@@ -1,18 +1,19 @@
 # TriageTaskDraftResponse
 
-**Location:** `backend/app/schemas/triage.py:213`
+**Location:** `backend/app/schemas/triage.py:244`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_triage](../modules/schemas_triage.md)
 
 ## Description
 
-Transient suggested task details for triage conversion.
+_Auto-generated from `TriageTaskDraftResponse` in `backend/app/schemas/triage.py`._
 
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
 | `triage_item_id` | `int` | `triage_item_id` | Yes | No | — | — | — | — |
 | `suggested_title` | `str` | `suggested_title` | Yes | No | — | — | — | — |
 | `suggested_description` | `str` | `suggested_description` | Yes | No | — | — | — | — |
@@ -68,7 +69,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_triage](../modules/schemas_triage.md) | 0 | `acceptance_criteria`, `classification_suggestion_id`, `finish_reason`, `grounded_facts`, `implementation_notes`, `is_fallback`, `is_truncated`, `language`, `model`, `open_questions`, `provider`, `rationale` |
+| [schemas_triage](../modules/schemas_triage.md) | 0 | `acceptance_criteria`, `brief`, `classification_suggestion_id`, `finish_reason`, `grounded_facts`, `implementation_notes`, `is_fallback`, `is_truncated`, `language`, `model`, `open_questions`, `provider` |
 
 ### Structure
 

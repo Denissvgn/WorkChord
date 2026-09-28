@@ -11,13 +11,13 @@ _Auto-generated from `TaskEditModalContentProps` in `frontend/src/components/gan
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `task` | `GanttTask` | *required* | — |
-| `iterationId` | `number` | *required* | — |
-| `onClose` | `() => void` | *required* | — |
-| `sandboxMode` | `boolean` | *required* | — |
-| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | *required* | — |
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `task` | `GanttTask` | Yes | — | — |
+| `iterationId` | `number` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `sandboxMode` | `boolean` | Yes | — | — |
+| `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | No | — | — |
 
 ## Methods
 
