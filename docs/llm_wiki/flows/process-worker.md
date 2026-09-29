@@ -40,14 +40,14 @@ sequenceDiagram
     participant p17 as _current_revision
     participant p18 as set
     participant p19 as head_revision
-    participant p20 as LEGACY_CORE_TABLES.issubset
-    participant p21 as CURRENT_SENTINEL_TABLES.issubset
-    participant p22 as DatabaseStatus
-    participant p23 as len
-    participant p24 as _sync_engine
-    participant p25 as database_configuration
-    participant p26 as create_engine
-    participant p27 as dict
+    participant p20 as DatabaseStatus
+    participant p21 as len
+    participant p22 as _sync_engine
+    participant p23 as database_configuration
+    participant p24 as create_engine
+    participant p25 as dict
+    participant p26 as engine.connect
+    participant p27 as engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
     p0-->>p1: build_parser().parse_args
     p0->>p2: build_parser
     p2-->>p3: argparse.ArgumentParser
@@ -69,18 +69,18 @@ sequenceDiagram
     p13->>p17: _current_revision
     p13-->>p18: set
     p13->>p19: head_revision
-    p13-->>p20: LEGACY_CORE_TABLES.issubset
-    p13-->>p20: LEGACY_CORE_TABLES.issubset
-    p13-->>p21: CURRENT_SENTINEL_TABLES.issubset
-    p13->>p22: DatabaseStatus
-    p13-->>p23: len
-    p12->>p24: _sync_engine
-    p24->>p25: database_configuration
-    p24-->>p26: create_engine
-    p24-->>p27: dict
+    p13->>p20: DatabaseStatus
+    p13-->>p21: len
+    p12->>p22: _sync_engine
+    p22->>p23: database_configuration
+    p22-->>p24: create_engine
+    p22-->>p25: dict
+    p12-->>p26: engine.connect
+    p12->>p13: _inspect_database_connection
+    p12-->>p27: engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
 ```
 
-> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 53 interactions; 23 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

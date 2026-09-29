@@ -6,6 +6,9 @@
 
 Operational database upgrade command.
 
+Read-only inspection is available through `--check`. Schema mutation requires the migration process role, with `--schema-only` for an empty destination or `--no-repairs` for a recognized revision chain. `--repairs-only` belongs to the separate repair role. Unversioned and older unreleased databases cannot be stamped through this command.
+
+
 ## Imports
 
 | Source | Symbols |

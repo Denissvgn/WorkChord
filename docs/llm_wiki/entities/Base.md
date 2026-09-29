@@ -141,4 +141,4 @@ flowchart LR
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `label` | import | [models_label](../modules/models_label.md) | — |
 
-> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.
+> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.

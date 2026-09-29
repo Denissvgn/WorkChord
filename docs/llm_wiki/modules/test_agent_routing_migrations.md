@@ -4,7 +4,7 @@
 
 ## Description
 
-Alembic and cross-dialect DDL coverage for routing Wave 1.
+Initial schema and cross-dialect routing constraints.
 
 ## Imports
 
@@ -16,12 +16,10 @@ Alembic and cross-dialect DDL coverage for routing Wave 1.
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTaskAssignment`, `TaskRoutingAssessment` |
 | `app.services.upgrade_service` | `alembic_config` |
-| `datetime` | `UTC`, `datetime` |
 | `pathlib` | `Path` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `create_engine`, `inspect`, `text` |
 | `sqlalchemy.dialects` | `postgresql` |
-| `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.schema` | `CreateIndex`, `CreateTable` |
 
 ## Local dependency map
@@ -63,7 +61,6 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `routing_migration_config` | `(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)` | `@pytest.fixture` | — |
 | `_sync_url` | `(path: Path) -> str` | — | — |
-| `test_upgrade_downgrade_upgrade_from_empty_database` | `(routing_migration_config) -> None` | `@pytest.mark.sqlite` | — |
-| `test_legacy_assignment_and_model_less_run_survive_upgrade` | `(routing_migration_config) -> None` | `@pytest.mark.sqlite` | — |
+| `test_routing_schema_from_empty_database` | `(routing_migration_config) -> None` | `@pytest.mark.sqlite` | — |
 | `test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_alembic_reports_exactly_one_head` | `() -> None` | `@pytest.mark.contract` | — |

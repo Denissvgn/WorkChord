@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:402176e11bd5c7e6b8ddee84be2f53119fab379eb7af3669b32fa7f5a3c54a75",
-    "knowledge_index_hash": "sha256:b2bda86997f0b33836378d80410e16cf89705ebb24c85acad265061ee86d47ce",
-    "surface_index_hash": "sha256:4a3e73e3a31ca9938f21f9280ad6a2c53a2113e986d612343a5e32fb904c2ea3"
+    "evaluated_envelope_hash": "sha256:32f74a93b164a8dd676d8df99e1093c0a107113e9d296247bffce7b4b5a8b0bb",
+    "knowledge_index_hash": "sha256:9f1fa6278943b5817c768ab69fc639778d646f47fad4c3cb19a209c4cfe73d0d",
+    "surface_index_hash": "sha256:b9df54944de9f249a4bac4a76aeb0a6007553c7f43d452b7484b9fcd39aa9484"
   },
   "evidence_baselines": {
     "entities/AccessibleNameViolation.md": {
@@ -2597,10 +2597,10 @@
     },
     "entities/DatabaseState.md": {
       "basis": {
-        "concept_observation_hash": "sha256:66f4afe9f2fd7373158806132c74a61ab0f934b24e6d851dc4f2bcd5d8b49dbf",
+        "concept_observation_hash": "sha256:531fa59dc698d75accc6215d471499c8fbd6ac42e4a689ccd92b5fd81a1feadf",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2994ec02a8738ec78de2dc4450d4861d12b65efa3ac527d093c7fab348ea169a",
+        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -2610,7 +2610,7 @@
         "concept_observation_hash": "sha256:8b520b5b126f62c19923580740f65e663ee5d1022547498100f188188f8d3597",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2994ec02a8738ec78de2dc4450d4861d12b65efa3ac527d093c7fab348ea169a",
+        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -8790,7 +8790,7 @@
         "concept_observation_hash": "sha256:add03cafedcb882ce0165edc2d06e737a5750fe473f8e9a079b43bd926578102",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2994ec02a8738ec78de2dc4450d4861d12b65efa3ac527d093c7fab348ea169a",
+        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -14035,403 +14035,13 @@
       },
       "state": "known"
     },
-    "modules/20260506_0000_legacy_core_baseline.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:f6fb24bb2b8c858688e65c91a81184f391f462814a16317d4471eed763891504",
-        "source_path": "backend/app/migrations/versions/20260506_0000_legacy_core_baseline.py"
-      },
-      "state": "known"
-    },
-    "modules/20260507_0001_agentic_tracing.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:7dd7dca704dfe449f8ec5e7819f588b7ea0333868d4d9955d9b2da3d5d209fcb",
-        "source_path": "backend/app/migrations/versions/20260507_0001_agentic_tracing.py"
-      },
-      "state": "known"
-    },
-    "modules/20260507_0002_create_projects.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:a6562d71e0bf3149e977a8781ab572fc85627b72251dba02d86b58ea1a118f0b",
-        "source_path": "backend/app/migrations/versions/20260507_0002_create_projects.py"
-      },
-      "state": "known"
-    },
-    "modules/20260507_0003_link_tasks_projects.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:3abf7c3c35397cde51d3994fabc4776bce287fcaa6b296c8a05527f25530448c",
-        "source_path": "backend/app/migrations/versions/20260507_0003_link_tasks_projects.py"
-      },
-      "state": "known"
-    },
-    "modules/20260508_0004_create_triage_items.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:8f590600837731b1721209235736739400407017225bf4795da759ff0a50c682",
-        "source_path": "backend/app/migrations/versions/20260508_0004_create_triage_items.py"
-      },
-      "state": "known"
-    },
-    "modules/20260508_0005_create_work_templates.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:c6d0699a7a996a14edc9e056d83798ed846a85b49e861b1d34e223035d654407",
-        "source_path": "backend/app/migrations/versions/20260508_0005_create_work_templates.py"
-      },
-      "state": "known"
-    },
-    "modules/20260508_0006_add_work_template_seed_key.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:f5b0081bc77c4ab6164f315b3948862850350a8ba9cc032a71754b1499f4d1d4",
-        "source_path": "backend/app/migrations/versions/20260508_0006_add_work_template_seed_key.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0007_create_label_groups.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:23f448d82bd07c6ddb4d130afc119e187fbd77e914338494530ec186f4a78e93",
-        "source_path": "backend/app/migrations/versions/20260509_0007_create_label_groups.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0008_create_saved_views.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:5eb9dd9f5483500490c26326e3d38558c4f721664d399393ca5c5aaa7f64b557",
-        "source_path": "backend/app/migrations/versions/20260509_0008_create_saved_views.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0009_add_saved_view_seed_key.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:6cc12ee00ed269227b044cd69715c7da189d4ee36bb77e21f66f6eaf6aac1066",
-        "source_path": "backend/app/migrations/versions/20260509_0009_add_saved_view_seed_key.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0010_create_project_updates.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:c013a0ff7fa7e4cdde767255faa402c096700decb2910591aebfc60257e997c3",
-        "source_path": "backend/app/migrations/versions/20260509_0010_create_project_updates.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0011_create_project_milestones.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:1b720e72a991e0a080b711547e9c945ad7cd97f25008533bf0bffa900ba46726",
-        "source_path": "backend/app/migrations/versions/20260509_0011_create_project_milestones.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0012_link_tasks_milestones.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:bf72e01c4921d679138cf85a130ff6b0f0d8a1d428b656df006822607179780b",
-        "source_path": "backend/app/migrations/versions/20260509_0012_link_tasks_milestones.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0013_create_initiatives.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:50cee21b271bf2ab80d94e2bf183858e05265ef3ac69758d267f86c59e1a9255",
-        "source_path": "backend/app/migrations/versions/20260509_0013_create_initiatives.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0014_create_external_links.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:67b7af16664bdf5754d24699a9527b90f9fe8761c4981516846c443555857f87",
-        "source_path": "backend/app/migrations/versions/20260509_0014_create_external_links.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0015_create_github_status_automation_rules.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:41caf207ce220133523cab2f57b02209dc9177c7c63299aeafb78929cbeeb30c",
-        "source_path": "backend/app/migrations/versions/20260509_0015_create_github_status_automation_rules.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0016_create_releases.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:d8a014bdfd7db83d7aa955c353253b014d312e057168a26f5abed77c8b745c40",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:f57495650dea16c19ef1e5fd66ea9e0f0ddf0d254758afcfdf5ec48270a8005e",
-        "source_path": "backend/app/migrations/versions/20260509_0016_create_releases.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0017_create_request_sources.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:91cd0e09692be4a1882a0f77752114da4c9543b805861effdc22f41b790ec0d8",
-        "source_path": "backend/app/migrations/versions/20260509_0017_create_request_sources.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0018_create_triage_classification_suggestions.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:45c68d5b3f55fff75c0e9704d37335855fb55f2d56011a74c8da78016e37e674",
-        "source_path": "backend/app/migrations/versions/20260509_0018_create_triage_classification_suggestions.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0019_create_outbound_webhooks.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:f9d1af2addda0bd7a4742ea8cbe508f970d4337a0746905f604af743af04006b",
-        "source_path": "backend/app/migrations/versions/20260509_0019_create_outbound_webhooks.py"
-      },
-      "state": "known"
-    },
-    "modules/20260509_0020_add_triage_metadata_json.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:6a118acd82b0312e6692eb883e0f6c1fe392def9d7f1d84119d84dba28069109",
-        "source_path": "backend/app/migrations/versions/20260509_0020_add_triage_metadata_json.py"
-      },
-      "state": "known"
-    },
-    "modules/20260510_0021_create_team_member_profiles.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:830e013dcb835859700a8bb64baa35e98677bfb99a2c28d5546a3fe0ca742ee3",
-        "source_path": "backend/app/migrations/versions/20260510_0021_create_team_member_profiles.py"
-      },
-      "state": "known"
-    },
-    "modules/20260510_0022_create_system_settings.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:f47cd22087f622f4aeccec3f5ce1f0df800a594e245095f05211d5612d2db14d",
-        "source_path": "backend/app/migrations/versions/20260510_0022_create_system_settings.py"
-      },
-      "state": "known"
-    },
-    "modules/20260510_0023_create_user_sessions.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:46f14c49216ee780a49527472853bbcf75def31a3506c768333b823988c0c8a5",
-        "source_path": "backend/app/migrations/versions/20260510_0023_create_user_sessions.py"
-      },
-      "state": "known"
-    },
-    "modules/20260515_0024_move_portfolio_ownership_to_profiles.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:888e75927f2f53fb8dc29ddb9f436cc9ab10c8c53809a6fc34d062f044ff7f65",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:7ab4ae223943f45ff695007f1debfd8157a0f63e781d12267f511d1018719c33",
-        "source_path": "backend/app/migrations/versions/20260515_0024_move_portfolio_ownership_to_profiles.py"
-      },
-      "state": "known"
-    },
-    "modules/20260516_0025_add_project_scope_to_iterations.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:9786ba6e3b03b243dd98f4c2aef095560c5c464466814c22b8159387091ed277",
-        "source_path": "backend/app/migrations/versions/20260516_0025_add_project_scope_to_iterations.py"
-      },
-      "state": "known"
-    },
-    "modules/20260709_0026_add_opaque_browser_sessions.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:805c29a8b8b7b65e8caba07c781b751702137f37e764613f281067370f4b8208",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:500e9ec5043db0d181e3ab067f96a83ee15fe0db9b0addc5ca0c30b25ed6444e",
-        "source_path": "backend/app/migrations/versions/20260709_0026_add_opaque_browser_sessions.py"
-      },
-      "state": "known"
-    },
-    "modules/20260709_0027_add_durable_outbound_delivery_queue.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:7a47524a9fbab3d990deaca8c888757f381607f5affb08e2687ebe5f3c96656e",
-        "source_path": "backend/app/migrations/versions/20260709_0027_add_durable_outbound_delivery_queue.py"
-      },
-      "state": "known"
-    },
-    "modules/20260711_0028_add_agent_skill_control_plane.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:c843554978402bb9da22221542b6ea55108d85a9f400452608203478dfa19cc0",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:b54923b626811c6ebffed0a7e358ad07bfec7a905e30f8820d30f281d2928cb6",
-        "source_path": "backend/app/migrations/versions/20260711_0028_add_agent_skill_control_plane.py"
-      },
-      "state": "known"
-    },
-    "modules/20260718_0029_add_agent_model_catalog.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:8b2e91093e10c183d1922654ba905293b7909ff5896e721b2bae0eee0911c0dc",
-        "source_path": "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py"
-      },
-      "state": "known"
-    },
-    "modules/20260718_0030_add_task_routing_assessments.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:ae75e8fbd9546a1a60ddc59e5563e3222160d7d2912ecda91e27c3ba7b6796af",
-        "source_path": "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py"
-      },
-      "state": "known"
-    },
-    "modules/20260718_0031_align_postgresql_types.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:5112a7f02407066fd7457d6ee749af73e64367920a3e4ad181b30478a8b42905",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:3bb6ccdf82abfb3a5e18f9b1a97621c05a00d9029976873cff647ff548ab584f",
-        "source_path": "backend/app/migrations/versions/20260718_0031_align_postgresql_types.py"
-      },
-      "state": "known"
-    },
-    "modules/20260718_0032_add_database_migration_gate.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:ff549cdfe2356be0300bed3b8cd65fdf1991a89114031b0ada2f20f9e4102950",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:e8934a9f98c344c7e54b55dadbfb67961c54c72f38a427eb9cc06dd52e0b918e",
-        "source_path": "backend/app/migrations/versions/20260718_0032_add_database_migration_gate.py"
-      },
-      "state": "known"
-    },
-    "modules/20260719_0033_add_autonomy_control_plane.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:ff549cdfe2356be0300bed3b8cd65fdf1991a89114031b0ada2f20f9e4102950",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:37041a3f2ae658f3f9bf6147ea4a05d9a51fb082f011598cd8fcee9efc822399",
-        "source_path": "backend/app/migrations/versions/20260719_0033_add_autonomy_control_plane.py"
-      },
-      "state": "known"
-    },
-    "modules/20260727_0034_add_agent_run_model_trust.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2bcc55e596f50dab3b150dc28e0e5e4ef88153e69e97e2bec025349c3c321f53",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:659d64c40fbfec76dd5d26f6874f4bb5d48247992cdf408c2c8433ee75380918",
-        "source_path": "backend/app/migrations/versions/20260727_0034_add_agent_run_model_trust.py"
-      },
-      "state": "known"
-    },
-    "modules/20260728_0035_add_agent_team_setup.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:5ff64714059e2ecfe369c409da7c207b258eb0120290cc5e077e54c914fe4066",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:45bf306ab490a2c2a0a9a0e5d5a29f33da94a278b9c602848e1bb175940bf144",
-        "source_path": "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py"
-      },
-      "state": "known"
-    },
-    "modules/20260802_0036_add_plan_shares.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:5ff64714059e2ecfe369c409da7c207b258eb0120290cc5e077e54c914fe4066",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:762645919a24314cad76f525749ca4345a30171224cb0eca301ca2d1b9a87466",
-        "source_path": "backend/app/migrations/versions/20260802_0036_add_plan_shares.py"
-      },
-      "state": "known"
-    },
-    "modules/20260915_0037_add_authority_and_recovery.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:446036c4349d5f2f98c526007f9055df23b4dd4aa955b96b9d868afa989445ac",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:3bd2bbd36690c3be883bc1fbbd65bffaf39f62ce0b5e985f55dac89847661b5f",
-        "source_path": "backend/app/migrations/versions/20260915_0037_add_authority_and_recovery.py"
-      },
-      "state": "known"
-    },
-    "modules/20260915_0038_canonical_task_domain.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:5522b4cf143bed15d13a247bf06b20ce4a16563efa70b33c075d03f65c179f52",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "module",
-        "source_content_hash": "sha256:d30607302bcdad93da05d6afb67f9a1309f69f4faa7a8d0fde16bb16e36ca2e4",
-        "source_path": "backend/app/migrations/versions/20260915_0038_canonical_task_domain.py"
-      },
-      "state": "known"
-    },
-    "modules/20260916_0039_task_deletion_fences.md": {
+    "modules/20260928_0001_initial_schema.md": {
       "basis": {
         "concept_observation_hash": "sha256:a8a669d4c75031d07ee1eead6822cf4180a7d48f6250ab654c64de5eb95a09b9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8b69ed8de20c7a1f2f2147ea7adc7a0fa21bfae0c9483e917b091d281da1b340",
-        "source_path": "backend/app/migrations/versions/20260916_0039_task_deletion_fences.py"
+        "source_content_hash": "sha256:9838fd7d8f5821021ea7e39546be630b079674140f59ff85155c6d7d0dd5d86e",
+        "source_path": "backend/app/migrations/versions/20260928_0001_initial_schema.py"
       },
       "state": "known"
     },
@@ -17237,10 +16847,10 @@
     },
     "modules/installed_wheel_postgresql_qualification.md": {
       "basis": {
-        "concept_observation_hash": "sha256:0c32d0794f0d178dc143c275651f73c78251773d9870e57c131648bcee51f890",
+        "concept_observation_hash": "sha256:0bc07b4b8ed5d14ccfa9b361a397d2bc25d090310e52b8692d1bb5f03242772b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:e6a3bf0da42da712937205db2cf81884c09eb6a555eb1198ccf4c92e98947586",
+        "source_content_hash": "sha256:feab2bd57041eccb5f50918257e4a31b20933f91b6490744ffadb5c27351979c",
         "source_path": "scripts/ci/installed_wheel_postgresql_qualification.py"
       },
       "state": "known"
@@ -19337,10 +18947,10 @@
     },
     "modules/test_agent_routing_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6b481fb37922371e0ca004ef86cfcc434e9070c485f23e61d830e211b32bf055",
+        "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:24a669d3e1669f7a0284da6dc670217bb40fd5ff643b90abefc27164ba21a301",
+        "source_content_hash": "sha256:7e878998857ad104f8ee87648716de27a7be390d0ae26a935972c664f37a1d3a",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -19457,10 +19067,10 @@
     },
     "modules/test_authority_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:2f1ef852c3ad1e3c96bb761902f038cab8d7f5940f7df7e3482c1be80a1fd1f9",
+        "concept_observation_hash": "sha256:c2d6ff92becf482346b851169d6884fee4d4bbb4e6ade596b2bc0e89e5d300cf",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:da8d15c4c559c45d766a981d0ba36958b20d6620ce8bb8986a5ffa3d3f2f5db0",
+        "source_content_hash": "sha256:99bdd362dab5e40d6f03c589c003c8dc8ab472f0ad7a77f04de7eeaab5fc9c52",
         "source_path": "backend/tests/test_authority_migrations.py"
       },
       "state": "known"
@@ -19477,10 +19087,10 @@
     },
     "modules/test_autonomy_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6f8c0ef5b200ed05b2b7fec038b7740e0f1afae8c2d3e11a211450475d9ff735",
+        "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:da091c30fd1f3d2fe360a52c785096debc8af00c69dc1d885ce0ea5aa52aa91a",
+        "source_content_hash": "sha256:69d250eaa1869caa9c9e5e641affb3075d110159378e1950379039bd26030d65",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -19562,6 +19172,16 @@
         "scope": "module",
         "source_content_hash": "sha256:974e2ae06eeeeca0300d92ceda5377538dc6de8ab5b55098dba20129d6cd8334",
         "source_path": "backend/tests/test_identity_lifecycle.py"
+      },
+      "state": "known"
+    },
+    "modules/test_initial_schema.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:303a96b9cf64ae500f476fe70149039396864a6af80826ecd3c3a92070ef141e",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:17513c3241971149cb54ef2d5faffe6276ec21d28e36473e725c616caa179c89",
+        "source_path": "backend/tests/migrations/test_initial_schema.py"
       },
       "state": "known"
     },
@@ -19667,10 +19287,10 @@
     },
     "modules/test_postgresql_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:289db0c29f5ff6f8b582df0429499f48e50be151c793146a5bc900c209e78a6e",
+        "concept_observation_hash": "sha256:60e306649815d77b559aa8606b0438cd630a3e63c8b3a4f2d72dce7ada10b257",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8bf68b42db6143ec5fa354b80a89f3d3ab685f5c6510c92538679d3e0ccd8745",
+        "source_content_hash": "sha256:1e8bccf9ab7023c3798b2b3c9afbf0018ddbc4aeca875754263856c8ba2f452d",
         "source_path": "backend/tests/migrations/test_postgresql_migrations.py"
       },
       "state": "known"
@@ -19767,10 +19387,10 @@
     },
     "modules/test_sqlite_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:3eeaaa5388633faefcf96f9f9702b643fc0a0244322e2b2cc420ee8272bba789",
+        "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:ae7110d5f01e2c5935fbfd3755847082ed7e3fa6306e3c75af07e37fbcd641c6",
+        "source_content_hash": "sha256:87b7a5fbd483dd13b8a02ee9354336e7715c71dc0b12fcc9c4337a11677cbd9a",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -19797,10 +19417,10 @@
     },
     "modules/test_task_domain_migrations.md": {
       "basis": {
-        "concept_observation_hash": "sha256:15189770840c915c9b2153c6f8af80f1c36647f8025de6f2c4fd010165c34bd8",
+        "concept_observation_hash": "sha256:082adf24146cdfd60db0271f9a1e6a2775ba949f80e7762ced9d1ee11fd9f737",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:926d4f868a929b32c795f2c6138d490dba5b52bdb95013135c55ad82a5c26785",
+        "source_content_hash": "sha256:10845d739a6667986e3d5ce9b8a97e9f2031670c159567df5c4c1c523425e006",
         "source_path": "backend/tests/test_task_domain_migrations.py"
       },
       "state": "known"
@@ -20070,17 +19690,17 @@
         "concept_observation_hash": "sha256:a637c3ffe28f93c3dc9b2762025ab11bc048c1e1d7cd489ee3f5a1addc9e2502",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2021dbf3f7c0a5916174fe4077d979be963a51e0ccffd09336df7c7ada145dac",
+        "source_content_hash": "sha256:d2861ca6260d570c5664314cdaf7965534eb4934a4f39141a106ec9b44b41051",
         "source_path": "backend/app/cli/upgrade.py"
       },
       "state": "known"
     },
     "modules/upgrade_service.md": {
       "basis": {
-        "concept_observation_hash": "sha256:eb2aee76f72e7e5406e458a097e0c4457f4a9a82374459e5264e393b0b865fdd",
+        "concept_observation_hash": "sha256:0d1d5dc3158eb48a6eadcd3ea63df001676bc113987a29ab2dba0e1ff00efde3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2994ec02a8738ec78de2dc4450d4861d12b65efa3ac527d093c7fab348ea169a",
+        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -20530,13 +20150,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:7ca8d80a83e5c6427265ed5826b71469b5a1244dd5d3f1c1766fc471a06d50c1",
-      "inventory_hash": "sha256:1ee010cf82ec2f9a79c41603030072267ca94eff631684f212a10cfd112fc4aa",
-      "lifecycle_hash": "sha256:ee9ff523bc7c241c0bd10c4417d102c4c76d481815c336995924473a9747d98f",
-      "markdown_snapshot_hash": "sha256:0db541e58b315a69ab1aab10ce8335d59d45fd1a11cf94b74302fef45f58e962",
-      "observation_inputs_hash": "sha256:61843a22657dd9547d921dad2c13ab00bd9b4e6e14ac4f31c307159c816976be",
+      "inventory_hash": "sha256:46d1bfe53b290aad8f8313d627a35737b823ed8c483568129a583b277be6b133",
+      "lifecycle_hash": "sha256:bc1caf8055d4c7ad60752257f8d728edd43dacbfd202948ccde0f023217607e0",
+      "markdown_snapshot_hash": "sha256:cc8c5e69af7ac2b64f2e78a2e3a54244cf515988e9d64cec529d667f6154477f",
+      "observation_inputs_hash": "sha256:52e5a45f676ff707cc7fc06e7bc9006a4938d0ce96fcf27062fb3d6746b26289",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:4b9dcbf831e0695c6c587deeadfd7b300951812e5cc1184a80c596319bb71012"
+      "source_snapshot_hash": "sha256:d90923642a186a8881b580b39ff8e70206df402de0ae84d8fe36644349096d60"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -28961,165 +28581,9 @@
       "scope": "module",
       "source_path": "backend/tests/fixtures/postgresql_migrations/versions/0001_wave0_probe.py"
     },
-    "modules/20260506_0000_legacy_core_baseline.md": {
+    "modules/20260928_0001_initial_schema.md": {
       "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260506_0000_legacy_core_baseline.py"
-    },
-    "modules/20260507_0001_agentic_tracing.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260507_0001_agentic_tracing.py"
-    },
-    "modules/20260507_0002_create_projects.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260507_0002_create_projects.py"
-    },
-    "modules/20260507_0003_link_tasks_projects.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260507_0003_link_tasks_projects.py"
-    },
-    "modules/20260508_0004_create_triage_items.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260508_0004_create_triage_items.py"
-    },
-    "modules/20260508_0005_create_work_templates.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260508_0005_create_work_templates.py"
-    },
-    "modules/20260508_0006_add_work_template_seed_key.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260508_0006_add_work_template_seed_key.py"
-    },
-    "modules/20260509_0007_create_label_groups.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0007_create_label_groups.py"
-    },
-    "modules/20260509_0008_create_saved_views.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0008_create_saved_views.py"
-    },
-    "modules/20260509_0009_add_saved_view_seed_key.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0009_add_saved_view_seed_key.py"
-    },
-    "modules/20260509_0010_create_project_updates.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0010_create_project_updates.py"
-    },
-    "modules/20260509_0011_create_project_milestones.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0011_create_project_milestones.py"
-    },
-    "modules/20260509_0012_link_tasks_milestones.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0012_link_tasks_milestones.py"
-    },
-    "modules/20260509_0013_create_initiatives.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0013_create_initiatives.py"
-    },
-    "modules/20260509_0014_create_external_links.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0014_create_external_links.py"
-    },
-    "modules/20260509_0015_create_github_status_automation_rules.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0015_create_github_status_automation_rules.py"
-    },
-    "modules/20260509_0016_create_releases.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0016_create_releases.py"
-    },
-    "modules/20260509_0017_create_request_sources.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0017_create_request_sources.py"
-    },
-    "modules/20260509_0018_create_triage_classification_suggestions.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0018_create_triage_classification_suggestions.py"
-    },
-    "modules/20260509_0019_create_outbound_webhooks.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0019_create_outbound_webhooks.py"
-    },
-    "modules/20260509_0020_add_triage_metadata_json.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260509_0020_add_triage_metadata_json.py"
-    },
-    "modules/20260510_0021_create_team_member_profiles.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260510_0021_create_team_member_profiles.py"
-    },
-    "modules/20260510_0022_create_system_settings.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260510_0022_create_system_settings.py"
-    },
-    "modules/20260510_0023_create_user_sessions.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260510_0023_create_user_sessions.py"
-    },
-    "modules/20260515_0024_move_portfolio_ownership_to_profiles.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260515_0024_move_portfolio_ownership_to_profiles.py"
-    },
-    "modules/20260516_0025_add_project_scope_to_iterations.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260516_0025_add_project_scope_to_iterations.py"
-    },
-    "modules/20260709_0026_add_opaque_browser_sessions.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260709_0026_add_opaque_browser_sessions.py"
-    },
-    "modules/20260709_0027_add_durable_outbound_delivery_queue.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260709_0027_add_durable_outbound_delivery_queue.py"
-    },
-    "modules/20260711_0028_add_agent_skill_control_plane.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260711_0028_add_agent_skill_control_plane.py"
-    },
-    "modules/20260718_0029_add_agent_model_catalog.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py"
-    },
-    "modules/20260718_0030_add_task_routing_assessments.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py"
-    },
-    "modules/20260718_0031_align_postgresql_types.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260718_0031_align_postgresql_types.py"
-    },
-    "modules/20260718_0032_add_database_migration_gate.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260718_0032_add_database_migration_gate.py"
-    },
-    "modules/20260719_0033_add_autonomy_control_plane.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260719_0033_add_autonomy_control_plane.py"
-    },
-    "modules/20260727_0034_add_agent_run_model_trust.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260727_0034_add_agent_run_model_trust.py"
-    },
-    "modules/20260728_0035_add_agent_team_setup.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py"
-    },
-    "modules/20260802_0036_add_plan_shares.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260802_0036_add_plan_shares.py"
-    },
-    "modules/20260915_0037_add_authority_and_recovery.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260915_0037_add_authority_and_recovery.py"
-    },
-    "modules/20260915_0038_canonical_task_domain.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260915_0038_canonical_task_domain.py"
-    },
-    "modules/20260916_0039_task_deletion_fences.md": {
-      "scope": "module",
-      "source_path": "backend/app/migrations/versions/20260916_0039_task_deletion_fences.py"
+      "source_path": "backend/app/migrations/versions/20260928_0001_initial_schema.py"
     },
     "modules/AdminAccessGate.md": {
       "scope": "module",
@@ -31172,6 +30636,10 @@
     "modules/test_identity_lifecycle.md": {
       "scope": "module",
       "source_path": "backend/tests/test_identity_lifecycle.py"
+    },
+    "modules/test_initial_schema.md": {
+      "scope": "module",
+      "source_path": "backend/tests/migrations/test_initial_schema.py"
     },
     "modules/test_load_seed_postgresql.md": {
       "scope": "module",
@@ -34676,10 +34144,10 @@
           }
         }
       },
-      "hash": "sha256:2021dbf3f7c0a5916174fe4077d979be963a51e0ccffd09336df7c7ada145dac",
+      "hash": "sha256:d2861ca6260d570c5664314cdaf7965534eb4934a4f39141a106ec9b44b41051",
       "language": "python",
       "module_page": "upgrade",
-      "semantic_hash": "sha256:bb8895ca3a53f4978e748c23a83858e9f5283c5b7f3329a4a6a4377860e064d2"
+      "semantic_hash": "sha256:974327483dac1822f343f8614a5ff71842328b3006bd4007701ba228235c9421"
     },
     "backend/app/cli/worker.py": {
       "entities": [],
@@ -35936,7 +35404,7 @@
       "module_page": "migrations_env",
       "semantic_hash": "sha256:d58e22ef3bf3c14e77cfa56af2ff2712e32accd18308ea3de31784a701234647"
     },
-    "backend/app/migrations/versions/20260506_0000_legacy_core_baseline.py": {
+    "backend/app/migrations/versions/20260928_0001_initial_schema.py": {
       "entities": [],
       "entity_page_occurrences": [],
       "entity_pages": {},
@@ -35944,808 +35412,17 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Baseline for pre-backlog core planning schema.\n\nRevision ID: 20260506_0000\nRevises: None\nCreate Date: 2026-05-06",
+          "description": "Create the complete initial WorkChord schema.\n\nThis revision is a frozen schema definition. Future changes belong in new\nrevisions; importing application model metadata here would change history.\nSchema creation does not seed identities, settings, or other application rows.",
           "functions": {
             "downgrade": "—",
             "upgrade": "—"
           }
         }
       },
-      "hash": "sha256:f6fb24bb2b8c858688e65c91a81184f391f462814a16317d4471eed763891504",
+      "hash": "sha256:9838fd7d8f5821021ea7e39546be630b079674140f59ff85155c6d7d0dd5d86e",
       "language": "python",
-      "module_page": "20260506_0000_legacy_core_baseline",
-      "semantic_hash": "sha256:4201e0e59a397450e9a963b9eb7f2f880aa66c7650ee9a73a5ac83c0b8313eb1"
-    },
-    "backend/app/migrations/versions/20260507_0001_agentic_tracing.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "add agentic task source and tracing tables\n\nRevision ID: 20260507_0001\nRevises: 20260506_0000\nCreate Date: 2026-05-07",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:7dd7dca704dfe449f8ec5e7819f588b7ea0333868d4d9955d9b2da3d5d209fcb",
-      "language": "python",
-      "module_page": "20260507_0001_agentic_tracing",
-      "semantic_hash": "sha256:e72058f7c8d5fa9c46f1a366b67168d110d7026e7c64d0cb00fc76368f5277cb"
-    },
-    "backend/app/migrations/versions/20260507_0002_create_projects.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create projects table\n\nRevision ID: 20260507_0002\nRevises: 20260507_0001\nCreate Date: 2026-05-07",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:a6562d71e0bf3149e977a8781ab572fc85627b72251dba02d86b58ea1a118f0b",
-      "language": "python",
-      "module_page": "20260507_0002_create_projects",
-      "semantic_hash": "sha256:64a52bffd46859c61bae7922643745a5fab187948e9262f46d9059717e5f79d4"
-    },
-    "backend/app/migrations/versions/20260507_0003_link_tasks_projects.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "link tasks to projects\n\nRevision ID: 20260507_0003\nRevises: 20260507_0002\nCreate Date: 2026-05-07",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:3abf7c3c35397cde51d3994fabc4776bce287fcaa6b296c8a05527f25530448c",
-      "language": "python",
-      "module_page": "20260507_0003_link_tasks_projects",
-      "semantic_hash": "sha256:b8080cddb9a2d7f001e57797688f7618b9521e920ecf1a6a3302f129148e91dd"
-    },
-    "backend/app/migrations/versions/20260508_0004_create_triage_items.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create triage items table\n\nRevision ID: 20260508_0004\nRevises: 20260507_0003\nCreate Date: 2026-05-08",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:8f590600837731b1721209235736739400407017225bf4795da759ff0a50c682",
-      "language": "python",
-      "module_page": "20260508_0004_create_triage_items",
-      "semantic_hash": "sha256:c926a4b988de699cc812afdeedac7c6ad634f7d27b5e539828376802f31d0014"
-    },
-    "backend/app/migrations/versions/20260508_0005_create_work_templates.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create work templates table\n\nRevision ID: 20260508_0005\nRevises: 20260508_0004\nCreate Date: 2026-05-08",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:c6d0699a7a996a14edc9e056d83798ed846a85b49e861b1d34e223035d654407",
-      "language": "python",
-      "module_page": "20260508_0005_create_work_templates",
-      "semantic_hash": "sha256:17ba1964baf5e9455f427ab22d9275ecf5e0cfd834d70a3aa9dbb4468df72a2a"
-    },
-    "backend/app/migrations/versions/20260508_0006_add_work_template_seed_key.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "add work template seed key\n\nRevision ID: 20260508_0006\nRevises: 20260508_0005\nCreate Date: 2026-05-08",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:f5b0081bc77c4ab6164f315b3948862850350a8ba9cc032a71754b1499f4d1d4",
-      "language": "python",
-      "module_page": "20260508_0006_add_work_template_seed_key",
-      "semantic_hash": "sha256:566612ade2875a8c5acec51ed47e354cec5194f2fe0783154d689afb359af52b"
-    },
-    "backend/app/migrations/versions/20260509_0007_create_label_groups.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create label groups\n\nRevision ID: 20260509_0007\nRevises: 20260508_0006\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:23f448d82bd07c6ddb4d130afc119e187fbd77e914338494530ec186f4a78e93",
-      "language": "python",
-      "module_page": "20260509_0007_create_label_groups",
-      "semantic_hash": "sha256:06a8b3323d9ac32024403f2c66105f9bc173841fe509a676e0557b5cf8e6b87d"
-    },
-    "backend/app/migrations/versions/20260509_0008_create_saved_views.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create saved views\n\nRevision ID: 20260509_0008\nRevises: 20260509_0007\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:5eb9dd9f5483500490c26326e3d38558c4f721664d399393ca5c5aaa7f64b557",
-      "language": "python",
-      "module_page": "20260509_0008_create_saved_views",
-      "semantic_hash": "sha256:2e06b95e821e2c3aee71f4c7f66def21534de8b6e55c46f4fcccb8f0a6ffd845"
-    },
-    "backend/app/migrations/versions/20260509_0009_add_saved_view_seed_key.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "add saved view seed key\n\nRevision ID: 20260509_0009\nRevises: 20260509_0008\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:6cc12ee00ed269227b044cd69715c7da189d4ee36bb77e21f66f6eaf6aac1066",
-      "language": "python",
-      "module_page": "20260509_0009_add_saved_view_seed_key",
-      "semantic_hash": "sha256:92e1eabbdf24eca09666243f0b994a0bb5f9403c6c99f16c536069517017d263"
-    },
-    "backend/app/migrations/versions/20260509_0010_create_project_updates.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create project updates\n\nRevision ID: 20260509_0010\nRevises: 20260509_0009\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:c013a0ff7fa7e4cdde767255faa402c096700decb2910591aebfc60257e997c3",
-      "language": "python",
-      "module_page": "20260509_0010_create_project_updates",
-      "semantic_hash": "sha256:84817dbd73a04b0eeef6d9ab3d9ea4ad780d6a1e45bddd8d3d5e4d7eb4ec3506"
-    },
-    "backend/app/migrations/versions/20260509_0011_create_project_milestones.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create project milestones\n\nRevision ID: 20260509_0011\nRevises: 20260509_0010\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:1b720e72a991e0a080b711547e9c945ad7cd97f25008533bf0bffa900ba46726",
-      "language": "python",
-      "module_page": "20260509_0011_create_project_milestones",
-      "semantic_hash": "sha256:b975007857aeb101e3b7255e76c76facb32b9c40728227b46db6b7c30083053e"
-    },
-    "backend/app/migrations/versions/20260509_0012_link_tasks_milestones.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "link tasks to project milestones\n\nRevision ID: 20260509_0012\nRevises: 20260509_0011\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:bf72e01c4921d679138cf85a130ff6b0f0d8a1d428b656df006822607179780b",
-      "language": "python",
-      "module_page": "20260509_0012_link_tasks_milestones",
-      "semantic_hash": "sha256:dd9725f829a08a391692b3b5d76d64f3a226acce4dae6a74e648877a7d48f747"
-    },
-    "backend/app/migrations/versions/20260509_0013_create_initiatives.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create initiatives\n\nRevision ID: 20260509_0013\nRevises: 20260509_0012\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:50cee21b271bf2ab80d94e2bf183858e05265ef3ac69758d267f86c59e1a9255",
-      "language": "python",
-      "module_page": "20260509_0013_create_initiatives",
-      "semantic_hash": "sha256:4c8a3b032364cd28ac90c74f51c0677ceaf02c6f903db721d8616ba07c90ce62"
-    },
-    "backend/app/migrations/versions/20260509_0014_create_external_links.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create external links\n\nRevision ID: 20260509_0014\nRevises: 20260509_0013\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:67b7af16664bdf5754d24699a9527b90f9fe8761c4981516846c443555857f87",
-      "language": "python",
-      "module_page": "20260509_0014_create_external_links",
-      "semantic_hash": "sha256:1f2b19f90a165e7c65705edf0b4647e6398b6dfe413cc6d0129209e9488dc383"
-    },
-    "backend/app/migrations/versions/20260509_0015_create_github_status_automation_rules.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create github status automation rules\n\nRevision ID: 20260509_0015\nRevises: 20260509_0014\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:41caf207ce220133523cab2f57b02209dc9177c7c63299aeafb78929cbeeb30c",
-      "language": "python",
-      "module_page": "20260509_0015_create_github_status_automation_rules",
-      "semantic_hash": "sha256:63976a80a1e759538056a76f70ecb0b8a5c833315b8de53140cb24389d18fc2a"
-    },
-    "backend/app/migrations/versions/20260509_0016_create_releases.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "create releases\n\nRevision ID: 20260509_0016\nRevises: 20260509_0015\nCreate Date: 2026-05-09",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:f57495650dea16c19ef1e5fd66ea9e0f0ddf0d254758afcfdf5ec48270a8005e",
-      "language": "python",
-      "module_page": "20260509_0016_create_releases",
-      "semantic_hash": "sha256:2dcd6b213abf4cafb8a321b71b78b56fb4fe8b6e33de144f454ec5d5e5e3a293"
-    },
-    "backend/app/migrations/versions/20260509_0017_create_request_sources.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create request sources.\n\nRevision ID: 20260509_0017\nRevises: 20260509_0016\nCreate Date: 2026-05-09 00:17:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:91cd0e09692be4a1882a0f77752114da4c9543b805861effdc22f41b790ec0d8",
-      "language": "python",
-      "module_page": "20260509_0017_create_request_sources",
-      "semantic_hash": "sha256:404727b8e64b568b0ecd3b862370553388164237ce4a9ba2a638b0780bf3a4c8"
-    },
-    "backend/app/migrations/versions/20260509_0018_create_triage_classification_suggestions.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create triage classification suggestions.\n\nRevision ID: 20260509_0018\nRevises: 20260509_0017\nCreate Date: 2026-05-09 00:18:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:45c68d5b3f55fff75c0e9704d37335855fb55f2d56011a74c8da78016e37e674",
-      "language": "python",
-      "module_page": "20260509_0018_create_triage_classification_suggestions",
-      "semantic_hash": "sha256:3eb56b3ece332ca566fc6d0f1e0fe1357b57df5f901364d48f4ac9c8dae8062b"
-    },
-    "backend/app/migrations/versions/20260509_0019_create_outbound_webhooks.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create outbound webhook targets and delivery logs.\n\nRevision ID: 20260509_0019\nRevises: 20260509_0018\nCreate Date: 2026-05-09 00:19:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:f9d1af2addda0bd7a4742ea8cbe508f970d4337a0746905f604af743af04006b",
-      "language": "python",
-      "module_page": "20260509_0019_create_outbound_webhooks",
-      "semantic_hash": "sha256:b92a03d1e354f1e523da9de68a40c35aa9b73946fc0465bd6520cb11f990dc81"
-    },
-    "backend/app/migrations/versions/20260509_0020_add_triage_metadata_json.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add metadata JSON to triage items.\n\nRevision ID: 20260509_0020\nRevises: 20260509_0019\nCreate Date: 2026-05-09 00:20:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:6a118acd82b0312e6692eb883e0f6c1fe392def9d7f1d84119d84dba28069109",
-      "language": "python",
-      "module_page": "20260509_0020_add_triage_metadata_json",
-      "semantic_hash": "sha256:94d04cd4a7bc40e5963617546b5c8d7f9abafe6cfe64cf7e57625d2c02a03f08"
-    },
-    "backend/app/migrations/versions/20260510_0021_create_team_member_profiles.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create team member capability profiles.\n\nRevision ID: 20260510_0021\nRevises: 20260509_0020\nCreate Date: 2026-05-10 00:21:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:830e013dcb835859700a8bb64baa35e98677bfb99a2c28d5546a3fe0ca742ee3",
-      "language": "python",
-      "module_page": "20260510_0021_create_team_member_profiles",
-      "semantic_hash": "sha256:868fabfdb779db6348df06bc188024ad18e9b9043d9b23498cf209d0ea732ff7"
-    },
-    "backend/app/migrations/versions/20260510_0022_create_system_settings.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create runtime system settings.\n\nRevision ID: 20260510_0022\nRevises: 20260510_0021\nCreate Date: 2026-05-10 00:22:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:f47cd22087f622f4aeccec3f5ce1f0df800a594e245095f05211d5612d2db14d",
-      "language": "python",
-      "module_page": "20260510_0022_create_system_settings",
-      "semantic_hash": "sha256:cae4d2c84b54f6e1b2e2648cba6b4f40d582804063058759325d3855fb6bfa26"
-    },
-    "backend/app/migrations/versions/20260510_0023_create_user_sessions.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Create user sessions table.\n\nRevision ID: 20260510_0023\nRevises: 20260510_0022\nCreate Date: 2026-05-10 00:23:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:46f14c49216ee780a49527472853bbcf75def31a3506c768333b823988c0c8a5",
-      "language": "python",
-      "module_page": "20260510_0023_create_user_sessions",
-      "semantic_hash": "sha256:5657ad48f98bda6e1623bdb84175242a7c7bd573326115a067033b037bb99f61"
-    },
-    "backend/app/migrations/versions/20260515_0024_move_portfolio_ownership_to_profiles.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Move portfolio ownership to team member profiles.\n\nRevision ID: 20260515_0024\nRevises: 20260510_0023\nCreate Date: 2026-05-15",
-          "functions": {
-            "_backfill_owner_profiles": "—",
-            "_create_profile_for_member": "—",
-            "_find_profile_id": "—",
-            "_normalize_text_key": "—",
-            "_resolve_profile_id": "—",
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:7ab4ae223943f45ff695007f1debfd8157a0f63e781d12267f511d1018719c33",
-      "language": "python",
-      "module_page": "20260515_0024_move_portfolio_ownership_to_profiles",
-      "semantic_hash": "sha256:6aa17c51f34acf109b6bfabf1abf1c6add16bcb2aa02aea414bb57d12df0bfb4"
-    },
-    "backend/app/migrations/versions/20260516_0025_add_project_scope_to_iterations.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add optional project scope to iterations.\n\nRevision ID: 20260516_0025\nRevises: 20260515_0024\nCreate Date: 2026-05-16",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:9786ba6e3b03b243dd98f4c2aef095560c5c464466814c22b8159387091ed277",
-      "language": "python",
-      "module_page": "20260516_0025_add_project_scope_to_iterations",
-      "semantic_hash": "sha256:679df273f32fac22f4f542c723022e72136e1739c8132dad776f10850ace925e"
-    },
-    "backend/app/migrations/versions/20260709_0026_add_opaque_browser_sessions.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Replace IP ownership with opaque browser-session tokens.\n\nRevision ID: 20260709_0026\nRevises: 20260516_0025\nCreate Date: 2026-07-09 00:26:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:500e9ec5043db0d181e3ab067f96a83ee15fe0db9b0addc5ca0c30b25ed6444e",
-      "language": "python",
-      "module_page": "20260709_0026_add_opaque_browser_sessions",
-      "semantic_hash": "sha256:34174175ec3691e6299b71bf657f2e5f61f3a0bca3fd332e0c3c38994f8c0c86"
-    },
-    "backend/app/migrations/versions/20260709_0027_add_durable_outbound_delivery_queue.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add durable multi-channel outbound delivery queue metadata.\n\nRevision ID: 20260709_0027\nRevises: 20260709_0026\nCreate Date: 2026-07-09 00:27:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:7a47524a9fbab3d990deaca8c888757f381607f5affb08e2687ebe5f3c96656e",
-      "language": "python",
-      "module_page": "20260709_0027_add_durable_outbound_delivery_queue",
-      "semantic_hash": "sha256:7258bb05cd58c3dad190b154420f48b85beed4375f9d3663132d9b3cf578672a"
-    },
-    "backend/app/migrations/versions/20260711_0028_add_agent_skill_control_plane.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add actor assignments, fenced work, and durable idempotency.\n\nRevision ID: 20260711_0028\nRevises: 20260709_0027\nCreate Date: 2026-07-11 00:00:00.000000",
-          "functions": {
-            "_columns": "—",
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:b54923b626811c6ebffed0a7e358ad07bfec7a905e30f8820d30f281d2928cb6",
-      "language": "python",
-      "module_page": "20260711_0028_add_agent_skill_control_plane",
-      "semantic_hash": "sha256:9d4ccf06d650d1b7e2bdced6bec3584b70454eb734dda1969d40f2b5d15623ef"
-    },
-    "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add provider-neutral model catalog and actor bindings.\n\nRevision ID: 20260718_0029\nRevises: 20260711_0028\nCreate Date: 2026-07-18 00:00:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:8b2e91093e10c183d1922654ba905293b7909ff5896e721b2bae0eee0911c0dc",
-      "language": "python",
-      "module_page": "20260718_0029_add_agent_model_catalog",
-      "semantic_hash": "sha256:bc3b889e2fd65a01248d254e274ff42f8381b8cf9ce4aae18f1e9483ee9d037a"
-    },
-    "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add task assessments and assignment/run model linkage.\n\nRevision ID: 20260718_0030\nRevises: 20260718_0029\nCreate Date: 2026-07-18 00:10:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:ae75e8fbd9546a1a60ddc59e5563e3222160d7d2912ecda91e27c3ba7b6796af",
-      "language": "python",
-      "module_page": "20260718_0030_add_task_routing_assessments",
-      "semantic_hash": "sha256:e6a68ab91aaa267119882d49a349a174e9d898bcce8f124b0496dff3518860a2"
-    },
-    "backend/app/migrations/versions/20260718_0031_align_postgresql_types.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Align UTC timestamps, legacy nullability, and PostgreSQL sequences.\n\nRevision ID: 20260718_0031\nRevises: 20260718_0030\nCreate Date: 2026-07-18 00:31:00.000000",
-          "functions": {
-            "_align_nullability": "—",
-            "_align_postgresql_timestamps": "—",
-            "_repair_postgresql_sequences": "—",
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:3bb6ccdf82abfb3a5e18f9b1a97621c05a00d9029976873cff647ff548ab584f",
-      "language": "python",
-      "module_page": "20260718_0031_align_postgresql_types",
-      "semantic_hash": "sha256:0a4e1e60fe2c75c340bb87209005a4489d8ded87371f8e16bcf6c696f06062ac"
-    },
-    "backend/app/migrations/versions/20260718_0032_add_database_migration_gate.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "add target-owned database migration gate\n\nRevision ID: 20260718_0032\nRevises: 20260718_0031\nCreate Date: 2026-07-18",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:e8934a9f98c344c7e54b55dadbfb67961c54c72f38a427eb9cc06dd52e0b918e",
-      "language": "python",
-      "module_page": "20260718_0032_add_database_migration_gate",
-      "semantic_hash": "sha256:6fd614640de9e4fc8d579c9923757ed0662a5a8846433834fef56907258a07c6"
-    },
-    "backend/app/migrations/versions/20260719_0033_add_autonomy_control_plane.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "add autonomous topology and verification projections\n\nRevision ID: 20260719_0033\nRevises: 20260718_0032\nCreate Date: 2026-07-19",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:37041a3f2ae658f3f9bf6147ea4a05d9a51fb082f011598cd8fcee9efc822399",
-      "language": "python",
-      "module_page": "20260719_0033_add_autonomy_control_plane",
-      "semantic_hash": "sha256:3935f74d9da7097d79f063c81b6ec2f4dc033de40aeafefaaf54963464420c53"
-    },
-    "backend/app/migrations/versions/20260727_0034_add_agent_run_model_trust.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add explicit configured-versus-observed model trust evidence.\n\nRevision ID: 20260727_0034\nRevises: 20260719_0033\nCreate Date: 2026-07-27 00:00:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:659d64c40fbfec76dd5d26f6874f4bb5d48247992cdf408c2c8433ee75380918",
-      "language": "python",
-      "module_page": "20260727_0034_add_agent_run_model_trust",
-      "semantic_hash": "sha256:77979d4b7672f27a5a7aaed3cec14be28b72e3ed93dbad3735a1f5efa1fa85d5"
-    },
-    "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add operator-owned agent-team setup and onboarding state.\n\nRevision ID: 20260728_0035\nRevises: 20260727_0034\nCreate Date: 2026-07-28 00:00:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:45bf306ab490a2c2a0a9a0e5d5a29f33da94a278b9c602848e1bb175940bf144",
-      "language": "python",
-      "module_page": "20260728_0035_add_agent_team_setup",
-      "semantic_hash": "sha256:d082c6d592b6f4825deb0b1bf7be60f56a801001b888d32736706993a6cc0d1a"
-    },
-    "backend/app/migrations/versions/20260802_0036_add_plan_shares.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add immutable, revocable plan shares.\n\nRevision ID: 20260802_0036\nRevises: 20260728_0035\nCreate Date: 2026-08-02 00:00:00.000000",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:762645919a24314cad76f525749ca4345a30171224cb0eca301ca2d1b9a87466",
-      "language": "python",
-      "module_page": "20260802_0036_add_plan_shares",
-      "semantic_hash": "sha256:51dce20cd494d702051f88dde8540c1487529539a2e94af309df37e50a63c991"
-    },
-    "backend/app/migrations/versions/20260915_0037_add_authority_and_recovery.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Add durable authority, application snapshots and explicit schedule commitments.",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:3bd2bbd36690c3be883bc1fbbd65bffaf39f62ce0b5e985f55dac89847661b5f",
-      "language": "python",
-      "module_page": "20260915_0037_add_authority_and_recovery",
-      "semantic_hash": "sha256:929044c47f567a4b5dba73a68ff4435e30bed6ba2de97934f17d42f1cdefa3de"
-    },
-    "backend/app/migrations/versions/20260915_0038_canonical_task_domain.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Expand task ownership, backlog, effort and canonical brief history.\n\nSQLite rebuilds with foreign keys disabled inside an explicit transaction, then\nchecks every foreign key before committing. Re-entry after schema application is\nsafe; each backfilled row carries its own completion marker.",
-          "functions": {
-            "_expand": "—",
-            "backfill_tasks": "Return bounded diagnostics; apply each legacy row at most once.",
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:d30607302bcdad93da05d6afb67f9a1309f69f4faa7a8d0fde16bb16e36ca2e4",
-      "language": "python",
-      "module_page": "20260915_0038_canonical_task_domain",
-      "semantic_hash": "sha256:e211122aa71a67d348d299887ddc54c43ae0ab01222c826e9cb5d7b05461bb8b"
-    },
-    "backend/app/migrations/versions/20260916_0039_task_deletion_fences.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
-      "generated_semantics": {
-        "entities": {},
-        "module": {
-          "classes": {},
-          "description": "Retain deletion versions for safe task identity restoration.",
-          "functions": {
-            "downgrade": "—",
-            "upgrade": "—"
-          }
-        }
-      },
-      "hash": "sha256:8b69ed8de20c7a1f2f2147ea7adc7a0fa21bfae0c9483e917b091d281da1b340",
-      "language": "python",
-      "module_page": "20260916_0039_task_deletion_fences",
-      "semantic_hash": "sha256:b84508eca27ba4af9e47881314fc1daa61f9e2aa6c1fbb37264bec79aa643eb4"
+      "module_page": "20260928_0001_initial_schema",
+      "semantic_hash": "sha256:6664ff53a65a0b55c3b5c57ea7b3f0780b5e29b457ecf1092f14cdccd9fcc874"
     },
     "backend/app/models/__init__.py": {
       "entities": [],
@@ -54545,10 +53222,10 @@
           }
         }
       },
-      "hash": "sha256:2994ec02a8738ec78de2dc4450d4861d12b65efa3ac527d093c7fab348ea169a",
+      "hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
       "language": "python",
       "module_page": "upgrade_service",
-      "semantic_hash": "sha256:082abb6239e4301388f8b73237b57a96dc24c45cbdd28009033f1f27bcc8bf2c"
+      "semantic_hash": "sha256:ede58646a617310dda9a24f74ab842ed80c0f80a237c9ba8463847b47fcfc22c"
     },
     "backend/app/services/web_intake_service.py": {
       "entities": [
@@ -55173,15 +53850,15 @@
           "functions": {
             "autonomy_migration_config": "—",
             "test_autonomy_migration_chain_has_one_head": "—",
-            "test_autonomy_projection_postgresql_ddl_preserves_fences": "—",
-            "test_autonomy_projection_upgrade_downgrade_upgrade": "—"
+            "test_autonomy_projection_initial_schema": "—",
+            "test_autonomy_projection_postgresql_ddl_preserves_fences": "—"
           }
         }
       },
-      "hash": "sha256:da091c30fd1f3d2fe360a52c785096debc8af00c69dc1d885ce0ea5aa52aa91a",
+      "hash": "sha256:69d250eaa1869caa9c9e5e641affb3075d110159378e1950379039bd26030d65",
       "language": "python",
       "module_page": "test_autonomy_migrations",
-      "semantic_hash": "sha256:f554741130f694279a750721cf51d43a6bd92947c75ecf0ec96dff1a0e53e631"
+      "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
     },
     "backend/tests/autonomy/test_server_acceptance.py": {
       "entities": [],
@@ -55725,6 +54402,28 @@
       "module_page": "0001_wave0_probe",
       "semantic_hash": "sha256:aa704d267f02e45f3f872cc93b7186e213cc5a3fd12da6b23b894bdd1fdac07d"
     },
+    "backend/tests/migrations/test_initial_schema.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "The packaged initial schema and fail-closed development reset boundary.",
+          "functions": {
+            "test_current_bootstrap_keeps_model_foreign_keys_and_checks": "—",
+            "test_current_upgrade_is_idempotent_and_downgrade_is_refused": "—",
+            "test_initial_schema_is_one_frozen_revision": "—",
+            "test_unreleased_databases_are_refused_without_mutation": "—"
+          }
+        }
+      },
+      "hash": "sha256:17513c3241971149cb54ef2d5faffe6276ec21d28e36473e725c616caa179c89",
+      "language": "python",
+      "module_page": "test_initial_schema",
+      "semantic_hash": "sha256:289d4c2d9b007aafafce57b280568b3b166e8a35921da08fa80d98484a27ba6d"
+    },
     "backend/tests/migrations/test_postgresql_migrations.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -55735,24 +54434,22 @@
           "classes": {},
           "description": "Real PostgreSQL migration, locking, and schema contract tests.",
           "functions": {
-            "seed_postgresql_legacy_baseline": "—",
             "sync_engine": "—",
             "test_async_postgresql_driver_select_one": "—",
             "test_concurrent_postgresql_migration_runners_serialize": "—",
             "test_cross_dialect_schema_diff_is_machine_readable": "—",
             "test_fresh_postgresql_schema_only_bootstrap": "—",
             "test_nonempty_postgresql_upgrade_requires_external_backup_gate": "—",
-            "test_postgresql_legacy_to_head_repairs_utc_nullability_and_sequences": "—",
             "test_postgresql_utc_types_partial_indexes_and_sequence_ownership": "—",
             "test_runtime_role_cannot_create_schema_objects_or_roles": "—",
             "test_sync_postgresql_driver_select_one": "—"
           }
         }
       },
-      "hash": "sha256:8bf68b42db6143ec5fa354b80a89f3d3ab685f5c6510c92538679d3e0ccd8745",
+      "hash": "sha256:1e8bccf9ab7023c3798b2b3c9afbf0018ddbc4aeca875754263856c8ba2f452d",
       "language": "python",
       "module_page": "test_postgresql_migrations",
-      "semantic_hash": "sha256:36cf74f2f76c5ea6a3831369a9bd69b11c25065416e2dcac4935a8e69891e229"
+      "semantic_hash": "sha256:e2f9288da82892a43678437cfc08640f01a40467fc8ea935dfec286228e12e76"
     },
     "backend/tests/migrations/test_sqlite_migrations.py": {
       "entities": [],
@@ -55762,26 +54459,23 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "SQLite side of the fresh/legacy/inspection migration matrix.",
+          "description": "SQLite side of the fresh schema and inspection migration matrix.",
           "functions": {
-            "seed_legacy_baseline": "—",
             "sqlite_url": "—",
             "test_alembic_config_preserves_percent_encoded_values": "—",
             "test_live_schema_column_contract_matches_model_metadata": "—",
-            "test_representative_legacy_sqlite_upgrades_with_explicit_semantics": "—",
             "test_schema_only_bootstrap_is_current_and_data_empty": "—",
             "test_single_head_invariant": "—",
             "test_startup_assertion_refuses_stale_schema_without_mutation": "—",
-            "test_target_alignment_revision_supports_reviewed_downgrade": "—",
             "test_unknown_alembic_revision_is_refused": "—",
             "test_unknown_nonempty_schema_is_refused": "—"
           }
         }
       },
-      "hash": "sha256:ae7110d5f01e2c5935fbfd3755847082ed7e3fa6306e3c75af07e37fbcd641c6",
+      "hash": "sha256:87b7a5fbd483dd13b8a02ee9354336e7715c71dc0b12fcc9c4337a11677cbd9a",
       "language": "python",
       "module_page": "test_sqlite_migrations",
-      "semantic_hash": "sha256:1c051415837f11b3d0519ee13adb71c84d58ce9196d0a541a2a2e641e967682b"
+      "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
     },
     "backend/tests/qualification/test_load_seed_postgresql.py": {
       "entities": [],
@@ -56329,21 +55023,20 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Alembic and cross-dialect DDL coverage for routing Wave 1.",
+          "description": "Initial schema and cross-dialect routing constraints.",
           "functions": {
             "_sync_url": "—",
             "routing_migration_config": "—",
             "test_alembic_reports_exactly_one_head": "—",
-            "test_legacy_assignment_and_model_less_run_survive_upgrade": "—",
             "test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys": "—",
-            "test_upgrade_downgrade_upgrade_from_empty_database": "—"
+            "test_routing_schema_from_empty_database": "—"
           }
         }
       },
-      "hash": "sha256:24a669d3e1669f7a0284da6dc670217bb40fd5ff643b90abefc27164ba21a301",
+      "hash": "sha256:7e878998857ad104f8ee87648716de27a7be390d0ae26a935972c664f37a1d3a",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
-      "semantic_hash": "sha256:e7b7a42019772047690e7ea085d5de3c236a4730aea5cd77142465fd842247ab"
+      "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"
     },
     "backend/tests/test_agent_routing_observability.py": {
       "entities": [],
@@ -56794,19 +55487,18 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Additive authority upgrades preserve legacy attribution and empty transfer targets.",
+          "description": "Initial authority schema, constraints and empty transfer targets.",
           "functions": {
-            "legacy_authority_database": "—",
-            "test_authority_upgrade_preserves_guest_ids_and_does_not_invent_humans": "—",
+            "initial_database": "—",
             "test_new_foreign_keys_and_uniqueness_are_declared": "—",
             "test_schema_only_target_remains_empty_for_catalogued_transfer": "—"
           }
         }
       },
-      "hash": "sha256:da8d15c4c559c45d766a981d0ba36958b20d6620ce8bb8986a5ffa3d3f2f5db0",
+      "hash": "sha256:99bdd362dab5e40d6f03c589c003c8dc8ab472f0ad7a77f04de7eeaab5fc9c52",
       "language": "python",
       "module_page": "test_authority_migrations",
-      "semantic_hash": "sha256:baca72d969157f7f0c3f3a4dc948fe7b4a4714f04673a2b178a27de62357a7a0"
+      "semantic_hash": "sha256:0cae075e2ec7db2a472eefbbaef2b9fb85ec923dcd6d0a0456e7e68ff0b307dc"
     },
     "backend/tests/test_capacity_contract.py": {
       "entities": [],
@@ -57232,19 +55924,18 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "Nonempty upgrade preservation and resumable task-domain backfill evidence.",
+          "description": "Initial task-domain constraints, evidence retention and identity fences.",
           "functions": {
             "insert_fixture": "Fill required scalar data while every relationship remains explicitly supplied.",
-            "test_backfill_cursor_resumes_without_rewriting_completed_rows": "—",
-            "test_deletion_fence_upgrade_preserves_unknown_history_and_survives_without_tasks": "—",
-            "test_nonempty_domain_upgrade_preserves_ids_history_and_backfill_provenance": "—"
+            "test_deletion_fence_survives_without_tasks": "—",
+            "test_initial_schema_enforces_scope_and_retains_deleted_task_evidence": "—"
           }
         }
       },
-      "hash": "sha256:926d4f868a929b32c795f2c6138d490dba5b52bdb95013135c55ad82a5c26785",
+      "hash": "sha256:10845d739a6667986e3d5ce9b8a97e9f2031670c159567df5c4c1c523425e006",
       "language": "python",
       "module_page": "test_task_domain_migrations",
-      "semantic_hash": "sha256:0a755647c9124ac899144fad9bc72e0e918c1b95c519ed382d75d245c61613e5"
+      "semantic_hash": "sha256:e6b4e5c0a958289a0246865603c2d72f4b2c660f85c14cbdef2bb1bc84f77dce"
     },
     "backend/tests/test_work_correctness.py": {
       "entities": [],
@@ -74155,6 +72846,7 @@
             "_maintenance_phase": "—",
             "_parser": "—",
             "_phase_environment": "—",
+            "_probe_maintenance": "—",
             "_psycopg_url": "—",
             "_run_phase": "—",
             "_source_phase": "—",
@@ -74164,10 +72856,10 @@
           }
         }
       },
-      "hash": "sha256:e6a3bf0da42da712937205db2cf81884c09eb6a555eb1198ccf4c92e98947586",
+      "hash": "sha256:feab2bd57041eccb5f50918257e4a31b20933f91b6490744ffadb5c27351979c",
       "language": "python",
       "module_page": "installed_wheel_postgresql_qualification",
-      "semantic_hash": "sha256:b14de875167247e0f9b19ce78ac5770a8af8f569af5aed7921dbf9f2126c01d3"
+      "semantic_hash": "sha256:87cc210fc653a541d225de578ea07ac448564dd500d82b1aba3225d3cda15e82"
     },
     "scripts/ci/postgres_runtime.py": {
       "entities": [],

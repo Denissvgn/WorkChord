@@ -54,6 +54,7 @@ sequenceDiagram
     participant p22 as set (backend/app/services/upgr…spect_database_connection)
     participant p23 as head_revision
     participant p24 as ScriptDirectory.from_config (backend/app/services/upgr…_service.py:head_revision)
+    participant p25 as alembic_config
     p0-->>p1: build_parser().parse_args
     p0->>p2: build_parser
     p2-->>p3: argparse.ArgumentParser
@@ -61,7 +62,6 @@ sequenceDiagram
     p2-->>p5: mode.add_argument
     p2-->>p5: mode.add_argument
     p2-->>p5: mode.add_argument
-    p2-->>p6: parser.add_argument
     p2-->>p6: parser.add_argument
     p2-->>p6: parser.add_argument
     p2-->>p6: parser.add_argument
@@ -84,9 +84,10 @@ sequenceDiagram
     p9-->>p22: set (backend/app/services/upgr…spect_database_connection)
     p9->>p23: head_revision
     p23-->>p24: ScriptDirectory.from_config (backend/app/services/upgr…_service.py:head_revision)
+    p23->>p25: alembic_config
 ```
 
-> Call sequence diagram shows 30 of 186 interactions; 156 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 178 interactions; 148 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -168,8 +169,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | build_parser().parse_args | 85 | `build_parser().parse_args(argv)` |
-| main | build_parser | 85 | `build_parser(data not statically known)` |
+| main | build_parser().parse_args | 80 | `build_parser().parse_args(argv)` |
+| main | build_parser | 80 | `build_parser(data not statically known)` |
 | build_parser | argparse.ArgumentParser | 29 | `argparse.ArgumentParser(description='Upgrade WorkChord database schema safely.')` |
 | build_parser | parser.add_mutually_exclusive_group | 32 | `parser.add_mutually_exclusive_group(data not statically known)` |
 | build_parser | mode.add_argument | 33 | `mode.add_argument('--check', action='store_true', help='Inspect schema state and exit without changing the database.')` |
@@ -184,20 +185,20 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 99 |
-| output | `print` | `main` | 103 |
-| output | `print` | `main` | 131 |
-| output | `print` | `main` | 136 |
-| output | `print` | `main` | 138 |
-| output | `print` | `main` | 140 |
-| output | `print` | `main` | 141 |
-| output | `print` | `main` | 149 |
+| output | `print` | `main` | 94 |
+| output | `print` | `main` | 98 |
+| output | `print` | `main` | 125 |
+| output | `print` | `main` | 130 |
+| output | `print` | `main` | 132 |
+| output | `print` | `main` | 134 |
+| output | `print` | `main` | 135 |
+| output | `print` | `main` | 143 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `build_parser().parse_args` | 85 |
+| unresolved_call | `main` | `build_parser().parse_args` | 80 |
 | external_call | `build_parser` | `argparse.ArgumentParser` | 29 |
 | unresolved_call | `build_parser` | `parser.add_mutually_exclusive_group` | 32 |
 | unresolved_call | `build_parser` | `mode.add_argument` | 33 |
@@ -212,4 +213,6 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `main` and is classified as `process`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+The CLI inspects the configured target without changing it when `--check` is selected. A migration-role invocation applies the initial schema only to an empty destination, or advances a known managed revision. Unknown and unversioned databases fail before DDL; they are never inferred current from table names or stamped automatically.
+
+Schema-only initialization leaves application tables empty. Explicit repair runs under the repair process role. PostgreSQL runners share an advisory lock and nonempty upgrades require an external recovery-point reference. The command reports the resulting revision and refuses an incomplete upgrade.

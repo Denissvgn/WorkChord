@@ -101,4 +101,4 @@ flowchart LR
 | `initialize_control_plane` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

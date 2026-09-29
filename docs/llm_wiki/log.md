@@ -388,3 +388,23 @@ Task recovery now preserves deleted-version fences, dependency mutations invalid
 ## 2026-09-28 — Native automation and Android identity boundaries
 
 Automatic integration workflows now use native tools and isolated loopback services; full Compose deployment acceptance is explicitly dispatched. The Android client enforces release HTTPS, restricts debug plaintext, redacts credentials and scopes personal work through authenticated profile ownership.
+
+## 2026-09-29
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d90923642a186a8881b580b39ff8e70206df402de0ae84d8fe36644349096d60`
+- Pages created: 2
+- Pages updated: 35
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2596
+- Pages deprecated: 40
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-09-29 — Initial database schema and authenticated maintenance boundary
+
+New databases use the frozen initial revision `20260928_0001`, including task recovery history and deletion fences. Older unreleased and unversioned databases are refused without automatic stamping. Schema creation remains separate from explicit control-plane repairs. The installed-wheel transfer path carries a principal-bound viewer session, and maintenance probes preserve authentication, write rejection and application-row immutability.

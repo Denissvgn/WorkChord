@@ -1,14 +1,15 @@
 # DatabaseState
 
-**Location:** `backend/app/services/upgrade_service.py:32`
+**Location:** `backend/app/services/upgrade_service.py:31`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [upgrade_service](../modules/upgrade_service.md)
-**Target:** `Literal['empty', 'legacy_pre_backlog', 'alembic_managed', 'unversioned_current', 'unknown']`
+**Target:** `Literal['empty', 'alembic_managed', 'unknown']`
 
 ## Description
 
-_Auto-generated from `DatabaseState` in `backend/app/services/upgrade_service.py`._
+Closed schema classification: an empty destination, an Alembic-managed database, or an unknown nonempty schema. An unversioned table set is unknown even if its names resemble the current application schema.
+
 
 ## Attributes
 

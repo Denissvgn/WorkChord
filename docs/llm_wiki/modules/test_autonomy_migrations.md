@@ -60,6 +60,6 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `autonomy_migration_config` | `(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)` | `@pytest.fixture` | — |
-| `test_autonomy_projection_upgrade_downgrade_upgrade` | `(autonomy_migration_config) -> None` | `@pytest.mark.sqlite` | — |
+| `test_autonomy_projection_initial_schema` | `(autonomy_migration_config) -> None` | `@pytest.mark.sqlite` | — |
 | `test_autonomy_projection_postgresql_ddl_preserves_fences` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_autonomy_migration_chain_has_one_head` | `() -> None` | `@pytest.mark.contract` | — |

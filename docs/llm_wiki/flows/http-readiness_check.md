@@ -144,13 +144,13 @@ flowchart LR
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |
 | readiness_snapshot | head_revision | 253 | `head_revision(data not statically known)` |
-| head_revision | ScriptDirectory.from_config | 132 | `ScriptDirectory.from_config(alembic_config(...))` |
-| head_revision | alembic_config | 132 | `alembic_config(data not statically known)` |
-| alembic_config | migrations_dir | 112 | `migrations_dir(data not statically known)` |
-| migrations_dir | Path(…).resolve | 101 | `Path(__file__).resolve(data not statically known)` |
-| migrations_dir | Path (backend/app/services/upgr…service.py:migrations_dir) | 101 | `Path(__file__)` |
-| alembic_config | Config | 113 | `Config(str(...))` |
-| alembic_config | str (backend/app/services/upgr…service.py:alembic_config) | 113 | `str(...)` |
+| head_revision | ScriptDirectory.from_config | 90 | `ScriptDirectory.from_config(alembic_config(...))` |
+| head_revision | alembic_config | 90 | `alembic_config(data not statically known)` |
+| alembic_config | migrations_dir | 70 | `migrations_dir(data not statically known)` |
+| migrations_dir | Path(…).resolve | 59 | `Path(__file__).resolve(data not statically known)` |
+| migrations_dir | Path (backend/app/services/upgr…service.py:migrations_dir) | 59 | `Path(__file__)` |
+| alembic_config | Config | 71 | `Config(str(...))` |
+| alembic_config | str (backend/app/services/upgr…service.py:alembic_config) | 71 | `str(...)` |
 
 ### Boundary effects
 
@@ -160,9 +160,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `head_revision` | `ScriptDirectory.from_config` | 132 |
-| unresolved_call | `migrations_dir` | `Path(__file__).resolve` | 101 |
-| external_call | `alembic_config` | `Config` | 113 |
+| external_call | `head_revision` | `ScriptDirectory.from_config` | 90 |
+| unresolved_call | `migrations_dir` | `Path(__file__).resolve` | 59 |
+| external_call | `alembic_config` | `Config` | 71 |
 | step_limit | `readiness_check` | `first 12 steps` | 0 |
 | truncated_flow | `readiness_check` | `depth limit` | 0 |
 

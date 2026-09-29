@@ -28,13 +28,13 @@ flowchart TD
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
-| [app_database](modules/app_database.md) | 72 | 5 |
+| [app_database](modules/app_database.md) | 74 | 5 |
 | [Button](modules/Button.md) | 62 | 0 |
 | [models_task](modules/models_task.md) | 61 | 9 |
-| [time](modules/time.md) | 61 | 0 |
 | [commands](modules/commands.md) | 60 | 8 |
 | [types_task](modules/types_task.md) | 57 | 2 |
-| [config](modules/config.md) | 51 | 1 |
+| [time](modules/time.md) | 55 | 0 |
+| [config](modules/config.md) | 52 | 1 |
 | [QueryState](modules/QueryState.md) | 50 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 48 | 1 |
 | [models_agent](modules/models_agent.md) | 46 | 5 |
@@ -52,11 +52,11 @@ flowchart TD
 | [agent_service](modules/agent_service.md) | 22 | 13 |
 | [index](modules/index.md) | 22 | 0 |
 | [authority](modules/authority.md) | 21 | 5 |
+| [upgrade_service](modules/upgrade_service.md) | 20 | 12 |
 | [taskService](modules/taskService.md) | 20 | 3 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 19 | 8 |
-| [upgrade_service](modules/upgrade_service.md) | 19 | 12 |
 | [toast](modules/toast.md) | 19 | 0 |
 | [types_team](modules/types_team.md) | 19 | 0 |
 | [models_calendar](modules/models_calendar.md) | 17 | 2 |
@@ -68,11 +68,11 @@ flowchart TD
 | [schemas_team](modules/schemas_team.md) | 16 | 1 |
 | [language_service](modules/language_service.md) | 16 | 2 |
 | [iterationService](modules/iterationService.md) | 16 | 2 |
+| [models_identity](modules/models_identity.md) | 15 | 2 |
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 15 | 0 |
 | [agent_routing](modules/agent_routing.md) | 15 | 1 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 15 | 0 |
 | [app_main](modules/app_main.md) | 14 | 41 |
-| [models_identity](modules/models_identity.md) | 14 | 2 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 14 | 11 |
 | [tone](modules/tone.md) | 14 | 1 |
 | [schemas_triage](modules/schemas_triage.md) | 13 | 3 |
@@ -104,6 +104,7 @@ flowchart TD
 | [savedView](modules/savedView.md) | 9 | 0 |
 | [load_common](modules/load_common.md) | 9 | 1 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
+| [database_config](modules/database_config.md) | 8 | 0 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
 | [models___init__](modules/models___init__.md) | 8 | 24 |
 | [recovery](modules/recovery.md) | 8 | 3 |
@@ -117,7 +118,6 @@ flowchart TD
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
-| [database_config](modules/database_config.md) | 7 | 0 |
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
 | [calendar_service](modules/calendar_service.md) | 7 | 4 |
 | [project_service](modules/project_service.md) | 7 | 12 |
@@ -147,7 +147,6 @@ flowchart TD
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
 | [charter](modules/charter.md) | 5 | 2 |
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
-| [task_status_log](modules/task_status_log.md) | 5 | 3 |
 | [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 16 |
 | [agent_skill_bundle](modules/agent_skill_bundle.md) | 5 | 0 |
 | [schemas_request_source](modules/schemas_request_source.md) | 5 | 1 |
@@ -219,6 +218,7 @@ flowchart TD
 | [loader](modules/loader.md) | 3 | 1 |
 | [status](modules/status.md) | 3 | 3 |
 | [models_release](modules/models_release.md) | 3 | 5 |
+| [task_status_log](modules/task_status_log.md) | 3 | 3 |
 | [models_template](modules/models_template.md) | 3 | 2 |
 | [observability](modules/observability.md) | 3 | 8 |
 | [agent_skill_bundles](modules/agent_skill_bundles.md) | 3 | 5 |
@@ -383,7 +383,7 @@ flowchart TD
 | [schema](modules/schema.md) | 1 | 0 |
 | [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) | 1 | 14 |
 | [test_agent_team_setup](modules/test_agent_team_setup.md) | 1 | 14 |
-| [test_authority_migrations](modules/test_authority_migrations.md) | 1 | 3 |
+| [test_authority_migrations](modules/test_authority_migrations.md) | 1 | 2 |
 | [test_managed_authority](modules/test_managed_authority.md) | 1 | 12 |
 | [test_task_domain](modules/test_task_domain.md) | 1 | 25 |
 | [App](modules/App.md) | 1 | 3 |
@@ -443,46 +443,7 @@ flowchart TD
 | [cli_database_migration](modules/cli_database_migration.md) | 0 | 4 |
 | [database_migration___init__](modules/database_migration___init__.md) | 0 | 2 |
 | [migrations_env](modules/migrations_env.md) | 0 | 4 |
-| [20260506_0000_legacy_core_baseline](modules/20260506_0000_legacy_core_baseline.md) | 0 | 0 |
-| [20260507_0001_agentic_tracing](modules/20260507_0001_agentic_tracing.md) | 0 | 0 |
-| [20260507_0002_create_projects](modules/20260507_0002_create_projects.md) | 0 | 0 |
-| [20260507_0003_link_tasks_projects](modules/20260507_0003_link_tasks_projects.md) | 0 | 0 |
-| [20260508_0004_create_triage_items](modules/20260508_0004_create_triage_items.md) | 0 | 0 |
-| [20260508_0005_create_work_templates](modules/20260508_0005_create_work_templates.md) | 0 | 0 |
-| [20260508_0006_add_work_template_seed_key](modules/20260508_0006_add_work_template_seed_key.md) | 0 | 0 |
-| [20260509_0007_create_label_groups](modules/20260509_0007_create_label_groups.md) | 0 | 0 |
-| [20260509_0008_create_saved_views](modules/20260509_0008_create_saved_views.md) | 0 | 0 |
-| [20260509_0009_add_saved_view_seed_key](modules/20260509_0009_add_saved_view_seed_key.md) | 0 | 0 |
-| [20260509_0010_create_project_updates](modules/20260509_0010_create_project_updates.md) | 0 | 0 |
-| [20260509_0011_create_project_milestones](modules/20260509_0011_create_project_milestones.md) | 0 | 0 |
-| [20260509_0012_link_tasks_milestones](modules/20260509_0012_link_tasks_milestones.md) | 0 | 0 |
-| [20260509_0013_create_initiatives](modules/20260509_0013_create_initiatives.md) | 0 | 0 |
-| [20260509_0014_create_external_links](modules/20260509_0014_create_external_links.md) | 0 | 0 |
-| [20260509_0015_create_github_status_automation_rules](modules/20260509_0015_create_github_status_automation_rules.md) | 0 | 0 |
-| [20260509_0016_create_releases](modules/20260509_0016_create_releases.md) | 0 | 0 |
-| [20260509_0017_create_request_sources](modules/20260509_0017_create_request_sources.md) | 0 | 0 |
-| [20260509_0018_create_triage_classification_suggestions](modules/20260509_0018_create_triage_classification_suggestions.md) | 0 | 0 |
-| [20260509_0019_create_outbound_webhooks](modules/20260509_0019_create_outbound_webhooks.md) | 0 | 0 |
-| [20260509_0020_add_triage_metadata_json](modules/20260509_0020_add_triage_metadata_json.md) | 0 | 0 |
-| [20260510_0021_create_team_member_profiles](modules/20260510_0021_create_team_member_profiles.md) | 0 | 0 |
-| [20260510_0022_create_system_settings](modules/20260510_0022_create_system_settings.md) | 0 | 0 |
-| [20260510_0023_create_user_sessions](modules/20260510_0023_create_user_sessions.md) | 0 | 0 |
-| [20260515_0024_move_portfolio_ownership_to_profiles](modules/20260515_0024_move_portfolio_ownership_to_profiles.md) | 0 | 0 |
-| [20260516_0025_add_project_scope_to_iterations](modules/20260516_0025_add_project_scope_to_iterations.md) | 0 | 0 |
-| [20260709_0026_add_opaque_browser_sessions](modules/20260709_0026_add_opaque_browser_sessions.md) | 0 | 0 |
-| [20260709_0027_add_durable_outbound_delivery_queue](modules/20260709_0027_add_durable_outbound_delivery_queue.md) | 0 | 0 |
-| [20260711_0028_add_agent_skill_control_plane](modules/20260711_0028_add_agent_skill_control_plane.md) | 0 | 0 |
-| [20260718_0029_add_agent_model_catalog](modules/20260718_0029_add_agent_model_catalog.md) | 0 | 0 |
-| [20260718_0030_add_task_routing_assessments](modules/20260718_0030_add_task_routing_assessments.md) | 0 | 0 |
-| [20260718_0031_align_postgresql_types](modules/20260718_0031_align_postgresql_types.md) | 0 | 0 |
-| [20260718_0032_add_database_migration_gate](modules/20260718_0032_add_database_migration_gate.md) | 0 | 1 |
-| [20260719_0033_add_autonomy_control_plane](modules/20260719_0033_add_autonomy_control_plane.md) | 0 | 1 |
-| [20260727_0034_add_agent_run_model_trust](modules/20260727_0034_add_agent_run_model_trust.md) | 0 | 0 |
-| [20260728_0035_add_agent_team_setup](modules/20260728_0035_add_agent_team_setup.md) | 0 | 1 |
-| [20260802_0036_add_plan_shares](modules/20260802_0036_add_plan_shares.md) | 0 | 1 |
-| [20260915_0037_add_authority_and_recovery](modules/20260915_0037_add_authority_and_recovery.md) | 0 | 1 |
-| [20260915_0038_canonical_task_domain](modules/20260915_0038_canonical_task_domain.md) | 0 | 1 |
-| [20260916_0039_task_deletion_fences](modules/20260916_0039_task_deletion_fences.md) | 0 | 0 |
+| [20260928_0001_initial_schema](modules/20260928_0001_initial_schema.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [task_import_service](modules/task_import_service.md) | 0 | 7 |
@@ -508,8 +469,9 @@ flowchart TD
 | [test_transfer_catalog](modules/test_transfer_catalog.md) | 0 | 1 |
 | [postgresql_migrations_env](modules/postgresql_migrations_env.md) | 0 | 0 |
 | [0001_wave0_probe](modules/0001_wave0_probe.md) | 0 | 0 |
+| [test_initial_schema](modules/test_initial_schema.md) | 0 | 2 |
 | [test_postgresql_migrations](modules/test_postgresql_migrations.md) | 0 | 7 |
-| [test_sqlite_migrations](modules/test_sqlite_migrations.md) | 0 | 5 |
+| [test_sqlite_migrations](modules/test_sqlite_migrations.md) | 0 | 4 |
 | [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) | 0 | 1 |
 | [test_load_tooling](modules/test_load_tooling.md) | 0 | 1 |
 | [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) | 0 | 18 |
@@ -639,7 +601,7 @@ flowchart TD
 | [build_agent_skills](modules/build_agent_skills.md) | 0 | 0 |
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
-| [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 13 |
+| [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 17 |
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
@@ -680,3 +642,5 @@ The authority and command modules are cross-cutting runtime boundaries. Intentio
 Task, brief, status and recovery services use deliberate late imports to share command ownership without eager initialization cycles. The triage draft projection invokes the canonical renderer at serialization time. Bounded UI detail remains separate from the full graph used for assigned execution and scheduling.
 
 Recovery models register the task deletion hook; the task recovery helper imports TaskService lazily to reuse command version reservations. This keeps the model-registration side effect explicit without treating static import order as runtime execution order.
+
+The initial Alembic revision uses frozen SQLAlchemy DDL and does not import application model metadata. The Alembic environment still exposes model metadata for tooling, while upgrade_service owns revision inspection, migration locking and the separate repair boundary.

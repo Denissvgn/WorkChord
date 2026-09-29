@@ -37,6 +37,7 @@ flowchart LR
     n8["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
     n9["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
     n10["backend/tests/test_managed_authority.py"]
+    n11["_source_phase (scripts/ci/installed_wheel_postgresql_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -47,6 +48,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -58,6 +60,7 @@ flowchart LR
     click n8 "../modules/test_agent_team_setup.md"
     click n9 "../modules/test_identity_lifecycle.md"
     click n10 "../modules/test_managed_authority.md"
+    click n11 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Summary
@@ -85,3 +88,4 @@ flowchart LR
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_shared_iteration_snapshots_cannot_reveal_another_project` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
 | `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
+| `_source_phase` | call | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) | 1 |

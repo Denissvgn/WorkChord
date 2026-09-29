@@ -1,6 +1,6 @@
 # DatabaseStatus
 
-**Location:** `backend/app/services/upgrade_service.py:75`
+**Location:** `backend/app/services/upgrade_service.py:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [upgrade_service](../modules/upgrade_service.md)
@@ -9,7 +9,8 @@
 
 ## Description
 
-Inspected database schema state.
+Inspected schema state, revision identifiers and table inventory. `is_current` compares the stored revision with the packaged head; it does not certify arbitrary schema contents. Mutation separately validates membership in the known revision chain and rejects unknown or unversioned databases.
+
 
 ## Attributes
 
@@ -36,12 +37,11 @@ flowchart LR
     n0["DatabaseStatus (backend/app/services/upgrade_service.py)"]
     n1["_backup_precondition (backend/app/services/upgrade_service.py)"]
     n2["_inspect_database_connection (backend/app/services/upgrade_service.py)"]
-    n3["_run_schema_upgrade (backend/app/services/upgrade_service.py)"]
-    n4["_validate_managed_revision (backend/app/services/upgrade_service.py)"]
-    n5["bootstrap_database_schema (backend/app/services/upgrade_service.py)"]
-    n6["inspect_database (backend/app/services/upgrade_service.py)"]
-    n7["run_alembic_upgrade (backend/app/services/upgrade_service.py)"]
-    n8["run_database_repairs (backend/app/services/upgrade_service.py)"]
+    n3["_validate_managed_revision (backend/app/services/upgrade_service.py)"]
+    n4["bootstrap_database_schema (backend/app/services/upgrade_service.py)"]
+    n5["inspect_database (backend/app/services/upgrade_service.py)"]
+    n6["run_alembic_upgrade (backend/app/services/upgrade_service.py)"]
+    n7["run_database_repairs (backend/app/services/upgrade_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -49,7 +49,6 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
-    n8 --> n0
     click n0 "../modules/upgrade_service.md"
     click n1 "../modules/upgrade_service.md"
     click n2 "../modules/upgrade_service.md"
@@ -58,7 +57,6 @@ flowchart LR
     click n5 "../modules/upgrade_service.md"
     click n6 "../modules/upgrade_service.md"
     click n7 "../modules/upgrade_service.md"
-    click n8 "../modules/upgrade_service.md"
 ```
 
 ### Summary
@@ -74,7 +72,6 @@ flowchart LR
 | `_backup_precondition` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |
 | `_inspect_database_connection` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 | `_inspect_database_connection` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |
-| `_run_schema_upgrade` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |
 | `_validate_managed_revision` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |
 | `bootstrap_database_schema` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |
 | `inspect_database` | type_reference | [upgrade_service](../modules/upgrade_service.md) | — |

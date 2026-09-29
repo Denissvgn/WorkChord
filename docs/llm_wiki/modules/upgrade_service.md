@@ -6,6 +6,11 @@
 
 Database upgrade and schema-version helpers.
 
+Empty databases apply the frozen initial schema. Managed databases must name a revision in the packaged Alembic chain; nonempty unversioned databases and revisions from older unreleased builds are refused before mutation. Table names alone never authorize stamping. Operators preserve any needed development data and select a new empty database for initialization.
+
+PostgreSQL runners serialize through a session advisory lock. Future nonempty PostgreSQL upgrades retain the external backup/PITR gate. Schema-only bootstrap creates no application rows; explicit repair owns control-plane and default-data initialization. API startup only checks the current revision.
+
+
 ## Imports
 
 | Source | Symbols |
@@ -57,7 +62,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
+| Inbound | `backend` (17) |
 | Inbound | `scripts` (3) |
 | Outbound | `backend` (12) |
 
@@ -67,15 +72,15 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DatabaseState](../entities/DatabaseState.md) | Type alias | 32 | `Literal['empty', 'legacy_pre_backlog', 'alembic_managed', 'unversioned_current', 'unknown']` | — |
-| [UpgradeError](../entities/UpgradeError.md) | Class | 70 | `RuntimeError` | Raised when a database cannot be upgraded safely. |
-| [DatabaseStatus](../entities/DatabaseStatus.md) | Class | 75 | — | Inspected database schema state. |
+| [DatabaseState](../entities/DatabaseState.md) | Type alias | 31 | `Literal['empty', 'alembic_managed', 'unknown']` | — |
+| [UpgradeError](../entities/UpgradeError.md) | Class | 34 | `RuntimeError` | Raised when a database cannot be upgraded safely. |
+| [DatabaseStatus](../entities/DatabaseStatus.md) | Class | 39 | — | Inspected database schema state. |
 
 ## Functions
 
@@ -97,8 +102,8 @@ flowchart LR
 | `_validate_managed_revision` | `(status: DatabaseStatus) -> None` | — | — |
 | `_application_tables_with_rows` | `(connection: Connection) -> list[str]` | — | — |
 | `_backup_precondition` | `(*, before: DatabaseStatus, backup: bool, backup_dir: Optional[Path], external_backup_reference: str \| None) -> Optional[Path]` | — | — |
-| `_run_schema_upgrade` | `(connection: Connection, before: DatabaseStatus, *, stamp_unversioned_current: bool) -> None` | — | — |
-| `run_alembic_upgrade` | `(*, backup: bool = True, backup_dir: Optional[Path] = None, stamp_unversioned_current: bool = True, run_repairs: bool = True, external_backup_reference: str \| None = None, require_empty: bool = False) -> tuple[DatabaseStatus, Optional[Path], DatabaseStatus]` | — | Upgrade the configured database to the current Alembic head. |
+| `_run_schema_upgrade` | `(connection: Connection) -> None` | — | — |
+| `run_alembic_upgrade` | `(*, backup: bool = True, backup_dir: Optional[Path] = None, run_repairs: bool = True, external_backup_reference: str \| None = None, require_empty: bool = False) -> tuple[DatabaseStatus, Optional[Path], DatabaseStatus]` | — | Upgrade the configured database to the current Alembic head. |
 | `bootstrap_database_schema` | `() -> tuple[DatabaseStatus, None, DatabaseStatus]` | — | Migrate an empty target without creating application-owned rows. |
 | `run_database_repairs` | `() -> tuple[DatabaseStatus, DatabaseStatus]` | — | Run serialized post-copy seed/compatibility repairs on a current schema. |
 | `assert_database_current` | `() -> None` | — | Raise a clear error when the app database is not Alembic-current. |

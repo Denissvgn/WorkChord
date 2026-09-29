@@ -36,16 +36,20 @@
 - [upgrade_service](../modules/upgrade_service.md)
 - [user_session](../modules/user_session.md)
 
-**Related modules:** [app_main](../modules/app_main.md), [cli_closeout](../modules/cli_closeout.md), [cli_cutover](../modules/cli_cutover.md), [database_migration_manifest](../modules/database_migration_manifest.md), and 9 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [cli_closeout](../modules/cli_closeout.md), [cli_cutover](../modules/cli_cutover.md), and 13 more
 
 **Complete related modules:**
 
+- [app_database](../modules/app_database.md)
 - [app_main](../modules/app_main.md)
 - [cli_closeout](../modules/cli_closeout.md)
 - [cli_cutover](../modules/cli_cutover.md)
+- [config](../modules/config.md)
+- [database_config](../modules/database_config.md)
 - [database_migration_manifest](../modules/database_migration_manifest.md)
 - [models_agent](../modules/models_agent.md)
 - [models_calendar](../modules/models_calendar.md)
+- [models_identity](../modules/models_identity.md)
 - [models_iteration](../modules/models_iteration.md)
 - [models_project](../modules/models_project.md)
 - [models_task](../modules/models_task.md)
@@ -117,7 +121,7 @@ sequenceDiagram
     p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
 ```
 
-> Call sequence diagram shows 30 of 1377 interactions; 1347 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1393 interactions; 1363 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -175,17 +179,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | _parser().parse_args | 615 | `_parser().parse_args(data not statically known)` |
-| main | _parser | 615 | `_parser(data not statically known)` |
-| _parser | argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser) | 602 | `argparse.ArgumentParser(data not statically known)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 603 | `parser.add_argument('--admin-url')` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 604 | `parser.add_argument('--phase', choices=(...), help=argparse.SUPPRESS)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 609 | `parser.add_argument('--workspace', type=Path, help=argparse.SUPPRESS)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 610 | `parser.add_argument('--authorize-target', help=argparse.SUPPRESS)` |
-| main | SystemExit | 618 | `SystemExit('--admin-url is required')` |
-| main | _coordinate | 619 | `_coordinate(args.admin_url)` |
-| _coordinate | tempfile.TemporaryDirectory | 562 | `tempfile.TemporaryDirectory(prefix='workchord-wheel-qa-')` |
-| _coordinate | Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate) | 563 | `Path(temporary).resolve(data not statically known)` |
+| main | _parser().parse_args | 664 | `_parser().parse_args(data not statically known)` |
+| main | _parser | 664 | `_parser(data not statically known)` |
+| _parser | argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser) | 651 | `argparse.ArgumentParser(data not statically known)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 652 | `parser.add_argument('--admin-url')` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 653 | `parser.add_argument('--phase', choices=(...), help=argparse.SUPPRESS)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 658 | `parser.add_argument('--workspace', type=Path, help=argparse.SUPPRESS)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 659 | `parser.add_argument('--authorize-target', help=argparse.SUPPRESS)` |
+| main | SystemExit | 667 | `SystemExit('--admin-url is required')` |
+| main | _coordinate | 668 | `_coordinate(args.admin_url)` |
+| _coordinate | tempfile.TemporaryDirectory | 611 | `tempfile.TemporaryDirectory(prefix='workchord-wheel-qa-')` |
+| _coordinate | Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate) | 612 | `Path(temporary).resolve(data not statically known)` |
 
 ### Boundary effects
 
@@ -195,18 +199,20 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `_parser().parse_args` | 615 |
-| external_call | `_parser` | `argparse.ArgumentParser` | 602 |
-| unresolved_call | `_parser` | `parser.add_argument` | 603 |
-| unresolved_call | `_parser` | `parser.add_argument` | 604 |
-| unresolved_call | `_parser` | `parser.add_argument` | 609 |
-| unresolved_call | `_parser` | `parser.add_argument` | 610 |
-| external_call | `main` | `SystemExit` | 618 |
-| external_call | `_coordinate` | `tempfile.TemporaryDirectory` | 562 |
-| unresolved_call | `_coordinate` | `Path(temporary).resolve` | 563 |
+| unresolved_call | `main` | `_parser().parse_args` | 664 |
+| external_call | `_parser` | `argparse.ArgumentParser` | 651 |
+| unresolved_call | `_parser` | `parser.add_argument` | 652 |
+| unresolved_call | `_parser` | `parser.add_argument` | 653 |
+| unresolved_call | `_parser` | `parser.add_argument` | 658 |
+| unresolved_call | `_parser` | `parser.add_argument` | 659 |
+| external_call | `main` | `SystemExit` | 667 |
+| external_call | `_coordinate` | `tempfile.TemporaryDirectory` | 611 |
+| unresolved_call | `_coordinate` | `Path(temporary).resolve` | 612 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 
 ## Behavior
 
-This flow starts at `main` and is classified as `process`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+The coordinator creates a disposable PostgreSQL destination and starts fresh child interpreters against the installed package from a temporary working directory. Managed authentication is explicit. Source initialization creates the frozen schema, then representative application and authenticated-identity records; transfer and reconciliation remain closed to traffic until their required steps finish.
+
+Maintenance probes use the transferred viewer session for a safe project read. Anonymous access remains denied, writes remain rejected, validation-only mode blocks non-allowlisted reads, and all application rows must remain unchanged. The coordinator drops its owned database and role during cleanup.

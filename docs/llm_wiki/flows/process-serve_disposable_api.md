@@ -96,7 +96,7 @@ sequenceDiagram
     p22->>p24: DatabaseConfigurationError
 ```
 
-> Call sequence diagram shows 30 of 282 interactions; 252 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 275 interactions; 245 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

@@ -4,7 +4,7 @@
 
 ## Description
 
-Additive authority upgrades preserve legacy attribution and empty transfer targets.
+Initial authority schema, constraints and empty transfer targets.
 
 ## Imports
 
@@ -13,12 +13,9 @@ Additive authority upgrades preserve legacy attribution and empty transfer targe
 | `alembic` | `command` |
 | `app.database_migration.catalog` | `transfer_tables` |
 | `app.services.upgrade_service` | `alembic_config` |
-| `app.utils.time` | `utc_now` |
-| `datetime` | `date`, `timedelta` |
 | `pytest` | `pytest` |
-| `sqlalchemy` | `MetaData`, `create_engine`, `event`, `inspect`, `select`, `text` |
+| `sqlalchemy` | `create_engine`, `event`, `inspect`, `select` |
 | `sqlalchemy.engine` | `make_url` |
-| `sqlalchemy.exc` | `IntegrityError` |
 
 ## Local dependency map
 
@@ -27,19 +24,15 @@ Additive authority upgrades preserve legacy attribution and empty transfer targe
 flowchart LR
     n0["backend/app/database_migration/catalog.py"]
     n1["backend/app/services/upgrade_service.py"]
-    n2["backend/app/utils/time.py"]
-    n3["backend/tests/test_authority_migrations.py"]
-    n4["backend/tests/test_task_domain_migrations.py"]
-    n3 --> n0
-    n3 --> n1
+    n2["backend/tests/test_authority_migrations.py"]
+    n3["backend/tests/test_task_domain_migrations.py"]
+    n2 --> n0
+    n2 --> n1
     n3 --> n2
-    n4 --> n2
-    n4 --> n3
     click n0 "../modules/catalog.md"
     click n1 "../modules/upgrade_service.md"
-    click n2 "../modules/time.md"
-    click n3 "../modules/test_authority_migrations.md"
-    click n4 "../modules/test_task_domain_migrations.md"
+    click n2 "../modules/test_authority_migrations.md"
+    click n3 "../modules/test_task_domain_migrations.md"
 ```
 
 ### Internal neighbors
@@ -49,7 +42,6 @@ flowchart LR
 | Inbound | [test_task_domain_migrations](../modules/test_task_domain_migrations.md) |
 | Outbound | [catalog](../modules/catalog.md) |
 | Outbound | [upgrade_service](../modules/upgrade_service.md) |
-| Outbound | [time](../modules/time.md) |
 
 ### External packages
 
@@ -61,7 +53,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `legacy_authority_database` | `(request, tmp_path, configure_database)` | `@pytest.fixture(params=[pytest.param('sqlite', marks=pytest.mark.sqlite), pytest.param('postgresql', marks=[pytest.mark.postgresql, pytest.mark.allow_network])])` | — |
-| `test_authority_upgrade_preserves_guest_ids_and_does_not_invent_humans` | `(legacy_authority_database)` | — | — |
-| `test_schema_only_target_remains_empty_for_catalogued_transfer` | `(legacy_authority_database)` | — | — |
-| `test_new_foreign_keys_and_uniqueness_are_declared` | `(legacy_authority_database)` | — | — |
+| `initial_database` | `(request, tmp_path, configure_database)` | `@pytest.fixture(params=[pytest.param('sqlite', marks=pytest.mark.sqlite), pytest.param('postgresql', marks=[pytest.mark.postgresql, pytest.mark.allow_network])])` | — |
+| `test_schema_only_target_remains_empty_for_catalogued_transfer` | `(initial_database)` | — | — |
+| `test_new_foreign_keys_and_uniqueness_are_declared` | `(initial_database)` | — | — |

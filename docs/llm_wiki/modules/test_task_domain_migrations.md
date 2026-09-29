@@ -4,7 +4,7 @@
 
 ## Description
 
-Nonempty upgrade preservation and resumable task-domain backfill evidence.
+Initial task-domain constraints, evidence retention and identity fences.
 
 ## Imports
 
@@ -13,11 +13,10 @@ Nonempty upgrade preservation and resumable task-domain backfill evidence.
 | `alembic` | `command` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `date` |
-| `importlib` | `importlib` |
 | `pytest` | `pytest` |
-| `sqlalchemy` | `Boolean`, `Date`, `DateTime`, `Float`, `Integer`, `JSON`, `MetaData`, `select`, `text`, `inspect` |
+| `sqlalchemy` | `Boolean`, `Date`, `DateTime`, `Float`, `Integer`, `JSON`, `MetaData`, `select`, `inspect` |
 | `sqlalchemy.exc` | `IntegrityError` |
-| `tests.test_authority_migrations` | `legacy_authority_database` |
+| `tests.test_authority_migrations` | `initial_database` |
 
 ## Local dependency map
 
@@ -27,7 +26,6 @@ flowchart LR
     n0["backend/app/utils/time.py"]
     n1["backend/tests/test_authority_migrations.py"]
     n2["backend/tests/test_task_domain_migrations.py"]
-    n1 --> n0
     n2 --> n0
     n2 --> n1
     click n0 "../modules/time.md"
@@ -53,6 +51,5 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `insert_fixture` | `(connection, table, **values)` | — | Fill required scalar data while every relationship remains explicitly supplied. |
-| `test_nonempty_domain_upgrade_preserves_ids_history_and_backfill_provenance` | `(legacy_authority_database)` | — | — |
-| `test_backfill_cursor_resumes_without_rewriting_completed_rows` | `(legacy_authority_database)` | — | — |
-| `test_deletion_fence_upgrade_preserves_unknown_history_and_survives_without_tasks` | `(legacy_authority_database)` | — | — |
+| `test_deletion_fence_survives_without_tasks` | `(initial_database)` | — | — |
+| `test_initial_schema_enforces_scope_and_retains_deleted_task_evidence` | `(initial_database)` | — | — |

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1402 | [Open section](#entities) |
-| Modules | 629 | [Open section](#modules) |
+| Modules | 591 | [Open section](#modules) |
 | Workflows | 147 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 490 | [Open section](#entry-point-flows) |
@@ -1424,46 +1424,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 ## Modules
 
 - [0001_wave0_probe](modules/0001_wave0_probe.md) - Create the Wave 0 PostgreSQL lifecycle probe.
-- [20260506_0000_legacy_core_baseline](modules/20260506_0000_legacy_core_baseline.md) - Baseline for pre-backlog core planning schema.
-- [20260507_0001_agentic_tracing](modules/20260507_0001_agentic_tracing.md) - add agentic task source and tracing tables
-- [20260507_0002_create_projects](modules/20260507_0002_create_projects.md) - create projects table
-- [20260507_0003_link_tasks_projects](modules/20260507_0003_link_tasks_projects.md) - link tasks to projects
-- [20260508_0004_create_triage_items](modules/20260508_0004_create_triage_items.md) - create triage items table
-- [20260508_0005_create_work_templates](modules/20260508_0005_create_work_templates.md) - create work templates table
-- [20260508_0006_add_work_template_seed_key](modules/20260508_0006_add_work_template_seed_key.md) - add work template seed key
-- [20260509_0007_create_label_groups](modules/20260509_0007_create_label_groups.md) - create label groups
-- [20260509_0008_create_saved_views](modules/20260509_0008_create_saved_views.md) - create saved views
-- [20260509_0009_add_saved_view_seed_key](modules/20260509_0009_add_saved_view_seed_key.md) - add saved view seed key
-- [20260509_0010_create_project_updates](modules/20260509_0010_create_project_updates.md) - create project updates
-- [20260509_0011_create_project_milestones](modules/20260509_0011_create_project_milestones.md) - create project milestones
-- [20260509_0012_link_tasks_milestones](modules/20260509_0012_link_tasks_milestones.md) - link tasks to project milestones
-- [20260509_0013_create_initiatives](modules/20260509_0013_create_initiatives.md) - create initiatives
-- [20260509_0014_create_external_links](modules/20260509_0014_create_external_links.md) - create external links
-- [20260509_0015_create_github_status_automation_rules](modules/20260509_0015_create_github_status_automation_rules.md) - create github status automation rules
-- [20260509_0016_create_releases](modules/20260509_0016_create_releases.md) - create releases
-- [20260509_0017_create_request_sources](modules/20260509_0017_create_request_sources.md) - Create request sources.
-- [20260509_0018_create_triage_classification_suggestions](modules/20260509_0018_create_triage_classification_suggestions.md) - Create triage classification suggestions.
-- [20260509_0019_create_outbound_webhooks](modules/20260509_0019_create_outbound_webhooks.md) - Create outbound webhook targets and delivery logs.
-- [20260509_0020_add_triage_metadata_json](modules/20260509_0020_add_triage_metadata_json.md) - Add metadata JSON to triage items.
-- [20260510_0021_create_team_member_profiles](modules/20260510_0021_create_team_member_profiles.md) - Create team member capability profiles.
-- [20260510_0022_create_system_settings](modules/20260510_0022_create_system_settings.md) - Create runtime system settings.
-- [20260510_0023_create_user_sessions](modules/20260510_0023_create_user_sessions.md) - Create user sessions table.
-- [20260515_0024_move_portfolio_ownership_to_profiles](modules/20260515_0024_move_portfolio_ownership_to_profiles.md) - Move portfolio ownership to team member profiles.
-- [20260516_0025_add_project_scope_to_iterations](modules/20260516_0025_add_project_scope_to_iterations.md) - Add optional project scope to iterations.
-- [20260709_0026_add_opaque_browser_sessions](modules/20260709_0026_add_opaque_browser_sessions.md) - Replace IP ownership with opaque browser-session tokens.
-- [20260709_0027_add_durable_outbound_delivery_queue](modules/20260709_0027_add_durable_outbound_delivery_queue.md) - Add durable multi-channel outbound delivery queue metadata.
-- [20260711_0028_add_agent_skill_control_plane](modules/20260711_0028_add_agent_skill_control_plane.md) - Add actor assignments, fenced work, and durable idempotency.
-- [20260718_0029_add_agent_model_catalog](modules/20260718_0029_add_agent_model_catalog.md) - Add provider-neutral model catalog and actor bindings.
-- [20260718_0030_add_task_routing_assessments](modules/20260718_0030_add_task_routing_assessments.md) - Add task assessments and assignment/run model linkage.
-- [20260718_0031_align_postgresql_types](modules/20260718_0031_align_postgresql_types.md) - Align UTC timestamps, legacy nullability, and PostgreSQL sequences.
-- [20260718_0032_add_database_migration_gate](modules/20260718_0032_add_database_migration_gate.md) - add target-owned database migration gate
-- [20260719_0033_add_autonomy_control_plane](modules/20260719_0033_add_autonomy_control_plane.md) - add autonomous topology and verification projections
-- [20260727_0034_add_agent_run_model_trust](modules/20260727_0034_add_agent_run_model_trust.md) - Add explicit configured-versus-observed model trust evidence.
-- [20260728_0035_add_agent_team_setup](modules/20260728_0035_add_agent_team_setup.md) - Add operator-owned agent-team setup and onboarding state.
-- [20260802_0036_add_plan_shares](modules/20260802_0036_add_plan_shares.md) - Add immutable, revocable plan shares.
-- [20260915_0037_add_authority_and_recovery](modules/20260915_0037_add_authority_and_recovery.md) - Add durable authority, application snapshots and explicit schedule commitments.
-- [20260915_0038_canonical_task_domain](modules/20260915_0038_canonical_task_domain.md) - Expand task ownership, backlog, effort and canonical brief history.
-- [20260916_0039_task_deletion_fences](modules/20260916_0039_task_deletion_fences.md) - Retain deletion versions for safe task identity restoration.
+- [20260928_0001_initial_schema](modules/20260928_0001_initial_schema.md) - Create the complete initial WorkChord schema.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1954,7 +1915,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.
 - [test_agent_routing_harness](modules/test_agent_routing_harness.md) - Smoke tests for the isolated routing database harness.
 - [test_agent_routing_history_surfaces](modules/test_agent_routing_history_surfaces.md) - Contract and parity coverage for routing-assessment history surfaces.
-- [test_agent_routing_migrations](modules/test_agent_routing_migrations.md) - Alembic and cross-dialect DDL coverage for routing Wave 1.
+- [test_agent_routing_migrations](modules/test_agent_routing_migrations.md) - Initial schema and cross-dialect routing constraints.
 - [test_agent_routing_observability](modules/test_agent_routing_observability.md) - Security and persistence coverage for bounded routing telemetry.
 - [test_agent_routing_rollout](modules/test_agent_routing_rollout.md) - Focused qualification for model-aware routing rollout controls.
 - [test_agent_routing_service](modules/test_agent_routing_service.md) - End-to-end service coverage for authoritative Wave 3 routing.
@@ -1966,7 +1927,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
-- [test_authority_migrations](modules/test_authority_migrations.md) - Additive authority upgrades preserve legacy attribution and empty transfer targets.
+- [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
 - [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
@@ -1977,6 +1938,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
+- [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
@@ -1997,10 +1959,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
-- [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh/legacy/inspection migration matrix.
+- [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh schema and inspection migration matrix.
 - [test_task_domain](modules/test_task_domain.md) - Domain commands preserve identity, evidence independence and bounded read contracts.
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
-- [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Nonempty upgrade preservation and resumable task-domain backfill evidence.
+- [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.

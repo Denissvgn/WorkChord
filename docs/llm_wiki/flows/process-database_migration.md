@@ -77,7 +77,7 @@ sequenceDiagram
     p2-->>p9: reconcile.add_argument
 ```
 
-> Call sequence diagram shows 30 of 1122 interactions; 1092 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1119 interactions; 1089 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

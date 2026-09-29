@@ -12,6 +12,9 @@ package is imported.  CI invokes this file from the repository checkout while
 the phase interpreters run with a temporary working directory, so an editable
 source tree cannot accidentally satisfy the wheel boundary.
 
+Child environments explicitly select managed authentication. The source includes a human principal, workspace membership, project viewer membership and an opaque authenticated session that cross the SQLite/PostgreSQL transfer boundary. Maintenance probes require authenticated reads, preserve anonymous denial and write rejection, and compare all application rows before and after the probes.
+
+
 ## Imports
 
 | Source | Symbols |
@@ -22,12 +25,16 @@ source tree cannot accidentally satisfy the wheel boundary.
 | `app` | `app` |
 | `app.cli.closeout` | `build_parser` |
 | `app.cli.cutover` | `build_parser` |
+| `app.config` | `get_settings`, `get_settings` |
+| `app.database` | `Base` |
+| `app.database_config` | `parse_database_configuration` |
 | `app.database_migration.manifest` | `write_document` |
 | `app.database_migration.source` | `preflight_source` |
 | `app.database_migration.transfer` | `load_snapshot`, `reconcile_snapshot`, `record_post_copy_repairs`, `target_identifier` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentActor` |
 | `app.models.calendar` | `Calendar` |
+| `app.models.identity` | `Principal`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
@@ -42,7 +49,7 @@ source tree cannot accidentally satisfy the wheel boundary.
 | `os` | `os` |
 | `pathlib` | `Path` |
 | `psycopg` | `psycopg`, `sql` |
-| `sqlalchemy` | `create_engine`, `create_engine`, `text` |
+| `sqlalchemy` | `create_engine`, `create_engine`, `text`, `create_engine`, `select` |
 | `sqlalchemy.orm` | `Session` |
 | `subprocess` | `subprocess` |
 | `sys` | `sys` |
@@ -66,7 +73,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (13) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -74,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 5 | 5 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -91,6 +98,7 @@ flowchart LR
 | `_source_phase` | `(workspace: Path) -> None` | — | — |
 | `_target_phase` | `(workspace: Path, authorized_target: str) -> None` | — | — |
 | `_maintenance_phase` | `(expected_mode: str) -> None` | — | — |
+| `_probe_maintenance` | `(app, expected_mode: str) -> None` | — | — |
 | `_coordinate` | `(admin_url: str) -> None` | — | — |
 | `_parser` | `() -> argparse.ArgumentParser` | — | — |
 | `main` | `() -> int` | — | — |

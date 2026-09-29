@@ -30,6 +30,7 @@ flowchart LR
     n5["backend/tests/database/test_database_configuration.py"]
     n6["backend/tests/database/test_postgresql_concurrency.py"]
     n7["backend/tests/migrations/test_postgresql_migrations.py"]
+    n8["scripts/ci/installed_wheel_postgresql_qualification.py"]
     n0 --> n2
     n1 --> n0
     n1 --> n2
@@ -49,6 +50,10 @@ flowchart LR
     n7 --> n1
     n7 --> n2
     n7 --> n4
+    n8 --> n0
+    n8 --> n1
+    n8 --> n2
+    n8 --> n4
     click n0 "../modules/config.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/database_config.md"
@@ -57,6 +62,7 @@ flowchart LR
     click n5 "../modules/test_database_configuration.md"
     click n6 "../modules/test_postgresql_concurrency.md"
     click n7 "../modules/test_postgresql_migrations.md"
+    click n8 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +76,7 @@ flowchart LR
 | Inbound | [test_database_configuration](../modules/test_database_configuration.md) |
 | Inbound | [test_postgresql_concurrency](../modules/test_postgresql_concurrency.md) |
 | Inbound | [test_postgresql_migrations](../modules/test_postgresql_migrations.md) |
+| Inbound | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) |
 
 ### External packages
 

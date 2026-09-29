@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 629,
+      "modules": 591,
       "workflows": 147
     },
     "dependency_architecture": 2,
-    "total": 2683
+    "total": 2645
   },
   "dependency_pages": {
     "count": 2,
@@ -13563,19 +13563,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 132,
+              "line": 90,
               "step": "head_revision",
               "target": "ScriptDirectory.from_config"
             },
             {
               "kind": "unresolved_call",
-              "line": 101,
+              "line": 59,
               "step": "migrations_dir",
               "target": "Path(__file__).resolve"
             },
             {
               "kind": "external_call",
-              "line": 113,
+              "line": 71,
               "step": "alembic_config",
               "target": "Config"
             },
@@ -14494,19 +14494,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 132,
+              "line": 90,
               "step": "head_revision",
               "target": "ScriptDirectory.from_config"
             },
             {
               "kind": "unresolved_call",
-              "line": 101,
+              "line": 59,
               "step": "migrations_dir",
               "target": "Path(__file__).resolve"
             },
             {
               "kind": "external_call",
-              "line": 113,
+              "line": 71,
               "step": "alembic_config",
               "target": "Config"
             },
@@ -32879,7 +32879,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 1123,
+          "step_count": 1120,
           "truncated": true
         }
       },
@@ -33452,55 +33452,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 615,
+              "line": 664,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 602,
+              "line": 651,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 603,
+              "line": 652,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 604,
+              "line": 653,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 609,
+              "line": 658,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 610,
+              "line": 659,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "external_call",
-              "line": 618,
+              "line": 667,
               "step": "main",
               "target": "SystemExit"
             },
             {
               "kind": "external_call",
-              "line": 562,
+              "line": 611,
               "step": "_coordinate",
               "target": "tempfile.TemporaryDirectory"
             },
             {
               "kind": "unresolved_call",
-              "line": 563,
+              "line": 612,
               "step": "_coordinate",
               "target": "Path(temporary).resolve"
             },
@@ -33554,7 +33554,7 @@
             "backend/app/database_migration/transfer.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 1378,
+          "step_count": 1394,
           "truncated": true
         }
       },
@@ -33652,7 +33652,7 @@
             "backend/app/database_config.py",
             "backend/app/config.py"
           ],
-          "step_count": 56,
+          "step_count": 53,
           "truncated": true
         }
       },
@@ -34788,7 +34788,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 283,
+          "step_count": 276,
           "truncated": true
         }
       },
@@ -35135,7 +35135,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 99,
+              "line": 94,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35143,7 +35143,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 103,
+              "line": 98,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35151,7 +35151,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 131,
+              "line": 125,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35159,7 +35159,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 136,
+              "line": 130,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35167,7 +35167,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 138,
+              "line": 132,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35175,7 +35175,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 140,
+              "line": 134,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35183,7 +35183,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 141,
+              "line": 135,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35191,7 +35191,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 149,
+              "line": 143,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -35200,7 +35200,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 85,
+              "line": 80,
               "step": "main",
               "target": "build_parser().parse_args"
             },
@@ -35294,7 +35294,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 187,
+          "step_count": 179,
           "truncated": true
         }
       },
@@ -35397,7 +35397,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/maintenance.py"
           ],
-          "step_count": 57,
+          "step_count": 54,
           "truncated": true
         }
       },
@@ -37319,46 +37319,7 @@
         "load-order.md",
         "log.md",
         "modules/0001_wave0_probe.md",
-        "modules/20260506_0000_legacy_core_baseline.md",
-        "modules/20260507_0001_agentic_tracing.md",
-        "modules/20260507_0002_create_projects.md",
-        "modules/20260507_0003_link_tasks_projects.md",
-        "modules/20260508_0004_create_triage_items.md",
-        "modules/20260508_0005_create_work_templates.md",
-        "modules/20260508_0006_add_work_template_seed_key.md",
-        "modules/20260509_0007_create_label_groups.md",
-        "modules/20260509_0008_create_saved_views.md",
-        "modules/20260509_0009_add_saved_view_seed_key.md",
-        "modules/20260509_0010_create_project_updates.md",
-        "modules/20260509_0011_create_project_milestones.md",
-        "modules/20260509_0012_link_tasks_milestones.md",
-        "modules/20260509_0013_create_initiatives.md",
-        "modules/20260509_0014_create_external_links.md",
-        "modules/20260509_0015_create_github_status_automation_rules.md",
-        "modules/20260509_0016_create_releases.md",
-        "modules/20260509_0017_create_request_sources.md",
-        "modules/20260509_0018_create_triage_classification_suggestions.md",
-        "modules/20260509_0019_create_outbound_webhooks.md",
-        "modules/20260509_0020_add_triage_metadata_json.md",
-        "modules/20260510_0021_create_team_member_profiles.md",
-        "modules/20260510_0022_create_system_settings.md",
-        "modules/20260510_0023_create_user_sessions.md",
-        "modules/20260515_0024_move_portfolio_ownership_to_profiles.md",
-        "modules/20260516_0025_add_project_scope_to_iterations.md",
-        "modules/20260709_0026_add_opaque_browser_sessions.md",
-        "modules/20260709_0027_add_durable_outbound_delivery_queue.md",
-        "modules/20260711_0028_add_agent_skill_control_plane.md",
-        "modules/20260718_0029_add_agent_model_catalog.md",
-        "modules/20260718_0030_add_task_routing_assessments.md",
-        "modules/20260718_0031_align_postgresql_types.md",
-        "modules/20260718_0032_add_database_migration_gate.md",
-        "modules/20260719_0033_add_autonomy_control_plane.md",
-        "modules/20260727_0034_add_agent_run_model_trust.md",
-        "modules/20260728_0035_add_agent_team_setup.md",
-        "modules/20260802_0036_add_plan_shares.md",
-        "modules/20260915_0037_add_authority_and_recovery.md",
-        "modules/20260915_0038_canonical_task_domain.md",
-        "modules/20260916_0039_task_deletion_fences.md",
+        "modules/20260928_0001_initial_schema.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -37865,6 +37826,7 @@
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_identity_lifecycle.md",
+        "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
@@ -46507,6 +46469,7 @@
       "outgoing_internal_links": [
         "modules/app_database.md",
         "modules/identity_service.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
@@ -52148,9 +52111,7 @@
         "modules/models_task.md",
         "modules/task_domain_service.md",
         "modules/task_status_log.md",
-        "modules/task_status_service.md",
-        "modules/test_postgresql_migrations.md",
-        "modules/test_sqlite_migrations.md"
+        "modules/task_status_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_status_log.py",
@@ -56731,6 +56692,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/UpgradeError",
       "outgoing_internal_links": [
+        "modules/test_initial_schema.md",
         "modules/test_postgresql_migrations.md",
         "modules/test_sqlite_migrations.md",
         "modules/upgrade.md",
@@ -56788,18 +56750,18 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/UTCDateTime",
       "outgoing_internal_links": [
-        "modules/20260718_0032_add_database_migration_gate.md",
-        "modules/20260719_0033_add_autonomy_control_plane.md",
-        "modules/20260728_0035_add_agent_team_setup.md",
-        "modules/20260802_0036_add_plan_shares.md",
-        "modules/20260915_0037_add_authority_and_recovery.md",
-        "modules/20260915_0038_canonical_task_domain.md",
         "modules/models_agent.md",
         "modules/models_autonomy.md",
         "modules/models_database_migration.md",
         "modules/models_external_link.md",
         "modules/models_github.md",
         "modules/models_identity.md",
+        "modules/models_label.md",
+        "modules/models_outbound_webhook.md",
+        "modules/models_plan_share.md",
+        "modules/models_project.md",
+        "modules/models_release.md",
+        "modules/recovery.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -57415,6 +57377,7 @@
       "outgoing_internal_links": [
         "modules/app_database.md",
         "modules/identity_service.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
@@ -57480,422 +57443,14 @@
       "title": "0001_wave0_probe Module"
     },
     {
-      "canonical_path": "modules/20260506_0000_legacy_core_baseline.md",
-      "id": "20260506_0000_legacy_core_baseline",
+      "canonical_path": "modules/20260928_0001_initial_schema.md",
+      "id": "20260928_0001_initial_schema",
       "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260506_0000_legacy_core_baseline",
+      "mcp_uri": "llm-wiki://modules/20260928_0001_initial_schema",
       "outgoing_internal_links": [],
       "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260506_0000_legacy_core_baseline.py",
-      "title": "20260506_0000_legacy_core_baseline Module"
-    },
-    {
-      "canonical_path": "modules/20260507_0001_agentic_tracing.md",
-      "id": "20260507_0001_agentic_tracing",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260507_0001_agentic_tracing",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260507_0001_agentic_tracing.py",
-      "title": "20260507_0001_agentic_tracing Module"
-    },
-    {
-      "canonical_path": "modules/20260507_0002_create_projects.md",
-      "id": "20260507_0002_create_projects",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260507_0002_create_projects",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260507_0002_create_projects.py",
-      "title": "20260507_0002_create_projects Module"
-    },
-    {
-      "canonical_path": "modules/20260507_0003_link_tasks_projects.md",
-      "id": "20260507_0003_link_tasks_projects",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260507_0003_link_tasks_projects",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260507_0003_link_tasks_projects.py",
-      "title": "20260507_0003_link_tasks_projects Module"
-    },
-    {
-      "canonical_path": "modules/20260508_0004_create_triage_items.md",
-      "id": "20260508_0004_create_triage_items",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260508_0004_create_triage_items",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260508_0004_create_triage_items.py",
-      "title": "20260508_0004_create_triage_items Module"
-    },
-    {
-      "canonical_path": "modules/20260508_0005_create_work_templates.md",
-      "id": "20260508_0005_create_work_templates",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260508_0005_create_work_templates",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260508_0005_create_work_templates.py",
-      "title": "20260508_0005_create_work_templates Module"
-    },
-    {
-      "canonical_path": "modules/20260508_0006_add_work_template_seed_key.md",
-      "id": "20260508_0006_add_work_template_seed_key",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260508_0006_add_work_template_seed_key",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260508_0006_add_work_template_seed_key.py",
-      "title": "20260508_0006_add_work_template_seed_key Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0007_create_label_groups.md",
-      "id": "20260509_0007_create_label_groups",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0007_create_label_groups",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0007_create_label_groups.py",
-      "title": "20260509_0007_create_label_groups Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0008_create_saved_views.md",
-      "id": "20260509_0008_create_saved_views",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0008_create_saved_views",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0008_create_saved_views.py",
-      "title": "20260509_0008_create_saved_views Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0009_add_saved_view_seed_key.md",
-      "id": "20260509_0009_add_saved_view_seed_key",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0009_add_saved_view_seed_key",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0009_add_saved_view_seed_key.py",
-      "title": "20260509_0009_add_saved_view_seed_key Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0010_create_project_updates.md",
-      "id": "20260509_0010_create_project_updates",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0010_create_project_updates",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0010_create_project_updates.py",
-      "title": "20260509_0010_create_project_updates Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0011_create_project_milestones.md",
-      "id": "20260509_0011_create_project_milestones",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0011_create_project_milestones",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0011_create_project_milestones.py",
-      "title": "20260509_0011_create_project_milestones Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0012_link_tasks_milestones.md",
-      "id": "20260509_0012_link_tasks_milestones",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0012_link_tasks_milestones",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0012_link_tasks_milestones.py",
-      "title": "20260509_0012_link_tasks_milestones Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0013_create_initiatives.md",
-      "id": "20260509_0013_create_initiatives",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0013_create_initiatives",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0013_create_initiatives.py",
-      "title": "20260509_0013_create_initiatives Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0014_create_external_links.md",
-      "id": "20260509_0014_create_external_links",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0014_create_external_links",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0014_create_external_links.py",
-      "title": "20260509_0014_create_external_links Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0015_create_github_status_automation_rules.md",
-      "id": "20260509_0015_create_github_status_automation_rules",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0015_create_github_status_automation_rules",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0015_create_github_status_automation_rules.py",
-      "title": "20260509_0015_create_github_status_automation_rules Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0016_create_releases.md",
-      "id": "20260509_0016_create_releases",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0016_create_releases",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0016_create_releases.py",
-      "title": "20260509_0016_create_releases Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0017_create_request_sources.md",
-      "id": "20260509_0017_create_request_sources",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0017_create_request_sources",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0017_create_request_sources.py",
-      "title": "20260509_0017_create_request_sources Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0018_create_triage_classification_suggestions.md",
-      "id": "20260509_0018_create_triage_classification_suggestions",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0018_create_triage_classification_suggestions",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0018_create_triage_classification_suggestions.py",
-      "title": "20260509_0018_create_triage_classification_suggestions Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0019_create_outbound_webhooks.md",
-      "id": "20260509_0019_create_outbound_webhooks",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0019_create_outbound_webhooks",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0019_create_outbound_webhooks.py",
-      "title": "20260509_0019_create_outbound_webhooks Module"
-    },
-    {
-      "canonical_path": "modules/20260509_0020_add_triage_metadata_json.md",
-      "id": "20260509_0020_add_triage_metadata_json",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260509_0020_add_triage_metadata_json",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260509_0020_add_triage_metadata_json.py",
-      "title": "20260509_0020_add_triage_metadata_json Module"
-    },
-    {
-      "canonical_path": "modules/20260510_0021_create_team_member_profiles.md",
-      "id": "20260510_0021_create_team_member_profiles",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260510_0021_create_team_member_profiles",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260510_0021_create_team_member_profiles.py",
-      "title": "20260510_0021_create_team_member_profiles Module"
-    },
-    {
-      "canonical_path": "modules/20260510_0022_create_system_settings.md",
-      "id": "20260510_0022_create_system_settings",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260510_0022_create_system_settings",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260510_0022_create_system_settings.py",
-      "title": "20260510_0022_create_system_settings Module"
-    },
-    {
-      "canonical_path": "modules/20260510_0023_create_user_sessions.md",
-      "id": "20260510_0023_create_user_sessions",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260510_0023_create_user_sessions",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260510_0023_create_user_sessions.py",
-      "title": "20260510_0023_create_user_sessions Module"
-    },
-    {
-      "canonical_path": "modules/20260515_0024_move_portfolio_ownership_to_profiles.md",
-      "id": "20260515_0024_move_portfolio_ownership_to_profiles",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260515_0024_move_portfolio_ownership_to_profiles",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260515_0024_move_portfolio_ownership_to_profiles.py",
-      "title": "20260515_0024_move_portfolio_ownership_to_profiles Module"
-    },
-    {
-      "canonical_path": "modules/20260516_0025_add_project_scope_to_iterations.md",
-      "id": "20260516_0025_add_project_scope_to_iterations",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260516_0025_add_project_scope_to_iterations",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260516_0025_add_project_scope_to_iterations.py",
-      "title": "20260516_0025_add_project_scope_to_iterations Module"
-    },
-    {
-      "canonical_path": "modules/20260709_0026_add_opaque_browser_sessions.md",
-      "id": "20260709_0026_add_opaque_browser_sessions",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260709_0026_add_opaque_browser_sessions",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260709_0026_add_opaque_browser_sessions.py",
-      "title": "20260709_0026_add_opaque_browser_sessions Module"
-    },
-    {
-      "canonical_path": "modules/20260709_0027_add_durable_outbound_delivery_queue.md",
-      "id": "20260709_0027_add_durable_outbound_delivery_queue",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260709_0027_add_durable_outbound_delivery_queue",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260709_0027_add_durable_outbound_delivery_queue.py",
-      "title": "20260709_0027_add_durable_outbound_delivery_queue Module"
-    },
-    {
-      "canonical_path": "modules/20260711_0028_add_agent_skill_control_plane.md",
-      "id": "20260711_0028_add_agent_skill_control_plane",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260711_0028_add_agent_skill_control_plane",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260711_0028_add_agent_skill_control_plane.py",
-      "title": "20260711_0028_add_agent_skill_control_plane Module"
-    },
-    {
-      "canonical_path": "modules/20260718_0029_add_agent_model_catalog.md",
-      "id": "20260718_0029_add_agent_model_catalog",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260718_0029_add_agent_model_catalog",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py",
-      "title": "20260718_0029_add_agent_model_catalog Module"
-    },
-    {
-      "canonical_path": "modules/20260718_0030_add_task_routing_assessments.md",
-      "id": "20260718_0030_add_task_routing_assessments",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260718_0030_add_task_routing_assessments",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py",
-      "title": "20260718_0030_add_task_routing_assessments Module"
-    },
-    {
-      "canonical_path": "modules/20260718_0031_align_postgresql_types.md",
-      "id": "20260718_0031_align_postgresql_types",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260718_0031_align_postgresql_types",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260718_0031_align_postgresql_types.py",
-      "title": "20260718_0031_align_postgresql_types Module"
-    },
-    {
-      "canonical_path": "modules/20260718_0032_add_database_migration_gate.md",
-      "id": "20260718_0032_add_database_migration_gate",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260718_0032_add_database_migration_gate",
-      "outgoing_internal_links": [
-        "modules/20260718_0032_add_database_migration_gate.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260718_0032_add_database_migration_gate.py",
-      "title": "20260718_0032_add_database_migration_gate Module"
-    },
-    {
-      "canonical_path": "modules/20260719_0033_add_autonomy_control_plane.md",
-      "id": "20260719_0033_add_autonomy_control_plane",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260719_0033_add_autonomy_control_plane",
-      "outgoing_internal_links": [
-        "modules/20260719_0033_add_autonomy_control_plane.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260719_0033_add_autonomy_control_plane.py",
-      "title": "20260719_0033_add_autonomy_control_plane Module"
-    },
-    {
-      "canonical_path": "modules/20260727_0034_add_agent_run_model_trust.md",
-      "id": "20260727_0034_add_agent_run_model_trust",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260727_0034_add_agent_run_model_trust",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260727_0034_add_agent_run_model_trust.py",
-      "title": "20260727_0034_add_agent_run_model_trust Module"
-    },
-    {
-      "canonical_path": "modules/20260728_0035_add_agent_team_setup.md",
-      "id": "20260728_0035_add_agent_team_setup",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260728_0035_add_agent_team_setup",
-      "outgoing_internal_links": [
-        "modules/20260728_0035_add_agent_team_setup.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py",
-      "title": "20260728_0035_add_agent_team_setup Module"
-    },
-    {
-      "canonical_path": "modules/20260802_0036_add_plan_shares.md",
-      "id": "20260802_0036_add_plan_shares",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260802_0036_add_plan_shares",
-      "outgoing_internal_links": [
-        "modules/20260802_0036_add_plan_shares.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260802_0036_add_plan_shares.py",
-      "title": "20260802_0036_add_plan_shares Module"
-    },
-    {
-      "canonical_path": "modules/20260915_0037_add_authority_and_recovery.md",
-      "id": "20260915_0037_add_authority_and_recovery",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260915_0037_add_authority_and_recovery",
-      "outgoing_internal_links": [
-        "modules/20260915_0037_add_authority_and_recovery.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260915_0037_add_authority_and_recovery.py",
-      "title": "20260915_0037_add_authority_and_recovery Module"
-    },
-    {
-      "canonical_path": "modules/20260915_0038_canonical_task_domain.md",
-      "id": "20260915_0038_canonical_task_domain",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260915_0038_canonical_task_domain",
-      "outgoing_internal_links": [
-        "modules/20260915_0038_canonical_task_domain.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260915_0038_canonical_task_domain.py",
-      "title": "20260915_0038_canonical_task_domain Module"
-    },
-    {
-      "canonical_path": "modules/20260916_0039_task_deletion_fences.md",
-      "id": "20260916_0039_task_deletion_fences",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20260916_0039_task_deletion_fences",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20260916_0039_task_deletion_fences.py",
-      "title": "20260916_0039_task_deletion_fences Module"
+      "source_path": "backend/app/migrations/versions/20260928_0001_initial_schema.py",
+      "title": "20260928_0001_initial_schema Module"
     },
     {
       "canonical_path": "modules/accessibilityInvariants.md",
@@ -59629,6 +59184,7 @@
         "modules/app_database.md",
         "modules/config.md",
         "modules/database_config.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/migrations_env.md",
         "modules/test_database_configuration.md",
         "modules/test_postgresql_concurrency.md",
@@ -65605,8 +65161,6 @@
         "modules/models_task.md",
         "modules/task_status_log.md",
         "modules/task_status_service.md",
-        "modules/test_postgresql_migrations.md",
-        "modules/test_sqlite_migrations.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -66757,7 +66311,6 @@
         "modules/catalog.md",
         "modules/test_authority_migrations.md",
         "modules/test_task_domain_migrations.md",
-        "modules/time.md",
         "modules/upgrade_service.md"
       ],
       "role": "semantic",
@@ -66910,6 +66463,20 @@
       "title": "test_identity_lifecycle Module"
     },
     {
+      "canonical_path": "modules/test_initial_schema.md",
+      "id": "test_initial_schema",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_initial_schema",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/test_initial_schema.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_initial_schema.py",
+      "title": "test_initial_schema Module"
+    },
+    {
       "canonical_path": "modules/test_load_seed_postgresql.md",
       "id": "test_load_seed_postgresql",
       "kind": "modules",
@@ -67055,8 +66622,8 @@
         "modules/database_config.md",
         "modules/models___init__.md",
         "modules/support___init__.md",
-        "modules/task_status_log.md",
         "modules/test_postgresql_migrations.md",
+        "modules/time.md",
         "modules/upgrade_service.md"
       ],
       "role": "semantic",
@@ -67237,7 +66804,6 @@
         "modules/app_database.md",
         "modules/models___init__.md",
         "modules/support___init__.md",
-        "modules/task_status_log.md",
         "modules/test_sqlite_migrations.md",
         "modules/upgrade_service.md"
       ],
@@ -70403,6 +69969,7 @@
         "modules/installed_wheel_postgresql_qualification.md",
         "modules/models_agent.md",
         "modules/models_calendar.md",
+        "modules/models_identity.md",
         "modules/models_iteration.md",
         "modules/models_project.md",
         "modules/models_task.md",
@@ -78143,6 +77710,7 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/process-installed_wheel_postgresql_qualification",
       "outgoing_internal_links": [
+        "modules/app_database.md",
         "modules/app_main.md",
         "modules/authority.md",
         "modules/calendar_service.md",
@@ -78562,46 +78130,7 @@
       "mcp_uri": "llm-wiki://dependencies",
       "outgoing_internal_links": [
         "modules/0001_wave0_probe.md",
-        "modules/20260506_0000_legacy_core_baseline.md",
-        "modules/20260507_0001_agentic_tracing.md",
-        "modules/20260507_0002_create_projects.md",
-        "modules/20260507_0003_link_tasks_projects.md",
-        "modules/20260508_0004_create_triage_items.md",
-        "modules/20260508_0005_create_work_templates.md",
-        "modules/20260508_0006_add_work_template_seed_key.md",
-        "modules/20260509_0007_create_label_groups.md",
-        "modules/20260509_0008_create_saved_views.md",
-        "modules/20260509_0009_add_saved_view_seed_key.md",
-        "modules/20260509_0010_create_project_updates.md",
-        "modules/20260509_0011_create_project_milestones.md",
-        "modules/20260509_0012_link_tasks_milestones.md",
-        "modules/20260509_0013_create_initiatives.md",
-        "modules/20260509_0014_create_external_links.md",
-        "modules/20260509_0015_create_github_status_automation_rules.md",
-        "modules/20260509_0016_create_releases.md",
-        "modules/20260509_0017_create_request_sources.md",
-        "modules/20260509_0018_create_triage_classification_suggestions.md",
-        "modules/20260509_0019_create_outbound_webhooks.md",
-        "modules/20260509_0020_add_triage_metadata_json.md",
-        "modules/20260510_0021_create_team_member_profiles.md",
-        "modules/20260510_0022_create_system_settings.md",
-        "modules/20260510_0023_create_user_sessions.md",
-        "modules/20260515_0024_move_portfolio_ownership_to_profiles.md",
-        "modules/20260516_0025_add_project_scope_to_iterations.md",
-        "modules/20260709_0026_add_opaque_browser_sessions.md",
-        "modules/20260709_0027_add_durable_outbound_delivery_queue.md",
-        "modules/20260711_0028_add_agent_skill_control_plane.md",
-        "modules/20260718_0029_add_agent_model_catalog.md",
-        "modules/20260718_0030_add_task_routing_assessments.md",
-        "modules/20260718_0031_align_postgresql_types.md",
-        "modules/20260718_0032_add_database_migration_gate.md",
-        "modules/20260719_0033_add_autonomy_control_plane.md",
-        "modules/20260727_0034_add_agent_run_model_trust.md",
-        "modules/20260728_0035_add_agent_team_setup.md",
-        "modules/20260802_0036_add_plan_shares.md",
-        "modules/20260915_0037_add_authority_and_recovery.md",
-        "modules/20260915_0038_canonical_task_domain.md",
-        "modules/20260916_0039_task_deletion_fences.md",
+        "modules/20260928_0001_initial_schema.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -79108,6 +78637,7 @@
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_identity_lifecycle.md",
+        "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
@@ -79202,46 +78732,7 @@
       "mcp_uri": "llm-wiki://load-order",
       "outgoing_internal_links": [
         "modules/0001_wave0_probe.md",
-        "modules/20260506_0000_legacy_core_baseline.md",
-        "modules/20260507_0001_agentic_tracing.md",
-        "modules/20260507_0002_create_projects.md",
-        "modules/20260507_0003_link_tasks_projects.md",
-        "modules/20260508_0004_create_triage_items.md",
-        "modules/20260508_0005_create_work_templates.md",
-        "modules/20260508_0006_add_work_template_seed_key.md",
-        "modules/20260509_0007_create_label_groups.md",
-        "modules/20260509_0008_create_saved_views.md",
-        "modules/20260509_0009_add_saved_view_seed_key.md",
-        "modules/20260509_0010_create_project_updates.md",
-        "modules/20260509_0011_create_project_milestones.md",
-        "modules/20260509_0012_link_tasks_milestones.md",
-        "modules/20260509_0013_create_initiatives.md",
-        "modules/20260509_0014_create_external_links.md",
-        "modules/20260509_0015_create_github_status_automation_rules.md",
-        "modules/20260509_0016_create_releases.md",
-        "modules/20260509_0017_create_request_sources.md",
-        "modules/20260509_0018_create_triage_classification_suggestions.md",
-        "modules/20260509_0019_create_outbound_webhooks.md",
-        "modules/20260509_0020_add_triage_metadata_json.md",
-        "modules/20260510_0021_create_team_member_profiles.md",
-        "modules/20260510_0022_create_system_settings.md",
-        "modules/20260510_0023_create_user_sessions.md",
-        "modules/20260515_0024_move_portfolio_ownership_to_profiles.md",
-        "modules/20260516_0025_add_project_scope_to_iterations.md",
-        "modules/20260709_0026_add_opaque_browser_sessions.md",
-        "modules/20260709_0027_add_durable_outbound_delivery_queue.md",
-        "modules/20260711_0028_add_agent_skill_control_plane.md",
-        "modules/20260718_0029_add_agent_model_catalog.md",
-        "modules/20260718_0030_add_task_routing_assessments.md",
-        "modules/20260718_0031_align_postgresql_types.md",
-        "modules/20260718_0032_add_database_migration_gate.md",
-        "modules/20260719_0033_add_autonomy_control_plane.md",
-        "modules/20260727_0034_add_agent_run_model_trust.md",
-        "modules/20260728_0035_add_agent_team_setup.md",
-        "modules/20260802_0036_add_plan_shares.md",
-        "modules/20260915_0037_add_authority_and_recovery.md",
-        "modules/20260915_0038_canonical_task_domain.md",
-        "modules/20260916_0039_task_deletion_fences.md",
+        "modules/20260928_0001_initial_schema.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -79748,6 +79239,7 @@
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_identity_lifecycle.md",
+        "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
@@ -79837,5 +79329,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:4a07bcc287100c79afd9d0317bb60a64a4524746f8fd58d993a1b2851c601095"
+  "source_hash": "sha256:adb1c9c62ec901d73feccd2050ebff7dc8b1403059340eb85647397b4f23dce5"
 }

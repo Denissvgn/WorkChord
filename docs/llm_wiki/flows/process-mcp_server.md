@@ -90,7 +90,7 @@ sequenceDiagram
     p26-->>p30: len (backend/app/services/upgr…e_service.py:head_revision)
 ```
 
-> Call sequence diagram shows 30 of 55 interactions; 25 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 52 interactions; 22 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -166,7 +166,7 @@ flowchart LR
 | main | asyncio.run | 2419 | `asyncio.run(init_db(...))` |
 | main | init_db | 2419 | `init_db(data not statically known)` |
 | init_db | assert_database_current | 71 | `assert_database_current(data not statically known)` |
-| assert_database_current | inspect_database | 441 | `inspect_database(data not statically known)` |
+| assert_database_current | inspect_database | 377 | `inspect_database(data not statically known)` |
 
 ### Boundary effects
 
