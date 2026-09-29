@@ -1,8 +1,7 @@
-"""Alembic and cross-dialect DDL coverage for routing Wave 1."""
+"""Initial schema and cross-dialect routing constraints."""
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from pathlib import Path
 
 from alembic import command
@@ -10,7 +9,6 @@ from alembic.script import ScriptDirectory
 import pytest
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.schema import CreateIndex, CreateTable
 
 from app.config import get_settings
@@ -42,9 +40,9 @@ def _sync_url(path: Path) -> str:
 
 
 @pytest.mark.sqlite
-def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config) -> None:
+def test_routing_schema_from_empty_database(routing_migration_config) -> None:
     config, database_path = routing_migration_config
-    command.upgrade(config, "20260802_0036")
+    command.upgrade(config, "20260928_0001")
 
     engine = create_engine(_sync_url(database_path))
     try:
@@ -73,214 +71,9 @@ def test_upgrade_downgrade_upgrade_from_empty_database(routing_migration_config)
         with engine.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260802_0036"
+            ).scalar_one() == "20260928_0001"
     finally:
         engine.dispose()
-
-    command.downgrade(config, "20260711_0028")
-    downgraded = create_engine(_sync_url(database_path))
-    try:
-        inspector = inspect(downgraded)
-        assert "agent_model_bindings" not in inspector.get_table_names()
-        assert "task_routing_assessments" not in inspector.get_table_names()
-        assert "model_binding_id" not in {
-            column["name"]
-            for column in inspector.get_columns("agent_task_assignments")
-        }
-    finally:
-        downgraded.dispose()
-
-    command.upgrade(config, "20260802_0036")
-    upgraded = create_engine(_sync_url(database_path))
-    try:
-        with upgraded.connect() as connection:
-            assert connection.execute(
-                text("SELECT version_num FROM alembic_version")
-            ).scalar_one() == "20260802_0036"
-    finally:
-        upgraded.dispose()
-
-
-@pytest.mark.sqlite
-def test_legacy_assignment_and_model_less_run_survive_upgrade(
-    routing_migration_config,
-) -> None:
-    config, database_path = routing_migration_config
-    command.upgrade(config, "20260711_0028")
-    engine = create_engine(_sync_url(database_path))
-    timestamp = datetime(2026, 7, 18, tzinfo=UTC).isoformat()
-    try:
-        with engine.begin() as connection:
-            connection.execute(text("PRAGMA foreign_keys=ON"))
-            connection.execute(
-                text(
-                    "INSERT INTO calendars (id, name, year) "
-                    "VALUES (1, 'Legacy', 2026)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO iterations "
-                    "(id, name, start_date, end_date, calendar_id) "
-                    "VALUES (1, 'Legacy', '2026-07-01', '2026-07-31', 1)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO agent_actors "
-                    "(id, name, display_name, api_key_hash, created_at) "
-                    "VALUES (1, 'legacy-worker', 'Legacy Worker', "
-                    "'legacy-worker-key-hash', :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO tasks "
-                    "(id, title, iteration_id, version, claim_generation, updated_at) "
-                    "VALUES (1, 'Legacy task', 1, 4, 0, :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO agent_task_assignments "
-                    "(id, task_id, actor_id, purpose, queue_class, state, queue_rank, "
-                    "task_version, routing_snapshot, created_at, updated_at) "
-                    "VALUES (1, 1, 1, 'execution', 'normal', 'fulfilled', 1000, "
-                    "4, '{}', :timestamp, :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO agent_runs "
-                    "(id, task_id, actor_id, assignment_id, status, model, "
-                    "run_metadata, artifact_links, started_at) "
-                    "VALUES (1, 1, 1, 1, 'succeeded', NULL, '{}', '[]', :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO agent_runs "
-                    "(id, task_id, actor_id, assignment_id, status, model, "
-                    "run_metadata, artifact_links, started_at) "
-                    "VALUES (2, 1, 1, 1, 'failed', 'legacy-model-alias', "
-                    "'{}', '[]', :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-    finally:
-        engine.dispose()
-
-    command.upgrade(config, "20260802_0036")
-    upgraded = create_engine(_sync_url(database_path))
-    try:
-        with upgraded.begin() as connection:
-            connection.execute(
-                text(
-                    "INSERT INTO agent_runs "
-                    "(id, task_id, actor_id, assignment_id, status, model, "
-                    "run_metadata, artifact_links, started_at) "
-                    "VALUES (3, 1, 1, 1, 'succeeded', NULL, '{}', '[]', :timestamp)"
-                ),
-                {"timestamp": timestamp},
-            )
-        with upgraded.connect() as connection:
-            assignment = connection.execute(
-                text(
-                    "SELECT routing_snapshot, model_binding_id, "
-                    "model_binding_revision FROM agent_task_assignments WHERE id = 1"
-                )
-            ).mappings().one()
-            runs = connection.execute(
-                text(
-                    "SELECT model, model_binding_id, model_binding_revision, "
-                    "configured_model_alias, resolved_model_id, "
-                    "model_trust_state, model_match_basis "
-                    "FROM agent_runs WHERE id IN (1, 2) ORDER BY id"
-                )
-            ).mappings().all()
-            assert connection.execute(
-                text(
-                    "SELECT model_trust_state FROM agent_runs WHERE id = 3"
-                )
-            ).scalar_one() == "unreported"
-        assert assignment == {
-            "routing_snapshot": "{}",
-            "model_binding_id": None,
-            "model_binding_revision": None,
-        }
-        assert runs == [
-            {
-                "model": None,
-                "model_binding_id": None,
-                "model_binding_revision": None,
-                "configured_model_alias": None,
-                "resolved_model_id": None,
-                "model_trust_state": "unreported",
-                "model_match_basis": None,
-            },
-            {
-                "model": "legacy-model-alias",
-                "model_binding_id": None,
-                "model_binding_revision": None,
-                "configured_model_alias": None,
-                "resolved_model_id": None,
-                "model_trust_state": "unverifiable",
-                "model_match_basis": None,
-            },
-        ]
-    finally:
-        upgraded.dispose()
-
-    constrained = create_engine(_sync_url(database_path))
-    try:
-        with pytest.raises(IntegrityError):
-            with constrained.begin() as connection:
-                connection.execute(
-                    text(
-                        "UPDATE agent_runs "
-                        "SET model_trust_state = 'matched', model_match_basis = NULL "
-                        "WHERE id = 2"
-                    )
-                )
-        with pytest.raises(IntegrityError):
-            with constrained.begin() as connection:
-                connection.execute(
-                    text(
-                        "UPDATE agent_runs SET model_trust_state = 'trusted' "
-                        "WHERE id = 2"
-                    )
-                )
-    finally:
-        constrained.dispose()
-
-    command.downgrade(config, "20260711_0028")
-    command.upgrade(config, "20260802_0036")
-    round_tripped = create_engine(_sync_url(database_path))
-    try:
-        with round_tripped.connect() as connection:
-            assert connection.execute(
-                text("SELECT routing_snapshot FROM agent_task_assignments WHERE id = 1")
-            ).scalar_one() == "{}"
-            assert connection.execute(
-                text("SELECT model FROM agent_runs WHERE id = 1")
-            ).scalar_one_or_none() is None
-            assert connection.execute(
-                text(
-                    "SELECT model_trust_state FROM agent_runs "
-                    "WHERE id IN (1, 2, 3) ORDER BY id"
-                )
-            ).scalars().all() == [
-                "unreported",
-                "unverifiable",
-                "unreported",
-            ]
-    finally:
-        round_tripped.dispose()
-
 
 @pytest.mark.contract
 def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> None:
@@ -319,4 +112,4 @@ def test_postgresql_ddl_contains_partial_default_and_audit_foreign_keys() -> Non
 @pytest.mark.contract
 def test_alembic_reports_exactly_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260916_0039"]
+    assert script.get_heads() == ["20260928_0001"]

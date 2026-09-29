@@ -3,28 +3,22 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC
-import importlib
 import json
 import os
 from pathlib import Path
 import threading
 
-from alembic import command
 import pytest
-from sqlalchemy import create_engine, inspect, select, text
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import Session
 from sqlalchemy.pool import NullPool
 
 from app import models  # noqa: F401 - register mapped metadata
 from app.config import get_settings
 from app.database import Base
 from app.database_config import parse_database_configuration
-from app.models.task_status_log import TaskStatusLog
 from app.services.upgrade_service import (
-    LEGACY_BASELINE_REVISION,
     UpgradeError,
     alembic_config,
     bootstrap_database_schema,
@@ -35,55 +29,8 @@ from app.services.upgrade_service import (
 from tests.support import cross_dialect_schema_diff, schema_snapshot
 
 
-ALIGNMENT_MIGRATION = importlib.import_module(
-    "app.migrations.versions.20260718_0031_align_postgresql_types"
-)
-
-
 def sync_engine(database_url: str):
     return create_engine(database_url, poolclass=NullPool)
-
-
-def seed_postgresql_legacy_baseline(database_url: str) -> None:
-    engine = sync_engine(database_url)
-    try:
-        with engine.begin() as connection:
-            connection.execute(
-                text(
-                    "INSERT INTO calendars (id, name, year) "
-                    "VALUES (100, 'Legacy', 2026)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO iterations "
-                    "(id, name, start_date, end_date, calendar_id) "
-                    "VALUES (100, 'Legacy iteration', '2026-01-01', "
-                    "'2026-01-31', 100)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO team_members (id, name, position, iteration_id) "
-                    "VALUES (100, 'Legacy member', 'Developer', 100)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO tasks (id, title, iteration_id) "
-                    "VALUES (100, 'Legacy task', 100)"
-                )
-            )
-            connection.execute(
-                text(
-                    "INSERT INTO task_status_logs "
-                    "(id, task_id, from_status, to_status, changed_at, triggered_by) "
-                    "VALUES (100, 100, 'planned', 'active', "
-                    "'2026-01-02 03:04:05', 'user')"
-                )
-            )
-    finally:
-        engine.dispose()
 
 
 @pytest.mark.postgresql
@@ -184,68 +131,20 @@ def test_runtime_role_cannot_create_schema_objects_or_roles(
 @pytest.mark.postgresql
 @pytest.mark.integration
 @pytest.mark.allow_network
-def test_postgresql_legacy_to_head_repairs_utc_nullability_and_sequences(
-    postgres_database,
-    configure_database,
-) -> None:
-    configure_database(postgres_database.url)
-    command.upgrade(alembic_config(), LEGACY_BASELINE_REVISION)
-    seed_postgresql_legacy_baseline(postgres_database.url)
-
-    before, _, after = run_alembic_upgrade(
-        backup=False,
-        run_repairs=False,
-        external_backup_reference="test-fixture-recovery-point",
-    )
-
-    assert before.current_revision == LEGACY_BASELINE_REVISION
-    assert after.current_revision == head_revision()
-    engine = sync_engine(postgres_database.url)
-    try:
-        with engine.begin() as connection:
-            task = connection.execute(
-                text(
-                    "SELECT priority, effort_days, effort_hours, status, is_optional, "
-                    "is_deferred, sort_order FROM tasks WHERE id = 100"
-                )
-            ).one()
-            next_calendar_id = connection.execute(
-                text(
-                    "INSERT INTO calendars "
-                    "(name, year, holidays, weekend_days, short_days) "
-                    "VALUES ('Sequence probe', 2027, '[]', '[5, 6]', '[]') "
-                    "RETURNING id"
-                )
-            ).scalar_one()
-        assert task == (5, None, None, "planned", False, False, 0)
-        with engine.connect() as connection:
-            assert connection.execute(text("SELECT estimate_provenance FROM tasks WHERE id=100")).scalar_one() == "unknown"
-        assert next_calendar_id == 101
-        with Session(engine) as session:
-            changed_at = session.scalar(
-                select(TaskStatusLog.changed_at).where(TaskStatusLog.id == 100)
-            )
-        assert changed_at is not None
-        assert changed_at.tzinfo == UTC
-        assert changed_at.isoformat() == "2026-01-02T03:04:05+00:00"
-    finally:
-        engine.dispose()
-
-
-@pytest.mark.postgresql
-@pytest.mark.integration
-@pytest.mark.allow_network
 def test_nonempty_postgresql_upgrade_requires_external_backup_gate(
     postgres_database,
     configure_database,
+    monkeypatch,
 ) -> None:
     configure_database(postgres_database.url)
-    command.upgrade(alembic_config(), LEGACY_BASELINE_REVISION)
+    bootstrap_database_schema()
+    original_head = head_revision()
+    monkeypatch.setattr("app.services.upgrade_service.head_revision", lambda: "future_revision")
 
     with pytest.raises(UpgradeError, match="backup/PITR"):
         run_alembic_upgrade(backup=False, run_repairs=False)
 
-    assert inspect_database().current_revision == LEGACY_BASELINE_REVISION
+    assert inspect_database().current_revision == original_head
 
 
 @pytest.mark.postgresql
@@ -284,7 +183,10 @@ def test_postgresql_utc_types_partial_indexes_and_sequence_ownership(
     engine = sync_engine(postgres_database.url)
     try:
         inspector = inspect(engine)
-        for table_name, column_name in ALIGNMENT_MIGRATION.UTC_COLUMNS:
+        from app.utils.time import UTCDateTime
+        utc_columns = [(table.name, column.name) for table in Base.metadata.tables.values()
+                       for column in table.columns if isinstance(column.type, UTCDateTime)]
+        for table_name, column_name in utc_columns:
             columns = {
                 column["name"]: column
                 for column in inspector.get_columns(table_name)

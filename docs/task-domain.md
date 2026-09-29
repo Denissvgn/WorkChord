@@ -18,7 +18,7 @@ Unknown effort is `null`; zero is a known zero. `estimate_provenance` distinguis
 
 Changing an iteration's calendar refreshes the nominal workday and derived days for its tasks while retaining authoritative hours and estimate provenance.
 
-Historical one-day/eight-hour defaults become unknown when no explicit estimate provenance exists. Original quantities remain in `legacy_estimate`. Unambiguous human profile links are retained as ownership with `legacy_capacity_link` provenance; unlinked capacity is reported without inventing a person.
+New tasks retain unknown effort until an estimate is supplied. A capacity allocation does not imply a human owner. Preserved historical provenance remains distinct from explicit ownership and estimates.
 
 ## Briefs and evidence
 

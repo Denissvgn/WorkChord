@@ -72,11 +72,6 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Run migrations only; skip idempotent seed/compatibility repairs.",
     )
-    parser.add_argument(
-        "--no-stamp-unversioned-current",
-        action="store_true",
-        help="Refuse to stamp an unversioned database that already has the current table set.",
-    )
     return parser
 
 
@@ -123,7 +118,6 @@ def main(argv: list[str] | None = None) -> int:
             before, backup_path, after = run_alembic_upgrade(
                 backup=not args.skip_backup,
                 backup_dir=args.backup_dir,
-                stamp_unversioned_current=not args.no_stamp_unversioned_current,
                 run_repairs=not args.no_repairs,
                 external_backup_reference=args.external_backup_reference,
             )

@@ -50,6 +50,7 @@ def _phase_environment(*, database_url: str, role: str) -> dict[str, str]:
         DATABASE_POOL_SIZE="1",
         DATABASE_MAX_OVERFLOW="0",
         DEPLOYMENT_ENVIRONMENT="test",
+        WORKCHORD_AUTH_MODE="managed",
         OUTBOUND_DELIVERY_WORKER_ENABLED="false",
     )
     return environment
@@ -229,6 +230,7 @@ def _source_phase(workspace: Path) -> None:
     from app.models.agent import AgentActor
     from app.models.calendar import Calendar
     from app.models.iteration import Iteration
+    from app.models.identity import Principal, ProjectMembership, WorkspaceMembership
     from app.models.project import Project
     from app.models.task import Task
     from app.models.user_session import UserSession
@@ -272,6 +274,13 @@ def _source_phase(workspace: Path) -> None:
             )
             raw_agent_key = "installed-wheel-agent-key"
             raw_session_token = "A" * 43
+            principal = Principal(kind="human", display_name="Installed Wheel Reader")
+            session.add_all([principal, project])
+            session.flush()
+            session.add_all([
+                WorkspaceMembership(principal_id=principal.id, role="member"),
+                ProjectMembership(principal_id=principal.id, project_id=project.id, role="viewer"),
+            ])
             session.add_all(
                 [
                     task,
@@ -289,6 +298,9 @@ def _source_phase(workspace: Path) -> None:
                             raw_session_token.encode("utf-8")
                         ).hexdigest(),
                         ip_address="192.0.2.10",
+                        principal_id=principal.id,
+                        csrf_token="installed-wheel-csrf",
+                        authenticated_at=datetime.now(UTC),
                         expires_at=datetime.now(UTC) + timedelta(days=1),
                     ),
                 ]
@@ -538,15 +550,44 @@ def _target_phase(workspace: Path, authorized_target: str) -> None:
 def _maintenance_phase(expected_mode: str) -> None:
     _assert_installed_package()
 
-    from fastapi.testclient import TestClient
+    from sqlalchemy import create_engine, select
 
+    from app.config import get_settings
+    from app.database import Base
+    from app.database_config import parse_database_configuration
     from app.main import app
+
+    configuration = parse_database_configuration(get_settings())
+    engine = create_engine(configuration.sync_url, connect_args=dict(configuration.connect_args))
+
+    def database_rows():
+        with engine.connect() as connection:
+            return {
+                name: connection.execute(select(table).order_by(*table.primary_key.columns)).all()
+                for name, table in Base.metadata.tables.items()
+            }
+
+    try:
+        before = database_rows()
+        _probe_maintenance(app, expected_mode)
+        if database_rows() != before:
+            raise RuntimeError("Installed-wheel maintenance probes mutated application rows")
+    finally:
+        engine.dispose()
+
+
+def _probe_maintenance(app, expected_mode: str) -> None:
+    from fastapi.testclient import TestClient
+    from app.config import get_settings
 
     with TestClient(app) as client:
         liveness = client.get("/health/live")
         readiness = client.get("/health/ready")
+        anonymous_read = client.get("/api/projects")
+        client.cookies.set(get_settings().session_cookie_name, "A" * 43)
         project_read = client.get("/api/projects")
-        project_write = client.post("/api/projects", json={"name": "blocked"})
+        project_write = client.post("/api/projects", json={"name": "blocked"},
+                                    headers={"X-CSRF-Token": "installed-wheel-csrf"})
 
     if liveness.status_code != 200 or readiness.status_code != 200:
         raise RuntimeError("Installed-wheel maintenance probes are not healthy")
@@ -555,7 +596,15 @@ def _maintenance_phase(expected_mode: str) -> None:
     if expected_mode == "validation-only" and project_read.status_code != 503:
         raise RuntimeError("Validation-only mode accepted a non-allowlisted read")
     if expected_mode == "read-only-maintenance" and project_read.status_code != 200:
-        raise RuntimeError("Read-only maintenance rejected an ordinary safe read")
+        raise RuntimeError(
+            "Read-only maintenance rejected an authenticated safe read: "
+            f"HTTP {project_read.status_code}, {project_read.text}"
+        )
+    if expected_mode == "read-only-maintenance":
+        if anonymous_read.status_code != 401:
+            raise RuntimeError("Read-only maintenance bypassed managed authentication")
+        if not any(project["name"] == "Installed wheel project" for project in project_read.json()):
+            raise RuntimeError("Authenticated maintenance reader cannot see the fixture project")
 
 
 def _coordinate(admin_url: str) -> None:

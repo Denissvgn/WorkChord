@@ -25,28 +25,23 @@ chain is not proof that a particular deployment completed cutover.
 inspection paths always use `NullPool` and do not consume a persistent pool
 allocation.
 
-## Historical migration compatibility rule
+## Initial schema and future migrations
 
-Revision identifiers and domain meaning are immutable. Before PostgreSQL is an
-official production backend, a historical revision may receive a narrowly
-scoped compatibility repair only when all of the following are true:
+New databases are created by the single frozen initial revision
+`20260928_0001`. It includes the complete application schema, constraints,
+indexes, UTC timestamp types, and task recovery fences. Schema creation does
+not seed application data. Future schema changes use new Alembic revisions.
 
-1. the old statement is accepted by SQLite but cannot execute on PostgreSQL, or
-   depends on object-creation ordering that PostgreSQL correctly rejects;
-2. the repair preserves the revision ID, final logical schema, existing SQLite
-   upgrades, and application data meaning;
-3. fresh SQLite, legacy SQLite, fresh PostgreSQL, and staged legacy PostgreSQL
-   paths are covered by the dual-dialect migration suite;
-4. type, nullability, sequence, or data normalization beyond syntax/order is
-   performed in a new head revision with an explicit downgrade policy.
+Databases created by earlier unreleased builds are outside this revision chain.
+Keep a backup if their development data is needed, then point `DATABASE_URL`
+at a new empty database and run schema initialization followed by explicit
+repairs. Never stamp the initial revision onto an old or unversioned schema.
+The upgrade command refuses those databases without modifying them. It does
+not delete or automatically reset an existing database.
 
-The current permitted repairs are the portable Boolean default in revision
-`20260507_0001` and deferring two `user_sessions` foreign keys until revision
-`20260510_0023` creates their target table. Revision `20260718_0031` owns the
-reviewable UTC timestamp, legacy-nullability, and PostgreSQL sequence alignment.
-
-After PostgreSQL production support is declared, historical revisions are
-fully frozen; later corrections must use a new revision.
+The initial revision has no destructive downgrade. Recovery uses a complete
+backup and its matching application image; disposable development databases
+may be recreated explicitly.
 
 ## Operational command boundary
 
