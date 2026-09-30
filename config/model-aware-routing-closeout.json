@@ -28,9 +28,7 @@
     },
     {
       "evidence": [
-        "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py",
-        "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py",
-        "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py",
+        "backend/app/migrations/versions/20260928_0001_initial_schema.py",
         "backend/tests/test_agent_routing_migrations.py"
       ],
       "id": "G2",
@@ -171,7 +169,7 @@
     },
     {
       "evidence": [
-        "backend/app/migrations/versions/20260718_0029_add_agent_model_catalog.py",
+        "backend/app/migrations/versions/20260928_0001_initial_schema.py",
         "backend/app/services/agent_model_catalog_service.py",
         "backend/tests/test_agent_model_catalog_api.py"
       ],
@@ -180,7 +178,7 @@
     },
     {
       "evidence": [
-        "backend/app/migrations/versions/20260718_0030_add_task_routing_assessments.py",
+        "backend/app/migrations/versions/20260928_0001_initial_schema.py",
         "backend/tests/test_agent_routing_data.py",
         "backend/tests/test_agent_routing_migrations.py"
       ],
@@ -311,7 +309,7 @@
     },
     {
       "evidence": [
-        "backend/app/migrations/versions/20260728_0035_add_agent_team_setup.py",
+        "backend/app/migrations/versions/20260928_0001_initial_schema.py",
         "backend/app/services/agent_team_setup_service.py",
         "scripts/api_keys/setup_agent_team.py",
         "backend/tests/test_agent_team_setup.py"
