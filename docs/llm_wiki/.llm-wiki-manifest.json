@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:32f74a93b164a8dd676d8df99e1093c0a107113e9d296247bffce7b4b5a8b0bb",
-    "knowledge_index_hash": "sha256:9f1fa6278943b5817c768ab69fc639778d646f47fad4c3cb19a209c4cfe73d0d",
-    "surface_index_hash": "sha256:b9df54944de9f249a4bac4a76aeb0a6007553c7f43d452b7484b9fcd39aa9484"
+    "evaluated_envelope_hash": "sha256:25df4a397097083b57ecdd352ac1e07effbd1eb1d0ff5a939428886b2267fe80",
+    "knowledge_index_hash": "sha256:e7d15f42e0c4a42b795f8b2373c639d67d59a45a8f2555da535a9fa1a7c769b5",
+    "surface_index_hash": "sha256:7b00d0b840b7c8168876b74586a8ee78372e1a2bfebb3038f0af41df299fcf75"
   },
   "evidence_baselines": {
     "entities/AccessibleNameViolation.md": {
@@ -19325,6 +19325,16 @@
       },
       "state": "known"
     },
+    "modules/test_routing_evidence.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:fa32414021706b20d779c03174d7db35f7ebd1829aced05f6bb0491d555209cb",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:7cb32be621dbb98e292e558df3aa367bc7211896af1a09efaccae967fc50adce",
+        "source_path": "backend/tests/qualification/test_routing_evidence.py"
+      },
+      "state": "known"
+    },
     "modules/test_runtime_boundaries.md": {
       "basis": {
         "concept_observation_hash": "sha256:80636db087cc207d3cf3d04ccc9c8ddc2e0751207d304569753cbe5ae7325b3c",
@@ -20149,14 +20159,14 @@
     "knowledge_reuse": {
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
-      "implementation_hash": "sha256:7ca8d80a83e5c6427265ed5826b71469b5a1244dd5d3f1c1766fc471a06d50c1",
-      "inventory_hash": "sha256:46d1bfe53b290aad8f8313d627a35737b823ed8c483568129a583b277be6b133",
-      "lifecycle_hash": "sha256:bc1caf8055d4c7ad60752257f8d728edd43dacbfd202948ccde0f023217607e0",
-      "markdown_snapshot_hash": "sha256:cc8c5e69af7ac2b64f2e78a2e3a54244cf515988e9d64cec529d667f6154477f",
-      "observation_inputs_hash": "sha256:52e5a45f676ff707cc7fc06e7bc9006a4938d0ce96fcf27062fb3d6746b26289",
+      "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
+      "inventory_hash": "sha256:9080845ec13a5a46c387b8f3458052c25f500c41e563321ec414d885ce5ac5ec",
+      "lifecycle_hash": "sha256:a7871a14eaa1684e1dfa23c3ab3077f8fe8bc0332abc045682c844cd576f83fd",
+      "markdown_snapshot_hash": "sha256:630ed4d714a137d19f1cb9220c28b488604704822a10f1d9622a4249e40b7d4e",
+      "observation_inputs_hash": "sha256:204dd363c6c3201a0220ff68ed51fee83f98f34eb7b5669ef6cf74bad8ed01b5",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:d90923642a186a8881b580b39ff8e70206df402de0ae84d8fe36644349096d60"
+      "source_snapshot_hash": "sha256:a9bf7b85c78898e532232ce84ad69e6e82a628b6378ddf2539840cf6eddf3f2f"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -30696,6 +30706,10 @@
     "modules/test_query_boundaries.md": {
       "scope": "module",
       "source_path": "backend/tests/database/test_query_boundaries.py"
+    },
+    "modules/test_routing_evidence.md": {
+      "scope": "module",
+      "source_path": "backend/tests/qualification/test_routing_evidence.py"
     },
     "modules/test_runtime_boundaries.md": {
       "scope": "module",
@@ -54525,6 +54539,27 @@
       "language": "python",
       "module_page": "test_load_tooling",
       "semantic_hash": "sha256:cab2bec1f7d22b99a9e8c907689b8fde8a1ae6f6081e88e1679c7898f40f8cae"
+    },
+    "backend/tests/qualification/test_routing_evidence.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Keep CI evidence inventories aligned with the checked-in implementation.",
+          "functions": {
+            "test_missing_evidence_is_rejected": "—",
+            "test_routing_inventory_passes_the_tracked_ci_contract": "—",
+            "test_untracked_evidence_is_rejected": "—"
+          }
+        }
+      },
+      "hash": "sha256:7cb32be621dbb98e292e558df3aa367bc7211896af1a09efaccae967fc50adce",
+      "language": "python",
+      "module_page": "test_routing_evidence",
+      "semantic_hash": "sha256:089007ca8ca1c12b7fc52cd16a33821c003c47dfa90d51075d1d26fa3343e4c5"
     },
     "backend/tests/support/__init__.py": {
       "entities": [],

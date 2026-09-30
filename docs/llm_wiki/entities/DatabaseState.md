@@ -10,7 +10,6 @@
 
 Closed schema classification: an empty destination, an Alembic-managed database, or an unknown nonempty schema. An unversioned table set is unknown even if its names resemble the current application schema.
 
-
 ## Attributes
 
 *No annotated attributes found.*

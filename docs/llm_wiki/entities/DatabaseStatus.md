@@ -11,7 +11,6 @@
 
 Inspected schema state, revision identifiers and table inventory. `is_current` compares the stored revision with the packaged head; it does not certify arbitrary schema contents. Mutation separately validates membership in the known revision chain and rejects unknown or unversioned databases.
 
-
 ## Attributes
 
 | Name | Type | Default | Description |

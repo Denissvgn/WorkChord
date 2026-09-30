@@ -12,7 +12,6 @@ Schema creation does not seed identities, settings, or other application rows.
 
 The initial revision creates all 68 application tables without data backfills. It preserves UTC timestamp types, portable Boolean defaults, partial unique indexes, recovery history and deletion fences. SQLite retains task AUTOINCREMENT and inline references; PostgreSQL installs cyclic foreign keys after the referenced tables exist. Downgrade refuses destructive removal and directs recovery to a matching backup and application image.
 
-
 ## Imports
 
 | Source | Symbols |

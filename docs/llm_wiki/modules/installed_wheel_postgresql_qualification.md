@@ -14,7 +14,6 @@ source tree cannot accidentally satisfy the wheel boundary.
 
 Child environments explicitly select managed authentication. The source includes a human principal, workspace membership, project viewer membership and an opaque authenticated session that cross the SQLite/PostgreSQL transfer boundary. Maintenance probes require authenticated reads, preserve anonymous denial and write rejection, and compare all application rows before and after the probes.
 
-
 ## Imports
 
 | Source | Symbols |

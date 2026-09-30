@@ -6,6 +6,9 @@
 
 Validate the tracked model-aware routing closure inventory.
 
+Schema evidence in the tracked inventory names the consolidated initial migration and current implementation surfaces. Evidence paths must exist within the repository, and the tracked mode additionally requires Git-index membership. Updating a path does not change the declared completion or external-acceptance state.
+
+
 ## Imports
 
 | Source | Symbols |

@@ -408,3 +408,23 @@ Automatic integration workflows now use native tools and isolated loopback servi
 ## 2026-09-29 — Initial database schema and authenticated maintenance boundary
 
 New databases use the frozen initial revision `20260928_0001`, including task recovery history and deletion fences. Older unreleased and unversioned databases are refused without automatic stamping. Schema creation remains separate from explicit control-plane repairs. The installed-wheel transfer path carries a principal-bound viewer session, and maintenance probes preserve authentication, write rejection and application-row immutability.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a9bf7b85c78898e532232ce84ad69e6e82a628b6378ddf2539840cf6eddf3f2f`
+- Pages created: 1
+- Pages updated: 45
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2606
+- Pages deprecated: 0
+- Semantic fields preserved: 66
+- Moved entities: none
+
+## 2026-09-30 — Routing evidence inventory alignment
+
+Routing evidence now references the consolidated initial schema. The validator continues to require present repository-contained files and, in tracked mode, Git-index membership. Declared completion and external-acceptance states remain separate from path maintenance.

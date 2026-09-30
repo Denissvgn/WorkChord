@@ -10,7 +10,6 @@ Empty databases apply the frozen initial schema. Managed databases must name a r
 
 PostgreSQL runners serialize through a session advisory lock. Future nonempty PostgreSQL upgrades retain the external backup/PITR gate. Schema-only bootstrap creates no application rows; explicit repair owns control-plane and default-data initialization. API startup only checks the current revision.
 
-
 ## Imports
 
 | Source | Symbols |

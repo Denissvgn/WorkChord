@@ -474,6 +474,7 @@ flowchart TD
 | [test_sqlite_migrations](modules/test_sqlite_migrations.md) | 0 | 4 |
 | [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) | 0 | 1 |
 | [test_load_tooling](modules/test_load_tooling.md) | 0 | 1 |
+| [test_routing_evidence](modules/test_routing_evidence.md) | 0 | 0 |
 | [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) | 0 | 18 |
 | [test_agent_routing_contract](modules/test_agent_routing_contract.md) | 0 | 7 |
 | [test_agent_routing_data](modules/test_agent_routing_data.md) | 0 | 8 |

@@ -172,4 +172,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `main` and is classified as `process`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+The command validates the configured inventory, resolves every evidence file within the repository, and optionally requires all evidence paths to be present in the Git index. It then checks package/API versions, advertised capabilities, the representative setup payload and package catalog, and explicit external-validation declarations. Missing files or untracked evidence cause failure before a success receipt is emitted. Schema evidence refers to the consolidated initial migration.
