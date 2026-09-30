@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import venv
 import xml.etree.ElementTree as ET
 from unittest.mock import Mock, patch
 
@@ -152,6 +153,53 @@ class NativeChecks(unittest.TestCase):
         self.assertNotIn('VITE_PRIVATE_KEY', environment)
         self.assertEqual(environment['HOME'], '/user')
         self.assertIn('localhost', environment['NO_PROXY'])
+
+    def test_browser_worker_uses_harness_interpreter_outside_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            environment = root / 'isolated python'
+            venv.EnvBuilder(with_pip=False).create(environment)
+            python = str(environment / 'bin/python')
+            worker = root / 'app/cli/worker.py'
+            worker.parent.mkdir(parents=True)
+            worker.write_text('import json, os, sys\nprint(json.dumps({"prefix": sys.prefix, '
+                              '"args": sys.argv[1:], "role": os.environ["DATABASE_PROCESS_ROLE"]}))\n')
+            # A PATH lookup must fail even though the explicit interpreter works.
+            poison = root / 'path'
+            poison.mkdir()
+            (poison / 'python').write_text('#!/bin/sh\nexit 87\n')
+            (poison / 'python').chmod(0o755)
+            helper = (SCRIPTS / 'browser_worker.mjs').as_uri()
+            command = [shutil.which('node'), '--input-type=module', '-e',
+                       f'import {{ dispatchInbox }} from {json.dumps(helper)}; '
+                       'process.stdout.write((await dispatchInbox()).stdout);']
+            def dispatch(runner, label, argv, **kwargs):
+                if label != 'browser':
+                    return 0
+                self.assertTrue((Path(kwargs['cwd']) / 'browser_worker.mjs').is_file())
+                env = {**kwargs['env'], 'PATH': str(poison), 'PYTHONPATH': str(root)}
+                self.assertEqual(env['WORKCHORD_BROWSER_PYTHON'], python)
+                result = subprocess.run(command, env=env, text=True, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout), {
+                    'prefix': str(environment), 'args': ['--once'], 'role': 'delivery_worker'})
+                for override, message in [({'WORKCHORD_BROWSER_PYTHON': ''}, 'absolute Python'),
+                                          ({'WORKCHORD_BROWSER_PYTHON': 'python'}, 'absolute Python'),
+                                          ({'WORKCHORD_FIXTURE_NONCE': ''}, 'owned disposable'),
+                                          ({'DATABASE_URL': 'sqlite+aiosqlite:///production.db'}, 'owned disposable')]:
+                    rejected = subprocess.run(command, env={**env, **override}, text=True, capture_output=True, timeout=10)
+                    self.assertNotEqual(rejected.returncode, 0)
+                    self.assertIn(message, rejected.stderr)
+                (runner.output / 'managed-browser.json').write_text(json.dumps({
+                    'status': 'passed', 'steps': ['worker dispatched'], 'pageErrors': []}))
+                return 0
+            with patch.object(sys, 'executable', python), \
+                 patch.object(sys, 'argv', ['checks', '--browser-only', '--managed-browser', '--output', str(root / 'results')]), \
+                 patch.object(checks, 'source_digest', return_value='unchanged'), \
+                 patch.object(checks.RunReceipt, 'run', autospec=True, side_effect=dispatch), \
+                 patch.object(checks.RunReceipt, 'start'), patch.object(checks, 'require_free_browser_ports'):
+                code = checks.main()
+                self.assertEqual(code, 0, (root / 'results/receipt.json').read_text())
 
     def run_backend(self, *, write_results, remote=False, scope=None):
         with tempfile.TemporaryDirectory() as directory:

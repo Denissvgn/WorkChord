@@ -195,10 +195,12 @@ def main():
                 run.run('browser-runtime', ['npx', '--no-install', 'playwright', 'install', 'chromium'], cwd=browser_dir, env=env, timeout=180)
                 browser_file = 'browser_managed_work.mjs' if args.managed_browser else 'browser_write_readback.mjs'
                 shutil.copyfile(ROOT / 'scripts/ci' / browser_file, browser_dir / browser_file)
+                if args.managed_browser:
+                    shutil.copyfile(ROOT / 'scripts/ci/browser_worker.mjs', browser_dir / 'browser_worker.mjs')
                 app_env = {**env, 'DATABASE_URL': f"sqlite+aiosqlite:///{scratch / 'workchord_test_browser.db'}",
                     'VITE_API_URL': 'http://127.0.0.1:8001', 'BROWSER_BASE_URL': 'http://localhost:4173',
                     'BROWSER_ARTIFACTS_DIR': str(run.output), 'WORKCHORD_FIXTURE_ISSUER': 'http://localhost:8002',
-                    'WORKCHORD_FIXTURE_NONCE': uuid4().hex}
+                    'WORKCHORD_FIXTURE_NONCE': uuid4().hex, 'WORKCHORD_BROWSER_PYTHON': sys.executable}
                 if args.managed_browser:
                     app_env.update(WORKCHORD_AUTH_MODE='managed', OIDC_ISSUER_URL='http://localhost:8002',
                         OIDC_CLIENT_ID='browser-client', OIDC_CLIENT_SECRET='disposable-browser-secret',
