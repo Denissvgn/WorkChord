@@ -86,17 +86,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| move_task | service.move_task | 358 | `service.move_task(task_id, target_iteration_id=data.iteration_id, parent_id=data.parent_id, expected_version=data.expected_version, expected_revisions=data.expected_revisions)` |
-| move_task | _raise_task_version_conflict | 366 | `_raise_task_version_conflict(exc)` |
+| move_task | service.move_task | 360 | `service.move_task(task_id, target_iteration_id=data.iteration_id, parent_id=data.parent_id, expected_version=data.expected_version, expected_revisions=data.expected_revisions)` |
+| move_task | _raise_task_version_conflict | 368 | `_raise_task_version_conflict(exc)` |
 | _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 56 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 | _raise_task_version_conflict | exc.detail | 58 | `exc.detail(data not statically known)` |
-| move_task | str | 368 | `str(e)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 370 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 374 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)` |
-| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 379 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| move_task | IterationService | 384 | `IterationService(db)` |
-| move_task | iteration_service.get_by_id | 385 | `iteration_service.get_by_id(task.iteration_id)` |
-| move_task | service.task_to_response | 386 | `service.task_to_response(task, ...)` |
+| move_task | str | 370 | `str(e)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 372 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 376 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)` |
+| move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 381 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| move_task | IterationService | 386 | `IterationService(db)` |
+| move_task | iteration_service.get_by_id | 387 | `iteration_service.get_by_id(task.iteration_id)` |
+| move_task | service.task_to_response | 388 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -106,14 +106,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `move_task` | `service.move_task` | 358 |
+| unresolved_call | `move_task` | `service.move_task` | 360 |
 | external_call | `_raise_task_version_conflict` | `HTTPException` | 56 |
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 58 |
-| external_call | `move_task` | `HTTPException` | 370 |
-| external_call | `move_task` | `HTTPException` | 374 |
-| external_call | `move_task` | `HTTPException` | 379 |
-| unresolved_call | `move_task` | `iteration_service.get_by_id` | 385 |
-| unresolved_call | `move_task` | `service.task_to_response` | 386 |
+| external_call | `move_task` | `HTTPException` | 372 |
+| external_call | `move_task` | `HTTPException` | 376 |
+| external_call | `move_task` | `HTTPException` | 381 |
+| unresolved_call | `move_task` | `iteration_service.get_by_id` | 387 |
+| unresolved_call | `move_task` | `service.task_to_response` | 388 |
 
 ## Behavior
 

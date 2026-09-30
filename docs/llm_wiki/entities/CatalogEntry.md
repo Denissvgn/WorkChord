@@ -1,6 +1,6 @@
 # CatalogEntry
 
-**Location:** `backend/app/database_migration/catalog.py:43`
+**Location:** `backend/app/database_migration/catalog.py:48`
 **Kind:** Class
 **Bases:** —
 **Module:** [catalog](../modules/catalog.md)

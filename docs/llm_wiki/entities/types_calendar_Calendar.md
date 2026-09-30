@@ -13,6 +13,7 @@ _Auto-generated from `Calendar` in `frontend/src/types/calendar.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `timezone` | `string` | No | — | — |
 | `nominal_day_hours` | `number` | No | — | — |
 | `id` | `number` | Yes | — | — |
 | `name` | `string` | Yes | — | — |
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `id`, `name`, `nominal_day_hours`, `short_days`, `weekend_days`, `year` |
+| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `id`, `name`, `nominal_day_hours`, `short_days`, `timezone`, `weekend_days`, `year` |
 
 ### References
 

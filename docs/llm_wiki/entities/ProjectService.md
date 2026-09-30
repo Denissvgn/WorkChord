@@ -50,12 +50,12 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `get_milestone_for_project` | *(async)* `(project_id: int, milestone_id: int) -> Optional[ProjectMilestone]` | — | Return a milestone only when it belongs to the requested project. |
 | `_completed_at_for_milestone_write` | `(status_value: str, completed_at: Optional[datetime], existing_completed_at: Optional[datetime] = None) -> Optional[datetime]` | — | Apply milestone completion timestamp defaults for status writes. |
 | `create_milestone` | *(async)* `(project_id: int, data: ProjectMilestoneCreateRequest, *, commit: bool = True) -> Optional[ProjectMilestone]` | — | Create a milestone under a project path. |
-| `update_milestone` | *(async)* `(project_id: int, milestone_id: int, data: ProjectMilestoneUpdate, *, commit: bool = True) -> Optional[ProjectMilestone]` | — | Apply a partial update to a project-scoped milestone. |
-| `delete_milestone` | *(async)* `(project_id: int, milestone_id: int, *, commit: bool = True) -> Optional[int]` | — | Delete a project milestone after detaching linked tasks. |
+| `update_milestone` | *(async)* `(project_id: int, milestone_id: int, data: ProjectMilestoneUpdate, *, commit: bool = True) -> Optional[ProjectMilestone]` | `@atomic_command` | Apply a partial update to a project-scoped milestone. |
+| `delete_milestone` | *(async)* `(project_id: int, milestone_id: int, *, commit: bool = True) -> Optional[int]` | `@atomic_command` | Delete a project milestone after detaching linked tasks. |
 | `list_iterations` | *(async)* `(project_id: int) -> Optional[Sequence[Iteration]]` | — | List iterations scoped to a project in newest-first order. |
 | `get_latest_project_update` | *(async)* `(project_id: int) -> Optional[ProjectUpdateEntry]` | — | Get the newest project update for summary display. |
 | `count_linked_tasks` | *(async)* `(project_id: int) -> int` | — | Count all tasks linked to a project. |
-| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | — | Delete a project, optionally detaching linked tasks first. |
+| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@atomic_command` | Delete a project, optionally detaching linked tasks first. |
 | `get_tasks` | *(async)* `(project_id: int) -> Optional[Sequence[Task]]` | — | Get linked root tasks for a project with response relationships loaded. |
 | `_get_all_linked_tasks` | *(async)* `(project_id: int) -> Sequence[Task]` | — | Get every task linked to a project for aggregate calculations. |
 | `_calculate_task_date_range` | `(tasks: Sequence[Task]) -> tuple[Optional[date], Optional[date]]` | — | Calculate min scheduled start and max scheduled end date. |

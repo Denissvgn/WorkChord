@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../components/releases/ReleaseForm` | `ReleaseForm` |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
 | `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` |
-| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE` |
+| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` |
 | `../services/projectService` | `projectService` |
 | `../services/releaseService` | `releaseService` |
 | `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` |

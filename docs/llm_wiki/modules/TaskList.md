@@ -24,6 +24,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.tsx`._
 | `../feedback/WorkFreshness` | `WorkFreshness` |
 | `../feedback/toast` | `useToast` |
 | `../ui` | `OverflowMenu` |
+| `../ui/tone` | `statusTextClassName` |
 | `./GuardedTaskModal` | `GuardedTaskModal` |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
 | `./TaskBulkOperationsPanel` | `TaskBulkOperationsPanel` |
@@ -62,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (18) |
+| Outbound | `frontend` (19) |
 
 ### External packages
 
@@ -70,19 +71,19 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Class | 67 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 730 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 782 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 45 | — | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 46 | — | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 47 | — | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 48 | — | — |
+| [TaskListProps](../entities/TaskListProps.md) | Class | 68 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Class | 731 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 783 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 46 | — | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 47 | — | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 48 | — | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 49 | — | — |
 
 ## Functions
 

@@ -4,11 +4,7 @@
 
 ## Description
 
-Project backlog recovery using the shared transactional snapshot store.
-
-Project backlog recovery uses the shared database snapshot store and the command transaction. Captures are bounded, checksummed and retained per project. Restore checks the complete current task-version map, preserves IDs and immutable brief history, and clears current acceptance/progress. Project authority and dependency scope remain validated.
-
-Scheduled and backlog restoration share a version allocator under the owning scope lock. It advances above the saved version, live task, retained history and durable deletion fence. Current progress and acceptance are cleared; immutable history survives. A deleted task without a reliable deletion fence returns snapshot_version_history_unknown (409), requiring recovery from a complete matching database backup.
+Restores project backlog identities under the shared planning and project locks. Incoming delivery references require explicit resolution before target removal. Retained discussion follows original task identity, while current execution evidence and acceptance are cleared and downstream delivery context is reconciled.
 
 ## Imports
 
@@ -32,96 +28,29 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/commands.py"]
-    n2["backend/app/config.py"]
-    n3["backend/app/models/recovery.py"]
-    n4["backend/app/models/task.py"]
-    n5["backend/app/routers/task_domain.py"]
-    n6["backend/app/services/backlog_snapshot_service.py"]
-    n7["backend/app/services/snapshot_service.py"]
-    n8["backend/app/services/task_service.py"]
-    n9["backend/app/utils/time.py"]
-    n10["backend/tests/test_task_domain.py"]
-    n11["backend/tests/test_task_domain_integrity.py"]
-    n0 --> n2
-    n0 --> n4
+    n0["backend"]
+    n1["backend/app/services/backlog_snapshot_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n4
-    n1 --> n7
-    n1 --> n8
-    n3 --> n4
-    n3 --> n9
-    n4 --> n9
-    n5 --> n0
-    n5 --> n4
-    n5 --> n6
-    n5 --> n8
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
-    n6 --> n4
-    n6 --> n7
-    n6 --> n8
-    n6 --> n9
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n9
-    n8 --> n0
-    n8 --> n1
-    n8 --> n4
-    n8 --> n7
-    n10 --> n0
-    n10 --> n1
-    n10 --> n4
-    n10 --> n6
-    n10 --> n8
-    n10 --> n9
-    n11 --> n0
-    n11 --> n1
-    n11 --> n3
-    n11 --> n4
-    n11 --> n6
-    n11 --> n7
-    n11 --> n8
-    n11 --> n10
-    click n0 "../modules/authority.md"
-    click n1 "../modules/commands.md"
-    click n2 "../modules/config.md"
-    click n3 "../modules/recovery.md"
-    click n4 "../modules/models_task.md"
-    click n5 "../modules/routers_task_domain.md"
-    click n6 "../modules/backlog_snapshot_service.md"
-    click n7 "../modules/snapshot_service.md"
-    click n8 "../modules/task_service.md"
-    click n9 "../modules/time.md"
-    click n10 "../modules/test_task_domain.md"
-    click n11 "../modules/test_task_domain_integrity.md"
+    click n1 "../modules/backlog_snapshot_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
-| Inbound | [test_task_domain](../modules/test_task_domain.md) |
-| Inbound | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [config](../modules/config.md) |
-| Outbound | [recovery](../modules/recovery.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [snapshot_service](../modules/snapshot_service.md) |
-| Outbound | [task_service](../modules/task_service.md) |
-| Outbound | [time](../modules/time.md) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

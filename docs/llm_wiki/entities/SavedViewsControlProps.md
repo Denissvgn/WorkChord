@@ -1,6 +1,6 @@
 # SavedViewsControlProps
 
-**Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:24`
+**Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:25`
 **Kind:** Class
 **Bases:** —
 **Module:** [SavedViewsControl](../modules/SavedViewsControl.md)

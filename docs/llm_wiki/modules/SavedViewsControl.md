@@ -4,7 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/components/tasks/SavedViewsControl.tsx`._
+Preserves authenticated saved-view ownership and legacy predicate adaptation. It distinguishes local modifications from saved filters and provides Save changes, Save as and reset controls. Unsaved filters are explicitly local; reloading follows the saved or linked view.
 
 ## Imports
 
@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/components/tasks/SavedViewsControl.tsx`._
 | `../../services/sessionService` | `sessionService` |
 | `../../types/savedView` | `SavedView`, `SavedViewScope` |
 | `../../utils/apiError` | `getApiErrorMessage` |
+| `../../utils/savedViewState` | `savedViewModified` |
 | `../common/Button` | `Button` |
 | `../common/Input` | `Input` |
 | `../common/Modal` | `Modal` |
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -62,15 +63,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Class | 24 | — | — |
-| [EditableScope](../entities/EditableScope.md) | Type alias | 21 | — | — |
-| [FormMode](../entities/FormMode.md) | Type alias | 22 | — | — |
+| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Class | 25 | — | — |
+| [EditableScope](../entities/EditableScope.md) | Type alias | 22 | — | — |
+| [FormMode](../entities/FormMode.md) | Type alias | 23 | — | — |
 
 ## Functions
 

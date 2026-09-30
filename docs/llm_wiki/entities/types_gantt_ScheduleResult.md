@@ -13,6 +13,8 @@ _Auto-generated from `ScheduleResult` in `frontend/src/types/gantt.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `planning_revision` | `number` | No | — | — |
+| `capacity_issues` | `{ profile_id: number \| null; code: string; message: string; dates?: string[] }[]` | No | — | — |
 | `success` | `boolean` | Yes | — | — |
 | `decisions` | `SchedulingDecision[]` | Yes | — | — |
 | `workload_balanced` | `boolean` | Yes | — | — |
@@ -41,7 +43,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `decisions`, `success`, `workload_balanced`, `workload_issues` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `workload_balanced`, `workload_issues` |
 
 ### References
 

@@ -457,3 +457,52 @@ Routing evidence now references the consolidated initial schema. The validator c
 ## 2026-09-30 — Scoped CI execution and durable progress
 
 CI separates database, frontend, packaging and client responsibilities. Native execution now shares atomic progress receipts, command deadlines, streamed logs and bounded process-group cleanup. Selected scopes own their evidence requirements, and the final aggregate accepts only successful required jobs.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:eb5dc5ec64cb49e9c49ec39d4728f9904f5e83fd7125ffac8e2b4a7ab09b8a3b`
+- Pages created: 27
+- Pages updated: 56
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2587
+- Pages deprecated: 1
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 5 (http=5)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-09-30 — Shared person availability
+
+Documented canonical person calendars and absences, legacy adapters, transactional planning revisions and permission-safe date capacity projections. Iteration recovery preserves shared availability.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:56971c10a0eadb04d17ddeab5deaa3dcf7bb3b1a1c1aba69e3381a106754d84d`
+- Pages created: 76
+- Pages updated: 405
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2267
+- Pages deprecated: 0
+- Semantic fields preserved: 21
+- Moved entities: none
+- Flow pages initialized: 15 (http=15)
+- Workflow pages created: 10
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-09-30 — Human work and collaboration
+
+Aligned canonical availability, shared planning reservations, delivery prerequisites, human ownership queues, bounded search, discussion and personal inbox semantics with their source boundaries. Updated editor/view navigation descriptions and documented transfer ordering and scoped recovery behavior.

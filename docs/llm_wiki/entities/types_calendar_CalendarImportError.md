@@ -1,6 +1,6 @@
 # CalendarImportError
 
-**Location:** `frontend/src/types/calendar.ts:34`
+**Location:** `frontend/src/types/calendar.ts:35`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)

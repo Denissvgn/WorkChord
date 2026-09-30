@@ -6,6 +6,12 @@
 
 _Auto-generated from `frontend/src/i18n/resources.en.ts`._
 
+## Imports
+
+| Source | Symbols |
+|--------|---------|
+| `./teamwork.en` | `teamworkEnglish` |
+
 ## Module Signals
 
 | Signal | Values |
@@ -21,16 +27,19 @@ flowchart LR
     n0["frontend/src/i18n/i18n.test.ts"]
     n1["frontend/src/i18n/i18n.ts"]
     n2["frontend/src/i18n/resources.en.ts"]
-    n3["frontend/src/pages/PlanMasterPage.test.tsx"]
+    n3["frontend/src/i18n/teamwork.en.ts"]
+    n4["frontend/src/pages/PlanMasterPage.test.tsx"]
     n0 --> n1
     n0 --> n2
     n1 --> n2
-    n3 --> n1
-    n3 --> n2
+    n2 --> n3
+    n4 --> n1
+    n4 --> n2
     click n0 "../modules/i18n.test.md"
     click n1 "../modules/i18n.md"
     click n2 "../modules/resources.en.md"
-    click n3 "../modules/PlanMasterPage.test.md"
+    click n3 "../modules/teamwork.en.md"
+    click n4 "../modules/PlanMasterPage.test.md"
 ```
 
 ### Internal neighbors
@@ -40,3 +49,4 @@ flowchart LR
 | Inbound | [i18n.test](../modules/i18n.test.md) |
 | Inbound | [i18n](../modules/i18n.md) |
 | Inbound | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) |
+| Outbound | [teamwork.en](../modules/teamwork.en.md) |

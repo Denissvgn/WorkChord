@@ -1,6 +1,6 @@
 # TeamMemberCreate
 
-**Location:** `backend/app/schemas/team.py:78`
+**Location:** `backend/app/schemas/team.py:85`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)

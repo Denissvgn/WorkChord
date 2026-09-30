@@ -38,11 +38,11 @@ flowchart LR
     n6["backend/app/routers/task_domain.py"]
     n7["AgentService.create_actor (backend/app/services/agent_service.py)"]
     n8["AgentTeamSetupService.acknowledge_runtime (backend/app/services/agent_team_setup_service.py)"]
-    n9["IdentityService.actor_context (backend/app/services/identity_service.py)"]
-    n10["IdentityService.context (backend/app/services/identity_service.py)"]
-    n11["IdentityService.finish_login (backend/app/services/identity_service.py)"]
-    n12["initialize_control_plane (backend/app/services/identity_service.py)"]
-    n13["backend/app/services/task_domain_service.py"]
+    n9["backend/app/services/discussion_service.py"]
+    n10["IdentityService.actor_context (backend/app/services/identity_service.py)"]
+    n11["IdentityService.context (backend/app/services/identity_service.py)"]
+    n12["IdentityService.finish_login (backend/app/services/identity_service.py)"]
+    n13["initialize_control_plane (backend/app/services/identity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -65,11 +65,11 @@ flowchart LR
     click n6 "../modules/routers_task_domain.md"
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_team_setup_service.md"
-    click n9 "../modules/identity_service.md"
+    click n9 "../modules/discussion_service.md"
     click n10 "../modules/identity_service.md"
     click n11 "../modules/identity_service.md"
     click n12 "../modules/identity_service.md"
-    click n13 "../modules/task_domain_service.md"
+    click n13 "../modules/identity_service.md"
 ```
 
 ### Summary
@@ -95,10 +95,10 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService.acknowledge_runtime` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
+| `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
 | `IdentityService.actor_context` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | type_reference | [identity_service](../modules/identity_service.md) | — |
 | `IdentityService.finish_login` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `initialize_control_plane` | call | [identity_service](../modules/identity_service.md) | 1 |
-| `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

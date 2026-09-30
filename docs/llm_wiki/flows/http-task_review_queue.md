@@ -21,7 +21,10 @@ sequenceDiagram
     participant p9 as authority.allows
     participant p10 as or_
     participant p11 as Task.executed_by_principal_id.is_
-    participant p12 as service.page
+    participant p12 as select(…).where(…).exists
+    participant p13 as select(…).where
+    participant p14 as select
+    participant p15 as service.page
     p0-->>p1: db.info.get
     p0->>p2: TaskDetailService
     p0-->>p3: service.references().where
@@ -34,7 +37,11 @@ sequenceDiagram
     p0-->>p7: query.where
     p0-->>p10: or_
     p0-->>p11: Task.executed_by_principal_id.is_
-    p0-->>p12: service.page
+    p0-->>p12: select(…).where(…).exists
+    p0-->>p13: select(…).where
+    p0-->>p14: select
+    p0-->>p7: query.where
+    p0-->>p15: service.page
 ```
 
 ## Data flow
@@ -90,17 +97,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_review_queue | db.info.get | 81 | `db.info.get('authority')` |
-| task_review_queue | TaskDetailService | 82 | `TaskDetailService(db)` |
-| task_review_queue | service.references().where | 83 | `service.references().where(..., Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
-| task_review_queue | service.references | 83 | `service.references(data not statically known)` |
-| task_review_queue | Task.canceled_at.is_ | 83 | `Task.canceled_at.is_(None)` |
-| task_review_queue | Task.is_summary.is_ | 83 | `Task.is_summary.is_(False)` |
-| task_review_queue | query.where | 86 | `query.where(Task.project_id.in_(...))` |
-| task_review_queue | Task.project_id.in_ | 86 | `Task.project_id.in_(...)` |
-| task_review_queue | authority.allows | 86 | `authority.allows(project_id, 'review')` |
-| task_review_queue | query.where | 88 | `query.where(or_(...))` |
-| task_review_queue | or_ | 88 | `or_(Task.executed_by_principal_id.is_(...), ...)` |
+| task_review_queue | db.info.get | 86 | `db.info.get('authority')` |
+| task_review_queue | TaskDetailService | 87 | `TaskDetailService(db)` |
+| task_review_queue | service.references().where | 88 | `service.references().where(..., Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
+| task_review_queue | service.references | 88 | `service.references(data not statically known)` |
+| task_review_queue | Task.canceled_at.is_ | 88 | `Task.canceled_at.is_(None)` |
+| task_review_queue | Task.is_summary.is_ | 88 | `Task.is_summary.is_(False)` |
+| task_review_queue | query.where | 91 | `query.where(Task.project_id.in_(...))` |
+| task_review_queue | Task.project_id.in_ | 91 | `Task.project_id.in_(...)` |
+| task_review_queue | authority.allows | 91 | `authority.allows(project_id, 'review')` |
+| task_review_queue | query.where | 93 | `query.where(or_(...))` |
+| task_review_queue | or_ | 93 | `or_(Task.executed_by_principal_id.is_(...), ...)` |
 
 ### Boundary effects
 
@@ -110,16 +117,16 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `task_review_queue` | `db.info.get` | 81 |
-| unresolved_call | `task_review_queue` | `service.references().where` | 83 |
-| unresolved_call | `task_review_queue` | `service.references` | 83 |
-| unresolved_call | `task_review_queue` | `Task.canceled_at.is_` | 83 |
-| unresolved_call | `task_review_queue` | `Task.is_summary.is_` | 83 |
-| unresolved_call | `task_review_queue` | `query.where` | 86 |
-| unresolved_call | `task_review_queue` | `Task.project_id.in_` | 86 |
-| unresolved_call | `task_review_queue` | `authority.allows` | 86 |
-| unresolved_call | `task_review_queue` | `query.where` | 88 |
-| external_call | `task_review_queue` | `or_` | 88 |
+| unresolved_call | `task_review_queue` | `db.info.get` | 86 |
+| unresolved_call | `task_review_queue` | `service.references().where` | 88 |
+| unresolved_call | `task_review_queue` | `service.references` | 88 |
+| unresolved_call | `task_review_queue` | `Task.canceled_at.is_` | 88 |
+| unresolved_call | `task_review_queue` | `Task.is_summary.is_` | 88 |
+| unresolved_call | `task_review_queue` | `query.where` | 91 |
+| unresolved_call | `task_review_queue` | `Task.project_id.in_` | 91 |
+| unresolved_call | `task_review_queue` | `authority.allows` | 91 |
+| unresolved_call | `task_review_queue` | `query.where` | 93 |
+| external_call | `task_review_queue` | `or_` | 93 |
 | step_limit | `task_review_queue` | `first 12 steps` | 0 |
 
 ## Behavior

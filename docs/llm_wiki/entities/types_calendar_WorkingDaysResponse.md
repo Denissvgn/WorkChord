@@ -1,6 +1,6 @@
 # WorkingDaysResponse
 
-**Location:** `frontend/src/types/calendar.ts:27`
+**Location:** `frontend/src/types/calendar.ts:28`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)

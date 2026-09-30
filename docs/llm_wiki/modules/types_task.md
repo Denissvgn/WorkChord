@@ -37,10 +37,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (57) |
+| Inbound | `frontend` (59) |
 | Outbound | `frontend` (2) |
 
-> All 58 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 60 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -81,18 +81,18 @@ flowchart LR
 | [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Class | 387 | — | — |
 | [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Class | 392 | — | — |
 | [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Class | 399 | — | — |
-| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 404 | — | — |
-| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 410 | — | — |
-| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Class | 416 | — | — |
-| [TaskBrief](../entities/types_task_TaskBrief.md) | Class | 423 | — | — |
-| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Class | 434 | — | — |
-| [TaskProgress](../entities/TaskProgress.md) | Class | 441 | — | — |
-| [TaskReference](../entities/types_task_TaskReference.md) | Class | 448 | — | — |
-| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Class | 452 | — | — |
-| [TaskDetail](../entities/TaskDetail.md) | Class | 453 | — | — |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Class | 457 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Class | 458 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Class | 462 | — | — |
+| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 405 | — | — |
+| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 411 | — | — |
+| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Class | 417 | — | — |
+| [TaskBrief](../entities/types_task_TaskBrief.md) | Class | 424 | — | — |
+| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Class | 435 | — | — |
+| [TaskProgress](../entities/TaskProgress.md) | Class | 442 | — | — |
+| [TaskReference](../entities/types_task_TaskReference.md) | Class | 449 | — | — |
+| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Class | 455 | — | — |
+| [TaskDetail](../entities/TaskDetail.md) | Class | 456 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Class | 460 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Class | 461 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Class | 465 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 45 | — | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 46 | — | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 276 | — | — |

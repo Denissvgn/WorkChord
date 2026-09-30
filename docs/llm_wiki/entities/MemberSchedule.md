@@ -29,6 +29,9 @@ Performance optimizations:
 | `weekend_days` | `set[int]` | `field(default_factory=lambda: {5, 6})` | — |
 | `allocated_dates` | `dict[date, int]` | `field(default_factory=dict)` | — |
 | `allocated_days` | `float` | `0.0` | — |
+| `nominal_day_hours` | `float` | `8.0` | — |
+| `productivity_factor` | `float` | `1.0` | — |
+| `short_dates` | `set[date]` | `field(default_factory=set)` | — |
 | `_date_to_idx` | `dict[date, int]` | `field(default_factory=dict, repr=False)` | — |
 | `_available_cache` | `Optional[list[date]]` | `field(default=None, repr=False)` | — |
 | `_cache_valid` | `bool` | `field(default=False, repr=False)` | — |
@@ -45,7 +48,7 @@ Performance optimizations:
 | `find_next_available_date` | `(earliest_start: date) -> Optional[date]` | — | Find the first available working date on or after earliest_start. |
 | `find_uninterrupted_slot` | `(earliest_start: date, effort_days: int) -> Optional[date]` | — | Find the earliest date where effort_days contiguous working days are available. |
 | `_is_projectable_working_day` | `(day: date) -> bool` | — | Working-day check for dates that may lie outside the iteration period. |
-| `allocate` | `(start_date: date, effort_days: int, task_id: int, accounting_days: Optional[float] = None) -> tuple[date, date]` | — | Allocate dates for a task, returns (start, end). |
+| `allocate` | `(start_date: date, effort_days: int, task_id: int, accounting_days: Optional[float] = None, required_hours: float \| None = None) -> tuple[date, date]` | — | Reserve whole working dates, including overflow, until the requested effort fits. |
 
 ## Relationships
 
@@ -57,22 +60,25 @@ flowchart LR
     n2["SchedulerService._check_workload_balance (backend/app/services/scheduler_service.py)"]
     n3["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
     n4["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
+    n5["test_short_workday_and_overflow_are_reserved_for_the_person (backend/tests/test_profile_capacity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/scheduler_service.md"
     click n1 "../modules/scheduler_service.md"
     click n2 "../modules/scheduler_service.md"
     click n3 "../modules/scheduler_service.md"
     click n4 "../modules/scheduler_service.md"
+    click n5 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 9 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `capacity_days`, `holiday_dates`, `member_id`, `member_name`, `vacation_dates`, `weekend_days`, `working_dates` |
+| [scheduler_service](../modules/scheduler_service.md) | 9 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `capacity_days`, `holiday_dates`, `member_id`, `member_name`, `nominal_day_hours`, `productivity_factor`, `short_dates` |
 
 ### References
 
@@ -83,3 +89,4 @@ flowchart LR
 | `SchedulerService._check_workload_balance` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_composite_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_leaf_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+| `test_short_workday_and_overflow_are_reserved_for_the_person` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |

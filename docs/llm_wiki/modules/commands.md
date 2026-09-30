@@ -4,22 +4,21 @@
 
 ## Description
 
-Explicit transaction ownership shared by HTTP, MCP and service commands.
-
-One command owns its transaction, original iteration/task revisions, and at most one pre-change snapshot per iteration. Apply commits at the owner; preview rolls back all database effects. Locks are acquired by sorted iteration ID before task context. Supplied stale revisions fail; missing versions remain an observed compatibility path. Planning-input edits reserve every affected scheduling aggregate.
-
-Explicit command ownership keeps domain state, history, revisions and outbound intents atomic. Nested services flush; previews roll back. Iteration and project-backlog reservations serialize the relevant graph edits, and a command retains at most one recovery point per affected scope.
+Owns apply and rollback-only transactions. Shared planning reserves the workspace coordinator before project, iteration and task locks; iterations and tasks are acquired in ascending ID order. Each command reserves one version per affected task. Before commit, delivery changes invalidate downstream evidence and notification intents join the same transaction. Failures and previews roll back snapshots, history, revisions and outbox rows together.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority`, `require_project`, `AuthorityError`, `internal_authority` |
+| `app.authority` | `internal_authority`, `internal_authority`, `require_project`, `AuthorityError`, `internal_authority` |
+| `app.models.capacity` | `PlanningState`, `ProfileAvailability` |
 | `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
 | `app.runtime_telemetry` | `metrics` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.discussion_service` | `DiscussionService` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
 | `contextlib` | `asynccontextmanager` |
@@ -27,6 +26,8 @@ Explicit command ownership keeps domain state, history, revisions and outbound i
 | `functools` | `wraps` |
 | `inspect` | `python_inspect` |
 | `sqlalchemy` | `select`, `update` |
+| `sqlalchemy.dialects.postgresql` | `insert` |
+| `sqlalchemy.dialects.sqlite` | `insert` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm.attributes` | `set_committed_value` |
 | `typing` | `Literal` |
@@ -49,8 +50,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (60) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (66) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -58,20 +59,22 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 73 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 22 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 33 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 23 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 34 | `RuntimeError` | — |
+| [PlanningConflict](../entities/PlanningConflict.md) | 39 | `RuntimeError` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `lock_planning` | *(async)* `(db, *, expected = None)` | — | Reserve shared planning before narrower locks, once per command including previews. |
 | `current_command` | `(db) -> CommandState \| None` | — | — |
 | `commit_or_flush` | *(async)* `(db) -> None` | — | Collaborators flush under an owner; standalone legacy calls retain commit behavior. |
 | `command_transaction` | *(async)* `(db: AsyncSession, *, mode = 'apply', commit = True)` | `@asynccontextmanager` | — |

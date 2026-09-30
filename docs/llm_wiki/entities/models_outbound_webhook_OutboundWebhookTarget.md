@@ -1,6 +1,6 @@
 # OutboundWebhookTarget
 
-**Location:** `backend/app/models/outbound_webhook.py:36`
+**Location:** `backend/app/models/outbound_webhook.py:37`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_outbound_webhook](../modules/models_outbound_webhook.md)

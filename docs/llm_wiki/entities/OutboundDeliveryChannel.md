@@ -15,6 +15,7 @@ Transport selected by the durable outbound delivery worker.
 |------|-------|-------------|
 | `WEBHOOK` | `'webhook'` | — |
 | `EMAIL` | `'email'` | — |
+| `INBOX` | `'inbox'` | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_outbound_webhook](../modules/models_outbound_webhook.md) | 0 | `EMAIL`, `WEBHOOK` |
+| [models_outbound_webhook](../modules/models_outbound_webhook.md) | 0 | `EMAIL`, `INBOX`, `WEBHOOK` |
 
 ### Structure
 

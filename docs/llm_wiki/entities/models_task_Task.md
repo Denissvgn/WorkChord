@@ -115,13 +115,13 @@ flowchart LR
     n4["backend/app/http_authority.py"]
     n5["backend/app/models/__init__.py"]
     n6["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
-    n7["backend/app/models/iteration.py"]
-    n8["backend/app/models/project.py"]
-    n9["backend/app/models/recovery.py"]
-    n10["backend/app/models/release.py"]
-    n11["backend/app/models/request_source.py"]
-    n12["backend/app/models/task_status_log.py"]
-    n13["backend/app/models/team_member.py"]
+    n7["backend/app/models/delivery_dependency.py"]
+    n8["backend/app/models/discussion.py"]
+    n9["backend/app/models/iteration.py"]
+    n10["backend/app/models/project.py"]
+    n11["backend/app/models/recovery.py"]
+    n12["backend/app/models/release.py"]
+    n13["backend/app/models/request_source.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -142,13 +142,13 @@ flowchart LR
     click n4 "../modules/http_authority.md"
     click n5 "../modules/models___init__.md"
     click n6 "../modules/models_agent.md"
-    click n7 "../modules/models_iteration.md"
-    click n8 "../modules/models_project.md"
-    click n9 "../modules/recovery.md"
-    click n10 "../modules/models_release.md"
-    click n11 "../modules/models_request_source.md"
-    click n12 "../modules/task_status_log.md"
-    click n13 "../modules/team_member.md"
+    click n7 "../modules/delivery_dependency.md"
+    click n8 "../modules/models_discussion.md"
+    click n9 "../modules/models_iteration.md"
+    click n10 "../modules/models_project.md"
+    click n11 "../modules/recovery.md"
+    click n12 "../modules/models_release.md"
+    click n13 "../modules/models_request_source.md"
 ```
 
 ### Summary
@@ -172,12 +172,12 @@ flowchart LR
 | `http_authority` | import | [http_authority](../modules/http_authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `_reject_routing_assessment_mutation` | type_reference | [models_agent](../modules/models_agent.md) | — |
+| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 | `request_source` | import | [models_request_source](../modules/models_request_source.md) | — |
-| `task_status_log` | import | [task_status_log](../modules/task_status_log.md) | — |
-| `team_member` | import | [team_member](../modules/team_member.md) | — |
 
-> References: showing 12 of 228 logical references; 216 omitted by the 12-row generated summary limit.
+> References: showing 12 of 238 logical references; 226 omitted by the 12-row generated summary limit.

@@ -12,9 +12,11 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.tsx`._
 |--------|---------|
 | `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` |
 | `../../navigation/workspaces` | `getWorkspaceForPath` |
+| `../../services/taskService` | `taskService` |
 | `../common/Checkbox` | `Checkbox` |
 | `../common/Modal` | `Modal` |
 | `./commandMenuEvents` | `OPEN_COMMAND_MENU_EVENT` |
+| `@tanstack/react-query` | `useQuery` |
 | `lucide-react` | `ArrowUpDown`, `ClipboardCheck`, `Command`, `GanttChartSquare`, `Layers`, `List`, `LayoutGrid`, `ListFilter`, `ListTodo`, `MapPin`, `Maximize2`, `Minimize2`, `Plus`, `Search`, `Settings`, `Users`, `LucideIcon` |
 | `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `KeyboardEvent` |
 | `react-i18next` | `useTranslation` |
@@ -41,6 +43,7 @@ flowchart LR
     n6["frontend/src/hooks/useSingleKeyShortcutPreference.ts"]
     n7["frontend/src/navigation/workspaces.ts"]
     n8["frontend/src/pages/SettingsPage.test.tsx"]
+    n9["frontend/src/services/taskService.ts"]
     n2 --> n4
     n3 --> n4
     n4 --> n0
@@ -48,6 +51,7 @@ flowchart LR
     n4 --> n5
     n4 --> n6
     n4 --> n7
+    n4 --> n9
     n8 --> n4
     click n0 "../modules/Checkbox.md"
     click n1 "../modules/Modal.md"
@@ -58,6 +62,7 @@ flowchart LR
     click n6 "../modules/useSingleKeyShortcutPreference.md"
     click n7 "../modules/workspaces.md"
     click n8 "../modules/SettingsPage.test.md"
+    click n9 "../modules/taskService.md"
 ```
 
 ### Internal neighbors
@@ -72,19 +77,20 @@ flowchart LR
 | Outbound | [commandMenuEvents](../modules/commandMenuEvents.md) |
 | Outbound | [useSingleKeyShortcutPreference](../modules/useSingleKeyShortcutPreference.md) |
 | Outbound | [workspaces](../modules/workspaces.md) |
+| Outbound | [taskService](../modules/taskService.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CommandAction](../entities/CommandAction.md) | Class | 32 | — | — |
-| [CommandGroup](../entities/CommandGroup.md) | Type alias | 30 | — | — |
+| [CommandAction](../entities/CommandAction.md) | Class | 34 | — | — |
+| [CommandGroup](../entities/CommandGroup.md) | Type alias | 32 | — | — |
 
 ## Functions
 

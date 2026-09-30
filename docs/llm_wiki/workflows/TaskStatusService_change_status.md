@@ -1,7 +1,7 @@
 # TaskStatusService_change_status
 
 **Entry point:** `task_status_service.TaskStatusService.change_status`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [language_service](../modules/language_service.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_status_service](../modules/task_status_service.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [language_service](../modules/language_service.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_status_service](../modules/task_status_service.md)
 
 > Apply one valid direct transition and reconcile its ancestor chain.
 
@@ -14,16 +14,18 @@
 4. `authority.require_project`
 5. `task_brief_service.TaskBriefService`
 6. `language_service.resolve_runtime_ui_language`
-7. `language_service.task_requires_schedule_message`
-8. `language_service.incomplete_dependency_message`
-9. `snapshot_service.SnapshotService`
-10. `task_brief_service.TaskBriefService`
-11. `commands.commit_or_flush`
+7. `delivery_dependency_service.DeliveryDependencyService`
+8. `language_service.task_requires_schedule_message`
+9. `language_service.incomplete_dependency_message`
+10. `snapshot_service.SnapshotService`
+11. `task_brief_service.TaskBriefService`
+12. `commands.commit_or_flush`
 
 ## Touches
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [language_service](../modules/language_service.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)

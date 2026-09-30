@@ -66,7 +66,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Database](../entities/Database.md) | Type alias | 25 | `Annotated[object, Depends(get_db, scope='function')]` | — |
+| [Database](../entities/routers_identity_Database.md) | Type alias | 25 | `Annotated[object, Depends(get_db, scope='function')]` | — |
 | [BootstrapOwner](../entities/BootstrapOwner.md) | Pydantic model | 28 | `BaseModel` | — |
 | [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 32 | `BaseModel` | — |
 | [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 38 | `BaseModel` | — |

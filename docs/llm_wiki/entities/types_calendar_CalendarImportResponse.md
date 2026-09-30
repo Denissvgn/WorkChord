@@ -1,6 +1,6 @@
 # CalendarImportResponse
 
-**Location:** `frontend/src/types/calendar.ts:39`
+**Location:** `frontend/src/types/calendar.ts:40`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)

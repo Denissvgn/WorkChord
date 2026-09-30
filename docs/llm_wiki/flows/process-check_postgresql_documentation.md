@@ -60,7 +60,7 @@ sequenceDiagram
     p1->>p14: _require
 ```
 
-> Call sequence diagram shows 30 of 58 interactions; 28 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 60 interactions; 30 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -128,7 +128,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | check_documentation | 226 | `check_documentation(data not statically known)` |
+| main | check_documentation | 229 | `check_documentation(data not statically known)` |
 | check_documentation | _read | 84 | `_read(path)` |
 | _read | path.is_file | 45 | `path.is_file(data not statically known)` |
 | _read | DocumentationContractError | 46 | `DocumentationContractError(...)` |
@@ -144,8 +144,8 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 228 |
-| output | `print` | `main` | 230 |
+| output | `print` | `main` | 231 |
+| output | `print` | `main` | 233 |
 | filesystem_read | `path.read_text` | `_read` | 47 |
 
 ### Static analysis gaps

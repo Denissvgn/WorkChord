@@ -1,6 +1,6 @@
 # SchedulePreviewResponse
 
-**Location:** `frontend/src/types/gantt.ts:74`
+**Location:** `frontend/src/types/gantt.ts:76`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
@@ -14,6 +14,7 @@ Server dry-run of sandbox edits through the real scheduler (nothing persisted).
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `input_revision` | `number` | Yes | — | — |
+| `input_planning_revision` | `number` | No | — | — |
 | `tasks` | `GanttTask[]` | Yes | — | — |
 | `overdue_task_ids` | `number[]` | Yes | — | — |
 | `schedule_result` | `ScheduleResult \| null` | No | — | — |
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `input_revision`, `overdue_task_ids`, `schedule_result`, `tasks` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `input_planning_revision`, `input_revision`, `overdue_task_ids`, `schedule_result`, `tasks` |
 
 ### References
 

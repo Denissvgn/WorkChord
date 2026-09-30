@@ -1,6 +1,6 @@
 # TeamMemberUpdate
 
-**Location:** `backend/app/schemas/team.py:89`
+**Location:** `backend/app/schemas/team.py:96`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
@@ -38,6 +38,7 @@ flowchart LR
     n5["backend/app/schemas/__init__.py"]
     n6["AgentPlanningService.update_team_member (backend/app/services/agent_planning_service.py)"]
     n7["TeamService.update (backend/app/services/team_service.py)"]
+    n8["test_reassigning_allocation_does_not_transfer_private_absence (backend/tests/test_profile_capacity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -45,6 +46,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_team.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -53,6 +55,7 @@ flowchart LR
     click n5 "../modules/schemas___init__.md"
     click n6 "../modules/agent_planning_service.md"
     click n7 "../modules/team_service.md"
+    click n8 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -77,3 +80,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.update_team_member` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `TeamService.update` | type_reference | [team_service](../modules/team_service.md) | — |
+| `test_reassigning_allocation_does_not_transfer_private_absence` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |

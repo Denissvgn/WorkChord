@@ -60,8 +60,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RouteModuleKey](../entities/RouteModuleKey.md) | Type alias | 26 | — | — |
-| [RouteMetadata](../entities/RouteMetadata.md) | Type alias | 28 | — | — |
+| [RouteModuleKey](../entities/RouteModuleKey.md) | Type alias | 27 | — | — |
+| [RouteMetadata](../entities/RouteMetadata.md) | Type alias | 29 | — | — |
 
 ## Functions
 

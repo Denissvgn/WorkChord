@@ -35,15 +35,15 @@ flowchart LR
     n2["backend/app/models/agent.py"]
     n3["backend/app/models/autonomy.py"]
     n4["backend/app/models/database_migration.py"]
-    n5["backend/app/models/external_link.py"]
-    n6["backend/app/models/github.py"]
-    n7["backend/app/models/identity.py"]
-    n8["backend/app/models/label.py"]
-    n9["backend/app/models/outbound_webhook.py"]
-    n10["backend/app/models/plan_share.py"]
-    n11["backend/app/models/project.py"]
-    n12["backend/app/models/recovery.py"]
-    n13["backend/app/models/release.py"]
+    n5["backend/app/models/discussion.py"]
+    n6["backend/app/models/external_link.py"]
+    n7["backend/app/models/github.py"]
+    n8["backend/app/models/identity.py"]
+    n9["backend/app/models/label.py"]
+    n10["backend/app/models/outbound_webhook.py"]
+    n11["backend/app/models/plan_share.py"]
+    n12["backend/app/models/project.py"]
+    n13["backend/app/models/recovery.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,15 +61,15 @@ flowchart LR
     click n2 "../modules/models_agent.md"
     click n3 "../modules/models_autonomy.md"
     click n4 "../modules/models_database_migration.md"
-    click n5 "../modules/models_external_link.md"
-    click n6 "../modules/models_github.md"
-    click n7 "../modules/models_identity.md"
-    click n8 "../modules/models_label.md"
-    click n9 "../modules/models_outbound_webhook.md"
-    click n10 "../modules/models_plan_share.md"
-    click n11 "../modules/models_project.md"
-    click n12 "../modules/recovery.md"
-    click n13 "../modules/models_release.md"
+    click n5 "../modules/models_discussion.md"
+    click n6 "../modules/models_external_link.md"
+    click n7 "../modules/models_github.md"
+    click n8 "../modules/models_identity.md"
+    click n9 "../modules/models_label.md"
+    click n10 "../modules/models_outbound_webhook.md"
+    click n11 "../modules/models_plan_share.md"
+    click n12 "../modules/models_project.md"
+    click n13 "../modules/recovery.md"
 ```
 
 ### Summary
@@ -91,6 +91,7 @@ flowchart LR
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
 | `autonomy` | import | [models_autonomy](../modules/models_autonomy.md) | — |
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
+| `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
 | `github` | import | [models_github](../modules/models_github.md) | — |
 | `identity` | import | [models_identity](../modules/models_identity.md) | — |
@@ -99,6 +100,5 @@ flowchart LR
 | `plan_share` | import | [models_plan_share](../modules/models_plan_share.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
-| `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.

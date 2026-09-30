@@ -71,14 +71,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_detail | domain_result | 95 | `domain_result(...)` |
+| task_detail | domain_result | 103 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_detail | TaskDetailService(…).detail | 95 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
-| task_detail | TaskDetailService | 95 | `TaskDetailService(db)` |
+| task_detail | TaskDetailService(…).detail | 103 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
+| task_detail | TaskDetailService | 103 | `TaskDetailService(db)` |
 
 ### Boundary effects
 
@@ -92,8 +92,10 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `task_detail` | `TaskDetailService(db).detail` | 95 |
+| unresolved_call | `task_detail` | `TaskDetailService(db).detail` | 103 |
 
 ## Behavior
 
 This flow starts at `task_detail` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+
+References include project/backlog context and current attributed acceptance; their bounded context is not sufficient for agent dispatch.

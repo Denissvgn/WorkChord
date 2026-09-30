@@ -6,12 +6,13 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `authority.require_project`
+1. `commands.lock_planning`
 2. `authority.require_project`
-3. `commands.lock_backlog_project`
-4. `authority.AuthorityError`
-5. `backlog_snapshot_service.BacklogSnapshotService`
-6. `commands.lock_iterations`
+3. `authority.require_project`
+4. `commands.lock_backlog_project`
+5. `authority.AuthorityError`
+6. `backlog_snapshot_service.BacklogSnapshotService`
+7. `commands.lock_iterations`
 
 ## Touches
 

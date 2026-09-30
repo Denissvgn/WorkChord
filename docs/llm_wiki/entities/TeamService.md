@@ -38,14 +38,15 @@ Service for team member operations.
 | `get_by_id` | *(async)* `(member_id: int) -> TeamMember \| None` | — | Get team member by ID. |
 | `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
 | `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
+| `detach_absence_adapters` | *(async)* `(member, next_profile_id)` | — | Allocation identity changes must not expose another person's absence adapters. |
 | `delete` | *(async)* `(member_id: int) -> bool` | `@schedule_input_command('member')` | Delete a team member. |
 | `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
 | `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
 | `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
-| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | — | Import vacation ranges for iteration team members from CSV text. |
+| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@atomic_command` | Import vacation ranges for iteration team members from CSV text. |
 | `calculate_capacity` | *(async)* `(member_id: int) -> MemberCapacity \| None` | — | Calculate capacity for a team member. |
 | `get_workload` | *(async)* `(member_id: int) -> MemberWorkload \| None` | — | Get workload information for a team member. |
-| `import_members` | *(async)* `(iteration_id: int, text: str) -> list[TeamMember]` | — | Import multiple team members from text format. |
+| `import_members` | *(async)* `(iteration_id: int, text: str) -> list[TeamMember]` | `@schedule_input_command('member')` | Import multiple team members from text format. |
 
 ## Relationships
 
@@ -96,7 +97,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [team_service](../modules/team_service.md) | 29 | — |
+| [team_service](../modules/team_service.md) | 30 | — |
 
 ### References
 
@@ -115,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

@@ -76,16 +76,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_task_github_external_link | GitHubExternalLinkCreate.model_validate | 464 | `GitHubExternalLinkCreate.model_validate(raw_data)` |
-| create_task_github_external_link | link_service.create_task_github_link | 465 | `link_service.create_task_github_link(task_id, data.url)` |
-| create_task_github_external_link | HTTPException | 467 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_task_github_external_link | str | 469 | `str(e)` |
-| create_task_github_external_link | HTTPException | 472 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_task_github_external_link | str | 474 | `str(e)` |
-| create_task_github_external_link | HTTPException | 477 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))` |
-| create_task_github_external_link | str | 479 | `str(e)` |
-| create_task_github_external_link | HTTPException | 483 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_task_github_external_link | link_service.link_to_response | 487 | `link_service.link_to_response(link)` |
+| create_task_github_external_link | GitHubExternalLinkCreate.model_validate | 466 | `GitHubExternalLinkCreate.model_validate(raw_data)` |
+| create_task_github_external_link | link_service.create_task_github_link | 467 | `link_service.create_task_github_link(task_id, data.url)` |
+| create_task_github_external_link | HTTPException | 469 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_task_github_external_link | str | 471 | `str(e)` |
+| create_task_github_external_link | HTTPException | 474 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_task_github_external_link | str | 476 | `str(e)` |
+| create_task_github_external_link | HTTPException | 479 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))` |
+| create_task_github_external_link | str | 481 | `str(e)` |
+| create_task_github_external_link | HTTPException | 485 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_task_github_external_link | link_service.link_to_response | 489 | `link_service.link_to_response(link)` |
 
 ### Boundary effects
 
@@ -95,13 +95,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_task_github_external_link` | `GitHubExternalLinkCreate.model_validate` | 464 |
-| unresolved_call | `create_task_github_external_link` | `link_service.create_task_github_link` | 465 |
-| external_call | `create_task_github_external_link` | `HTTPException` | 467 |
-| external_call | `create_task_github_external_link` | `HTTPException` | 472 |
-| external_call | `create_task_github_external_link` | `HTTPException` | 477 |
-| external_call | `create_task_github_external_link` | `HTTPException` | 483 |
-| unresolved_call | `create_task_github_external_link` | `link_service.link_to_response` | 487 |
+| unresolved_call | `create_task_github_external_link` | `GitHubExternalLinkCreate.model_validate` | 466 |
+| unresolved_call | `create_task_github_external_link` | `link_service.create_task_github_link` | 467 |
+| external_call | `create_task_github_external_link` | `HTTPException` | 469 |
+| external_call | `create_task_github_external_link` | `HTTPException` | 474 |
+| external_call | `create_task_github_external_link` | `HTTPException` | 479 |
+| external_call | `create_task_github_external_link` | `HTTPException` | 485 |
+| unresolved_call | `create_task_github_external_link` | `link_service.link_to_response` | 489 |
 
 ## Behavior
 

@@ -132,10 +132,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| bulk_update_tasks | IterationService | 840 | `IterationService(db)` |
-| bulk_update_tasks | iteration_service.get_by_id | 841 | `iteration_service.get_by_id(iteration_id)` |
-| bulk_update_tasks | HTTPException | 844 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| bulk_update_tasks | _not_found_detail | 846 | `_not_found_detail(db, 'iteration', iteration_id)` |
+| bulk_update_tasks | IterationService | 842 | `IterationService(db)` |
+| bulk_update_tasks | iteration_service.get_by_id | 843 | `iteration_service.get_by_id(iteration_id)` |
+| bulk_update_tasks | HTTPException | 846 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| bulk_update_tasks | _not_found_detail | 848 | `_not_found_detail(db, 'iteration', iteration_id)` |
 | _not_found_detail | resolve_runtime_ui_language | 68 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
@@ -152,8 +152,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `bulk_update_tasks` | `iteration_service.get_by_id` | 841 |
-| external_call | `bulk_update_tasks` | `HTTPException` | 844 |
+| unresolved_call | `bulk_update_tasks` | `iteration_service.get_by_id` | 843 |
+| external_call | `bulk_update_tasks` | `HTTPException` | 846 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

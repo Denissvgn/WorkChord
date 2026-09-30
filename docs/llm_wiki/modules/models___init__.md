@@ -15,7 +15,10 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `ImmutableRoutingAssessmentError`, `TaskEvent`, `TaskRoutingAssessment` |
 | `app.models.autonomy` | `AgentAutonomyTopology`, `AgentAutonomyTopologyMember`, `AgentObservationJob`, `AgentVerificationEvent`, `AgentVerificationRequirement`, `AgentWorkPackage`, `ImmutableAutonomyEventError` |
 | `app.models.calendar` | `Calendar` |
+| `app.models.capacity` | `PlanningState`, `ProfileAvailability`, `ProfileAbsence` |
 | `app.models.database_migration` | `DatabaseMigrationGate` |
+| `app.models.delivery_dependency` | `DeliveryDependency` |
+| `app.models.discussion` | `TaskComment`, `TaskCommentRevision`, `TaskSubscription`, `InboxNotification` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType`, `ExternalLinkProvider` |
 | `app.models.github` | `GitHubStatusAutomationRule` |
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
@@ -56,6 +59,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (24) |
+| Outbound | `backend` (27) |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

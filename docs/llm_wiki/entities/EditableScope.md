@@ -1,6 +1,6 @@
 # EditableScope
 
-**Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:21`
+**Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SavedViewsControl](../modules/SavedViewsControl.md)

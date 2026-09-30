@@ -81,7 +81,7 @@ flowchart LR
 | [SchedulingDecision](../entities/schemas_gantt_SchedulingDecision.md) | 60 | `BaseModel` | Explanation for a scheduling decision. |
 | [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | 69 | `BaseModel` | Workload issue for a team member. |
 | [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | 76 | `BaseModel` | Result of scheduling operation. |
-| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | 84 | `BaseModel` | Full Gantt chart response. |
-| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | 95 | `BaseModel` | — |
-| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | 100 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
-| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | 110 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |
+| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | 86 | `BaseModel` | Full Gantt chart response. |
+| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | 97 | `BaseModel` | — |
+| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | 103 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
+| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | 114 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |

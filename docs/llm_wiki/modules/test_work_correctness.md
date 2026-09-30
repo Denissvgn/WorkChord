@@ -19,7 +19,7 @@ Atomic recovery, hierarchy, aggregate versions and cross-surface metric contract
 | `app.models.iteration` | `Iteration` |
 | `app.models.recovery` | `ApplicationSnapshot`, `TaskScheduleBaseline` |
 | `app.models.task` | `Task`, `TaskDependency` |
-| `app.models.team_member` | `Vacation` |
+| `app.models.team_member` | `TeamMember`, `Vacation`, `TeamMember` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.task` | `TaskUpdate`, `TaskCreate` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |

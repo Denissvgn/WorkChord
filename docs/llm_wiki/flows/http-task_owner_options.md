@@ -127,17 +127,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_owner_options | require_project | 55 | `require_project(db, project_id)` |
+| task_owner_options | require_project | 60 | `require_project(db, project_id)` |
 | require_project | db.info.get (backend/app/authority.py:require_project) | 69 | `db.info.get('authority')` |
 | require_project | get_settings | 71 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |
 | require_project | AuthorityError | 73 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
 | require_project | authority.allows | 74 | `authority.allows(project_id, action)` |
 | require_project | AuthorityError | 75 | `AuthorityError(data not statically known)` |
-| task_owner_options | select(…).where (backend/app/routers/task_…n.py:task_owner_options, 1) | 56 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where(..., ...)` |
-| task_owner_options | select | 56 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label(...))` |
-| task_owner_options | TeamMemberProfile.display_name.label | 56 | `TeamMemberProfile.display_name.label('name')` |
-| task_owner_options | db.info.get (backend/app/routers/task_…main.py:task_owner_options) | 57 | `db.info.get('authority')` |
+| task_owner_options | select(…).where (backend/app/routers/task_…n.py:task_owner_options, 1) | 61 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where(..., ...)` |
+| task_owner_options | select | 61 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label(...))` |
+| task_owner_options | TeamMemberProfile.display_name.label | 61 | `TeamMemberProfile.display_name.label('name')` |
+| task_owner_options | db.info.get (backend/app/routers/task_…main.py:task_owner_options) | 62 | `db.info.get('authority')` |
 
 ### Boundary effects
 
@@ -149,10 +149,10 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `require_project` | `db.info.get` | 69 |
 | unresolved_call | `require_project` | `authority.allows` | 74 |
-| unresolved_call | `task_owner_options` | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where` | 56 |
-| external_call | `task_owner_options` | `select` | 56 |
-| unresolved_call | `task_owner_options` | `TeamMemberProfile.display_name.label` | 56 |
-| unresolved_call | `task_owner_options` | `db.info.get` | 57 |
+| unresolved_call | `task_owner_options` | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where` | 61 |
+| external_call | `task_owner_options` | `select` | 61 |
+| unresolved_call | `task_owner_options` | `TeamMemberProfile.display_name.label` | 61 |
+| unresolved_call | `task_owner_options` | `db.info.get` | 62 |
 | step_limit | `task_owner_options` | `first 12 steps` | 0 |
 
 ## Behavior

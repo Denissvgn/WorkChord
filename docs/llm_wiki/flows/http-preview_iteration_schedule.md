@@ -2,12 +2,14 @@
 
 **Entry point:** `preview_iteration_schedule` (`http`)
 **Source:** [routers_gantt](../modules/routers_gantt.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [iteration_service](../modules/iteration_service.md), [routers_gantt](../modules/routers_gantt.md), and 6 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [discussion_service](../modules/discussion_service.md), and 8 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [routers_gantt](../modules/routers_gantt.md)
 - [schemas_gantt](../modules/schemas_gantt.md)
@@ -34,21 +36,18 @@ sequenceDiagram
     participant p9 as info.get
     participant p10 as RuntimeError (backend/app/commands.py:command_transaction)
     participant p11 as CommandState
-    participant p12 as db.rollback
-    participant p13 as db.commit
-    participant p14 as db.flush
-    participant p15 as db.info.pop
-    participant p16 as lock_iterations
-    participant p17 as RuntimeError (backend/app/commands.py:lock_iterations)
-    participant p18 as sorted (backend/app/commands.py:lock_iterations)
-    participant p19 as AggregateVersionConflict
-    participant p20 as db.scalar
-    participant p21 as select(…).where(…).with_for_update
-    participant p22 as select(…).where (backend/app/commands.py:lock_iterations)
-    participant p23 as select
-    participant p24 as ValueError (backend/app/commands.py:lock_iterations)
-    participant p25 as db.info.get (backend/app/commands.py:lock_iterations)
-    participant p26 as internal_authority
+    participant p12 as db.flush
+    participant p13 as db.info.get (backend/app/commands.py:command_transaction)
+    participant p14 as DeliveryDependencyService(…).reconcile
+    participant p15 as DeliveryDependencyService
+    participant p16 as sorted (backend/app/commands.py:command_transaction)
+    participant p17 as db.info.pop
+    participant p18 as set (backend/app/commands.py:command_transaction)
+    participant p19 as DiscussionService(…).enqueue
+    participant p20 as DiscussionService
+    participant p21 as db.rollback
+    participant p22 as db.commit
+    participant p23 as lock_iterations
     p0->>p1: IterationService
     p0->>p2: TaskService
     p0-->>p3: iteration_service.get_by_id
@@ -61,27 +60,27 @@ sequenceDiagram
     p5-->>p10: RuntimeError (backend/app/commands.py:command_transaction)
     p5->>p11: CommandState
     p5-->>p10: RuntimeError (backend/app/commands.py:command_transaction)
-    p5-->>p12: db.rollback
-    p5-->>p13: db.commit
-    p5-->>p14: db.flush
-    p5-->>p12: db.rollback
-    p5-->>p15: db.info.pop
-    p5-->>p15: db.info.pop
-    p0->>p16: lock_iterations
-    p16->>p6: current_command
-    p16-->>p17: RuntimeError (backend/app/commands.py:lock_iterations)
-    p16-->>p18: sorted (backend/app/commands.py:lock_iterations)
-    p16->>p19: AggregateVersionConflict
-    p16-->>p20: db.scalar
-    p16-->>p21: select(…).where(…).with_for_update
-    p16-->>p22: select(…).where (backend/app/commands.py:lock_iterations)
-    p16-->>p23: select
-    p16-->>p24: ValueError (backend/app/commands.py:lock_iterations)
-    p16-->>p25: db.info.get (backend/app/commands.py:lock_iterations)
-    p16->>p26: internal_authority
+    p5-->>p12: db.flush
+    p5-->>p13: db.info.get (backend/app/commands.py:command_transaction)
+    p5-->>p13: db.info.get (backend/app/commands.py:command_transaction)
+    p5-->>p13: db.info.get (backend/app/commands.py:command_transaction)
+    p5-->>p14: DeliveryDependencyService(…).reconcile
+    p5->>p15: DeliveryDependencyService
+    p5-->>p16: sorted (backend/app/commands.py:command_transaction)
+    p5-->>p17: db.info.pop
+    p5-->>p18: set (backend/app/commands.py:command_transaction)
+    p5-->>p19: DiscussionService(…).enqueue
+    p5->>p20: DiscussionService
+    p5-->>p21: db.rollback
+    p5-->>p22: db.commit
+    p5-->>p12: db.flush
+    p5-->>p21: db.rollback
+    p5-->>p17: db.info.pop
+    p5-->>p17: db.info.pop
+    p0->>p23: lock_iterations
 ```
 
-> Call sequence diagram shows 30 of 141 interactions; 111 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 167 interactions; 137 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -117,6 +116,8 @@ flowchart LR
     s6 -. "mutation db.info.pop" .-> b1
     b2["mutation db.info.pop"]
     s6 -. "mutation db.info.pop" .-> b2
+    b3["mutation db.info.pop"]
+    s6 -. "mutation db.info.pop" .-> b3
     click s1 "../modules/routers_gantt.md"
     click s2 "../modules/iteration_service.md"
     click s3 "../modules/task_service.md"
@@ -127,6 +128,7 @@ flowchart LR
     class b0 boundary
     class b1 boundary
     class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -155,20 +157,21 @@ flowchart LR
 | preview_iteration_schedule | iteration_service.get_by_id | 74 | `iteration_service.get_by_id(iteration_id)` |
 | preview_iteration_schedule | HTTPException | 76 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | preview_iteration_schedule | command_transaction | 81 | `command_transaction(db, mode='preview')` |
-| command_transaction | current_command | 53 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 39 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 40 | `isinstance(info, dict)` |
-| current_command | info.get | 40 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 56 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 63 | `CommandState(mode=mode)` |
+| command_transaction | current_command | 85 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 71 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 72 | `isinstance(info, dict)` |
+| current_command | info.get | 72 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 88 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 95 | `CommandState(mode=mode)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | mutation | `gantt_tasks.append` | `preview_iteration_schedule` | 100 |
-| mutation | `db.info.pop` | `command_transaction` | 79 |
-| mutation | `db.info.pop` | `command_transaction` | 81 |
+| mutation | `db.info.pop` | `command_transaction` | 105 |
+| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 120 |
 
 ### Static analysis gaps
 
@@ -176,14 +179,12 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `preview_iteration_schedule` | `iteration_service.get_by_id` | 74 |
 | external_call | `preview_iteration_schedule` | `HTTPException` | 76 |
-| external_call | `current_command` | `getattr` | 39 |
-| external_call | `current_command` | `isinstance` | 40 |
-| unresolved_call | `current_command` | `info.get` | 40 |
-| external_call | `command_transaction` | `RuntimeError` | 56 |
+| external_call | `current_command` | `getattr` | 71 |
+| external_call | `current_command` | `isinstance` | 72 |
+| unresolved_call | `current_command` | `info.get` | 72 |
+| external_call | `command_transaction` | `RuntimeError` | 88 |
 | step_limit | `preview_iteration_schedule` | `first 12 steps` | 0 |
 
 ## Behavior
 
-This flow starts at `preview_iteration_schedule` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
-
-Applies sandbox inputs and the real scheduler inside a rollback-only owner, serializes the projected result with its input revision, and leaves durable state and snapshot retention unchanged.
+Applies sandbox inputs and the real scheduler inside a rollback-only owner. The result carries observed iteration and shared planning revisions plus capacity constraints. Domain rows, current versions, recovery retention and notification intents are all rolled back.

@@ -1,6 +1,6 @@
 # TeamMemberProfileResponse
 
-**Location:** `backend/app/schemas/team.py:245`
+**Location:** `backend/app/schemas/team.py:252`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

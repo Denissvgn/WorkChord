@@ -158,39 +158,39 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_gantt_data | IterationService | 135 | `IterationService(db)` |
-| get_gantt_data | TaskService | 136 | `TaskService(db)` |
-| get_gantt_data | TeamService | 137 | `TeamService(db)` |
-| get_gantt_data | iteration_service.get_by_id | 142 | `iteration_service.get_by_id(iteration_id)` |
-| get_gantt_data | task_service.get_by_iteration | 143 | `task_service.get_by_iteration(iteration_id)` |
-| get_gantt_data | team_service.get_by_iteration | 144 | `team_service.get_by_iteration(iteration_id)` |
-| get_gantt_data | HTTPException | 147 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_gantt_data | CalendarService | 153 | `CalendarService(db)` |
-| get_gantt_data | calendar_service.calculate_working_days | 154 | `calendar_service.calculate_working_days(iteration.calendar, iteration.start_date, iteration.end_date)` |
-| get_gantt_data | _task_to_gantt | 166 | `_task_to_gantt(task, iteration.end_date, calendar_timezone=iteration.calendar.timezone)` |
-| _task_to_gantt | attributes.instance_state | 251 | `attributes.instance_state(task)` |
+| get_gantt_data | IterationService | 136 | `IterationService(db)` |
+| get_gantt_data | TaskService | 137 | `TaskService(db)` |
+| get_gantt_data | TeamService | 138 | `TeamService(db)` |
+| get_gantt_data | iteration_service.get_by_id | 143 | `iteration_service.get_by_id(iteration_id)` |
+| get_gantt_data | task_service.get_by_iteration | 144 | `task_service.get_by_iteration(iteration_id)` |
+| get_gantt_data | team_service.get_by_iteration | 145 | `team_service.get_by_iteration(iteration_id)` |
+| get_gantt_data | HTTPException | 148 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_gantt_data | CalendarService | 154 | `CalendarService(db)` |
+| get_gantt_data | calendar_service.calculate_working_days | 155 | `calendar_service.calculate_working_days(iteration.calendar, iteration.start_date, iteration.end_date)` |
+| get_gantt_data | _task_to_gantt | 167 | `_task_to_gantt(task, iteration.end_date, calendar_timezone=iteration.calendar.timezone)` |
+| _task_to_gantt | attributes.instance_state | 252 | `attributes.instance_state(task)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `gantt_tasks.append` | `get_gantt_data` | 169 |
-| mutation | `vacation_dates.update` | `get_gantt_data` | 190 |
-| mutation | `signals.pop` | `_task_to_gantt` | 266 |
-| mutation | `assignees.append` | `_task_to_gantt` | 299 |
-| mutation | `seen_ids.add` | `_task_to_gantt` | 302 |
-| mutation | `children.append` | `_task_to_gantt` | 334 |
+| mutation | `gantt_tasks.append` | `get_gantt_data` | 170 |
+| mutation | `vacation_dates.update` | `get_gantt_data` | 191 |
+| mutation | `signals.pop` | `_task_to_gantt` | 267 |
+| mutation | `assignees.append` | `_task_to_gantt` | 300 |
+| mutation | `seen_ids.add` | `_task_to_gantt` | 303 |
+| mutation | `children.append` | `_task_to_gantt` | 335 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_gantt_data` | `iteration_service.get_by_id` | 142 |
-| unresolved_call | `get_gantt_data` | `task_service.get_by_iteration` | 143 |
-| unresolved_call | `get_gantt_data` | `team_service.get_by_iteration` | 144 |
-| external_call | `get_gantt_data` | `HTTPException` | 147 |
-| unresolved_call | `get_gantt_data` | `calendar_service.calculate_working_days` | 154 |
-| external_call | `_task_to_gantt` | `attributes.instance_state` | 251 |
+| unresolved_call | `get_gantt_data` | `iteration_service.get_by_id` | 143 |
+| unresolved_call | `get_gantt_data` | `task_service.get_by_iteration` | 144 |
+| unresolved_call | `get_gantt_data` | `team_service.get_by_iteration` | 145 |
+| external_call | `get_gantt_data` | `HTTPException` | 148 |
+| unresolved_call | `get_gantt_data` | `calendar_service.calculate_working_days` | 155 |
+| external_call | `_task_to_gantt` | `attributes.instance_state` | 252 |
 | step_limit | `get_gantt_data` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -15,6 +15,7 @@ _Auto-generated from `TaskBatchUpdateRequest` in `frontend/src/types/task.ts`._
 |------|------|----------|---------|-------------|
 | `expected_revision` | `number` | No | — | — |
 | `tasks` | `TaskBatchUpdateItem[]` | Yes | — | — |
+| `expected_planning_revision` | `number` | No | — | — |
 
 ## Methods
 
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `expected_revision`, `tasks` |
+| [types_task](../modules/types_task.md) | 0 | `expected_planning_revision`, `expected_revision`, `tasks` |
 
 ### References
 

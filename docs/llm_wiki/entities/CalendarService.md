@@ -27,7 +27,7 @@ Service for calendar operations.
 | `_public_holidays` | `(country: str, year: int) -> list[str]` | — | Return deterministic built-in public holiday dates for a country/year. |
 | `_parse_holiday_csv` | `(csv_text: str \| None) -> tuple[list[str], list[CalendarImportError]]` | — | Parse holiday CSV rows with a required date column. |
 | `_merge_holidays` | `(existing_holidays: Iterable[str], imported_holidays: Iterable[str]) -> tuple[list[str], int, int]` | — | Merge imported holiday dates into existing holiday strings. |
-| `import_holidays` | *(async)* `(calendar_id: int, data: CalendarImportRequest) -> CalendarImportResponse \| None` | — | Import public or CSV holiday dates into a calendar. |
+| `import_holidays` | *(async)* `(calendar_id: int, data: CalendarImportRequest) -> CalendarImportResponse \| None` | `@schedule_input_command('calendar')` | Import public or CSV holiday dates into a calendar. |
 | `calculate_working_days` | `(calendar: Calendar, start_date: date, end_date: date) -> WorkingDaysResponse` | — | Calculate working days for a period. |
 | `get_working_dates` | `(calendar: Calendar, start_date: date, end_date: date) -> list[date]` | — | Get list of working dates in a period. |
 
@@ -96,4 +96,4 @@ flowchart LR
 | `AgentRoutingService._capacity_inputs` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `IterationService._calculate_team_capacity` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

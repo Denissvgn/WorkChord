@@ -32,12 +32,13 @@ flowchart LR
     n3["bootstrap (backend/app/routers/identity.py)"]
     n4["workspace_member (backend/app/routers/identity.py)"]
     n5["backend/app/routers/task_domain.py"]
-    n6["backend/app/services/identity_service.py"]
-    n7["backend/app/services/task_domain_service.py"]
-    n8["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n9["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
-    n10["backend/tests/test_managed_authority.py"]
-    n11["_source_phase (scripts/ci/installed_wheel_postgresql_qualification.py)"]
+    n6["backend/app/services/discussion_service.py"]
+    n7["backend/app/services/identity_service.py"]
+    n8["backend/app/services/task_domain_service.py"]
+    n9["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
+    n10["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
+    n11["backend/tests/test_managed_authority.py"]
+    n12["_source_phase (scripts/ci/installed_wheel_postgresql_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,18 +50,20 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/routers_identity.md"
     click n4 "../modules/routers_identity.md"
     click n5 "../modules/routers_task_domain.md"
-    click n6 "../modules/identity_service.md"
-    click n7 "../modules/task_domain_service.md"
-    click n8 "../modules/test_agent_team_setup.md"
-    click n9 "../modules/test_identity_lifecycle.md"
-    click n10 "../modules/test_managed_authority.md"
-    click n11 "../modules/installed_wheel_postgresql_qualification.md"
+    click n6 "../modules/discussion_service.md"
+    click n7 "../modules/identity_service.md"
+    click n8 "../modules/task_domain_service.md"
+    click n9 "../modules/test_agent_team_setup.md"
+    click n10 "../modules/test_identity_lifecycle.md"
+    click n11 "../modules/test_managed_authority.md"
+    click n12 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Summary
@@ -83,6 +86,7 @@ flowchart LR
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `workspace_member` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
 | `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |

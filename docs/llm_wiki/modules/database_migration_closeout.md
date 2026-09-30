@@ -4,13 +4,7 @@
 
 ## Description
 
-Fail-closed PostgreSQL release publication and contract closeout evidence.
-
-This module never mutates a database, deployment, or public document in place.
-It verifies the signed pre-cutover and production evidence chain, creates a
-signed post-cutover publication, and lets an independent auditor issue a
-derived SHIP or NO-SHIP decision.  Missing production evidence is represented
-as an explicit NO-SHIP blocker; it can never be converted into a local pass.
+Validates and signs post-cutover publication against its production evidence chain and exact repository document hashes. The concise README supplies operator-guide links; capacity, authentication and production boundaries remain mandatory in the linked authoritative runbooks. This does not authorize a release or replace independent closeout.
 
 ## Imports
 
@@ -39,7 +33,8 @@ flowchart LR
     n1["backend/app/database_migration/closeout.py"]
     n2["backend/app/database_migration/cutover.py"]
     n3["backend/app/database_migration/manifest.py"]
-    n4["backend/tests/database_migration/test_postgresql_closeout.py"]
+    n4["backend/tests/database_migration/test_documentation_boundary.py"]
+    n5["backend/tests/database_migration/test_postgresql_closeout.py"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
@@ -47,12 +42,14 @@ flowchart LR
     n1 --> n3
     n2 --> n3
     n4 --> n1
-    n4 --> n2
+    n5 --> n1
+    n5 --> n2
     click n0 "../modules/cli_closeout.md"
     click n1 "../modules/database_migration_closeout.md"
     click n2 "../modules/database_migration_cutover.md"
     click n3 "../modules/database_migration_manifest.md"
-    click n4 "../modules/test_postgresql_closeout.md"
+    click n4 "../modules/test_documentation_boundary.md"
+    click n5 "../modules/test_postgresql_closeout.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [cli_closeout](../modules/cli_closeout.md) |
+| Inbound | [test_documentation_boundary](../modules/test_documentation_boundary.md) |
 | Inbound | [test_postgresql_closeout](../modules/test_postgresql_closeout.md) |
 | Outbound | [database_migration_cutover](../modules/database_migration_cutover.md) |
 | Outbound | [database_migration_manifest](../modules/database_migration_manifest.md) |

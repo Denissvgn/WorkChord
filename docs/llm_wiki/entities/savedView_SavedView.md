@@ -49,6 +49,8 @@ flowchart LR
     n6["frontend/src/pages/TasksPage.tsx"]
     n7["frontend/src/pages/TriagePage.tsx"]
     n8["frontend/src/services/savedViewService.ts"]
+    n9["frontend/src/utils/savedViewState.test.ts"]
+    n10["savedViewModified (frontend/src/utils/savedViewState.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -57,6 +59,8 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/savedView.md"
     click n1 "../modules/AppSidebar.test.md"
     click n2 "../modules/AppSidebar.md"
@@ -66,6 +70,8 @@ flowchart LR
     click n6 "../modules/TasksPage.md"
     click n7 "../modules/TriagePage.md"
     click n8 "../modules/savedViewService.md"
+    click n9 "../modules/savedViewState.test.md"
+    click n10 "../modules/savedViewState.md"
 ```
 
 ### Summary
@@ -86,3 +92,5 @@ flowchart LR
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |
 | `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
 | `savedViewService` | import | [savedViewService](../modules/savedViewService.md) | — |
+| `savedViewState.test` | import | [savedViewState.test](../modules/savedViewState.test.md) | — |
+| `savedViewModified` | type_reference | [savedViewState](../modules/savedViewState.md) | — |

@@ -1,6 +1,6 @@
 # MemberCapacity
 
-**Location:** `backend/app/schemas/team.py:308`
+**Location:** `backend/app/schemas/team.py:315`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)
@@ -20,6 +20,10 @@ Capacity calculation for a team member.
 | `effective_days` | `float` | `effective_days` | Yes | No | — | — | — | — |
 | `adjusted_days` | `float` | `adjusted_days` | Yes | No | — | — | — | — |
 | `hours` | `float` | `hours` | Yes | No | — | — | — | — |
+| `calendar_source` | `str` | `calendar_source` | No | No | `'legacy_allocation'` | — | — | — |
+| `calendar_uncertain` | `bool` | `calendar_uncertain` | No | No | `False` | — | — | — |
+| `outside_calendar_year` | `bool` | `outside_calendar_year` | No | No | `False` | — | — | — |
+| `timezone` | `str \| None` | `timezone` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -52,7 +56,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_team](../modules/schemas_team.md) | 0 | `adjusted_days`, `available_days`, `effective_days`, `hours`, `team_member_id`, `vacation_days`, `working_days` |
+| [schemas_team](../modules/schemas_team.md) | 0 | `adjusted_days`, `available_days`, `calendar_source`, `calendar_uncertain`, `effective_days`, `hours`, `outside_calendar_year`, `team_member_id`, `timezone`, `vacation_days`, `working_days` |
 
 ### Structure
 
