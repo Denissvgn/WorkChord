@@ -21,7 +21,8 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe` |
+| Constants | `lookup` |
+| Module calls | `lookup = hoisted`, `mock`, `describe` |
 
 ## Local dependency map
 

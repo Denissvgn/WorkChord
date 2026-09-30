@@ -1,6 +1,6 @@
 # SortKey
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:45`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:46`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

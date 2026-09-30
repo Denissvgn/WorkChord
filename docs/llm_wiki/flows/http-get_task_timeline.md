@@ -74,14 +74,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_timeline | AgentService | 977 | `AgentService(db)` |
-| get_task_timeline | db.scalar | 978 | `db.scalar(...)` |
-| get_task_timeline | select(…).where | 978 | `select(Task.id).where(...)` |
-| get_task_timeline | select | 978 | `select(Task.id)` |
-| get_task_timeline | HTTPException | 980 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task_timeline | agent_service.get_task_timeline | 985 | `agent_service.get_task_timeline(task_id)` |
-| get_task_timeline | TaskTimelineResponse | 986 | `TaskTimelineResponse(task_id=task_id, items=...)` |
-| get_task_timeline | TaskTimelineItem | 988 | `TaskTimelineItem(**=item)` |
+| get_task_timeline | AgentService | 979 | `AgentService(db)` |
+| get_task_timeline | db.scalar | 980 | `db.scalar(...)` |
+| get_task_timeline | select(…).where | 980 | `select(Task.id).where(...)` |
+| get_task_timeline | select | 980 | `select(Task.id)` |
+| get_task_timeline | HTTPException | 982 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task_timeline | agent_service.get_task_timeline | 987 | `agent_service.get_task_timeline(task_id)` |
+| get_task_timeline | TaskTimelineResponse | 988 | `TaskTimelineResponse(task_id=task_id, items=...)` |
+| get_task_timeline | TaskTimelineItem | 990 | `TaskTimelineItem(**=item)` |
 
 ### Boundary effects
 
@@ -91,11 +91,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task_timeline` | `db.scalar` | 978 |
-| unresolved_call | `get_task_timeline` | `select(Task.id).where` | 978 |
-| external_call | `get_task_timeline` | `select` | 978 |
-| external_call | `get_task_timeline` | `HTTPException` | 980 |
-| unresolved_call | `get_task_timeline` | `agent_service.get_task_timeline` | 985 |
+| unresolved_call | `get_task_timeline` | `db.scalar` | 980 |
+| unresolved_call | `get_task_timeline` | `select(Task.id).where` | 980 |
+| external_call | `get_task_timeline` | `select` | 980 |
+| external_call | `get_task_timeline` | `HTTPException` | 982 |
+| unresolved_call | `get_task_timeline` | `agent_service.get_task_timeline` | 987 |
 
 ## Behavior
 

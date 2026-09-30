@@ -64,6 +64,8 @@ export interface GanttResponse {
 }
 
 export interface ScheduleResult {
+    planning_revision?: number;
+    capacity_issues?: { profile_id: number | null; code: string; message: string; dates?: string[] }[];
     success: boolean;
     decisions: SchedulingDecision[];
     workload_balanced: boolean;
@@ -73,6 +75,7 @@ export interface ScheduleResult {
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */
 export interface SchedulePreviewResponse {
     input_revision: number;
+    input_planning_revision?: number;
     tasks: GanttTask[];
     overdue_task_ids: number[];
     schedule_result?: ScheduleResult | null;

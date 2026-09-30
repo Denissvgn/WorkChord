@@ -17,6 +17,7 @@ class CommandState:
     tasks: dict[int, int] = field(default_factory=dict)
     backlog_projects: set[int] = field(default_factory=set)
     failed: bool = False
+    planning_revision: int | None = None
 
 
 class AggregateVersionConflict(RuntimeError):
@@ -33,6 +34,37 @@ class AggregateVersionConflict(RuntimeError):
 class HierarchyScopeError(RuntimeError):
     def detail(self):
         return {"code": "hierarchy_reconciliation_required", "message": "This scope contains unresolved hierarchy data. Ask an operator to run its hierarchy audit."}
+
+
+class PlanningConflict(RuntimeError):
+    def __init__(self, code, message):
+        self.code = code
+        super().__init__(message)
+
+    def detail(self):
+        return {"code": self.code, "message": str(self)}
+
+
+async def lock_planning(db, *, expected=None):
+    """Reserve shared planning before narrower locks, once per command including previews."""
+    from app.authority import internal_authority
+    from app.models.capacity import PlanningState
+    state = current_command(db)
+    if state is None:
+        raise RuntimeError("Shared planning requires a command transaction")
+    if state.planning_revision is None:
+        if db.bind.dialect.name == "postgresql":
+            from sqlalchemy.dialects.postgresql import insert
+        else:
+            from sqlalchemy.dialects.sqlite import insert
+        with internal_authority(db):
+            await db.execute(insert(PlanningState).values(id=1, revision=0).on_conflict_do_nothing())
+            # An actual write obtains the same serialization on SQLite as PostgreSQL.
+            state.planning_revision = await db.scalar(update(PlanningState).where(PlanningState.id == 1)
+                .values(revision=PlanningState.revision + 1).returning(PlanningState.revision)) - 1
+    if expected is not None and expected != state.planning_revision:
+        raise PlanningConflict("planning_version_conflict", "Shared availability changed. Calculate the schedule again.")
+    return state.planning_revision
 
 
 def current_command(db) -> CommandState | None:
@@ -66,6 +98,13 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         yield state
         if state.failed:
             raise RuntimeError("A failed nested command cannot commit")
+        await db.flush()
+        if db.info.get("delivery_changed_nodes") or db.info.get("delivery_graph_changed") or db.info.get("delivery_scope_changed"):
+            from app.services.delivery_dependency_service import DeliveryDependencyService
+            await DeliveryDependencyService(db).reconcile()
+        for task_id, version, kind in sorted(db.info.pop("discussion_events", set())):
+            from app.services.discussion_service import DiscussionService
+            await DiscussionService(db).enqueue(task_id, kind, f"task:{task_id}:{version}:{kind}")
         if mode == "preview":
             await db.rollback()
         elif commit:
@@ -77,7 +116,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         raise
     finally:
         db.info.pop("command", None)
-        for key in ["command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending"]:
+        for key in ["command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events"]:
             db.info.pop(key, None)
 
 
@@ -105,6 +144,7 @@ async def lock_backlog_project(db, project_id):
     from app.authority import internal_authority, require_project
     from app.models.project import Project
     require_project(db, project_id, "read")
+    await lock_planning(db)
     state = current_command(db)
     if state is None:
         raise RuntimeError("Backlog reservations require a command transaction")
@@ -125,6 +165,8 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> 
     from app.models.iteration import Iteration
     from app.runtime_telemetry import metrics
 
+    await lock_planning(db)
+
     state = current_command(db)
     if state is None:
         raise RuntimeError("Iteration reservations require a command transaction")
@@ -138,7 +180,7 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> 
         if current is None:
             raise ValueError("Iteration not found or inaccessible")
         authority = db.info.get("authority")
-        if authority is not None and not authority.operator and not authority.local:
+        if authority is not None and not authority.operator and not authority.local and not db.info.get("authority_internal"):
             from app.models.task import Task
             from app.authority import AuthorityError, internal_authority
             with internal_authority(db):
@@ -178,28 +220,33 @@ def schedule_input_command(kind):
             from app.services.task_service import TaskService
 
             values = signature.bind(self, *args, **kwargs).arguments
-            ids = []
-            if kind == "calendar":
-                ids = list((await self.db.scalars(select(Iteration.id).where(Iteration.calendar_id == values["calendar_id"])) ).all())
-            elif kind == "project":
-                direct = select(Iteration.id).where(Iteration.project_id == values["project_id"])
-                linked = select(Task.iteration_id).where(Task.project_id == values["project_id"])
-                ids = [item for item in (await self.db.scalars(direct.union(linked))).all() if item is not None]
-            elif kind == "iteration":
-                ids = [values["iteration_id"]]
-            elif kind == "profile":
-                ids = list((await self.db.scalars(select(TeamMember.iteration_id).where(TeamMember.profile_id == values["profile_id"], TeamMember.iteration_id.is_not(None)).distinct())).all())
-            else:
-                member_id = values.get("member_id")
-                if "vacation_id" in values:
-                    member_id = await self.db.scalar(select(Vacation.team_member_id).where(Vacation.id == values["vacation_id"]))
-                if member_id is not None:
-                    member = await self.db.get(TeamMember, member_id)
-                    if member is not None and member.iteration_id is not None:
-                        ids = [member.iteration_id]
-                elif values.get("iteration_id") is not None:
-                    ids = [values["iteration_id"]]
             async with command_transaction(self.db, commit=kwargs.get("commit", True)):
+                await lock_planning(self.db)
+                ids = []
+                if kind == "calendar":
+                    ids = list((await self.db.scalars(select(Iteration.id).where(Iteration.calendar_id == values["calendar_id"])) ).all())
+                    from app.models.capacity import ProfileAvailability
+                    ids.extend((await self.db.scalars(select(TeamMember.iteration_id).join(
+                        ProfileAvailability, ProfileAvailability.profile_id == TeamMember.profile_id).where(
+                        ProfileAvailability.calendar_id == values["calendar_id"], TeamMember.iteration_id.is_not(None)))).all())
+                elif kind == "project":
+                    direct = select(Iteration.id).where(Iteration.project_id == values["project_id"])
+                    linked = select(Task.iteration_id).where(Task.project_id == values["project_id"])
+                    ids = [item for item in (await self.db.scalars(direct.union(linked))).all() if item is not None]
+                elif kind == "iteration":
+                    ids = [values["iteration_id"]]
+                elif kind == "profile":
+                    ids = list((await self.db.scalars(select(TeamMember.iteration_id).where(TeamMember.profile_id == values["profile_id"], TeamMember.iteration_id.is_not(None)).distinct())).all())
+                else:
+                    member_id = values.get("member_id")
+                    if "vacation_id" in values:
+                        member_id = await self.db.scalar(select(Vacation.team_member_id).where(Vacation.id == values["vacation_id"]))
+                    if member_id is not None:
+                        member = await self.db.get(TeamMember, member_id)
+                        if member is not None and member.iteration_id is not None:
+                            ids = [member.iteration_id]
+                    elif values.get("iteration_id") is not None:
+                        ids = [values["iteration_id"]]
                 if ids:
                     data = values.get("data")
                     await lock_iterations(self.db, ids, expected=getattr(data, "expected_revisions", None))

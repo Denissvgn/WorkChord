@@ -38,7 +38,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (24) |
+| Inbound | `backend` (27) |
 | Outbound | `backend` (5) |
 
 ### External packages
@@ -47,7 +47,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -84,8 +84,8 @@ flowchart LR
 | [TaskStatusChangeResponse](../entities/schemas_task_TaskStatusChangeResponse.md) | Pydantic model | 413 | `BaseModel` | Response for status change with cascade info. |
 | [TaskBatchUpdateItem](../entities/schemas_task_TaskBatchUpdateItem.md) | Pydantic model | 420 | `BaseModel` | Schema for a single task update item in a batch. |
 | [TaskBatchUpdateRequest](../entities/schemas_task_TaskBatchUpdateRequest.md) | Pydantic model | 428 | `BaseModel` | Schema for updating multiple tasks in a single request. |
-| [TaskBatchUpdateResponseItem](../entities/schemas_task_TaskBatchUpdateResponseItem.md) | Pydantic model | 434 | `BaseModel` | Schema for a single task update response inside a batch response. |
-| [TaskBatchUpdateResponse](../entities/schemas_task_TaskBatchUpdateResponse.md) | Pydantic model | 441 | `BaseModel` | Response schema for a batch task update. |
+| [TaskBatchUpdateResponseItem](../entities/schemas_task_TaskBatchUpdateResponseItem.md) | Pydantic model | 435 | `BaseModel` | Schema for a single task update response inside a batch response. |
+| [TaskBatchUpdateResponse](../entities/schemas_task_TaskBatchUpdateResponse.md) | Pydantic model | 442 | `BaseModel` | Response schema for a batch task update. |
 
 ## Functions
 

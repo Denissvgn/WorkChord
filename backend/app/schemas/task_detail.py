@@ -1,6 +1,7 @@
 """Bounded UI projections with explicit completeness and deterministic cursors."""
 
 from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime
 from app.schemas.task import TaskResponse
 
 
@@ -14,6 +15,11 @@ class TaskReference(BaseModel):
     iteration_id: int | None
     parent_id: int | None
     owner_profile_id: int | None
+    project_name: str | None = None
+    iteration_name: str | None = None
+    blocked_reason: str | None = None
+    canceled_at: datetime | None = None
+    acceptance_current: bool = False
 
 
 class TaskReferencePage(BaseModel):

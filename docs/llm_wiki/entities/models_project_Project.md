@@ -119,4 +119,4 @@ flowchart LR
 | `IterationService._response_project` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
 | `ProjectService._aggregated_milestone_groups` | type_reference | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.

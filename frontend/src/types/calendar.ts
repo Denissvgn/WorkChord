@@ -1,4 +1,5 @@
 export interface Calendar {
+    timezone?: string;
     nominal_day_hours?: number;
     id: number;
     name: string;

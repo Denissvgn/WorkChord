@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import type { Task } from '../../types/task';
 import { formatDate } from '../../utils/formatDate';
-import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { pillToneClassName, STATUS_TONE, statusTextClassName } from '../ui/tone';
 
 const t = i18n.t.bind(i18n);
 
@@ -43,7 +43,7 @@ const ProjectTaskRow = ({ task, level, onOpen }: { task: Task; level: number; on
                 {level > 0 && (
                     <CornerDownRight className="absolute -left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
                 )}
-                <div className={clsx('text-content-tertiary', task.status === 'closed' && 'text-feedback-success')}>
+                <div className={statusTextClassName[task.status]}>
                     {task.status === 'closed' ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0 flex-1">

@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_get_capabilities` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 12 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 14 more
 
 **Complete modules touched:**
 
@@ -15,6 +15,8 @@
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -53,7 +55,7 @@ sequenceDiagram
     participant p23 as info.get
     participant p24 as RuntimeError
     participant p25 as CommandState
-    participant p26 as db.rollback
+    participant p26 as db.flush
     p0->>p1: _tool_call
     p1->>p2: enforce_mcp_access
     p2->>p3: get_settings
@@ -83,10 +85,10 @@ sequenceDiagram
     p19-->>p24: RuntimeError
     p19->>p25: CommandState
     p19-->>p24: RuntimeError
-    p19-->>p26: db.rollback
+    p19-->>p26: db.flush
 ```
 
-> Call sequence diagram shows 30 of 140 interactions; 110 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 151 interactions; 121 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

@@ -13,7 +13,7 @@ _Auto-generated from `backend/app/main.py`._
 | `app.authority` | `AuthorityError` |
 | `app.autonomy.contracts.postgresql` | `load_postgresql_contract_bundle` |
 | `app.build_identity` | `load_backend_build_identity` |
-| `app.commands` | `AggregateVersionConflict`, `HierarchyScopeError` |
+| `app.commands` | `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict` |
 | `app.config` | `get_settings` |
 | `app.database` | `close_database`, `init_db` |
 | `app.database_runtime` | `DatabaseConflictError`, `DatabaseUnavailableError` |
@@ -22,7 +22,7 @@ _Auto-generated from `backend/app/main.py`._
 | `app.mcp_server` | `mcp`, `mount_mcp_http` |
 | `app.observability` | `collect_metrics`, `readiness_snapshot` |
 | `app.query_limits` | `CollectionLimitExceededError` |
-| `app.routers` | `identity`, `task_domain`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
+| `app.routers` | `identity`, `task_domain`, `capacity`, `delivery_dependencies`, `discussion`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
 | `app.runtime_telemetry` | `metrics` |
 | `contextlib` | `asynccontextmanager` |
 | `fastapi` | `FastAPI`, `Request`, `status`, `Depends` |
@@ -53,7 +53,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (10) |
 | Inbound | `scripts` (4) |
-| Outbound | `backend` (41) |
+| Outbound | `backend` (44) |
 
 ### External packages
 
@@ -61,13 +61,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 58 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `lifespan` | *(async)* `(app: FastAPI)` | `@asynccontextmanager` | Application lifespan handler. |
+| `planning_conflict` | *(async)* `(request: Request, exc: PlanningConflict)` | `@app.exception_handler(PlanningConflict)` | — |
 | `aggregate_version_conflict` | *(async)* `(request: Request, exc: AggregateVersionConflict)` | `@app.exception_handler(AggregateVersionConflict)` | — |
 | `authority_error` | *(async)* `(request: Request, exc: AuthorityError)` | `@app.exception_handler(AuthorityError)` | — |
 | `hierarchy_scope_error` | *(async)* `(request: Request, exc: HierarchyScopeError)` | `@app.exception_handler(HierarchyScopeError)` | — |

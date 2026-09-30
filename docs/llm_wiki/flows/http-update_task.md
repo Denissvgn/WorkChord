@@ -86,22 +86,22 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_task | service.update | 329 | `service.update(task_id, data)` |
-| update_task | _raise_task_version_conflict | 331 | `_raise_task_version_conflict(exc)` |
+| update_task | service.update | 331 | `service.update(task_id, data)` |
+| update_task | _raise_task_version_conflict | 333 | `_raise_task_version_conflict(exc)` |
 | _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 56 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 | _raise_task_version_conflict | exc.detail | 58 | `exc.detail(data not statically known)` |
-| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 333 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_task | str | 335 | `str(e)` |
-| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 338 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| update_task | IterationService | 343 | `IterationService(db)` |
-| update_task | iteration_service.get_by_id | 344 | `iteration_service.get_by_id(task.iteration_id)` |
-| update_task | service.task_to_response | 346 | `service.task_to_response(task, ...)` |
+| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 335 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_task | str | 337 | `str(e)` |
+| update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 340 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_task | IterationService | 345 | `IterationService(db)` |
+| update_task | iteration_service.get_by_id | 346 | `iteration_service.get_by_id(task.iteration_id)` |
+| update_task | service.task_to_response | 348 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_task` | 329 |
+| mutation | `service.update` | `update_task` | 331 |
 
 ### Static analysis gaps
 
@@ -109,10 +109,10 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `_raise_task_version_conflict` | `HTTPException` | 56 |
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 58 |
-| external_call | `update_task` | `HTTPException` | 333 |
-| external_call | `update_task` | `HTTPException` | 338 |
-| unresolved_call | `update_task` | `iteration_service.get_by_id` | 344 |
-| unresolved_call | `update_task` | `service.task_to_response` | 346 |
+| external_call | `update_task` | `HTTPException` | 335 |
+| external_call | `update_task` | `HTTPException` | 340 |
+| unresolved_call | `update_task` | `iteration_service.get_by_id` | 346 |
+| unresolved_call | `update_task` | `service.task_to_response` | 348 |
 
 ## Behavior
 

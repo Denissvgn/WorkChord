@@ -2,13 +2,15 @@
 
 **Entry point:** `workspace_decline_triage_item` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), and 8 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 10 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -50,7 +52,7 @@ sequenceDiagram
     participant p23 as info.get
     participant p24 as RuntimeError
     participant p25 as CommandState
-    participant p26 as db.rollback (backend/app/commands.py:command_transaction)
+    participant p26 as db.flush (backend/app/commands.py:command_transaction)
     p0->>p1: _tool_call
     p1->>p2: enforce_mcp_access
     p2->>p3: get_settings
@@ -80,10 +82,10 @@ sequenceDiagram
     p19-->>p24: RuntimeError
     p19->>p25: CommandState
     p19-->>p24: RuntimeError
-    p19-->>p26: db.rollback (backend/app/commands.py:command_transaction)
+    p19-->>p26: db.flush (backend/app/commands.py:command_transaction)
 ```
 
-> Call sequence diagram shows 30 of 146 interactions; 116 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 157 interactions; 127 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

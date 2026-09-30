@@ -21,6 +21,7 @@ _Auto-generated from `CommandState` in `backend/app/commands.py`._
 | `tasks` | `dict[int, int]` | `field(default_factory=dict)` | — |
 | `backlog_projects` | `set[int]` | `field(default_factory=set)` | — |
 | `failed` | `bool` | `False` | — |
+| `planning_revision` | `int \| None` | `None` | — |
 
 ## Methods
 
@@ -45,7 +46,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [commands](../modules/commands.md) | 0 | `backlog_projects`, `failed`, `iterations`, `mode`, `snapshots`, `tasks` |
+| [commands](../modules/commands.md) | 0 | `backlog_projects`, `failed`, `iterations`, `mode`, `planning_revision`, `snapshots`, `tasks` |
 
 ### References
 

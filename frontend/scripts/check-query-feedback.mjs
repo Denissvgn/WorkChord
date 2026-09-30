@@ -7,6 +7,13 @@ import ts from 'typescript';
 // Reviewed FE-08 inventory. Any count change requires reviewing the file's
 // loading/error/retry/empty or pending/failure policy and updating this record.
 export const REVIEWED_HOOK_COUNTS = {
+    'src/pages/MyWorkPage.tsx': [5, 2],
+    'src/components/tasks/TaskSearch.tsx': [1, 0],
+    'src/components/tasks/TaskDiscussion.tsx': [4, 2],
+    'src/components/tasks/PersonCapacity.tsx': [3, 2],
+    'src/components/tasks/DeliveryDependencies.tsx': [4, 1],
+    'src/components/tasks/BacklogPanel.tsx': [2, 0],
+    'src/components/layout/CommandMenu.tsx': [1, 0],
     'src/components/dashboard/SavedViewDashboardCards.tsx': [1, 0],
     'src/components/gantt/GanttChart.tsx': [0, 2],
     'src/components/gantt/TaskEditModal.tsx': [2, 0],
@@ -77,8 +84,15 @@ const HOOK_KINDS = new Map([
 // prevents an unreviewed hook from replacing a reviewed hook in the same file
 // while leaving Q/M totals unchanged.
 export const REVIEWED_HOOK_FINGERPRINTS = {
+    'src/pages/MyWorkPage.tsx': '8cb0024e22f7e3ca',
+    'src/components/tasks/TaskSearch.tsx': '1c836716acf30699',
+    'src/components/tasks/TaskDiscussion.tsx': '90fd117ca2c0dc6d',
+    'src/components/tasks/PersonCapacity.tsx': '9ed055ec8adb42aa',
+    'src/components/tasks/DeliveryDependencies.tsx': '0606dde61002be81',
+    'src/components/tasks/BacklogPanel.tsx': 'bed57a32098e94a8',
+    'src/components/layout/CommandMenu.tsx': '000910e369219b88',
     'src/components/dashboard/SavedViewDashboardCards.tsx': 'a850ee02012738f3',
-    'src/components/gantt/GanttChart.tsx': 'eb79c489f021aab4',
+    'src/components/gantt/GanttChart.tsx': 'ba83b7289529c7f1',
     'src/components/gantt/TaskEditModal.tsx': 'c2e5fc8906c57e4b',
     'src/components/iteration/IterationForm.tsx': '64499bf5dc9cf46c',
     'src/components/iteration/IterationList.tsx': 'ce187652dfa1be79',
@@ -123,7 +137,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/AgentPipelinePage.tsx': '200e7928fa9ecf11',
     'src/pages/AnalyticsPage.tsx': 'd0ccdf0dc14dee0f',
     'src/pages/CalendarPage.tsx': 'd2af934981655964',
-    'src/pages/GanttPage.tsx': '890756f7a62b3a33',
+    'src/pages/GanttPage.tsx': '0ea68b05fd1e3f43',
     'src/pages/OverviewPage.tsx': 'e54b146286e95b83',
     'src/pages/PlanMasterPage.tsx': '099fb2eef2f3f843',
     'src/pages/PlanSharePage.tsx': '9e333df62efb5575',

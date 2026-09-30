@@ -14,7 +14,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectTaskTree.tsx`._
 | `../../types/task` | `Task` |
 | `../../utils/formatDate` | `formatDate` |
 | `../tasks/TaskEditorDrawer` | `TaskEditorDrawer` |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` |
+| `../ui/tone` | `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` |
 | `clsx` | `clsx` |
 | `lucide-react` | `AlertTriangle`, `CheckCircle2`, `Circle`, `CornerDownRight`, `MessageSquare`, `User` |
 | `react` | `useState` |

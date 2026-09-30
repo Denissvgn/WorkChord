@@ -70,14 +70,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| merge_tasks | IterationService | 689 | `IterationService(db)` |
-| merge_tasks | iteration_service.get_by_id | 690 | `iteration_service.get_by_id(iteration_id)` |
-| merge_tasks | HTTPException | 693 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| merge_tasks | service.merge_tasks | 699 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description, expected_revision=data.expected_revision)` |
-| merge_tasks | HTTPException | 707 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| merge_tasks | str | 709 | `str(e)` |
-| merge_tasks | HTTPException | 713 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not merge tasks. Ensure all tasks exist, belong to this iteration, and have no children.')` |
-| merge_tasks | service.task_to_response | 718 | `service.task_to_response(parent_task, iteration.end_date)` |
+| merge_tasks | IterationService | 691 | `IterationService(db)` |
+| merge_tasks | iteration_service.get_by_id | 692 | `iteration_service.get_by_id(iteration_id)` |
+| merge_tasks | HTTPException | 695 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| merge_tasks | service.merge_tasks | 701 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description, expected_revision=data.expected_revision)` |
+| merge_tasks | HTTPException | 709 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| merge_tasks | str | 711 | `str(e)` |
+| merge_tasks | HTTPException | 715 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not merge tasks. Ensure all tasks exist, belong to this iteration, and have no children.')` |
+| merge_tasks | service.task_to_response | 720 | `service.task_to_response(parent_task, iteration.end_date)` |
 
 ### Boundary effects
 
@@ -87,12 +87,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `merge_tasks` | `iteration_service.get_by_id` | 690 |
-| external_call | `merge_tasks` | `HTTPException` | 693 |
-| unresolved_call | `merge_tasks` | `service.merge_tasks` | 699 |
-| external_call | `merge_tasks` | `HTTPException` | 707 |
-| external_call | `merge_tasks` | `HTTPException` | 713 |
-| unresolved_call | `merge_tasks` | `service.task_to_response` | 718 |
+| unresolved_call | `merge_tasks` | `iteration_service.get_by_id` | 692 |
+| external_call | `merge_tasks` | `HTTPException` | 695 |
+| unresolved_call | `merge_tasks` | `service.merge_tasks` | 701 |
+| external_call | `merge_tasks` | `HTTPException` | 709 |
+| external_call | `merge_tasks` | `HTTPException` | 715 |
+| unresolved_call | `merge_tasks` | `service.task_to_response` | 720 |
 
 ## Behavior
 

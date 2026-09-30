@@ -119,6 +119,9 @@ class TaskStatusService:
             await TaskBriefService(self.db).require_review(task, accepting=True)
         ui_language = await resolve_runtime_ui_language(self.db)
         if task.status == TaskStatus.PLANNED.value:
+            from app.services.delivery_dependency_service import DeliveryDependencyService
+            if not await DeliveryDependencyService(self.db).ready(task.id):
+                raise ValueError("Delivery prerequisites must be accepted before starting this work")
             if not manual_execution and (not task.start_date or not task.end_date):
                 raise ValueError(task_requires_schedule_message(ui_language))
             for dependency in task.dependencies:

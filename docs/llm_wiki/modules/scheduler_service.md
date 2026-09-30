@@ -4,13 +4,13 @@
 
 ## Description
 
-Gantt Scheduler Service - automatic task scheduling with optimization.
+Builds forecasts from canonical person calendars and shared absences, retaining actual execution dates. Productive-hour reservations include shortened days, existing execution slots and overflow dates. Preview and apply use the same shared planning revision. A forecast may overflow, but a new commitment must fit allocation dates and shared capacity; accepted baselines are changed only through deliberate rebaselining.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `lock_planning`, `PlanningConflict` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
@@ -46,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
+| Inbound | `backend` (6) |
 | Outbound | `backend` (9) |
 
 ### External packages
@@ -55,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -65,5 +65,5 @@ flowchart LR
 | [TaskChange](../entities/TaskChange.md) | Class | 40 | — | Represents a change to a task for incremental rescheduling. |
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
-| [SchedulerService](../entities/SchedulerService.md) | Class | 341 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1329 | — | Handles incremental rescheduling when a single task changes. |
+| [SchedulerService](../entities/SchedulerService.md) | Class | 282 | — | Service for automatic task scheduling. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1292 | — | Handles incremental rescheduling when a single task changes. |

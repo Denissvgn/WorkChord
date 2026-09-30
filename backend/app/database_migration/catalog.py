@@ -25,6 +25,11 @@ from app.database import Base
 
 TRANSFER_CATALOG_VERSION = 1
 TARGET_OWNED_TABLES = frozenset({"alembic_version", "database_migration_gates"})
+REQUIRED_REFERENCE_COLUMNS = {
+    "tasks": {"iteration_id", "project_id"},
+    "application_snapshots": {"iteration_id", "project_id"},
+    "delivery_dependencies": {"prerequisite_task_id", "prerequisite_milestone_id"},
+}
 TEXT_JSON_COLUMNS = frozenset(
     {
         ("agent_actors", "scopes"),
@@ -106,23 +111,24 @@ def staged_reference_columns(table: Table) -> tuple[str, ...]:
         constrained = [element.parent for element in constraint.elements]
         if constrained and all(column.nullable for column in constrained):
             columns.update(column.name for column in constrained)
-    if table.name in {"tasks", "application_snapshots"}:
-        columns.difference_update({"iteration_id", "project_id"})
+    # Nullable alternatives can still have a non-null aggregate constraint.
+    columns.difference_update(REQUIRED_REFERENCE_COLUMNS.get(table.name, set()))
     return tuple(sorted(columns))
 
 
 def transfer_order() -> tuple[str, ...]:
-    """Topologically order tables by non-nullable foreign-key dependencies."""
+    """Order tables by references that must survive their initial insertion."""
 
     tables = transfer_tables()
     dependencies: dict[str, set[str]] = {name: set() for name in tables}
     for name, table in tables.items():
+        staged = set(staged_reference_columns(table))
         for constraint in table.foreign_key_constraints:
             parent_name = constraint.referred_table.name
             if parent_name == name or parent_name not in tables:
                 continue
             constrained = [element.parent for element in constraint.elements]
-            if constrained and (not all(column.nullable for column in constrained) or name in {"tasks", "application_snapshots"} and any(column.name in {"iteration_id", "project_id"} for column in constrained)):
+            if constrained and any(column.name not in staged for column in constrained):
                 dependencies[name].add(parent_name)
 
     ordered: list[str] = []

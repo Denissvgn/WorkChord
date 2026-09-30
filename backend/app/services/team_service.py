@@ -1,6 +1,6 @@
 """Team member service with business logic."""
 
-from app.commands import commit_or_flush, schedule_input_command
+from app.commands import atomic_command, commit_or_flush, schedule_input_command
 import csv
 from datetime import date
 from io import StringIO
@@ -211,6 +211,13 @@ class TeamService:
         if not profile:
             return False
 
+        from app.models.capacity import ProfileAbsence
+        from app.authority import internal_authority
+        from app.commands import PlanningConflict
+        with internal_authority(self.db):
+            retained = await self.db.scalar(select(ProfileAbsence.id).where(ProfileAbsence.profile_id == profile_id).limit(1))
+        if retained is not None:
+            raise PlanningConflict("availability_history_retained", "This profile has retained absence history and cannot be deleted.")
         await self.db.delete(profile)
         await commit_or_flush(self.db)
         return True
@@ -393,6 +400,8 @@ class TeamService:
             return None
 
         update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
+        if "profile_id" in update_data:
+            await self.detach_absence_adapters(member, update_data["profile_id"])
         if "profile_id" in update_data and update_data["profile_id"] is not None:
             profile = await self._get_profile_by_id(update_data["profile_id"])
             if not profile:
@@ -413,7 +422,17 @@ class TeamService:
         else:
             await self.db.flush()
         await self.db.refresh(member)
-        return member
+        return await self.get_by_id(member_id)
+
+    async def detach_absence_adapters(self, member, next_profile_id):
+        """Allocation identity changes must not expose another person's absence adapters."""
+        if member.profile_id == next_profile_id:
+            return
+        from app.commands import PlanningConflict
+        await self.db.refresh(member, ["vacations"])
+        if any(vacation.profile_absence_id is None for vacation in member.vacations):
+            raise PlanningConflict("absence_reconciliation_required", "Reconcile legacy allocation absences before changing this person's profile.")
+        member.vacations.clear()
 
     @schedule_input_command("member")
     async def delete(self, member_id: int) -> bool:
@@ -444,12 +463,23 @@ class TeamService:
             start_date=data.start_date,
             end_date=data.end_date,
         )
+        if member.profile_id is not None:
+            from app.services.capacity_service import CapacityService
+            absence = await CapacityService(self.db).save_absence(member.profile_id, data.start_date, data.end_date)
+            vacation.profile_absence_id = absence.id
         self.db.add(vacation)
         if commit:
             await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(vacation)
+        if vacation.profile_absence_id is not None:
+            from app.authority import internal_authority
+            from app.models.capacity import ProfileAbsence
+            with internal_authority(self.db):
+                absence = await self.db.get(ProfileAbsence, vacation.profile_absence_id)
+                absence.provenance = [*absence.provenance, {"legacy_vacation_ids": [vacation.id]}]
+                await self.db.flush()
         return vacation
 
     @schedule_input_command("member")
@@ -473,6 +503,14 @@ class TeamService:
         next_end = updates.get("end_date", vacation.end_date)
         if next_start > next_end:
             raise ValueError("start_date must be before or equal to end_date")
+        if vacation.profile_absence_id is not None:
+            from app.models.capacity import ProfileAbsence
+            from app.services.capacity_service import CapacityService
+            from app.authority import internal_authority
+            with internal_authority(self.db):
+                absence = await self.db.get(ProfileAbsence, vacation.profile_absence_id)
+            await CapacityService(self.db).save_absence(absence.profile_id, next_start, next_end,
+                absence_id=absence.id, expected_version=absence.version)
         for field, value in updates.items():
             setattr(vacation, field, value)
 
@@ -493,10 +531,19 @@ class TeamService:
         if not vacation:
             return False
 
+        if vacation.profile_absence_id is not None:
+            from app.models.capacity import ProfileAbsence
+            from app.services.capacity_service import CapacityService
+            from app.authority import internal_authority
+            with internal_authority(self.db):
+                absence = await self.db.get(ProfileAbsence, vacation.profile_absence_id)
+            await CapacityService(self.db).save_absence(absence.profile_id, absence.start_date, absence.end_date,
+                absence_id=absence.id, expected_version=absence.version, deleted=True)
         await self.db.delete(vacation)
         await commit_or_flush(self.db)
         return True
 
+    @atomic_command
     async def import_vacations(self, iteration_id: int, csv_text: str) -> VacationImportResponse:
         """Import vacation ranges for iteration team members from CSV text."""
         if not csv_text.strip():
@@ -574,12 +621,7 @@ class TeamService:
                 skipped_count += 1
                 continue
 
-            vacation = Vacation(
-                team_member_id=member.id,
-                start_date=start_date,
-                end_date=end_date,
-            )
-            self.db.add(vacation)
+            vacation = await self.add_vacation(member.id, VacationCreate(start_date=start_date, end_date=end_date), commit=False)
             member.vacations.append(vacation)
             imported.append(vacation)
 
@@ -600,39 +642,24 @@ class TeamService:
         if not member or not member.iteration:
             return None
 
-        iteration = member.iteration
-        calendar_service = CalendarService(self.db)
-
-        # Get working days info
-        working_days_info = calendar_service.calculate_working_days(
-            iteration.calendar, iteration.start_date, iteration.end_date
-        )
-        working_days = working_days_info.working_days
-
-        # Calculate vacation days
-        vacation_days = 0
-        for vacation in member.vacations:
-            vac_working = calendar_service.calculate_working_days(
-                iteration.calendar,
-                max(vacation.start_date, iteration.start_date),
-                min(vacation.end_date, iteration.end_date)
-            ).working_days
-            vacation_days += vac_working
-
-        # Apply factors
-        available_days = (working_days - vacation_days) * (member.availability_percent / 100)
+        from app.services.capacity_service import CapacityService, day_hours
+        capacity_service = CapacityService(self.db)
+        calendar = await capacity_service.calendar_for(member)
+        calendar_source, calendar_uncertain = await capacity_service.calendar_status(member)
+        working = CalendarService(self.db).get_working_dates(
+            calendar, member.iteration.start_date, member.iteration.end_date)
+        ranges = await capacity_service.absence_ranges(member)
+        absent = {day for day in working if any(start <= day <= end for start, end in ranges)}
+        available_days = (len(working) - len(absent)) * member.availability_percent / 100
         effective_days = available_days * (1 - member.operational_utilization / 100)
         adjusted_days = effective_days * member.professionalism_coefficient
-
-        return MemberCapacity(
-            team_member_id=member_id,
-            working_days=working_days,
-            vacation_days=vacation_days,
-            available_days=round(available_days, 2),
-            effective_days=round(effective_days, 2),
-            adjusted_days=round(adjusted_days, 2),
-            hours=round(adjusted_days * 8, 2),
-        )
+        hours = sum(day_hours(calendar, day) for day in working if day not in absent)
+        hours *= member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient
+        return MemberCapacity(team_member_id=member_id, working_days=len(working),
+            vacation_days=len(absent), available_days=round(available_days, 2),
+            effective_days=round(effective_days, 2), adjusted_days=round(adjusted_days, 2),
+            hours=round(hours, 2), calendar_source=calendar_source, calendar_uncertain=calendar_uncertain, timezone=calendar.timezone,
+            outside_calendar_year=member.iteration.start_date.year != calendar.year or member.iteration.end_date.year != calendar.year)
 
     async def get_workload(self, member_id: int) -> MemberWorkload | None:
         """Get workload information for a team member."""
@@ -644,31 +671,34 @@ class TeamService:
         if not capacity:
             return None
 
-        # Calculate allocated days from assigned tasks (deferred tasks are excluded)
-        allocated_days = sum(t.effort_days for t in member.tasks if not t.is_deferred and not t.canceled_at and t.effort_days is not None)
-        # Use effective_days for capacity display - professionalism_coefficient only affects Gantt scheduling
-        free_days = capacity.effective_days - allocated_days
+        from app.services.capacity_service import CapacityService
+        calendar = await CapacityService(self.db).calendar_for(member)
+        allocated_hours = sum(t.effort_hours for t in member.tasks if not t.is_summary and not t.is_deferred and not t.canceled_at and t.effort_hours is not None)
+        allocated_days = allocated_hours / calendar.nominal_day_hours
+        capacity_days = capacity.hours / calendar.nominal_day_hours
+        free_days = capacity_days - allocated_days
 
         # Determine workload status
         if free_days >= 0:
             status = "green"
-        elif abs(free_days) / capacity.effective_days < 0.05:
+        elif capacity_days > 0 and abs(free_days) / capacity_days < 0.05:
             status = "yellow"
         else:
             status = "red"
 
-        workload_percent = (allocated_days / capacity.effective_days * 100) if capacity.effective_days > 0 else 0
+        workload_percent = (allocated_days / capacity_days * 100) if capacity_days > 0 else 0
 
         return MemberWorkload(
             team_member_id=member_id,
             name=member.name,
-            capacity_days=capacity.effective_days,
+            capacity_days=capacity_days,
             allocated_days=round(allocated_days, 2),
             free_days=round(free_days, 2),
             workload_status=status,
             workload_percent=round(workload_percent, 1),
         )
 
+    @schedule_input_command("member")
     async def import_members(
         self,
         iteration_id: int,

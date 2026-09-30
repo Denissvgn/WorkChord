@@ -1,6 +1,6 @@
 # SchedulerService
 
-**Location:** `backend/app/services/scheduler_service.py:341`
+**Location:** `backend/app/services/scheduler_service.py:282`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -18,7 +18,7 @@ Service for automatic task scheduling.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
-| `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
+| `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
 | `_build_member_schedules` | *(async)* `(iteration: Iteration, team_members: Sequence[TeamMember]) -> dict[int, MemberSchedule]` | — | Build schedule tracking for each team member. |
 | `_topological_sort` | `(tasks: list[Task]) -> list[Task]` | — | Sort tasks respecting dependencies. |
 | `_topological_sort_children` | `(children: list[Task], child_ids: set[int]) -> list[Task]` | — | Sort child tasks respecting internal dependencies, then by (is_optional, priority). |
@@ -47,7 +47,8 @@ flowchart LR
     n6["get_scheduler_service (backend/app/routers/tasks.py)"]
     n7["AgentPlanningService.__init__ (backend/app/services/agent_planning_service.py)"]
     n8["IncrementalScheduler.__init__ (backend/app/services/scheduler_service.py)"]
-    n9["test_late_start_does_not_overwrite_committed_baseline (backend/tests/test_work_correctness.py)"]
+    n9["test_overallocated_person_can_preview_but_cannot_commit (backend/tests/test_profile_capacity.py)"]
+    n10["test_overflow_forecast_cannot_commit_outside_allocation_dates (backend/tests/test_profile_capacity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -57,6 +58,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/scheduler_service.md"
     click n1 "../modules/routers_gantt.md"
     click n2 "../modules/routers_gantt.md"
@@ -66,7 +68,8 @@ flowchart LR
     click n6 "../modules/tasks.md"
     click n7 "../modules/agent_planning_service.md"
     click n8 "../modules/scheduler_service.md"
-    click n9 "../modules/test_work_correctness.md"
+    click n9 "../modules/test_profile_capacity.md"
+    click n10 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -89,4 +92,7 @@ flowchart LR
 | `get_scheduler_service` | type_reference | [tasks](../modules/tasks.md) | — |
 | `AgentPlanningService.__init__` | call | [agent_planning_service](../modules/agent_planning_service.md) | 1 |
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
-| `test_late_start_does_not_overwrite_committed_baseline` | call | [test_work_correctness](../modules/test_work_correctness.md) | 1 |
+| `test_overallocated_person_can_preview_but_cannot_commit` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 2 |
+| `test_overflow_forecast_cannot_commit_outside_allocation_dates` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 2 |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

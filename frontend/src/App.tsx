@@ -15,6 +15,7 @@ const CalendarPage = lazy(routeModuleLoaders.calendar);
 const IterationsPage = lazy(routeModuleLoaders.iterations);
 const TeamPage = lazy(routeModuleLoaders.team);
 const TasksPage = lazy(routeModuleLoaders.tasks);
+const MyWorkPage = lazy(routeModuleLoaders.myWork);
 const TriagePage = lazy(routeModuleLoaders.triage);
 const ProjectsPage = lazy(routeModuleLoaders.projects);
 const ProjectDetailPage = lazy(routeModuleLoaders.projectDetail);
@@ -52,6 +53,7 @@ const WorkspaceRoutes = () => (
     <Route path="/iterations" element={<IterationsPage />} />
     <Route path="/team" element={<TeamPage />} />
     <Route path="/tasks" element={<TasksPage />} />
+    <Route path="/my-work" element={<MyWorkPage />} />
     <Route path="/triage" element={<TriagePage />} />
     <Route path="/projects" element={<ProjectsPage />} />
     <Route path="/projects/:projectId" element={<ProjectDetailPage />} />

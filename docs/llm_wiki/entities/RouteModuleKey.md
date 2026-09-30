@@ -1,6 +1,6 @@
 # RouteModuleKey
 
-**Location:** `frontend/src/navigation/routeModules.ts:26`
+**Location:** `frontend/src/navigation/routeModules.ts:27`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routeModules](../modules/routeModules.md)

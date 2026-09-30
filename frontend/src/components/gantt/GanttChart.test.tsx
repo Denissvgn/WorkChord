@@ -57,7 +57,7 @@ const scheduleResult: ScheduleResult = {
 };
 
 const previewFixture: SchedulePreviewResponse = {
-    input_revision: 1,
+    input_revision: 1, input_planning_revision: 19,
     tasks: [{
         ...taskFixture,
         title: 'Projected task',
@@ -118,7 +118,7 @@ describe('GanttChart schedule preview', () => {
         }));
         await user.click(screen.getByRole('button', { name: i18n.t('gantt.applySchedulePreview') }));
 
-        await waitFor(() => expect(ganttServiceMock.schedule).toHaveBeenCalledWith(42, 1));
+        await waitFor(() => expect(ganttServiceMock.schedule).toHaveBeenCalledWith(42, 1, 19));
         expect(screen.getByRole('heading', { name: i18n.t('gantt.scheduleApplyPending') })).toBeInTheDocument();
         resolveSchedule(scheduleResult);
         await screen.findByText(i18n.t('gantt.scheduleApplied'));

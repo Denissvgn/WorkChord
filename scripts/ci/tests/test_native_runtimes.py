@@ -4,10 +4,13 @@ import json
 import os
 from pathlib import Path
 import shutil
+import socket
+from types import SimpleNamespace
 import subprocess
 import sys
 import tempfile
 import unittest
+import venv
 import xml.etree.ElementTree as ET
 from unittest.mock import Mock, patch
 
@@ -36,12 +39,12 @@ class WorkflowContracts(unittest.TestCase):
         for path in (REPO / '.github/workflows').glob('*.yml'):
             document = yaml.safe_load(path.read_text())
             triggers = document.get('on', document.get(True, {}))
-            if not any(name in triggers for name in ('pull_request', 'push', 'pull_request_target')):
+            if not any(name in triggers for name in ('pull_request', 'push', 'pull_request_target', 'workflow_call')):
                 continue
             for job in document['jobs'].values():
                 self.assertNotIn('services', job, str(path))
                 self.assertNotIn('container', job, str(path))
-                for step in job['steps']:
+                for step in job.get('steps', []):
                     self.assertFalse(step.get('uses', '').startswith('docker://'))
                     script = step.get('run', '')
                     self.assertNotIn('accept_self_hosted.sh', script)
@@ -69,6 +72,43 @@ class WorkflowContracts(unittest.TestCase):
                         result = subprocess.run(['bash', '-n'], input=script, text=True, capture_output=True)
                         self.assertEqual(result.returncode, 0, f'{path}: {result.stderr}')
 
+    def test_workflow_split_and_required_gate_cover_every_job(self):
+        workflow = yaml.safe_load((REPO / '.github/workflows/ci.yml').read_text())
+        jobs = workflow['jobs']
+        gate = jobs['build']
+        self.assertEqual(set(gate['needs']), set(jobs) - {'build'})
+        self.assertEqual(gate['if'], 'always()')
+        self.assertEqual({item['scope'] for item in jobs['backend']['strategy']['matrix']['include']}, {'sqlite', 'postgresql'})
+        self.assertFalse(jobs['backend']['strategy']['fail-fast'])
+        client = yaml.safe_load((REPO / '.github/workflows/client-baseline.yml').read_text())
+        self.assertEqual(set(client.get('on', client.get(True))), {'workflow_call', 'workflow_dispatch'})
+        delivery = client['jobs']['delivery']
+        self.assertFalse(delivery['strategy']['fail-fast'])
+        self.assertEqual({item['access'] for item in delivery['strategy']['matrix']['include']}, {'managed', 'trusted-local'})
+        script = next(step['run'] for step in delivery['steps'] if step.get('name') == 'Run the pinned native runtimes')
+        self.assertIn('--browser-only', script)
+        self.assertNotIn('--full-backend', script)
+        self.assertFalse(any('native-postgres' in step.get('uses', '') for step in delivery['steps']))
+        results = {name: {'result': 'success'} for name in gate['needs']}
+        command = gate['steps'][0]['run']
+        def evaluate(values):
+            return subprocess.run(['bash', '-e', '-c', command], env={**os.environ, 'CHECK_RESULTS': json.dumps(values)}, capture_output=True).returncode
+        self.assertEqual(evaluate(results), 0)
+        for name in results:
+            for status in ('failure', 'cancelled', 'skipped'):
+                with self.subTest(name=name, status=status):
+                    changed = {**results, name: {'result': status}}
+                    self.assertNotEqual(evaluate(changed), 0)
+        self.assertNotEqual(evaluate({}), 0)
+
+    def test_runners_reserve_time_before_toolchain_setup(self):
+        ci = yaml.safe_load((REPO / '.github/workflows/ci.yml').read_text())['jobs']
+        client = yaml.safe_load((REPO / '.github/workflows/client-baseline.yml').read_text())['jobs']
+        for job in [ci['backend'], ci['frontend'], client['delivery'], client['android']]:
+            self.assertIn('WORKCHORD_CI_DEADLINE_EPOCH', job['steps'][0]['run'])
+            self.assertIn('- 180', job['steps'][0]['run'])
+            self.assertTrue(any(step.get('if') == 'always()' and 'upload-artifact' in step.get('uses', '') for step in job['steps']))
+
 
 class NativeChecks(unittest.TestCase):
     def test_connection_parameters_cannot_override_the_loopback_host(self):
@@ -78,16 +118,30 @@ class NativeChecks(unittest.TestCase):
                 checks.validate_admin_url(url)
         checks.validate_admin_url('postgresql+psycopg://fixture@127.0.0.1:55432/postgres')
 
-    def test_service_cleanup_reaps_exited_processes_and_escalates_timeouts(self):
-        process = Mock(pid=123)
-        with patch.object(checks.os, 'killpg', side_effect=ProcessLookupError):
-            self.assertTrue(checks.stop_process_group(process))
-        process.wait.assert_called_once_with(timeout=15)
-        process = Mock(pid=123)
-        process.wait.side_effect = [subprocess.TimeoutExpired('fixture', 15), 0]
-        with patch.object(checks.os, 'killpg') as kill:
-            self.assertFalse(checks.stop_process_group(process))
-            self.assertEqual([call.args[1] for call in kill.call_args_list], [checks.signal.SIGTERM, checks.signal.SIGKILL])
+    def test_port_preflight_rejects_listeners_but_accepts_closed_connections(self):
+        with socket.socket() as server, socket.socket() as client:
+            server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            server.bind(('127.0.0.1', 0))
+            port = server.getsockname()[1]
+            server.listen()
+            with self.assertRaises(OSError):
+                checks.require_free_browser_ports((port,))
+            client.connect(('127.0.0.1', port))
+            connection, _ = server.accept()
+            connection.close()
+            self.assertEqual(client.recv(1), b'')
+        checks.require_free_browser_ports((port,))
+
+    def test_incomplete_browser_evidence_cannot_pass(self):
+        for managed, payload in [(True, {'status': 'passed', 'steps': ['one']}),
+                                 (False, {'status': 'passed', 'reloadVerified': True})]:
+            with self.subTest(managed=managed), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                name = 'managed-browser.json' if managed else 'browser.json'
+                (output / name).write_text(json.dumps(payload))
+                run = SimpleNamespace(output=output, data={})
+                checks.validate_results(run, ['browser'], managed)
+                self.assertTrue(run.data['artifact_errors'])
 
     def test_application_secrets_are_not_inherited(self):
         with patch.dict(os.environ, {'PATH': '/tools', 'HOME': '/user', 'DATABASE_URL': 'production',
@@ -100,22 +154,76 @@ class NativeChecks(unittest.TestCase):
         self.assertEqual(environment['HOME'], '/user')
         self.assertIn('localhost', environment['NO_PROXY'])
 
-    def run_backend(self, *, write_results, remote=False):
+    def test_browser_worker_uses_harness_interpreter_outside_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            environment = root / 'isolated python'
+            venv.EnvBuilder(with_pip=False).create(environment)
+            python = str(environment / 'bin/python')
+            worker = root / 'app/cli/worker.py'
+            worker.parent.mkdir(parents=True)
+            worker.write_text('import json, os, sys\nprint(json.dumps({"prefix": sys.prefix, '
+                              '"args": sys.argv[1:], "role": os.environ["DATABASE_PROCESS_ROLE"]}))\n')
+            # A PATH lookup must fail even though the explicit interpreter works.
+            poison = root / 'path'
+            poison.mkdir()
+            (poison / 'python').write_text('#!/bin/sh\nexit 87\n')
+            (poison / 'python').chmod(0o755)
+            helper = (SCRIPTS / 'browser_worker.mjs').as_uri()
+            command = [shutil.which('node'), '--input-type=module', '-e',
+                       f'import {{ dispatchInbox }} from {json.dumps(helper)}; '
+                       'process.stdout.write((await dispatchInbox()).stdout);']
+            def dispatch(runner, label, argv, **kwargs):
+                if label != 'browser':
+                    return 0
+                self.assertTrue((Path(kwargs['cwd']) / 'browser_worker.mjs').is_file())
+                env = {**kwargs['env'], 'PATH': str(poison), 'PYTHONPATH': str(root)}
+                self.assertEqual(env['WORKCHORD_BROWSER_PYTHON'], python)
+                result = subprocess.run(command, env=env, text=True, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout), {
+                    'prefix': str(environment), 'args': ['--once'], 'role': 'delivery_worker'})
+                for override, message in [({'WORKCHORD_BROWSER_PYTHON': ''}, 'absolute Python'),
+                                          ({'WORKCHORD_BROWSER_PYTHON': 'python'}, 'absolute Python'),
+                                          ({'WORKCHORD_FIXTURE_NONCE': ''}, 'owned disposable'),
+                                          ({'DATABASE_URL': 'sqlite+aiosqlite:///production.db'}, 'owned disposable')]:
+                    rejected = subprocess.run(command, env={**env, **override}, text=True, capture_output=True, timeout=10)
+                    self.assertNotEqual(rejected.returncode, 0)
+                    self.assertIn(message, rejected.stderr)
+                (runner.output / 'managed-browser.json').write_text(json.dumps({
+                    'status': 'passed', 'steps': ['worker dispatched'], 'pageErrors': []}))
+                return 0
+            with patch.object(sys, 'executable', python), \
+                 patch.object(sys, 'argv', ['checks', '--browser-only', '--managed-browser', '--output', str(root / 'results')]), \
+                 patch.object(checks, 'source_digest', return_value='unchanged'), \
+                 patch.object(checks.RunReceipt, 'run', autospec=True, side_effect=dispatch), \
+                 patch.object(checks.RunReceipt, 'start'), patch.object(checks, 'require_free_browser_ports'):
+                code = checks.main()
+                self.assertEqual(code, 0, (root / 'results/receipt.json').read_text())
+
+    def run_backend(self, *, write_results, remote=False, scope=None):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / 'results'
             calls = []
-            def execute(argv, **kwargs):
+            def execute(runner, label, argv, **kwargs):
                 calls.append(argv)
+                runner.data['commands'].append({'label': label, 'status': 'passed', 'exit_code': 0})
                 self.assertNotIn('docker', argv)
                 if write_results:
                     for value in argv:
                         if str(value).startswith('--junitxml='):
                             Path(str(value).partition('=')[2]).write_text('<testsuite tests="3" failures="0" errors="0" skipped="0"/>')
-                return subprocess.CompletedProcess(argv, 0)
+                    if label == 'frontend-tests':
+                        (output / 'frontend.xml').write_text('<testsuite tests="3" failures="0" errors="0" skipped="0"/>')
+                    if label == 'browser':
+                        (output / 'browser.json').write_text(json.dumps({'status': 'passed', 'reloadVerified': True, 'writeStatus': 201, 'independentReadStatus': 200}))
+                return 0
             environment = {'POSTGRES_ADMIN_URL': 'postgresql://fixture@' + ('remote.example' if remote else '127.0.0.1') + '/postgres'}
-            with patch.dict(os.environ, environment), patch.object(sys, 'argv', ['checks', '--backend-only', '--output', str(output)]), \
+            with patch.dict(os.environ, environment), patch.object(sys, 'argv', ['checks', *(['--scope', scope] if scope else ['--backend-only']), '--output', str(output)]), \
                  patch.object(checks, 'source_digest', return_value='unchanged'), \
-                 patch.object(subprocess, 'check_output', return_value='revision\n'), patch.object(subprocess, 'run', side_effect=execute):
+                 patch.object(subprocess, 'check_output', return_value='revision\n'), \
+                 patch.object(checks.RunReceipt, 'run', autospec=True, side_effect=execute), \
+                 patch.object(checks.RunReceipt, 'start'), patch.object(checks, 'require_free_browser_ports'):
                 result = checks.main()
             return result, json.loads((output / 'receipt.json').read_text()), calls
 
@@ -137,6 +245,31 @@ class NativeChecks(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('loopback', receipt['error'])
         self.assertEqual(calls, [])
+
+
+    def test_sqlite_scope_needs_no_postgresql_server(self):
+        code, receipt, calls = self.run_backend(write_results=True, remote=True, scope='sqlite')
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt['checks'], ['sqlite'])
+        self.assertEqual(set(receipt['junit']), {'sqlite.xml'})
+        self.assertEqual(len([argv for argv in calls if 'pytest' in argv]), 1)
+
+    def test_frontend_scope_does_not_run_backend_checks(self):
+        code, receipt, calls = self.run_backend(write_results=True, remote=True, scope='frontend')
+        self.assertEqual(code, 0)
+        self.assertEqual(set(receipt['junit']), {'frontend.xml'})
+        self.assertTrue(any('test:run' in argv and '--maxWorkers=2' in argv for argv in calls))
+        self.assertFalse(any('pytest' in argv for argv in calls))
+
+    def test_browser_scope_does_not_repeat_unit_suites(self):
+        code, receipt, calls = self.run_backend(write_results=True, remote=True, scope='browser')
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt['junit'], {})
+        self.assertEqual(receipt['browser_report'], 'browser.json')
+        self.assertFalse(any('pytest' in argv or 'test:run' in argv or 'lint' in argv or 'build' in argv for argv in calls))
+        code, receipt, _ = self.run_backend(write_results=False, scope='browser')
+        self.assertEqual(code, 1)
+        self.assertIn('browser.json', receipt['artifact_errors'][0])
 
 
 class PostgresOwnership(unittest.TestCase):
@@ -183,7 +316,11 @@ class AndroidArtifacts(unittest.TestCase):
             (sdk / 'platforms/android-34/android.jar').write_bytes(b'fixture')
             (sdk / 'build-tools/34.0.0').mkdir(parents=True)
             output = root / 'results'
-            def execute(argv, **kwargs):
+            def execute(runner, label, argv, **kwargs):
+                runner.data['commands'].append({'label': label, 'status': 'failed' if label == 'gradle' and gradle_code else 'passed', 'exit_code': gradle_code if label == 'gradle' else 0})
+                if label == 'java-version':
+                    (output / 'java-version.log').write_text('openjdk version "17.0.16"')
+                    return 0
                 self.assertNotIn('docker', argv)
                 self.assertIn('testDebugUnitTest', argv)
                 self.assertIn('testReleaseUnitTest', argv)
@@ -199,13 +336,13 @@ class AndroidArtifacts(unittest.TestCase):
                     artifact = cwd / 'app/build/outputs/apk/debug/app-debug.apk'
                     artifact.parent.mkdir(parents=True)
                     artifact.write_bytes(b'fixture apk')
-                return subprocess.CompletedProcess(argv, gradle_code)
+                return gradle_code
             def stdout(argv, **kwargs):
                 return 'openjdk version "17.0.16"\n' if '-version' in argv else 'revision\n'
             with patch.dict(os.environ, {'ANDROID_HOME': str(sdk)}), patch.object(android, 'ROOT', root), \
                  patch.object(android, 'source_digest', return_value='unchanged'), \
                  patch.object(sys, 'argv', ['android', '--output', str(output)]), \
-                 patch.object(subprocess, 'run', side_effect=execute), patch.object(subprocess, 'check_output', side_effect=stdout):
+                 patch.object(android.RunReceipt, 'run', autospec=True, side_effect=execute), patch.object(subprocess, 'check_output', side_effect=stdout):
                 code = android.main()
             return code, json.loads((output / 'receipt.json').read_text())
 

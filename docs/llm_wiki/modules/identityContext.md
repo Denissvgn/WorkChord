@@ -26,35 +26,49 @@ _Auto-generated from `frontend/src/features/identity/identityContext.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/TaskForm.tsx"]
-    n1["frontend/src/components/UserSessionBadge.tsx"]
-    n2["frontend/src/features/identity/identityContext.ts"]
-    n3["frontend/src/features/identity/IdentityProvider.tsx"]
-    n4["frontend/src/features/identity/identityService.ts"]
-    n5["frontend/src/hooks/useAdminAccess.ts"]
-    n0 --> n2
-    n1 --> n2
-    n1 --> n3
+    n0["frontend/src/components/tasks/TaskDiscussion.test.tsx"]
+    n1["frontend/src/components/tasks/TaskDiscussion.tsx"]
+    n2["frontend/src/components/tasks/TaskForm.tsx"]
+    n3["frontend/src/components/UserSessionBadge.tsx"]
+    n4["frontend/src/features/identity/identityContext.ts"]
+    n5["frontend/src/features/identity/IdentityProvider.tsx"]
+    n6["frontend/src/features/identity/identityService.ts"]
+    n7["frontend/src/hooks/useAdminAccess.ts"]
+    n8["frontend/src/pages/MyWorkPage.tsx"]
+    n0 --> n1
+    n0 --> n4
+    n1 --> n4
+    n2 --> n1
     n2 --> n4
-    n3 --> n2
     n3 --> n4
-    n5 --> n2
-    click n0 "../modules/TaskForm.md"
-    click n1 "../modules/UserSessionBadge.md"
-    click n2 "../modules/identityContext.md"
-    click n3 "../modules/IdentityProvider.md"
-    click n4 "../modules/identityService.md"
-    click n5 "../modules/useAdminAccess.md"
+    n3 --> n5
+    n4 --> n6
+    n5 --> n4
+    n5 --> n6
+    n7 --> n4
+    n8 --> n4
+    click n0 "../modules/TaskDiscussion.test.md"
+    click n1 "../modules/TaskDiscussion.md"
+    click n2 "../modules/TaskForm.md"
+    click n3 "../modules/UserSessionBadge.md"
+    click n4 "../modules/identityContext.md"
+    click n5 "../modules/IdentityProvider.md"
+    click n6 "../modules/identityService.md"
+    click n7 "../modules/useAdminAccess.md"
+    click n8 "../modules/MyWorkPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [TaskDiscussion.test](../modules/TaskDiscussion.test.md) |
+| Inbound | [TaskDiscussion](../modules/TaskDiscussion.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Inbound | [UserSessionBadge](../modules/UserSessionBadge.md) |
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [useAdminAccess](../modules/useAdminAccess.md) |
+| Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
 | Outbound | [identityService](../modules/identityService.md) |
 
 ### External packages

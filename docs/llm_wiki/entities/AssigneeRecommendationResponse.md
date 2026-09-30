@@ -1,6 +1,6 @@
 # AssigneeRecommendationResponse
 
-**Location:** `backend/app/schemas/team.py:341`
+**Location:** `backend/app/schemas/team.py:352`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

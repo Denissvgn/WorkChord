@@ -14,6 +14,8 @@ Result of scheduling operation.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `success` | `bool` | `success` | Yes | No | — | — | — | — |
+| `planning_revision` | `int \| None` | `planning_revision` | No | Yes | `None` | — | — | — |
+| `capacity_issues` | `list[dict]` | `capacity_issues` | No | No | `[]` | — | — | — |
 | `decisions` | `list[SchedulingDecision]` | `decisions` | No | No | `[]` | — | — | — |
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[WorkloadIssue]` | `workload_issues` | No | No | `[]` | — | — | — |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `decisions`, `success`, `workload_balanced`, `workload_issues` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 

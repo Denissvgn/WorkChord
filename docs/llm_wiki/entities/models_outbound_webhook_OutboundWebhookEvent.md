@@ -1,6 +1,6 @@
 # OutboundWebhookEvent
 
-**Location:** `backend/app/models/outbound_webhook.py:79`
+**Location:** `backend/app/models/outbound_webhook.py:80`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_outbound_webhook](../modules/models_outbound_webhook.md)
@@ -34,15 +34,16 @@ flowchart LR
     n0["OutboundWebhookEvent (backend/app/models/outbound_webhook.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["OutboundWebhookService._delivery_payload (backend/app/services/outbound_webhook_service.py)"]
-    n4["OutboundWebhookService._email_delivery (backend/app/services/outbound_webhook_service.py)"]
-    n5["OutboundWebhookService._enqueue_event_records (backend/app/services/outbound_webhook_service.py)"]
-    n6["OutboundWebhookService._webhook_delivery (backend/app/services/outbound_webhook_service.py)"]
-    n7["OutboundWebhookService.emit_event (backend/app/services/outbound_webhook_service.py)"]
-    n8["OutboundWebhookService.enqueue_event (backend/app/services/outbound_webhook_service.py)"]
-    n9["_seed_race_workspace (backend/tests/database/test_postgresql_concurrency.py)"]
-    n10["backend/tests/test_agent_routing_observability.py"]
-    n11["backend/tests/test_agent_routing_rollout.py"]
+    n3["DiscussionService.enqueue (backend/app/services/discussion_service.py)"]
+    n4["OutboundWebhookService._delivery_payload (backend/app/services/outbound_webhook_service.py)"]
+    n5["OutboundWebhookService._email_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n6["OutboundWebhookService._enqueue_event_records (backend/app/services/outbound_webhook_service.py)"]
+    n7["OutboundWebhookService._webhook_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n8["OutboundWebhookService.emit_event (backend/app/services/outbound_webhook_service.py)"]
+    n9["OutboundWebhookService.enqueue_event (backend/app/services/outbound_webhook_service.py)"]
+    n10["_seed_race_workspace (backend/tests/database/test_postgresql_concurrency.py)"]
+    n11["backend/tests/test_agent_routing_observability.py"]
+    n12["backend/tests/test_agent_routing_rollout.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -54,18 +55,20 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_outbound_webhook.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/outbound_webhook_service.md"
+    click n3 "../modules/discussion_service.md"
     click n4 "../modules/outbound_webhook_service.md"
     click n5 "../modules/outbound_webhook_service.md"
     click n6 "../modules/outbound_webhook_service.md"
     click n7 "../modules/outbound_webhook_service.md"
     click n8 "../modules/outbound_webhook_service.md"
-    click n9 "../modules/test_postgresql_concurrency.md"
-    click n10 "../modules/test_agent_routing_observability.md"
-    click n11 "../modules/test_agent_routing_rollout.md"
+    click n9 "../modules/outbound_webhook_service.md"
+    click n10 "../modules/test_postgresql_concurrency.md"
+    click n11 "../modules/test_agent_routing_observability.md"
+    click n12 "../modules/test_agent_routing_rollout.md"
 ```
 
 ### Summary
@@ -85,6 +88,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `DiscussionService.enqueue` | call | [discussion_service](../modules/discussion_service.md) | 1 |
 | `OutboundWebhookService._delivery_payload` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._email_delivery` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._enqueue_event_records` | call | [outbound_webhook_service](../modules/outbound_webhook_service.md) | 1 |

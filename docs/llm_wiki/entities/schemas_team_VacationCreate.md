@@ -44,6 +44,9 @@ flowchart LR
     n8["VacationCreate.validate_date_range (backend/app/schemas/team.py)"]
     n9["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
     n10["TeamService.add_vacation (backend/app/services/team_service.py)"]
+    n11["TeamService.import_vacations (backend/app/services/team_service.py)"]
+    n12["test_iteration_restore_preserves_current_shared_absence (backend/tests/test_profile_capacity.py)"]
+    n13["test_reassigning_allocation_does_not_transfer_private_absence (backend/tests/test_profile_capacity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -54,6 +57,9 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_team.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -65,6 +71,9 @@ flowchart LR
     click n8 "../modules/schemas_team.md"
     click n9 "../modules/agent_planning_service.md"
     click n10 "../modules/team_service.md"
+    click n11 "../modules/team_service.md"
+    click n12 "../modules/test_profile_capacity.md"
+    click n13 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -92,3 +101,8 @@ flowchart LR
 | `VacationCreate.validate_date_range` | type_reference | [schemas_team](../modules/schemas_team.md) | — |
 | `AgentPlanningService.create_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `TeamService.add_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
+| `TeamService.import_vacations` | call | [team_service](../modules/team_service.md) | 1 |
+| `test_iteration_restore_preserves_current_shared_absence` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |
+| `test_reassigning_allocation_does_not_transfer_private_absence` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

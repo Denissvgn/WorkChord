@@ -16,8 +16,8 @@ _Auto-generated from `frontend/src/components/ui/tone.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PillTone`, `STATUS_TONE`, `isTaskStatus`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
-| Constants | `wcPillClass`, `toneVar`, `toneSoftVar`, `toneLineVar`, `STATUS_TONE`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneSolidClassName` |
+| Exports | `PillTone`, `STATUS_TONE`, `isTaskStatus`, `pillToneClassName`, `statusTextClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
+| Constants | `wcPillClass`, `toneVar`, `toneSoftVar`, `toneLineVar`, `STATUS_TONE`, `statusTextClassName`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneSolidClassName` |
 
 ## Local dependency map
 
@@ -37,10 +37,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (14) |
+| Inbound | `frontend` (16) |
 | Outbound | `frontend` (1) |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

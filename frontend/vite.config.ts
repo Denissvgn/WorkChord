@@ -10,6 +10,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes('/src/i18n/teamwork.en.ts')) return 'app-teamwork-i18n'
+          if (id.includes('/src/i18n/teamwork.ru.ts')) return 'app-teamwork-i18n-ru'
           if (id.includes('/src/i18n/resources.en.ts')) return 'app-i18n'
           if (id.includes('/src/i18n/resources.ru.ts')) return 'app-i18n-ru'
           if (id.includes('commonjsHelpers')) return 'vendor-react'

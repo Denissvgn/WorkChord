@@ -33,7 +33,7 @@ flowchart LR
     s1 -->|"IterationService(db)"| s2
     s1 -. "iteration_service.get_by_id(iteration_id)" .-> s3
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s4
-    s1 -. "service.schedule_iteration(iteration_id, expected_revision=..., commit_baseline=True, rebaseline_reason=...)" .-> s5
+    s1 -. "service.schedule_iteration(iteration_id, expected_revision=..., expected_planning_revision=..., commit_baseline=True, rebaseline_reason=...)" .-> s5
     click s1 "../modules/routers_gantt.md"
     click s2 "../modules/iteration_service.md"
 ```
@@ -55,7 +55,7 @@ flowchart LR
 | schedule_iteration | IterationService | 40 | `IterationService(db)` |
 | schedule_iteration | iteration_service.get_by_id | 41 | `iteration_service.get_by_id(iteration_id)` |
 | schedule_iteration | HTTPException | 44 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| schedule_iteration | service.schedule_iteration | 49 | `service.schedule_iteration(iteration_id, expected_revision=..., commit_baseline=True, rebaseline_reason=...)` |
+| schedule_iteration | service.schedule_iteration | 49 | `service.schedule_iteration(iteration_id, expected_revision=..., expected_planning_revision=..., commit_baseline=True, rebaseline_reason=...)` |
 
 ### Boundary effects
 
@@ -71,4 +71,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `schedule_iteration` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Applies the scheduler under shared planning and iteration reservations. A supplied stale planning basis conflicts. Canonical absence, calendar and allocation constraints protect commitments, while actual execution dates remain unchanged. Forecasts outside allocation dates cannot be silently committed.

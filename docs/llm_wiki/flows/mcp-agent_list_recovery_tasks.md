@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_list_recovery_tasks` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 4 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 6 more
 
 **Complete modules touched:**
 
@@ -10,6 +10,8 @@
 - [agent_work_service](../modules/agent_work_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -26,9 +28,9 @@ sequenceDiagram
     participant p3 as get_settings
     participant p4 as Settings
     participant p5 as scope_requirement_is_mutating
-    participant p6 as isinstance (backend/app/maintenance.p…pe_requirement_is_mutating)
+    participant p6 as isinstance (backend/app/maintenance.p…e_requirement_is_mutating)
     participant p7 as tuple
-    participant p8 as any (backend/app/maintenance.p…pe_requirement_is_mutating)
+    participant p8 as any (backend/app/maintenance.p…e_requirement_is_mutating)
     participant p9 as scope.endswith
     participant p10 as MaintenanceModeError
     participant p11 as _agent_context
@@ -46,17 +48,17 @@ sequenceDiagram
     participant p23 as info.get
     participant p24 as RuntimeError
     participant p25 as CommandState
-    participant p26 as db.rollback
+    participant p26 as db.flush
     p0->>p1: _tool_call
     p1->>p2: enforce_mcp_access
     p2->>p3: get_settings
     p3->>p4: Settings
     p2->>p5: scope_requirement_is_mutating
-    p5-->>p6: isinstance (backend/app/maintenance.p…pe_requirement_is_mutating)
+    p5-->>p6: isinstance (backend/app/maintenance.p…e_requirement_is_mutating)
     p5-->>p7: tuple
-    p5-->>p8: any (backend/app/maintenance.p…pe_requirement_is_mutating)
+    p5-->>p8: any (backend/app/maintenance.p…e_requirement_is_mutating)
     p5-->>p9: scope.endswith
-    p5-->>p8: any (backend/app/maintenance.p…pe_requirement_is_mutating)
+    p5-->>p8: any (backend/app/maintenance.p…e_requirement_is_mutating)
     p5-->>p9: scope.endswith
     p5-->>p9: scope.endswith
     p2->>p10: MaintenanceModeError
@@ -76,10 +78,10 @@ sequenceDiagram
     p19-->>p24: RuntimeError
     p19->>p25: CommandState
     p19-->>p24: RuntimeError
-    p19-->>p26: db.rollback
+    p19-->>p26: db.flush
 ```
 
-> Call sequence diagram shows 30 of 92 interactions; 62 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 103 interactions; 73 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -94,22 +96,22 @@ flowchart LR
     s4["4. get_settings"]
     s5["5. Settings"]
     s6["6. scope_requirement_is_mutating"]
-    s7["7. isinstance (backend/app/maintenance.p…pe_requirement_is_mutating)"]
+    s7["7. isinstance (backend/app/maintenance.p…e_requirement_is_mutating)"]
     s8["8. tuple"]
-    s9["9. any (backend/app/maintenance.p…pe_requirement_is_mutating)"]
+    s9["9. any (backend/app/maintenance.p…e_requirement_is_mutating)"]
     s10["10. scope.endswith"]
-    s11["11. any (backend/app/maintenance.p…pe_requirement_is_mutating)"]
+    s11["11. any (backend/app/maintenance.p…e_requirement_is_mutating)"]
     s12["12. scope.endswith"]
     s1 -->|"_tool_call('recovery:read', ...)"| s2
     s2 -->|"enforce_mcp_access(required_scope)"| s3
     s3 -->|"get_settings(data not statically known)"| s4
     s4 -->|"Settings(data not statically known)"| s5
     s3 -->|"scope_requirement_is_mutating(required_scope)"| s6
-    s6 -. "isinstance (backend/app/maintenance.p…pe_requirement_is_mutating)(required_scope, str)" .-> s7
+    s6 -. "isinstance (backend/app/maintenance.p…e_requirement_is_mutating)(required_scope, str)" .-> s7
     s6 -. "tuple(required_scope)" .-> s8
-    s6 -. "any (backend/app/maintenance.p…pe_requirement_is_mutating)(...)" .-> s9
+    s6 -. "any (backend/app/maintenance.p…e_requirement_is_mutating)(...)" .-> s9
     s6 -. "scope.endswith(':read')" .-> s10
-    s6 -. "any (backend/app/maintenance.p…pe_requirement_is_mutating)(...)" .-> s11
+    s6 -. "any (backend/app/maintenance.p…e_requirement_is_mutating)(...)" .-> s11
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
@@ -129,11 +131,11 @@ flowchart LR
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
 | `scope_requirement_is_mutating` | `required_scope: Any` | - | - | `False`, `...` |
-| `isinstance (backend/app/maintenance.p…pe_requirement_is_mutating)` | - | - | - | - |
+| `isinstance (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
 | `tuple` | - | - | - | - |
-| `any (backend/app/maintenance.p…pe_requirement_is_mutating)` | - | - | - | - |
+| `any (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
 | `scope.endswith` | - | - | - | - |
-| `any (backend/app/maintenance.p…pe_requirement_is_mutating)` | - | - | - | - |
+| `any (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
 | `scope.endswith` | - | - | - | - |
 
 ### Call data
@@ -145,11 +147,11 @@ flowchart LR
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
-| scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…pe_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
+| scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |
-| scope_requirement_is_mutating | any (backend/app/maintenance.p…pe_requirement_is_mutating) | 101 | `any(...)` |
+| scope_requirement_is_mutating | any (backend/app/maintenance.p…e_requirement_is_mutating) | 101 | `any(...)` |
 | scope_requirement_is_mutating | scope.endswith | 101 | `scope.endswith(':read')` |
-| scope_requirement_is_mutating | any (backend/app/maintenance.p…pe_requirement_is_mutating) | 102 | `any(...)` |
+| scope_requirement_is_mutating | any (backend/app/maintenance.p…e_requirement_is_mutating) | 102 | `any(...)` |
 | scope_requirement_is_mutating | scope.endswith | 103 | `scope.endswith(':write')` |
 
 ### Boundary effects

@@ -46,6 +46,11 @@ async def task_capabilities(db: DB):
     return await domain_capabilities(db)
 
 
+@router.get("/tasks/my-work")
+async def human_my_work(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
+    return await TaskDetailService(db).my_work(limit=limit, after_id=after_id)
+
+
 @router.get("/tasks/owner-options")
 async def task_owner_options(db: DB, project_id: int | None = None, after_id: int = Query(default=0, ge=0), limit: int = Query(default=100, ge=1, le=100)):
     from sqlalchemy import or_
@@ -86,6 +91,9 @@ async def task_review_queue(db: DB, limit: int = Query(default=50, ge=1, le=100)
             query = query.where(Task.project_id.in_([project_id for project_id in authority.projects if authority.allows(project_id, "review")]))
         if authority.principal_id is not None:
             query = query.where(or_(Task.executed_by_principal_id.is_(None), Task.executed_by_principal_id != authority.principal_id))
+            own_progress = select(TaskProgressRecord.id).where(TaskProgressRecord.original_task_id == Task.id,
+                TaskProgressRecord.artifact_revision == Task.artifact_revision, TaskProgressRecord.principal_id == authority.principal_id).exists()
+            query = query.where(~own_progress)
     return await service.page(query, limit=limit, after_id=after_id)
 
 

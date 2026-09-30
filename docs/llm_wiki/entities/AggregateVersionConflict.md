@@ -1,6 +1,6 @@
 # AggregateVersionConflict
 
-**Location:** `backend/app/commands.py:22`
+**Location:** `backend/app/commands.py:23`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [commands](../modules/commands.md)

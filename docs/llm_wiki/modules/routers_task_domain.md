@@ -48,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (2) |
+| Inbound | `backend` (4) |
 | Outbound | `backend` (15) |
 
 ### External packages
@@ -57,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -72,6 +72,7 @@ flowchart LR
 | `domain_result` | *(async)* `(awaitable)` | — | — |
 | `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
+| `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/my-work')` | — |
 | `task_owner_options` | *(async)* `(db: DB, project_id: int \| None = None, after_id: int = Query(default=0, ge=0), limit: int = Query(default=100, ge=1, le=100))` | `@router.get('/tasks/owner-options')` | — |
 | `task_migration_diagnostics` | *(async)* `(db: DB, after_id: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100))` | `@router.get('/tasks/migration-diagnostics')` | — |
 | `task_review_queue` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/review-queue', response_model=TaskReferencePage)` | — |

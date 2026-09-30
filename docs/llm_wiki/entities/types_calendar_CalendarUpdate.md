@@ -1,6 +1,6 @@
 # CalendarUpdate
 
-**Location:** `frontend/src/types/calendar.ts:19`
+**Location:** `frontend/src/types/calendar.ts:20`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)

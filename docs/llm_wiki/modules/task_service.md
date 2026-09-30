@@ -16,8 +16,8 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `require_project` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command` |
+| `app.authority` | `require_project`, `internal_authority` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command`, `lock_planning` |
 | `app.models.agent` | `TaskEvent` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
@@ -57,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (36) |
+| Inbound | `backend` (39) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -66,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 54 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

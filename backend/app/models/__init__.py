@@ -137,3 +137,7 @@ __all__ = [
 ]
 
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
+
+from app.models.capacity import PlanningState, ProfileAvailability, ProfileAbsence
+from app.models.delivery_dependency import DeliveryDependency
+from app.models.discussion import TaskComment, TaskCommentRevision, TaskSubscription, InboxNotification

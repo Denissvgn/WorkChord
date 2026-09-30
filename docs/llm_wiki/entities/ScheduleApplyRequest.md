@@ -1,6 +1,6 @@
 # ScheduleApplyRequest
 
-**Location:** `backend/app/schemas/gantt.py:95`
+**Location:** `backend/app/schemas/gantt.py:97`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -14,6 +14,7 @@ _Auto-generated from `ScheduleApplyRequest` in `backend/app/schemas/gantt.py`._
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | — | — | — |
+| `expected_planning_revision` | `Optional[int]` | `expected_planning_revision` | No | Yes | `None` | — | — | — |
 | `rebaseline_reason` | `Optional[str]` | `rebaseline_reason` | No | Yes | `None` | — | — | — |
 
 ## Methods
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `expected_revision`, `rebaseline_reason` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `expected_planning_revision`, `expected_revision`, `rebaseline_reason` |
 
 ### Structure
 

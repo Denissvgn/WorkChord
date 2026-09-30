@@ -122,4 +122,4 @@ flowchart LR
 | `emit_outbound_webhook_event` | call | [outbound_webhook_service](../modules/outbound_webhook_service.md) | 1 |
 | `run_due_outbound_delivery_jobs` | call | [outbound_webhook_service](../modules/outbound_webhook_service.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

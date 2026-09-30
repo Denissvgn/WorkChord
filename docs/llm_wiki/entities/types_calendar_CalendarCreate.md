@@ -1,6 +1,6 @@
 # CalendarCreate
 
-**Location:** `frontend/src/types/calendar.ts:11`
+**Location:** `frontend/src/types/calendar.ts:12`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)

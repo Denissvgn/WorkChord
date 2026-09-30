@@ -102,11 +102,11 @@ flowchart LR
 | [GanttTask](../entities/types_gantt_GanttTask.md) | Class | 6 | — | — |
 | [GanttResponse](../entities/types_gantt_GanttResponse.md) | Class | 56 | — | — |
 | [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Class | 66 | — | — |
-| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Class | 74 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
-| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Class | 81 | — | — |
-| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Class | 89 | — | — |
-| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Class | 97 | — | — |
-| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Class | 101 | — | — |
-| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Class | 108 | — | — |
-| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Class | 113 | — | — |
-| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 95 | — | — |
+| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Class | 76 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
+| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Class | 84 | — | — |
+| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Class | 92 | — | — |
+| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Class | 100 | — | — |
+| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Class | 104 | — | — |
+| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Class | 111 | — | — |
+| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Class | 116 | — | — |
+| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 98 | — | — |

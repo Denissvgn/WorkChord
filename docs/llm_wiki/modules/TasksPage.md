@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../components/iteration/IterationSelector` | `IterationSelector` |
 | `../components/overview/OverviewTaskReturnBar` | `OverviewTaskReturnBar` |
 | `../components/planning/PlanReturnBar` | `PlanReturnBar` |
+| `../components/tasks/BacklogPanel` | `BacklogPanel` |
 | `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` |
 | `../components/tasks/ImportTasksModal` | `ImportTasksModal` |
 | `../components/tasks/KanbanBoard/KanbanBoard` | `KanbanBoard` |
@@ -23,6 +24,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../components/tasks/TaskEditorDrawer` | `TaskEditorDrawer` |
 | `../components/tasks/TaskFiltersBar` | `TaskFiltersBar`, `TaskFilters` |
 | `../components/tasks/TaskList` | `TaskList`, `SortKey`, `TaskMode` |
+| `../components/tasks/TaskSearch` | `TaskSearch` |
 | `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout`, `SlideOverDrawer` |
 | `../features/overview/overviewTaskThread` | `OVERVIEW_TASK_ORIGIN`, `OVERVIEW_TASK_ORIGIN_PARAM`, `OVERVIEW_TASK_PARAM`, `OVERVIEW_TASK_RETURN_PARAM`, `OVERVIEW_TASK_THREAD_PARAM`, `overviewTaskThreadSource`, `positiveTaskId` |
 | `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUE_PARAM`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `PlanningTaskIssue` |
@@ -32,6 +34,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../services/taskService` | `taskService` |
 | `../store/iterationStore` | `useIterationStore` |
 | `../types/savedView` | `SavedView` |
+| `../utils/savedViewState` | `savedViewModified` |
 | `../utils/taskFilterDefaults` | `defaultFilters` |
 | `@tanstack/react-query` | `useQuery` |
 | `clsx` | `clsx` |
@@ -67,7 +70,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (23) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
@@ -75,10 +78,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ViewMode](../entities/ViewMode.md) | Type alias | 62 | — | — |
+| [ViewMode](../entities/ViewMode.md) | Type alias | 65 | — | — |

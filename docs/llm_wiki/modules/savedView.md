@@ -27,6 +27,8 @@ flowchart LR
     n7["frontend/src/pages/TriagePage.tsx"]
     n8["frontend/src/services/savedViewService.ts"]
     n9["frontend/src/types/savedView.ts"]
+    n10["frontend/src/utils/savedViewState.test.ts"]
+    n11["frontend/src/utils/savedViewState.ts"]
     n0 --> n4
     n0 --> n8
     n0 --> n9
@@ -38,6 +40,7 @@ flowchart LR
     n3 --> n4
     n3 --> n8
     n3 --> n9
+    n3 --> n11
     n4 --> n9
     n5 --> n8
     n5 --> n9
@@ -45,10 +48,14 @@ flowchart LR
     n6 --> n4
     n6 --> n8
     n6 --> n9
+    n6 --> n11
     n7 --> n4
     n7 --> n8
     n7 --> n9
     n8 --> n9
+    n10 --> n9
+    n10 --> n11
+    n11 --> n9
     click n0 "../modules/SavedViewDashboardCards.md"
     click n1 "../modules/AppSidebar.test.md"
     click n2 "../modules/AppSidebar.md"
@@ -59,6 +66,8 @@ flowchart LR
     click n7 "../modules/TriagePage.md"
     click n8 "../modules/savedViewService.md"
     click n9 "../modules/savedView.md"
+    click n10 "../modules/savedViewState.test.md"
+    click n11 "../modules/savedViewState.md"
 ```
 
 ### Internal neighbors
@@ -74,6 +83,8 @@ flowchart LR
 | Inbound | [TasksPage](../modules/TasksPage.md) |
 | Inbound | [TriagePage](../modules/TriagePage.md) |
 | Inbound | [savedViewService](../modules/savedViewService.md) |
+| Inbound | [savedViewState.test](../modules/savedViewState.test.md) |
+| Inbound | [savedViewState](../modules/savedViewState.md) |
 
 ## Classes
 

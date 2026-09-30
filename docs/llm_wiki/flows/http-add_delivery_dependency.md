@@ -1,0 +1,99 @@
+# add_delivery_dependency
+
+**Entry point:** `add_delivery_dependency` (`http`)
+**Source:** [delivery_dependencies](../modules/delivery_dependencies.md)
+**Modules touched:** [delivery_dependencies](../modules/delivery_dependencies.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [routers_task_domain](../modules/routers_task_domain.md)
+
+## Call sequence
+
+<!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
+```mermaid
+sequenceDiagram
+    participant p0 as add_delivery_dependency
+    participant p1 as domain_result
+    participant p2 as HTTPException
+    participant p3 as exc.detail
+    participant p4 as str
+    participant p5 as DeliveryDependencyService(…).add
+    participant p6 as DeliveryDependencyService
+    p0->>p1: domain_result
+    p1-->>p2: HTTPException
+    p1-->>p3: exc.detail
+    p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
+    p0-->>p5: DeliveryDependencyService(…).add
+    p0->>p6: DeliveryDependencyService
+```
+
+## Data flow
+
+<!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+```mermaid
+flowchart LR
+    s1["1. add_delivery_dependency"]
+    s2["2. domain_result"]
+    s3["3. HTTPException"]
+    s4["4. exc.detail"]
+    s5["5. HTTPException"]
+    s6["6. str"]
+    s7["7. HTTPException"]
+    s8["8. DeliveryDependencyService(…).add"]
+    s9["9. DeliveryDependencyService"]
+    s1 -->|"domain_result(...)"| s2
+    s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
+    s2 -. "exc.detail(data not statically known)" .-> s4
+    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "str(exc)" .-> s6
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
+    s1 -. "DeliveryDependencyService(…).add(task_id, data.kind, data.target_id, data.expected_version)" .-> s8
+    s1 -->|"DeliveryDependencyService(db)"| s9
+    click s1 "../modules/delivery_dependencies.md"
+    click s2 "../modules/routers_task_domain.md"
+    click s9 "../modules/delivery_dependency_service.md"
+```
+
+### Step data
+
+| Step | Inputs | Reads | Writes | Returns |
+|---|---|---|---|---|
+| `add_delivery_dependency` | `task_id: int`, `data: DeliveryDependencyInput`, `db: DeliveryDatabase` | - | - | `...` |
+| `domain_result` | `awaitable` | `TaskVersionConflictError` | - | `result` |
+| `HTTPException` | - | - | - | - |
+| `exc.detail` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `DeliveryDependencyService(…).add` | - | - | - | - |
+| `DeliveryDependencyService` | - | - | - | - |
+
+### Call data
+
+| From | To | Line | Call |
+|---|---|---:|---|
+| add_delivery_dependency | domain_result | 30 | `domain_result(...)` |
+| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 31 | `str(exc)` |
+| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| add_delivery_dependency | DeliveryDependencyService(…).add | 30 | `DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version)` |
+| add_delivery_dependency | DeliveryDependencyService | 30 | `DeliveryDependencyService(db)` |
+
+### Boundary effects
+
+*No boundary effects detected.*
+
+### Static analysis gaps
+
+| Kind | Step | Target | Line |
+|---|---|---|---:|
+| external_call | `domain_result` | `HTTPException` | 29 |
+| unresolved_call | `domain_result` | `exc.detail` | 29 |
+| external_call | `domain_result` | `HTTPException` | 31 |
+| external_call | `domain_result` | `HTTPException` | 33 |
+| unresolved_call | `add_delivery_dependency` | `DeliveryDependencyService(db).add` | 30 |
+
+## Behavior
+
+Requires edit permission on the dependent task, read permission on the target and the supplied task version. It locks shared planning before graph mutation, validates task/milestone cycles and clears stale current evidence while retaining history. Any failure rolls back the complete command.

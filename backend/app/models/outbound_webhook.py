@@ -31,6 +31,7 @@ class OutboundDeliveryChannel(str, Enum):
 
     WEBHOOK = "webhook"
     EMAIL = "email"
+    INBOX = "inbox"
 
 
 class OutboundWebhookTarget(Base):
@@ -121,7 +122,7 @@ class OutboundWebhookDelivery(Base):
             name="ck_outbound_webhook_deliveries_status",
         ),
         CheckConstraint(
-            "channel IN ('webhook', 'email')",
+            "channel IN ('webhook', 'email', 'inbox')",
             name="ck_outbound_webhook_deliveries_channel",
         ),
         Index("ix_outbound_webhook_deliveries_target_status", "target_id", "status"),

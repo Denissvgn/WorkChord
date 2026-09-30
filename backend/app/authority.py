@@ -112,8 +112,10 @@ def _scope_conditions(authority):
         c = table.c
         name = table.name
         condition = None
-        if name == "task_deletion_fences":
+        if name in {"task_deletion_fences", "planning_state"}:
             condition = false()
+        elif name in {"task_subscriptions", "inbox_notifications"}:
+            condition = and_(c.principal_id == authority.principal_id, c.task_id.in_(task_ids)) if authority.principal_id is not None else false()
         elif name == "projects":
             condition = c.id.in_(projects)
         elif name == "iterations":
@@ -151,6 +153,8 @@ def _scope_conditions(authority):
             condition = c.principal_id == authority.principal_id if authority.principal_id is not None else c.id == authority.session_id
         elif name == "calendars":
             condition = true() if workspace_read else c.id.in_(select(iterations.c.calendar_id).where(project_condition))
+        elif name in {"profile_availability", "profile_absences"}:
+            condition = c.profile_id == authority.profile_id if authority.profile_id is not None else false()
         elif name == "team_member_profiles":
             condition = true() if workspace_read else c.id == authority.profile_id
         elif name == "team_member_profile_skills":
@@ -277,7 +281,7 @@ def _object_project(session, obj):
         if value is None and entity_type == "task":
             value = session.info.get("command_task_projects", {}).get(entity_id)
         return value
-    for key, target in (("iteration_id", "iterations"), ("task_id", "tasks"), ("milestone_id", "project_milestones"), ("release_id", "releases")):
+    for key, target in (("iteration_id", "iterations"), ("task_id", "tasks"), ("original_task_id", "tasks"), ("milestone_id", "project_milestones"), ("release_id", "releases")):
         foreign_id = getattr(obj, key, None)
         if foreign_id is not None:
             target_table = Base.metadata.tables[target]
@@ -309,9 +313,15 @@ def authorize_domain_writes(session, _flush_context, _instances):
             continue
         if table == "agent_actors" and obj.id == authority.actor_id and changed <= {"last_seen_at"} and obj not in session.deleted and obj not in session.new:
             continue
+        if table in {"planning_state", "profile_availability", "profile_absences"} and not authority.operator:
+            raise AuthorityError("availability_command_required", "Use the versioned availability commands.")
         owned_personal = (table == "user_sessions" and obj.principal_id == authority.principal_id and authority.principal_id is not None
                           or table == "saved_views" and obj.scope == "personal" and
                           (obj.owner_principal_id == authority.principal_id and authority.principal_id is not None or obj.created_by_session_id == authority.session_id and authority.session_id is not None))
+        if table in {"task_subscriptions", "inbox_notifications"} and obj.principal_id == authority.principal_id:
+            owned_personal = True
+        if table in {"task_comments", "task_comment_revisions"} and obj in session.new and obj.principal_id != authority.principal_id:
+            raise AuthorityError("comment_authorship_required", "Discussion authorship must match the current account.")
         if protocol and table == "agent_idempotency_records" and obj.actor_id == authority.actor_id:
             owned_personal = True
         project_id = _object_project(session, obj)
@@ -323,7 +333,7 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 action = "review" if obj.purpose == "verification" else "execute"
             elif obj in session.new and obj.task_id in session.info.get("review_rework_tasks", set()):
                 action = "review"
-        derived = table in {"task_brief_revisions", "task_progress_records", "task_review_records", "task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
+        derived = table in {"task_comments", "task_comment_revisions", "task_brief_revisions", "task_progress_records", "task_review_records", "task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
         if derived and not authority.allows(project_id, action):
             action = "execute" if authority.allows(project_id, "execute") else "review"
         if isinstance(obj, Task):

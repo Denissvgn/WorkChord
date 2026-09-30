@@ -40,5 +40,5 @@ export const writeTaskDraft = (key: string | null, values: TaskEditorValues) => 
 
 export const removeTaskDraft = (key: string | null, includeProgress = false) => {
     if (!key) return;
-    try { sessionStorage.removeItem(key); if (includeProgress) sessionStorage.removeItem(`${key}:progress`); } catch { /* Storage may be disabled. */ }
+    try { sessionStorage.removeItem(key); if (includeProgress) { sessionStorage.removeItem(`${key}:progress`); sessionStorage.removeItem(`${key}:discussion`); } } catch { /* Storage may be disabled. */ }
 };

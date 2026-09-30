@@ -276,6 +276,9 @@ class TaskBriefService:
             raise ValueError("Review requires resolved, uncanceled leaf work")
         if not accepting:
             return
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        if not await DeliveryDependencyService(self.db).ready(task.id):
+            raise ValueError("Delivery prerequisites must be accepted before this work can be accepted")
         from app.models.autonomy import AgentWorkPackage
         package = await self.db.scalar(select(AgentWorkPackage).where(AgentWorkPackage.execution_task_id == task.id)
             .order_by(AgentWorkPackage.id.desc()).limit(1))

@@ -1,7 +1,7 @@
 """Task service with business logic."""
 
-from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations, current_command
-from app.authority import require_project
+from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations, current_command, lock_planning
+from app.authority import require_project, internal_authority
 import json
 from datetime import date
 from typing import Any, Optional, Sequence
@@ -1094,6 +1094,12 @@ class TaskService:
         self.ensure_expected_version(task, expected_version)
         require_project(self.db, task.project_id, "edit")
         await self._require_unclaimed_structure(await self._task_subtree_ids(task_id))
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        from app.models.delivery_dependency import DeliveryDependency
+        from sqlalchemy import delete
+        subtree = await self._task_subtree_ids(task_id)
+        await DeliveryDependencyService(self.db).require_unreferenced(subtree)
+        await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(subtree)))
         old_parent_id = task.parent_id
         # Create snapshot before deletion
         snapshot_service = SnapshotService(self.db)
@@ -1107,7 +1113,10 @@ class TaskService:
             actor_id=actor_id,
         )
 
-        await ExternalLinkService(self.db).delete_for_entity("task", task_id)
+        await self.db.flush()
+        # The task is already authorized and locked; cleanup is restricted to its exact link rows.
+        with self.db.no_autoflush, internal_authority(self.db):
+            await ExternalLinkService(self.db).delete_for_entity("task", task_id)
         await self.db.delete(task)
         await self.db.flush()
         if old_parent_id is not None:
@@ -1447,6 +1456,7 @@ class TaskService:
         return [await self.get_by_id(child.id) for child in children]
 
     async def _lock_task_scope(self, task_id, *, target_iteration_id=None, target_project_id=None, expected_revisions=None):
+        await lock_planning(self.db)
         hint = (await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first()
         if hint is None:
             return

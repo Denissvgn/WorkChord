@@ -10,7 +10,7 @@ Project service with CRUD and summary logic.
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush`, `schedule_input_command` |
+| `app.commands` | `atomic_command`, `lock_planning`, `commit_or_flush`, `schedule_input_command` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |

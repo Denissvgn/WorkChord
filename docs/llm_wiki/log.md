@@ -428,3 +428,101 @@ New databases use the frozen initial revision `20260928_0001`, including task re
 ## 2026-09-30 — Routing evidence inventory alignment
 
 Routing evidence now references the consolidated initial schema. The validator continues to require present repository-contained files and, in tracked mode, Git-index membership. Declared completion and external-acceptance states remain separate from path maintenance.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4933a9e5a68ff44506a1316d3f9e4f6c5d8ecd4692d5714140972cda6dfe6efc`
+- Pages created: 7
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2621
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+## 2026-09-30 — Scoped CI execution and durable progress
+
+CI separates database, frontend, packaging and client responsibilities. Native execution now shares atomic progress receipts, command deadlines, streamed logs and bounded process-group cleanup. Selected scopes own their evidence requirements, and the final aggregate accepts only successful required jobs.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:eb5dc5ec64cb49e9c49ec39d4728f9904f5e83fd7125ffac8e2b4a7ab09b8a3b`
+- Pages created: 27
+- Pages updated: 56
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2587
+- Pages deprecated: 1
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 5 (http=5)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-09-30 — Shared person availability
+
+Documented canonical person calendars and absences, legacy adapters, transactional planning revisions and permission-safe date capacity projections. Iteration recovery preserves shared availability.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:56971c10a0eadb04d17ddeab5deaa3dcf7bb3b1a1c1aba69e3381a106754d84d`
+- Pages created: 76
+- Pages updated: 405
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2267
+- Pages deprecated: 0
+- Semantic fields preserved: 21
+- Moved entities: none
+- Flow pages initialized: 15 (http=15)
+- Workflow pages created: 10
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-09-30 — Human work and collaboration
+
+Aligned canonical availability, shared planning reservations, delivery prerequisites, human ownership queues, bounded search, discussion and personal inbox semantics with their source boundaries. Updated editor/view navigation descriptions and documented transfer ordering and scoped recovery behavior.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:2a249433148e3e51ffa2450dd121b99124701e53b4565d6bdd1b37c3c1346743`
+- Pages created: 0
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2735
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-09-30 — Browser worker runtime identity
+
+Documented explicit interpreter propagation from the native runner through the managed browser to inbox delivery, preserving virtual-environment identity and the disposable database boundary.

@@ -85,6 +85,11 @@ class BacklogSnapshotService:
         if collision is not None:
             raise ValueError("A snapshot task ID is already in another scope")
         removed = set(current) - ids
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        from app.models.delivery_dependency import DeliveryDependency
+        await DeliveryDependencyService(self.db).require_unreferenced(removed)
+        await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed)))
+        self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
         outside = await self.db.scalar(select(TaskDependency.id).where(TaskDependency.depends_on_id.in_(removed), TaskDependency.task_id.notin_(removed)).limit(1))
         if outside is not None:
             raise ValueError("Restore would remove a referenced task")

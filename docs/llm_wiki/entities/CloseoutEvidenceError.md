@@ -94,4 +94,4 @@ flowchart LR
 | `_validate_availability` | call | [database_migration_closeout](../modules/database_migration_closeout.md) | 12 |
 | `_validate_backup_restore` | call | [database_migration_closeout](../modules/database_migration_closeout.md) | 4 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

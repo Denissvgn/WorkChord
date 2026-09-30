@@ -44,10 +44,12 @@ flowchart LR
     n3["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
     n4["frontend/src/components/tasks/TaskList.tsx"]
     n5["frontend/src/pages/TasksPage.tsx"]
-    n6["frontend/src/utils/taskFilterDefaults.ts"]
-    n7["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
-    n8["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
-    n9["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
+    n6["filterSignature (frontend/src/utils/savedViewState.ts)"]
+    n7["savedViewModified (frontend/src/utils/savedViewState.ts)"]
+    n8["frontend/src/utils/taskFilterDefaults.ts"]
+    n9["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
+    n10["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
+    n11["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -57,16 +59,20 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/KanbanBoard.md"
     click n2 "../modules/SavedViewsControl.md"
     click n3 "../modules/TaskFiltersBar.md"
     click n4 "../modules/TaskList.md"
     click n5 "../modules/TasksPage.md"
-    click n6 "../modules/taskFilterDefaults.md"
-    click n7 "../modules/taskFilters.md"
-    click n8 "../modules/taskFilters.md"
-    click n9 "../modules/visibleWork.md"
+    click n6 "../modules/savedViewState.md"
+    click n7 "../modules/savedViewState.md"
+    click n8 "../modules/taskFilterDefaults.md"
+    click n9 "../modules/taskFilters.md"
+    click n10 "../modules/taskFilters.md"
+    click n11 "../modules/visibleWork.md"
 ```
 
 ### Summary
@@ -84,6 +90,8 @@ flowchart LR
 | `TaskFiltersBar` | type_reference | [TaskFiltersBar](../modules/TaskFiltersBar.md) | — |
 | `TaskList` | import | [TaskList](../modules/TaskList.md) | — |
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |
+| `filterSignature` | type_reference | [savedViewState](../modules/savedViewState.md) | — |
+| `savedViewModified` | type_reference | [savedViewState](../modules/savedViewState.md) | — |
 | `taskFilterDefaults` | import | [taskFilterDefaults](../modules/taskFilterDefaults.md) | — |
 | `filterTaskWithChildren` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
 | `taskMatchesFilters` | type_reference | [taskFilters](../modules/taskFilters.md) | — |

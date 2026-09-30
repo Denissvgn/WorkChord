@@ -1,6 +1,6 @@
 # VacationImportResponse
 
-**Location:** `backend/app/schemas/team.py:70`
+**Location:** `backend/app/schemas/team.py:77`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

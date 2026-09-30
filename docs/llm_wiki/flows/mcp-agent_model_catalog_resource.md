@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_model_catalog_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 4 more
+**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 6 more
 
 **Complete modules touched:**
 
@@ -10,6 +10,8 @@
 - [agent_service](../modules/agent_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -79,7 +81,7 @@ sequenceDiagram
     p20-->>p25: RuntimeError
 ```
 
-> Call sequence diagram shows 30 of 102 interactions; 72 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 113 interactions; 83 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

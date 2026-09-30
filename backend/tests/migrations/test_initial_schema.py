@@ -16,10 +16,11 @@ from app.services.upgrade_service import (
 def test_initial_schema_is_one_frozen_revision():
     scripts = ScriptDirectory.from_config(alembic_config())
     revisions = list(scripts.walk_revisions())
-    assert len(revisions) == 1
-    assert revisions[0].revision == "20260928_0001"
-    assert revisions[0].down_revision is None
-    source = Path(revisions[0].path).read_text()
+    roots = [revision for revision in revisions if revision.down_revision is None]
+    assert len(roots) == 1
+    assert roots[0].revision == "20260928_0001"
+    assert len(scripts.get_heads()) == 1
+    source = Path(roots[0].path).read_text()
     assert "app.models" not in source
     assert "Base.metadata" not in source
     assert "create_all" not in source

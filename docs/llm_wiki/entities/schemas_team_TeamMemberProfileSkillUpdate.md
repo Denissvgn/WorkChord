@@ -1,6 +1,6 @@
 # TeamMemberProfileSkillUpdate
 
-**Location:** `backend/app/schemas/team.py:134`
+**Location:** `backend/app/schemas/team.py:141`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)

@@ -31,3 +31,6 @@ def test_nullable_cycles_are_staged_without_weakening_required_foreign_keys() ->
     assert "duplicate_of_id" in staged_reference_columns(tables["triage_items"])
     assert "iteration_id" not in staged_reference_columns(tables["tasks"])
     assert transfer_order().index("iterations") < transfer_order().index("tasks")
+    assert staged_reference_columns(tables["delivery_dependencies"]) == ()
+    assert transfer_order().index("tasks") < transfer_order().index("delivery_dependencies")
+    assert transfer_order().index("project_milestones") < transfer_order().index("delivery_dependencies")

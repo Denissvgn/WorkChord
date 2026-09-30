@@ -4,11 +4,7 @@
 
 ## Description
 
-Snapshot service for iteration state backups.
-
-Stores bounded, checksummed pre-command points transactionally in the database; preview and failed commands cannot publish or evict them. Captured project scopes gate payload reads. Restore preserves supported IDs, recovers captured iteration dates and absences, records baseline restoration, and invalidates current acceptance. Ambiguous legacy files remain quarantined provenance records. Global configuration and external side effects require separate recovery.
-
-Scheduled and backlog restoration share a version allocator under the owning scope lock. It advances above the saved version, live task, retained history and durable deletion fence. Current progress and acceptance are cleared; immutable history survives. A deleted task without a reliable deletion fence returns snapshot_version_history_unknown (409), requiring recovery from a complete matching database backup.
+Stores bounded recovery points within the owning planning transaction. Iteration restoration preserves current shared person availability and delivery prerequisites, while legacy unlinked allocation absences retain local recovery. Incoming delivery references block destructive restoration. Restored task versions exceed retained fences and history; current evidence and acceptance are invalidated.
 
 ## Imports
 
@@ -46,7 +42,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
+| Inbound | `backend` (13) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -55,7 +51,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

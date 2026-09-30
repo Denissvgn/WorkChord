@@ -1,3 +1,4 @@
+import { savedViewModified } from '../../utils/savedViewState';
 import i18n from '../../i18n/i18n';
 import { useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -66,6 +67,8 @@ export const SavedViewsControl = ({
         () => savedViews.find(view => view.id === selectedViewId) ?? null,
         [savedViews, selectedViewId],
     );
+
+    const modified = savedViewModified(selectedView, filters, sortKey);
 
     const canMutateSelected = Boolean(
         selectedView &&
@@ -240,16 +243,16 @@ export const SavedViewsControl = ({
 
                 <Button variant="secondary" size="sm" onClick={openCreateForm}>
                     <Save className="mr-1 h-4 w-4" />
-                    {t('surfaces.savedViews.save')}
+                    {t('teamwork.saveAs')}
                 </Button>
                 <Button
                     variant="outline"
                     size="sm"
                     onClick={handleUpdateSelected}
-                    disabled={!canMutateSelected || updateMutation.isPending}
+                    disabled={!canMutateSelected || !modified || updateMutation.isPending}
                     isLoading={updateMutation.isPending}
                 >
-                    {t('surfaces.savedViews.update')}
+                    {t('teamwork.saveChanges')}
                 </Button>
                 <Button
                     variant="outline"
@@ -271,6 +274,11 @@ export const SavedViewsControl = ({
                     {t('surfaces.savedViews.delete')}
                 </Button>
 
+                {modified && <>
+                    <span role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
+                    {selectedView && <Button size="sm" variant="ghost" onClick={() => onApplyView(selectedView)}>{t('teamwork.resetView')}</Button>}
+                    <p className="w-full text-sm text-content-secondary">{t('teamwork.draftViewHelp')}</p>
+                </>}
                 {selectedView && !selectedView.is_valid && (
                     <span className="inline-flex items-center gap-1 text-sm text-feedback-warning-foreground">
                         <AlertTriangle className="h-4 w-4" />

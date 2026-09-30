@@ -1,6 +1,6 @@
 # ScheduleDecisionExplanation
 
-**Location:** `frontend/src/types/gantt.ts:101`
+**Location:** `frontend/src/types/gantt.ts:104`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

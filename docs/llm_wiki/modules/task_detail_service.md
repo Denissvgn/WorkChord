@@ -4,9 +4,7 @@
 
 ## Description
 
-Small UI reads, independent of the complete authoritative execution graph.
-
-UI detail and search return deterministic, explicitly bounded parent, direct-child, dependency and owner projections. Completeness markers and continuation cursors prevent clients from mistaking a page for an execution graph. The service does not overwrite authoritative ORM child collections with a truncated list.
+Provides bounded task references, title/ID lookup and human ownership queues without loading the full execution graph. Projections include project/backlog context and current attributed acceptance. Owned closed work with withdrawn or unknown acceptance stays visible for reconciliation. Exact-agent dispatch continues to use its separate complete context.
 
 ## Imports
 
@@ -16,7 +14,7 @@ UI detail and search return deterministic, explicitly bounded parent, direct-chi
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.schemas.task` | `TaskAgentReadiness` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReference`, `TaskReferencePage` |
-| `sqlalchemy` | `or_`, `select` |
+| `sqlalchemy` | `and_`, `or_`, `select` |
 | `sqlalchemy.orm` | `selectinload`, `raiseload` |
 
 ## Local dependency map
@@ -31,7 +29,8 @@ flowchart LR
     n4["backend/app/schemas/task.py"]
     n5["backend/app/schemas/task_detail.py"]
     n6["backend/app/services/task_detail_service.py"]
-    n7["backend/tests/test_task_domain.py"]
+    n7["backend/tests/test_human_work_queries.py"]
+    n8["backend/tests/test_task_domain.py"]
     n0 --> n2
     n1 --> n4
     n1 --> n6
@@ -46,10 +45,15 @@ flowchart LR
     n6 --> n4
     n6 --> n5
     n7 --> n0
-    n7 --> n1
     n7 --> n2
     n7 --> n4
     n7 --> n6
+    n7 --> n8
+    n8 --> n0
+    n8 --> n1
+    n8 --> n2
+    n8 --> n4
+    n8 --> n6
     click n0 "../modules/authority.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/models_task.md"
@@ -57,7 +61,8 @@ flowchart LR
     click n4 "../modules/schemas_task.md"
     click n5 "../modules/task_detail.md"
     click n6 "../modules/task_detail_service.md"
-    click n7 "../modules/test_task_domain.md"
+    click n7 "../modules/test_human_work_queries.md"
+    click n8 "../modules/test_task_domain.md"
 ```
 
 ### Internal neighbors
@@ -66,6 +71,7 @@ flowchart LR
 |---|---|
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
+| Inbound | [test_human_work_queries](../modules/test_human_work_queries.md) |
 | Inbound | [test_task_domain](../modules/test_task_domain.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [models_task](../modules/models_task.md) |

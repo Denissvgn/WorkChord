@@ -1,3 +1,6 @@
+import { savedViewModified } from '../utils/savedViewState';
+import { BacklogPanel } from '../components/tasks/BacklogPanel';
+import { TaskSearch } from '../components/tasks/TaskSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -140,6 +143,7 @@ const TasksPage = () => {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const appliedRequestedViewIdRef = useRef<number | null>(null);
+    const appliedPlanningContext = useRef<string | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
@@ -300,6 +304,9 @@ const TasksPage = () => {
     ]);
 
     useEffect(() => {
+        const context = `${rawPlanningIssue}:${requestedSavedViewId}`;
+        if (appliedPlanningContext.current === context) return;
+        appliedPlanningContext.current = context;
         if (rawPlanningIssue !== null && requestedPlanningIssue === null) {
             const nextSearchParams = new URLSearchParams(searchParams);
             nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
@@ -395,9 +402,7 @@ const TasksPage = () => {
     const applySavedView = useCallback((view: SavedView) => {
         setFilters(filtersFromSavedView(view));
         const savedSortKey = sortKeyFromSavedView(view);
-        if (savedSortKey) {
-            setSortKey(savedSortKey);
-        }
+        setSortKey(savedSortKey ?? "priority");
     }, []);
 
     const selectSavedView = useCallback((viewId: number | null) => {
@@ -424,26 +429,8 @@ const TasksPage = () => {
     }, [searchParams, setSearchParams]);
 
     const changeFilters = useCallback((nextFilters: TaskFilters) => {
-        const planningIssueChanged = (
-            nextFilters.planningIssue !== filters.planningIssue
-        );
         setFilters(nextFilters);
-        if (!planningIssueChanged) return;
-
-        appliedRequestedViewIdRef.current = null;
-        setSelectedSavedViewId(null);
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('view');
-        if (nextFilters.planningIssue) {
-            nextSearchParams.set(
-                PLANNING_TASK_ISSUE_PARAM,
-                nextFilters.planningIssue,
-            );
-        } else {
-            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-        }
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [filters.planningIssue, searchParams, setSearchParams]);
+    }, []);
 
     const clearIterationViewContext = useCallback(() => {
         setFilters(defaultFilters);
@@ -491,31 +478,25 @@ const TasksPage = () => {
         return <QueryErrorState error={iterationsError} onRetry={() => void refetchIterations()} />;
     }
 
-    if (!iterations || iterations.length === 0) {
-        return (
-            <PageLayout>
-                <PageHeader
-                    title={t('tasks.title')}
-                    subtitle={t('tasks.noIterationsBody')}
-                    actions={(
-                        <Link to="/iterations" className="btn primary">
-                            {t('tasks.goToIterations')}
-                        </Link>
-                    )}
-                />
-                <PlanReturnBar />
-                <div className="empty">
-                    <h4>{t('tasks.noIterationsTitle')}</h4>
-                    <p>{t('tasks.noIterationsBody')}</p>
-                </div>
-            </PageLayout>
-        );
+    if (!iterations || iterations.length === 0 || searchParams.get('scope') === 'backlog') {
+        return <PageLayout>
+            <PageHeader title={t('tasks.title')} subtitle={t('teamwork.backlogHelp')}
+                actions={<Link className="btn secondary" to={iterations?.length ? '/tasks' : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+            <div className="space-y-6"><TaskSearch /><BacklogPanel /></div>
+            <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
+                title={task => task?.title ?? t('taskEditor.editTask')} />
+        </PageLayout>;
     }
 
     return (
         <PageLayout variant="workbench" className="wc-workbench-flush tasks-workbench">
             {/* Main Content Area */}
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
+                <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
+                    <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
+                    <TaskSearch />
+                    {savedViewModified(selectedSavedView, filters, sortKey) && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
+                </div>
                 <PlanReturnBar />
                 <OverviewTaskReturnBar
                     active={isFromOverview}

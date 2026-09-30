@@ -4,13 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/components/tasks/TaskForm.tsx`._
-
-Task drafts have explicit dirty/pending guards and same-account recovery storage. Conflicts load current state before an explicit reapply; saving stays disabled while that refresh is incomplete. Stable labels/disclosure state identify controls, and baselines, forecasts and actual events remain distinct in the editor.
-
-The shared task form edits canonical brief fields and explicit unknown estimates while preserving legacy text for deliberate conversion. Durable owners and iteration capacity have separate controls. Metadata and progress drafts share dismissal protection; conflicts require a current-version comparison before reapplication. Iteration controls follow the task after commit/uncommit, and triage handoff preserves the structured draft.
-
-A validated canonical template brief takes precedence over legacy title/description/checklist adaptation. All brief content and verification instructions are copied; criteria receive fresh IDs and revision 1 for the new task. The source template remains unchanged.
+Places title, durable owner, capacity assignment, estimates and commitment state before the canonical brief. AI assistance is an intentional disclosure. The shared editor guards task, work and discussion drafts, preserves conflicts, and separates delivery prerequisites and discussion from current execution evidence.
 
 ## Imports
 
@@ -37,10 +31,13 @@ A validated canonical template brief takes precedence over legacy title/descript
 | `../feedback/QueryState` | `QueryErrorState` |
 | `../labels/LabelSelector` | `LabelSelector` |
 | `../team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` |
+| `./DeliveryDependencies` | `DeliveryDependencies` |
+| `./PersonCapacity` | `PersonCapacity` |
 | `./StatusChangeControl` | `StatusChangeControl` |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
 | `./TaskBriefEditor` | `TaskBriefEditor` |
 | `./TaskDependencySelector` | `TaskDependencySelector` |
+| `./TaskDiscussion` | `TaskDiscussion` |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` |
 | `./TaskWorkPanel` | `TaskWorkPanel` |
 | `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft` |
@@ -75,7 +72,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (29) |
+| Outbound | `frontend` (32) |
 
 ### External packages
 
@@ -83,13 +80,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 49 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Class | 52 | — | — |
 
 ## Functions
 

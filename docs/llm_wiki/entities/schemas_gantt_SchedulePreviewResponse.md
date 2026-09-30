@@ -1,6 +1,6 @@
 # SchedulePreviewResponse
 
-**Location:** `backend/app/schemas/gantt.py:110`
+**Location:** `backend/app/schemas/gantt.py:114`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -17,6 +17,7 @@ is persisted.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `input_revision` | `int` | `input_revision` | Yes | No | — | — | — | — |
+| `input_planning_revision` | `int \| None` | `input_planning_revision` | No | Yes | `None` | — | — | — |
 | `tasks` | `list[GanttTask]` | `tasks` | Yes | No | — | — | — | — |
 | `overdue_task_ids` | `list[int]` | `overdue_task_ids` | No | No | `[]` | — | — | — |
 | `schedule_result` | `Optional[ScheduleResult]` | `schedule_result` | No | Yes | `None` | — | — | — |
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `input_revision`, `overdue_task_ids`, `schedule_result`, `tasks` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `input_planning_revision`, `input_revision`, `overdue_task_ids`, `schedule_result`, `tasks` |
 
 ### Structure
 

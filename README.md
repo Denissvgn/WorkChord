@@ -1,18 +1,13 @@
 # WorkChord
 
-WorkChord is a self-hosted planning and delivery workspace for human teams and
-agent-assisted execution. It brings projects, iterations, triage, task trees,
-capacity, Gantt and roadmap views, release planning, audit history, REST APIs,
-and authenticated MCP workflows into one application.
+WorkChord is a self-hosted workspace for planning and delivering team work.
+Organize projects and task trees, assign owners, plan capacity, and follow work
+through execution and review. Gantt, board, and roadmap views share the same
+tasks. Agent assistance is optional through REST and authenticated MCP APIs.
 
-## Included components
-
-- A FastAPI and SQLAlchemy backend with PostgreSQL integration storage,
-  Alembic migrations, and an explicit SQLite development/migration-source
-  compatibility path.
-- A React and Vite frontend with English and Russian interfaces.
-- Docker Compose profiles for local and production-style deployments.
-- Portable WorkChord planner and worker role packages for agent integrations.
+Built with FastAPI, SQLAlchemy, React, and Vite. The web interface supports
+English and Russian. PostgreSQL is the deployment database; SQLite is supported
+for local development.
 
 ## Requirements
 
@@ -59,136 +54,28 @@ The MCP command is installed with the backend package:
 .venv/bin/workchord-mcp --help
 ```
 
-## Docker
-
-For a clean local PostgreSQL container deployment:
+## Container setup
 
 ```bash
 cp .env.example .env
-docker compose config --quiet
+# Configure secrets and sign-in settings in .env before starting.
 docker compose up --build --detach
-docker compose ps
 ```
 
-For a clean self-hosted server checkout, the container-backed acceptance
-profile builds revision-bound backend and frontend artifacts, starts the
-application plus its signing, locked-object, and CAS analogues, and writes a
-bounded acceptance receipt:
+Managed sign-in is the default. Follow the [identity setup guide](docs/identity-and-recovery.md)
+to configure your provider and establish the first owner. For an isolated local
+workspace, that guide also describes the explicit trusted-local mode.
 
-```bash
-./scripts/server/accept_self_hosted.sh
-```
+## Documentation
 
-This receipt confirms only the self-hosted server profile. It is structurally
-separate from production autonomy evidence and never changes the production
-`NO-SHIP` decision or G1-G15. The server binds to loopback by default; terminate
-TLS at a host reverse proxy before remote access. See the
-[self-hosted server acceptance runbook](docs/runbooks/self-hosted-server-acceptance.md).
-
-The integration stack runs PostgreSQL 18 and stores its cluster, WAL archive,
-and backup artifacts in separate major-version-aware volumes. Do not copy a
-live database volume. Use the checksummed logical/base backup jobs and prove an
-isolated restore as described in the
-[backup and restore runbook](docs/runbooks/postgresql-backup-restore.md).
-
-`docker-compose.prod.yml` is the hardened PostgreSQL deployment profile. It
-requires separate migration, runtime, and backup credentials; exact image
-identities; verified database TLS; HTTPS origins; host allowlists; proxy trust;
-and independently managed secrets. Start with the
-[PostgreSQL operator and developer guide](docs/runbooks/postgresql-operations.md)
-rather than adapting the local defaults for production.
-
-## Configuration
-
-`.env.example` lists supported environment settings. At minimum, use a strong
-`SETTINGS_ENCRYPTION_KEY` before saving runtime credentials. Keep `.env`, API
-keys, database files, and certificates outside version control.
-
-The direct Python development default remains SQLite only for local work and
-tests. PostgreSQL is the integration and production target, and production
-fails closed when it is configured with SQLite. Database URL, pool, TLS,
-process-role, migration, maintenance, and readiness policies are indexed in
-the [database operations guide](docs/runbooks/postgresql-operations.md).
-
-The protected control plane uses `WORKCHORD_ADMIN_API_KEY`. Agent provisioning
-uses `AGENT_BOOTSTRAP_API_KEY`; normal MCP actors should receive separate,
-least-privilege credentials.
-
-Model-aware routing is restart-bound and defaults to `off`. Shadow or enforced
-operation requires a server-side topology-readiness authority; readiness cannot
-be supplied through an environment variable, API, or UI override. A deployment
-without that authority must remain off, and configured `shadow` or `enforced`
-resolves to effective `off`. See the
-[model-aware routing operations guide](docs/runbooks/model-aware-routing.md)
-for enablement, evidence handling, and non-destructive rollback.
-
-## PostgreSQL migration and capacity
-
-The pre-cutover runbook set is deliberately fail closed:
-
-- [SQLite source migration](docs/runbooks/sqlite-to-postgresql-migration.md)
-- [cutover, rollback, and stop conditions](docs/runbooks/sqlite-to-postgresql-cutover.md)
-- [security and credential rotation](docs/runbooks/postgresql-security.md)
-- [backup, PITR, and isolated restore](docs/runbooks/postgresql-backup-restore.md)
-- [scale and resilience qualification](docs/runbooks/postgresql-qualification.md)
-- [signed rehearsal and production-cutover evidence](docs/runbooks/postgresql-rehearsal-cutover-evidence.md)
-- [post-cutover release publication and independent closeout](docs/runbooks/postgresql-postcutover-release-and-closeout.md)
-- [troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
-
-Qualification can certify only **1,250 opaque browser identities, 250 active
-browser sessions, and 200 concurrent MCP/agent clients** under the frozen
-workload contract. Opaque identities are not authenticated people;
-authentication, RBAC, and any people-based capacity claim are separate scope.
-The repository's load tooling is not itself qualification evidence: three
-complete, consecutive, independently reviewed production-shaped attempts are
-required before migration rehearsal or production cutover.
-
-This repository supports the production PostgreSQL path but does not by itself
-assert that a particular deployment has cut over. Post-cutover release notes
-and a final SHIP decision are generated only from the trusted production
-evidence chain; missing production evidence remains NO-SHIP.
-
-The autonomous migration control-plane foundation also installs a fail-closed
-diagnostic:
-
-```bash
-workchord-agent-preflight
-```
-
-The current diagnostic deliberately accepts no external evidence and exits
-`2`, listing the missing charter, immutable archive, identity/KMS/WORM,
-adapter, and qualification predicates. Its JSON is explicitly unsigned and is
-not a release or production authorization. See the
-[autonomous execution preflight runbook](docs/runbooks/postgresql-autonomous-execution-preflight.md).
-
-The separate `workchord-server-acceptance` command is used only by the
-self-hosted Compose profile. The live command checks the listed database,
-revision-bound artifact, signing, retention, and CAS predicates, then signs
-the receipt. Offline verification also requires the separate signer public-key
-pin emitted by the bootstrap. The receipt is not accepted by the production
-preflight, status, cutover, handoff, or closeout paths.
-
-## Agent role packages
-
-Canonical planner and worker roles live in `agent-skills/`. Validate or build
-their deterministic archives with:
-
-```bash
-.venv/bin/python scripts/build_agent_skills.py validate
-.venv/bin/python scripts/build_agent_skills.py build --output-dir dist/agent-skills
-.venv/bin/python scripts/build_agent_skills.py build-codex-plugin \
-  --output-dir adapters/codex/workchord-agent-roles
-```
-
-The tracked Codex adapter is generated from the canonical role folders. Rebuild
-it after role changes; CI compares the committed tree with a clean generation.
-
-Public bundle delivery is disabled by default. If enabled, pin the exact
-official checksum with `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256`.
+- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md)
+- **Accounts and recovery:** [sign-in, permissions, sessions, and snapshots](docs/identity-and-recovery.md)
+- **Configuration:** [environment settings](.env.example)
+- **Self-hosting:** [server setup](docs/runbooks/self-hosted-server-acceptance.md) · [deployment topology](docs/runbooks/postgresql-deployment.md)
+- **Database operations:** [operator guide and runbook index](docs/runbooks/postgresql-operations.md) · [backup and restore](docs/runbooks/postgresql-backup-restore.md) · [troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
+- **Agent integrations:** [team setup](docs/agent-team-setup.md) · [planner role](agent-skills/workchord-pm/SKILL.md) · [worker role](agent-skills/workchord-worker/SKILL.md) · [model routing](docs/runbooks/model-aware-routing.md)
+- **API reference:** interactive documentation at `/docs` on your backend instance
 
 ## License
 
-WorkChord is released under the [MIT License](LICENSE). Third-party components
-remain subject to their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-Managed sign-in, membership, session rotation, and application snapshot recovery are described in the [identity and recovery runbook](docs/identity-and-recovery.md).
+[MIT](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) for bundled components.

@@ -174,5 +174,9 @@ class Vacation(Base):
         Integer, ForeignKey("team_members.id"), nullable=False
     )
 
+    profile_absence_id: Mapped[int | None] = mapped_column(
+        ForeignKey("profile_absences.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+
     # Relationships
     team_member: Mapped["TeamMember"] = relationship("TeamMember", back_populates="vacations")

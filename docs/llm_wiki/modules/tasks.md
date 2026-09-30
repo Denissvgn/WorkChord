@@ -20,6 +20,7 @@ Task API router.
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.services.agent_service` | `AgentService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService`, `ExternalLinkValidationError` |
 | `app.services.github_status_service` | `GitHubStatusService` |
 | `app.services.iteration_service` | `IterationService`, `IterationService` |
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -62,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

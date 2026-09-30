@@ -11,6 +11,7 @@ Bounded UI projections with explicit completeness and deterministic cursors.
 | Source | Symbols |
 |--------|---------|
 | `app.schemas.task` | `TaskResponse` |
+| `datetime` | `datetime` |
 | `pydantic` | `BaseModel`, `ConfigDict`, `Field` |
 
 ## Local dependency map
@@ -52,6 +53,6 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskReference](../entities/task_detail_TaskReference.md) | 7 | `BaseModel` | — |
-| [TaskReferencePage](../entities/task_detail_TaskReferencePage.md) | 19 | `BaseModel` | — |
-| [TaskDetailResponse](../entities/TaskDetailResponse.md) | 27 | `BaseModel` | — |
+| [TaskReference](../entities/task_detail_TaskReference.md) | 8 | `BaseModel` | — |
+| [TaskReferencePage](../entities/task_detail_TaskReferencePage.md) | 25 | `BaseModel` | — |
+| [TaskDetailResponse](../entities/TaskDetailResponse.md) | 33 | `BaseModel` | — |

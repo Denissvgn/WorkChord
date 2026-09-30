@@ -2,7 +2,17 @@
 
 **Entry point:** `workchord_pm_role` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [mcp_server](../modules/mcp_server.md)
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 3 more
+
+**Complete modules touched:**
+
+- [agent_service](../modules/agent_service.md)
+- [commands](../modules/commands.md)
+- [config](../modules/config.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [discussion_service](../modules/discussion_service.md)
+- [identity_service](../modules/identity_service.md)
+- [mcp_server](../modules/mcp_server.md)
 
 ## Call sequence
 
@@ -26,15 +36,17 @@ sequenceDiagram
     participant p14 as info.get
     participant p15 as RuntimeError
     participant p16 as CommandState
-    participant p17 as db.rollback
-    participant p18 as db.commit
-    participant p19 as db.flush
-    participant p20 as db.info.pop
-    participant p21 as _authenticate_agent_key
-    participant p22 as get_settings
-    participant p23 as Settings
-    participant p24 as AgentService(…).authenticate
-    participant p25 as AgentService
+    participant p17 as db.flush
+    participant p18 as db.info.get
+    participant p19 as DeliveryDependencyService(…).reconcile
+    participant p20 as DeliveryDependencyService
+    participant p21 as sorted
+    participant p22 as db.info.pop
+    participant p23 as set
+    participant p24 as DiscussionService(…).enqueue
+    participant p25 as DiscussionService
+    participant p26 as db.rollback
+    participant p27 as db.commit
     p0->>p1: _skill_bundle_prompt
     p1->>p2: _agent_context
     p2->>p3: _current_agent_key
@@ -52,22 +64,22 @@ sequenceDiagram
     p10-->>p15: RuntimeError
     p10->>p16: CommandState
     p10-->>p15: RuntimeError
-    p10-->>p17: db.rollback
-    p10-->>p18: db.commit
-    p10-->>p19: db.flush
-    p10-->>p17: db.rollback
-    p10-->>p20: db.info.pop
-    p10-->>p20: db.info.pop
-    p2->>p21: _authenticate_agent_key
-    p21->>p22: get_settings
-    p22->>p23: Settings
-    p21->>p6: MCPAuthError
-    p21-->>p24: AgentService(…).authenticate
-    p21->>p25: AgentService
-    p21->>p6: MCPAuthError
+    p10-->>p17: db.flush
+    p10-->>p18: db.info.get
+    p10-->>p18: db.info.get
+    p10-->>p18: db.info.get
+    p10-->>p19: DeliveryDependencyService(…).reconcile
+    p10->>p20: DeliveryDependencyService
+    p10-->>p21: sorted
+    p10-->>p22: db.info.pop
+    p10-->>p23: set
+    p10-->>p24: DiscussionService(…).enqueue
+    p10->>p25: DiscussionService
+    p10-->>p26: db.rollback
+    p10-->>p27: db.commit
 ```
 
-> Call sequence diagram shows 30 of 45 interactions; 15 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -105,6 +117,8 @@ flowchart LR
     s11 -. "mutation db.info.pop" .-> b1
     b2["mutation db.info.pop"]
     s11 -. "mutation db.info.pop" .-> b2
+    b3["mutation db.info.pop"]
+    s11 -. "mutation db.info.pop" .-> b3
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
     click s3 "../modules/mcp_server.md"
@@ -117,6 +131,7 @@ flowchart LR
     class b0 boundary
     class b1 boundary
     class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -150,15 +165,16 @@ flowchart LR
 | _open_db_session | _session_factory | 180 | `_session_factory(data not statically known)` |
 | _open_db_session | hasattr | 181 | `hasattr(session_context, '__aenter__')` |
 | _agent_context | command_transaction | 250 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 53 | `current_command(db)` |
+| command_transaction | current_command | 85 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.getenv` | `_current_agent_key` | 199 |
-| mutation | `db.info.pop` | `command_transaction` | 79 |
-| mutation | `db.info.pop` | `command_transaction` | 81 |
+| mutation | `db.info.pop` | `command_transaction` | 105 |
+| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 120 |
 
 ### Static analysis gaps
 

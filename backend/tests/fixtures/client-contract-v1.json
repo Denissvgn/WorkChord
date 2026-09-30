@@ -1111,6 +1111,34 @@
       },
       "TaskReference": {
         "properties": {
+          "acceptance_current": {
+            "default": false,
+            "title": "Acceptance Current",
+            "type": "boolean"
+          },
+          "blocked_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocked Reason"
+          },
+          "canceled_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canceled At"
+          },
           "id": {
             "title": "Id",
             "type": "integer"
@@ -1125,6 +1153,17 @@
               }
             ],
             "title": "Iteration Id"
+          },
+          "iteration_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iteration Name"
           },
           "owner_profile_id": {
             "anyOf": [
@@ -1158,6 +1197,17 @@
               }
             ],
             "title": "Project Id"
+          },
+          "project_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Name"
           },
           "status": {
             "title": "Status",

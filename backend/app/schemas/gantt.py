@@ -76,6 +76,8 @@ class WorkloadIssue(BaseModel):
 class ScheduleResult(BaseModel):
     """Result of scheduling operation."""
     success: bool
+    planning_revision: int | None = None
+    capacity_issues: list[dict] = []
     decisions: list[SchedulingDecision] = []
     workload_balanced: bool = True
     workload_issues: list[WorkloadIssue] = []
@@ -94,6 +96,7 @@ class GanttResponse(BaseModel):
 
 class ScheduleApplyRequest(BaseModel):
     expected_revision: Optional[int] = None
+    expected_planning_revision: Optional[int] = None
     rebaseline_reason: Optional[str] = None
 
 
@@ -105,6 +108,7 @@ class SchedulePreviewRequest(BaseModel):
     """
     changes: list[TaskBatchUpdateItem] = []
     expected_revision: Optional[int] = None
+    expected_planning_revision: Optional[int] = None
 
 
 class SchedulePreviewResponse(BaseModel):
@@ -114,6 +118,7 @@ class SchedulePreviewResponse(BaseModel):
     is persisted.
     """
     input_revision: int
+    input_planning_revision: int | None = None
     tasks: list[GanttTask]
     overdue_task_ids: list[int] = []
     schedule_result: Optional[ScheduleResult] = None

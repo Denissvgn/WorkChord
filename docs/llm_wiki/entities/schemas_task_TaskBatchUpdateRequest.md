@@ -15,6 +15,7 @@ Schema for updating multiple tasks in a single request.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `tasks` | `list[TaskBatchUpdateItem]` | `tasks` | Yes | No | — | — | — | — |
 | `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
+| `expected_planning_revision` | `Optional[int]` | `expected_planning_revision` | No | Yes | `None` | ge=0 | — | — |
 
 ## Methods
 
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `expected_revision`, `tasks` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `expected_planning_revision`, `expected_revision`, `tasks` |
 
 ### Structure
 

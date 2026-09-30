@@ -1,6 +1,6 @@
 # OutboundWebhookDelivery
 
-**Location:** `backend/app/models/outbound_webhook.py:114`
+**Location:** `backend/app/models/outbound_webhook.py:115`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_outbound_webhook](../modules/models_outbound_webhook.md)
@@ -50,14 +50,15 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["backend/app/observability.py"]
-    n4["OutboundWebhookService._attempt_delivery (backend/app/services/outbound_webhook_service.py)"]
-    n5["OutboundWebhookService._attempt_email (backend/app/services/outbound_webhook_service.py)"]
-    n6["OutboundWebhookService._attempt_webhook (backend/app/services/outbound_webhook_service.py)"]
-    n7["OutboundWebhookService._delivery_response (backend/app/services/outbound_webhook_service.py)"]
-    n8["OutboundWebhookService._email_delivery (backend/app/services/outbound_webhook_service.py)"]
-    n9["OutboundWebhookService._enqueue_event_records (backend/app/services/outbound_webhook_service.py)"]
-    n10["OutboundWebhookService._load_delivery (backend/app/services/outbound_webhook_service.py)"]
-    n11["OutboundWebhookService._webhook_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n4["DiscussionService.enqueue (backend/app/services/discussion_service.py)"]
+    n5["OutboundWebhookService._attempt_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n6["OutboundWebhookService._attempt_email (backend/app/services/outbound_webhook_service.py)"]
+    n7["OutboundWebhookService._attempt_webhook (backend/app/services/outbound_webhook_service.py)"]
+    n8["OutboundWebhookService._delivery_response (backend/app/services/outbound_webhook_service.py)"]
+    n9["OutboundWebhookService._email_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n10["OutboundWebhookService._enqueue_event_records (backend/app/services/outbound_webhook_service.py)"]
+    n11["OutboundWebhookService._load_delivery (backend/app/services/outbound_webhook_service.py)"]
+    n12["OutboundWebhookService._webhook_delivery (backend/app/services/outbound_webhook_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -69,11 +70,12 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_outbound_webhook.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/observability.md"
-    click n4 "../modules/outbound_webhook_service.md"
+    click n4 "../modules/discussion_service.md"
     click n5 "../modules/outbound_webhook_service.md"
     click n6 "../modules/outbound_webhook_service.md"
     click n7 "../modules/outbound_webhook_service.md"
@@ -81,6 +83,7 @@ flowchart LR
     click n9 "../modules/outbound_webhook_service.md"
     click n10 "../modules/outbound_webhook_service.md"
     click n11 "../modules/outbound_webhook_service.md"
+    click n12 "../modules/outbound_webhook_service.md"
 ```
 
 ### Summary
@@ -101,6 +104,7 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `observability` | import | [observability](../modules/observability.md) | — |
+| `DiscussionService.enqueue` | call | [discussion_service](../modules/discussion_service.md) | 1 |
 | `OutboundWebhookService._attempt_delivery` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._attempt_email` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._attempt_webhook` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
@@ -110,6 +114,5 @@ flowchart LR
 | `OutboundWebhookService._enqueue_event_records` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._load_delivery` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService._webhook_delivery` | call | [outbound_webhook_service](../modules/outbound_webhook_service.md) | 1 |
-| `OutboundWebhookService._webhook_delivery` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

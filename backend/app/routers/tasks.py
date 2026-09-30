@@ -251,7 +251,9 @@ async def batch_update_tasks(
             updated_tasks_list, results = await apply_batch_update_items(
                 service, iteration_id, iteration.end_date, data.tasks
             )
-            schedule_res = await scheduler_service.schedule_iteration(iteration_id)
+            schedule_res = await scheduler_service.schedule_iteration(iteration_id, expected_planning_revision=data.expected_planning_revision)
+            from app.services.delivery_dependency_service import DeliveryDependencyService
+            await DeliveryDependencyService(db).reconcile()
             updated_tasks_list = [service.task_to_response(await service.get_by_id(task.id), iteration.end_date) for task in updated_tasks_list]
     except Exception as e:
         if isinstance(e, TaskVersionConflictError):

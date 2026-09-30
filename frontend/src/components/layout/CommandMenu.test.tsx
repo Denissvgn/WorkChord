@@ -5,6 +5,9 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { CommandMenu, RECENT_COMMANDS_STORAGE_KEY } from './CommandMenu';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
 
+const lookup = vi.hoisted(() => vi.fn());
+vi.mock('../../services/taskService', () => ({ taskService: { lookup } }));
+
 const LocationProbe = () => {
     const location = useLocation();
     return <output data-testid="command-location">{`${location.pathname}${location.search}`}</output>;
@@ -13,6 +16,8 @@ const LocationProbe = () => {
 describe('CommandMenu', () => {
     beforeEach(() => {
         window.localStorage.clear();
+        lookup.mockReset();
+        lookup.mockResolvedValue({ items: [], has_more: false });
         Element.prototype.scrollIntoView = vi.fn();
     });
 
@@ -35,6 +40,17 @@ describe('CommandMenu', () => {
 
         expect(screen.queryByRole('dialog', { name: 'Command menu' })).not.toBeInTheDocument();
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?view=12&mode=bulk');
+    });
+
+    it('opens an authorized task result by keyboard separately from commands', async () => {
+        lookup.mockResolvedValue({ items: [{ id: 42, title: 'Repair endpoint', status: 'active', project_name: 'Delivery', iteration_name: null }], has_more: false });
+        const { user } = renderWithProviders(<><CommandMenu /><LocationProbe /></>, { initialEntries: ['/tasks?view=12'] });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), '#42');
+        await screen.findByRole('option', { name: /Repair endpoint/ });
+        expect(screen.getByRole('group', { name: 'Task results' })).toBeInTheDocument();
+        await user.keyboard('{Enter}');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?view=12&task=42');
     });
 
     it('keeps single-key task shortcuts off until users opt in', async () => {

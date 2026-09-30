@@ -44,6 +44,13 @@ class VacationUpdate(PlanningInputRevisions):
     start_date: Optional[date] = None
     end_date: Optional[date] = None
 
+    @field_validator("start_date", "end_date")
+    @classmethod
+    def reject_null_date(cls, value):
+        if value is None:
+            raise ValueError("Vacation dates cannot be null")
+        return value
+
 
 class VacationResponse(BaseModel):
     """Schema for vacation response."""
@@ -314,6 +321,10 @@ class MemberCapacity(BaseModel):
     effective_days: float
     adjusted_days: float
     hours: float
+    calendar_source: str = "legacy_allocation"
+    calendar_uncertain: bool = False
+    outside_calendar_year: bool = False
+    timezone: str | None = None
 
 
 class MemberWorkload(BaseModel):

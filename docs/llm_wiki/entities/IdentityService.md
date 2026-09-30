@@ -41,7 +41,8 @@ flowchart LR
     n5["login (backend/app/routers/identity.py)"]
     n6["native_token (backend/app/routers/identity.py)"]
     n7["transfer_guest (backend/app/routers/identity.py)"]
-    n8["test_shared_actions_rest_mcp_and_explicit_backlog_triage (backend/tests/test_task_domain.py)"]
+    n8["DiscussionService.recipient_authorized (backend/app/services/discussion_service.py)"]
+    n9["test_shared_actions_rest_mcp_and_explicit_backlog_triage (backend/tests/test_task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -50,6 +51,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/identity_service.md"
     click n1 "../modules/http_authority.md"
     click n2 "../modules/mcp_server.md"
@@ -58,7 +60,8 @@ flowchart LR
     click n5 "../modules/routers_identity.md"
     click n6 "../modules/routers_identity.md"
     click n7 "../modules/routers_identity.md"
-    click n8 "../modules/test_task_domain.md"
+    click n8 "../modules/discussion_service.md"
+    click n9 "../modules/test_task_domain.md"
 ```
 
 ### Summary
@@ -78,4 +81,5 @@ flowchart LR
 | `login` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `native_token` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `transfer_guest` | call | [routers_identity](../modules/routers_identity.md) | 1 |
+| `DiscussionService.recipient_authorized` | call | [discussion_service](../modules/discussion_service.md) | 1 |
 | `test_shared_actions_rest_mcp_and_explicit_backlog_triage` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

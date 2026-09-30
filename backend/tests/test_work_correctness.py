@@ -150,10 +150,15 @@ async def test_project_iteration_and_portfolio_share_metric_definitions(delivery
 async def test_late_start_does_not_overwrite_committed_baseline(delivery_store):
     factory, scenario, _ = delivery_store
     async with factory() as db:
+        from app.models.team_member import TeamMember
+        (await db.get(TeamMember, scenario.capacity_rows[0])).operational_utilization = 0
+        (await db.get(TeamMember, scenario.capacity_rows[1])).availability_percent = 0
+        await db.commit()
         await SchedulerService(db).schedule_iteration(scenario.iterations[0], commit_baseline=True)
         task = await TaskService(db).get_by_id(scenario.tasks["planned"])
         baseline = task.baseline_start_date, task.baseline_end_date
         assert all(baseline)
+        assert baseline[0].isoformat() >= "2026-01-07"
         version = task.version
         changed, _, _ = await TaskService(db).change_status(task.id, "active", expected_version=version)
         assert (changed.baseline_start_date, changed.baseline_end_date) == baseline
@@ -214,6 +219,9 @@ async def test_restore_recovers_dates_and_absences_without_inventing_acceptance(
     from app.models.team_member import Vacation
     factory, scenario, _ = delivery_store
     async with factory() as db:
+        from app.models.team_member import TeamMember
+        # Unlinked allocations retain their local absence recovery semantics.
+        (await db.get(TeamMember, scenario.capacity_rows[0])).profile_id = None
         db.add(Vacation(team_member_id=scenario.capacity_rows[0], start_date=date(2026, 1, 8), end_date=date(2026, 1, 9)))
         await db.commit()
         snapshot = await SnapshotService(db).create_snapshot(scenario.iterations[0], "saved_absences")

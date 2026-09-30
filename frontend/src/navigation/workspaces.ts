@@ -48,6 +48,7 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         defaultPath: '/',
         items: [
             { to: '/', labelKey: 'nav.overview', defaultLabel: 'Overview', icon: LayoutDashboard },
+            { to: '/my-work', labelKey: 'teamwork.myWork', defaultLabel: 'My Work', icon: ListTodo },
             { to: '/tasks', labelKey: 'nav.tasks', defaultLabel: 'Tasks', icon: ListTodo },
             { to: '/triage', labelKey: 'nav.triage', defaultLabel: 'Triage', icon: Inbox },
             { to: '/projects', labelKey: 'nav.projects', defaultLabel: 'Projects', icon: FolderOpen },

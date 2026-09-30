@@ -1,6 +1,6 @@
 # WorkflowContracts
 
-**Location:** `scripts/ci/tests/test_native_runtimes.py:24`
+**Location:** `scripts/ci/tests/test_native_runtimes.py:27`
 **Kind:** Class
 **Bases:** `unittest.TestCase`
 **Module:** [test_native_runtimes](../modules/test_native_runtimes.md)
@@ -21,6 +21,8 @@ _Auto-generated from `WorkflowContracts` in `scripts/ci/tests/test_native_runtim
 | `test_automatic_workflows_do_not_pull_or_build_images` | `()` | — | — |
 | `test_deployment_acceptance_remains_explicit_and_checks_twice` | `()` | — | — |
 | `test_all_workflow_and_composite_scripts_parse_as_bash` | `()` | — | — |
+| `test_workflow_split_and_required_gate_cover_every_job` | `()` | — | — |
+| `test_runners_reserve_time_before_toolchain_setup` | `()` | — | — |
 
 ## Relationships
 
@@ -37,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_native_runtimes](../modules/test_native_runtimes.md) | 4 | — |
+| [test_native_runtimes](../modules/test_native_runtimes.md) | 6 | — |
 
 ### Structure
 

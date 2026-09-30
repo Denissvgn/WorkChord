@@ -1,6 +1,6 @@
 # WorkloadIssue
 
-**Location:** `frontend/src/types/gantt.ts:89`
+**Location:** `frontend/src/types/gantt.ts:92`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

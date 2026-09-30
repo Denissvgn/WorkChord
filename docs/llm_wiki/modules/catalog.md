@@ -4,7 +4,7 @@
 
 ## Description
 
-Versioned transfer catalog derived from the packaged ORM schema.
+Derives transfer coverage and ordering from the packaged schema. Nullable references are staged only when aggregate constraints permit it. Task/snapshot scope references and typed delivery targets remain present during insertion, so referenced tasks and milestones load first without disabling constraints.
 
 ## Imports
 
@@ -80,7 +80,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CatalogEntry](../entities/CatalogEntry.md) | 43 | — | — |
+| [CatalogEntry](../entities/CatalogEntry.md) | 48 | — | — |
 
 ## Functions
 
@@ -92,5 +92,5 @@ flowchart LR
 | `application_tables` | `() -> dict[str, Table]` | — | — |
 | `transfer_tables` | `() -> dict[str, Table]` | — | — |
 | `staged_reference_columns` | `(table: Table) -> tuple[str, ...]` | — | Stage nullable references so cycles never weaken target constraints. |
-| `transfer_order` | `() -> tuple[str, ...]` | — | Topologically order tables by non-nullable foreign-key dependencies. |
+| `transfer_order` | `() -> tuple[str, ...]` | — | Order tables by references that must survive their initial insertion. |
 | `catalog_entries` | `() -> tuple[CatalogEntry, ...]` | — | — |

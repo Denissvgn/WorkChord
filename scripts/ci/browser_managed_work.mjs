@@ -1,3 +1,4 @@
+import { dispatchInbox } from './browser_worker.mjs';
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -184,7 +185,7 @@ try {
   assert.equal(implemented.is_accepted, false);
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
 
-  const reviewerContext = await browser.newContext({ baseURL, locale: 'en-US', viewport: { width: 1440, height: 1000 } });
+  const reviewerContext = await browser.newContext({ baseURL, locale: 'en-US', hasTouch: true, viewport: { width: 1440, height: 1000 } });
   const reviewerPage = await reviewerContext.newPage();
   reviewerPage.on('pageerror', error => errors.push(error.message));
   await reviewerPage.goto(`/projects/${projects[0].id}`);
@@ -200,6 +201,106 @@ try {
   await reviewerPage.getByRole('dialog').getByText('Accepted', { exact: true }).waitFor();
   await reviewerPage.getByText('Loading data...', { exact: true }).waitFor({ state: 'hidden' });
   await reviewerPage.screenshot({ path: join(artifacts, 'canonical-review-desktop.png'), fullPage: true });
+  const followed = reviewerPage.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/subscription`) && response.request().method() === 'PUT');
+  await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).click();
+  assert.equal((await followed).status(), 200);
+  await reviewerPage.getByRole('checkbox', { name: 'Discussion', exact: true }).waitFor();
+  await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).waitFor({ state: 'visible' });
+  const reviewerMe = await (await reviewerContext.request.get('/api/auth/me')).json();
+  await page.goto('/tasks?scope=backlog');
+  await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
+  await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
+  await page.getByRole('textbox', { name: 'Task Title', exact: false }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
+  await page.getByRole('textbox', { name: 'New comment', exact: true }).fill('Coordinate delivery with the reviewer');
+  await page.getByRole('textbox', { name: 'Mention a person: search by name', exact: true }).fill('Charlie');
+  await page.getByRole('checkbox', { name: 'Charlie', exact: true }).check();
+  const beforeDiscussion = await (await context.request.get(`/api/tasks/${capturedTask.id}`)).json();
+  const commentPosted = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/comments`) && response.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Post comment', exact: true }).click();
+  assert.equal((await commentPosted).status(), 201);
+  await page.getByText('Comment saved.', { exact: true }).waitFor();
+  const afterDiscussion = await (await context.request.get(`/api/tasks/${capturedTask.id}`)).json();
+  assert.equal(afterDiscussion.version, beforeDiscussion.version);
+  await page.screenshot({ path: join(artifacts, 'teamwork-discussion-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('heading', { name: 'Discussion', exact: true }).evaluate(element => element.scrollIntoView({ block: 'start' }));
+  await page.screenshot({ path: join(artifacts, 'teamwork-discussion-mobile.png'), fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await dispatchInbox();
+  await reviewerPage.goto('/my-work?queue=inbox');
+  await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).waitFor();
+  await reviewerPage.getByRole('button', { name: 'Mark read', exact: true }).click();
+  await reviewerPage.getByRole('button', { name: 'Mark unread', exact: true }).waitFor();
+  await reviewerPage.setViewportSize({ width: 390, height: 844 });
+  await reviewerPage.screenshot({ path: join(artifacts, 'teamwork-inbox-mobile.png'), fullPage: true });
+  assert.equal(await reviewerPage.evaluate(() => matchMedia('(pointer: coarse)').matches), true);
+  assert.equal(await reviewerPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  await page.getByRole('textbox', { name: 'New comment', exact: true }).fill('Queued before access is revoked');
+  await page.getByRole('checkbox', { name: 'Charlie', exact: true }).check();
+  const queuedBeforeRevocation = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/comments`) && response.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Post comment', exact: true }).click();
+  assert.equal((await queuedBeforeRevocation).status(), 201);
+  const identityNow = await (await context.request.get('/api/auth/me')).json();
+  const revocation = await context.request.put(`/api/auth/project-members/${projects[0].id}/${reviewerMe.principal.id}`, {
+    headers: { 'X-CSRF-Token': identityNow.csrf_token, Origin: baseURL }, data: { role: null, reason: 'Disposable recipient revocation check' },
+  });
+  assert.equal(revocation.status(), 200, await revocation.text());
+  await dispatchInbox();
+  assert.deepEqual((await (await reviewerContext.request.get('/api/notifications')).json()).items, []);
+  const createOwned = async (title, parentId) => {
+    const response = await context.request.post(`/api/projects/${projects[0].id}/backlog`, {
+      headers: { 'X-CSRF-Token': identityNow.csrf_token, Origin: baseURL },
+      data: { title, project_id: projects[0].id, owner_profile_id: me.profile.id, parent_id: parentId ?? null, effort_hours: 1.5 },
+    });
+    assert.equal(response.status(), 201, await response.text());
+    return response.json();
+  };
+  const handoff = await createOwned('Prepare a human team handoff');
+  await createOwned('Согласовать критерии готовности и порядок совместной проверки результата между участниками команды', handoff.id);
+  await createOwned('Confirm the deployment checklist and coordinate the next review');
+  await page.goto('/my-work?queue=queued');
+  await page.getByRole('heading', { name: 'My Work', exact: true }).waitFor();
+  await page.getByRole('button', { name: /Согласовать критерии/ }).waitFor();
+  const themeContrast = [];
+  for (const theme of ['light', 'dark', 'blue', 'green']) {
+    await page.evaluate(async chosen => { const module = await import('/src/store/themeStore.ts'); module.useThemeStore.getState().setTheme(chosen); }, theme);
+    await page.evaluate(async () => {
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      await Promise.all(document.getAnimations().filter(animation => animation instanceof CSSTransition).map(animation => animation.finished.catch(() => {})));
+    });
+    const labels = await page.getByRole('navigation', { name: 'Work queues', exact: true }).evaluate(nav => {
+      const rgb = value => (value.match(/[\d.]+/g) || []).map(Number);
+      const luminance = color => color.slice(0, 3).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+      return [...nav.querySelectorAll('button')].filter(button => !button.disabled).map(button => {
+        const foreground = getComputedStyle(button).color;
+        let parent = button;
+        let background = getComputedStyle(parent).backgroundColor;
+        while ((rgb(background)[3] ?? 1) === 0 && parent.parentElement) {
+          parent = parent.parentElement;
+          background = getComputedStyle(parent).backgroundColor;
+        }
+        const lights = [luminance(rgb(foreground)), luminance(rgb(background))].sort((a, b) => b - a);
+        return { label: button.textContent.trim(), foreground, background, ratio: (lights[0] + .05) / (lights[1] + .05) };
+      });
+    });
+    assert.ok(labels.every(label => label.ratio >= 4.5), JSON.stringify({ theme, labels }));
+    themeContrast.push({ theme, labels });
+    await page.screenshot({ path: join(artifacts, `teamwork-my-work-${theme}-desktop.png`), fullPage: true });
+  }
+  await writeFile(join(artifacts, 'teamwork-theme-contrast.json'), JSON.stringify(themeContrast, null, 2));
+  await page.evaluate(async () => { const theme = await import('/src/store/themeStore.ts'); theme.useThemeStore.getState().setTheme('light'); });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(async () => { const locale = await import('/src/i18n/i18n.ts'); await locale.changeAppLanguage('ru'); });
+  await page.getByRole('heading', { name: 'Моя работа', exact: true }).waitFor();
+  await page.screenshot({ path: join(artifacts, 'teamwork-my-work-ru-mobile.png'), fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
+  await page.evaluate(async () => { const locale = await import('/src/i18n/i18n.ts'); await locale.changeAppLanguage('en'); });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`/projects/${projects[0].id}`);
+  check('Task ID search, independent discussion version, mentions, inbox read state, recipient revocation, and responsive My Work');
   await reviewerContext.close();
   check('Unestimated backlog capture, durable owner, structured criteria, manual execution, persisted evidence, and independent human acceptance');
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();

@@ -42,12 +42,12 @@ flowchart LR
     n17["backend/app/models/agent.py"]
     n18["backend/app/models/autonomy.py"]
     n19["backend/app/models/calendar.py"]
-    n20["backend/app/models/database_migration.py"]
-    n21["backend/app/models/external_link.py"]
-    n22["backend/app/models/github.py"]
-    n23["backend/app/models/identity.py"]
-    n24["backend/app/models/iteration.py"]
-    n25["backend/app/models/label.py"]
+    n20["backend/app/models/capacity.py"]
+    n21["backend/app/models/database_migration.py"]
+    n22["backend/app/models/delivery_dependency.py"]
+    n23["backend/app/models/discussion.py"]
+    n24["backend/app/models/external_link.py"]
+    n25["backend/app/models/github.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -92,12 +92,12 @@ flowchart LR
     click n17 "../modules/models_agent.md"
     click n18 "../modules/models_autonomy.md"
     click n19 "../modules/models_calendar.md"
-    click n20 "../modules/models_database_migration.md"
-    click n21 "../modules/models_external_link.md"
-    click n22 "../modules/models_github.md"
-    click n23 "../modules/models_identity.md"
-    click n24 "../modules/models_iteration.md"
-    click n25 "../modules/models_label.md"
+    click n20 "../modules/models_capacity.md"
+    click n21 "../modules/models_database_migration.md"
+    click n22 "../modules/delivery_dependency.md"
+    click n23 "../modules/models_discussion.md"
+    click n24 "../modules/models_external_link.md"
+    click n25 "../modules/models_github.md"
 ```
 
 ### Summary
@@ -134,11 +134,11 @@ flowchart LR
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
 | `autonomy` | import | [models_autonomy](../modules/models_autonomy.md) | — |
 | `calendar` | import | [models_calendar](../modules/models_calendar.md) | — |
+| `capacity` | import | [models_capacity](../modules/models_capacity.md) | — |
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
+| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
 | `github` | import | [models_github](../modules/models_github.md) | — |
-| `identity` | import | [models_identity](../modules/models_identity.md) | — |
-| `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
-| `label` | import | [models_label](../modules/models_label.md) | — |
 
-> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.
+> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.

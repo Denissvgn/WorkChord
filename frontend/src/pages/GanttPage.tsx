@@ -240,7 +240,7 @@ const GanttPage = () => {
 
     const applySandboxMutation = useMutation({
         mutationFn: async () => {
-            await taskService.batchUpdate(selectedIterationId, { tasks: buildBatchTasks(), expected_revision: schedulePreviewQuery.data?.input_revision });
+            await taskService.batchUpdate(selectedIterationId, { tasks: buildBatchTasks(), expected_revision: schedulePreviewQuery.data?.input_revision, expected_planning_revision: schedulePreviewQuery.data?.input_planning_revision });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['gantt', selectedIterationId] });

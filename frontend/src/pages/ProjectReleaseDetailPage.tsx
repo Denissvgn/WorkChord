@@ -23,7 +23,7 @@ import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage } from '../utils/apiError';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
-import { isTaskStatus, pillToneClassName, STATUS_TONE } from '../components/ui/tone';
+import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName } from '../components/ui/tone';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 
 const releaseStatusLabelKeys: Record<ReleaseStatus, string> = {
@@ -75,7 +75,7 @@ const ReleaseTaskList = ({ tasks }: { tasks: ReleaseTaskSummary[] }) => {
                 <div key={task.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
                     <CheckCircle2 className={clsx(
                         'h-5 w-5',
-                        task.status === 'closed' ? 'text-feedback-success' : 'text-content-tertiary',
+                        isTaskStatus(task.status) ? statusTextClassName[task.status] : 'text-content-secondary',
                     )} />
                     <div className="min-w-0 flex-1">
                         <p className="truncate font-medium text-content-primary">{task.title}</p>

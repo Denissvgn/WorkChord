@@ -38,16 +38,16 @@ flowchart LR
     n0["ProjectMilestone (backend/app/models/project.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["backend/app/models/task.py"]
-    n4["backend/app/services/iteration_service.py"]
-    n5["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
-    n6["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
-    n7["ProjectService._calculate_milestone_groups (backend/app/services/project_service.py)"]
-    n8["ProjectService.create_milestone (backend/app/services/project_service.py)"]
-    n9["ProjectService.get_milestone_for_project (backend/app/services/project_service.py)"]
-    n10["ProjectService.list_milestones (backend/app/services/project_service.py)"]
-    n11["ProjectService.list_portfolio_milestones (backend/app/services/project_service.py)"]
-    n12["ProjectService.update_milestone (backend/app/services/project_service.py)"]
+    n3["backend/app/models/delivery_dependency.py"]
+    n4["backend/app/models/task.py"]
+    n5["backend/app/services/delivery_dependency_service.py"]
+    n6["backend/app/services/iteration_service.py"]
+    n7["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
+    n8["ProjectService._build_milestone_task_group (backend/app/services/project_service.py)"]
+    n9["ProjectService._calculate_milestone_groups (backend/app/services/project_service.py)"]
+    n10["ProjectService.create_milestone (backend/app/services/project_service.py)"]
+    n11["ProjectService.get_milestone_for_project (backend/app/services/project_service.py)"]
+    n12["ProjectService.list_milestones (backend/app/services/project_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,10 +63,10 @@ flowchart LR
     click n0 "../modules/models_project.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_task.md"
-    click n4 "../modules/iteration_service.md"
-    click n5 "../modules/project_service.md"
-    click n6 "../modules/project_service.md"
+    click n3 "../modules/delivery_dependency.md"
+    click n4 "../modules/models_task.md"
+    click n5 "../modules/delivery_dependency_service.md"
+    click n6 "../modules/iteration_service.md"
     click n7 "../modules/project_service.md"
     click n8 "../modules/project_service.md"
     click n9 "../modules/project_service.md"
@@ -92,7 +92,9 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
+| `delivery_dependency_service` | import | [delivery_dependency_service](../modules/delivery_dependency_service.md) | — |
 | `iteration_service` | import | [iteration_service](../modules/iteration_service.md) | — |
 | `ProjectService._aggregated_milestone_groups` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService._build_milestone_task_group` | type_reference | [project_service](../modules/project_service.md) | — |
@@ -101,7 +103,5 @@ flowchart LR
 | `ProjectService.create_milestone` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService.get_milestone_for_project` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService.list_milestones` | type_reference | [project_service](../modules/project_service.md) | — |
-| `ProjectService.list_portfolio_milestones` | type_reference | [project_service](../modules/project_service.md) | — |
-| `ProjectService.update_milestone` | type_reference | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
