@@ -279,12 +279,18 @@ class SnapshotService:
             if member is None:
                 member = TeamMember(id=data["id"], iteration_id=iteration_id)
                 self.db.add(member)
+            elif "profile_id" in data and member.profile_id != data["profile_id"]:
+                from app.services.team_service import TeamService
+                await TeamService(self.db).detach_absence_adapters(member, data["profile_id"])
             for key in ["name", "position", "profile_id", "availability_percent", "professionalism_coefficient", "operational_utilization"]:
                 if key in data:
                     setattr(member, key, data[key])
             member.iteration_id = iteration_id
             members[member.id] = member
-            await self.db.execute(delete(Vacation).where(Vacation.team_member_id == member.id))
+            # Person availability is shared across iterations and is never restored from one plan.
+            if member.profile_id is not None:
+                continue
+            await self.db.execute(delete(Vacation).where(Vacation.team_member_id == member.id, Vacation.profile_absence_id.is_(None)))
             for vacation in data.get("vacations", []):
                 start, end = date.fromisoformat(vacation["start_date"]), date.fromisoformat(vacation["end_date"])
                 if end < start:
@@ -300,6 +306,12 @@ class SnapshotService:
             flat.append((row, parent_id))
             pending.extend((child, row["id"]) for child in row.get("children", []))
         ids = {row["id"] for row, _ in flat}
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        from app.models.delivery_dependency import DeliveryDependency
+        removed_ids = {task.id for task in current} - ids
+        self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
+        await DeliveryDependencyService(self.db).require_unreferenced(removed_ids)
+        await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed_ids)))
         outside = await self.db.scalar(select(TaskDependency.task_id).where(TaskDependency.depends_on_id.in_({t.id for t in current} - ids), TaskDependency.task_id.notin_(ids)).limit(1))
         if outside is not None:
             raise ValueError("Restoring would remove a referenced task")

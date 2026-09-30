@@ -384,7 +384,7 @@ export const GanttChart = ({
 
     // feedback-policy: mutation pending,inline - Apply is disabled while pending and failures retain the preview for retry.
     const scheduleMutation = useMutation({
-        mutationFn: () => ganttService.schedule(iterationId, schedulePreview?.input_revision ?? iterationRevision),
+        mutationFn: () => ganttService.schedule(iterationId, schedulePreview?.input_revision ?? iterationRevision, schedulePreview?.input_planning_revision),
         onSuccess: async () => {
             setSchedulePreview(null);
             await Promise.all([
@@ -782,6 +782,7 @@ export const GanttChart = ({
                                         ? 'gantt.scheduleApplyPendingBody'
                                         : 'gantt.schedulePreviewBody')}
                                 </p>
+                                {Boolean(schedulePreview.schedule_result?.capacity_issues?.length) && <p className="mt-2 text-sm text-feedback-warning-foreground">{t('teamwork.capacityConflicts')}</p>}
                                 {!scheduleMutation.isPending && (
                                     <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-content-secondary">
                                         {previewChangedTaskIds.size > 0 ? (
@@ -811,7 +812,7 @@ export const GanttChart = ({
                                 size="sm"
                                 onClick={applySchedulePreview}
                                 isLoading={scheduleMutation.isPending}
-                                disabled={scheduleMutation.isError}
+                                disabled={scheduleMutation.isError || Boolean(schedulePreview.schedule_result?.capacity_issues?.length)}
                             >
                                 {t('gantt.applySchedulePreview')}
                             </Button>

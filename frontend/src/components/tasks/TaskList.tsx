@@ -1,3 +1,4 @@
+import { statusTextClassName } from '../ui/tone';
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -825,11 +826,7 @@ const TaskItemContent = ({
         + Number(task.dependencies.length > 0)
         + task.tags.length
         + 1;
-    const statusClassName = task.status === 'planned'
-        ? 'text-status-planned'
-        : task.status === 'active'
-            ? 'text-status-active'
-            : 'text-status-resolved';
+    const statusClassName = statusTextClassName[task.status];
 
     return (
         <div className="group">
@@ -903,7 +900,7 @@ const TaskItemContent = ({
                     {task.status === 'resolved' || task.status === 'closed'
                         ? <CheckCircle2 className="h-5 w-5" />
                         : <Circle className="h-5 w-5" />}
-                    <span className="sr-only">
+                    <span className="text-xs">
                         {t('taskList.taskStatus', {
                             status: t(`statuses.${task.status}`, { defaultValue: task.status }),
                         })}

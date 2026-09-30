@@ -19,7 +19,7 @@ from app.security import admin_api_key_is_valid
 PUBLIC_PATHS = {"/health", "/health/live", "/health/ready", "/.well-known/workchord-build.json", "/openapi.json", "/docs", "/redoc", "/docs/oauth2-redirect"}
 AUTH_PUBLIC_PATHS = {"/auth/me", "/auth/login", "/auth/callback", "/auth/bootstrap"}
 OPERATOR_PREFIXES = ("/system-settings", "/settings", "/email-settings", "/scheduling-rules", "/outbound-webhooks", "/github/status-automation-rules")
-KNOWN_PREFIXES = ("/tasks", "/iterations", "/projects", "/initiatives", "/milestones", "/releases", "/roadmap", "/team", "/calendars",
+KNOWN_PREFIXES = ("/tasks", "/notifications", "/iterations", "/projects", "/initiatives", "/milestones", "/releases", "/roadmap", "/team", "/calendars",
                   "/employees", "/vacations", "/request-source-links",
                   "/triage", "/labels", "/label-groups", "/templates", "/saved-views", "/plan-shares", "/request-sources",
                   "/external-links", "/llm", "/agent", "/session", "/auth", "/github", "/export", *OPERATOR_PREFIXES)
@@ -157,6 +157,10 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
             if task is None:
                 raise AuthorityError("resource_unavailable", "Task not found or inaccessible.", 404)
             action = "edit"
+            if relative.endswith("/subscription"):
+                action = "read"
+            elif "/comments" in relative:
+                action = "execute" if authority.allows(task.project_id, "execute") else "review"
             if relative.endswith("/progress"):
                 action = "execute"
             elif relative.endswith("/review"):

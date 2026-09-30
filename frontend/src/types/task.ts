@@ -399,6 +399,7 @@ export interface TaskBatchUpdateItem {
 export interface TaskBatchUpdateRequest {
     expected_revision?: number;
     tasks: TaskBatchUpdateItem[];
+    expected_planning_revision?: number;
 }
 
 export interface TaskBatchUpdateResponseItem {
@@ -446,6 +447,8 @@ export interface TaskProgress {
 }
 
 export interface TaskReference {
+    acceptance_current?: boolean;
+    project_name?: string | null; iteration_name?: string | null; blocked_reason?: string | null; canceled_at?: string | null;
     id: number; title: string; version: number; status: TaskStatus;
     project_id: number | null; iteration_id: number | null; parent_id: number | null; owner_profile_id: number | null;
 }

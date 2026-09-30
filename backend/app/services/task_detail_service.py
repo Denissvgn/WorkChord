@@ -1,6 +1,6 @@
 """Small UI reads, independent of the complete authoritative execution graph."""
 
-from sqlalchemy import or_, select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import selectinload, raiseload
 
 from app.authority import require_project
@@ -15,7 +15,14 @@ class TaskDetailService:
 
     @staticmethod
     def references():
-        return select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id)
+        from app.models.project import Project
+        from app.models.iteration import Iteration
+        return select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id,
+            Task.parent_id, Task.owner_profile_id, Project.name.label("project_name"), Iteration.name.label("iteration_name"),
+            Task.blocked_reason, Task.canceled_at,
+            and_(Task.status == "closed", Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None),
+                 Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label("acceptance_current")
+            ).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, Iteration.id == Task.iteration_id)
 
     async def page(self, query, *, limit=50, after_id=0):
         if not 1 <= limit <= 100 or after_id < 0:
@@ -37,8 +44,37 @@ class TaskDetailService:
         if query:
             if len(query) > 200:
                 raise ValueError("Search text must contain at most 200 characters")
-            statement = statement.where(or_(Task.title.contains(query, autoescape=True), Task.description.contains(query, autoescape=True)))
+            from app.sql_semantics import portable_contains
+            text = query.strip()
+            identifier = text.removeprefix("#")
+            predicate = portable_contains(Task.title, text)
+            if identifier.isascii() and identifier.isdigit() and len(identifier) <= 18:
+                predicate = or_(predicate, Task.id == int(identifier))
+            statement = statement.where(predicate)
         return await self.page(statement, limit=limit, after_id=after_id)
+
+    async def my_work(self, *, limit=50, after_id=0):
+        """Bounded human ownership queues, independent of exact-agent assignment decisions."""
+        from app.services.task_domain_service import TaskDomainService
+        authority = self.db.info.get("authority")
+        queues = {key: [] for key in ("active", "queued", "blocked", "awaiting_review")}
+        if authority is None or authority.kind != "human" or authority.profile_id is None:
+            return {"state": "profile_unlinked", "queues": queues, "has_more": False, "next_after_id": None}
+        if not authority.operator and not authority.local and not authority.projects and not authority.workspace_role:
+            return {"state": "membership_required", "queues": queues, "has_more": False, "next_after_id": None}
+        page = await self.page(self.references().where(Task.owner_profile_id == authority.profile_id,
+            or_(Task.status != "closed", Task.accepted_at.is_(None), Task.accepted_by_principal_id.is_(None), Task.accepted_version.is_(None), Task.accepted_version != Task.version),
+            Task.canceled_at.is_(None), Task.is_summary.is_(False)), limit=limit, after_id=after_id)
+        for item in page.items:
+            actions = await TaskDomainService(self.db).allowed_actions(item.id)
+            blocked = item.status == "closed" or bool(item.blocked_reason) or any(
+                blocker.code in {"dependencies_incomplete", "dependency_incomplete"}
+                for action in actions.actions if action.action == "start_manual" for blocker in action.blockers)
+            from app.services.delivery_dependency_service import DeliveryDependencyService
+            blocked = blocked or not await DeliveryDependencyService(self.db).ready(item.id)
+            category = "blocked" if blocked else "awaiting_review" if item.status == "resolved" else "active" if item.status == "active" else "queued"
+            queues[category].append({**item.model_dump(mode="json"), "actions": actions.model_dump(mode="json")["actions"]})
+        return {"state": "ready", "queues": queues, "has_more": page.has_more, "next_after_id": page.next_after_id}
 
     async def detail(self, task_id, *, limit=50, children_after_id=0, dependencies_after_id=0):
         from app.services.task_service import TaskService

@@ -47,7 +47,7 @@ async def schedule_iteration(
         )
 
     result = await service.schedule_iteration(iteration_id, expected_revision=data.expected_revision if data else None,
-        commit_baseline=True, rebaseline_reason=data.rebaseline_reason if data else None)
+        expected_planning_revision=data.expected_planning_revision if data else None, commit_baseline=True, rebaseline_reason=data.rebaseline_reason if data else None)
     return result
 
 
@@ -86,7 +86,7 @@ async def preview_iteration_schedule(
                     task_service, iteration_id, iteration.end_date, data.changes
                 )
 
-            schedule_result = await service.schedule_iteration(iteration_id, commit=False)
+            schedule_result = await service.schedule_iteration(iteration_id, commit=False, expected_planning_revision=data.expected_planning_revision)
 
             tasks = await task_service.get_by_iteration(iteration_id)
             gantt_tasks: list[GanttTask] = []
@@ -102,6 +102,7 @@ async def preview_iteration_schedule(
 
             return SchedulePreviewResponse(
                 input_revision=revisions[iteration_id],
+                input_planning_revision=schedule_result.planning_revision,
                 tasks=gantt_tasks,
                 overdue_task_ids=overdue_ids,
                 schedule_result=schedule_result,

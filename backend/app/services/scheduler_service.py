@@ -1,6 +1,6 @@
 """Gantt Scheduler Service - automatic task scheduling with optimization."""
 
-from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations
+from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations, lock_planning, PlanningConflict
 import math
 import logging
 from dataclasses import dataclass, field
@@ -79,6 +79,9 @@ class MemberSchedule:
     # consumed by a task are inflated by coefficients; counting them here would
     # double-apply operational utilization against the already-deflated capacity.
     allocated_days: float = 0.0
+    nominal_day_hours: float = 8.0
+    productivity_factor: float = 1.0
+    short_dates: set[date] = field(default_factory=set)
 
     # Optimization: date-to-index mapping for O(1) lookups
     _date_to_idx: dict[date, int] = field(default_factory=dict, repr=False)
@@ -253,89 +256,27 @@ class MemberSchedule:
         )
 
     def allocate(
-        self,
-        start_date: date,
-        effort_days: int,
-        task_id: int,
-        accounting_days: Optional[float] = None,
+        self, start_date: date, effort_days: int, task_id: int,
+        accounting_days: Optional[float] = None, required_hours: float | None = None,
     ) -> tuple[date, date]:
-        """Allocate dates for a task, returns (start, end).
-
-        The end_date is calculated as the actual calendar date when the task
-        completes, accounting for weekends/holidays that the task spans.
-        If not enough working days are available, the task extends beyond
-        the available period with the correct calendar duration.
-
-        ``accounting_days`` is the task's raw effort in standard effort-days,
-        recorded for workload reporting. It defaults to ``effort_days`` (the
-        coefficient-inflated calendar demand) when not provided.
-
-        IMPORTANT: Invalidates the available dates cache after allocation.
-        """
-        if accounting_days is None:
-            accounting_days = float(effort_days)
-
-        available = [d for d in self.get_available_dates() if d >= start_date]
-
-        if len(available) < effort_days:
-            # Not enough available working days within the iteration period
-            # Allocate what we can within the iteration
-            allocated_count = len(available)
-            for d in available:
-                self.allocated_dates[d] = task_id
-            # The member owns the whole task even when it overflows the
-            # iteration, so account its full effort for workload reporting.
-            self.allocated_days += accounting_days
-            self._invalidate_cache()  # Cache invalidation
-
-            if available:
-                remaining_working_days = effort_days - allocated_count
-                last_available = available[-1]
-
-                if remaining_working_days > 0:
-                    # Calculate end_date by finding actual working days after last available
-                    # Skip calendar-configured weekends/holidays and vacations
-                    current = last_available
-                    working_days_found = 0
-                    while working_days_found < remaining_working_days:
-                        current = current + timedelta(days=1)
-                        if self._is_projectable_working_day(current):
-                            working_days_found += 1
-                    end_date = current
-                else:
-                    # All days fit within available - use last available as end
-                    end_date = last_available
-
-                logger.warning(f"  - Overflow allocation: {allocated_count} available + {remaining_working_days} remaining = end {end_date}")
-                return (available[0], end_date)
-
-            # No available days at all - find working days from start_date
-            current = start_date
-            working_days_found = 0
-            while working_days_found < effort_days:
-                if self._is_projectable_working_day(current):
-                    working_days_found += 1
-                    if working_days_found == effort_days:
-                        break
-                current = current + timedelta(days=1)
-            return (start_date, current)
-
-        # Allocate exactly effort_days working days
+        """Reserve whole working dates, including overflow, until the requested effort fits."""
+        remaining = required_hours if required_hours is not None else float(effort_days)
         allocated = []
-        for d in available:
-            if len(allocated) >= effort_days:
-                break
-            self.allocated_dates[d] = task_id
-            allocated.append(d)
-
-        self.allocated_days += accounting_days
-        self._invalidate_cache()  # Cache invalidation
-
-        if allocated:
-            # end_date is the last working day allocated
-            logger.warning(f"  - Allocated {len(allocated)} working days: {allocated[0]} to {allocated[-1]}")
-            return (allocated[0], allocated[-1])
-        return (start_date, start_date)
+        current = start_date
+        for _ in range(3660):
+            if self._is_projectable_working_day(current) and current not in self.allocated_dates:
+                capacity = ((self.nominal_day_hours - (current in self.short_dates)) * self.productivity_factor
+                            if required_hours is not None else 1.0)
+                if capacity > 0:
+                    self.allocated_dates[current] = task_id
+                    allocated.append(current)
+                    remaining -= capacity
+                    if remaining <= .000001:
+                        self.allocated_days += accounting_days if accounting_days is not None else effort_days
+                        self._invalidate_cache()
+                        return allocated[0], current
+            current += timedelta(days=1)
+        raise PlanningConflict("forecast_horizon_exceeded", "No capacity was found within the forecast horizon. Reconcile availability.")
 
 
 class SchedulerService:
@@ -355,12 +296,14 @@ class SchedulerService:
         *,
         commit: bool = True,
         expected_revision: int | None = None,
+        expected_planning_revision: int | None = None,
         commit_baseline: bool = False,
         rebaseline_reason: str | None = None,
     ) -> ScheduleResult:
         """Schedule an iteration, optionally leaving commit ownership to the caller."""
         from app.services.iteration_service import IterationService
 
+        planning_revision = await lock_planning(self.db, expected=expected_planning_revision)
         iteration_service = IterationService(self.db)
         await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
         iteration = await iteration_service.get_by_id(iteration_id)
@@ -372,6 +315,12 @@ class SchedulerService:
         all_tasks = await self.task_service.get_all_tasks(iteration_id)
         before_dates = {task.id: (task.start_date, task.end_date) for task in all_tasks}
         team_members = await self.team_service.get_by_iteration(iteration_id)
+
+        from app.services.capacity_service import CapacityService
+        capacity_issues = await CapacityService(self.db).schedule_issues(iteration, team_members)
+        input_issues = [issue for issue in capacity_issues if issue["code"] != "committed_capacity_exceeded"]
+        if commit_baseline and input_issues:
+            raise PlanningConflict(input_issues[0]["code"], input_issues[0]["message"])
 
         # Build member schedules
         member_schedules = await self._build_member_schedules(
@@ -400,6 +349,19 @@ class SchedulerService:
             decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                 reason="Provide a positive effort estimate to schedule this task."))
         unavailable_ids = {task.id for task in unavailable_estimates}
+        for task in leaf_tasks:
+            if task.assignee and (task.assignee.availability_percent <= 0 or task.assignee.operational_utilization >= 100):
+                unavailable_ids.add(task.id)
+                task.start_date = task.end_date = task.calculated_effort_days = None
+                decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
+                    reason="The assigned person has no productive capacity. Adjust the allocation before scheduling."))
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        for task in leaf_tasks:
+            if not await DeliveryDependencyService(self.db).ready(task.id):
+                unavailable_ids.add(task.id)
+                task.start_date = task.end_date = task.calculated_effort_days = None
+                decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
+                    reason="Accept the delivery prerequisites before scheduling this work."))
         # A downstream task cannot be forecast from a missing predecessor estimate.
         changed = True
         while changed:
@@ -413,6 +375,19 @@ class SchedulerService:
         leaf_tasks = [task for task in leaf_tasks if task.id not in unavailable_ids]
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
+
+        # Retained execution dates consume slots before new forecasts are placed.
+        for task in locked_tasks:
+            schedule = member_schedules.get(task.assignee_id)
+            if schedule is None or task.start_date is None or task.end_date is None:
+                continue
+            day = task.start_date
+            while day <= task.end_date:
+                if schedule._is_projectable_working_day(day):
+                    schedule.allocated_dates.setdefault(day, task.id)
+                day += timedelta(days=1)
+            schedule.allocated_days += task.effort_days or 0
+            schedule._invalidate_cache()
 
         # IMPORTANT: Only clear dates for PLANNED tasks
         # Non-PLANNED tasks keep their dates as they are already "locked in"
@@ -770,6 +745,11 @@ class SchedulerService:
         if commit_baseline:
             from app.models.recovery import TaskScheduleBaseline
             from app.models.project import Project
+            if any(task.start_date is not None and task.end_date is not None and
+                   (task.start_date < iteration.start_date or task.end_date > iteration.end_date)
+                   for task in leaf_tasks):
+                raise PlanningConflict("schedule_outside_allocation",
+                    "The forecast exceeds its allocation dates. Extend the iteration or move the work before committing.")
             authority = self.db.info.get("authority")
             timezone = await self.db.scalar(select(Project.timezone).where(Project.id == iteration.project_id)) if iteration.project_id else iteration.calendar.timezone
             for task in all_leaf_tasks:
@@ -786,6 +766,12 @@ class SchedulerService:
                     start_date=task.start_date, end_date=task.end_date, timezone=timezone or "UTC",
                     reason=rebaseline_reason or "Initial schedule commitment", principal_id=getattr(authority, "principal_id", None)))
 
+        if commit_baseline:
+            await self.db.flush()
+            committed_issues = await CapacityService(self.db).schedule_issues(iteration, team_members)
+            if committed_issues:
+                raise PlanningConflict(committed_issues[0]["code"], committed_issues[0]["message"])
+
         # Agent command adapters need the schedule and their exact receipt to
         # share one transaction. Existing callers retain commit-by-default.
         if commit:
@@ -798,6 +784,8 @@ class SchedulerService:
 
         return ScheduleResult(
             success=True,
+            planning_revision=planning_revision,
+            capacity_issues=capacity_issues,
             decisions=decisions,
             workload_balanced=len(workload_issues) == 0,
             workload_issues=workload_issues,
@@ -811,46 +799,22 @@ class SchedulerService:
         """Build schedule tracking for each team member."""
         schedules = {}
 
-        working_dates = self.calendar_service.get_working_dates(
-            iteration.calendar, iteration.start_date, iteration.end_date
-        )
-
-        # Extract all holiday dates from the calendar (not just the iteration
-        # window) so overflow projections beyond the iteration end can skip
-        # them the same way in-iteration scheduling does.
-        holiday_dates = set()
-        if iteration.calendar and iteration.calendar.holidays:
-            for holiday_str in iteration.calendar.holidays:
-                try:
-                    holiday_dates.add(date.fromisoformat(holiday_str))
-                except ValueError:
-                    logger.warning(
-                        "Ignoring invalid calendar holiday value",
-                        exc_info=True,
-                        extra={"holiday_value": holiday_str, "iteration_id": iteration.id},
-                    )
-
-        weekend_days = (
-            set(iteration.calendar.weekend_days)
-            if iteration.calendar and iteration.calendar.weekend_days is not None
-            else {5, 6}
-        )
-
-        logger.warning(f"[BUILD_SCHEDULES] Total working dates in iteration: {len(working_dates)}")
-        logger.warning(f"[BUILD_SCHEDULES] Calendar holiday dates: {[d.isoformat() for d in sorted(holiday_dates)]}")
-
+        self._member_day_hours = {}
+        from app.services.capacity_service import CapacityService
+        shared_capacity = CapacityService(self.db)
         for member in team_members:
-            # Get vacation dates
+            calendar = await shared_capacity.calendar_for(member)
+            self._member_day_hours[member.id] = calendar.nominal_day_hours
+            working_dates = self.calendar_service.get_working_dates(calendar, iteration.start_date, iteration.end_date)
+            holiday_dates = {date.fromisoformat(value) for value in calendar.holidays}
+            weekend_days = set(calendar.weekend_days)
             vacation_dates = set()
-            logger.warning(f"[BUILD_SCHEDULES] Member '{member.name}' has {len(member.vacations)} vacations")
-            for vacation in member.vacations:
-                logger.warning(f"  - Vacation: {vacation.start_date} to {vacation.end_date}")
-                current = vacation.start_date
-                while current <= vacation.end_date:
+            for start, end in await shared_capacity.absence_ranges(member):
+                current = max(start, iteration.start_date)
+                last = end
+                while current <= last:
                     vacation_dates.add(current)
                     current += timedelta(days=1)
-
-            logger.warning(f"  - Total vacation dates: {len(vacation_dates)}")
 
             # Calculate capacity
             capacity = await self.team_service.calculate_capacity(member.id)
@@ -858,6 +822,9 @@ class SchedulerService:
             schedule = MemberSchedule(
                 member_id=member.id,
                 member_name=member.name,
+                nominal_day_hours=calendar.nominal_day_hours,
+                productivity_factor=member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient,
+                short_dates={date.fromisoformat(value) for value in calendar.short_days},
                 capacity_days=capacity.adjusted_days if capacity else 0,
                 working_dates=working_dates.copy(),
                 vacation_dates=vacation_dates,
@@ -957,7 +924,8 @@ class SchedulerService:
         operational_util = task.assignee.operational_utilization if task.assignee else 0.0
 
         return self.rules_service.calculate_adjusted_effort(
-            base_effort=task.effort_days,
+            base_effort=(task.effort_hours / getattr(self, "_member_day_hours", {}).get(task.assignee_id, task.nominal_day_hours or 8))
+                / (task.assignee.availability_percent / 100 if task.assignee and task.assignee.availability_percent else 1),
             professionalism_coefficient=coefficient,
             operational_utilization=operational_util,
         )
@@ -1131,9 +1099,8 @@ class SchedulerService:
         coefficient = task.assignee.professionalism_coefficient if task.assignee else 1.0
         operational_util = task.assignee.operational_utilization if task.assignee else 0.0
 
-        adjusted_effort = task.effort_days / coefficient if coefficient > 0 else task.effort_days
-        adjusted_effort = adjusted_effort / (1 - operational_util / 100) if operational_util < 100 else adjusted_effort
-        effort_days = max(1, math.ceil(adjusted_effort))
+        effort_days = self._calculate_adjusted_effort(task)
+        adjusted_effort = float(effort_days)
 
         # DEBUG LOGGING
         available_dates = schedule.get_available_dates()
@@ -1161,11 +1128,11 @@ class SchedulerService:
 
         if slot_start:
             start_date, end_date = schedule.allocate(
-                slot_start, effort_days, task.id, accounting_days=task.effort_days
+                slot_start, effort_days, task.id, accounting_days=task.effort_days, required_hours=task.effort_hours
             )
             task.start_date = start_date
             task.end_date = end_date
-            task.calculated_effort_days = float(effort_days)  # Save to DB for Gantt display
+            task.calculated_effort_days = float(sum(owner == task.id for owner in schedule.allocated_dates.values()))
             logger.warning(f"  - ALLOCATED: {start_date} to {end_date} ({(end_date - start_date).days + 1} calendar days)")
 
             # Check if overdue
@@ -1173,15 +1140,11 @@ class SchedulerService:
                 decision_type = "overdue"
                 reason = f"Task extends beyond iteration by {(end_date - iteration.end_date).days} days"
         else:
-            # No slot available - use calendar days calculation (5 working = 7 calendar)
-            task.start_date = earliest_start
-            calendar_days = int(effort_days * 7 / 5)
-            task.end_date = earliest_start + timedelta(days=calendar_days)
-            task.calculated_effort_days = float(effort_days)  # Save to DB for Gantt display
-            # The member still owns this effort; keep workload reporting truthful.
-            schedule.allocated_days += task.effort_days
+            task.start_date, task.end_date = schedule.allocate(earliest_start, effort_days, task.id,
+                accounting_days=task.effort_days, required_hours=task.effort_hours)
+            task.calculated_effort_days = float(sum(owner == task.id for owner in schedule.allocated_dates.values()))
             decision_type = "overdue"
-            reason = "No available slot found within iteration"
+            reason = "The forecast extends beyond the available iteration slots"
 
         decisions.append(SchedulingDecision(
             task_id=task.id,

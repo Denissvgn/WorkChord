@@ -56,7 +56,7 @@ async def domain_capabilities(db):
         pending = await db.scalar(select(Task.id).where(Task.domain_backfill_version < 1).limit(1))
     ready = pending is None
     return {"schema_version": 1, "ready": ready, "reason": None if ready else "domain_backfill_pending",
-        "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1"] if ready else [],
+        "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "task-discussion-v1"] if ready else [],
         "legacy_iteration_routes": True, "legacy_task_versions_required": False}
 
 
@@ -172,7 +172,8 @@ class TaskDomainService:
         edge, target = TaskDependency.__table__, Task.__table__.alias("action_dependency")
         unavailable = select(edge.c.id).outerjoin(target, target.c.id == edge.c.depends_on_id).where(edge.c.task_id == task.id,
             or_(target.c.id.is_(None), target.c.status.notin_(["resolved", "closed"]), target.c.canceled_at.is_not(None))).exists()
-        dependencies_complete = not bool(await self.db.scalar(select(unavailable)))
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        dependencies_complete = not bool(await self.db.scalar(select(unavailable))) and await DeliveryDependencyService(self.db).ready(task.id)
         actions = action_projection(task, self.db.info.get("authority"), dependencies_complete=dependencies_complete, live_assignment=bool(assignments or runs))
         authority = self.db.info.get("authority")
         review_action = next(item for item in actions if item["action"] == "review")

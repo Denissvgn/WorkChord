@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { isTaskStatus, statusTextClassName } from '../ui/tone';
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +44,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                     {t('notifications.title')}
                 </h3>
 
+                <Link to="/my-work?queue=inbox" className="mb-3 inline-block text-sm font-medium text-action hover:underline">{t('teamwork.queue_inbox')}</Link>
                 <div className="flex space-x-1 bg-surface-subtle p-1 rounded-lg">
                     <button
                         onClick={() => setActiveTab('history')}
@@ -92,9 +95,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                                         <span>→</span>
                                         <span className={clsx(
                                             "font-medium",
-                                            log.to_status === 'active' && "text-action",
-                                            log.to_status === 'resolved' && "text-feedback-success-foreground",
-                                            log.to_status === 'closed' && "text-content-secondary"
+                                            isTaskStatus(log.to_status) && statusTextClassName[log.to_status]
                                         )}>
                                             {statusLabel(log.to_status)}
                                         </span>

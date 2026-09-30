@@ -688,6 +688,9 @@ class OutboundWebhookService:
                 await self._attempt_webhook(delivery)
             elif delivery.channel == OutboundDeliveryChannel.EMAIL.value:
                 await self._attempt_email(delivery)
+            elif delivery.channel == OutboundDeliveryChannel.INBOX.value:
+                from app.services.discussion_service import DiscussionService
+                await DiscussionService(self.db).deliver(delivery)
             else:
                 raise OutboundDeliveryAttemptError(
                     f"Unsupported delivery channel: {delivery.channel}",
@@ -998,7 +1001,7 @@ class OutboundWebhookService:
                 "headers": self._json_safe(delivery.target.headers_json or {}),
                 "secret": delivery.target.secret,
             }
-        elif delivery.channel != OutboundDeliveryChannel.EMAIL.value:
+        elif delivery.channel not in {OutboundDeliveryChannel.EMAIL.value, OutboundDeliveryChannel.INBOX.value}:
             raise OutboundWebhookValidationError(
                 f"Unsupported delivery channel: {delivery.channel}"
             )

@@ -15,8 +15,8 @@ export const ganttService = {
         return response.data;
     },
 
-    schedule: async (iterationId: number, expectedRevision?: number) => {
-        const response = await api.post<ScheduleResult>(`/iterations/${iterationId}/schedule`, { expected_revision: expectedRevision });
+    schedule: async (iterationId: number, expectedRevision?: number, expectedPlanningRevision?: number) => {
+        const response = await api.post<ScheduleResult>(`/iterations/${iterationId}/schedule`, { expected_revision: expectedRevision, expected_planning_revision: expectedPlanningRevision });
         return response.data;
     },
 

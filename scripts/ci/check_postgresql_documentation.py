@@ -106,14 +106,17 @@ def check_documentation() -> tuple[int, int]:
 
     _require(
         Path("README.md"),
-        "PostgreSQL 18",
+        "PostgreSQL",
         "postgresql-operations.md",
         "postgresql-backup-restore.md",
+    )
+    _require(
+        Path("docs/runbooks/postgresql-operations.md"),
+        "PostgreSQL 18",
         "postgresql-rehearsal-cutover-evidence.md",
         "postgresql-postcutover-release-and-closeout.md",
         "1,250 opaque browser identities, 250 active",
-        "Opaque identities are not authenticated people",
-        "missing production evidence remains NO-SHIP",
+        "It cannot certify 1,250 authenticated people",
     )
     _require(
         Path(".env.example"),

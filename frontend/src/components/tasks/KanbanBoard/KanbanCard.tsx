@@ -64,7 +64,7 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
             <div className="pl-3">
                 {/* Header: ID and Badges */}
                 <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-mono text-content-tertiary">#{task.id}</span>
+                    <span className="text-xs tabular-nums text-content-secondary">#{task.id} · P{task.priority}</span>
                     <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })}
                         className="flex h-11 w-11 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
@@ -75,7 +75,8 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                         </div>
                     )}
                     {task.claimed_by && (
-                        <div className="text-action" title={t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}>
+                        <div className="flex flex-wrap items-center gap-1 text-xs text-content-secondary">
+                            <span>{t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}{task.claim_expires_at ? ` · ${new Date(task.claim_expires_at).toLocaleString()}` : ''}</span>
                             <Bot className="w-4 h-4" />
                         </div>
                     )}

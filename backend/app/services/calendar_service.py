@@ -156,6 +156,14 @@ class CalendarService:
         if (usage_result.scalar_one() or 0) > 0:
             raise ValueError("Calendar is used by iterations and cannot be deleted")
 
+        from app.authority import internal_authority
+        from app.commands import PlanningConflict
+        from app.models.capacity import ProfileAvailability
+        with internal_authority(self.db):
+            selected = await self.db.scalar(select(ProfileAvailability.profile_id).where(ProfileAvailability.calendar_id == calendar_id).limit(1))
+        if selected is not None:
+            raise PlanningConflict("calendar_in_use", "Choose another person availability calendar before deleting this calendar.")
+
         await self.db.delete(calendar)
         await commit_or_flush(self.db)
         return True
@@ -211,6 +219,7 @@ class CalendarService:
 
         return sorted(existing), imported_count, skipped_count
 
+    @schedule_input_command("calendar")
     async def import_holidays(
         self,
         calendar_id: int,

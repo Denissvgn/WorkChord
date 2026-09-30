@@ -255,15 +255,16 @@ def _repository_document_set(
 
     required_text = {
         "readme": (
-            "PostgreSQL is the integration and production target",
-            CAPACITY_WORDING,
-            "Opaque identities are not authenticated people",
+            "docs/runbooks/postgresql-operations.md",
+            "docs/runbooks/postgresql-backup-restore.md",
         ),
         "database_portability_policy": (
             "production fallback allowed",
             "PostgreSQL production support is declared only",
         ),
         "postgresql_operations": (
+            CAPACITY_WORDING,
+            "It cannot certify 1,250 authenticated people",
             "DATABASE_POSTGRESQL_REQUIRED=true",
             "Monthly 99.9% availability is a post-release 30-day observation objective",
         ),

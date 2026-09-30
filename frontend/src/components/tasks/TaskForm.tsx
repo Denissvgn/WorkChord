@@ -1,3 +1,6 @@
+import { DeliveryDependencies } from './DeliveryDependencies';
+import { PersonCapacity } from './PersonCapacity';
+import { TaskDiscussion } from './TaskDiscussion';
 import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Inbox, Save, Sparkles } from 'lucide-react';
@@ -98,6 +101,8 @@ export const TaskForm = ({
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [statusPending, setStatusPending] = useState(false);
     const [workDirty, setWorkDirty] = useState(false);
+    const [discussionDirty, setDiscussionDirty] = useState(false);
+    const [showAssistant, setShowAssistant] = useState(false);
     const [showDiscardWarning, setShowDiscardWarning] = useState(false);
     const canApplyTemplates = !currentTask && mode === 'direct';
     const canSendToTriage = !currentTask && !parentId && mode === 'direct';
@@ -123,8 +128,8 @@ export const TaskForm = ({
     }, [draftKey, formData, isDirty]);
 
     useEffect(() => {
-        onDirtyChange?.(isDirty || workDirty);
-    }, [isDirty, workDirty, onDirtyChange]);
+        onDirtyChange?.(isDirty || workDirty || discussionDirty);
+    }, [isDirty, workDirty, discussionDirty, onDirtyChange]);
 
     // Fetch team for assignee dropdown
     const { data: teamMembers, error: teamError, refetch: refetchTeam } = useQuery({
@@ -378,7 +383,7 @@ export const TaskForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isSubmitting || workDirty) return;
+        if (isSubmitting || workDirty || discussionDirty) return;
         setError(null);
         setConflict(null);
         const values = {
@@ -420,7 +425,7 @@ export const TaskForm = ({
 
     const handleCancel = () => {
         if (isSubmitting) return;
-        if (confirmUnsavedOnCancel && (isDirty || workDirty)) {
+        if (confirmUnsavedOnCancel && (isDirty || workDirty || discussionDirty)) {
             setShowDiscardWarning(true);
             return;
         }
@@ -493,8 +498,8 @@ export const TaskForm = ({
                             <dd className="max-h-40 overflow-auto whitespace-pre-wrap break-words">{conflictTask.description || '—'}</dd>
                             <dt>{t('statusChange.currentStatus')}</dt><dd>{t(`statuses.${conflictTask.status}`)}</dd>
                         </dl></details>}
-                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
-                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty}>
+                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty || discussionDirty}>
                         {t('taskEditor.reload')}
                     </Button>
                 </div>
@@ -537,18 +542,11 @@ export const TaskForm = ({
             )}
 
             {/* Agent readiness badge (only for existing tasks) */}
-            {currentTask && <dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
-                <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.forecast')}</dt><dd>{currentTask.start_date ?? '—'} → {currentTask.end_date ?? '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{currentTask.started_at ? new Date(currentTask.started_at).toLocaleString() : '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{currentTask.resolved_at ? new Date(currentTask.resolved_at).toLocaleString() : '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{currentTask.accepted_at ? new Date(currentTask.accepted_at).toLocaleString() : '—'}</dd></div>
-            </dl>}
             {currentTask && mode === 'direct' && (
                 currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
             )}
 
-            <fieldset disabled={workDirty || isSubmitting} className="contents">
+            <fieldset disabled={workDirty || discussionDirty || isSubmitting} className="contents">
             {/* === ESSENTIAL SECTION (always visible) === */}
 
             {/* Title - required */}
@@ -559,26 +557,6 @@ export const TaskForm = ({
                 required
             />
 
-            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty}
-                onChange={brief => setFormData(values => ({ ...values, brief }))} /> : <div className="space-y-3">
-                <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
-                <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
-                    onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
-                {currentTask && <Button type="button" variant="secondary" size="sm" disabled={isSubmitting || isDirty}
-                    onClick={async () => {
-                        setIsRefreshing(true);
-                        try {
-                            const preview = await taskService.convertBrief(currentTask.id, currentTask.version, false);
-                            setFormData(values => ({ ...values, brief: preview.brief }));
-                            setStatusMessage([t('domain.conversionDraft'), ...preview.notes].join(' '));
-                        } catch (cause) { setError(getApiErrorMessage(cause, t('domain.saveFailed'))); }
-                        finally { setIsRefreshing(false); }
-                    }}>{t('domain.convertBrief')}</Button>}
-            </div>}
-            {currentTask?.legacy_description && <details className="text-sm text-content-secondary">
-                <summary className="cursor-pointer">{t('domain.originalDescription')}</summary>
-                <pre className="mt-2 whitespace-pre-wrap break-words font-sans">{currentTask.legacy_description}</pre>
-            </details>}
             <div>
                 <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
                 {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
@@ -590,6 +568,7 @@ export const TaskForm = ({
                     {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
                 </select>
                 <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
+                {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
             </div>
 
             {/* Priority + Assignee */}
@@ -653,8 +632,77 @@ export const TaskForm = ({
                 )}
             </div>
 
+                {/* Effort Days + Hours */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Input
+                        type="number"
+                        label={t('surfaces.taskForm.effortDays')}
+                        value={formData.effort_days ?? ''}
+                        step="0.1"
+                        disabled={Boolean(currentTask?.is_composite || currentTask?.children?.length)}
+                        title={currentTask?.children?.length ? t('surfaces.taskForm.calculatedFromSubtasks') : t('surfaces.taskForm.enterEffortDays')}
+                        onChange={e => {
+                            const days = e.target.value === "" ? null : parseFloat(e.target.value);
+                            setFormData({
+                                ...formData,
+                                effort_days: days,
+                                effort_hours: days === null ? null : days * dayHours,
+                                estimate_provenance: days === null ? "unknown" : "estimated"
+                            });
+                        }}
+                    />
+                    <Input
+                        type="number"
+                        label={t('surfaces.taskForm.effortHours')}
+                        value={formData.effort_hours ?? ''}
+                        step="0.5"
+                        disabled={Boolean(currentTask?.is_composite || currentTask?.children?.length)}
+                        title={currentTask?.children?.length ? t('surfaces.taskForm.calculatedFromSubtasks') : t('surfaces.taskForm.enterEffortHours')}
+                        onChange={e => {
+                            const hours = e.target.value === "" ? null : parseFloat(e.target.value);
+                            setFormData({
+                                ...formData,
+                                effort_hours: hours,
+                                effort_days: hours === null ? null : hours / dayHours,
+                                estimate_provenance: hours === null ? "unknown" : "estimated"
+                            });
+                        }}
+                    />
+                </div>
+
+                <p className="text-sm text-content-secondary">{t("domain.estimateHelp", { hours: dayHours })}</p>
+            <p className="text-sm text-content-secondary">{t(iterationId === null ? 'teamwork.inBacklog' : 'teamwork.inIteration')}{currentTask?.baseline_start_date ? ` · ${currentTask.baseline_start_date} – ${currentTask.baseline_end_date}` : ''}</p>
+            {currentTask && <details><summary className="cursor-pointer text-sm font-medium">{t('teamwork.executionDates')}</summary><dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
+                <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.forecast')}</dt><dd>{currentTask.start_date ?? '—'} → {currentTask.end_date ?? '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{currentTask.started_at ? new Date(currentTask.started_at).toLocaleString() : '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{currentTask.resolved_at ? new Date(currentTask.resolved_at).toLocaleString() : '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{currentTask.accepted_at ? new Date(currentTask.accepted_at).toLocaleString() : '—'}</dd></div>
+            </dl></details>}
+
+            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty || discussionDirty}
+                onChange={brief => setFormData(values => ({ ...values, brief }))} /> : <div className="space-y-3">
+                <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
+                <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
+                    onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
+                {currentTask && <Button type="button" variant="secondary" size="sm" disabled={isSubmitting || isDirty}
+                    onClick={async () => {
+                        setIsRefreshing(true);
+                        try {
+                            const preview = await taskService.convertBrief(currentTask.id, currentTask.version, false);
+                            setFormData(values => ({ ...values, brief: preview.brief }));
+                            setStatusMessage([t('domain.conversionDraft'), ...preview.notes].join(' '));
+                        } catch (cause) { setError(getApiErrorMessage(cause, t('domain.saveFailed'))); }
+                        finally { setIsRefreshing(false); }
+                    }}>{t('domain.convertBrief')}</Button>}
+            </div>}
+            {currentTask?.legacy_description && <details className="text-sm text-content-secondary">
+                <summary className="cursor-pointer">{t('domain.originalDescription')}</summary>
+                <pre className="mt-2 whitespace-pre-wrap break-words font-sans">{currentTask.legacy_description}</pre>
+            </details>}
+            {mode === 'direct' && <Button type="button" variant="ghost" size="sm" aria-expanded={showAssistant} onClick={() => setShowAssistant(value => !value)}>{t('teamwork.optionalAssistant')}</Button>}
             {/* AI assistance intentionally stays outside sandbox drafts. */}
-            {mode === 'direct' && (
+            {mode === 'direct' && showAssistant && (
             <section className="rounded-md border border-feedback-purple-border bg-feedback-purple-muted p-4 space-y-3">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -843,45 +891,6 @@ export const TaskForm = ({
                     </select>
                 </div>
 
-                {/* Effort Days + Hours */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Input
-                        type="number"
-                        label={t('surfaces.taskForm.effortDays')}
-                        value={formData.effort_days ?? ''}
-                        step="0.1"
-                        disabled={Boolean(currentTask?.is_composite || currentTask?.children?.length)}
-                        title={currentTask?.children?.length ? t('surfaces.taskForm.calculatedFromSubtasks') : t('surfaces.taskForm.enterEffortDays')}
-                        onChange={e => {
-                            const days = e.target.value === "" ? null : parseFloat(e.target.value);
-                            setFormData({
-                                ...formData,
-                                effort_days: days,
-                                effort_hours: days === null ? null : days * dayHours,
-                                estimate_provenance: days === null ? "unknown" : "estimated"
-                            });
-                        }}
-                    />
-                    <Input
-                        type="number"
-                        label={t('surfaces.taskForm.effortHours')}
-                        value={formData.effort_hours ?? ''}
-                        step="0.5"
-                        disabled={Boolean(currentTask?.is_composite || currentTask?.children?.length)}
-                        title={currentTask?.children?.length ? t('surfaces.taskForm.calculatedFromSubtasks') : t('surfaces.taskForm.enterEffortHours')}
-                        onChange={e => {
-                            const hours = e.target.value === "" ? null : parseFloat(e.target.value);
-                            setFormData({
-                                ...formData,
-                                effort_hours: hours,
-                                effort_days: hours === null ? null : hours / dayHours,
-                                estimate_provenance: hours === null ? "unknown" : "estimated"
-                            });
-                        }}
-                    />
-                </div>
-
-                <p className="text-sm text-content-secondary">{t("domain.estimateHelp", { hours: dayHours })}</p>
                 {/* Date constraints */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
@@ -984,7 +993,7 @@ export const TaskForm = ({
             {currentTask && iterationId !== null && mode === 'direct' && (
                 <div className="border-t pt-4">
                     <label className="block text-sm font-medium text-content-primary mb-2">{t('surfaces.taskForm.statusManagement')}</label>
-                    {iterationId !== null && <fieldset disabled={isDirty || workDirty || isSubmitting}><StatusChangeControl
+                    {iterationId !== null && <fieldset disabled={isDirty || workDirty || discussionDirty || isSubmitting}><StatusChangeControl
                         onPendingChange={handleStatusPending}
                         task={currentTask}
                         iterationId={iterationId}
@@ -1001,13 +1010,19 @@ export const TaskForm = ({
 
             </fieldset>
             {currentTask && mode === 'direct' && <TaskWorkPanel key={`${currentTask.id}:${currentTask.version}`} task={currentTask}
-                draftKey={draftKey} disabled={isDirty || isSubmitting} onDirty={setWorkDirty} onPending={handleStatusPending}
+                draftKey={draftKey} disabled={isDirty || discussionDirty || isSubmitting} onDirty={setWorkDirty} onPending={handleStatusPending}
                 onReload={() => void reloadCurrentTask()}
                 onUpdated={latest => {
                     const values = buildTaskEditorDefaults({ task: latest });
                     setCurrentTask(latest); setFormData(values); setBaseline(values); setStatusPending(false);
                     invalidateTaskProjectQueries();
                 }} />}
+            {currentTask && mode === 'direct' && <DeliveryDependencies task={currentTask} disabled={isDirty || workDirty || discussionDirty || isSubmitting}
+                onPending={handleStatusPending} onUpdated={latest => {
+                    const values = buildTaskEditorDefaults({ task: latest }); setCurrentTask(latest); setFormData(values); setBaseline(values); invalidateTaskProjectQueries();
+                }} />}
+            {currentTask && mode === 'direct' && <TaskDiscussion taskId={currentTask.id} draftKey={draftKey} disabled={isSubmitting}
+                onDirty={setDiscussionDirty} onPending={handleStatusPending} />}
             {currentTask && mode === 'direct' && <CollapsibleSection title={t('taskTimeline.title', { defaultValue: t('domain.history') })}><TaskTimelinePanel task={currentTask} /></CollapsibleSection>}
 
             {/* === ACTION BUTTONS === */}
@@ -1019,7 +1034,7 @@ export const TaskForm = ({
                         className="w-full sm:w-auto"
                         onClick={handleSendToTriage}
                         isLoading={createTriageMutation.isPending}
-                        disabled={isSubmitting || workDirty}
+                        disabled={isSubmitting || workDirty || discussionDirty}
                     >
                         <Inbox className="w-4 h-4 mr-2" />
                         {t('surfaces.taskForm.sendToTriage')}
@@ -1040,7 +1055,7 @@ export const TaskForm = ({
                         type="submit"
                         className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
-                        disabled={isSubmitting || workDirty || sessionUnavailable || Boolean(conflict)}
+                        disabled={isSubmitting || workDirty || discussionDirty || sessionUnavailable || Boolean(conflict)}
                     >
                         <Save className="w-4 h-4 mr-2" />
                         {mode === 'sandbox'

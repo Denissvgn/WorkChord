@@ -3829,6 +3829,9 @@ class AgentWorkService:
             blockers.append("schedule_missing")
         elif assignment.queue_class == "normal" and task.start_date > date.today():
             blockers.append("scheduled_start_future")
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        if not await DeliveryDependencyService(self.db).ready(task.id):
+            blockers.append("delivery_prerequisite_unavailable")
         for edge in task.dependencies:
             dependency = edge.depends_on
             if dependency.canceled_at or dependency.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:

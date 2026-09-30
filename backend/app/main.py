@@ -16,10 +16,10 @@ from app.maintenance import (
 )
 from app.observability import collect_metrics, readiness_snapshot
 from app.query_limits import CollectionLimitExceededError
-from app.commands import AggregateVersionConflict, HierarchyScopeError
+from app.commands import AggregateVersionConflict, HierarchyScopeError, PlanningConflict
 from app.authority import AuthorityError
 from app.http_authority import enforce_http_authority
-from app.routers import identity, task_domain
+from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion
 from app.runtime_telemetry import metrics
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
@@ -52,6 +52,11 @@ app = FastAPI(
 )
 
 
+@app.exception_handler(PlanningConflict)
+async def planning_conflict(request: Request, exc: PlanningConflict):
+    return JSONResponse(status_code=409, content={"detail": exc.detail()})
+
+
 @app.exception_handler(AggregateVersionConflict)
 async def aggregate_version_conflict(request: Request, exc: AggregateVersionConflict):
     return JSONResponse(status_code=409, content={"detail": exc.detail()}, headers={"Cache-Control": "no-store"})
@@ -69,6 +74,8 @@ async def hierarchy_scope_error(request: Request, exc: HierarchyScopeError):
 
 app.include_router(identity.router, prefix=settings.api_prefix, tags=["Identity"])
 app.include_router(task_domain.router, prefix=settings.api_prefix, tags=["Task domain"])
+app.include_router(delivery_dependencies.router, prefix=settings.api_prefix, tags=["Delivery dependencies"])
+app.include_router(discussion.router, prefix=settings.api_prefix, tags=["Discussion"])
 
 
 @app.exception_handler(RequestValidationError)
@@ -188,6 +195,7 @@ app.add_middleware(RuntimeBoundaryMiddleware)
 app.include_router(calendars.router, prefix=settings.api_prefix, tags=["Calendars"])
 app.include_router(iterations.router, prefix=settings.api_prefix, tags=["Iterations"])
 app.include_router(team.router, prefix=settings.api_prefix, tags=["Team"])
+app.include_router(capacity.router, prefix=settings.api_prefix, tags=["Capacity"])
 app.include_router(tasks.router, prefix=settings.api_prefix, tags=["Tasks"])
 app.include_router(projects.router, prefix=settings.api_prefix, tags=["Projects"])
 app.include_router(gantt.router, prefix=settings.api_prefix, tags=["Gantt"])

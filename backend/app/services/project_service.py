@@ -1,6 +1,6 @@
 """Project service with CRUD and summary logic."""
 
-from app.commands import commit_or_flush, schedule_input_command
+from app.commands import atomic_command, lock_planning, commit_or_flush, schedule_input_command
 from datetime import date, datetime
 from typing import Optional, Sequence
 
@@ -742,6 +742,7 @@ class ProjectService:
             raise
         return milestone
 
+    @atomic_command
     async def update_milestone(
         self,
         project_id: int,
@@ -751,6 +752,7 @@ class ProjectService:
         commit: bool = True,
     ) -> Optional[ProjectMilestone]:
         """Apply a partial update to a project-scoped milestone."""
+        await lock_planning(self.db)
         milestone = await self.get_milestone_for_project(project_id, milestone_id)
         if milestone is None:
             return None
@@ -780,6 +782,7 @@ class ProjectService:
             raise
         return milestone
 
+    @atomic_command
     async def delete_milestone(
         self,
         project_id: int,
@@ -788,10 +791,13 @@ class ProjectService:
         commit: bool = True,
     ) -> Optional[int]:
         """Delete a project milestone after detaching linked tasks."""
+        await lock_planning(self.db)
         milestone = await self.get_milestone_for_project(project_id, milestone_id)
         if milestone is None:
             return None
 
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        await DeliveryDependencyService(self.db).require_unreferenced(milestone_id=milestone_id)
         result = await self.db.execute(
             select(func.count(Task.id)).where(Task.milestone_id == milestone_id)
         )
@@ -860,8 +866,10 @@ class ProjectService:
         )
         return int(result.scalar_one())
 
+    @atomic_command
     async def delete(self, project_id: int, detach_tasks: bool = False) -> str:
         """Delete a project, optionally detaching linked tasks first."""
+        await lock_planning(self.db)
         project = await self.get_by_id(project_id)
         if not project:
             return "not_found"
@@ -873,6 +881,17 @@ class ProjectService:
         backlog_exists = await self.db.scalar(select(Task.id).where(Task.project_id == project_id, Task.iteration_id.is_(None)).limit(1))
         if backlog_exists is not None:
             return "has_tasks"
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        from app.models.delivery_dependency import DeliveryDependency
+        from app.commands import PlanningConflict
+        from app.authority import internal_authority
+        ids = list((await self.db.scalars(select(Task.id).where(Task.project_id == project_id))).all())
+        await DeliveryDependencyService(self.db).require_unreferenced(ids)
+        with internal_authority(self.db):
+            if await self.db.scalar(select(DeliveryDependency.id).where(DeliveryDependency.task_id.in_(ids)).limit(1)):
+                raise PlanningConflict("delivery_dependency_referenced", "Unlink delivery dependencies before removing this project.")
+        for milestone_id in (await self.db.scalars(select(ProjectMilestone.id).where(ProjectMilestone.project_id == project_id))).all():
+            await DeliveryDependencyService(self.db).require_unreferenced(milestone_id=milestone_id)
         project_name = project.name
         try:
             if linked_task_count:

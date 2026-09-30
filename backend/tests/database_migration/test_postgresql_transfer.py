@@ -41,7 +41,7 @@ from app.models.user_session import UserSession
 
 
 def _source_artifacts(
-    tmp_path: Path, configure_database
+    tmp_path: Path, configure_database, *, include_delivery_dependencies=False
 ) -> tuple[Path, Path, str]:
     source = tmp_path / "transfer-source.db"
     configure_database(f"sqlite+aiosqlite:///{source}")
@@ -107,6 +107,20 @@ def _source_artifacts(
                     ),
                 ]
             )
+            if include_delivery_dependencies:
+                from app.models.project import Project, ProjectMilestone
+                from app.models.delivery_dependency import DeliveryDependency
+                session.flush()
+                project = Project(name="Milestone delivery")
+                session.add(project)
+                session.flush()
+                milestone = ProjectMilestone(project_id=project.id, name="Accepted component")
+                session.add(milestone)
+                session.flush()
+                session.add_all([
+                    DeliveryDependency(task_id=parent.id, prerequisite_task_id=child.id),
+                    DeliveryDependency(task_id=child.id, prerequisite_milestone_id=milestone.id),
+                ])
             session.commit()
     finally:
         engine.dispose()
@@ -484,5 +498,26 @@ def test_loader_is_idempotent_and_gate_opens_only_after_final_reconciliation(
                 {"run_id": source_manifest["migration_run_id"]},
             ).scalar_one()
         assert gate == "reconciled"
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+def test_typed_delivery_targets_survive_source_transfer(tmp_path, postgres_database, configure_database):
+    from app.models.delivery_dependency import DeliveryDependency
+    snapshot, manifest, _ = _source_artifacts(tmp_path, configure_database, include_delivery_dependencies=True)
+    configure_database(postgres_database.url)
+    bootstrap_database_schema()
+    report = load_snapshot(snapshot_path=snapshot, source_manifest_path=manifest,
+        report_path=tmp_path / "typed-delivery-load.json", authorized_target=target_identifier(database_configuration()), chunk_size=7)
+    assert report["status"] == "loaded_closed_to_traffic"
+    engine = create_engine(postgres_database.url)
+    try:
+        with engine.connect() as connection:
+            edges = connection.execute(select(DeliveryDependency.__table__)).mappings().all()
+            assert len(edges) == 2
+            assert all((edge["prerequisite_task_id"] is None) != (edge["prerequisite_milestone_id"] is None) for edge in edges)
     finally:
         engine.dispose()

@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+import { taskService } from '../../services/taskService';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -27,7 +29,7 @@ import { OPEN_COMMAND_MENU_EVENT } from './commandMenuEvents';
 import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
 import { getWorkspaceForPath } from '../../navigation/workspaces';
 
-type CommandGroup = 'tasks' | 'current' | 'navigate' | 'suggested';
+type CommandGroup = 'results' | 'tasks' | 'current' | 'navigate' | 'suggested';
 
 interface CommandAction {
     id: string;
@@ -123,6 +125,11 @@ export const CommandMenu = () => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
+    const [taskQuery, setTaskQuery] = useState('');
+    useEffect(() => { const timer = setTimeout(() => setTaskQuery(query.trim().slice(0, 200)), 200); return () => clearTimeout(timer); }, [query]);
+    // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
+    const taskResults = useQuery({ queryKey: ['command-task-search', taskQuery], enabled: open && taskQuery.length > 0,
+        queryFn: () => taskService.lookup({ q: taskQuery, limit: 8 }) });
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllCommands, setShowAllCommands] = useState(false);
     const [recentCommandIds, setRecentCommandIds] = useState<string[]>(readRecentCommandIds);
@@ -367,16 +374,21 @@ export const CommandMenu = () => {
     const isCompactView = !hasSearchQuery && !showAllCommands;
     const visibleGroupOrder: readonly CommandGroup[] = isCompactView
         ? COMPACT_GROUPS
-        : groupOrder;
+        : ['results', ...groupOrder];
     const filteredCommands = useMemo(() => {
         const normalizedQuery = query.trim().toLocaleLowerCase();
         if (!normalizedQuery) return showAllCommands ? orderedCommands : compactCommands;
-        return orderedCommands.filter(command => (
+        const taskCommands: CommandAction[] = (taskQuery === query.trim().slice(0, 200) ? taskResults.data?.items ?? [] : []).map(task => ({
+            id: `task-result-${task.id}`, group: 'results', label: `#${task.id} · ${task.title}`,
+            description: `${task.project_name ?? t('teamwork.workspace')} · ${task.iteration_name ?? t('teamwork.backlog')} · ${t(`statuses.${task.status}`)}`,
+            icon: ListTodo, to: `${withTaskCommand(location, 'task', String(task.id))}`,
+        }));
+        return [...taskCommands, ...orderedCommands.filter(command => (
             `${command.label} ${command.description} ${command.keywords?.join(' ') ?? ''}`
                 .toLocaleLowerCase()
                 .includes(normalizedQuery)
-        ));
-    }, [compactCommands, orderedCommands, query, showAllCommands]);
+        ))];
+    }, [compactCommands, orderedCommands, query, showAllCommands, taskResults.data, taskQuery, location, t]);
 
     useEffect(() => {
         if (!open) return;
@@ -569,6 +581,8 @@ export const CommandMenu = () => {
                 </div>
             )}
 
+            {hasSearchQuery && taskResults.isFetching && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
+            {hasSearchQuery && taskResults.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('teamwork.loadFailed')} <button type="button" onClick={() => void taskResults.refetch()}>{t('teamwork.retry')}</button></p>}
             <div
                 id="workchord-command-results"
                 className="command-menu-results"
@@ -594,7 +608,7 @@ export const CommandMenu = () => {
                                 aria-labelledby={`command-menu-group-${group}`}
                             >
                                 <h3 id={`command-menu-group-${group}`}>
-                                    {t(`commandMenu.groups.${group}`)}
+                                    {group === 'results' ? t('teamwork.taskResults') : t(`commandMenu.groups.${group}`)}
                                 </h3>
                                 <div>
                                     {groupedCommands.map(({ command, index }) => {

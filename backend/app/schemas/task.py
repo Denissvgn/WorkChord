@@ -429,6 +429,7 @@ class TaskBatchUpdateRequest(BaseModel):
     """Schema for updating multiple tasks in a single request."""
     tasks: list[TaskBatchUpdateItem]
     expected_revision: Optional[int] = Field(default=None, ge=1)
+    expected_planning_revision: Optional[int] = Field(default=None, ge=0)
 
 
 class TaskBatchUpdateResponseItem(BaseModel):
