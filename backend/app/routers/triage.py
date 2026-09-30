@@ -10,6 +10,7 @@ from app.schemas.triage import (
     TriageActionRequest,
     TriageClassificationSuggestionResponse,
     TriageConvertToTaskRequest,
+    TriageConvertToBacklogRequest,
     TriageConvertToTaskResponse,
     TriageDuplicateRequest,
     TriageDuplicateSuggestionsResponse,
@@ -38,14 +39,14 @@ router = APIRouter()
 
 
 async def get_triage_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> TriageService:
     """Dependency for triage service."""
     return TriageService(db)
 
 
 async def get_llm_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> LLMService:
     """Dependency for LLM-powered triage classification."""
     service = await LLMService.from_runtime(db)
@@ -54,7 +55,7 @@ async def get_llm_service(
 
 
 async def get_assignee_recommendation_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> AssigneeRecommendationService:
     """Dependency for assignee recommendation service."""
     return AssigneeRecommendationService(db)
@@ -374,3 +375,17 @@ async def convert_triage_item_to_task(
         triage_item=TriageItemResponse.model_validate(item),
         task=service.task_service.task_to_response(task),
     )
+
+
+@router.post("/triage/{triage_item_id}/convert-to-backlog", response_model=TriageConvertToTaskResponse)
+async def convert_triage_item_to_backlog(triage_item_id: int, data: TriageConvertToBacklogRequest,
+        service: Annotated[TriageService, Depends(get_triage_service)]):
+    """Convert to a durable project task without scheduling it."""
+    from app.routers.task_domain import domain_result
+    from app.commands import command_transaction
+    try:
+        async with command_transaction(service.db):
+            item, task = await domain_result(service.convert_to_task(triage_item_id, data))
+            return TriageConvertToTaskResponse(triage_item=TriageItemResponse.model_validate(item), task=service.task_service.task_to_response(task))
+    except TriageConflictError as exc:
+        raise HTTPException(409, detail=str(exc)) from exc

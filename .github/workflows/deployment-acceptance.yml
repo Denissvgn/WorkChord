@@ -1,0 +1,45 @@
+name: Deployment acceptance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deployment-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  server-acceptance:
+    name: Self-hosted server acceptance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build and accept the self-hosted stack
+        run: |
+          ./scripts/server/accept_self_hosted.sh
+          ./scripts/server/accept_self_hosted.sh
+      - name: Validate the bounded receipt
+        run: |
+          test -s .runtime/autonomy/reports/latest.json
+          test -s .runtime/autonomy/reports/trusted-signer-public-key.b64
+          test "$(find .runtime/autonomy/reports \
+            -maxdepth 1 -name 'previous-*.json' | wc -l)" -ge 1
+          grep -q '"decision": "SELF-HOSTED-SERVER-ACCEPTED"' \
+            .runtime/autonomy/reports/latest.json
+          grep -q '"accepted_as_production_evidence": false' \
+            .runtime/autonomy/reports/latest.json
+      - name: Stop the acceptance stack
+        if: always()
+        run: |
+          if test -f .runtime/autonomy/server.env; then
+            docker compose \
+              --project-name workchord-server \
+              --env-file .runtime/autonomy/server.env \
+              -f docker-compose.yml \
+              -f docker-compose.server.yml \
+              --profile autonomy \
+              down
+          fi

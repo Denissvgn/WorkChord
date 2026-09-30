@@ -21,7 +21,7 @@ from app.services.team_service import TeamService
 router = APIRouter()
 
 
-async def get_team_service(db: Annotated[AsyncSession, Depends(get_db)]) -> TeamService:
+async def get_team_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> TeamService:
     """Dependency for team service."""
     return TeamService(db)
 

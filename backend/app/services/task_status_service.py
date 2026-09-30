@@ -1,5 +1,8 @@
 """Task status transitions, roll-up reconciliation, and status reporting."""
 
+from app.authority import AuthorityError
+from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations
+
 import json
 from datetime import date, timedelta
 from typing import Any, Optional, Sequence, TYPE_CHECKING
@@ -61,6 +64,7 @@ class TaskStatusService:
             return TaskStatus.RESOLVED.value
         return TaskStatus.ACTIVE.value
 
+    @atomic_command
     async def change_status(
         self,
         task_id: int,
@@ -75,31 +79,56 @@ class TaskStatusService:
         expected_version: Optional[int] = None,
         commit: bool = True,
         reserve_version: bool = True,
+        manual_execution: bool = False,
+        review_evidence: str = "",
+        review_rework: bool = False,
     ) -> tuple[Optional[Task], list[dict], bool]:
         """Apply one valid direct transition and reconcile its ancestor chain."""
+        authority = self.db.info.get("authority")
+        if authority is not None and authority.kind == "agent":
+            if (new_status.value if hasattr(new_status, "value") else str(new_status)) == "closed" and authority.actor_role != "verifier":
+                raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
+            if authority.source == "rest":
+                raise AuthorityError("agent_protocol_required", "Use the assigned-work command with its current execution fence.")
+        await self.task_service._lock_task_scope(task_id)
         task = await self.task_service.get_by_id(task_id)
         if task is None:
             return None, [], False
+        if task.canceled_at or task.blocked_reason:
+            raise ValueError("Canceled or blocked work cannot change lifecycle")
+        if manual_execution and authority is not None and authority.kind not in {"human", "local"}:
+            raise AuthorityError("human_execution_required", "Manual execution requires a human identity.")
+        if task.is_summary or task.children:
+            raise ValueError("Summary lifecycle is derived from its leaf work")
         self.task_service.ensure_expected_version(task, expected_version)
 
         new_status_value = (
             new_status.value if hasattr(new_status, "value") else str(new_status)
         )
+        from app.authority import require_project
+        require_project(self.db, task.project_id, "review" if new_status_value == "closed" or review_rework else "execute")
+        if review_rework:
+            if task.status != "resolved" or new_status_value != "active":
+                raise ValueError("Review rework requires a resolved-to-active transition")
+            self.db.info.setdefault("review_rework_tasks", set()).add(task.id)
         if new_status_value not in self.VALID_TRANSITIONS.get(task.status, set()):
             return None, [], False
 
+        if new_status_value == "closed":
+            from app.services.task_brief_service import TaskBriefService
+            await TaskBriefService(self.db).require_review(task, accepting=True)
         ui_language = await resolve_runtime_ui_language(self.db)
         if task.status == TaskStatus.PLANNED.value:
-            if not task.start_date or not task.end_date:
+            if not manual_execution and (not task.start_date or not task.end_date):
                 raise ValueError(task_requires_schedule_message(ui_language))
             for dependency in task.dependencies:
                 dependency_task = await self.task_service.get_by_id(
                     dependency.depends_on_id
                 )
-                if dependency_task and dependency_task.status not in {
+                if dependency_task and (dependency_task.canceled_at or dependency_task.status not in {
                     TaskStatus.RESOLVED.value,
                     TaskStatus.CLOSED.value,
-                }:
+                }):
                     raise ValueError(
                         incomplete_dependency_message(
                             dependency_task.title,
@@ -108,6 +137,8 @@ class TaskStatusService:
                         )
                     )
 
+        from app.services.snapshot_service import SnapshotService
+        await SnapshotService(self.db).create_snapshot(task.iteration_id, "before_status_change")
         updated, cascade_updates, notification_sent = await self._apply_transition(
             task,
             new_status_value,
@@ -122,6 +153,9 @@ class TaskStatusService:
             automatic=False,
             reserve_version=reserve_version,
         )
+        if new_status_value == "closed":
+            from app.services.task_brief_service import TaskBriefService
+            await TaskBriefService(self.db).record_review(updated, verdict="accept", reason=reason or "Independent status review", evidence=review_evidence)
         if updated.parent_id is not None:
             await self.reconcile_parent_chain(
                 updated.parent_id,
@@ -129,7 +163,7 @@ class TaskStatusService:
                 commit=False,
             )
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         refreshed = await self.task_service.get_by_id(task_id)
@@ -159,31 +193,44 @@ class TaskStatusService:
         if new_status not in transition_map.get(old_status, set()):
             raise ValueError(f"Invalid task status transition: {old_status} -> {new_status}")
 
-        today = date.today()
+        from app.services.work_metrics import working_today
+        from app.models.project import Project
+        from app.utils.time import utc_now
+        from app.models.calendar import Calendar
+        timezone = (await self.db.scalar(select(Project.timezone).where(Project.id == task.project_id)) if task.project_id else
+                    await self.db.scalar(select(Calendar.timezone).join(Iteration, Iteration.calendar_id == Calendar.id).where(Iteration.id == task.iteration_id)))
+        today, now = working_today(timezone), utc_now()
         original_end_date = task.end_date
+        authority = self.db.info.get("authority")
         if automatic:
-            if new_status == TaskStatus.PLANNED.value:
-                task.actual_start_date = None
-                task.actual_end_date = None
-            elif new_status == TaskStatus.ACTIVE.value:
-                task.actual_start_date = task.actual_start_date or today
-                task.actual_end_date = None
-            elif new_status == TaskStatus.RESOLVED.value:
-                task.actual_end_date = None
-            elif new_status == TaskStatus.CLOSED.value:
-                task.actual_end_date = task.actual_end_date or today
-        elif new_status == TaskStatus.ACTIVE.value and old_status == TaskStatus.PLANNED.value:
-            task.actual_start_date = today
-            if task.start_date and today > task.start_date and task.end_date:
-                task.end_date += timedelta(days=(today - task.start_date).days)
-            task.start_date = today
+            self.db.info.setdefault("derived_rollups", set()).add(task.id)
+            task.is_summary = True
+        elif new_status == TaskStatus.ACTIVE.value:
+            task.progress = None
+            task.started_at = task.started_at or now
+            task.actual_start_date = task.actual_start_date or today
+            task.resolved_at = task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
+            task.actual_end_date = None
+            if old_status == TaskStatus.PLANNED.value and task.execution_mode != "manual":
+                if task.start_date and today > task.start_date and task.end_date:
+                    task.end_date += timedelta(days=(today - task.start_date).days)
+                task.start_date = today
+            if task.id not in self.db.info.get("review_rework_tasks", set()):
+                task.executed_by_principal_id = getattr(authority, "principal_id", None)
+        elif new_status == TaskStatus.RESOLVED.value:
+            task.resolved_at = now
+            task.executed_by_principal_id = getattr(authority, "principal_id", None) or task.executed_by_principal_id
+            task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
         elif new_status == TaskStatus.CLOSED.value:
             task.actual_end_date = today
-            task.end_date = today
+            task.accepted_at = now
+            task.accepted_by_principal_id = getattr(authority, "principal_id", None)
 
         task.status = new_status
         if reserve_version:
             await self.task_service.reserve_task_version(task, expected_version)
+        if new_status == "closed" and not automatic:
+            task.accepted_version = task.version
 
         cascade_updates: list[dict] = []
         status_log = TaskStatusLog(
@@ -252,7 +299,7 @@ class TaskStatusService:
                 "old_status": old_status,
                 "new_status": new_status,
                 "manager_email": iteration.manager_email if iteration else None,
-                "assignee_email": task.assignee.email if task.assignee else None,
+                "assignee_email": task.owner_profile.email if task.__dict__.get("owner_profile") else task.assignee.email if task.assignee else None,
                 "cascade_updates": cascade_updates,
                 "reason": reason,
             },
@@ -276,34 +323,30 @@ class TaskStatusService:
         visited.add(parent_id)
 
         parent = await self.task_service.get_by_id(parent_id)
-        if parent is None or not parent.children:
+        if parent is None:
             return
-        target_status = self.derive_parent_status(
-            [child.status for child in parent.children]
-        )
-        if target_status == parent.status:
-            return
-
-        ui_language = await resolve_runtime_ui_language(self.db)
-        await self._apply_transition(
-            parent,
-            target_status,
-            reason=automatic_child_status_reason(ui_language),
-            actor_type="auto",
-            expected_version=parent.version,
-            automatic=True,
-            reserve_version=True,
-        )
+        children = list(parent.children)
+        target_status = self.derive_parent_status([child.status for child in children]) if children else "planned"
+        target_priority = min(child.priority for child in children) if children else parent.priority
+        structural_change = not parent.is_summary or parent.priority != target_priority or parent.effort_days != 0 or parent.effort_hours != 0 or parent.assignee_id is not None
+        self.db.info.setdefault("derived_rollups", set()).add(parent.id)
+        parent.is_summary = True
+        parent.effort_days = parent.effort_hours = 0.0
+        parent.assignee_id = None
+        parent.priority = target_priority
+        parent.accepted_at = parent.accepted_by_principal_id = parent.accepted_version = None
+        if target_status != parent.status:
+            ui_language = await resolve_runtime_ui_language(self.db)
+            await self._apply_transition(parent, target_status, reason=automatic_child_status_reason(ui_language),
+                actor_type="auto", expected_version=parent.version, automatic=True, reserve_version=True)
+        elif structural_change:
+            await self.task_service.reserve_task_version(parent, parent.version)
+            await self.task_service.record_task_event(parent.id, "summary_reconciled", {"priority": target_priority, "status": target_status}, actor_type="auto")
+        await self.db.flush()
         if parent.parent_id is not None:
-            await self.reconcile_parent_chain(
-                parent.parent_id,
-                visited=visited,
-                commit=False,
-            )
+            await self.reconcile_parent_chain(parent.parent_id, visited=visited, commit=False)
         if commit:
-            await self.db.commit()
-        else:
-            await self.db.flush()
+            await commit_or_flush(self.db)
 
     async def cascade_update_dependents(
         self,
@@ -384,26 +427,18 @@ class TaskStatusService:
         return history
 
     async def get_overdue_tasks(self, iteration_id: int) -> Sequence[Task]:
-        """Get planned tasks whose start date has passed."""
-        result = await self.db.execute(
-            select(Task)
-            .where(
-                Task.iteration_id == iteration_id,
-                Task.status == TaskStatus.PLANNED.value,
-                Task.start_date < date.today(),
-                Task.start_date.isnot(None),
-            )
-            .options(selectinload(Task.assignee), selectinload(Task.dependencies))
-            .order_by(Task.start_date.asc().nulls_last(), Task.id.asc())
-            .limit(MAX_BOUNDED_LIST_ITEMS + 1)
-        )
-        tasks = list(result.scalars().all())
-        if len(tasks) > MAX_BOUNDED_LIST_ITEMS:
-            raise CollectionLimitExceededError(
-                "overdue task list",
-                MAX_BOUNDED_LIST_ITEMS,
-            )
-        return tasks
+        """Return open leaf delivery past its expected completion in the working zone."""
+        from app.services.work_metrics import task_signals
+        tasks = await self.task_service.get_all_tasks(iteration_id)
+        overdue = []
+        for task in tasks:
+            project = task.__dict__.get("project")
+            if task_signals(task, timezone=project.timezone if project else "UTC", composite=task.is_summary or bool(task.children))["is_overdue"]:
+                overdue.append(task)
+        overdue.sort(key=lambda task: (task.end_date, task.id))
+        if len(overdue) > MAX_BOUNDED_LIST_ITEMS:
+            raise CollectionLimitExceededError("overdue task list", MAX_BOUNDED_LIST_ITEMS)
+        return overdue
 
     async def get_iteration_status_history(
         self,

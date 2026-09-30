@@ -9,6 +9,7 @@ import json
 from typing import Any
 
 import pytest
+from tests.support.transactions import reload_session_fixture
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -1196,6 +1197,7 @@ async def test_wave6_scenario_06_stale_binding_rejects_preview_selection_atomica
     assert conflict.value.code == "routing_preview_stale"
     assert conflict.value.context["current_input_digest"] != preview.input_digest
     await db_session.rollback()
+    await reload_session_fixture(db_session)
 
     state = await _persisted_state(db_session, base.task.id)
     binding = await db_session.get(AgentModelBinding, binding_id)
@@ -1207,7 +1209,6 @@ async def test_wave6_scenario_06_stale_binding_rejects_preview_selection_atomica
     assert [event.event_type for event in state.events] == [
         "agent.routing_assessment_created",
         "agent.routing.assessment_created",
-        "agent.routing.stale_conflict",
     ]
 
 
@@ -1279,6 +1280,7 @@ async def test_wave6_scenario_07_material_model_mismatch_blocks_begin_atomically
     ).hexdigest(
     )
     await db_session.rollback()
+    await reload_session_fixture(db_session)
 
     state = await _persisted_state(db_session, base.task.id)
     assert state.task.status == "planned"
@@ -1292,7 +1294,6 @@ async def test_wave6_scenario_07_material_model_mismatch_blocks_begin_atomically
         "agent.routing.assessment_created",
         "agent.assignment_created",
         "agent.routing.assignment_selected",
-        "agent.routing.configured_observed_mismatch",
     ]
 
 
@@ -1433,6 +1434,7 @@ async def test_wave6_scenario_09_external_blocker_cannot_escalate_model_tier(
     assert conflict.value.code == "routing_model_escalation_not_allowed"
     assert conflict.value.context["selected_reasoning_tier"] == 2
     await db_session.rollback()
+    await reload_session_fixture(db_session)
 
     state = await _persisted_state(db_session, base.task.id)
     assert [
@@ -1514,6 +1516,7 @@ async def test_legacy_lineage_cannot_forge_model_escalation_eligibility(
 
     assert conflict.value.code == "routing_lineage_authority_unverified"
     await db_session.rollback()
+    await reload_session_fixture(db_session)
     persisted = await db_session.get(AgentTaskAssignment, pending.id)
     assert persisted is not None
     assert (
@@ -1748,6 +1751,7 @@ async def test_wave6_scenario_11_reassignment_without_fresh_preview_is_rejected(
     assert conflict.value.code == "model_aware_assignment_update_required"
     assert conflict.value.context["changed_fields"] == ["actor_id"]
     await db_session.rollback()
+    await reload_session_fixture(db_session)
 
     state = await _persisted_state(db_session, base.task.id)
     assert len(state.assignments) == 1
@@ -1827,6 +1831,7 @@ async def test_wave6_scenario_12_matching_self_report_is_unattested_and_mismatch
         )
     assert mismatch.value.code == "resolved_model_mismatch"
     await db_session.rollback()
+    await reload_session_fixture(db_session)
     inert = await _persisted_state(db_session, base.task.id)
     assert inert.task.status == "planned"
     assert inert.task.claimed_by is None

@@ -26,7 +26,7 @@ async def get_current_plan_share(
         UserSession,
         Depends(session_service.get_current_session),
     ],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> PlanShareResponse | None:
     """Return the current session's active share for one iteration."""
     response.headers["Cache-Control"] = "no-store"
@@ -47,7 +47,7 @@ async def create_plan_share(
         UserSession,
         Depends(session_service.get_current_session),
     ],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> PlanShareResponse:
     """Create a new immutable snapshot and revoke this owner's prior link."""
     response.headers["Cache-Control"] = "no-store"
@@ -68,11 +68,7 @@ async def create_plan_share(
 async def get_plan_share(
     public_id: str,
     response: Response,
-    _current_session: Annotated[
-        UserSession,
-        Depends(session_service.get_current_session),
-    ],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> PlanShareResponse:
     """Resolve a token-scoped immutable snapshot for read-only viewing."""
     response.headers["Cache-Control"] = "no-store"
@@ -97,7 +93,7 @@ async def revoke_plan_share(
         UserSession,
         Depends(session_service.get_current_session),
     ],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> MessageResponse:
     """Revoke a share only when the current browser session owns it."""
     response.headers["Cache-Control"] = "no-store"

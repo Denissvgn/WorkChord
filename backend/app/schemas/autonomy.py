@@ -164,6 +164,10 @@ class VerificationRequirementResponse(AutonomySchema):
 
 
 class AgentWorkPackageResponse(AutonomySchema):
+    task_context_version: int | None = None
+    task_brief_revision: int | None = None
+    task_artifact_revision: int | None = None
+    task_brief_digest: str | None = None
     model_config = ConfigDict(from_attributes=True, extra="forbid")
 
     id: int

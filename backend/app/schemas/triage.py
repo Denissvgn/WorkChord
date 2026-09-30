@@ -3,9 +3,10 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
 
 from app.schemas.task import TaskResponse
+from app.schemas.task_brief import TaskBrief
 
 
 class TriageItemStatus(str, Enum):
@@ -16,6 +17,17 @@ class TriageItemStatus(str, Enum):
     DUPLICATE = "duplicate"
     SNOOZED = "snoozed"
     CONVERTED = "converted"
+
+
+def current_triage_brief(description, metadata):
+    from app.services.task_brief_service import render_brief
+    if not isinstance(metadata, dict) or not metadata.get("task_brief"):
+        return None
+    try:
+        brief = TaskBrief.model_validate(metadata["task_brief"])
+    except ValueError:
+        return None
+    return brief if description == render_brief(brief) else None
 
 
 class TriageItemCreate(BaseModel):
@@ -38,6 +50,13 @@ class TriageItemCreate(BaseModel):
     duplicate_of_id: Optional[int] = None
     duplicate_task_id: Optional[int] = None
     converted_task_id: Optional[int] = None
+
+    @field_validator("metadata_json")
+    @classmethod
+    def validate_brief_metadata(cls, value):
+        if value and "task_brief" in value:
+            return {**value, "task_brief": TaskBrief.model_validate(value["task_brief"]).model_dump(mode="json")}
+        return value
 
     @model_validator(mode="after")
     def validate_duplicate_target(self):
@@ -67,6 +86,13 @@ class TriageItemUpdate(BaseModel):
     duplicate_of_id: Optional[int] = None
     duplicate_task_id: Optional[int] = None
     converted_task_id: Optional[int] = None
+
+    @field_validator("metadata_json")
+    @classmethod
+    def validate_brief_metadata(cls, value):
+        if value and "task_brief" in value:
+            return {**value, "task_brief": TaskBrief.model_validate(value["task_brief"]).model_dump(mode="json")}
+        return value
 
     @model_validator(mode="after")
     def validate_duplicate_target(self):
@@ -98,6 +124,11 @@ class TriageItemResponse(BaseModel):
     request_count: int = 0
     created_at: datetime
     updated_at: datetime
+
+    @computed_field
+    @property
+    def brief(self) -> Optional[TaskBrief]:
+        return current_triage_brief(self.description, self.metadata_json)
 
     class Config:
         from_attributes = True
@@ -211,6 +242,7 @@ class TriageTaskDraftRequest(BaseModel):
 
 
 class TriageTaskDraftResponse(BaseModel):
+    brief: Optional[TaskBrief] = None
     """Transient suggested task details for triage conversion."""
     triage_item_id: int
     suggested_title: str
@@ -235,6 +267,8 @@ class TriageTaskDraftResponse(BaseModel):
 
 
 class TriageConvertToTaskRequest(BaseModel):
+    brief: Optional[TaskBrief] = None
+    owner_profile_id: Optional[int] = Field(default=None, ge=1)
     """Request for converting a triage item to a task."""
     iteration_id: int
     title: Optional[str] = Field(default=None, min_length=1, max_length=500)
@@ -243,7 +277,7 @@ class TriageConvertToTaskRequest(BaseModel):
     assignee_id: Optional[int] = None
     priority: Optional[int] = Field(default=None, ge=1, le=10)
     tags: Optional[list[str]] = None
-    effort_days: float = Field(default=1.0, ge=0.1)
+    effort_days: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
     effort_hours: Optional[float] = None
     depends_on: list[int] = Field(default_factory=list, description="Task IDs")
     scope: list[str] = Field(default_factory=list)
@@ -255,6 +289,13 @@ class TriageConvertToTaskRequest(BaseModel):
     risks: list[str] = Field(default_factory=list)
     implementation_notes: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
+
+
+class TriageConvertToBacklogRequest(TriageConvertToTaskRequest):
+    """Explicit project backlog destination; the legacy iteration contract stays required."""
+    project_id: int = Field(ge=1)
+    iteration_id: None = None
+    destination: Literal["project_backlog"] = "project_backlog"
 
 
 class TriageConvertToTaskResponse(BaseModel):

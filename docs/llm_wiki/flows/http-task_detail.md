@@ -1,0 +1,99 @@
+# task_detail
+
+**Entry point:** `task_detail` (`http`)
+**Source:** [routers_task_domain](../modules/routers_task_domain.md)
+**Modules touched:** [routers_task_domain](../modules/routers_task_domain.md), [task_detail_service](../modules/task_detail_service.md)
+
+## Call sequence
+
+<!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
+```mermaid
+sequenceDiagram
+    participant p0 as task_detail
+    participant p1 as domain_result
+    participant p2 as HTTPException
+    participant p3 as exc.detail
+    participant p4 as str
+    participant p5 as TaskDetailService(…).detail
+    participant p6 as TaskDetailService
+    p0->>p1: domain_result
+    p1-->>p2: HTTPException
+    p1-->>p3: exc.detail
+    p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
+    p0-->>p5: TaskDetailService(…).detail
+    p0->>p6: TaskDetailService
+```
+
+## Data flow
+
+<!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+```mermaid
+flowchart LR
+    s1["1. task_detail"]
+    s2["2. domain_result"]
+    s3["3. HTTPException"]
+    s4["4. exc.detail"]
+    s5["5. HTTPException"]
+    s6["6. str"]
+    s7["7. HTTPException"]
+    s8["8. TaskDetailService(…).detail"]
+    s9["9. TaskDetailService"]
+    s1 -->|"domain_result(...)"| s2
+    s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
+    s2 -. "exc.detail(data not statically known)" .-> s4
+    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "str(exc)" .-> s6
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
+    s1 -. "TaskDetailService(…).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)" .-> s8
+    s1 -->|"TaskDetailService(db)"| s9
+    click s1 "../modules/routers_task_domain.md"
+    click s2 "../modules/routers_task_domain.md"
+    click s9 "../modules/task_detail_service.md"
+```
+
+### Step data
+
+| Step | Inputs | Reads | Writes | Returns |
+|---|---|---|---|---|
+| `task_detail` | `task_id: int`, `db: DB`, `limit: int`, `children_after_id: int`, `dependencies_after_id: int` | - | - | `...` |
+| `domain_result` | `awaitable` | `TaskVersionConflictError` | - | `result` |
+| `HTTPException` | - | - | - | - |
+| `exc.detail` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `TaskDetailService(…).detail` | - | - | - | - |
+| `TaskDetailService` | - | - | - | - |
+
+### Call data
+
+| From | To | Line | Call |
+|---|---|---:|---|
+| task_detail | domain_result | 95 | `domain_result(...)` |
+| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 31 | `str(exc)` |
+| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_detail | TaskDetailService(…).detail | 95 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
+| task_detail | TaskDetailService | 95 | `TaskDetailService(db)` |
+
+### Boundary effects
+
+*No boundary effects detected.*
+
+### Static analysis gaps
+
+| Kind | Step | Target | Line |
+|---|---|---|---:|
+| external_call | `domain_result` | `HTTPException` | 29 |
+| unresolved_call | `domain_result` | `exc.detail` | 29 |
+| external_call | `domain_result` | `HTTPException` | 31 |
+| external_call | `domain_result` | `HTTPException` | 33 |
+| unresolved_call | `task_detail` | `TaskDetailService(db).detail` | 95 |
+
+## Behavior
+
+This flow starts at `task_detail` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.

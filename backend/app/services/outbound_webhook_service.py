@@ -1,4 +1,6 @@
 """Outbound webhook target management and delivery service."""
+
+from app.commands import commit_or_flush
 import asyncio
 import hashlib
 import hmac
@@ -300,7 +302,7 @@ class OutboundWebhookService:
             headers_json=self._normalize_headers(data.headers_json),
         )
         self.db.add(target)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(target)
         return self._target_response(target)
 
@@ -332,7 +334,7 @@ class OutboundWebhookService:
         if "secret" in update_data:
             target.secret = update_data["secret"] or None
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(target)
         return self._target_response(target)
 
@@ -348,7 +350,7 @@ class OutboundWebhookService:
             .values(target_id=None)
         )
         await self.db.delete(target)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def _enabled_targets(self) -> list[OutboundWebhookTarget]:
@@ -535,7 +537,7 @@ class OutboundWebhookService:
         for delivery in deliveries:
             delivery.event = event
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         return event, deliveries, email_queued
 
     async def enqueue_event(
@@ -729,7 +731,7 @@ class OutboundWebhookService:
         finally:
             delivery.lease_token = None
             delivery.lease_expires_at = None
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
     def _claim_conditions(
         self,
@@ -785,7 +787,7 @@ class OutboundWebhookService:
         async def claim_once(_attempt: int) -> Optional[str]:
             result = await self.db.execute(statement)
             claimed = result.scalar_one_or_none()
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return lease_token if claimed is not None else None
 
         return await run_database_retry(
@@ -829,7 +831,7 @@ class OutboundWebhookService:
                     .execution_options(synchronize_session=False)
                 )
                 claimed.append((delivery_id, lease_token))
-            await self.db.commit()
+            await commit_or_flush(self.db)
             return claimed
 
         return await run_database_retry(
@@ -900,7 +902,7 @@ class OutboundWebhookService:
         if delivery is None:
             await self.db.rollback()
             return False
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self._attempt_delivery(delivery, now=now)
         return True
 
@@ -1010,7 +1012,7 @@ class OutboundWebhookService:
         )
         delivery.lease_token = None
         delivery.lease_expires_at = None
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
         token = await self._claim_delivery_id(
             delivery.id,

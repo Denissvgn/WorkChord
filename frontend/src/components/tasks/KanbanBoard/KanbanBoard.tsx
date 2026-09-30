@@ -19,7 +19,9 @@ import { teamService } from '../../../services/teamService';
 import { labelService } from '../../../services/labelService';
 import type { Task, TaskStatus, TaskUpdate } from '../../../types/task';
 import type { TaskFilters } from '../TaskFiltersBar';
-import { filterTaskWithChildren } from '../../../utils/taskFilters';
+import { selectVisibleWork } from '../../../utils/visibleWork';
+import { TaskEditorDrawer } from '../TaskEditorDrawer';
+import { WorkFreshness } from '../../feedback/WorkFreshness';
 import { KanbanColumn } from './KanbanColumn';
 import { KanbanCard } from './KanbanCard';
 import { createPortal } from 'react-dom';
@@ -64,6 +66,8 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [activeId, setActiveId] = useState<number | null>(null);
+    const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
+    const openTrigger = useRef<HTMLElement | null>(null);
     const [ownershipSelection, setOwnershipSelection] = useState<OwnershipSelection | null>(null);
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const assigneeSelectId = useId();
@@ -92,26 +96,14 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const updateTaskMutation = useMutation({
         mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
             const { status, ...fieldUpdates } = updates;
-            let expectedVersion = task.version;
             if (status && status !== task.status && !VALID_TRANSITIONS[task.status]?.includes(status)) {
                 throw new Error(t('surfaces.kanbanBoard.invalidTransition', { from: task.status, to: status }));
             }
-            if (Object.keys(fieldUpdates).length > 0) {
-                const updated = await taskService.update(task.id, {
-                    ...fieldUpdates,
-                    expected_version: expectedVersion,
-                });
-                expectedVersion = updated.version;
-            }
-            if (status && status !== task.status) {
-                return taskService.changeStatus(
-                    task.id,
-                    status,
-                    t('surfaces.kanbanBoard.movedOnBoard'),
-                    expectedVersion,
-                );
-            }
-            return null;
+            return taskService.batchUpdate(iterationId, {
+                expected_revision: task.iteration_revision,
+                tasks: [{ task_id: task.id, expected_version: task.version,
+                    update: { ...fieldUpdates, status }, status_reason: t('surfaces.kanbanBoard.movedOnBoard') }],
+            });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
@@ -146,11 +138,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     };
 
     // Filtering & Grouping
-    const filteredTasks = useMemo(() => {
-        return tasks
-            .map(task => filterTaskWithChildren(task, filters, labelGroups))
-            .filter((t): t is Task => t !== null);
-    }, [tasks, filters, labelGroups]);
+    const filteredTasks = useMemo(() => selectVisibleWork(tasks, filters, labelGroups).leaves, [tasks, filters, labelGroups]);
 
     const columns = useMemo(() => {
         const cols: Record<ColumnId, Task[]> = {
@@ -173,17 +161,6 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
 
                 cols[colId].push(task);
 
-                // For now, we only show top-level tasks or handle children differently?
-                // The current list view handles hierarchy. In Kanban, typically we flatten or show parents.
-                // Assuming flattening for the board or just showing root.
-                // Let's show all matching tasks flat for simplicity in this version,
-                // OR just root tasks. Let's stick to root tasks as per task list structure,
-                // but if filters match children, the helper returns the parent with filtered children.
-                // The task list normally renders tree. Kanban usually renders cards.
-                // If I have subtasks, where do they go?
-                // Visualizing subtasks in Kanban is hard.
-                // Decision: Only show items that are visible in the list.
-                // If the filter returns a hierarchy, we only render the top-level items returned.
             });
         };
 
@@ -321,6 +298,10 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
             onDragCancel={() => setActiveId(null)}
         >
             <div className="space-y-3" aria-busy={updateTaskMutation.isPending}>
+                <WorkFreshness updatedAt={tasksQuery.dataUpdatedAt} stale={tasksQuery.isRefetchError}
+                    refreshing={tasksQuery.isFetching} onRefresh={() => { void tasksQuery.refetch(); }} />
+                <TaskEditorDrawer open={openedTaskId !== null} taskId={openedTaskId} iterationId={iterationId}
+                    onClose={() => setOpenedTaskId(null)} restoreFocusRef={openTrigger} />
                 {updateTaskMutation.isError && (
                     <QueryErrorState
                         error={updateTaskMutation.error}
@@ -336,6 +317,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                         <KanbanColumn
                             key={col.id}
                             id={col.id}
+                            onOpen={(task, trigger) => { openTrigger.current = trigger ?? null; setOpenedTaskId(task.id); }}
                             title={t(`surfaces.kanbanBoard.columns.${col.titleKey}`)}
                             tasks={columns[col.id]}
                             count={columns[col.id].length}

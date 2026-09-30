@@ -1,4 +1,6 @@
 """Iteration service with business logic."""
+
+from app.commands import commit_or_flush, schedule_input_command
 import re
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -62,8 +64,10 @@ class IterationService:
         )
         return IterationResponse(
             id=iteration.id,
+            revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
+            nominal_day_hours=iteration.calendar.nominal_day_hours,
             project_id=iteration.project_id,
             project=self._response_project(iteration),
             start_date=iteration.start_date,
@@ -340,7 +344,7 @@ class IterationService:
         )
         self.db.add(iteration)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(iteration)
@@ -371,7 +375,7 @@ class IterationService:
         ]
         self.db.add_all(iterations)
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -385,6 +389,7 @@ class IterationService:
             created.append(reloaded)
         return created
 
+    @schedule_input_command("iteration")
     async def update(
         self,
         iteration_id: int,
@@ -397,7 +402,7 @@ class IterationService:
         if not iteration:
             return None
 
-        update_data = data.model_dump(exclude_unset=True)
+        update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         next_start = update_data.get("start_date", iteration.start_date)
         next_end = update_data.get("end_date", iteration.end_date)
         self._validate_date_range(next_start, next_end)
@@ -416,8 +421,12 @@ class IterationService:
         for field, value in update_data.items():
             setattr(iteration, field, value)
 
+        if "calendar_id" in update_data:
+            from app.services.task_domain_service import nominal_day_hours, refresh_nominal_day_hours
+            await refresh_nominal_day_hours(self.db, [iteration_id], await nominal_day_hours(self.db, iteration_id))
+
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(iteration)
@@ -430,7 +439,7 @@ class IterationService:
             return False
 
         await self.db.delete(iteration)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def get_summary(self, iteration_id: int) -> IterationSummary | None:
@@ -445,46 +454,20 @@ class IterationService:
             iteration.calendar, iteration.start_date, iteration.end_date
         )
 
-        task_row = (
-            await self.db.execute(
-                select(
-                    func.count(Task.id),
-                    func.coalesce(
-                        func.sum(
-                            case(
-                                (Task.status == TaskStatusModel.CLOSED.value, 1),
-                                else_=0,
-                            )
-                        ),
-                        0,
-                    ),
-                    func.coalesce(func.sum(Task.effort_days), 0.0),
-                    func.coalesce(
-                        func.sum(
-                            case(
-                                (
-                                    Task.end_date.is_not(None)
-                                    & (Task.end_date > iteration.end_date),
-                                    1,
-                                ),
-                                else_=0,
-                            )
-                        ),
-                        0,
-                    ),
-                ).where(Task.iteration_id == iteration_id)
-            )
-        ).one()
-        total_tasks = int(task_row[0])
-        completed_tasks = int(task_row[1])
-        total_effort_days = float(task_row[2])
+        from app.services.work_metrics import aggregate_metrics
+        metrics = await aggregate_metrics(self.db, iteration_id=iteration_id)
+        total_tasks = metrics["total_tasks"]
+        completed_tasks = metrics["implemented_tasks"]
+        total_effort_days = metrics["total_effort_days"]
 
         # Calculate team capacity
         team_capacity = await self._calculate_team_capacity(iteration)
 
-        overdue_count = int(task_row[3])
+        overdue_count = metrics["overdue_tasks"]
 
+        from app.schemas.work_metrics import WorkMetricSummary
         return IterationSummary(
+            **{key: metrics[key] for key in WorkMetricSummary.model_fields if key in metrics},
             id=iteration.id,
             name=iteration.name,
             project_id=iteration.project_id,
@@ -529,7 +512,7 @@ class IterationService:
                         0,
                     ),
                     func.coalesce(
-                        func.sum(case((Task.effort_days <= 0, 1), else_=0)),
+                        func.sum(case((or_(Task.effort_hours.is_(None), Task.effort_hours <= 0), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
@@ -537,7 +520,7 @@ class IterationService:
                             case(
                                 (
                                     or_(
-                                        Task.effort_days <= 0,
+                                        or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
                                         Task.start_date.is_(None),
                                         Task.end_date.is_(None),
                                         Task.start_date > Task.end_date,
@@ -597,7 +580,7 @@ class IterationService:
         planned_hours = (
             select(
                 Task.assignee_id.label("assignee_id"),
-                func.sum(Task.effort_days * 8.0).label("planned_hours"),
+                func.sum(Task.effort_hours).label("planned_hours"),
             )
             .where(is_planning_leaf, Task.assignee_id.is_not(None))
             .group_by(Task.assignee_id)

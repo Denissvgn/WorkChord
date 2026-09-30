@@ -1,0 +1,22 @@
+name: Native PostgreSQL
+description: Install PostgreSQL 18 and start a job-owned loopback cluster
+runs:
+  using: composite
+  steps:
+    - name: Install PostgreSQL from signed distribution packages
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends postgresql-common ca-certificates curl
+        sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends postgresql-18 postgresql-client-18
+    - name: Start an isolated cluster
+      shell: bash
+      env:
+        WORKCHORD_CI_POSTGRES_PASSWORD: workchord-ci-only
+      run: |
+        python3 scripts/ci/postgres_runtime.py start \
+          --bin-dir /usr/lib/postgresql/18/bin \
+          --data-dir "$RUNNER_TEMP/workchord-postgresql" --port 55432
+        echo 'POSTGRES_ADMIN_URL=postgresql+psycopg://postgres:workchord-ci-only@127.0.0.1:55432/postgres' >> "$GITHUB_ENV"

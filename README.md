@@ -190,3 +190,5 @@ official checksum with `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256`.
 
 WorkChord is released under the [MIT License](LICENSE). Third-party components
 remain subject to their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Managed sign-in, membership, session rotation, and application snapshot recovery are described in the [identity and recovery runbook](docs/identity-and-recovery.md).

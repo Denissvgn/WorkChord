@@ -1,4 +1,7 @@
 """Task schemas."""
+
+from app.schemas.work_metrics import TaskMetricSignals
+from app.schemas.task_brief import TaskBrief
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal, Optional
@@ -34,12 +37,16 @@ class TaskStatus(str, Enum):
 
 class TaskCreate(BaseModel):
     """Schema for creating a task."""
+    expected_revision: Optional[int] = Field(default=None, ge=1)
     title: str = Field(..., min_length=1, max_length=500)
     description: Optional[str] = None
     parent_id: Optional[int] = None
     priority: int = Field(default=5, ge=1, le=10)
-    effort_days: float = Field(default=1.0, ge=0.1)
-    effort_hours: Optional[float] = None  # Auto-calculated if not provided
+    effort_days: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    effort_hours: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)  # Auto-calculated if not provided
+    owner_profile_id: Optional[int] = Field(default=None, ge=1)
+    brief: Optional[TaskBrief] = None
+    estimate_provenance: Optional[Literal["unknown", "assumed", "estimated"]] = None
     assignee_id: Optional[int] = None
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
@@ -66,8 +73,11 @@ class TaskUpdate(BaseModel):
     title: Optional[str] = Field(default=None, min_length=1, max_length=500)
     description: Optional[str] = None
     priority: Optional[int] = Field(default=None, ge=1, le=10)
-    effort_days: Optional[float] = Field(default=None, ge=0.1)
-    effort_hours: Optional[float] = None
+    effort_days: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    effort_hours: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
+    owner_profile_id: Optional[int] = Field(default=None, ge=1)
+    brief: Optional[TaskBrief] = None
+    estimate_provenance: Optional[Literal["unknown", "assumed", "estimated"]] = None
     assignee_id: Optional[int] = None
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
@@ -96,6 +106,8 @@ class TaskDependencyCreate(BaseModel):
 
 class TaskReorder(BaseModel):
     """Schema for reordering tasks."""
+    expected_revision: Optional[int] = Field(default=None, ge=1)
+
     task_ids: list[int]
     iteration_id: Optional[int] = None
     parent_id: Optional[int] = None
@@ -103,6 +115,8 @@ class TaskReorder(BaseModel):
 
 class TaskMoveRequest(BaseModel):
     """Schema for moving a task subtree to another iteration."""
+    expected_revisions: dict[int, int] = Field(default_factory=dict)
+
     iteration_id: int
     parent_id: Optional[int] = None
     expected_version: Optional[int] = Field(default=None, ge=1)
@@ -169,18 +183,43 @@ class TaskAgentReadiness(BaseModel):
     criteria: list[TaskAgentReadinessCriterion] = Field(default_factory=list)
 
 
-class TaskResponse(BaseModel):
+class TaskResponse(TaskMetricSignals):
     """Schema for task response."""
+    iteration_revision: Optional[int] = None
+    baseline_start_date: Optional[date] = None
+    baseline_end_date: Optional[date] = None
+    baseline_revision: int = 0
+    baseline_provenance: str = "legacy_unknown"
+    started_at: Optional[datetime] = None
+    resolved_at: Optional[datetime] = None
+    accepted_at: Optional[datetime] = None
+
     id: int
-    iteration_id: int
+    iteration_id: Optional[int]
     project_id: Optional[int] = None
     milestone_id: Optional[int] = None
     parent_id: Optional[int]
     title: str
     description: Optional[str]
     priority: int
-    effort_days: float
-    effort_hours: float
+    effort_days: Optional[float]
+    effort_hours: Optional[float]
+    nominal_day_hours: float = 8
+    estimate_provenance: str = "unknown"
+    owner_profile_id: Optional[int] = None
+    owner: Optional[TaskAssignee] = None
+    ownership_provenance: str = "unassigned"
+    blocked_reason: Optional[str] = None
+    canceled_at: Optional[datetime] = None
+    canceled_reason: Optional[str] = None
+    execution_mode: str = "scheduled"
+    brief: Optional[TaskBrief] = None
+    brief_revision: int = 0
+    brief_provenance: str = "legacy_text"
+    legacy_description: Optional[str] = None
+    brief_migration_notes: list[str] = Field(default_factory=list)
+    artifact_revision: int = 0
+    progress: Optional[dict[str, Any]] = None
     project: Optional[TaskProject] = None
     milestone: Optional[TaskMilestone] = None
     assignee: Optional[TaskAssignee] = None
@@ -218,6 +257,8 @@ class TaskResponse(BaseModel):
 
 class TaskMerge(BaseModel):
     """Request schema for merging tasks under a new parent."""
+    expected_revision: Optional[int] = Field(default=None, ge=1)
+
     task_ids: list[int] = Field(..., min_length=2, description="IDs of tasks to merge (min 2)")
     parent_title: str = Field(..., min_length=1, max_length=500)
     parent_description: Optional[str] = None
@@ -225,6 +266,8 @@ class TaskMerge(BaseModel):
 
 class TaskUnmerge(BaseModel):
     """Request schema for unmerging a parent task."""
+    expected_revision: Optional[int] = Field(default=None, ge=1)
+
     delete_parent: bool = Field(default=True, description="Delete the parent task after unmerging")
 
 
@@ -249,6 +292,8 @@ TaskBulkOutcome = Literal["updated", "deleted", "skipped", "failed", "would_upda
 
 class TaskBulkOperationRequest(BaseModel):
     """Request schema for selected-task bulk operations."""
+    expected_versions: dict[int, int] = Field(default_factory=dict)
+    expected_revisions: dict[int, int] = Field(default_factory=dict)
     task_ids: list[int] = Field(..., min_length=1, max_length=200)
     action: TaskBulkAction
     payload: dict[str, Any] = Field(default_factory=dict)
@@ -268,6 +313,8 @@ class TaskBulkOperationResult(BaseModel):
 
 class TaskBulkOperationResponse(BaseModel):
     """Response for selected-task bulk operations."""
+    input_revisions: dict[int, int] = Field(default_factory=dict)
+    task_versions: dict[int, int] = Field(default_factory=dict)
     requested_count: int
     succeeded_count: int
     failed_count: int
@@ -381,6 +428,7 @@ class TaskBatchUpdateItem(BaseModel):
 class TaskBatchUpdateRequest(BaseModel):
     """Schema for updating multiple tasks in a single request."""
     tasks: list[TaskBatchUpdateItem]
+    expected_revision: Optional[int] = Field(default=None, ge=1)
 
 
 class TaskBatchUpdateResponseItem(BaseModel):

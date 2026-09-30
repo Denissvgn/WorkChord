@@ -1,8 +1,11 @@
 """Creation, ownership, and revocation of immutable plan shares."""
 
-import secrets
+from app.commands import commit_or_flush
 
-from sqlalchemy import select, update
+import secrets
+from datetime import timedelta
+
+from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -21,10 +24,7 @@ class PlanShareService:
 
     @staticmethod
     def _query():
-        return select(PlanShare).options(
-            selectinload(PlanShare.iteration),
-            selectinload(PlanShare.created_by_session),
-        )
+        return select(PlanShare)
 
     @staticmethod
     def to_response(share: PlanShare) -> PlanShareResponse:
@@ -32,11 +32,12 @@ class PlanShareService:
             id=share.id,
             public_id=share.public_id,
             iteration_id=share.iteration_id,
-            iteration_name=share.iteration.name,
-            created_by_display=share.created_by_session.display_name,
+            iteration_name=share.snapshot_data.get("iteration", {}).get("name", "Shared plan"),
+            created_by_display=share.snapshot_data.get("shared_by_display", "WorkChord member"),
             snapshot_data=share.snapshot_data,
             created_at=share.created_at,
             revoked_at=share.revoked_at,
+            expires_at=share.expires_at,
         )
 
     @staticmethod
@@ -91,6 +92,13 @@ class PlanShareService:
             "snapshot_info": snapshot_data.get("snapshot_info", {}),
         }
 
+    def _owner_filter(self, session_id):
+        authority = self.db.info.get("authority")
+        if authority is not None and authority.principal_id is not None:
+            return or_(PlanShare.owner_principal_id == authority.principal_id,
+                       PlanShare.created_by_session_id == session_id)
+        return PlanShare.created_by_session_id == session_id
+
     async def get_owned_current(
         self,
         iteration_id: int,
@@ -100,8 +108,9 @@ class PlanShareService:
             self._query()
             .where(
                 PlanShare.iteration_id == iteration_id,
-                PlanShare.created_by_session_id == session_id,
+                self._owner_filter(session_id),
                 PlanShare.revoked_at.is_(None),
+                or_(PlanShare.expires_at.is_(None), PlanShare.expires_at > utc_now()),
             )
             .order_by(PlanShare.created_at.desc(), PlanShare.id.desc())
             .limit(1)
@@ -113,6 +122,7 @@ class PlanShareService:
             self._query().where(
                 PlanShare.public_id == public_id,
                 PlanShare.revoked_at.is_(None),
+                or_(PlanShare.expires_at.is_(None), PlanShare.expires_at > utc_now()),
             )
         )
         return result.scalar_one_or_none()
@@ -134,8 +144,9 @@ class PlanShareService:
             update(PlanShare)
             .where(
                 PlanShare.iteration_id == iteration_id,
-                PlanShare.created_by_session_id == session.id,
+                self._owner_filter(session.id),
                 PlanShare.revoked_at.is_(None),
+                or_(PlanShare.expires_at.is_(None), PlanShare.expires_at > utc_now()),
             )
             .values(revoked_at=created_at)
         )
@@ -150,12 +161,14 @@ class PlanShareService:
             public_id=public_id,
             iteration_id=iteration_id,
             created_by_session_id=session.id,
-            snapshot_data=self._share_snapshot(snapshot_data),
+            owner_principal_id=session.principal_id,
+            expires_at=created_at + timedelta(days=30),
+            snapshot_data={**self._share_snapshot(snapshot_data), "shared_by_display": session.display_name},
             created_at=created_at,
         )
         self.db.add(share)
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise
@@ -169,8 +182,9 @@ class PlanShareService:
         result = await self.db.execute(
             select(PlanShare).where(
                 PlanShare.id == share_id,
-                PlanShare.created_by_session_id == session_id,
+                self._owner_filter(session_id),
                 PlanShare.revoked_at.is_(None),
+                or_(PlanShare.expires_at.is_(None), PlanShare.expires_at > utc_now()),
             )
         )
         share = result.scalar_one_or_none()
@@ -179,7 +193,7 @@ class PlanShareService:
 
         share.revoked_at = utc_now()
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except Exception:
             await self.db.rollback()
             raise

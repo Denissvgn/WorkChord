@@ -24,47 +24,11 @@ from app.database_config import (
 )
 
 
-LEGACY_BASELINE_REVISION = "20260506_0000"
 MIGRATION_ADVISORY_LOCK_KEY = 0x574F524B43484F52
 
 # Upgrade classification is closed because every unknown state must fail safely
 # before a migration mutates persistent data.
-DatabaseState = Literal[
-    "empty",
-    "legacy_pre_backlog",
-    "alembic_managed",
-    "unversioned_current",
-    "unknown",
-]
-
-LEGACY_CORE_TABLES = {
-    "calendars",
-    "iterations",
-    "team_members",
-    "vacations",
-    "tasks",
-    "task_dependencies",
-    "task_status_logs",
-}
-
-CURRENT_SENTINEL_TABLES = {
-    "agent_actors",
-    "projects",
-    "triage_items",
-    "work_templates",
-    "label_groups",
-    "saved_views",
-    "project_updates",
-    "project_milestones",
-    "initiatives",
-    "external_links",
-    "github_status_automation_rules",
-    "releases",
-    "request_sources",
-    "outbound_webhook_targets",
-    "team_member_profiles",
-    "system_settings",
-}
+DatabaseState = Literal["empty", "alembic_managed", "unknown"]
 
 
 class UpgradeError(RuntimeError):
@@ -87,13 +51,7 @@ class DatabaseStatus:
 
     @property
     def needs_upgrade(self) -> bool:
-        upgradable_states = {
-            "empty",
-            "legacy_pre_backlog",
-            "alembic_managed",
-            "unversioned_current",
-        }
-        return self.state in upgradable_states and not self.is_current
+        return self.state in {"empty", "alembic_managed"} and not self.is_current
 
 
 def migrations_dir() -> Path:
@@ -169,10 +127,6 @@ def _inspect_database_connection(connection: Connection) -> DatabaseStatus:
         state = "alembic_managed"
     elif not table_set or table_set == {"alembic_version"}:
         state = "empty"
-    elif LEGACY_CORE_TABLES.issubset(table_set) and not (CURRENT_SENTINEL_TABLES & table_set):
-        state = "legacy_pre_backlog"
-    elif LEGACY_CORE_TABLES.issubset(table_set) and CURRENT_SENTINEL_TABLES.issubset(table_set):
-        state = "unversioned_current"
     else:
         state = "unknown"
 
@@ -229,6 +183,7 @@ def backup_sqlite_database(backup_dir: Optional[Path] = None) -> Optional[Path]:
 async def run_post_migration_repairs() -> None:
     """Run idempotent seeders and compatibility repairs after migrations."""
     from app.maintenance import require_background_writes_enabled
+    from app.commands import commit_or_flush
     from app.database import async_session_maker
     from app.services.calendar_service import CalendarService
     from app.services.github_status_automation_service import GitHubStatusAutomationService
@@ -239,6 +194,9 @@ async def run_post_migration_repairs() -> None:
 
     require_background_writes_enabled("database repair and default seeding")
     async with async_session_maker() as db:
+        from app.services.identity_service import initialize_control_plane
+        await initialize_control_plane(db)
+        await commit_or_flush(db)
         await CalendarService(db).get_or_create_default()
         await TemplateService(db).seed_default_templates()
         await LabelService(db).seed_default_labels()
@@ -290,6 +248,9 @@ def _validate_managed_revision(status: DatabaseStatus) -> None:
     if unknown:
         raise UpgradeError(
             "Database reports unknown Alembic revision(s): " + ", ".join(unknown)
+            + ". Unreleased schemas cannot be upgraded to the initial schema. "
+            "Preserve any needed data and initialize a new empty database; "
+            "do not stamp the new revision onto the old schema."
         )
 
 
@@ -331,34 +292,16 @@ def _backup_precondition(
     return backup_path
 
 
-def _run_schema_upgrade(
-    connection: Connection,
-    before: DatabaseStatus,
-    *,
-    stamp_unversioned_current: bool,
-) -> None:
-    config = alembic_config(connection=connection)
+def _run_schema_upgrade(connection: Connection) -> None:
     if connection.in_transaction():
         connection.commit()
-    if before.state == "legacy_pre_backlog":
-        command.stamp(config, LEGACY_BASELINE_REVISION)
-        command.upgrade(config, "head")
-    elif before.state == "unversioned_current":
-        if not stamp_unversioned_current:
-            raise UpgradeError(
-                "Database looks current but lacks alembic_version. "
-                "Rerun without --no-stamp-unversioned-current to mark it as managed."
-            )
-        command.stamp(config, "head")
-    else:
-        command.upgrade(config, "head")
+    command.upgrade(alembic_config(connection=connection), "head")
 
 
 def run_alembic_upgrade(
     *,
     backup: bool = True,
     backup_dir: Optional[Path] = None,
-    stamp_unversioned_current: bool = True,
     run_repairs: bool = True,
     external_backup_reference: str | None = None,
     require_empty: bool = False,
@@ -368,7 +311,8 @@ def run_alembic_upgrade(
         before = inspect_database(connection=connection)
         if before.state == "unknown":
             raise UpgradeError(
-                "Database schema is not recognized. Refusing to run migrations automatically."
+                "Database schema is not recognized. Preserve any needed data and "
+                "initialize a new empty database. Unversioned schemas are never stamped automatically."
             )
         _validate_managed_revision(before)
         if require_empty and before.state != "empty":
@@ -387,11 +331,7 @@ def run_alembic_upgrade(
             backup_dir=backup_dir,
             external_backup_reference=external_backup_reference,
         )
-        _run_schema_upgrade(
-            connection,
-            before,
-            stamp_unversioned_current=stamp_unversioned_current,
-        )
+        _run_schema_upgrade(connection)
 
         if require_empty:
             populated = _application_tables_with_rows(connection)

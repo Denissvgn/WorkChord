@@ -1,4 +1,6 @@
 """GitHub webhook intake service."""
+
+from app.commands import commit_or_flush
 import hashlib
 import hmac
 import json
@@ -412,7 +414,7 @@ class GitHubWebhookService:
                         "matched": False,
                     },
                 )
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
             except Exception:
                 await self.db.rollback()
@@ -499,7 +501,7 @@ class GitHubWebhookService:
                     ],
                 },
             )
-            await self.db.commit()
+            await commit_or_flush(self.db)
             await self.db.refresh(link)
         except Exception:
             await self.db.rollback()

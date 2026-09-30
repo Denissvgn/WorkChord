@@ -57,6 +57,7 @@ const scheduleResult: ScheduleResult = {
 };
 
 const previewFixture: SchedulePreviewResponse = {
+    input_revision: 1,
     tasks: [{
         ...taskFixture,
         title: 'Projected task',
@@ -78,6 +79,7 @@ const scheduledTaskName = (task: GanttTask) => i18n.t('gantt.openScheduledTask',
 const renderChart = (sandboxMode = false, chartTasks: GanttTask[] = [taskFixture]) => renderWithProviders(
     <GanttChart
         iterationId={42}
+        iterationRevision={1}
         startDate="2026-01-05"
         endDate="2026-01-16"
         tasks={chartTasks}
@@ -102,7 +104,7 @@ describe('GanttChart schedule preview', () => {
         await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
         await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
 
-        await waitFor(() => expect(ganttServiceMock.previewSchedule).toHaveBeenCalledWith(42, []));
+        await waitFor(() => expect(ganttServiceMock.previewSchedule).toHaveBeenCalledWith(42, [], 1));
         expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
 
         await screen.findByRole('heading', { name: i18n.t('gantt.schedulePreviewReady') });
@@ -116,7 +118,7 @@ describe('GanttChart schedule preview', () => {
         }));
         await user.click(screen.getByRole('button', { name: i18n.t('gantt.applySchedulePreview') }));
 
-        await waitFor(() => expect(ganttServiceMock.schedule).toHaveBeenCalledWith(42));
+        await waitFor(() => expect(ganttServiceMock.schedule).toHaveBeenCalledWith(42, 1));
         expect(screen.getByRole('heading', { name: i18n.t('gantt.scheduleApplyPending') })).toBeInTheDocument();
         resolveSchedule(scheduleResult);
         await screen.findByText(i18n.t('gantt.scheduleApplied'));

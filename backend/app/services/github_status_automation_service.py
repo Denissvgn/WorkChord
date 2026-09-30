@@ -1,4 +1,6 @@
 """GitHub status automation rule service."""
+
+from app.commands import commit_or_flush
 from collections import defaultdict
 from typing import Any, Optional
 
@@ -113,7 +115,7 @@ class GitHubStatusAutomationService:
         """Create an automation rule."""
         rule = GitHubStatusAutomationRule(**data.model_dump())
         self.db.add(rule)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(rule)
         return rule
 
@@ -130,7 +132,7 @@ class GitHubStatusAutomationService:
         for field, value in data.model_dump(exclude_unset=True).items():
             setattr(rule, field, value)
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(rule)
         return rule
 
@@ -141,7 +143,7 @@ class GitHubStatusAutomationService:
             return False
 
         await self.db.delete(rule)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def seed_default_rules(self) -> None:
@@ -157,7 +159,7 @@ class GitHubStatusAutomationService:
             changed = True
 
         if changed:
-            await self.db.commit()
+            await commit_or_flush(self.db)
 
     async def _event_exists(self, idempotency_key: Optional[str]) -> bool:
         if not idempotency_key:
@@ -380,7 +382,7 @@ class GitHubStatusAutomationService:
             ))
 
         if needs_commit and commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         elif needs_commit:
             await self.db.flush()
 

@@ -159,7 +159,7 @@ const boundedPercentage = (value: number) => (
 );
 
 const boundedCoefficient = (value: number) => (
-    Number.isFinite(value) && value > 0 ? value : 0
+    Number.isFinite(value) && value != null && value > 0 ? value : 0
 );
 
 const roundHours = (value: number) => Math.round(value * 100) / 100;
@@ -181,7 +181,7 @@ export const enrichPlanningTeamMembers = ({
         plannedHoursByMember.set(
             task.assignee.id,
             (plannedHoursByMember.get(task.assignee.id) ?? 0)
-                + task.effort_days * HOURS_PER_DAY,
+                + (task.effort_hours ?? task.effort_days * HOURS_PER_DAY),
         );
     }
 

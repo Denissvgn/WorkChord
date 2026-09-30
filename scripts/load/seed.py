@@ -593,6 +593,11 @@ def _insert_actors(connection: Connection, rows: list[dict[str, Any]]) -> None:
         ),
         rows,
     )
+    connection.execute(text(
+        "INSERT INTO principals (kind, display_name, enabled, agent_actor_id, created_at) "
+        "SELECT 'agent', display_name, enabled, id, created_at FROM agent_actors "
+        "WHERE id = :id ON CONFLICT (agent_actor_id) DO NOTHING"
+    ), [{"id": row["id"]} for row in rows])
 
 
 def _insert_agent_runs(

@@ -1,0 +1,50 @@
+# LLMRuntimeSettings
+
+**Location:** `frontend/src/types/systemSettings.ts:18`
+**Kind:** Class
+**Bases:** —
+**Module:** [systemSettings](../modules/systemSettings.md)
+
+## Description
+
+_Auto-generated from `LLMRuntimeSettings` in `frontend/src/types/systemSettings.ts`._
+
+## Attributes
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `provider` | `LLMProvider` | Yes | — | — |
+| `api_url` | `string` | Yes | — | — |
+| `model` | `string` | Yes | — | — |
+| `temperature` | `number` | Yes | — | — |
+| `max_output_tokens` | `number` | Yes | — | — |
+| `has_api_key` | `boolean` | Yes | — | — |
+| `field_sources` | `Record<string, RuntimeSettingSource>` | Yes | — | — |
+
+## Methods
+
+*No public methods. Inherits from base classes.*
+
+## Relationships
+
+<!-- Auto-generated relationship summary. Do not edit by hand. -->
+```mermaid
+flowchart LR
+    n0["LLMRuntimeSettings (frontend/src/types/systemSettings.ts)"]
+    n1["frontend/src/services/systemSettingsService.ts"]
+    n1 --> n0
+    click n0 "../modules/systemSettings.md"
+    click n1 "../modules/systemSettingsService.md"
+```
+
+### Summary
+
+| Module | Methods | Attributes |
+|---|---:|---|
+| [systemSettings](../modules/systemSettings.md) | 0 | `api_url`, `field_sources`, `has_api_key`, `max_output_tokens`, `model`, `provider`, `temperature` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `systemSettingsService` | import | [systemSettingsService](../modules/systemSettingsService.md) | — |

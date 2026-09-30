@@ -71,7 +71,9 @@ export const SavedViewsControl = ({
         selectedView &&
         selectedView.is_valid &&
         selectedView.scope !== 'system' &&
-        selectedView.created_by_session_id === session?.id,
+        (selectedView.owner_principal_id != null
+            ? selectedView.owner_principal_id === session?.principal_id
+            : selectedView.created_by_session_id === session?.id),
     );
 
     const currentViewPayload = {
@@ -275,6 +277,7 @@ export const SavedViewsControl = ({
                         {selectedView.invalid_reason ?? t('surfaces.savedViews.invalidReason')}
                     </span>
                 )}
+                {selectedView?.metric_migration_note && <p role="status" className="text-sm text-content-secondary">{t("workMetrics.legacyOverflowView")}</p>}
                 {statusMessage && (
                     <span className="text-sm text-content-secondary">{statusMessage}</span>
                 )}

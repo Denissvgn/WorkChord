@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.commands import commit_or_flush
+
 from datetime import datetime
 from typing import Any
 
@@ -75,7 +77,21 @@ class AutonomyWorkPackageService:
                 raise AgentConflictError("Successor package key differs from predecessor")
             if data.package_version != predecessor.package_version + 1:
                 raise AgentConflictError("Successor package version must increment by one")
+        task_binding = {}
+        if data.execution_task_id is not None:
+            from app.models.task import Task
+            from app.services.task_service import TaskService
+            from app.commands import command_transaction
+            async with command_transaction(self.db, commit=False):
+                await TaskService(self.db)._lock_task_scope(data.execution_task_id)
+                task = await self.db.scalar(select(Task).where(Task.id == data.execution_task_id).with_for_update())
+                if task is None:
+                    raise ValueError("Execution task not found or inaccessible")
+                if task.brief is not None:
+                    task_binding = {"task_context_version": task.version, "task_brief_revision": task.brief_revision,
+                        "task_artifact_revision": task.artifact_revision, "task_brief_digest": sha256_hex(task.brief)}
         package = AgentWorkPackage(
+            **task_binding,
             package_key=data.package_key,
             package_version=data.package_version,
             execution_task_id=data.execution_task_id,
@@ -104,7 +120,7 @@ class AutonomyWorkPackageService:
                     verifier_independence_group=requirement.verifier_independence_group,
                 )
             )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return self.package_response(await self._load_package(package.id))
 
     async def activate_requirements(
@@ -148,7 +164,7 @@ class AutonomyWorkPackageService:
                 idempotency_key=self._child_key(key, requirement.slot_key),
             )
         package.state = "evaluating"
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return self.package_response(await self._load_package(package.id))
 
     async def claim_requirement(
@@ -201,7 +217,7 @@ class AutonomyWorkPackageService:
             payload_digest=payload_digest,
             idempotency_key=key,
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return self.transition_response(
             await self._load_requirement(requirement.id),
             await self._load_package(package.id),
@@ -336,7 +352,7 @@ class AutonomyWorkPackageService:
             package.state = "passed"
         else:
             package.state = "evaluating"
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return self.transition_response(
             await self._load_requirement(requirement.id),
             await self._load_package(package.id),
@@ -391,7 +407,7 @@ class AutonomyWorkPackageService:
                 )
                 expired.append(requirement.id)
             package.state = "rework_required"
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return tuple(expired)
 
     async def _lease_transition(
@@ -454,7 +470,7 @@ class AutonomyWorkPackageService:
             payload_digest=payload_digest,
             idempotency_key=key,
         )
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return self.transition_response(
             await self._load_requirement(requirement.id),
             await self._load_package(package.id),
@@ -748,7 +764,7 @@ class AutonomyWorkPackageService:
                 "id",
                 "package_key",
                 "package_version",
-                "execution_task_id",
+                "execution_task_id", "task_context_version", "task_brief_revision", "task_artifact_revision", "task_brief_digest",
                 "predecessor_package_id",
                 "state",
                 "artifact_set_digest",

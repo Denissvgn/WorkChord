@@ -3,7 +3,14 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+def _canonical_template_payload(payload):
+    if payload and "brief" in payload:
+        from app.schemas.task_brief import TaskBrief
+        payload = {**payload, "brief": TaskBrief.model_validate(payload["brief"]).model_dump(mode="json")}
+    return payload
 
 
 class TemplateType(str, Enum):
@@ -16,6 +23,12 @@ class TemplateType(str, Enum):
 class WorkTemplateCreate(BaseModel):
     """Schema for creating a reusable work template."""
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("default_payload")
+    @classmethod
+    def validate_brief_payload(cls, value):
+        return _canonical_template_payload(value)
+
 
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
@@ -34,6 +47,12 @@ class WorkTemplateCreate(BaseModel):
 class WorkTemplateUpdate(BaseModel):
     """Schema for updating a reusable work template."""
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("default_payload")
+    @classmethod
+    def validate_brief_payload(cls, value):
+        return _canonical_template_payload(value)
+
 
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None

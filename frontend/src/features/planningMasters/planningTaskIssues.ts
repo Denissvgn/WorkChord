@@ -31,13 +31,13 @@ export const parsePlanningIterationId = (value: unknown): number | null => {
 };
 
 export const isPlanningLeafTask = (task: Task) => (
-    !task.is_deferred
+    !(task.effective_is_deferred ?? task.is_deferred)
     && !task.is_composite
     && !task.children?.length
 );
 
-export const hasPositivePlanningEffort = (value: number) => (
-    Number.isFinite(value) && value > 0
+export const hasPositivePlanningEffort = (value: number | null): value is number => (
+    Number.isFinite(value) && value !== null && value > 0
 );
 
 export const taskMatchesPlanningIssue = (

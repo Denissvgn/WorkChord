@@ -22,7 +22,7 @@ from app.services.iteration_service import IterationService
 router = APIRouter()
 
 
-async def get_iteration_service(db: Annotated[AsyncSession, Depends(get_db)]) -> IterationService:
+async def get_iteration_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> IterationService:
     """Dependency for iteration service."""
     return IterationService(db)
 

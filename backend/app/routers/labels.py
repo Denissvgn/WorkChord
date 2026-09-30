@@ -20,7 +20,7 @@ router = APIRouter()
 
 
 async def get_label_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> LabelService:
     """Dependency for label service."""
     return LabelService(db)

@@ -158,7 +158,7 @@ export const triageService: FrontendTriageService = {
     },
 
     convertToTask: async (triageItemId: number, data: TriageConvertToTaskRequest) => {
-        const response = await api.post<TriageConvertToTaskResponse>(`/triage/${triageItemId}/convert-to-task`, data);
+        const response = await api.post<TriageConvertToTaskResponse>(`/triage/${triageItemId}/${data.destination === "project_backlog" ? "convert-to-backlog" : "convert-to-task"}`, data);
         return response.data;
     },
 };

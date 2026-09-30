@@ -149,8 +149,8 @@ const GanttPage = () => {
                 description: changes.description !== undefined ? changes.description : originalTask?.description,
                 project_id: changes.project_id !== undefined ? changes.project_id : originalTask?.project_id,
                 priority: changes.priority !== undefined ? Number(changes.priority) : originalTask?.priority,
-                effort_days: changes.effort_days !== undefined ? Number(changes.effort_days) : originalTask?.effort_days,
-                effort_hours: changes.effort_hours !== undefined ? Number(changes.effort_hours) : originalTask?.effort_hours,
+                effort_days: changes.effort_days !== undefined ? changes.effort_days === null ? null : Number(changes.effort_days) : originalTask?.effort_days,
+                effort_hours: changes.effort_hours !== undefined ? changes.effort_hours === null ? null : Number(changes.effort_hours) : originalTask?.effort_hours,
                 assignee_id: changes.assignee !== undefined ? (changes.assignee ? Number(changes.assignee.id) : null) : originalTask?.assignee?.id,
                 milestone_id: changes.milestone_id !== undefined ? (changes.milestone_id ? Number(changes.milestone_id) : null) : originalTask?.milestone_id,
                 is_optional: changes.is_optional !== undefined ? changes.is_optional : originalTask?.is_optional,
@@ -175,8 +175,8 @@ const GanttPage = () => {
     // Dry-run the sandbox edits through the real backend scheduler so the
     // preview always matches what applying them would produce.
     const schedulePreviewQuery = useQuery({
-        queryKey: ['gantt-schedule-preview', selectedIterationId, sandboxChanges],
-        queryFn: () => ganttService.previewSchedule(selectedIterationId, buildBatchTasks()),
+        queryKey: ['gantt-schedule-preview', selectedIterationId, sandboxChanges, ganttTasks?.iteration.revision],
+        queryFn: () => ganttService.previewSchedule(selectedIterationId, buildBatchTasks(), ganttTasks?.iteration.revision),
         enabled: sandboxMode && selectedIterationId > 0 && sandboxChangeCount > 0,
         staleTime: Infinity,
         retry: false,
@@ -240,7 +240,7 @@ const GanttPage = () => {
 
     const applySandboxMutation = useMutation({
         mutationFn: async () => {
-            await taskService.batchUpdate(selectedIterationId, { tasks: buildBatchTasks() });
+            await taskService.batchUpdate(selectedIterationId, { tasks: buildBatchTasks(), expected_revision: schedulePreviewQuery.data?.input_revision });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['gantt', selectedIterationId] });
@@ -669,6 +669,7 @@ const GanttPage = () => {
             ) : selectedIterationId > 0 && currentIteration && ganttTasks ? (
                 <div className="flex-1 min-h-0 overflow-hidden rounded-lg shadow ring-1 ring-overlay/5">
                     <GanttChart
+                        iterationRevision={ganttTasks?.iteration.revision}
                         iterationId={selectedIterationId}
                         startDate={currentIteration.start_date}
                         endDate={currentIteration.end_date}

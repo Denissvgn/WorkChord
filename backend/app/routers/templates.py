@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 async def get_template_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> TemplateService:
     """Dependency for template service."""
     return TemplateService(db)

@@ -89,7 +89,7 @@ def evaluate_agent_readiness(
     blockers: list[str] = []
     warnings: list[str] = []
 
-    planned_and_available = task.status == TaskStatus.PLANNED.value and not task.is_deferred
+    planned_and_available = task.status == TaskStatus.PLANNED.value and not task.is_deferred and not task.canceled_at and not task.blocked_reason
     status_reason = (
         "Task is planned and not deferred."
         if planned_and_available
@@ -131,7 +131,7 @@ def evaluate_agent_readiness(
         reason=label_reason,
     )
 
-    has_schedule = task.start_date is not None and task.end_date is not None
+    has_schedule = task.iteration_id is not None and task.start_date is not None and task.end_date is not None
     _add_criterion(
         criteria,
         blockers,
@@ -188,7 +188,13 @@ def evaluate_agent_readiness(
         reason=claim_reason,
     )
 
-    description_ready, description_reason = _description_is_actionable(task.description)
+    if task.brief is not None:
+        from app.services.task_brief_service import brief_definition_blockers
+        definition_blockers = brief_definition_blockers(task.brief)
+        description_ready = not definition_blockers
+        description_reason = "Structured brief contains goal, scope, criteria and verification." if description_ready else "Complete the structured brief: " + ", ".join(definition_blockers)
+    else:
+        description_ready, description_reason = _description_is_actionable(task.description)
     _add_criterion(
         criteria,
         blockers,
@@ -198,7 +204,7 @@ def evaluate_agent_readiness(
         reason=description_reason,
     )
 
-    effort_priority_ready = task.effort_days > 0 and 1 <= task.priority <= 10
+    effort_priority_ready = task.effort_days is not None and task.effort_days > 0 and 1 <= task.priority <= 10
     _add_criterion(
         criteria,
         blockers,

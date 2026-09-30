@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from fastapi import Request
 
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
@@ -38,13 +39,29 @@ class Base(DeclarativeBase):
     pass
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """Dependency for getting database session."""
+async def request_command_mode(request: Request) -> str:
+    """Match DTO preview defaults before creating the root transaction."""
+    if request.url.path.endswith("/schedule/preview"):
+        return "preview"
+    if request.method == "POST" and request.url.path.endswith(("/bulk-operations", "/import-legacy")):
+        from pydantic import TypeAdapter, ValidationError
+        payload = await request.json()
+        if isinstance(payload, dict):
+            try:
+                if TypeAdapter(bool).validate_python(payload.get("dry_run", True)):
+                    return "preview"
+            except ValidationError:
+                pass  # Normal request-body validation reports the invalid field.
+    return "apply"
+
+
+async def get_db(request: Request) -> AsyncGenerator[AsyncSession, None]:
+    """Own each HTTP transaction before its response is sent (function-scoped dependency)."""
+    from app.commands import command_transaction
+    mode = await request_command_mode(request)
     async with async_session_maker() as session:
-        try:
+        async with command_transaction(session, mode=mode):
             yield session
-        finally:
-            await session.close()
 
 
 async def init_db() -> None:

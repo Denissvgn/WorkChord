@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronRight, X, FileText, XCircle } from 'lucide-react';
@@ -20,6 +20,7 @@ export interface TaskFilters {
     status: string | null;
     hasDependency: boolean | null;
     isOverdue: boolean | null;
+    isIterationOverflow?: boolean | null;
     agentReady: boolean | null;
     startDateFrom: string;
     startDateTo: string;
@@ -64,6 +65,7 @@ const FilterBadge = ({
 export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFiltersBarProps) => {
     const { t } = useTranslation();
     const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+    const advancedId = useId();
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
 
     const teamQuery = useQuery({
@@ -128,6 +130,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
         filters.status !== null ||
         filters.hasDependency !== null ||
         filters.isOverdue !== null ||
+        filters.isIterationOverflow != null ||
         filters.agentReady !== null ||
         filters.startDateFrom ||
         filters.startDateTo ||
@@ -205,6 +208,10 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     // Build active badges list
     const activeBadges: { label: string; value: string; onRemove: () => void }[] = [];
 
+    if (filters.isIterationOverflow != null) activeBadges.push({
+        label: t('workStatus.iterationOverflow'), value: t(filters.isIterationOverflow ? 'workStatus.iterationOverflow' : 'workStatus.withinIteration'),
+        onRemove: () => onFiltersChange({ ...filters, isIterationOverflow: null }),
+    });
     if (filters.planningIssue) {
         activeBadges.push({
             label: t('taskFilters.planningReadiness'),
@@ -331,12 +338,23 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                 )}
             </div>
 
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+                <label htmlFor={`${advancedId}-overflow`} className="text-sm text-content-secondary">{t('workStatus.iterationOverflow')}</label>
+                <select id={`${advancedId}-overflow`} className="min-h-11 rounded-md border border-border bg-surface-card px-3 text-sm"
+                    value={filters.isIterationOverflow === null || filters.isIterationOverflow === undefined ? '' : String(filters.isIterationOverflow)}
+                    onChange={event => onFiltersChange({ ...filters, isIterationOverflow: event.target.value === '' ? null : event.target.value === 'true' })}>
+                    <option value="">{t('workStatus.any')}</option><option value="true">{t('workStatus.iterationOverflow')}</option>
+                    <option value="false">{t('workStatus.withinIteration')}</option>
+                </select>
+            </div>
             {/* Advanced toggle + actions */}
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
                 <div className="flex items-center gap-2">
                     <Button
                         variant="ghost"
                         size="sm"
+                        aria-expanded={isAdvancedOpen}
+                        aria-controls={advancedId}
                         onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
                         className="text-content-secondary"
                     >
@@ -373,12 +391,13 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
             </div>
 
             {/* Advanced filters - collapsible */}
+            <div id={advancedId}>
             {isAdvancedOpen && (
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-3 pt-3 border-t border-border-subtle">
                     {/* Project filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.project')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-project`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.project')}</label>
+                        <select id={`${advancedId}-project`}
                             value={filters.projectId ?? ''}
                             onChange={e => onFiltersChange({
                                 ...filters,
@@ -386,7 +405,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                             })}
                             className="w-full px-2 py-1 text-sm border border-border-strong rounded"
                         >
-                            <option value="">{t('taskFilters.all')}</option>
+                            <option value="">{t('workStatus.any')}</option>
                             {projects?.map(project => (
                                 <option key={project.id} value={project.id}>{project.name}</option>
                             ))}
@@ -395,8 +414,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Priority filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.priority')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-priority`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.priority')}</label>
+                        <select id={`${advancedId}-priority`}
                             value={filters.priority ?? ''}
                             onChange={e => onFiltersChange({
                                 ...filters,
@@ -404,7 +423,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                             })}
                             className="w-full px-2 py-1 text-sm border border-border-strong rounded"
                         >
-                            <option value="">{t('taskFilters.all')}</option>
+                            <option value="">{t('workStatus.any')}</option>
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(p => (
                                 <option key={p} value={p}>{p}</option>
                             ))}
@@ -413,8 +432,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Has dependency filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.dependencies')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-dependencies`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.dependencies')}</label>
+                        <select id={`${advancedId}-dependencies`}
                             value={filters.hasDependency === null ? '' : filters.hasDependency ? 'yes' : 'no'}
                             onChange={e => onFiltersChange({
                                 ...filters,
@@ -422,7 +441,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                             })}
                             className="w-full px-2 py-1 text-sm border border-border-strong rounded"
                         >
-                            <option value="">{t('taskFilters.all')}</option>
+                            <option value="">{t('workStatus.any')}</option>
                             <option value="yes">{t('taskFilters.yes')}</option>
                             <option value="no">{t('taskFilters.no')}</option>
                         </select>
@@ -430,8 +449,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Agent readiness filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.agentReadiness')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-agentReadiness`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.agentReadiness')}</label>
+                        <select id={`${advancedId}-agentReadiness`}
                             value={filters.agentReady === null ? '' : filters.agentReady ? 'ready' : 'not-ready'}
                             onChange={e => onFiltersChange({
                                 ...filters,
@@ -447,8 +466,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Label group filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labelGroups')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-labelGroups`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labelGroups')}</label>
+                        <select id={`${advancedId}-labelGroups`}
                             value=""
                             onChange={e => addLabelGroup(e.target.value)}
                             className="w-full px-2 py-1 text-sm border border-border-strong rounded"
@@ -478,8 +497,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Label filter */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labels')}</label>
-                        <select
+                        <label htmlFor={`${advancedId}-labels`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labels')}</label>
+                        <select id={`${advancedId}-labels`}
                             value=""
                             onChange={e => addLabel(e.target.value)}
                             className="w-full px-2 py-1 text-sm border border-border-strong rounded"
@@ -511,8 +530,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Start date from */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startFrom')}</label>
-                        <input
+                        <label htmlFor={`${advancedId}-startFrom`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startFrom')}</label>
+                        <input id={`${advancedId}-startFrom`}
                             type="date"
                             value={filters.startDateFrom}
                             onChange={e => onFiltersChange({ ...filters, startDateFrom: e.target.value })}
@@ -522,8 +541,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* Start date to */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startTo')}</label>
-                        <input
+                        <label htmlFor={`${advancedId}-startTo`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startTo')}</label>
+                        <input id={`${advancedId}-startTo`}
                             type="date"
                             value={filters.startDateTo}
                             onChange={e => onFiltersChange({ ...filters, startDateTo: e.target.value })}
@@ -533,8 +552,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* End date from */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endFrom')}</label>
-                        <input
+                        <label htmlFor={`${advancedId}-endFrom`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endFrom')}</label>
+                        <input id={`${advancedId}-endFrom`}
                             type="date"
                             value={filters.endDateFrom}
                             onChange={e => onFiltersChange({ ...filters, endDateFrom: e.target.value })}
@@ -544,8 +563,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
                     {/* End date to */}
                     <div>
-                        <label className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endTo')}</label>
-                        <input
+                        <label htmlFor={`${advancedId}-endTo`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endTo')}</label>
+                        <input id={`${advancedId}-endTo`}
                             type="date"
                             value={filters.endDateTo}
                             onChange={e => onFiltersChange({ ...filters, endDateTo: e.target.value })}
@@ -555,6 +574,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                 </div>
             )}
 
+            </div>
             {isTextEditorOpen && (
                 <TaskTextEditorModal
                     iterationId={iterationId}

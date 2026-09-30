@@ -1,4 +1,6 @@
 """Triage service with inbox, lifecycle, and conversion logic."""
+
+from app.commands import commit_or_flush
 import json
 from datetime import datetime
 from typing import Any, Optional, Sequence
@@ -140,6 +142,11 @@ class TriageService:
         triage_item_id: int,
         payload: Optional[dict[str, Any]] = None,
     ) -> None:
+        item = await self.get_by_id(triage_item_id)
+        project_id = item.project_hint_id if item else None
+        if item and project_id is None and item.iteration_hint_id is not None:
+            project_id = await self.db.scalar(select(Iteration.project_id).where(Iteration.id == item.iteration_hint_id))
+        self.db.info.setdefault("command_triage_projects", {})[triage_item_id] = project_id
         await self.task_service.record_task_event(
             None,
             event_type,
@@ -351,7 +358,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(suggestion)
         except Exception:
             if commit:
@@ -395,6 +402,8 @@ class TriageService:
             draft.provider = getattr(service, "provider", None)
         if draft.model is None:
             draft.model = getattr(service, "model", None)
+        from app.services.task_brief_service import brief_from_draft
+        draft.brief = brief_from_draft(draft, title=draft.suggested_title, context=draft.suggested_description)
         return draft
 
     async def _get_task_draft_template(
@@ -765,9 +774,15 @@ class TriageService:
             converted_task_id=data.converted_task_id,
         )
 
+        description = data.description
+        if data.metadata_json.get("task_brief"):
+            from app.services.task_brief_service import render_brief
+            description = render_brief(data.metadata_json["task_brief"])
+            if data.description is not None and data.description != description:
+                raise ValueError("Description conflicts with the structured brief draft")
         item = TriageItem(
             title=data.title,
-            description=data.description,
+            description=description,
             source=data.source,
             source_url=data.source_url,
             external_key=data.external_key,
@@ -815,7 +830,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -878,7 +893,7 @@ class TriageService:
                     },
                 )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -926,7 +941,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -974,7 +989,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1028,7 +1043,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1089,7 +1104,7 @@ class TriageService:
                 },
             )
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:
@@ -1366,8 +1381,8 @@ class TriageService:
         if item.status == TriageItemStatus.CONVERTED.value or item.converted_task_id is not None:
             raise TriageConflictError("Triage item has already been converted")
 
-        target_iteration = await self._require_plannable_iteration(data.iteration_id)
-        iteration_project_id = target_iteration.project_id
+        target_iteration = await self._require_plannable_iteration(data.iteration_id) if data.iteration_id is not None else None
+        iteration_project_id = target_iteration.project_id if target_iteration else None
         project_id_was_set = "project_id" in data.model_fields_set
         if iteration_project_id is not None:
             if data.project_id is not None and data.project_id != iteration_project_id:
@@ -1381,7 +1396,7 @@ class TriageService:
             project_id = data.project_id if project_id_was_set else item.project_hint_id
         await self._require_project_exists(project_id)
         await self.task_service.require_iteration_assignee(data.assignee_id, data.iteration_id)
-        await self._require_dependencies_in_iteration(data.depends_on, data.iteration_id)
+        await self.task_service._require_same_iteration_dependencies(data.iteration_id, data.depends_on, project_id)
 
         description = data.description if data.description is not None else item.description
         structured_fields = (
@@ -1413,12 +1428,22 @@ class TriageService:
                 open_questions=data.open_questions,
             )
 
+        from app.services.task_brief_service import brief_from_draft
+        canonical_brief = data.brief
+        if canonical_brief is None and not any(structured_fields):
+            from app.schemas.triage import current_triage_brief
+            canonical_brief = current_triage_brief(item.description, item.metadata_json)
+        if canonical_brief is not None and any(structured_fields):
+            raise ValueError("Send canonical brief fields or legacy draft sections, not conflicting representations")
+        if canonical_brief is None and any(structured_fields):
+            canonical_brief = brief_from_draft(data, title=data.title or item.title, context=data.description if data.description is not None else item.description)
         task_data = TaskCreate(
+            brief=canonical_brief,
+            owner_profile_id=data.owner_profile_id,
             title=data.title or item.title,
             description=description,
             priority=data.priority if data.priority is not None else (item.priority_hint or 5),
-            effort_days=data.effort_days,
-            effort_hours=data.effort_hours,
+            **({"effort_hours": data.effort_hours} if data.effort_hours is not None else {"effort_days": data.effort_days}),
             assignee_id=data.assignee_id,
             project_id=project_id,
             depends_on=data.depends_on,
@@ -1491,7 +1516,7 @@ class TriageService:
             )
             await self.db.flush()
             if commit:
-                await self.db.commit()
+                await commit_or_flush(self.db)
                 await self.db.refresh(item)
         except Exception:
             if commit:

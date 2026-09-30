@@ -32,9 +32,9 @@ def autonomy_migration_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 
 @pytest.mark.sqlite
-def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config) -> None:
+def test_autonomy_projection_initial_schema(autonomy_migration_config) -> None:
     config, database_path = autonomy_migration_config
-    command.upgrade(config, "head")
+    command.upgrade(config, "20260928_0001")
     engine = create_engine(f"sqlite:///{database_path}")
     try:
         inspector = inspect(engine)
@@ -58,29 +58,9 @@ def test_autonomy_projection_upgrade_downgrade_upgrade(autonomy_migration_config
         with engine.connect() as connection:
             assert connection.execute(
                 text("SELECT version_num FROM alembic_version")
-                ).scalar_one() == "20260802_0036"
+                ).scalar_one() == "20260928_0001"
     finally:
         engine.dispose()
-
-    command.downgrade(config, "20260718_0032")
-    downgraded = create_engine(f"sqlite:///{database_path}")
-    try:
-        inspector = inspect(downgraded)
-        assert "agent_work_packages" not in inspector.get_table_names()
-        assert "agent_autonomy_topologies" not in inspector.get_table_names()
-    finally:
-        downgraded.dispose()
-
-    command.upgrade(config, "head")
-    upgraded = create_engine(f"sqlite:///{database_path}")
-    try:
-        with upgraded.connect() as connection:
-            assert connection.execute(
-                text("SELECT version_num FROM alembic_version")
-                ).scalar_one() == "20260802_0036"
-    finally:
-        upgraded.dispose()
-
 
 @pytest.mark.contract
 def test_autonomy_projection_postgresql_ddl_preserves_fences() -> None:
@@ -108,4 +88,4 @@ def test_autonomy_projection_postgresql_ddl_preserves_fences() -> None:
 @pytest.mark.contract
 def test_autonomy_migration_chain_has_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20260802_0036"]
+    assert script.get_heads() == ["20260928_0001"]

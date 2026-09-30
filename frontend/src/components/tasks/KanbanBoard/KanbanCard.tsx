@@ -2,16 +2,17 @@ import i18n from '../../../i18n/i18n';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task } from '../../../types/task';
-import { Bot, Clock, User as UserIcon, AlertCircle } from 'lucide-react';
+import { Bot, Clock, User as UserIcon, AlertCircle, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 
 const t = i18n.t.bind(i18n);
 
 interface KanbanCardProps {
     task: Task;
+    onOpen?: (task: Task, trigger?: HTMLElement) => void;
 }
 
-export const KanbanCard = ({ task }: KanbanCardProps) => {
+export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
     const {
         attributes,
         listeners,
@@ -54,9 +55,7 @@ export const KanbanCard = ({ task }: KanbanCardProps) => {
         <div
             ref={setNodeRef}
             style={style}
-            {...attributes}
-            {...listeners}
-            aria-label={task.title}
+
             className="group relative bg-surface-card p-4 rounded-xl border border-border-subtle shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing select-none hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
             {/* Priority Strip */}
@@ -66,6 +65,10 @@ export const KanbanCard = ({ task }: KanbanCardProps) => {
                 {/* Header: ID and Badges */}
                 <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-mono text-content-tertiary">#{task.id}</span>
+                    <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })}
+                        className="flex h-11 w-11 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <GripVertical className="h-4 w-4" aria-hidden="true" />
+                    </button>
                     {task.is_overdue && (
                         <div className="text-feedback-danger" title={t('surfaces.kanbanCard.overdue')}>
                             <AlertCircle className="w-4 h-4" />
@@ -79,8 +82,12 @@ export const KanbanCard = ({ task }: KanbanCardProps) => {
                 </div>
 
                 {/* Title */}
-                <h4 className="text-sm font-medium text-content-primary leading-snug mb-3 line-clamp-2">
-                    {task.title}
+                {'parent_context' in task && Array.isArray(task.parent_context) && task.parent_context.length > 0 &&
+                    <p className="mb-1 truncate text-xs text-content-secondary">{task.parent_context.join(' / ')}</p>}
+                <h4 className="mb-3 text-sm font-medium leading-snug text-content-primary">
+                    <button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                        aria-label={t('workStatus.openTask', { title: task.title })}
+                        onClick={event => onOpen?.(task, event.currentTarget)}>{task.title}</button>
                 </h4>
 
                 {/* Footer: Meta Info */}

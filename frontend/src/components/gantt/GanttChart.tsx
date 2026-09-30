@@ -21,6 +21,7 @@ import { OverflowMenu, SlideOverDrawer } from '../ui';
 
 interface GanttChartProps {
     iterationId: number;
+    iterationRevision?: number;
     startDate: string;
     endDate: string;
     tasks: GanttTask[];
@@ -51,7 +52,7 @@ const hasCompleteTimelineDates = (
 
 export const GanttChart = ({
     iterationId,
-    startDate,
+    iterationRevision,    startDate,
     endDate,
     tasks,
     weekends,
@@ -374,7 +375,7 @@ export const GanttChart = ({
 
     // feedback-policy: mutation pending,inline - preview is non-persistent and exposes inline retry.
     const schedulePreviewMutation = useMutation({
-        mutationFn: () => ganttService.previewSchedule(iterationId, []),
+        mutationFn: () => ganttService.previewSchedule(iterationId, [], iterationRevision),
         onSuccess: preview => {
             setEditingTask(null);
             setSchedulePreview(preview);
@@ -383,7 +384,7 @@ export const GanttChart = ({
 
     // feedback-policy: mutation pending,inline - Apply is disabled while pending and failures retain the preview for retry.
     const scheduleMutation = useMutation({
-        mutationFn: () => ganttService.schedule(iterationId),
+        mutationFn: () => ganttService.schedule(iterationId, schedulePreview?.input_revision ?? iterationRevision),
         onSuccess: async () => {
             setSchedulePreview(null);
             await Promise.all([

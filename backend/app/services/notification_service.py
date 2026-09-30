@@ -1,4 +1,6 @@
 """Email notification service for task status changes."""
+
+from app.commands import commit_or_flush
 import asyncio
 import logging
 from datetime import date
@@ -65,7 +67,7 @@ class NotificationService:
             # Commit is intentional: the delivery worker may already have
             # in-memory attempt state, and its sessions use expire_on_commit=False.
             if self.db is not None:
-                await self.db.commit()
+                await commit_or_flush(self.db)
         except Exception:
             logger.error(
                 "[Notification] Failed to resolve email settings",

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { TaskEditorDrawer } from '../tasks/TaskEditorDrawer';
 import i18n from '../../i18n/i18n';
 import {
     AlertTriangle,
@@ -18,14 +20,15 @@ interface ProjectTaskTreeProps {
     tasks: Task[];
 }
 
-const getEffectiveEffort = (task: Task): number => {
+const getEffectiveEffort = (task: Task): number | null => {
     if (task.children && task.children.length > 0) {
-        return task.children.reduce((sum, child) => sum + getEffectiveEffort(child), 0);
+        const values = task.children.map(getEffectiveEffort);
+        return values.some(value => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
     }
-    return task.effort_days || 0;
+    return task.effort_days;
 };
 
-const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
+const ProjectTaskRow = ({ task, level, onOpen }: { task: Task; level: number; onOpen: (id: number) => void }) => {
     const hasChildren = Boolean(task.children?.length);
 
     return (
@@ -45,7 +48,9 @@ const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
                 </div>
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="truncate font-medium text-content-primary">{task.title}</span>
+                        <button type="button" className="truncate text-left font-medium text-content-primary hover:underline" onClick={() => onOpen(task.id)}>{task.title}</button>
+                        {task.iteration_id === null && <span className="text-sm text-content-secondary">{t("domain.backlog")}</span>}
+                        {task.canceled_at && <span className="text-sm text-content-secondary">{t("domain.canceled")}</span>}
                         <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', pillToneClassName[STATUS_TONE[task.status]])}>
                             {t(`statuses.${task.status}`)}
                         </span>
@@ -53,7 +58,7 @@ const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
                             P{task.priority}
                         </span>
                         <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-secondary">
-                            {getEffectiveEffort(task)}d
+                            {getEffectiveEffort(task) === null ? t("domain.unknownEstimate") : t("units.daysCompact", { count: getEffectiveEffort(task)! })}
                         </span>
                         {task.milestone && (
                             <span className="rounded-full border border-feedback-indigo-border bg-feedback-indigo-muted px-2 py-0.5 text-xs font-medium text-feedback-indigo-foreground">
@@ -77,7 +82,7 @@ const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
                         {task.assignee && (
                             <span className="inline-flex items-center gap-1">
                                 <User className="h-3 w-3" />
-                                {task.assignee.name}
+                                {task.owner?.name ?? task.assignee.name}
                             </span>
                         )}
                         {task.start_date && task.end_date && (
@@ -93,7 +98,7 @@ const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
             {hasChildren && (
                 <div className="space-y-2">
                     {task.children.map(child => (
-                        <ProjectTaskRow key={child.id} task={child} level={level + 1} />
+                        <ProjectTaskRow key={child.id} task={child} level={level + 1} onOpen={onOpen} />
                     ))}
                 </div>
             )}
@@ -102,6 +107,7 @@ const ProjectTaskRow = ({ task, level }: { task: Task; level: number }) => {
 };
 
 export const ProjectTaskTree = ({ tasks }: ProjectTaskTreeProps) => {
+    const [selectedTask, setSelectedTask] = useState<number | null>(null);
     if (tasks.length === 0) {
         return (
             <div className="rounded-lg border border-dashed border-border bg-surface-muted py-10 text-center text-content-tertiary">
@@ -112,8 +118,9 @@ export const ProjectTaskTree = ({ tasks }: ProjectTaskTreeProps) => {
 
     return (
         <div className="space-y-2">
+            <TaskEditorDrawer taskId={selectedTask} open={selectedTask !== null} onClose={() => setSelectedTask(null)} />
             {tasks.map(task => (
-                <ProjectTaskRow key={task.id} task={task} level={0} />
+                <ProjectTaskRow key={task.id} task={task} level={0} onOpen={setSelectedTask} />
             ))}
         </div>
     );

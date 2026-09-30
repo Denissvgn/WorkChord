@@ -36,7 +36,7 @@ from app.schemas.agent_team_setup import (
     parse_agent_team_master,
     reconcile_agent_team_master,
 )
-from app.services.agent_service import AgentService
+from app.services.agent_service import AgentService, hash_api_key
 from app.services.agent_team_setup_service import (
     AgentTeamSetupConflictError,
     AgentTeamSetupService,
@@ -272,10 +272,23 @@ def test_reconciliation_is_stable_and_never_hard_deletes() -> None:
     assert all(action.operation != "delete" for action in plan.actions)
 
 
+@pytest.fixture(params=["trusted_local", "managed"])
+def onboarding_access_mode(request, monkeypatch):
+    from app.config import get_settings
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", request.param)
+    get_settings.cache_clear()
+    yield request.param
+    get_settings.cache_clear()
+
+
 @pytest.mark.asyncio
 async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
     db_session: AsyncSession,
+    onboarding_access_mode,
 ) -> None:
+    from app.services.identity_service import initialize_control_plane
+    await initialize_control_plane(db_session)
+    await db_session.commit()
     payload = example_payload()
     manifest = AgentTeamMaster.model_validate(payload)
     for key in {
@@ -396,11 +409,36 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
             server_features=handoff.required_server_features,
             supported_assignment_modes=handoff.supported_assignment_modes,
         )
-        receipt = await service.acknowledge_runtime(
-            api_key,
-            acknowledgement,
-        )
-        assert receipt.actor_key == handoff.actor_key
+        from app.commands import command_transaction
+        async def onboarding_db():
+            async with command_transaction(db_session):
+                yield db_session
+        original_overrides = main_app.dependency_overrides.copy()
+        main_app.dependency_overrides[get_db] = onboarding_db
+        try:
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main_app), base_url="https://test") as client:
+                ordinary = await client.get("/api/agent/actors", headers={"X-Agent-API-Key": api_key})
+                assert ordinary.status_code == 401
+                response = await client.post("/api/agent/team-setup/onboarding/acknowledge",
+                    headers={"X-Agent-API-Key": api_key}, json=acknowledgement.model_dump(mode="json"))
+                assert response.status_code == 200, response.text
+                assert response.json()["actor_key"] == handoff.actor_key
+                mixed = await client.post("/api/agent/team-setup/onboarding/acknowledge",
+                    headers={"X-Agent-API-Key": api_key, "Authorization": "Bearer unrelated"}, json=acknowledgement.model_dump(mode="json"))
+                assert mixed.status_code == 401
+                from app.models.identity import Principal
+                principal = await db_session.scalar(select(Principal).join(AgentActor, AgentActor.id == Principal.agent_actor_id).where(AgentActor.api_key_hash == hash_api_key(api_key)))
+                principal_id = principal.id
+                principal.enabled = False
+                await db_session.commit()
+                disabled = await client.post("/api/agent/team-setup/onboarding/acknowledge", headers={"X-Agent-API-Key": api_key}, json=acknowledgement.model_dump(mode="json"))
+                assert disabled.status_code == 403
+                principal = await db_session.get(Principal, principal_id)
+                principal.enabled = True
+                await db_session.commit()
+        finally:
+            main_app.dependency_overrides.clear()
+            main_app.dependency_overrides.update(original_overrides)
         assert await actor_service.authenticate(api_key) is not None
 
     ready = await service.status(admin, topology_key=manifest.topology_key)
@@ -420,6 +458,11 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
     controller_key = sink.keys[manifest.controller.actor_key]
     controller = await actor_service.authenticate(controller_key)
     assert controller is not None
+    if onboarding_access_mode == "managed":
+        from app.models.identity import Principal, WorkspaceMembership
+        principal = await db_session.scalar(select(Principal).where(Principal.agent_actor_id == controller.id))
+        db_session.add(WorkspaceMembership(principal_id=principal.id, role="member"))
+        await db_session.commit()
     outsider = AgentActor(
         name="unmanaged-worker",
         display_name="Unmanaged Worker",

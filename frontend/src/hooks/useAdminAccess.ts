@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ADMIN_API_KEY_CHANGED_EVENT, hasAdminApiKey } from '../utils/adminAccess';
+import { useIdentity } from '../features/identity/identityContext';
 
 export const useAdminAccess = () => {
+    const identity = useIdentity();
     const [hasAdminKey, setHasAdminKey] = useState(hasAdminApiKey());
 
     useEffect(() => {
@@ -14,5 +16,7 @@ export const useAdminAccess = () => {
         };
     }, []);
 
-    return { hasAdminKey };
+    const role = identity?.identity?.workspace_role;
+    const hasAdminAccess = hasAdminKey || role === 'owner' || role === 'operator';
+    return { hasAdminKey: hasAdminAccess, hasAdminAccess };
 };

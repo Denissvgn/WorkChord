@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, Depends
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +16,10 @@ from app.maintenance import (
 )
 from app.observability import collect_metrics, readiness_snapshot
 from app.query_limits import CollectionLimitExceededError
+from app.commands import AggregateVersionConflict, HierarchyScopeError
+from app.authority import AuthorityError
+from app.http_authority import enforce_http_authority
+from app.routers import identity, task_domain
 from app.runtime_telemetry import metrics
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
@@ -44,7 +48,27 @@ app = FastAPI(
     description="API для планирования работ команды разработки",
     version="1.7.0",
     lifespan=lifespan,
+    dependencies=[Depends(enforce_http_authority)],
 )
+
+
+@app.exception_handler(AggregateVersionConflict)
+async def aggregate_version_conflict(request: Request, exc: AggregateVersionConflict):
+    return JSONResponse(status_code=409, content={"detail": exc.detail()}, headers={"Cache-Control": "no-store"})
+
+
+@app.exception_handler(AuthorityError)
+async def authority_error(request: Request, exc: AuthorityError):
+    return JSONResponse(status_code=exc.status, content={"detail": exc.detail()}, headers={"Cache-Control": "no-store"})
+
+
+@app.exception_handler(HierarchyScopeError)
+async def hierarchy_scope_error(request: Request, exc: HierarchyScopeError):
+    return JSONResponse(status_code=409, content={"detail": exc.detail()}, headers={"Cache-Control": "no-store"})
+
+
+app.include_router(identity.router, prefix=settings.api_prefix, tags=["Identity"])
+app.include_router(task_domain.router, prefix=settings.api_prefix, tags=["Task domain"])
 
 
 @app.exception_handler(RequestValidationError)
@@ -211,9 +235,11 @@ async def liveness_check():
 
 
 @app.get("/health/ready")
-async def readiness_check():
+async def readiness_check(request: Request):
     """Fail when the database is unavailable or not at packaged Alembic head."""
     ready, payload = await readiness_snapshot()
+    if get_settings().workchord_auth_mode == "managed":
+        payload = {"status": "ready" if ready else "not_ready"}
     return JSONResponse(status_code=200 if ready else 503, content=payload)
 
 

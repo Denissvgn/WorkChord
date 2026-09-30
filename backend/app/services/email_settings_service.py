@@ -1,4 +1,6 @@
 """Email settings service backed by runtime system settings."""
+
+from app.commands import commit_or_flush
 import asyncio
 from dataclasses import dataclass, field
 import logging
@@ -157,7 +159,7 @@ class EmailSettingsService:
             # the transaction before DNS/connect/TLS/provider waits without
             # expiring other objects attached to this request session.
             if self.db is not None:
-                await self.db.commit()
+                await commit_or_flush(self.db)
         except RuntimeSettingsEncryptionError as exc:
             return False, str(exc)
         except RuntimeSettingsError as exc:

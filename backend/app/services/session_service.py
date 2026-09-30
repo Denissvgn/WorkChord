@@ -1,5 +1,7 @@
 """Opaque browser-session resolution and trusted request audit metadata."""
 
+from app.commands import commit_or_flush
+
 from datetime import timedelta
 import hashlib
 from ipaddress import ip_address, ip_network
@@ -101,7 +103,7 @@ async def _create_session(
         )
         db.add(session)
         try:
-            await db.commit()
+            await commit_or_flush(db)
             await db.refresh(session)
             return session, raw_token
         except IntegrityError:
@@ -141,12 +143,13 @@ async def get_or_create_session(
     )
     if touch_due or metadata_changed:
         session.last_seen_at = now
-        session.expires_at = now + timedelta(seconds=settings.session_max_age_seconds)
+        if session.principal_id is None:
+            session.expires_at = now + timedelta(seconds=settings.session_max_age_seconds)
         if session.ip_address != ip_address:
             session.ip_address = ip_address
         if user_agent is not None and session.user_agent != user_agent:
             session.user_agent = user_agent
-        await db.commit()
+        await commit_or_flush(db)
         await db.refresh(session)
         metrics.increment("workchord_browser_session_touches_total")
     else:
@@ -157,10 +160,18 @@ async def get_or_create_session(
 async def get_current_session(
     request: Request,
     response: Response,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> UserSession:
     """FastAPI dependency resolving the current browser and refreshing its cookie."""
     settings = get_settings()
+    authority = db.info.get("authority")
+    if authority is not None and authority.session_id is not None:
+        session = await _get_session_by_token(db, request.cookies.get(settings.session_cookie_name))
+        if session is not None:
+            return session
+    if settings.workchord_auth_mode == "managed":
+        from app.authority import AuthorityError
+        raise AuthorityError("authentication_required", "A valid browser session is required.", 401)
     session, raw_token = await get_or_create_session(
         db=db,
         ip_address=await get_client_ip(request),
@@ -177,15 +188,23 @@ async def rotate_session(
     response: Response,
 ) -> UserSession:
     """Rotate a raw token while preserving ownership links on the session row."""
+    from app.authority import AuthorityError
+    from app.services.identity_service import require_identity_writes
+    require_identity_writes()
+    if session.revoked_at is not None or session.expires_at is None or as_utc(session.expires_at) <= utc_now():
+        raise AuthorityError("session_expired", "Expired or revoked sessions cannot be rotated.", 401)
     raw_token = _new_token()
+    session.csrf_token = secrets.token_urlsafe(32) if session.principal_id is not None else None
     session.session_token_hash = _token_digest(raw_token)
     session.expires_at = utc_now() + timedelta(
-        seconds=get_settings().session_max_age_seconds
+        seconds=(get_settings().auth_session_max_age_seconds if session.principal_id is not None else get_settings().session_max_age_seconds)
     )
-    session.revoked_at = None
-    await db.commit()
+    await commit_or_flush(db)
     await db.refresh(session)
-    response.set_cookie(value=raw_token, **_cookie_options())
+    options = _cookie_options()
+    if session.principal_id is not None:
+        options["max_age"] = get_settings().auth_session_max_age_seconds
+    response.set_cookie(value=raw_token, **options)
     return session
 
 
@@ -196,7 +215,7 @@ async def revoke_session(
 ) -> None:
     """Revoke the current browser identity and remove its cookie."""
     session.revoked_at = utc_now()
-    await db.commit()
+    await commit_or_flush(db)
     options = _cookie_options()
     response.delete_cookie(
         key=options["key"],

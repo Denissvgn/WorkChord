@@ -1,3 +1,4 @@
+import type { WorkMetrics } from './workMetrics';
 export interface IterationProject {
     id: number;
     name: string;
@@ -6,6 +7,8 @@ export interface IterationProject {
 }
 
 export interface Iteration {
+    nominal_day_hours?: number;
+    revision?: number;
     id: number;
     name: string;
     calendar_id: number;
@@ -53,7 +56,7 @@ export interface IterationSeriesResponse {
     iterations: Iteration[];
 }
 
-export interface IterationSummary {
+export interface IterationSummary extends WorkMetrics {
     id: number;
     name: string;
     project_id?: number | null;

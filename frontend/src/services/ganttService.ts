@@ -15,8 +15,8 @@ export const ganttService = {
         return response.data;
     },
 
-    schedule: async (iterationId: number) => {
-        const response = await api.post<ScheduleResult>(`/iterations/${iterationId}/schedule`);
+    schedule: async (iterationId: number, expectedRevision?: number) => {
+        const response = await api.post<ScheduleResult>(`/iterations/${iterationId}/schedule`, { expected_revision: expectedRevision });
         return response.data;
     },
 
@@ -25,10 +25,10 @@ export const ganttService = {
      * Nothing is persisted; the response mirrors what applying the same
      * changes via batch-update (which auto-reschedules) would produce.
      */
-    previewSchedule: async (iterationId: number, changes: TaskBatchUpdateItem[]) => {
+    previewSchedule: async (iterationId: number, changes: TaskBatchUpdateItem[], expectedRevision?: number) => {
         const response = await api.post<SchedulePreviewResponse>(
             `/iterations/${iterationId}/schedule/preview`,
-            { changes }
+            { changes, expected_revision: expectedRevision }
         );
         return response.data;
     },

@@ -1,4 +1,6 @@
 """Team member service with business logic."""
+
+from app.commands import commit_or_flush, schedule_input_command
 import csv
 from datetime import date
 from io import StringIO
@@ -170,15 +172,16 @@ class TeamService:
         commit: bool = True,
     ) -> TeamMemberProfile:
         """Create a profile, optionally leaving commit ownership to the caller."""
-        profile = TeamMemberProfile(**data.model_dump())
+        profile = TeamMemberProfile(**data.model_dump(exclude={"expected_revisions"}))
         self.db.add(profile)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(profile)
         return await self._get_profile_by_id(profile.id) or profile
 
+    @schedule_input_command("profile")
     async def update_profile(
         self,
         profile_id: int,
@@ -191,16 +194,17 @@ class TeamService:
         if not profile:
             return None
 
-        for field, value in data.model_dump(exclude_unset=True).items():
+        for field, value in data.model_dump(exclude_unset=True, exclude={"expected_revisions"}).items():
             setattr(profile, field, value)
 
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(profile)
         return await self._get_profile_by_id(profile.id)
 
+    @schedule_input_command("profile")
     async def delete_profile(self, profile_id: int) -> bool:
         """Delete a reusable profile and detach linked team members."""
         profile = await self._get_profile_by_id(profile_id)
@@ -208,7 +212,7 @@ class TeamService:
             return False
 
         await self.db.delete(profile)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def add_profile_skill(
@@ -221,12 +225,13 @@ class TeamService:
         if not profile:
             return None
 
-        skill = TeamMemberProfileSkill(profile_id=profile_id, **data.model_dump())
+        skill = TeamMemberProfileSkill(profile_id=profile_id, **data.model_dump(exclude={"expected_revisions"}))
         self.db.add(skill)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(skill)
         return skill
 
+    @schedule_input_command("profile")
     async def update_profile_skill(
         self,
         profile_id: int,
@@ -244,13 +249,14 @@ class TeamService:
         if not skill:
             return None
 
-        for field, value in data.model_dump(exclude_unset=True).items():
+        for field, value in data.model_dump(exclude_unset=True, exclude={"expected_revisions"}).items():
             setattr(skill, field, value)
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         await self.db.refresh(skill)
         return skill
 
+    @schedule_input_command("profile")
     async def delete_profile_skill(self, profile_id: int, skill_id: int) -> bool:
         """Delete one profile skill or weakness."""
         result = await self.db.execute(
@@ -264,7 +270,7 @@ class TeamService:
             return False
 
         await self.db.delete(skill)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def get_by_iteration(self, iteration_id: int) -> Sequence[TeamMember]:
@@ -337,6 +343,7 @@ class TeamService:
         )
         return result.scalar_one_or_none()
 
+    @schedule_input_command("member")
     async def create(
         self,
         iteration_id: int,
@@ -366,12 +373,13 @@ class TeamService:
         )
         self.db.add(member)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(member)
         return member
 
+    @schedule_input_command("member")
     async def update(
         self,
         member_id: int,
@@ -384,7 +392,7 @@ class TeamService:
         if not member:
             return None
 
-        update_data = data.model_dump(exclude_unset=True)
+        update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         if "profile_id" in update_data and update_data["profile_id"] is not None:
             profile = await self._get_profile_by_id(update_data["profile_id"])
             if not profile:
@@ -401,12 +409,13 @@ class TeamService:
             setattr(member, field, value)
 
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(member)
         return member
 
+    @schedule_input_command("member")
     async def delete(self, member_id: int) -> bool:
         """Delete a team member."""
         member = await self.get_by_id(member_id)
@@ -414,9 +423,10 @@ class TeamService:
             return False
 
         await self.db.delete(member)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
+    @schedule_input_command("member")
     async def add_vacation(
         self,
         member_id: int,
@@ -436,12 +446,13 @@ class TeamService:
         )
         self.db.add(vacation)
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(vacation)
         return vacation
 
+    @schedule_input_command("member")
     async def update_vacation(
         self,
         vacation_id: int,
@@ -457,7 +468,7 @@ class TeamService:
         if vacation is None:
             return None
 
-        updates = data.model_dump(exclude_unset=True)
+        updates = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
         next_start = updates.get("start_date", vacation.start_date)
         next_end = updates.get("end_date", vacation.end_date)
         if next_start > next_end:
@@ -466,12 +477,13 @@ class TeamService:
             setattr(vacation, field, value)
 
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
         await self.db.refresh(vacation)
         return vacation
 
+    @schedule_input_command("member")
     async def delete_vacation(self, vacation_id: int) -> bool:
         """Delete a vacation."""
         result = await self.db.execute(
@@ -482,7 +494,7 @@ class TeamService:
             return False
 
         await self.db.delete(vacation)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         return True
 
     async def import_vacations(self, iteration_id: int, csv_text: str) -> VacationImportResponse:
@@ -571,7 +583,7 @@ class TeamService:
             member.vacations.append(vacation)
             imported.append(vacation)
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for vacation in imported:
             await self.db.refresh(vacation)
 
@@ -633,7 +645,7 @@ class TeamService:
             return None
 
         # Calculate allocated days from assigned tasks (deferred tasks are excluded)
-        allocated_days = sum(t.effort_days for t in member.tasks if not t.is_deferred)
+        allocated_days = sum(t.effort_days for t in member.tasks if not t.is_deferred and not t.canceled_at and t.effort_days is not None)
         # Use effective_days for capacity display - professionalism_coefficient only affects Gantt scheduling
         free_days = capacity.effective_days - allocated_days
 
@@ -697,7 +709,7 @@ class TeamService:
             self.db.add(member)
             created_members.append(member)
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
         # Refresh all members to get IDs
         for member in created_members:

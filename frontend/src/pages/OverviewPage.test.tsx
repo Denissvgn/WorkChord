@@ -370,9 +370,9 @@ describe('Overview partial-data resilience', () => {
 
         const { container } = renderWithProviders(<OverviewPage />);
 
-        expect(await screen.findByText('3 / 4 tasks complete')).toBeVisible();
+        expect(await screen.findByText('3 / 4 tasks implemented')).toBeVisible();
         expect(screen.getByRole('progressbar', {
-            name: 'Task completion',
+            name: 'Task implementation',
         })).toHaveAttribute('aria-valuenow', '75');
         expect(container.querySelector('.overview-focus-progress')).not.toBeNull();
         expect(container.querySelector('.overview-thread-flow'))
@@ -555,7 +555,7 @@ describe('Overview partial-data resilience', () => {
         })).not.toBeInTheDocument();
     });
 
-    it('announces task-based completion and keeps healthy actions in reading order', async () => {
+    it('announces task implementation and keeps healthy actions in reading order', async () => {
         serviceMocks.getIterationSummary.mockResolvedValue({
             ...iterationSummary,
             total_tasks: 4,
@@ -578,9 +578,9 @@ describe('Overview partial-data resilience', () => {
 
         const { user, container } = renderWithProviders(<OverviewPage />);
         const progress = await screen.findByRole('progressbar', {
-            name: 'Task completion',
+            name: 'Task implementation',
         });
-        expect(await screen.findByText('1 / 4 tasks complete')).toBeVisible();
+        expect(await screen.findByText('1 / 4 tasks implemented')).toBeVisible();
 
         expect(screen.getAllByRole('progressbar')).toHaveLength(1);
         expect(progress).toHaveAttribute('aria-valuemin', '0');
@@ -589,7 +589,7 @@ describe('Overview partial-data resilience', () => {
             expect(progress).toHaveAttribute('aria-valuenow', '25');
             expect(progress).toHaveAttribute(
                 'aria-valuetext',
-                '25% complete — 1 of 4 tasks complete',
+                '25% implemented — 1 of 4 tasks implemented',
             );
         });
         expect(screen.getByText('25%')).toBeVisible();

@@ -15,8 +15,8 @@ export interface GanttTask {
     actual_end_date?: string | null;    // When status changed to CLOSED
     min_start_date?: string | null;
     max_end_date?: string | null;
-    effort_days: number;
-    effort_hours?: number;
+    effort_days: number | null;
+    effort_hours?: number | null;
     calculated_effort_days: number | null;  // Effort after applying coefficients
     progress: number;
     priority: number;
@@ -72,6 +72,7 @@ export interface ScheduleResult {
 
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */
 export interface SchedulePreviewResponse {
+    input_revision: number;
     tasks: GanttTask[];
     overdue_task_ids: number[];
     schedule_result?: ScheduleResult | null;

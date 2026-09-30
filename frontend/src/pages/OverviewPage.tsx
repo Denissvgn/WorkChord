@@ -1,3 +1,4 @@
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -746,6 +747,7 @@ const OverviewPage = () => {
                     </>
                 )}
             />
+            <WorkMetricsLine metrics={iterationSummary} />
             {recoveryAnnouncement && (
                 <p className="sr-only" role="status" aria-atomic="true">
                     {recoveryAnnouncement}
@@ -1425,9 +1427,7 @@ const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) =>
                         </span>
                     )}
                     <span className="w-10 shrink-0 text-right text-xs tabular-nums text-content-secondary">
-                        {t('units.daysCompact', {
-                            count: formatNumber(task.effort_days || 0, numberLocale),
-                        })}
+                        {task.effort_days === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: formatNumber(task.effort_days, numberLocale) })}
                     </span>
                     {task.assignee ? (
                         <span

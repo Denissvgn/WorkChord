@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -6,8 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
 import type { Task, TaskUpdate } from '../../types/task';
 import { Button } from '../common/Button';
-import { ConfirmDialog } from '../common/ConfirmDialog';
+import { DraftDismissalDialog } from './DraftDismissalDialog';
+import { useDraftDismissal } from './useDraftDismissal';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
 
 type DrawerCopy = ReactNode | ((task: Task | null) => ReactNode);
@@ -94,8 +96,7 @@ const TaskEditorDrawerContent = ({
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
     const { t } = useTranslation();
-    const [dirty, setDirty] = useState(false);
-    const [showDiscardWarning, setShowDiscardWarning] = useState(false);
+    const guard = useDraftDismissal(onClose);
     // The drawer renders a spinner, inline retry, and withholds the editor until a task exists.
     const {
         data: fullTask,
@@ -104,22 +105,19 @@ const TaskEditorDrawerContent = ({
         refetch,
         // feedback-policy: query loading,error,retry,empty
     } = useQuery({
-        queryKey: ['task', taskId],
-        queryFn: () => taskService.getById(taskId),
+        queryKey: ['taskEditor', taskId],
+        gcTime: 0,
+        staleTime: 0,
+        queryFn: async () => {
+            const detail = await taskService.getDetail(taskId);
+            return { ...detail.task, dependencies: detail.dependencies.items.map(item => item.id), detail_context: detail };
+        },
     });
     const editorTask = useMemo(
         () => fullTask ? prepareTask?.(fullTask) ?? fullTask : null,
         [fullTask, prepareTask],
     );
-    const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? 0;
-
-    const requestClose = () => {
-        if (dirty) {
-            setShowDiscardWarning(true);
-            return;
-        }
-        onClose();
-    };
+    const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? null;
 
     return (
         <SlideOverDrawer
@@ -129,7 +127,8 @@ const TaskEditorDrawerContent = ({
                 ?? t('taskEditor.taskCode', { id: taskId })}
             icon={icon}
             closeLabel={t('taskEditor.close')}
-            onClose={requestClose}
+            onClose={guard.requestClose}
+            closeDisabled={guard.pending}
             className={className ?? 'max-w-2xl'}
             restoreFocusRef={restoreFocusRef}
         >
@@ -157,30 +156,23 @@ const TaskEditorDrawerContent = ({
                     </div>
                 )}
                 {beforeForm}
-                {editorTask && resolvedIterationId > 0 && (
+                {editorTask?.detail_context && <TaskContextSummary detail={editorTask.detail_context} />}
+                {editorTask && (
                     <TaskForm
                         iterationId={resolvedIterationId}
                         initialData={editorTask}
                         mode={mode}
                         onSaveSandbox={onSaveSandbox}
-                        onDirtyChange={setDirty}
+                        onDirtyChange={guard.setDirty}
+                        onPendingChange={guard.setPending}
+                        onDiscardReady={guard.onDiscardReady}
                         confirmUnsavedOnCancel={false}
-                        onSuccess={onClose}
-                        onCancel={requestClose}
+                        onSuccess={guard.complete}
+                        onCancel={guard.requestClose}
                     />
                 )}
             </div>
-            <ConfirmDialog
-                open={showDiscardWarning}
-                title={t('taskEditor.unsavedTitle')}
-                description={t('taskEditor.unsavedBody')}
-                confirmLabel={t('taskEditor.discard')}
-                cancelLabel={t('taskEditor.keepEditing')}
-                closeLabel={t('actions.close')}
-                tone="warning"
-                onCancel={() => setShowDiscardWarning(false)}
-                onConfirm={onClose}
-            />
+            <DraftDismissalDialog guard={guard} />
         </SlideOverDrawer>
     );
 };

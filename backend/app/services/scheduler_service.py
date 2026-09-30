@@ -1,4 +1,6 @@
 """Gantt Scheduler Service - automatic task scheduling with optimization."""
+
+from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations
 import math
 import logging
 from dataclasses import dataclass, field
@@ -346,16 +348,21 @@ class SchedulerService:
         self.team_service = TeamService(db)
         self.rules_service = SchedulingRulesService.get_instance()
 
+    @atomic_command
     async def schedule_iteration(
         self,
         iteration_id: int,
         *,
         commit: bool = True,
+        expected_revision: int | None = None,
+        commit_baseline: bool = False,
+        rebaseline_reason: str | None = None,
     ) -> ScheduleResult:
         """Schedule an iteration, optionally leaving commit ownership to the caller."""
         from app.services.iteration_service import IterationService
 
         iteration_service = IterationService(self.db)
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
         iteration = await iteration_service.get_by_id(iteration_id)
 
         if not iteration:
@@ -363,6 +370,7 @@ class SchedulerService:
 
         # Get all data
         all_tasks = await self.task_service.get_all_tasks(iteration_id)
+        before_dates = {task.id: (task.start_date, task.end_date) for task in all_tasks}
         team_members = await self.team_service.get_by_iteration(iteration_id)
 
         # Build member schedules
@@ -381,11 +389,28 @@ class SchedulerService:
         # that should not be modified by auto-scheduling
         from app.models.task import TaskStatus
 
-        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_deferred]
+        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not t.is_deferred and not t.canceled_at and not t.blocked_reason]
 
         # Split into schedulable (PLANNED) and locked (non-PLANNED) tasks
         leaf_tasks = [t for t in all_leaf_tasks if t.status == TaskStatus.PLANNED.value]
         locked_tasks = [t for t in all_leaf_tasks if t.status != TaskStatus.PLANNED.value]
+        unavailable_estimates = [task for task in leaf_tasks if task.effort_hours is None or task.effort_hours == 0]
+        for task in unavailable_estimates:
+            task.start_date = task.end_date = task.calculated_effort_days = None
+            decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
+                reason="Provide a positive effort estimate to schedule this task."))
+        unavailable_ids = {task.id for task in unavailable_estimates}
+        # A downstream task cannot be forecast from a missing predecessor estimate.
+        changed = True
+        while changed:
+            changed = False
+            for task in leaf_tasks:
+                if task.id not in unavailable_ids and any(dep.depends_on_id in unavailable_ids for dep in task.dependencies):
+                    unavailable_ids.add(task.id)
+                    task.start_date = task.end_date = task.calculated_effort_days = None
+                    decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable", reason="Estimate and schedule the prerequisite first."))
+                    changed = True
+        leaf_tasks = [task for task in leaf_tasks if task.id not in unavailable_ids]
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
 
@@ -738,10 +763,33 @@ class SchedulerService:
         for parent in composite_tasks:
             self._update_composite_task_dates(parent, iteration, decisions)
 
+        for task in sorted(all_tasks, key=lambda task: task.id):
+            if before_dates[task.id] != (task.start_date, task.end_date):
+                await self.task_service.reserve_task_version(task, task.version)
+
+        if commit_baseline:
+            from app.models.recovery import TaskScheduleBaseline
+            from app.models.project import Project
+            authority = self.db.info.get("authority")
+            timezone = await self.db.scalar(select(Project.timezone).where(Project.id == iteration.project_id)) if iteration.project_id else iteration.calendar.timezone
+            for task in all_leaf_tasks:
+                if task.start_date is None or task.end_date is None:
+                    continue
+                if task.baseline_revision and not rebaseline_reason:
+                    continue
+                if rebaseline_reason is not None and len(rebaseline_reason.strip()) < 8:
+                    raise ValueError("A deliberate rebaseline requires a clear reason")
+                task.baseline_revision += 1
+                task.baseline_start_date, task.baseline_end_date = task.start_date, task.end_date
+                task.baseline_provenance = "committed" if getattr(authority, "principal_id", None) else "committed_unattributed"
+                self.db.add(TaskScheduleBaseline(task_id=task.id, revision=task.baseline_revision,
+                    start_date=task.start_date, end_date=task.end_date, timezone=timezone or "UTC",
+                    reason=rebaseline_reason or "Initial schedule commitment", principal_id=getattr(authority, "principal_id", None)))
+
         # Agent command adapters need the schedule and their exact receipt to
         # share one transaction. Existing callers retain commit-by-default.
         if commit:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         else:
             await self.db.flush()
 
@@ -1507,7 +1555,7 @@ class IncrementalScheduler:
                 task, iteration, member_schedules, decisions, task_map, earliest_start
             )
 
-        await self.db.commit()
+        await commit_or_flush(self.db)
 
         logger.warning(f"[INCREMENTAL] Rescheduled {len(tasks)} tasks")
 
@@ -1531,7 +1579,7 @@ class IncrementalScheduler:
 
         if new_effort is not None and new_effort != old_task.effort_days:
             change_type = (
-                ChangeType.EFFORT_INCREASED if new_effort > old_task.effort_days
+                ChangeType.EFFORT_INCREASED if old_task.effort_days is None or new_effort > old_task.effort_days
                 else ChangeType.EFFORT_DECREASED
             )
             changes.append(TaskChange(

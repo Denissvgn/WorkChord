@@ -150,13 +150,13 @@ describe('lazy language resources', () => {
             completed: 1,
             total: 1,
             count: 1,
-        })).toBe('1 / 1 task complete');
+        })).toBe('1 / 1 task implemented');
         expect(i18n.t('overview.focus.deliveryProgressValue', {
             percent: 50,
             completed: 1,
             total: 2,
             count: 2,
-        })).toBe('50% complete — 1 of 2 tasks complete');
+        })).toBe('50% implemented — 1 of 2 tasks implemented');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 1 }))
             .toBe('Delivery Hub needs attention: 1 intake item awaits triage. Open Triage.');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 2 }))
@@ -205,22 +205,22 @@ describe('lazy language resources', () => {
             completed: 1,
             total: 1,
             count: 1,
-        })).toBe('Завершено 1 из 1 задачи');
+        })).toBe('Реализовано 1 из 1 задачи');
         expect(i18n.t('overview.tasksShipped', {
             completed: 1,
             total: 2,
             count: 2,
-        })).toBe('Завершено 1 из 2 задач');
+        })).toBe('Реализовано 1 из 2 задач');
         expect(i18n.t('overview.tasksShipped', {
             completed: 3,
             total: 5,
             count: 5,
-        })).toBe('Завершено 3 из 5 задач');
+        })).toBe('Реализовано 3 из 5 задач');
         expect(i18n.t('overview.tasksShipped', {
             completed: 13,
             total: 21,
             count: 21,
-        })).toBe('Завершено 13 из 21 задачи');
+        })).toBe('Реализовано 13 из 21 задачи');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 1 }))
             .toBe('Центр поставки требует внимания: 1 входящий элемент ожидает разбора. Откройте триаж.');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 2 }))

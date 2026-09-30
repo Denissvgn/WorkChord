@@ -1,12 +1,13 @@
 """Snapshot restore API schemas."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SnapshotRestoreRequest(BaseModel):
     """Explicit acknowledgement required before destructive snapshot restore."""
 
     confirm: bool = False
+    expected_revision: int | None = Field(default=None, ge=1)
 
 
 class SnapshotRestoreResponse(BaseModel):

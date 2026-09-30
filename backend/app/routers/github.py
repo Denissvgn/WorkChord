@@ -31,14 +31,14 @@ router = APIRouter()
 
 
 async def get_github_webhook_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> GitHubWebhookService:
     """Dependency for GitHub webhook processing."""
     return await GitHubWebhookService.from_runtime(db)
 
 
 async def get_github_status_automation_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> GitHubStatusAutomationService:
     """Dependency for GitHub status automation rule management."""
     return GitHubStatusAutomationService(db)
@@ -157,6 +157,8 @@ async def receive_github_webhook(
     body = await request.body()
     try:
         service.verify_signature(body, github_signature)
+        from app.services.identity_service import bind_verified_system
+        await bind_verified_system(service.db, source="github_webhook", reason="Verified configured GitHub webhook signature")
         payload = service.parse_payload(body)
         return await service.process(github_event, github_delivery, payload)
     except GitHubWebhookConfigurationError as exc:

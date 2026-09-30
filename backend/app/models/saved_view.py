@@ -63,6 +63,8 @@ class SavedView(Base):
         index=True,
     )
     schema_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    metric_migration_note: Mapped[str | None] = mapped_column(String(64))
+    owner_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), index=True)
     created_at: Mapped[datetime] = mapped_column(
         UTCDateTime(), default=utc_now, nullable=False, index=True
     )

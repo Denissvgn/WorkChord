@@ -1,3 +1,4 @@
+import type { WorkMetrics } from './workMetrics';
 import type { Task } from './task';
 import type { TeamMemberOption, TeamMemberProfileCompact } from './team';
 
@@ -184,7 +185,7 @@ export interface ProjectMilestoneTaskGroup {
     remaining_effort_days: number;
 }
 
-export interface ProjectPortfolioSummary {
+export interface ProjectPortfolioSummary extends WorkMetrics {
     project_id: number;
     total_tasks: number;
     completed_tasks: number;
@@ -195,7 +196,7 @@ export interface ProjectPortfolioSummary {
     target_date_risk: ProjectTargetDateRisk;
 }
 
-export interface ProjectSummary {
+export interface ProjectSummary extends WorkMetrics {
     id: number;
     name: string;
     status: ProjectStatus;

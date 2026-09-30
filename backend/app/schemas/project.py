@@ -1,4 +1,8 @@
 """Project schemas."""
+
+from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
+
+from app.schemas.work_metrics import WorkMetricSummary
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Optional
@@ -110,6 +114,8 @@ class ProjectInitiativeSummary(BaseModel):
 
 class ProjectCreate(BaseModel):
     """Schema for creating a project."""
+    timezone: WorkingZone = "UTC"
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.PLANNED
@@ -122,8 +128,10 @@ class ProjectCreate(BaseModel):
     sort_order: int = 0
 
 
-class ProjectUpdate(BaseModel):
+class ProjectUpdate(PlanningInputRevisions):
     """Schema for updating a project."""
+    timezone: WorkingZone | None = None
+
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
@@ -245,7 +253,7 @@ class ProjectMilestoneSummary(BaseModel):
     sort_order: int = 0
 
 
-class ProjectMilestoneTaskGroup(BaseModel):
+class ProjectMilestoneTaskGroup(WorkMetricSummary):
     """Task progress metrics grouped under one milestone or unassigned work."""
     milestone_id: Optional[int] = None
     milestone: Optional[ProjectMilestoneSummary] = None
@@ -267,6 +275,8 @@ class ProjectMilestoneTaskGroup(BaseModel):
 
 class ProjectResponse(BaseModel):
     """Schema for project response."""
+    timezone: str = "UTC"
+
     id: int
     name: str
     description: Optional[str] = None
@@ -289,7 +299,7 @@ class ProjectResponse(BaseModel):
         from_attributes = True
 
 
-class ProjectPortfolioSummary(BaseModel):
+class ProjectPortfolioSummary(WorkMetricSummary):
     """Compact project signals for portfolio tables."""
     project_id: int
     total_tasks: int = 0
@@ -301,7 +311,7 @@ class ProjectPortfolioSummary(BaseModel):
     target_date_risk: ProjectTargetDateRisk = ProjectTargetDateRisk.UNKNOWN
 
 
-class ProjectSummary(BaseModel):
+class ProjectSummary(WorkMetricSummary):
     """Summary statistics for a project."""
     id: int
     name: str

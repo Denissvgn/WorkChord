@@ -1,4 +1,4 @@
-import type { Task, TaskCreate, TaskStatus, TaskUpdate } from '../../types/task';
+import type { Task, TaskBrief, TaskCreate, TaskStatus, TaskUpdate } from '../../types/task';
 import { getApiErrorMessage } from '../../utils/apiError';
 
 export type TaskEditorSection = 'essential' | 'planning' | 'advanced' | 'internal';
@@ -11,8 +11,11 @@ export interface TaskEditorValues {
     title: string;
     description: string;
     priority: number;
-    effort_days: number;
-    effort_hours: number;
+    effort_days: number | null;
+    effort_hours: number | null;
+    owner_profile_id: number | null;
+    brief: TaskBrief | null;
+    estimate_provenance: "unknown" | "assumed" | "estimated";
     assignee_id: number | null;
     project_id: number | null;
     milestone_id: number | null;
@@ -44,13 +47,16 @@ interface TaskEditorFieldDefinition<K extends keyof TaskEditorValues> {
     defaultValue: (context: TaskEditorDefaultsContext) => TaskEditorValues[K];
 }
 
-const effectiveEffortDays = (task?: Task): number => {
-    if (!task) return 1;
+const effectiveEffortDays = (task?: Task): number | null => {
+    if (!task) return null;
     if (task.children?.length) {
-        return task.children.reduce((total, child) => total + effectiveEffortDays(child), 0);
+        const estimates = task.children.map(effectiveEffortDays);
+        return estimates.some(value => value === null) ? null : estimates.reduce<number>((sum, value) => sum + (value ?? 0), 0);
     }
-    return task.effort_days || 1;
+    return task.effort_days;
 };
+
+export const emptyTaskBrief = (): TaskBrief => ({ schema_version: 1, goal: '', context: '', scope: '', exclusions: '', acceptance_criteria: [], verification: '', artifact_expectations: '' });
 
 /**
  * Canonical task-editor contract. Both Tasks and Gantt use these defaults and
@@ -62,6 +68,9 @@ const effectiveEffortDays = (task?: Task): number => {
 export const TASK_EDITOR_FIELD_SCHEMA: {
     [K in keyof TaskEditorValues]: TaskEditorFieldDefinition<K>;
 } = {
+    owner_profile_id: { section: 'essential', availability: 'all-editors', defaultValue: ({ task }) => task?.owner_profile_id ?? null },
+    brief: { section: 'essential', availability: 'all-editors', defaultValue: ({ task }) => task ? task.brief ?? null : emptyTaskBrief() },
+    estimate_provenance: { section: 'planning', availability: 'all-editors', defaultValue: ({ task }) => task?.effort_hours == null ? 'unknown' : task.estimate_provenance === 'assumed' ? 'assumed' : 'estimated' },
     title: {
         section: 'essential',
         availability: 'all-editors',
@@ -85,7 +94,7 @@ export const TASK_EDITOR_FIELD_SCHEMA: {
     effort_hours: {
         section: 'planning',
         availability: 'all-editors',
-        defaultValue: ({ task }) => effectiveEffortDays(task) * 8,
+        defaultValue: ({ task }) => task?.effort_hours ?? null,
     },
     assignee_id: {
         section: 'essential',
@@ -196,7 +205,7 @@ export const validateTaskEditor = (
     if (!Number.isFinite(values.priority) || values.priority < 1 || values.priority > 10) {
         issues.push({ field: 'priority', code: 'priorityRange' });
     }
-    if (!Number.isFinite(values.effort_days) || values.effort_days < 0.1) {
+    if (values.effort_hours !== null && (!Number.isFinite(values.effort_hours) || values.effort_hours < 0)) {
         issues.push({ field: 'effort_days', code: 'effortRequired' });
     }
     if (
@@ -218,7 +227,10 @@ export const validateTaskEditor = (
 
 const mutationFields = (values: TaskEditorValues): TaskCreate => ({
     title: values.title.trim(),
-    description: values.description,
+    description: values.brief ? undefined : values.description,
+    brief: values.brief ?? undefined,
+    owner_profile_id: values.owner_profile_id,
+    estimate_provenance: values.effort_hours === null ? "unknown" : values.estimate_provenance === "unknown" ? "estimated" : values.estimate_provenance,
     priority: values.priority,
     effort_days: values.effort_days,
     effort_hours: values.effort_hours,
@@ -291,3 +303,5 @@ export const mapTaskEditorServerError = (
     }
     return { kind: 'generic', message: getApiErrorMessage(error, fallback) };
 };
+
+export const newCriterion = (text = '') => ({ id: crypto.randomUUID().replaceAll('-', ''), revision: 1, text, verification: '' });

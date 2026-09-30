@@ -1,3 +1,4 @@
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import i18n from '../i18n/i18n';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
@@ -33,6 +34,7 @@ import { QueryErrorState } from '../components/feedback/QueryState';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { ProjectForm } from '../components/projects/ProjectForm';
 import { ProjectIterationsSection } from '../components/projects/ProjectIterationsSection';
+import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { ProjectTaskTree } from '../components/projects/ProjectTaskTree';
 import { RequestSourceLinksPanel } from '../components/requestSources/RequestSourceLinksPanel';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
@@ -864,6 +866,7 @@ const ProjectDetailPage = () => {
     });
     const [postUpdateOpen, setPostUpdateOpen] = useState(false);
     const [historyOpen, setHistoryOpen] = useState(false);
+    const [newBacklogTask, setNewBacklogTask] = useState(false);
 
     const enabled = Number.isInteger(numericProjectId) && numericProjectId > 0;
 
@@ -1280,6 +1283,7 @@ const ProjectDetailPage = () => {
                     </>
                 )}
             />
+            <WorkMetricsLine metrics={summary} />
 
             {/* Progress bar */}
             <div>
@@ -1394,12 +1398,15 @@ const ProjectDetailPage = () => {
                         title={t('surfaces.projectDetail.linkedTasks')}
                         count={<span className="text-xs text-content-secondary">· {tasks.length} {t('surfaces.projectDetail.rootTasks')}</span>}
                         actions={(
-                            <Button variant="secondary" size="sm" onClick={() => navigate('/tasks')}>
-                                {t('surfaces.projectDetail.openTaskBoard')}
-                            </Button>
+                            <div className="flex flex-wrap gap-2">
+                                <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('domain.newBacklogTask')}</Button>
+                                <Button variant="secondary" size="sm" onClick={() => navigate('/tasks')}>{t('surfaces.projectDetail.openTaskBoard')}</Button>
+                            </div>
                         )}
                     >
 
+                        {newBacklogTask && <GuardedTaskModal title={t('domain.newBacklogTask')} closeLabel={t('common.close')}
+                            iterationId={null} parentProjectId={numericProjectId} onClose={() => setNewBacklogTask(false)} />}
                         {/* Status segments — moved from a standalone "Status Counts" card to here, where they actually scope the list below */}
                         <StatusSegmentStrip
                             className="mb-4"

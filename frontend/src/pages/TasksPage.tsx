@@ -17,13 +17,12 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/common/Button';
-import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { TaskList } from '../components/tasks/TaskList';
 import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
-import { TaskForm } from '../components/tasks/TaskForm';
+import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
@@ -111,6 +110,7 @@ const filtersFromSavedView = (view: SavedView): TaskFilters => {
         status: nullableStringFromValue(raw.status),
         hasDependency: nullableBooleanFromValue(raw.hasDependency),
         isOverdue: nullableBooleanFromValue(raw.isOverdue),
+        isIterationOverflow: nullableBooleanFromValue(raw.isIterationOverflow),
         agentReady: nullableBooleanFromValue(raw.agentReady),
         startDateFrom: stringFromValue(raw.startDateFrom),
         startDateTo: stringFromValue(raw.startDateTo),
@@ -180,6 +180,7 @@ const TasksPage = () => {
         Number(filters.status !== null) +
         Number(filters.hasDependency !== null) +
         Number(filters.isOverdue !== null) +
+        Number(filters.isIterationOverflow != null) +
         Number(filters.agentReady !== null) +
         Number(Boolean(filters.startDateFrom)) +
         Number(Boolean(filters.startDateTo)) +
@@ -341,6 +342,7 @@ const TasksPage = () => {
         const focusedTask = focusedTaskQuery.data;
         if (
             !focusedTask
+            || focusedTask.iteration_id === null
             || focusedTask.iteration_id === selectedIterationId
             || !iterations?.some(iteration => iteration.id === focusedTask.iteration_id)
         ) {
@@ -810,15 +812,10 @@ const TasksPage = () => {
                 )}
             </div>
 
-            <Modal open={isCreateModalOpen} title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}>
-                {isCreateModalOpen && (
-                        <TaskForm
-                            iterationId={selectedIterationId}
-                            onSuccess={closeTaskCreator}
-                            onCancel={closeTaskCreator}
-                        />
-                )}
-            </Modal>
+            {isCreateModalOpen && <GuardedTaskModal
+                title={t('tasks.createNewTask')} closeLabel={t('actions.close')}
+                onClose={closeTaskCreator} iterationId={selectedIterationId}
+            />}
 
             {isImporting && (
                 <ImportTasksModal

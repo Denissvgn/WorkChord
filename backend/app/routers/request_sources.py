@@ -24,7 +24,7 @@ router = APIRouter()
 
 
 async def get_request_source_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> RequestSourceService:
     """Dependency for request-source service."""
     return RequestSourceService(db)

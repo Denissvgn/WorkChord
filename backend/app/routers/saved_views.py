@@ -33,7 +33,7 @@ router = APIRouter()
 
 
 async def get_saved_view_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> SavedViewService:
     """Dependency for saved view service."""
     return SavedViewService(db)

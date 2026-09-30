@@ -22,7 +22,7 @@ router = APIRouter(dependencies=[Depends(require_admin_api_key)])
 
 
 async def get_llm_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> LLMService:
     """Dependency for LLM service."""
     service = await LLMService.from_runtime(db)
@@ -153,7 +153,7 @@ async def improve_task_description_draft(
 @router.post("/tasks/ai/suggest", response_model=GroundedAISuggestionResponse)
 async def suggest_task_draft(
     data: TaskAISuggestRequest,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     llm_service: Annotated[LLMService, Depends(get_llm_service)],
 ):
     """Generate grounded advisory suggestions for unsaved task form data."""
@@ -171,7 +171,7 @@ async def suggest_task_draft(
 async def formalize_task(
     task_id: int,
     data: FormalizeRequest,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     llm_service: Annotated[LLMService, Depends(get_llm_service)]
 ):
     """Formalize a task using LLM."""
@@ -198,7 +198,7 @@ async def formalize_task(
 async def improve_task_description(
     task_id: int,
     data: ImproveDescriptionRequest,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     llm_service: Annotated[LLMService, Depends(get_llm_service)]
 ):
     """Improve task description using LLM."""
@@ -223,7 +223,7 @@ async def improve_task_description(
 async def suggest_existing_task(
     task_id: int,
     data: TaskAISuggestRequest,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     llm_service: Annotated[LLMService, Depends(get_llm_service)],
 ):
     """Generate grounded advisory suggestions for an existing task."""
@@ -242,7 +242,7 @@ async def suggest_existing_task(
 @router.post("/iterations/{iteration_id}/explain-schedule", response_model=ExplainScheduleResponse)
 async def explain_schedule(
     iteration_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
     llm_service: Annotated[LLMService, Depends(get_llm_service)],
     data: Annotated[ExplainScheduleRequest | None, Body()] = None,
 ):

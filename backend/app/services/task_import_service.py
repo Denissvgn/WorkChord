@@ -1,5 +1,8 @@
 """Task text import, export, and triage intake workflows."""
 
+from app.services.task_domain_service import nominal_day_hours
+from app.commands import commit_or_flush
+
 import json
 from typing import Optional, TYPE_CHECKING
 
@@ -93,11 +96,12 @@ class TaskImportService:
         assignee_id: Optional[int],
         sort_order: int,
         project_id: Optional[int] = None,
+        nominal_day_hours: float = 8,
     ) -> Task:
         """Build a task model from parsed import data."""
         priority = parsed_task.priority if parsed_task.priority is not None else 5
         effort_days = (
-            parsed_task.effort_days if parsed_task.effort_days is not None else 1.0
+            parsed_task.effort_days
         )
         return Task(
             iteration_id=iteration_id,
@@ -106,8 +110,10 @@ class TaskImportService:
             title=parsed_task.title,
             description=parsed_task.description,
             priority=priority,
+            nominal_day_hours=nominal_day_hours,
             effort_days=effort_days,
-            effort_hours=effort_days * 8.0,
+            effort_hours=effort_days * nominal_day_hours if effort_days is not None else None,
+            estimate_provenance="estimated" if effort_days is not None else "unknown",
             assignee_id=assignee_id,
             status="planned",
             is_optional=False,
@@ -207,6 +213,7 @@ class TaskImportService:
                 assignee_id,
                 next_sort_order,
                 project_id=iteration_project_id,
+                nominal_day_hours=await nominal_day_hours(self.db, iteration_id),
             )
             self.db.add(task)
             created_tasks.append(task)
@@ -214,7 +221,7 @@ class TaskImportService:
 
         await self.db.flush()
         await self._record_triage_import_events(created_triage_items)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for task in created_tasks:
             await self.db.refresh(task)
         for triage_item in created_triage_items:
@@ -258,7 +265,7 @@ class TaskImportService:
         for parsed in parse_tasks_text(text):
             priority = parsed.priority if parsed.priority is not None else 5
             effort_days = (
-                parsed.effort_days if parsed.effort_days is not None else 1.0
+                parsed.effort_days
             )
             if parsed.id:
                 assignee_id = self._resolve_import_assignee_id(
@@ -283,13 +290,10 @@ class TaskImportService:
                                 "Task milestone must belong to the scoped iteration project."
                             )
                         task.project_id = iteration_project_id
-                    task.title = parsed.title
-                    if parsed.description is not None:
-                        task.description = parsed.description
-                    task.priority = priority
-                    task.effort_days = effort_days
-                    task.effort_hours = effort_days * 8.0
-                    task.assignee_id = assignee_id
+                    from app.schemas.task import TaskUpdate
+                    task = await self.task_service.update(task.id, TaskUpdate(expected_version=task.version, title=parsed.title,
+                        **({"description": parsed.description} if parsed.description is not None else {}),
+                        priority=priority, effort_days=effort_days, assignee_id=assignee_id), commit=False)
                     processed_tasks.append(task)
                 continue
 
@@ -320,6 +324,7 @@ class TaskImportService:
                 assignee_id,
                 next_sort_order,
                 project_id=iteration_project_id,
+                nominal_day_hours=await nominal_day_hours(self.db, iteration_id),
             )
             self.db.add(task)
             processed_tasks.append(task)
@@ -327,7 +332,7 @@ class TaskImportService:
 
         await self.db.flush()
         await self._record_triage_import_events(created_triage_items)
-        await self.db.commit()
+        await commit_or_flush(self.db)
         for task in processed_tasks:
             await self.db.refresh(task)
         for triage_item in created_triage_items:

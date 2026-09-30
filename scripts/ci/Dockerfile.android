@@ -1,0 +1,24 @@
+FROM eclipse-temurin:17.0.16_8-jdk-jammy@sha256:47d330891da01c4b17fb6af5018d9a7bad33f7a252a91dde890c10d4de5ebd33
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip \
+    && rm -rf /var/lib/apt/lists/*
+ENV ANDROID_HOME=/opt/android-sdk GRADLE_USER_HOME=/opt/gradle-cache
+RUN curl --fail --location --retry 3 \
+      https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+      -o /tmp/android-tools.zip \
+    && echo 'd313adb7aedccf6cf0cfca51ec180f0059f5f8f8  /tmp/android-tools.zip' | sha1sum -c - \
+    && mkdir -p /opt/android-sdk/cmdline-tools \
+    && unzip -q /tmp/android-tools.zip -d /opt/android-sdk/cmdline-tools \
+    && mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/12.0 \
+    && rm /tmp/android-tools.zip
+RUN yes | /opt/android-sdk/cmdline-tools/12.0/bin/sdkmanager --licenses >/dev/null
+RUN /opt/android-sdk/cmdline-tools/12.0/bin/sdkmanager 'platforms;android-34' 'build-tools;34.0.0'
+
+WORKDIR /workspace
+COPY gradlew gradlew.bat gradle.properties settings.gradle.kts build.gradle.kts ./
+COPY gradle ./gradle
+RUN echo 'cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8  gradle/wrapper/gradle-wrapper.jar' | sha256sum -c -
+COPY app/build.gradle.kts app/proguard-rules.pro ./app/
+COPY app/src ./app/src
+RUN ./gradlew --no-daemon --max-workers=2 --project-cache-dir /tmp/gradle-project-cache --version
+CMD ["./gradlew", "--no-daemon", "--max-workers=2", "--project-cache-dir", "/tmp/gradle-project-cache", "testDebugUnitTest", "assembleDebug"]

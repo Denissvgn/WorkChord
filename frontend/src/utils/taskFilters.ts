@@ -102,6 +102,9 @@ export const taskMatchesFilters = (
         return false;
     }
 
+    if (filters.isIterationOverflow !== undefined && filters.isIterationOverflow !== null
+        && Boolean(task.is_iteration_overflow) !== filters.isIterationOverflow) return false;
+
     if (filters.agentReady !== null && task.agent_readiness.is_ready !== filters.agentReady) {
         return false;
     }
@@ -141,24 +144,28 @@ export const filterTaskWithChildren = (
     task: Task,
     filters: TaskFilters | undefined,
     labelGroups: LabelGroup[] = [],
+    inherited = { deferred: false, optional: false },
 ): Task | null => {
     if (!filters) return task;
 
+    const effective = { deferred: inherited.deferred || task.is_deferred, optional: inherited.optional || task.is_optional };
+    const projected = { ...task, effective_is_deferred: effective.deferred, effective_is_optional: effective.optional };
     // Filter children first
     let filteredChildren: Task[] = [];
     if (task.children && task.children.length > 0) {
         filteredChildren = task.children
-            .map(child => filterTaskWithChildren(child, filters, labelGroups))
+            .map(child => filterTaskWithChildren(child, filters, labelGroups, effective))
             .filter((c): c is Task => c !== null);
     }
 
     // Check if this task matches or has matching children
-    const selfMatches = taskMatchesFilters(task, filters, labelGroups);
+    const selfMatches = taskMatchesFilters(projected, filters, labelGroups);
     const hasMatchingChildren = filteredChildren.length > 0;
 
     if (selfMatches || hasMatchingChildren) {
         return {
-            ...task,
+            ...projected,
+            is_composite: Boolean(task.is_composite || task.children?.length),
             children: filteredChildren
         };
     }

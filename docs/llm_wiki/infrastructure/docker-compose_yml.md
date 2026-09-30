@@ -1,0 +1,97 @@
+# docker-compose.yml
+
+**Path:** `docker-compose.yml`
+
+## Services
+
+| Service | Image / Build | Ports | Depends On |
+|---------|---------------|-------|------------|
+| `postgres` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` | `127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432` |  |
+| `migration` | build: `.` |  | `{'postgres': {'condition': 'service_healthy'}}` |
+| `repair` | build: `.` |  | `{'migration': {'condition': 'service_completed_successfully'}}` |
+| `backend` | build: `.` |  | `{'repair': {'condition': 'service_completed_successfully'}}` |
+| `delivery-worker` | build: `.` |  | `{'repair': {'condition': 'service_completed_successfully'}}` |
+| `frontend` | build: `.` | `${WORKCHORD_HTTP_BIND:-127.0.0.1}:${WORKCHORD_HTTP_PORT:-80}:80` | `{'backend': {'condition': 'service_healthy'}}` |
+| `logical-backup` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
+| `base-backup` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
+| `restore-verify` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
+
+### postgres
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Ports:** `127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432`
+- **Volumes:** `workchord_postgresql18_data:/var/lib/postgresql`, `workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive`, `./deploy/postgresql/init-replication-auth.sh:/docker-entrypoint-initdb.d/05-replication-auth.sh:ro`, `./deploy/postgresql/init-development.sql:/docker-entrypoint-initdb.d/10-workchord.sql:ro`, `./deploy/postgresql/entrypoint.sh:/opt/workchord/postgresql-entrypoint.sh:ro`
+- **Environment:** `{'POSTGRES_DB': 'workchord', 'POSTGRES_USER': 'postgres', 'POSTGRES_PASSWORD': '${POSTGRES_PASSWORD:-workchord-local-only}', 'POSTGRES_INITDB_ARGS': '--encoding=UTF8 --locale-provider=builtin --builtin-locale=PG_UNICODE_FAST', 'PGDATA': '/var/lib/postgresql/18/docker'}`
+- **Command:** `['postgres', '-c', 'max_connections=150', '-c', 'wal_level=replica', '-c', 'archive_mode=on', '-c', 'archive_timeout=300s', '-c', 'archive_command=mkdir -p /var/lib/postgresql/wal-archive && test ! -f /var/lib/postgresql/wal-archive/%f && cp %p /var/lib/postgresql/wal-archive/%f', '-c', 'log_min_duration_statement=500ms', '-c', 'shared_preload_libraries=pg_stat_statements', '-c', 'pg_stat_statements.track=all', '-c', 'track_io_timing=on', '-c', 'track_wal_io_timing=on', '-c', 'log_lock_waits=on', '-c', 'deadlock_timeout=200ms']`
+
+### migration
+
+- **Build context:** `.`
+- **Environment:** `DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}`, `DATABASE_POSTGRESQL_REQUIRED=true`, `DATABASE_PROCESS_ROLE=migration`, `DATABASE_POOL_SIZE=1`, `DATABASE_MAX_OVERFLOW=0`, `DEPLOYMENT_ENVIRONMENT=development`, `DATABASE_SSL_MODE=disable`, `MAINTENANCE_MODE=off`, `OUTBOUND_DELIVERY_WORKER_ENABLED=false`
+- **Depends on:** `{'postgres': {'condition': 'service_healthy'}}`
+- **Command:** `['python', '-m', 'app.cli.upgrade', '--no-repairs']`
+
+### repair
+
+- **Build context:** `.`
+- **Environment:** `DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}`, `DATABASE_POSTGRESQL_REQUIRED=true`, `DATABASE_PROCESS_ROLE=repair`, `DATABASE_POOL_SIZE=1`, `DATABASE_MAX_OVERFLOW=0`, `DEPLOYMENT_ENVIRONMENT=development`, `DATABASE_SSL_MODE=disable`, `MAINTENANCE_MODE=off`, `OUTBOUND_DELIVERY_WORKER_ENABLED=false`
+- **Depends on:** `{'migration': {'condition': 'service_completed_successfully'}}`
+- **Command:** `['python', '-m', 'app.cli.upgrade', '--repairs-only']`
+
+### backend
+
+- **Build context:** `.`
+- **Environment:** `DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}`, `DATABASE_POSTGRESQL_REQUIRED=true`, `DATABASE_PROCESS_ROLE=web`, `API_PREFIX=/api`, `DEPLOYMENT_ENVIRONMENT=development`, `WORKCHORD_AUTH_MODE=${WORKCHORD_AUTH_MODE:-managed}`, `OIDC_ISSUER_URL=${OIDC_ISSUER_URL:-}`, `OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}`, `OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}`, `OIDC_REDIRECT_URI=${OIDC_REDIRECT_URI:-}`, `AUTH_SESSION_MAX_AGE_SECONDS=${AUTH_SESSION_MAX_AGE_SECONDS:-28800}`, `SESSION_METADATA_RETENTION_DAYS=${SESSION_METADATA_RETENTION_DAYS:-30}`, `SNAPSHOT_RETENTION_COUNT=${SNAPSHOT_RETENTION_COUNT:-10}`, `SNAPSHOT_MAX_BYTES=${SNAPSHOT_MAX_BYTES:-8388608}`, `DEBUG=false`, `DATABASE_SSL_MODE=disable`, `CORS_ORIGINS=${CORS_ORIGINS:-["http://localhost","http://frontend"]}`, `SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:-}`, `AGENT_BOOTSTRAP_API_KEY=${AGENT_BOOTSTRAP_API_KEY:-}`, `AGENT_TEAM_CREDENTIAL_SINK_DIR=${AGENT_TEAM_CREDENTIAL_SINK_DIR:-}`, `AGENT_TEAM_CREDENTIAL_SINK_REF=${AGENT_TEAM_CREDENTIAL_SINK_REF:-agent-team-secure-sink}`, `AGENT_SKILL_BUNDLES_PUBLIC=${AGENT_SKILL_BUNDLES_PUBLIC:-false}`, `AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256=${AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256:-}`, `MODEL_AWARE_ROUTING_MODE=${MODEL_AWARE_ROUTING_MODE:-off}`, `WORKCHORD_ADMIN_API_KEY=${WORKCHORD_ADMIN_API_KEY:-}`, `ALLOW_PRIVATE_EGRESS_URLS=${ALLOW_PRIVATE_EGRESS_URLS:-false}`, `TRUSTED_PROXY_IPS=${TRUSTED_PROXY_IPS:-[]}`, `SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}`, `SESSION_MAX_AGE_SECONDS=${SESSION_MAX_AGE_SECONDS:-2592000}`, `SESSION_TOUCH_INTERVAL_SECONDS=${SESSION_TOUCH_INTERVAL_SECONDS:-300}`, `AGENT_LAST_SEEN_INTERVAL_SECONDS=${AGENT_LAST_SEEN_INTERVAL_SECONDS:-300}`, `NOTIFICATIONS_ENABLED=${NOTIFICATIONS_ENABLED:-false}`, `OUTBOUND_DELIVERY_WORKER_ENABLED=false`, `OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}`, `OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}`, `SMTP_HOST=${SMTP_HOST:-}`, `SMTP_PORT=${SMTP_PORT:-587}`, `SMTP_USER=${SMTP_USER:-}`, `SMTP_PASSWORD=${SMTP_PASSWORD:-}`, `SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-notifications@workchord.local}`, `SMTP_USE_TLS=${SMTP_USE_TLS:-true}`, `MAINTENANCE_MODE=${MAINTENANCE_MODE:-off}`, `MAINTENANCE_REVISION=${MAINTENANCE_REVISION:-development}`, `MAINTENANCE_REPLICA_ID=${MAINTENANCE_REPLICA_ID:-backend-local}`, `MAINTENANCE_RETRY_AFTER_SECONDS=${MAINTENANCE_RETRY_AFTER_SECONDS:-60}`, `MAINTENANCE_VALIDATION_ALLOWLIST=${MAINTENANCE_VALIDATION_ALLOWLIST:-["/health","/health/live","/health/ready","/metrics"]}`
+- **Depends on:** `{'repair': {'condition': 'service_completed_successfully'}}`
+- **Command:** `['uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', '8001']`
+
+### delivery-worker
+
+- **Build context:** `.`
+- **Environment:** `DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}`, `DATABASE_POSTGRESQL_REQUIRED=true`, `DATABASE_PROCESS_ROLE=delivery_worker`, `DATABASE_POOL_SIZE=8`, `DATABASE_MAX_OVERFLOW=2`, `DEPLOYMENT_ENVIRONMENT=development`, `DATABASE_SSL_MODE=disable`, `OUTBOUND_DELIVERY_WORKER_ENABLED=true`, `OUTBOUND_DELIVERY_POLL_SECONDS=${OUTBOUND_DELIVERY_POLL_SECONDS:-1}`, `OUTBOUND_DELIVERY_BATCH_SIZE=${OUTBOUND_DELIVERY_BATCH_SIZE:-50}`, `MAINTENANCE_MODE=${MAINTENANCE_MODE:-off}`, `MAINTENANCE_REVISION=${MAINTENANCE_REVISION:-development}`, `MAINTENANCE_REPLICA_ID=${MAINTENANCE_REPLICA_ID:-delivery-worker-local}`, `NOTIFICATIONS_ENABLED=${NOTIFICATIONS_ENABLED:-false}`, `SMTP_HOST=${SMTP_HOST:-}`, `SMTP_PORT=${SMTP_PORT:-587}`, `SMTP_USER=${SMTP_USER:-}`, `SMTP_PASSWORD=${SMTP_PASSWORD:-}`, `SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-notifications@workchord.local}`, `SMTP_USE_TLS=${SMTP_USE_TLS:-true}`
+- **Depends on:** `{'repair': {'condition': 'service_completed_successfully'}}`
+- **Command:** `['python', '-m', 'app.cli.worker']`
+
+### frontend
+
+- **Build context:** `.`
+- **Ports:** `${WORKCHORD_HTTP_BIND:-127.0.0.1}:${WORKCHORD_HTTP_PORT:-80}:80`
+- **Depends on:** `{'backend': {'condition': 'service_healthy'}}`
+
+### logical-backup
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `workchord_postgresql_backups:/backups`, `./scripts/database_backup/logical_backup.sh:/opt/workchord/logical_backup.sh:ro`
+- **Environment:** `{'DATABASE_BACKUP_URL': '${POSTGRES_BACKUP_URL:-postgresql://postgres:workchord-local-only@postgres:5432/workchord}', 'DEPLOYMENT_ENVIRONMENT': 'development', 'BACKUP_ENCRYPTION_CONFIRMED': '${BACKUP_ENCRYPTION_CONFIRMED:-true}', 'BACKUP_RETENTION_DAYS': '${BACKUP_RETENTION_DAYS:-35}'}`
+- **Depends on:** `{'postgres': {'condition': 'service_healthy'}}`
+- **Command:** `['/bin/bash', '/opt/workchord/logical_backup.sh']`
+
+### base-backup
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `workchord_postgresql_backups:/backups`, `./scripts/database_backup/base_backup.sh:/opt/workchord/base_backup.sh:ro`
+- **Environment:** `{'DATABASE_BACKUP_URL': '${POSTGRES_BACKUP_URL:-postgresql://postgres:workchord-local-only@postgres:5432/workchord}', 'DEPLOYMENT_ENVIRONMENT': 'development', 'BACKUP_ENCRYPTION_CONFIRMED': '${BACKUP_ENCRYPTION_CONFIRMED:-true}'}`
+- **Depends on:** `{'postgres': {'condition': 'service_healthy'}}`
+- **Command:** `['/bin/bash', '/opt/workchord/base_backup.sh']`
+
+### restore-verify
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `workchord_postgresql_backups:/backups:ro`, `./scripts/database_backup/restore_verify.sh:/opt/workchord/restore_verify.sh:ro`
+- **Environment:** `{'DATABASE_RESTORE_URL': '${DATABASE_RESTORE_URL:-}', 'RESTORE_TARGET_IDENTIFIER': '${RESTORE_TARGET_IDENTIFIER:-}', 'RESTORE_AUTHORIZED_TARGET': '${RESTORE_AUTHORIZED_TARGET:-}', 'BACKUP_PATH': '${BACKUP_PATH:-}', 'BACKUP_SHA256': '${BACKUP_SHA256:-}'}`
+- **Depends on:** `{'postgres': {'condition': 'service_healthy'}}`
+- **Command:** `['/bin/bash', '/opt/workchord/restore_verify.sh']`
+
+## Networks
+
+- `workchord`
+
+## Named Volumes
+
+- `workchord_postgresql18_data`
+- `workchord_postgresql_wal_archive`
+- `workchord_postgresql_backups`
+
+## Notes
+
+_Add reviewed operational context here; generated sections are replaced from source observations._

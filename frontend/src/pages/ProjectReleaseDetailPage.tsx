@@ -15,6 +15,7 @@ import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
 import { QueryErrorState } from '../components/feedback/QueryState';
+import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
 import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
 import { projectService } from '../services/projectService';
@@ -210,6 +211,7 @@ const ProjectReleaseDetailPage = () => {
                     </>
                 )}
             />
+            <WorkMetricsLine metrics={release} />
             <MetricGrid>
                 <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.linkedTasks')}</div><div className="kpi-val tnum">{release.tasks.length}</div></div>
                 <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.status')}</div><div className="kpi-val" style={{fontSize:16}}>{t(releaseStatusLabelKeys[release.status])}</div></div>

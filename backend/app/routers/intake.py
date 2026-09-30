@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 async def get_web_intake_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> WebIntakeService:
     """Dependency for controlled web intake."""
     settings = await RuntimeSettingsService(db).get_web_intake_settings()

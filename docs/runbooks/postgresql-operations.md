@@ -177,6 +177,11 @@ without duplicate delivery or an unbounded queue.
 
 ## Schema-only bootstrap, upgrade, and post-copy repair
 
+Fresh installations apply the single initial schema revision `20260928_0001`.
+Older unreleased development databases must be backed up if needed and replaced
+with an explicitly selected empty database; they cannot be upgraded or stamped
+into this revision chain. See the [initial schema policy](../database-portability-policy.md#initial-schema-and-future-migrations).
+
 Application startup performs read-only schema assertion; it never runs DDL or
 seed repair. Use the packaged commands with the process role and pool fence:
 

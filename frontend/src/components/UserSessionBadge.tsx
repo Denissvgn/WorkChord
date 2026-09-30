@@ -2,8 +2,15 @@ import { useEffect, useState } from 'react';
 import { User, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { sessionService, type UserSession } from '../services/sessionService';
+import { IdentityBadge } from '../features/identity/IdentityProvider';
+import { useIdentity } from '../features/identity/identityContext';
 
 export const UserSessionBadge = () => {
+    const identity = useIdentity();
+    return identity ? <IdentityBadge /> : <GuestSessionBadge />;
+};
+
+const GuestSessionBadge = () => {
     const { t } = useTranslation();
     const [session, setSession] = useState<UserSession | null>(null);
     const [loading, setLoading] = useState(true);

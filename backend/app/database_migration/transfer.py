@@ -59,6 +59,8 @@ MIGRATION_LOADER_LOCK_NAMESPACE = int.from_bytes(b"WCML", "big")
 REPAIR_OWNED_TABLES = frozenset(
     {
         "calendars",
+        "principals",
+        "workspace_authority_state",
         "github_status_automation_rules",
         "label_groups",
         "labels",

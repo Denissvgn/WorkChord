@@ -1,0 +1,109 @@
+# get_profile_skill_catalog
+
+**Entry point:** `get_profile_skill_catalog` (`http`)
+**Source:** [agent_catalog](../modules/agent_catalog.md)
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_profile_catalog_service](../modules/agent_profile_catalog_service.md), [agent_service](../modules/agent_service.md)
+
+## Call sequence
+
+<!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
+```mermaid
+sequenceDiagram
+    participant p0 as get_profile_skill_catalog
+    participant p1 as _require_catalog_read
+    participant p2 as any
+    participant p3 as actor_has_scope
+    participant p4 as actor_scopes
+    participant p5 as json.loads
+    participant p6 as isinstance
+    participant p7 as HTTPException
+    participant p8 as AgentProfileCatalogService(…).catalog
+    participant p9 as AgentProfileCatalogService
+    p0->>p1: _require_catalog_read
+    p1-->>p2: any
+    p1->>p3: actor_has_scope
+    p3->>p4: actor_scopes
+    p4-->>p5: json.loads
+    p4-->>p6: isinstance
+    p1-->>p7: HTTPException
+    p0-->>p8: AgentProfileCatalogService(…).catalog
+    p0->>p9: AgentProfileCatalogService
+```
+
+## Data flow
+
+<!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+```mermaid
+flowchart LR
+    s1["1. get_profile_skill_catalog"]
+    s2["2. _require_catalog_read"]
+    s3["3. any"]
+    s4["4. actor_has_scope"]
+    s5["5. actor_scopes"]
+    s6["6. json.loads"]
+    s7["7. isinstance"]
+    s8["8. HTTPException"]
+    s9["9. AgentProfileCatalogService(…).catalog"]
+    s10["10. AgentProfileCatalogService"]
+    s1 -->|"_require_catalog_read(actor)"| s2
+    s2 -. "any(...)" .-> s3
+    s2 -->|"actor_has_scope(actor, scope)"| s4
+    s4 -->|"actor_scopes(actor)"| s5
+    s5 -. "json.loads(actor.scopes)" .-> s6
+    s5 -. "isinstance(scopes, list)" .-> s7
+    s2 -. "HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')" .-> s8
+    s1 -. "AgentProfileCatalogService(…).catalog(data not statically known)" .-> s9
+    s1 -->|"AgentProfileCatalogService(db)"| s10
+    click s1 "../modules/agent_catalog.md"
+    click s2 "../modules/agent_catalog.md"
+    click s4 "../modules/agent_service.md"
+    click s5 "../modules/agent_service.md"
+    click s10 "../modules/agent_profile_catalog_service.md"
+```
+
+### Step data
+
+| Step | Inputs | Reads | Writes | Returns |
+|---|---|---|---|---|
+| `get_profile_skill_catalog` | `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | - | - | `...` |
+| `_require_catalog_read` | `actor: AgentActor` | `status` | - | - |
+| `any` | - | - | - | - |
+| `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
+| `actor_scopes` | `actor: AgentActor` | `json` | - | `...` |
+| `json.loads` | - | - | - | - |
+| `isinstance` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `AgentProfileCatalogService(…).catalog` | - | - | - | - |
+| `AgentProfileCatalogService` | - | - | - | - |
+
+### Call data
+
+| From | To | Line | Call |
+|---|---|---:|---|
+| get_profile_skill_catalog | _require_catalog_read | 84 | `_require_catalog_read(actor)` |
+| _require_catalog_read | any | 68 | `any(...)` |
+| _require_catalog_read | actor_has_scope | 69 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance | 75 | `isinstance(scopes, list)` |
+| _require_catalog_read | HTTPException | 72 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
+| get_profile_skill_catalog | AgentProfileCatalogService(…).catalog | 85 | `AgentProfileCatalogService(db).catalog(data not statically known)` |
+| get_profile_skill_catalog | AgentProfileCatalogService | 85 | `AgentProfileCatalogService(db)` |
+
+### Boundary effects
+
+*No boundary effects detected.*
+
+### Static analysis gaps
+
+| Kind | Step | Target | Line |
+|---|---|---|---:|
+| external_call | `_require_catalog_read` | `any` | 68 |
+| external_call | `actor_scopes` | `json.loads` | 72 |
+| external_call | `actor_scopes` | `isinstance` | 75 |
+| external_call | `_require_catalog_read` | `HTTPException` | 72 |
+| unresolved_call | `get_profile_skill_catalog` | `AgentProfileCatalogService(db).catalog` | 85 |
+
+## Behavior
+
+This flow starts at `get_profile_skill_catalog` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.

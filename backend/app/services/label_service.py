@@ -1,4 +1,6 @@
 """Service for governed label taxonomy and built-in defaults."""
+
+from app.commands import commit_or_flush
 from typing import Any, Optional, Sequence
 
 from sqlalchemy import Select, or_, select
@@ -183,7 +185,7 @@ class LabelService:
                 labels_by_slug[slug] = label
 
         if created:
-            await self.db.commit()
+            await commit_or_flush(self.db)
             for instance in created:
                 await self.db.refresh(instance)
 
@@ -247,7 +249,7 @@ class LabelService:
         group = LabelGroup(**data.model_dump())
         self.db.add(group)
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except IntegrityError as exc:
             await self._handle_integrity_error("Label group key already exists", exc)
         await self.db.refresh(group)
@@ -267,7 +269,7 @@ class LabelService:
             setattr(group, field, value)
 
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except IntegrityError as exc:
             await self._handle_integrity_error("Label group key already exists", exc)
         await self.db.refresh(group)
@@ -282,7 +284,7 @@ class LabelService:
         label = Label(**data.model_dump())
         self.db.add(label)
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except IntegrityError as exc:
             await self._handle_integrity_error("Label slug already exists", exc)
         await self.db.refresh(label)
@@ -307,7 +309,7 @@ class LabelService:
             setattr(label, field, value)
 
         try:
-            await self.db.commit()
+            await commit_or_flush(self.db)
         except IntegrityError as exc:
             await self._handle_integrity_error("Label slug already exists", exc)
         await self.db.refresh(label)

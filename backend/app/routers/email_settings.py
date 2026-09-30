@@ -34,7 +34,7 @@ def _response(settings) -> EmailSettingsResponse:
 
 
 async def get_settings_service(
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
 ) -> EmailSettingsService:
     """Get email settings service singleton."""
     return EmailSettingsService(db)

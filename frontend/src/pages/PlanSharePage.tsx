@@ -179,7 +179,7 @@ const PlanSharePage = () => {
                                                 {t(`statuses.${task.status}`, { defaultValue: task.status })}
                                             </td>
                                             <td className="px-4 py-3 tabular-nums text-content-secondary">
-                                                {t('units.daysCompact', { count: task.effort_days })}
+                                                {task.effort_days === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: task.effort_days })}
                                             </td>
                                             <td className="px-4 py-3 tabular-nums text-content-secondary">
                                                 {task.start_date && task.end_date
