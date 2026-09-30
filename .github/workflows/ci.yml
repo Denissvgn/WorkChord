@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Source and build checks
+  packaging:
+    name: Packaging and contracts
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -35,57 +35,22 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Set up native PostgreSQL
+        timeout-minutes: 3
         uses: ./.github/actions/native-postgres
       - name: Create the project environment
         run: python -m venv .venv
       - name: Install the backend
+        timeout-minutes: 5
         run: |
           .venv/bin/pip install --require-hashes -r backend/build-requirements.lock
           .venv/bin/pip install --require-hashes -r backend/requirements.lock
           .venv/bin/pip install --require-hashes -r backend/test-requirements.lock
           .venv/bin/pip install --no-build-isolation --no-deps -e ./backend
       - name: Validate native runtime helpers
+        timeout-minutes: 3
         run: .venv/bin/python -m unittest discover -s scripts/ci/tests -v
-      - name: Run the focused backend routing contracts
-        env:
-          DEPLOYMENT_ENVIRONMENT: test
-          DATABASE_SSL_MODE: disable
-          PYTHONPYCACHEPREFIX: /tmp/workchord-routing-pycache
-          PYTHONPATH: backend
-        run: >-
-          .venv/bin/python -m pytest -q
-          -o cache_dir=/tmp/workchord-routing-pytest-cache
-          backend/tests/test_agent_routing_contract.py
-          backend/tests/test_agent_routing_harness.py
-          backend/tests/test_agent_routing_rollout.py
-          backend/tests/test_agent_routing_observability.py
-          backend/tests/test_agent_routing_wave6_qualification.py
-          backend/tests/test_agent_team_setup.py
-          backend/tests/test_agent_team_setup_cli.py
-          backend/tests/test_agent_team_setup_qualification.py
-      - name: Run the backend database harness
-        env:
-          DEPLOYMENT_ENVIRONMENT: test
-          DATABASE_SSL_MODE: disable
-          PYTHONPYCACHEPREFIX: /tmp/workchord-backend-pycache
-          PYTHONPATH: backend
-          WORKCHORD_SCHEMA_DIFF_ARTIFACT: /tmp/workchord-schema-diff.json
-        run: |
-          .venv/bin/python -m pytest -q \
-            -o cache_dir=/tmp/workchord-backend-pytest-cache \
-            -m "not postgresql" backend/tests
-          .venv/bin/python -m pytest -q \
-            -o cache_dir=/tmp/workchord-backend-pytest-cache \
-            -m postgresql backend/tests
-          test -s "$WORKCHORD_SCHEMA_DIFF_ARTIFACT"
-      - name: Upload the dual-dialect schema diff
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: workchord-schema-diff
-          path: /tmp/workchord-schema-diff.json
-          if-no-files-found: error
-          retention-days: 14
       - name: Validate the backend wheel boundary
+        timeout-minutes: 10
         run: |
           wheel_dir="$(mktemp -d)"
           .venv/bin/pip wheel --no-build-isolation --no-deps --wheel-dir "$wheel_dir" ./backend
@@ -187,13 +152,16 @@ jobs:
             scripts/ci/installed_wheel_postgresql_qualification.py \
             --admin-url "$POSTGRES_ADMIN_URL"
       - name: Validate Python source and migrations
+        timeout-minutes: 3
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.7.0'"
+          .venv/bin/python scripts/generate_client_contract.py --check
           .venv/bin/python scripts/generate_agent_team_contract.py --output /tmp/agent-team-master-v1.schema.json
           .venv/bin/python scripts/generate_agent_team_report_contract.py --output /tmp/agent-team-setup-report-v1.schema.json
       - name: Validate the PostgreSQL qualification harness contract
+        timeout-minutes: 3
         run: |
           qualification_dir="$(mktemp -d)"
           PYTHONPATH=backend .venv/bin/python scripts/load/seed.py \
@@ -215,6 +183,7 @@ jobs:
             --require-tracked \
             --output /tmp/workchord-qualification-contracts/model-aware-routing-closeout.json
       - name: Validate PostgreSQL operator documentation
+        timeout-minutes: 2
         run: |
           .venv/bin/python scripts/ci/check_postgresql_documentation.py
       - name: Upload the qualification harness contracts
@@ -225,19 +194,14 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Validate agent role packages
+        timeout-minutes: 3
         run: |
           .venv/bin/python scripts/build_agent_skills.py validate
           .venv/bin/python scripts/build_agent_skills.py build --output-dir /tmp/workchord-agent-skills
           .venv/bin/python scripts/build_agent_skills.py build-codex-plugin --output-dir /tmp/workchord-codex-plugin
           diff -ru adapters/codex/workchord-agent-roles /tmp/workchord-codex-plugin
-      - name: Install and validate the frontend
-        working-directory: frontend
-        run: |
-          npm ci
-          npm run test:run
-          npm run lint
-          npm run build
       - name: Validate the local Compose profile
+        timeout-minutes: 2
         env:
           WORKCHORD_SOURCE_REVISION: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
           WORKCHORD_ACCEPTANCE_REPORT_DIR: /tmp/workchord-server-acceptance
@@ -260,8 +224,145 @@ jobs:
             --profile autonomy \
             config --quiet
       - name: Stop the job-owned PostgreSQL cluster
+        timeout-minutes: 1
         if: always()
         run: >-
           python3 scripts/ci/postgres_runtime.py stop
           --bin-dir /usr/lib/postgresql/18/bin
           --data-dir "$RUNNER_TEMP/workchord-postgresql"
+
+  backend:
+    name: Backend (${{ matrix.scope }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.job_minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scope: sqlite
+            job_minutes: 25
+            work_seconds: 1200
+          - scope: postgresql
+            job_minutes: 20
+            work_seconds: 900
+    steps:
+      - name: Reserve cleanup and artifact time
+        env:
+          JOB_BUDGET_MINUTES: "${{ matrix.job_minutes }}"
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          import time
+          deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n")
+          PYTHON
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12.13'
+          cache: pip
+          cache-dependency-path: |
+            backend/build-requirements.lock
+            backend/requirements.lock
+            backend/test-requirements.lock
+      - name: Set up native PostgreSQL
+        timeout-minutes: 3
+        if: matrix.scope == 'postgresql'
+        uses: ./.github/actions/native-postgres
+      - name: Install the backend
+        timeout-minutes: 5
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --require-hashes -r backend/build-requirements.lock
+          .venv/bin/pip install --require-hashes -r backend/requirements.lock
+          .venv/bin/pip install --require-hashes -r backend/test-requirements.lock
+          .venv/bin/pip install --no-build-isolation --no-deps -e ./backend
+      - name: Run the selected database suite
+        run: >-
+          .venv/bin/python scripts/ci/run_disposable_checks.py
+          --scope ${{ matrix.scope }} --timeout-seconds ${{ matrix.work_seconds }}
+          --output /tmp/workchord-backend-results
+      - name: Upload database results and durations
+        if: always()
+        timeout-minutes: 2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: backend-${{ matrix.scope }}-${{ github.sha }}
+          path: /tmp/workchord-backend-results
+          if-no-files-found: error
+          retention-days: 14
+      - name: Stop the job-owned PostgreSQL cluster
+        if: always() && matrix.scope == 'postgresql'
+        timeout-minutes: 1
+        run: >-
+          python3 scripts/ci/postgres_runtime.py stop
+          --bin-dir /usr/lib/postgresql/18/bin
+          --data-dir "$RUNNER_TEMP/workchord-postgresql"
+
+  frontend:
+    name: Frontend checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Reserve cleanup and artifact time
+        env:
+          JOB_BUDGET_MINUTES: "15"
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          import time
+          deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n")
+          PYTHON
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12.13'
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '22.23.1'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Run frontend checks
+        run: >-
+          python scripts/ci/run_disposable_checks.py --scope frontend
+          --timeout-seconds 600 --output /tmp/workchord-frontend-results
+      - name: Upload frontend results and durations
+        if: always()
+        timeout-minutes: 2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: frontend-${{ github.sha }}
+          path: /tmp/workchord-frontend-results
+          if-no-files-found: error
+          retention-days: 14
+
+  clients:
+    name: Browser and Android checks
+    uses: ./.github/workflows/client-baseline.yml
+
+  build:
+    name: Source and build checks
+    if: always()
+    needs: [packaging, backend, frontend, clients]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require every check to finish successfully
+        env:
+          CHECK_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          results = json.loads(os.environ["CHECK_RESULTS"])
+          expected = {"packaging", "backend", "frontend", "clients"}
+          if set(results) != expected:
+              raise SystemExit("Required check inventory differs")
+          failed = {name: value["result"] for name, value in results.items() if value["result"] != "success"}
+          if failed:
+              raise SystemExit(f"Required checks did not succeed: {failed}")
+          print("All required checks completed successfully")
+          PYTHON

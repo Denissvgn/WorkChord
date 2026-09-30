@@ -1,9 +1,7 @@
 name: Client and scenario baseline
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -15,7 +13,7 @@ concurrency:
 
 jobs:
   delivery:
-    name: Native database and browser (${{ matrix.access }})
+    name: Browser (${{ matrix.access }})
     strategy:
       fail-fast: false
       matrix:
@@ -25,8 +23,19 @@ jobs:
           - access: managed
             browser_args: "--managed-browser"
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
+      - name: Reserve cleanup and artifact time
+        env:
+          JOB_BUDGET_MINUTES: "15"
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          import time
+          deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n")
+          PYTHON
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
@@ -41,9 +50,8 @@ jobs:
           node-version: '22.23.1'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - name: Set up native PostgreSQL
-        uses: ./.github/actions/native-postgres
       - name: Install backend and browser dependencies
+        timeout-minutes: 5
         run: |
           python -m venv "$RUNNER_TEMP/workchord-python"
           "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/build-requirements.lock
@@ -52,8 +60,9 @@ jobs:
           "$RUNNER_TEMP/workchord-python/bin/pip" install --no-build-isolation --no-deps -e ./backend
           npx --yes playwright@1.59.1 install-deps chromium
       - name: Run the pinned native runtimes
-        run: '"$RUNNER_TEMP/workchord-python/bin/python" scripts/ci/run_disposable_checks.py --full-backend ${{ matrix.browser_args }} --output /tmp/workchord-client-results'
+        run: '"$RUNNER_TEMP/workchord-python/bin/python" scripts/ci/run_disposable_checks.py --browser-only --timeout-seconds 600 ${{ matrix.browser_args }} --output /tmp/workchord-client-results'
       - name: Upload commands, revision, JUnit and browser readback
+        timeout-minutes: 2
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
@@ -61,18 +70,23 @@ jobs:
           path: /tmp/workchord-client-results
           if-no-files-found: error
           retention-days: 14
-      - name: Stop the job-owned PostgreSQL cluster
-        if: always()
-        run: >-
-          python3 scripts/ci/postgres_runtime.py stop
-          --bin-dir /usr/lib/postgresql/18/bin
-          --data-dir "$RUNNER_TEMP/workchord-postgresql"
 
   android:
     name: Android unit results and debug APK
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
+      - name: Reserve cleanup and artifact time
+        env:
+          JOB_BUDGET_MINUTES: "25"
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          import time
+          deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n")
+          PYTHON
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
@@ -84,6 +98,7 @@ jobs:
             android-companion/gradle/wrapper/gradle-wrapper.properties
             android-companion/**/*.gradle.kts
       - name: Install the Android SDK components
+        timeout-minutes: 5
         run: |
           if ! test -x "$ANDROID_HOME/cmdline-tools/12.0/bin/sdkmanager"; then
             curl --fail --location --retry 3 \
@@ -100,12 +115,13 @@ jobs:
           from pathlib import Path
           manager = str(Path(os.environ["ANDROID_HOME"]) / "cmdline-tools/12.0/bin/sdkmanager")
           subprocess.run([manager, "--licenses"], input="y\n" * 100, text=True,
-                         stdout=subprocess.DEVNULL, check=True)
-          subprocess.run([manager, "platforms;android-34", "build-tools;34.0.0"], check=True)
+                         stdout=subprocess.DEVNULL, check=True, timeout=120)
+          subprocess.run([manager, "platforms;android-34", "build-tools;34.0.0"], check=True, timeout=180)
           PY
       - name: Build and execute with the pinned native JDK and SDK
-        run: python3 scripts/ci/run_android_checks.py --output /tmp/workchord-android-results
+        run: python3 scripts/ci/run_android_checks.py --timeout-seconds 1200 --output /tmp/workchord-android-results
       - name: Upload actual results and debug APK
+        timeout-minutes: 2
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
