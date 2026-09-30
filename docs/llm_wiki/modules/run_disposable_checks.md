@@ -8,6 +8,7 @@ Runs explicit SQLite, PostgreSQL, frontend or browser scopes through native exec
 
 The shared runner checkpoints receipts, streams logs and enforces deadlines. Selected scopes own their required evidence: nonempty successful JUnit records for database/frontend scopes, explicit browser write/read/reload evidence or completed managed assertions for browser scope, and schema parity for the full PostgreSQL scope. Source drift, failed commands, incomplete evidence and cleanup errors prevent success. Browser writes retain the invocation nonce fence. Frontend worker concurrency is bounded.
 
+The managed browser receives the runner's exact Python executable through `WORKCHORD_BROWSER_PYTHON`. Its copied `browser_worker.mjs` helper dispatches inbox delivery with that absolute path, preserving virtual-environment identity independently of `PATH`. Missing or relative interpreter paths fail explicitly; the disposable database and invocation nonce remain required.
 
 ## Imports
 

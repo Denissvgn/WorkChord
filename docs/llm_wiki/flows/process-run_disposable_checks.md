@@ -66,7 +66,7 @@ sequenceDiagram
     p0-->>p24: run.validators.append (scripts/ci/run_disposable_checks.py:main)
 ```
 
-> Call sequence diagram shows 30 of 93 interactions; 63 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 94 interactions; 64 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -106,8 +106,10 @@ flowchart LR
     s1 -. "filesystem_write shutil.copytree" .-> b3
     b4["filesystem_write shutil.copyfile"]
     s1 -. "filesystem_write shutil.copyfile" .-> b4
-    b5["mutation app_env.update"]
-    s1 -. "mutation app_env.update" .-> b5
+    b5["filesystem_write shutil.copyfile"]
+    s1 -. "filesystem_write shutil.copyfile" .-> b5
+    b6["mutation app_env.update"]
+    s1 -. "mutation app_env.update" .-> b6
     click s1 "../modules/run_disposable_checks.md"
     click s2 "../modules/run_disposable_checks.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
@@ -117,6 +119,7 @@ flowchart LR
     class b3 boundary
     class b4 boundary
     class b5 boundary
+    class b6 boundary
 ```
 
 ### Step data
@@ -161,7 +164,8 @@ flowchart LR
 | mutation | `run.validators.append` | `main` | 178 |
 | filesystem_write | `shutil.copytree` | `main` | 181 |
 | filesystem_write | `shutil.copyfile` | `main` | 197 |
-| mutation | `app_env.update` | `main` | 203 |
+| filesystem_write | `shutil.copyfile` | `main` | 199 |
+| mutation | `app_env.update` | `main` | 205 |
 
 ### Static analysis gaps
 
@@ -180,6 +184,8 @@ flowchart LR
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior
+
+The runner supplies its exact Python executable to the managed browser and copies the inbox dispatch helper beside the scenario. Node launches the worker through that absolute executable, retaining the backend dependency environment even when a different Python is on `PATH`. The helper requires the owned disposable database and invocation nonce before starting delivery.
 
 The selected scope determines prerequisites, commands and required artifacts. SQLite runs without a PostgreSQL admin endpoint; PostgreSQL uses a validated loopback cluster; frontend owns its JUnit, lint and build outcomes; browser-only mode provisions the isolated application and Playwright scenario without repeating those suites. Existing combined command-line modes remain available.
 

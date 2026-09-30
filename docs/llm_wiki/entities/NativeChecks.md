@@ -1,6 +1,6 @@
 # NativeChecks
 
-**Location:** `scripts/ci/tests/test_native_runtimes.py:112`
+**Location:** `scripts/ci/tests/test_native_runtimes.py:113`
 **Kind:** Class
 **Bases:** `unittest.TestCase`
 **Module:** [test_native_runtimes](../modules/test_native_runtimes.md)
@@ -21,6 +21,7 @@ _Auto-generated from `NativeChecks` in `scripts/ci/tests/test_native_runtimes.py
 | `test_port_preflight_rejects_listeners_but_accepts_closed_connections` | `()` | — | — |
 | `test_incomplete_browser_evidence_cannot_pass` | `()` | — | — |
 | `test_application_secrets_are_not_inherited` | `()` | — | — |
+| `test_browser_worker_uses_harness_interpreter_outside_path` | `()` | — | — |
 | `run_backend` | `(*, write_results, remote = False, scope = None)` | — | — |
 | `test_empty_results_cannot_be_reported_as_success` | `()` | — | — |
 | `test_both_database_results_are_required_and_recorded` | `()` | — | — |
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_native_runtimes](../modules/test_native_runtimes.md) | 11 | — |
+| [test_native_runtimes](../modules/test_native_runtimes.md) | 12 | — |
 
 ### Structure
 

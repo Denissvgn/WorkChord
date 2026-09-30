@@ -35703,8 +35703,16 @@
             },
             {
               "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 199,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copyfile"
+            },
+            {
+              "confidence": "unknown",
               "kind": "mutation",
-              "line": 203,
+              "line": 205,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -35787,7 +35795,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 94,
+          "step_count": 95,
           "truncated": false
         }
       },
@@ -36487,7 +36495,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 317,
+              "line": 365,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -82820,5 +82828,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:77a2f4c83657a5a7c19783bcde48097adf3b6343c743b4f819f5784945a5f59b"
+  "source_hash": "sha256:12688e319260cbb2af92515a26d190cba098fa964d70ad9c53223605ab4bab2e"
 }

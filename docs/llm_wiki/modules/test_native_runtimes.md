@@ -24,6 +24,7 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 | `types` | `SimpleNamespace` |
 | `unittest` | `unittest` |
 | `unittest.mock` | `Mock`, `patch` |
+| `venv` | `venv` |
 | `xml.etree.ElementTree` | `ET` |
 | `yaml` | `yaml` |
 
@@ -42,7 +43,7 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [WorkflowContracts](../entities/WorkflowContracts.md) | 26 | `unittest.TestCase` | — |
-| [NativeChecks](../entities/NativeChecks.md) | 112 | `unittest.TestCase` | — |
-| [PostgresOwnership](../entities/PostgresOwnership.md) | 227 | `unittest.TestCase` | — |
-| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 257 | `unittest.TestCase` | — |
+| [WorkflowContracts](../entities/WorkflowContracts.md) | 27 | `unittest.TestCase` | — |
+| [NativeChecks](../entities/NativeChecks.md) | 113 | `unittest.TestCase` | — |
+| [PostgresOwnership](../entities/PostgresOwnership.md) | 275 | `unittest.TestCase` | — |
+| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 305 | `unittest.TestCase` | — |

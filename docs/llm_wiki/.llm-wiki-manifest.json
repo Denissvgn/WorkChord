@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:e04be8b60f773fe99e2ceba1752ca991d7e74077fb7d675e6c263b34c208fc82",
-    "knowledge_index_hash": "sha256:2119803504058146fac6f27187efe61d8625ff0d5bcb24c955686e99a8659e80",
-    "surface_index_hash": "sha256:59b5364d8e90e849a422ca9a33ab6ca66c636820619ca7d5ae1721de61fbed95"
+    "evaluated_envelope_hash": "sha256:d4d0c267aaaddd87289929a1de2bab2fbd9a16dfb20389011f2c197b16768fe4",
+    "knowledge_index_hash": "sha256:5be752e5cf4525212f58796e5123f779cc7c701b3dccd7d20aa7af0f57abac08",
+    "surface_index_hash": "sha256:5edc700042b28e81d07d8af88f761a06ba4034e118716ef47d3d4785ced1e87e"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1410,7 +1410,7 @@
         "concept_observation_hash": "sha256:c5eef96b4b86c320873cbbe5f99bfc37258b154f3718c5053f123ca10930c5a9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -4757,10 +4757,10 @@
     },
     "entities/NativeChecks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:435df3459fba8f0635680e3d83adefc755dde9284fdb9714e4fca26d435fceca",
+        "concept_observation_hash": "sha256:83b5d86e4e3a42c0b67306534b5d1e9936d6f0e003259be500be1beb4e0ebbdd",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -5390,7 +5390,7 @@
         "concept_observation_hash": "sha256:0cd0984005dc19ba135eb12f89c6edc9448622b5acf0335beebc8562017f8e60",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -9530,7 +9530,7 @@
         "concept_observation_hash": "sha256:70654b9eca0d81b179c2825f101fb9c48a247f9711ea3d3a59dec28c201002c9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -18520,7 +18520,7 @@
         "concept_observation_hash": "sha256:2ae4d5f7679dde08254e372521140866c5e0795ae8a9e28aa2560d547cd80d7a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2daf879be81cf04ff0072a43e38519fe29e42fa012180ee25f39b8813a35dbc8",
+        "source_content_hash": "sha256:3b4d2261cf2f7a9b30d27d496a90a27e7acf4862187ec805fb87ebfb22e8d69d",
         "source_path": "scripts/ci/run_disposable_checks.py"
       },
       "state": "known"
@@ -19907,10 +19907,10 @@
     },
     "modules/test_native_runtimes.md": {
       "basis": {
-        "concept_observation_hash": "sha256:91529111d07625ad062e5429a5496623035fb58103d95ff785452783dbfe9bb6",
+        "concept_observation_hash": "sha256:2b3f4e44b0763f4e7a5fe4b4c8eb4e8ee032b6b1c4f03458d6c39da30728debc",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -20880,13 +20880,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:602a3e444f5f32f0fe90b9020e1e99a854c06e7f1e8646e2f26b16ec7d970ac8",
-      "lifecycle_hash": "sha256:eab56f1f11c05fb42505b731d4a46ac89829665818385441ee40a12142e48d0d",
-      "markdown_snapshot_hash": "sha256:a8de9c8ff31e8ef48f3dbbc29e4ef8cc2cacc8af2386ff2186bf2fad0c11aba1",
-      "observation_inputs_hash": "sha256:3fd0ea5caddedbea5793acf452bf8c45373cfaa0e9df809306c1eb61bf0787e0",
+      "inventory_hash": "sha256:1b94db95d50192b213209ed3eeee7f9f295a0ddd7fddb612a73542ef48513572",
+      "lifecycle_hash": "sha256:75f8a9b24b5d17a2b7e04ee227efb4614a7475f2ba50cf887bdfb2bd97dd882e",
+      "markdown_snapshot_hash": "sha256:ed7e7ff05b494722266cee82a00ff32c7a3d8212f87cd58385fac763bd4734a5",
+      "observation_inputs_hash": "sha256:8fb16230766f779b4269c84c9698b4db22b90673335420003c9555f1cf8471eb",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:56971c10a0eadb04d17ddeab5deaa3dcf7bb3b1a1c1aba69e3381a106754d84d"
+      "source_snapshot_hash": "sha256:2a249433148e3e51ffa2450dd121b99124701e53b4565d6bdd1b37c3c1346743"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -75498,10 +75498,10 @@
           }
         }
       },
-      "hash": "sha256:2daf879be81cf04ff0072a43e38519fe29e42fa012180ee25f39b8813a35dbc8",
+      "hash": "sha256:3b4d2261cf2f7a9b30d27d496a90a27e7acf4862187ec805fb87ebfb22e8d69d",
       "language": "python",
       "module_page": "run_disposable_checks",
-      "semantic_hash": "sha256:a1fcfed13010ea486860bd0296b7b94b4cb669390cc2196476a600644e68746f"
+      "semantic_hash": "sha256:2b31c418c0e5dd4474ce86cbdfbe1ea8a228a1d2ee1eb91c824a49f62d3d170e"
     },
     "scripts/ci/serve_disposable_api.py": {
       "entities": [],
@@ -75644,6 +75644,7 @@
               "test_application_secrets_are_not_inherited": "—",
               "test_both_database_results_are_required_and_recorded": "—",
               "test_browser_scope_does_not_repeat_unit_suites": "—",
+              "test_browser_worker_uses_harness_interpreter_outside_path": "—",
               "test_connection_parameters_cannot_override_the_loopback_host": "—",
               "test_empty_results_cannot_be_reported_as_success": "—",
               "test_frontend_scope_does_not_run_backend_checks": "—",
@@ -75685,10 +75686,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
+      "hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
       "language": "python",
       "module_page": "test_native_runtimes",
-      "semantic_hash": "sha256:3ab1b1708cccf3cb790a788e1cd7be428f852c44e46fb25736ce0299339b9eb3"
+      "semantic_hash": "sha256:cab803675666e8c0258e9675993ed667740b60a8c8fc6211e4ba60426db85375"
     },
     "scripts/generate_agent_team_contract.py": {
       "entities": [],

@@ -506,3 +506,23 @@ Documented canonical person calendars and absences, legacy adapters, transaction
 ## 2026-09-30 — Human work and collaboration
 
 Aligned canonical availability, shared planning reservations, delivery prerequisites, human ownership queues, bounded search, discussion and personal inbox semantics with their source boundaries. Updated editor/view navigation descriptions and documented transfer ordering and scoped recovery behavior.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:2a249433148e3e51ffa2450dd121b99124701e53b4565d6bdd1b37c3c1346743`
+- Pages created: 0
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2735
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-09-30 — Browser worker runtime identity
+
+Documented explicit interpreter propagation from the native runner through the managed browser to inbox delivery, preserving virtual-environment identity and the disposable database boundary.
