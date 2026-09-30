@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:25df4a397097083b57ecdd352ac1e07effbd1eb1d0ff5a939428886b2267fe80",
-    "knowledge_index_hash": "sha256:e7d15f42e0c4a42b795f8b2373c639d67d59a45a8f2555da535a9fa1a7c769b5",
-    "surface_index_hash": "sha256:7b00d0b840b7c8168876b74586a8ee78372e1a2bfebb3038f0af41df299fcf75"
+    "evaluated_envelope_hash": "sha256:f1b72a741787b60b118a93248a21097a6398486d1c6a8dee5f932dcd7e3b037a",
+    "knowledge_index_hash": "sha256:7b0f5e9e779d8164ca78973e1e5d0eebeb064c683240c9bb6d17dcb3711b5415",
+    "surface_index_hash": "sha256:e2f61e097223e135920fd8df2112166a160b71f36f2f687b229042635f9a02b2"
   },
   "evidence_baselines": {
     "entities/AccessibleNameViolation.md": {
@@ -1380,7 +1380,7 @@
         "concept_observation_hash": "sha256:c5eef96b4b86c320873cbbe5f99bfc37258b154f3718c5053f123ca10930c5a9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -2225,6 +2225,16 @@
       },
       "state": "known"
     },
+    "entities/CommandLifecycle.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a56e0f93db4ad8929aaad8d9fd45681793bf29b3e6d831cfdcd37d7c4ce3f288",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bb955e5138d78b3a54f5200af11ae0656232bb007eb8e6a4066187026580d374",
+        "source_path": "scripts/ci/tests/test_ci_runtime.py"
+      },
+      "state": "known"
+    },
     "entities/CommandState.md": {
       "basis": {
         "concept_observation_hash": "sha256:a5142bc39621973cd8db303391995ecdbbbd1480452560fefbfabc4b5c08e40e",
@@ -2232,6 +2242,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:3de3ea216cea6887ef41243297661a7602df0e431c9a38f9539993ef7ef10a4b",
         "source_path": "backend/app/commands.py"
+      },
+      "state": "known"
+    },
+    "entities/CommandTimeout.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:fa20afa5d35cab0c0b39ef9511ff97e910dd9f7eb9c445cbbb653e1015d4e187",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:91a122903df87f1be0bb7235c4ffc0f576daa4f740f7cb720d5ecc2edbb6700b",
+        "source_path": "scripts/ci/ci_runtime.py"
       },
       "state": "known"
     },
@@ -4547,10 +4567,10 @@
     },
     "entities/NativeChecks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:62ad0b345b5664238aa19a01bd9c71c939a032535bb8922d7fb4ccf560fb91a0",
+        "concept_observation_hash": "sha256:435df3459fba8f0635680e3d83adefc755dde9284fdb9714e4fca26d435fceca",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -5130,7 +5150,7 @@
         "concept_observation_hash": "sha256:0cd0984005dc19ba135eb12f89c6edc9448622b5acf0335beebc8562017f8e60",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -6232,6 +6252,26 @@
         "scope": "entity",
         "source_content_hash": "sha256:25783014305ba56dba445e5cb1b5f06146737a204da970caf4a550b4ae2012c2",
         "source_path": "backend/app/schemas/agent_routing.py"
+      },
+      "state": "known"
+    },
+    "entities/RunCancelled.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b73191f265035a2fdff5b398a307dc1349a5f9eaf67a2fbda4e35a1eea96b8f9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:91a122903df87f1be0bb7235c4ffc0f576daa4f740f7cb720d5ecc2edbb6700b",
+        "source_path": "scripts/ci/ci_runtime.py"
+      },
+      "state": "known"
+    },
+    "entities/RunReceipt.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:959fdc5f12088a833561c5afdc3bf8c52c9c1fdfa057b790679b51dbcd60ca78",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:91a122903df87f1be0bb7235c4ffc0f576daa4f740f7cb720d5ecc2edbb6700b",
+        "source_path": "scripts/ci/ci_runtime.py"
       },
       "state": "known"
     },
@@ -9167,10 +9207,10 @@
     },
     "entities/WorkflowContracts.md": {
       "basis": {
-        "concept_observation_hash": "sha256:aa889a4e367f0c0e57a67bf48ecfe5544b6c1a4bef50c05c202605ee4ef3d814",
+        "concept_observation_hash": "sha256:70654b9eca0d81b179c2825f101fb9c48a247f9711ea3d3a59dec28c201002c9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -16245,6 +16285,16 @@
       },
       "state": "known"
     },
+    "modules/ci_runtime.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:86dc1a9a627b50d2e9ffb8ff11523f02a3fa74a41e12de99305c931fcd143d96",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:91a122903df87f1be0bb7235c4ffc0f576daa4f740f7cb720d5ecc2edbb6700b",
+        "source_path": "scripts/ci/ci_runtime.py"
+      },
+      "state": "known"
+    },
     "modules/cli_closeout.md": {
       "basis": {
         "concept_observation_hash": "sha256:c248e692f1842c32bf45013285d22ee0c6208586657386b712b6d772c7be8936",
@@ -17897,20 +17947,20 @@
     },
     "modules/run_android_checks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:48927e42780110ab441da9080ade5f93c2c74aca7691ca2bfd29743bfdba82a9",
+        "concept_observation_hash": "sha256:73e4c9029c79e29fc56c40dc02b02420c613d53a3052a4aa039b83bd5eb03309",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:66d0980f679ff2900a7810af4edd8d173cd30ca308a9c41374a380063f1698cc",
+        "source_content_hash": "sha256:874378caba5b5b2d9934249a702a1b249f8d1d76420a82df3877c2a18fb0f806",
         "source_path": "scripts/ci/run_android_checks.py"
       },
       "state": "known"
     },
     "modules/run_disposable_checks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:2ce92b94b7a2d9c92ada8bdb709cf1cdc3a33809127686ec62fd968253a8bef1",
+        "concept_observation_hash": "sha256:2ae4d5f7679dde08254e372521140866c5e0795ae8a9e28aa2560d547cd80d7a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:65d6fae60c164e1850347bb26a056c9cb3fcb27b90d287cff5df790beac7599f",
+        "source_content_hash": "sha256:2daf879be81cf04ff0072a43e38519fe29e42fa012180ee25f39b8813a35dbc8",
         "source_path": "scripts/ci/run_disposable_checks.py"
       },
       "state": "known"
@@ -19105,6 +19155,16 @@
       },
       "state": "known"
     },
+    "modules/test_ci_runtime.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b44ccb13d46a5d36511d8c6e8bd90956659c7240fc340404fe1b5a1dfedbea46",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:bb955e5138d78b3a54f5200af11ae0656232bb007eb8e6a4066187026580d374",
+        "source_path": "scripts/ci/tests/test_ci_runtime.py"
+      },
+      "state": "known"
+    },
     "modules/test_client_contract.md": {
       "basis": {
         "concept_observation_hash": "sha256:ec24d76d6f73713b97bc1642b24ccd532f6a0ba044b932de11a3580ec91ac9db",
@@ -19217,10 +19277,10 @@
     },
     "modules/test_native_runtimes.md": {
       "basis": {
-        "concept_observation_hash": "sha256:65ef5e048f06260d965aa4ec4ca6ee68120e0692cc2f572adb5b52e93e62fc73",
+        "concept_observation_hash": "sha256:91529111d07625ad062e5429a5496623035fb58103d95ff785452783dbfe9bb6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+        "source_content_hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -20003,12 +20063,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:9a6bfd6acfd0bf93988408ad08d5b106bebdd170209a7c34b77646fd6ef3b3e7",
-            "source_content_hash": "sha256:2deb29a0d92920612d600eb3719f7623f2a6c571b7a6a190eaeac5132d52f156"
+            "observation_hash": "sha256:d5b0246c32c2043f5f99a83345a7fc526dec040f6abd45a256f5003083553455",
+            "source_content_hash": "sha256:84f50e135f273a61e4b573fae692c084e61a2e9398b9da4b752fcb17bee2758a"
           },
-          "observation_hash": "sha256:9a6bfd6acfd0bf93988408ad08d5b106bebdd170209a7c34b77646fd6ef3b3e7",
+          "observation_hash": "sha256:d5b0246c32c2043f5f99a83345a7fc526dec040f6abd45a256f5003083553455",
           "page_path": "infrastructure/_github_workflows_ci_yml.md",
-          "source_content_hash": "sha256:2deb29a0d92920612d600eb3719f7623f2a6c571b7a6a190eaeac5132d52f156",
+          "source_content_hash": "sha256:84f50e135f273a61e4b573fae692c084e61a2e9398b9da4b752fcb17bee2758a",
           "source_path": ".github/workflows/ci.yml",
           "state": "current"
         },
@@ -20017,12 +20077,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:a095e7bf1d77866d67574f766693a48ec6e1194d606cdb92beca425856f7fa13",
-            "source_content_hash": "sha256:a3525ce7d5f1628aa1b5a41ce2a654bdab0bfb30c9c7686233adb4985a0a2998"
+            "observation_hash": "sha256:a91994d148da2a0f9b208c1558611303f2732dce72b82906ad96cb2e5cd39518",
+            "source_content_hash": "sha256:76c18c5b3e57f288c213449541129aa059f497f04124384bf1ee0bec7c426864"
           },
-          "observation_hash": "sha256:a095e7bf1d77866d67574f766693a48ec6e1194d606cdb92beca425856f7fa13",
+          "observation_hash": "sha256:a91994d148da2a0f9b208c1558611303f2732dce72b82906ad96cb2e5cd39518",
           "page_path": "infrastructure/_github_workflows_client-baseline_yml.md",
-          "source_content_hash": "sha256:a3525ce7d5f1628aa1b5a41ce2a654bdab0bfb30c9c7686233adb4985a0a2998",
+          "source_content_hash": "sha256:76c18c5b3e57f288c213449541129aa059f497f04124384bf1ee0bec7c426864",
           "source_path": ".github/workflows/client-baseline.yml",
           "state": "current"
         },
@@ -20160,13 +20220,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:9080845ec13a5a46c387b8f3458052c25f500c41e563321ec414d885ce5ac5ec",
-      "lifecycle_hash": "sha256:a7871a14eaa1684e1dfa23c3ab3077f8fe8bc0332abc045682c844cd576f83fd",
-      "markdown_snapshot_hash": "sha256:630ed4d714a137d19f1cb9220c28b488604704822a10f1d9622a4249e40b7d4e",
-      "observation_inputs_hash": "sha256:204dd363c6c3201a0220ff68ed51fee83f98f34eb7b5669ef6cf74bad8ed01b5",
+      "inventory_hash": "sha256:3a647d87135f3dd57f8a30edb9a40bb21dbe256939bb9e8dd117a57631a798db",
+      "lifecycle_hash": "sha256:e1cab141eee2c31f3d95f09fc0ab39bed971788254bacd752a70f880eaca14c2",
+      "markdown_snapshot_hash": "sha256:a25a461144e30c909167fb1d6354f859a7f5671090d40221caab29a67d00f8ab",
+      "observation_inputs_hash": "sha256:bf4768070180d9f9afbc8b6d691f184f1c16c7beaec5509df545d0d4b32df048",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:a9bf7b85c78898e532232ce84ad69e6e82a628b6378ddf2539840cf6eddf3f2f"
+      "source_snapshot_hash": "sha256:4933a9e5a68ff44506a1316d3f9e4f6c5d8ecd4692d5714140972cda6dfe6efc"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -21507,11 +21567,23 @@
       "scope": "entity",
       "source_path": "frontend/src/components/layout/CommandMenu.tsx"
     },
+    "entities/CommandLifecycle.md": {
+      "entity_name": "CommandLifecycle",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_ci_runtime.py"
+    },
     "entities/CommandState.md": {
       "entity_name": "CommandState",
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/commands.py"
+    },
+    "entities/CommandTimeout.md": {
+      "entity_name": "CommandTimeout",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/ci_runtime.py"
     },
     "entities/CompleteMetricWindow.md": {
       "entity_name": "CompleteMetricWindow",
@@ -23912,6 +23984,18 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/schemas/agent_routing.py"
+    },
+    "entities/RunCancelled.md": {
+      "entity_name": "RunCancelled",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/ci_runtime.py"
+    },
+    "entities/RunReceipt.md": {
+      "entity_name": "RunReceipt",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/ci_runtime.py"
     },
     "entities/RuntimeActivity.md": {
       "entity_name": "RuntimeActivity",
@@ -29475,6 +29559,10 @@
       "scope": "module",
       "source_path": "scripts/ci/check_postgresql_documentation.py"
     },
+    "modules/ci_runtime.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/ci_runtime.py"
+    },
     "modules/cli_closeout.md": {
       "scope": "module",
       "source_path": "backend/app/cli/closeout.py"
@@ -30618,6 +30706,10 @@
     "modules/test_capacity_contract.md": {
       "scope": "module",
       "source_path": "backend/tests/test_capacity_contract.py"
+    },
+    "modules/test_ci_runtime.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/tests/test_ci_runtime.py"
     },
     "modules/test_client_contract.md": {
       "scope": "module",
@@ -72863,6 +72955,84 @@
       "module_page": "check_postgresql_documentation",
       "semantic_hash": "sha256:b306c10a41c9336df2f80c927e60fcd9b332b235666186c11da327aa496f7113"
     },
+    "scripts/ci/ci_runtime.py": {
+      "entities": [
+        "CommandTimeout",
+        "RunCancelled",
+        "RunReceipt"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "CommandTimeout",
+          "occurrence": 1,
+          "page": "CommandTimeout"
+        },
+        {
+          "name": "RunCancelled",
+          "occurrence": 1,
+          "page": "RunCancelled"
+        },
+        {
+          "name": "RunReceipt",
+          "occurrence": 1,
+          "page": "RunReceipt"
+        }
+      ],
+      "entity_pages": {
+        "CommandTimeout": "CommandTimeout",
+        "RunCancelled": "RunCancelled",
+        "RunReceipt": "RunReceipt"
+      },
+      "generated_semantics": {
+        "entities": {
+          "CommandTimeout": {
+            "attributes": {},
+            "description": "_Auto-generated from `CommandTimeout` in `scripts/ci/ci_runtime.py`._",
+            "methods": {}
+          },
+          "RunCancelled": {
+            "attributes": {},
+            "description": "_Auto-generated from `RunCancelled` in `scripts/ci/ci_runtime.py`._",
+            "methods": {}
+          },
+          "RunReceipt": {
+            "attributes": {},
+            "description": "Own a bounded run; a killed process leaves a durable incomplete receipt.",
+            "methods": {
+              "__enter__": "—",
+              "__exit__": "—",
+              "__init__": "—",
+              "_cancel": "—",
+              "_command": "—",
+              "_interrupted_status": "—",
+              "check_budget": "—",
+              "checkpoint": "—",
+              "exit_code": "—",
+              "run": "—",
+              "start": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "CommandTimeout": "—",
+            "RunCancelled": "—",
+            "RunReceipt": "Own a bounded run; a killed process leaves a durable incomplete receipt."
+          },
+          "description": "Bounded native commands with streamed logs and atomic progress receipts.",
+          "functions": {
+            "junit_counts": "—",
+            "positive_seconds": "—",
+            "stop_process_group": "Terminate descendants as well as the leader, then reap the leader.",
+            "timestamp": "—"
+          }
+        }
+      },
+      "hash": "sha256:91a122903df87f1be0bb7235c4ffc0f576daa4f740f7cb720d5ecc2edbb6700b",
+      "language": "python",
+      "module_page": "ci_runtime",
+      "semantic_hash": "sha256:efac9a4c2ea074631c0c3674d1aa0f84806e3bd93bb7c413e01900beeef23d01"
+    },
     "scripts/ci/installed_wheel_postgresql_qualification.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -72929,10 +73099,10 @@
           }
         }
       },
-      "hash": "sha256:66d0980f679ff2900a7810af4edd8d173cd30ca308a9c41374a380063f1698cc",
+      "hash": "sha256:874378caba5b5b2d9934249a702a1b249f8d1d76420a82df3877c2a18fb0f806",
       "language": "python",
       "module_page": "run_android_checks",
-      "semantic_hash": "sha256:dffe7da9a4615e0cd4645857b483e961104171508b0395fce69e7319000ad82f"
+      "semantic_hash": "sha256:3bf036ea0d883c5bb93f8b4da291d57bfc4e208218b91f3b6da2d5116faa8892"
     },
     "scripts/ci/run_disposable_checks.py": {
       "entities": [],
@@ -72944,19 +73114,21 @@
           "classes": {},
           "description": "Run database, frontend and browser checks using isolated native processes.",
           "functions": {
+            "bind_source": "—",
             "main": "—",
+            "parse_args": "—",
             "require_free_browser_ports": "—",
             "runtime_environment": "Inherit toolchain settings without inheriting an operator's application secrets.",
             "source_digest": "—",
-            "stop_process_group": "Stop the owned service and its descendants, and always reap the parent.",
-            "validate_admin_url": "Keep libpq connection overrides from escaping the loopback fixture boundary."
+            "validate_admin_url": "Keep libpq connection overrides from escaping the loopback fixture boundary.",
+            "validate_results": "—"
           }
         }
       },
-      "hash": "sha256:65d6fae60c164e1850347bb26a056c9cb3fcb27b90d287cff5df790beac7599f",
+      "hash": "sha256:2daf879be81cf04ff0072a43e38519fe29e42fa012180ee25f39b8813a35dbc8",
       "language": "python",
       "module_page": "run_disposable_checks",
-      "semantic_hash": "sha256:9fbfb66b64c8dd1f89208c641129a02158a245853ba0d04d6711aa9c3fbd55a5"
+      "semantic_hash": "sha256:a1fcfed13010ea486860bd0296b7b94b4cb669390cc2196476a600644e68746f"
     },
     "scripts/ci/serve_disposable_api.py": {
       "entities": [],
@@ -72999,6 +73171,51 @@
       "language": "python",
       "module_page": "serve_disposable_oidc",
       "semantic_hash": "sha256:e7267c78bc7c01bcfbec27f8333a0a80db00be399abd9b15ca9c0d5be67602b5"
+    },
+    "scripts/ci/tests/test_ci_runtime.py": {
+      "entities": [
+        "CommandLifecycle"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "CommandLifecycle",
+          "occurrence": 1,
+          "page": "CommandLifecycle"
+        }
+      ],
+      "entity_pages": {
+        "CommandLifecycle": "CommandLifecycle"
+      },
+      "generated_semantics": {
+        "entities": {
+          "CommandLifecycle": {
+            "attributes": {},
+            "description": "_Auto-generated from `CommandLifecycle` in `scripts/ci/tests/test_ci_runtime.py`._",
+            "methods": {
+              "test_elapsed_setup_reduces_work_budget": "—",
+              "test_failure_cannot_be_hidden_by_continue_after_error": "—",
+              "test_hard_kill_leaves_an_incomplete_receipt": "—",
+              "test_job_budget_limits_a_longer_command_deadline": "—",
+              "test_receipt_survives_cleanup_failure": "—",
+              "test_running_receipt_exists_before_command_and_success_is_finalized": "—",
+              "test_service_descendants_that_exit_on_term_are_cleaned_successfully": "—",
+              "test_sigterm_persists_cancellation_and_stops_active_command": "—",
+              "test_timeout_kills_descendants_even_when_the_parent_exits_on_term": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "CommandLifecycle": "—"
+          },
+          "description": "Exercise cancellation, deadlines and durable command results with real processes.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:bb955e5138d78b3a54f5200af11ae0656232bb007eb8e6a4066187026580d374",
+      "language": "python",
+      "module_page": "test_ci_runtime",
+      "semantic_hash": "sha256:eb0bc7bcdf93f214268d9da56eb2a06bbedea60368c436fa43a9eac6578ff1bd"
     },
     "scripts/ci/tests/test_native_runtimes.py": {
       "entities": [
@@ -73053,10 +73270,14 @@
               "run_backend": "—",
               "test_application_secrets_are_not_inherited": "—",
               "test_both_database_results_are_required_and_recorded": "—",
+              "test_browser_scope_does_not_repeat_unit_suites": "—",
               "test_connection_parameters_cannot_override_the_loopback_host": "—",
               "test_empty_results_cannot_be_reported_as_success": "—",
+              "test_frontend_scope_does_not_run_backend_checks": "—",
+              "test_incomplete_browser_evidence_cannot_pass": "—",
+              "test_port_preflight_rejects_listeners_but_accepts_closed_connections": "—",
               "test_remote_database_is_rejected_before_any_command": "—",
-              "test_service_cleanup_reaps_exited_processes_and_escalates_timeouts": "—"
+              "test_sqlite_scope_needs_no_postgresql_server": "—"
             }
           },
           "PostgresOwnership": {
@@ -73074,7 +73295,9 @@
               "test_all_workflow_and_composite_scripts_parse_as_bash": "—",
               "test_android_cleartext_is_restricted_to_debug_loopback_hosts": "—",
               "test_automatic_workflows_do_not_pull_or_build_images": "—",
-              "test_deployment_acceptance_remains_explicit_and_checks_twice": "—"
+              "test_deployment_acceptance_remains_explicit_and_checks_twice": "—",
+              "test_runners_reserve_time_before_toolchain_setup": "—",
+              "test_workflow_split_and_required_gate_cover_every_job": "—"
             }
           }
         },
@@ -73089,10 +73312,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:4056c840f771c762f88064d81126a9af747d6ea90db2b1f3ce385ee451b89d59",
+      "hash": "sha256:ae7a375eb4c5700c3477d3aef1d96d9d967c4bd3bee6ba08a45a3016fe2ce3e2",
       "language": "python",
       "module_page": "test_native_runtimes",
-      "semantic_hash": "sha256:c941788d8c5af2219c759b0057192b2a75bd9db743aff4bd88b4cb276c8cbb4d"
+      "semantic_hash": "sha256:3ab1b1708cccf3cb790a788e1cd7be428f852c44e46fb25736ce0299339b9eb3"
     },
     "scripts/generate_agent_team_contract.py": {
       "entities": [],

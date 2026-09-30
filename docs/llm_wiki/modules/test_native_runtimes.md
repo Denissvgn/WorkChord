@@ -17,9 +17,11 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 | `run_android_checks` | `android` |
 | `run_disposable_checks` | `checks` |
 | `shutil` | `shutil` |
+| `socket` | `socket` |
 | `subprocess` | `subprocess` |
 | `sys` | `sys` |
 | `tempfile` | `tempfile` |
+| `types` | `SimpleNamespace` |
 | `unittest` | `unittest` |
 | `unittest.mock` | `Mock`, `patch` |
 | `xml.etree.ElementTree` | `ET` |
@@ -40,7 +42,7 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [WorkflowContracts](../entities/WorkflowContracts.md) | 24 | `unittest.TestCase` | — |
-| [NativeChecks](../entities/NativeChecks.md) | 73 | `unittest.TestCase` | — |
-| [PostgresOwnership](../entities/PostgresOwnership.md) | 142 | `unittest.TestCase` | — |
-| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 172 | `unittest.TestCase` | — |
+| [WorkflowContracts](../entities/WorkflowContracts.md) | 26 | `unittest.TestCase` | — |
+| [NativeChecks](../entities/NativeChecks.md) | 112 | `unittest.TestCase` | — |
+| [PostgresOwnership](../entities/PostgresOwnership.md) | 227 | `unittest.TestCase` | — |
+| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 257 | `unittest.TestCase` | — |

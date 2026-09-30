@@ -10,66 +10,63 @@
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as argparse.ArgumentParser
-    participant p2 as parser.add_argument
-    participant p3 as parser.parse_args
-    participant p4 as args.output.resolve
-    participant p5 as Path
-    participant p6 as tempfile.mkdtemp
-    participant p7 as output.exists
-    participant p8 as any
-    participant p9 as output.iterdir
-    participant p10 as parser.error
-    participant p11 as output.mkdir
-    participant p12 as subprocess.check_output(…).strip
-    participant p13 as subprocess.check_output (scripts/ci/run_disposable_checks.py:main)
-    participant p14 as source_digest
-    participant p15 as subprocess.check_output(…).split
-    participant p16 as subprocess.check_output (scripts/ci/run_disposable_checks.py:source_digest)
-    participant p17 as hashlib.sha256 (scripts/ci/run_disposable_checks.py:source_digest)
-    participant p18 as sorted (scripts/ci/run_disposable_checks.py:source_digest)
-    participant p19 as set
-    participant p20 as raw.decode
-    participant p21 as path.is_file (scripts/ci/run_disposable_checks.py:source_digest)
-    participant p22 as name.startswith
-    participant p23 as digest.update
-    participant p24 as path.read_bytes (scripts/ci/run_disposable_checks.py:source_digest)
-    participant p25 as digest.hexdigest
-    participant p26 as datetime.now(…).isoformat
-    participant p27 as datetime.now
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p3: parser.parse_args
-    p0-->>p4: args.output.resolve
-    p0-->>p5: Path
-    p0-->>p6: tempfile.mkdtemp
-    p0-->>p7: output.exists
-    p0-->>p8: any
-    p0-->>p9: output.iterdir
-    p0-->>p10: parser.error
-    p0-->>p11: output.mkdir
-    p0-->>p12: subprocess.check_output(…).strip
-    p0-->>p13: subprocess.check_output (scripts/ci/run_disposable_checks.py:main)
-    p0->>p14: source_digest
-    p14-->>p15: subprocess.check_output(…).split
-    p14-->>p16: subprocess.check_output (scripts/ci/run_disposable_checks.py:source_digest)
-    p14-->>p17: hashlib.sha256 (scripts/ci/run_disposable_checks.py:source_digest)
-    p14-->>p18: sorted (scripts/ci/run_disposable_checks.py:source_digest)
-    p14-->>p19: set
-    p14-->>p20: raw.decode
-    p14-->>p21: path.is_file (scripts/ci/run_disposable_checks.py:source_digest)
-    p14-->>p22: name.startswith
-    p14-->>p23: digest.update
-    p14-->>p24: path.read_bytes (scripts/ci/run_disposable_checks.py:source_digest)
-    p14-->>p25: digest.hexdigest
-    p0-->>p26: datetime.now(…).isoformat
-    p0-->>p27: datetime.now
+    participant p1 as parse_args
+    participant p2 as argparse.ArgumentParser
+    participant p3 as parser.add_argument
+    participant p4 as parser.add_mutually_exclusive_group
+    participant p5 as mode.add_argument
+    participant p6 as parser.parse_args
+    participant p7 as parser.error
+    participant p8 as set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
+    participant p9 as set (scripts/ci/run_disposable_checks.py:parse_args)
+    participant p10 as Path
+    participant p11 as tempfile.mkdtemp
+    participant p12 as RunReceipt
+    participant p13 as SystemExit
+    participant p14 as str
+    participant p15 as bind_source
+    participant p16 as run.check_budget
+    participant p17 as subprocess.check_output(…).strip
+    participant p18 as subprocess.check_output
+    participant p19 as digest
+    participant p20 as run.checkpoint
+    participant p21 as run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
+    participant p22 as tempfile.TemporaryDirectory
+    participant p23 as run.cleanups.append
+    participant p24 as run.validators.append (scripts/ci/run_disposable_checks.py:main)
+    p0->>p1: parse_args
+    p1-->>p2: argparse.ArgumentParser
+    p1-->>p3: parser.add_argument
+    p1-->>p4: parser.add_mutually_exclusive_group
+    p1-->>p5: mode.add_argument
+    p1-->>p5: mode.add_argument
+    p1-->>p5: mode.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p6: parser.parse_args
+    p1-->>p7: parser.error
+    p1-->>p8: set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
+    p1-->>p9: set (scripts/ci/run_disposable_checks.py:parse_args)
+    p1-->>p7: parser.error
+    p0-->>p10: Path
+    p0-->>p11: tempfile.mkdtemp
+    p0-->>p12: RunReceipt
+    p0-->>p13: SystemExit
+    p0-->>p14: str
+    p0->>p15: bind_source
+    p15-->>p16: run.check_budget
+    p15-->>p17: subprocess.check_output(…).strip
+    p15-->>p18: subprocess.check_output
+    p15-->>p19: digest
+    p15-->>p20: run.checkpoint
+    p15-->>p21: run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
+    p0-->>p22: tempfile.TemporaryDirectory
+    p0-->>p23: run.cleanups.append
+    p0-->>p24: run.validators.append (scripts/ci/run_disposable_checks.py:main)
 ```
 
-> Call sequence diagram shows 30 of 109 interactions; 79 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 93 interactions; 63 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -77,43 +74,42 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     s1["1. main"]
-    s2["2. argparse.ArgumentParser"]
-    s3["3. parser.add_argument"]
+    s2["2. parse_args"]
+    s3["3. argparse.ArgumentParser"]
     s4["4. parser.add_argument"]
-    s5["5. parser.add_argument"]
-    s6["6. parser.add_argument"]
-    s7["7. parser.parse_args"]
-    s8["8. args.output.resolve"]
-    s9["9. Path"]
-    s10["10. tempfile.mkdtemp"]
-    s11["11. output.exists"]
-    s12["12. any"]
-    s1 -. "argparse.ArgumentParser(description=__doc__)" .-> s2
-    s1 -. "parser.add_argument('--output', type=Path)" .-> s3
-    s1 -. "parser.add_argument('--backend-only', action='store_true')" .-> s4
-    s1 -. "parser.add_argument('--full-backend', action='store_true')" .-> s5
-    s1 -. "parser.add_argument('--managed-browser', action='store_true')" .-> s6
-    s1 -. "parser.parse_args(data not statically known)" .-> s7
-    s1 -. "args.output.resolve(data not statically known)" .-> s8
-    s1 -. "Path(tempfile.mkdtemp(...))" .-> s9
-    s1 -. "tempfile.mkdtemp(prefix='workchord-checks-')" .-> s10
-    s1 -. "output.exists(data not statically known)" .-> s11
-    s1 -. "any(output.iterdir(...))" .-> s12
-    b0["mutation failures.append"]
-    s1 -. "mutation failures.append" .-> b0
-    b1["filesystem_write shutil.copytree"]
-    s1 -. "filesystem_write shutil.copytree" .-> b1
-    b2["mutation failures.append"]
-    s1 -. "mutation failures.append" .-> b2
-    b3["filesystem_write shutil.copyfile"]
-    s1 -. "filesystem_write shutil.copyfile" .-> b3
-    b4["mutation app_env.update"]
-    s1 -. "mutation app_env.update" .-> b4
-    b5["mutation failures.append"]
-    s1 -. "mutation failures.append" .-> b5
-    b6["output print"]
-    s1 -. "output print" .-> b6
+    s5["5. parser.add_mutually_exclusive_group"]
+    s6["6. mode.add_argument"]
+    s7["7. mode.add_argument"]
+    s8["8. mode.add_argument"]
+    s9["9. parser.add_argument"]
+    s10["10. parser.add_argument"]
+    s11["11. parser.add_argument"]
+    s12["12. parser.parse_args"]
+    s1 -->|"parse_args(data not statically known)"| s2
+    s2 -. "argparse.ArgumentParser(description=__doc__)" .-> s3
+    s2 -. "parser.add_argument('--output', type=Path)" .-> s4
+    s2 -. "parser.add_mutually_exclusive_group(data not statically known)" .-> s5
+    s2 -. "mode.add_argument('--scope', choices=[...])" .-> s6
+    s2 -. "mode.add_argument('--browser-only', action='store_true')" .-> s7
+    s2 -. "mode.add_argument('--backend-only', action='store_true')" .-> s8
+    s2 -. "parser.add_argument('--full-backend', action='store_true')" .-> s9
+    s2 -. "parser.add_argument('--managed-browser', action='store_true')" .-> s10
+    s2 -. "parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800, help='Work budget; leave time outside this for cleanup and uploads')" .-> s11
+    s2 -. "parser.parse_args(data not statically known)" .-> s12
+    b0["mutation run.cleanups.append"]
+    s1 -. "mutation run.cleanups.append" .-> b0
+    b1["mutation run.validators.append"]
+    s1 -. "mutation run.validators.append" .-> b1
+    b2["mutation run.validators.append"]
+    s1 -. "mutation run.validators.append" .-> b2
+    b3["filesystem_write shutil.copytree"]
+    s1 -. "filesystem_write shutil.copytree" .-> b3
+    b4["filesystem_write shutil.copyfile"]
+    s1 -. "filesystem_write shutil.copyfile" .-> b4
+    b5["mutation app_env.update"]
+    s1 -. "mutation app_env.update" .-> b5
     click s1 "../modules/run_disposable_checks.md"
+    click s2 "../modules/run_disposable_checks.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
@@ -121,70 +117,70 @@ flowchart LR
     class b3 boundary
     class b4 boundary
     class b5 boundary
-    class b6 boundary
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `main` | - | `Path`, `PLAYWRIGHT_VERSION`, `ROOT`, `sys`, `sys`, `ROOT`, `ROOT`, `sys` | `receipt[...]`, `receipt[...]`, `receipt[...]`, `receipt[...]`, `receipt[...]`, `counts[...]`, `receipt[...]`, `receipt[...]` | `...` |
+| `main` | - | `source_digest`, `PLAYWRIGHT_VERSION`, `ROOT`, `sys`, `sys`, `ROOT`, `ROOT`, `sys` | `run.data[...]`, `run.data[...]`, `env[...]` | `run.exit_code` |
+| `parse_args` | - | `Path`, `positive_seconds` | - | `(...)` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
+| `parser.add_mutually_exclusive_group` | - | - | - | - |
+| `mode.add_argument` | - | - | - | - |
+| `mode.add_argument` | - | - | - | - |
+| `mode.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.parse_args` | - | - | - | - |
-| `args.output.resolve` | - | - | - | - |
-| `Path` | - | - | - | - |
-| `tempfile.mkdtemp` | - | - | - | - |
-| `output.exists` | - | - | - | - |
-| `any` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 87 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 88 | `parser.add_argument('--output', type=Path)` |
-| main | parser.add_argument | 89 | `parser.add_argument('--backend-only', action='store_true')` |
-| main | parser.add_argument | 90 | `parser.add_argument('--full-backend', action='store_true')` |
-| main | parser.add_argument | 91 | `parser.add_argument('--managed-browser', action='store_true')` |
-| main | parser.parse_args | 92 | `parser.parse_args(data not statically known)` |
-| main | args.output.resolve | 93 | `args.output.resolve(data not statically known)` |
-| main | Path | 93 | `Path(tempfile.mkdtemp(...))` |
-| main | tempfile.mkdtemp | 93 | `tempfile.mkdtemp(prefix='workchord-checks-')` |
-| main | output.exists | 94 | `output.exists(data not statically known)` |
-| main | any | 94 | `any(output.iterdir(...))` |
+| main | parse_args | 139 | `parse_args(data not statically known)` |
+| parse_args | argparse.ArgumentParser | 114 | `argparse.ArgumentParser(description=__doc__)` |
+| parse_args | parser.add_argument | 115 | `parser.add_argument('--output', type=Path)` |
+| parse_args | parser.add_mutually_exclusive_group | 116 | `parser.add_mutually_exclusive_group(data not statically known)` |
+| parse_args | mode.add_argument | 117 | `mode.add_argument('--scope', choices=[...])` |
+| parse_args | mode.add_argument | 118 | `mode.add_argument('--browser-only', action='store_true')` |
+| parse_args | mode.add_argument | 119 | `mode.add_argument('--backend-only', action='store_true')` |
+| parse_args | parser.add_argument | 120 | `parser.add_argument('--full-backend', action='store_true')` |
+| parse_args | parser.add_argument | 121 | `parser.add_argument('--managed-browser', action='store_true')` |
+| parse_args | parser.add_argument | 122 | `parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800, help='Work budget; leave time outside this for cleanup and uploads')` |
+| parse_args | parser.parse_args | 124 | `parser.parse_args(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `failures.append` | `main` | 142 |
-| filesystem_write | `shutil.copytree` | `main` | 146 |
-| mutation | `failures.append` | `main` | 153 |
-| filesystem_write | `shutil.copyfile` | `main` | 159 |
-| mutation | `app_env.update` | `main` | 165 |
-| mutation | `failures.append` | `main` | 172 |
-| output | `print` | `main` | 213 |
+| mutation | `run.cleanups.append` | `main` | 150 |
+| mutation | `run.validators.append` | `main` | 151 |
+| mutation | `run.validators.append` | `main` | 178 |
+| filesystem_write | `shutil.copytree` | `main` | 181 |
+| filesystem_write | `shutil.copyfile` | `main` | 197 |
+| mutation | `app_env.update` | `main` | 203 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 87 |
-| unresolved_call | `main` | `parser.add_argument` | 88 |
-| unresolved_call | `main` | `parser.add_argument` | 89 |
-| unresolved_call | `main` | `parser.add_argument` | 90 |
-| unresolved_call | `main` | `parser.add_argument` | 91 |
-| unresolved_call | `main` | `parser.parse_args` | 92 |
-| unresolved_call | `main` | `args.output.resolve` | 93 |
-| external_call | `main` | `tempfile.mkdtemp` | 93 |
-| unresolved_call | `main` | `output.exists` | 94 |
-| external_call | `main` | `any` | 94 |
+| external_call | `parse_args` | `argparse.ArgumentParser` | 114 |
+| unresolved_call | `parse_args` | `parser.add_argument` | 115 |
+| unresolved_call | `parse_args` | `parser.add_mutually_exclusive_group` | 116 |
+| unresolved_call | `parse_args` | `mode.add_argument` | 117 |
+| unresolved_call | `parse_args` | `mode.add_argument` | 118 |
+| unresolved_call | `parse_args` | `mode.add_argument` | 119 |
+| unresolved_call | `parse_args` | `parser.add_argument` | 120 |
+| unresolved_call | `parse_args` | `parser.add_argument` | 121 |
+| unresolved_call | `parse_args` | `parser.add_argument` | 122 |
+| unresolved_call | `parse_args` | `parser.parse_args` | 124 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior
 
-Provision native tools and a loopback PostgreSQL admin endpoint before invoking the runner. It runs database and client contracts, copies the frontend into a temporary workspace, and starts owned API/frontend processes for bounded browser interactions. The browser verifies an invocation nonce before mutation. Source drift, missing executed results, failed commands or cleanup failures prevent a successful receipt. Automatic workflows do not pull or build container images.
+The selected scope determines prerequisites, commands and required artifacts. SQLite runs without a PostgreSQL admin endpoint; PostgreSQL uses a validated loopback cluster; frontend owns its JUnit, lint and build outcomes; browser-only mode provisions the isolated application and Playwright scenario without repeating those suites. Existing combined command-line modes remain available.
+
+The runner writes an initial receipt before commands, streams command logs with periodic heartbeats, records stage durations, and enforces command/run deadlines. Workflow setup time reduces the remaining budget so cleanup and uploads have reserved headroom. Missing evidence, nonzero commands, source changes and unsuccessful cleanup fail the run. Graceful cancellation is recorded; a hard-killed run remains incomplete. The browser invocation nonce and active-port ownership checks remain enforced.

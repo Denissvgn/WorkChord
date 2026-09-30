@@ -428,3 +428,32 @@ New databases use the frozen initial revision `20260928_0001`, including task re
 ## 2026-09-30 — Routing evidence inventory alignment
 
 Routing evidence now references the consolidated initial schema. The validator continues to require present repository-contained files and, in tracked mode, Git-index membership. Declared completion and external-acceptance states remain separate from path maintenance.
+
+## 2026-09-30
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4933a9e5a68ff44506a1316d3f9e4f6c5d8ecd4692d5714140972cda6dfe6efc`
+- Pages created: 7
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2621
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+## 2026-09-30 — Scoped CI execution and durable progress
+
+CI separates database, frontend, packaging and client responsibilities. Native execution now shares atomic progress receipts, command deadlines, streamed logs and bounded process-group cleanup. Selected scopes own their evidence requirements, and the final aggregate accepts only successful required jobs.

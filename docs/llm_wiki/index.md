@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1402 | [Open section](#entities) |
-| Modules | 592 | [Open section](#modules) |
+| Entities | 1406 | [Open section](#entities) |
+| Modules | 594 | [Open section](#modules) |
 | Workflows | 147 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 490 | [Open section](#entry-point-flows) |
+| Entry-point flows | 491 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -240,7 +240,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [CommandAction](entities/CommandAction.md)
 - [CommandAudit](entities/CommandAudit.md)
 - [CommandGroup](entities/CommandGroup.md)
+- [CommandLifecycle](entities/CommandLifecycle.md)
 - [CommandState](entities/CommandState.md)
+- [CommandTimeout](entities/CommandTimeout.md)
 - [CompleteMetricWindow](entities/CompleteMetricWindow.md)
 - [ConfirmDialogProps](entities/ConfirmDialogProps.md)
 - [ConfirmDialogTone](entities/ConfirmDialogTone.md)
@@ -641,6 +643,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTrustLineage](entities/RoutingTrustLineage.md)
+- [RunCancelled](entities/RunCancelled.md)
+- [RunReceipt](entities/RunReceipt.md)
 - [RuntimeActivity](entities/RuntimeActivity.md)
 - [RuntimeBoundaryMiddleware](entities/RuntimeBoundaryMiddleware.md)
 - [RuntimeContract](entities/RuntimeContract.md)
@@ -1645,6 +1649,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [charter](modules/charter.md) - Standing delegation and finite bootstrap-action contracts.
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
+- [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
@@ -1931,6 +1936,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
 - [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
+- [test_ci_runtime](modules/test_ci_runtime.md) - Exercise cancellation, deadlines and durable command results with real processes.
 - [test_client_contract](modules/test_client_contract.md) - Schema-derived compatibility, legacy payloads, and additive client behavior.
 - [test_cutover_evidence](modules/test_cutover_evidence.md) - Fail-closed contracts for rehearsal and production cutover evidence.
 - [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
@@ -2665,6 +2671,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-serve_disposable_oidc](flows/process-serve_disposable_oidc.md) - entry: `__main__`
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
+- [process-test_ci_runtime](flows/process-test_ci_runtime.md) - entry: `__main__`
 - [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`
 - [process-worker](flows/process-worker.md) - entry: `main`

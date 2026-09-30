@@ -602,12 +602,14 @@ flowchart TD
 | [build_agent_skills](modules/build_agent_skills.md) | 0 | 0 |
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
+| [ci_runtime](modules/ci_runtime.md) | 0 | 0 |
 | [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 17 |
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
 | [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 6 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
+| [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |
 | [test_native_runtimes](modules/test_native_runtimes.md) | 0 | 0 |
 | [generate_agent_team_contract](modules/generate_agent_team_contract.md) | 0 | 1 |
 | [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) | 0 | 1 |
@@ -625,8 +627,8 @@ flowchart TD
 
 ### python
 
-- **Used:** `aiosmtplib`, `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
-- ⚠️ **Undeclared:** `alembic`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- **Used:** `aiosmtplib`, `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- ⚠️ **Undeclared:** `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
 - **Unused (declared, not imported):** `aiosqlite`, `email-validator`, `psycopg`, `python-dotenv`, `python-multipart`, `uvicorn`
 
 ### typescript
@@ -645,3 +647,5 @@ Task, brief, status and recovery services use deliberate late imports to share c
 Recovery models register the task deletion hook; the task recovery helper imports TaskService lazily to reuse command version reservations. This keeps the model-registration side effect explicit without treating static import order as runtime execution order.
 
 The initial Alembic revision uses frozen SQLAlchemy DDL and does not import application model metadata. The Alembic environment still exposes model metadata for tooling, while upgrade_service owns revision inspection, migration locking and the separate repair boundary.
+
+Both native orchestration entry points depend on ci_runtime for command deadlines, signal handling, process-group cleanup and receipt lifecycle. Result requirements remain caller-owned so a browser-only scope does not infer success from unrelated or absent JUnit files.
