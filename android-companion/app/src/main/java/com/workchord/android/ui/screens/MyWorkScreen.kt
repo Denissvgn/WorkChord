@@ -11,6 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.workchord.android.R
@@ -24,6 +27,12 @@ import com.workchord.android.ui.viewmodels.TaskFilter
 @Composable
 fun MyWorkScreen(viewModel: MyWorkViewModel, onTaskClick: (Int) -> Unit, modifier: Modifier = Modifier) {
     val state by viewModel.uiState.collectAsState()
+    val lifecycle = LocalLifecycleOwner.current
+    DisposableEffect(lifecycle, viewModel) {
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh() }
+        lifecycle.lifecycle.addObserver(observer)
+        onDispose { lifecycle.lifecycle.removeObserver(observer) }
+    }
     Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(title = { Text(stringResource(R.string.my_work_title)) }, actions = {
             IconButton(onClick = { viewModel.refresh() }, enabled = !state.isLoading && !state.isRefreshing) {
@@ -34,6 +43,9 @@ fun MyWorkScreen(viewModel: MyWorkViewModel, onTaskClick: (Int) -> Unit, modifie
         LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item { Text(stringResource(R.string.work_help), style = MaterialTheme.typography.bodyLarge) }
+            state.fetchedAt?.let { timestamp -> item {
+                Text("${state.source} · ${java.time.Instant.ofEpochMilli(timestamp)}", style = MaterialTheme.typography.bodyMedium)
+            } }
             item {
                 ScopeMenu(if (state.selection.projectId == null) stringResource(R.string.work_all_projects)
                     else state.projects.firstOrNull { it.id == state.selection.projectId }?.name ?: stringResource(R.string.work_selection_unavailable),

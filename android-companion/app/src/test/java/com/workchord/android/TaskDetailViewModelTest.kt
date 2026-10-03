@@ -22,7 +22,7 @@ class TaskDetailViewModelTest {
         val repo = repository()
         repo.actionsResult = Result.success(TaskActions(72, 3, listOf(AllowedAction("start_manual", false,
             listOf(ActionBlocker("invalid_lifecycle", "Already active")))), 0, emptyList(), emptyList()))
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.setReason("Begin work")
         viewModel.execute("start_manual")
         assertEquals(0, repo.commandCalls)
@@ -31,7 +31,7 @@ class TaskDetailViewModelTest {
 
     @Test fun canonicalBlockAndReopenUseCurrentVersionAndOwnershipEvidence() = runTest {
         val repo = repository()
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.setReason("Waiting for input")
         viewModel.execute("block")
         assertEquals("block", repo.lastCommand)
@@ -45,7 +45,7 @@ class TaskDetailViewModelTest {
 
     @Test fun completionRequiresEvidenceAndPersistsStableCriterionIdentity() = runTest {
         val repo = repository()
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.beginEvidenceEdit()
         viewModel.setCriterion("outline", progress = "completed")
         viewModel.saveProgress()
@@ -65,7 +65,7 @@ class TaskDetailViewModelTest {
         val repo = repository()
         val current = task.copy(version = 4, title = "Changed outline")
         repo.progressResult = Result.failure(ApiProblem(409, ProblemDetail("task_version_conflict", "Changed", currentTask = current)))
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.beginEvidenceEdit()
         viewModel.setCriterion("outline", progress = "completed", evidence = "Retained evidence")
         viewModel.saveProgress()
@@ -83,7 +83,7 @@ class TaskDetailViewModelTest {
 
     @Test fun changedCriterionRevisionPreventsBlindDraftReapply() = runTest {
         val repo = repository()
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.beginEvidenceEdit()
         val changed = task.copy(version = 4, brief = task.brief!!.copy(acceptanceCriteria = listOf(BriefCriterion("outline", 3, "New requirement"))))
         repo.setTasks(listOf(changed))
@@ -95,7 +95,7 @@ class TaskDetailViewModelTest {
 
     @Test fun independentVerdictUsesCurrentBriefAndArtifactRevisions() = runTest {
         val repo = repository()
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         viewModel.setReason("The result needs more detail")
         viewModel.setReviewEvidence("Independent comparison to the brief")
         viewModel.submitReview("reject")
@@ -108,9 +108,40 @@ class TaskDetailViewModelTest {
     @Test fun mismatchedReadVersionsDisableAllMutationActions() = runTest {
         val repo = repository()
         repo.actionsResult = Result.success(TaskActions(72, 4, listOf(AllowedAction("record_progress", true)), 0, emptyList(), emptyList()))
-        val viewModel = TaskDetailViewModel(72, repo)
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
         assertFalse(viewModel.uiState.value.authoritative)
         assertFalse(viewModel.uiState.value.allowed("record_progress"))
         assertNotNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test fun savedDraftRestoresAfterAuthorizedReadAndKeepsItsOriginalVersion() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        viewModel.beginEvidenceEdit()
+        viewModel.setCriterion("outline", evidence = "Explicitly saved local work")
+        viewModel.saveLocalDraft()
+        repo.setTasks(listOf(task.copy(version = 4)))
+        val restored = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        assertEquals("Explicitly saved local work", restored.uiState.value.draft!!.criteria.single().evidence)
+        assertEquals(3, restored.uiState.value.draft!!.base.version)
+        assertEquals(4, restored.uiState.value.task!!.version)
+        assertNull(repo.lastProgress)
+    }
+
+    @Test fun networkCacheIsReadOnlyButAccessLossClearsPrivateContent() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        val detail = viewModel.uiState.value.detail!!
+        repo.cachedDetail = TaskReadState(detail, 1000)
+        repo.getTaskByIdResult = Result.failure(java.io.IOException("Offline"))
+        viewModel.loadTask()
+        assertEquals(72, viewModel.uiState.value.task!!.id)
+        assertFalse(viewModel.uiState.value.authoritative)
+        assertTrue(viewModel.uiState.value.errorMessage!!.contains("Cached read-only"))
+        repo.getTaskByIdResult = Result.failure(ApiProblem(403, ProblemDetail("resource_unavailable", "Access revoked")))
+        viewModel.loadTask()
+        assertNull(viewModel.uiState.value.task)
+        assertNull(viewModel.uiState.value.detail)
+        assertFalse(viewModel.uiState.value.authoritative)
     }
 }

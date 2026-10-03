@@ -103,4 +103,18 @@ class MyWorkViewModelTest {
         assertNull(repo.lastSelection!!.projectId)
         assertEquals(19, viewModel.uiState.value.identity!!.principal!!.id)
     }
+
+    @Test fun temporaryFailureShowsDatedCacheAndForbiddenRefreshRemovesIt() = runTest {
+        val repo = repository()
+        val viewModel = MyWorkViewModel(repo)
+        repo.myWorkResult = Result.failure(java.io.IOException("Offline"))
+        viewModel.refresh()
+        assertEquals("cache", viewModel.uiState.value.source)
+        assertNotNull(viewModel.uiState.value.fetchedAt)
+        assertEquals(72, viewModel.uiState.value.visibleWork.single().id)
+        repo.myWorkResult = Result.failure(ApiProblem(403, ProblemDetail("resource_unavailable", "Revoked")))
+        viewModel.refresh()
+        assertEquals("unavailable", viewModel.uiState.value.source)
+        assertTrue(viewModel.uiState.value.visibleWork.isEmpty())
+    }
 }

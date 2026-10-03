@@ -9,7 +9,9 @@ data class Identity(
     val configured: Boolean = false,
     val mode: String? = null,
     @SerializedName("csrf_token") val csrfToken: String? = null,
-    @SerializedName("authentication_error") val authenticationError: String? = null
+    @SerializedName("authentication_error") val authenticationError: String? = null,
+    @SerializedName("workspace_role") val workspaceRole: String? = null,
+    val projects: Map<String, String>? = null
 ) {
     val humanOwnerProfileId: Int?
         get() = if (authenticated && principal?.kind == "human" && principal.id > 0) {

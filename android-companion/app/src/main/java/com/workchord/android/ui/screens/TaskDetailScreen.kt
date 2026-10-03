@@ -9,6 +9,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.workchord.android.ui.components.PriorityBadge
 import com.workchord.android.ui.components.StatusChip
 import com.workchord.android.ui.viewmodels.TaskDetailViewModel
@@ -18,12 +21,18 @@ import com.workchord.android.ui.viewmodels.TaskDetailViewModel
 fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
     onNavigateTask: (Int) -> Unit = {}, modifier: Modifier = Modifier) {
     val state by viewModel.uiState.collectAsState()
+    val lifecycle = LocalLifecycleOwner.current
+    DisposableEffect(lifecycle, viewModel) {
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) viewModel.loadTask() }
+        lifecycle.lifecycle.addObserver(observer)
+        onDispose { lifecycle.lifecycle.removeObserver(observer) }
+    }
     var pendingExit by remember { mutableStateOf<(() -> Unit)?>(null) }
     fun leave(action: () -> Unit) { if (state.hasUnsavedInputs) pendingExit = action else action() }
     BackHandler(state.hasUnsavedInputs) { pendingExit = onNavigateBack }
     pendingExit?.let { action -> AlertDialog(onDismissRequest = { pendingExit = null },
         title = { Text("Unsaved evidence") }, text = { Text("These changes have not been saved to the server. Stay to keep editing, or discard them before leaving.") },
-        confirmButton = { TextButton(onClick = { viewModel.discardInputs(); pendingExit = null; action() }) { Text("Discard and leave") } },
+        confirmButton = { TextButton(onClick = { viewModel.discardInputs { pendingExit = null; action() } }) { Text("Discard and leave") } },
         dismissButton = { TextButton(onClick = { pendingExit = null }) { Text("Stay") } }) }
     Scaffold(modifier.fillMaxSize().imePadding(), topBar = {
         TopAppBar(title = { Text(state.task?.let { "Task #${it.id}" } ?: "Task") }, navigationIcon = {
@@ -38,6 +47,9 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                 OutlinedButton(onClick = { viewModel.loadTask() }, enabled = !state.isUpdatingStatus) { Text("Reload current task") }
             } }
             state.successMessage?.let { item { Text(it, style = MaterialTheme.typography.bodyMedium) } }
+            if (state.hasUnsavedInputs) item {
+                OutlinedButton(onClick = { viewModel.saveLocalDraft() }, enabled = !state.isUpdatingStatus) { Text("Save draft on this device") }
+            }
             val task = state.task
             if (task != null) {
                 item {
@@ -123,7 +135,8 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                     Button(onClick = { viewModel.submitReview("accept") }, enabled = state.allowed("accept_review") && state.reason.isNotBlank()) { Text("Accept current evidence") }
                     OutlinedButton(onClick = { viewModel.submitReview("reject") }, enabled = state.allowed("review") && state.reason.isNotBlank()) { Text("Reject for rework") }
                     (state.blockers("accept_review") + state.blockers("review")).distinctBy { it.code }.forEach { Text(it.message) }
-                    state.currentReview?.let { Text("Current verdict: ${it.verdict} · ${it.reason}") }
+                    if (!state.authoritative) Text("Current acceptance is not verified while this view is unavailable or cached.")
+                    else state.currentReview?.let { Text("Current verdict: ${it.verdict} · ${it.reason}") }
                         ?: Text("No current independent verdict recorded.")
                 }
                 state.reviews.forEach { review -> item(key = "review-${review.id}") {

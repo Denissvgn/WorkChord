@@ -61,6 +61,15 @@ class FakeTaskRepository(
     var lastReview: ReviewRequest? = null
     var commandCalls = 0
     private val reviews = mutableListOf<TaskReview>()
+    override val draftScope = "fixture-scope"
+    private val saved = mutableMapOf<Int, SavedTaskDraft>()
+    var cachedDetail: TaskReadState? = null
+    override fun cachedReadState(taskId: Int) = cachedDetail?.takeIf { it.detail.task.id == taskId }
+    override fun savedDraft(taskId: Int) = saved[taskId]
+    override fun saveDraft(taskId: Int, draft: SavedTaskDraft?, expectedScope: String?) {
+        check(expectedScope == draftScope)
+        if (draft == null) saved.remove(taskId) else saved[taskId] = draft
+    }
     override suspend fun getTaskActions(taskId: Int): Result<TaskActions> = actionsResult ?: getTaskById(taskId).map { task ->
         TaskActions(taskId, requireNotNull(task.version), listOf("start_manual", "resolve_manual", "block", "unblock", "cancel", "reopen", "record_progress", "review", "accept_review")
             .map { AllowedAction(it, true, emptyList()) }, 0, emptyList(), emptyList())

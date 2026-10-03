@@ -6,13 +6,15 @@ import com.workchord.android.data.models.*
 import com.workchord.android.data.repository.TaskRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.coroutineContext
 
-data class EvidenceDraft(val base: Task, val criteria: List<CriterionProgress>, val artifacts: String = "")
 data class TaskDetailUiState(val isLoading: Boolean = true, val isUpdatingStatus: Boolean = false,
     val task: Task? = null, val detail: TaskDetail? = null, val actions: TaskActions? = null,
     val reviews: List<TaskReview> = emptyList(), val reviewSnapshot: CurrentTaskReview? = null, val draft: EvidenceDraft? = null,
@@ -27,11 +29,14 @@ data class TaskDetailUiState(val isLoading: Boolean = true, val isUpdatingStatus
     fun blockers(action: String) = actions?.actions.orEmpty().firstOrNull { it.action == action }?.blockers.orEmpty()
 }
 
-class TaskDetailViewModel(private val taskId: Int, private val repository: TaskRepository) : ViewModel() {
+class TaskDetailViewModel(private val taskId: Int, private val repository: TaskRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
     private val state = MutableStateFlow(TaskDetailUiState())
     val uiState = state.asStateFlow()
     private var load: Job? = null
     private var generation = 0L
+    private var restored = false
+    private var scopeAtRead: String? = null
     init { loadTask() }
 
     fun loadTask() {
@@ -57,10 +62,31 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
                     actions = actions, reviews = reviews, reviewSnapshot = currentReview,
                     authoritative = detail.task.status != TaskStatus.UNKNOWN,
                     errorMessage = if (detail.task.status == TaskStatus.UNKNOWN) "This lifecycle state is unsupported. Upgrade the client before executing or reviewing." else null)
+                scopeAtRead = repository.draftScope
+                if (!restored) {
+                    restored = true
+                    val saved = withContext(ioDispatcher) { repository.savedDraft(taskId) }
+                    coroutineContext.ensureActive()
+                    if (current != generation || scopeAtRead != repository.draftScope) return@launch
+                    if (saved != null) state.value = state.value.copy(draft = saved.evidence,
+                        reason = saved.reason, reviewEvidence = saved.reviewEvidence,
+                        successMessage = "Saved local draft restored. Compare its version before submitting.")
+                }
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) {
-                if (current == generation) state.value = state.value.copy(isLoading = false, authoritative = false,
-                    errorMessage = error.localizedMessage ?: "Could not load current work.")
+                if (current == generation) {
+                    val forbidden = error is ApiProblem && error.statusCode in setOf(401, 403, 404)
+                    val temporary = error is java.io.IOException || (error is ApiProblem && error.statusCode >= 500)
+                    val cached = if (temporary) repository.cachedReadState(taskId) else null
+                    state.value = state.value.copy(isLoading = false, authoritative = false,
+                        task = cached?.detail?.task, detail = cached?.detail, actions = null, reviewSnapshot = null,
+                        reviews = if (forbidden) emptyList() else state.value.reviews,
+                        draft = if (forbidden) null else state.value.draft,
+                        reason = if (forbidden) "" else state.value.reason,
+                        reviewEvidence = if (forbidden) "" else state.value.reviewEvidence,
+                        errorMessage = if (cached != null) "Cached read-only data from ${java.time.Instant.ofEpochMilli(cached.fetchedAt)}. Access and acceptance are not verified until a successful refresh."
+                            else error.localizedMessage ?: "Could not load current work.")
+                }
             }
         }
     }
@@ -100,8 +126,42 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
         }))
     }
     fun setArtifacts(value: String) { state.value.draft?.let { state.value = state.value.copy(draft = it.copy(artifacts = value)) } }
-    fun discardDraft() { state.value = state.value.copy(draft = null, conflict = null, errorMessage = null) }
-    fun discardInputs() { state.value = state.value.copy(draft = null, reason = "", reviewEvidence = "", conflict = null) }
+    fun discardDraft() {
+        val before = state.value
+        val scope = scopeAtRead
+        viewModelScope.launch {
+            try {
+                withContext(ioDispatcher) { repository.saveDraft(taskId,
+                    if (before.reason.isNotBlank() || before.reviewEvidence.isNotBlank()) SavedTaskDraft(
+                        reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis()) else null, scope) }
+                state.value = state.value.copy(draft = null, conflict = null, errorMessage = null)
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage ?: "Could not discard the saved evidence.") }
+        }
+    }
+    fun discardInputs(onComplete: () -> Unit = {}) {
+        val scope = scopeAtRead
+        viewModelScope.launch {
+            try {
+                withContext(ioDispatcher) { repository.saveDraft(taskId, null, scope) }
+                state.value = state.value.copy(draft = null, reason = "", reviewEvidence = "", conflict = null)
+                onComplete()
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage ?: "Could not discard the saved draft.") }
+        }
+    }
+    fun saveLocalDraft() {
+        val before = state.value
+        val scope = scopeAtRead
+        viewModelScope.launch {
+            try {
+                withContext(ioDispatcher) { repository.saveDraft(taskId, SavedTaskDraft(evidence = before.draft,
+                    reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis()), scope) }
+                state.value = state.value.copy(successMessage = "Draft saved only on this device. It has not changed server progress or acceptance.")
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage ?: "Could not save the local draft.") }
+        }
+    }
     fun saveProgress() {
         val before = state.value
         val draft = before.draft ?: return
@@ -139,6 +199,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
 
     private fun mutate(clearDraft: Boolean = false, clearInputs: Boolean = false, call: suspend () -> Result<Task>) {
         if (state.value.isUpdatingStatus) return
+        val scope = scopeAtRead
         state.value = state.value.copy(isUpdatingStatus = true, errorMessage = null, successMessage = null)
         viewModelScope.launch {
             try {
@@ -148,6 +209,11 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
                         reason = if (clearInputs) "" else state.value.reason,
                         reviewEvidence = if (clearInputs) "" else state.value.reviewEvidence,
                         successMessage = "Saved on the server. Reloading current work.")
+                    val remaining = state.value
+                    withContext(ioDispatcher) {
+                        repository.saveDraft(taskId, if (remaining.hasUnsavedInputs) SavedTaskDraft(evidence = remaining.draft,
+                            reason = remaining.reason, reviewEvidence = remaining.reviewEvidence, savedAt = System.currentTimeMillis()) else null, scope)
+                    }
                     loadTask()
                 }, onFailure = { error ->
                     state.value = state.value.copy(isUpdatingStatus = false, authoritative = false,

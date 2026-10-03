@@ -16,6 +16,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -27,6 +31,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -104,6 +109,75 @@ class TaskRepositoryTest {
     }
 
     @Test
+    fun deletedOrForbiddenTaskIsRemovedInsteadOfReturnedAsCachedSuccess() = runTest(testDispatcher) {
+        for (code in listOf(403, 404)) {
+            mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Private work\",\"status\":\"planned\",\"version\":3}"))
+            assertTrue(repository.getTaskById(5).isSuccess)
+            mockWebServer.enqueue(MockResponse().setResponseCode(code).setBody("{\"detail\":\"Unavailable\"}"))
+            val result = repository.getTaskById(5)
+            assertTrue(result.isFailure)
+            assertEquals(code, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
+            assertTrue(repository.cachedTasks.first().isEmpty())
+        }
+    }
+
+    @Test
+    fun olderResponseCannotReplaceNewerTaskVersion() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Old work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val older = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"New work\",\"status\":\"active\",\"version\":4}"))
+        assertTrue(repository.getTaskById(5).isSuccess)
+        assertTrue(older.await().isFailure)
+        assertEquals(4, repository.cachedTasks.first().single().version)
+        assertEquals("New work", repository.cachedTasks.first().single().title)
+    }
+
+    @Test
+    fun serverSwitchAndCanceledRequestsCannotPublishOldPrivateData() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Old private work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val request = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        tokenManager.baseUrl = "https://different.example/"
+        assertTrue(request.await().isFailure)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+        tokenManager.baseUrl = mockWebServer.url("/").toString()
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Canceled work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val canceled = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        canceled.cancelAndJoin()
+        assertTrue(canceled.isCancelled)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+    }
+
+    @Test
+    fun savedPrivateDraftIsIsolatedAcrossServerAndAccountChanges() {
+        val storage = object : com.workchord.android.data.api.DraftStorage {
+            val values = mutableMapOf<String, String>()
+            override fun read(scope: String, taskId: Int) = values["$scope:$taskId"]
+            override fun write(scope: String, taskId: Int, value: String?) {
+                if (value == null) values.remove("$scope:$taskId") else values["$scope:$taskId"] = value
+            }
+            override fun clear(scope: String) { values.keys.filter { it.startsWith("$scope:") }.toList().forEach { values.remove(it) } }
+        }
+        val tokens = TokenManager(draftStorage = storage).apply { baseUrl = "https://workspace.example/"; principalId = 19 }
+        val first = TaskRepositoryImpl(api, tokens, testDispatcher)
+        val draft = com.workchord.android.data.models.SavedTaskDraft(reason = "Private review notes", savedAt = 1000)
+        val originalScope = first.draftScope
+        first.saveDraft(72, draft, originalScope)
+        assertEquals("Private review notes", TaskRepositoryImpl(api, tokens, testDispatcher).savedDraft(72)!!.reason)
+        tokens.principalId = 20
+        assertNull(first.savedDraft(72))
+        try { first.saveDraft(72, draft, originalScope); fail("An old account must not save into the new scope") }
+        catch (_: IllegalStateException) { }
+        tokens.principalId = 19
+        assertEquals("Private review notes", first.savedDraft(72)!!.reason)
+        tokens.baseUrl = "https://other.example/"
+        tokens.principalId = 19
+        assertNull(first.savedDraft(72))
+    }
+
+    @Test
     fun testGetWhoAmISuccess() = runTest(testDispatcher) {
         val sessionJson = """
             {
@@ -138,7 +212,7 @@ class TaskRepositoryTest {
         val result = repository.getWhoAmI()
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("401") == true)
+        assertEquals(401, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -195,7 +269,7 @@ class TaskRepositoryTest {
         val result = repository.fetchTasks(iterationId = 1)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("Failed to fetch tasks") == true)
+        assertEquals(500, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -248,7 +322,7 @@ class TaskRepositoryTest {
     }
 
     @Test
-    fun testGetTaskByIdOfflineFallbackToCacheOnNetworkFailure() = runTest(testDispatcher) {
+    fun temporaryFailureIsNotAReportedCachedSuccess() = runTest(testDispatcher) {
         // Step 1: Pre-populate cache via fetchTasks
         val initialTasks = """
             [
@@ -269,12 +343,9 @@ class TaskRepositoryTest {
 
         val result = repository.getTaskById(5)
 
-        // Should return the cached task gracefully
-        assertTrue(result.isSuccess)
-        val task = result.getOrNull()
-        assertNotNull(task)
-        assertEquals(5, task?.id)
-        assertEquals("Cached Task", task?.title)
+        assertTrue(result.isFailure)
+        assertEquals(503, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
+        assertEquals("Cached Task", repository.cachedTasks.first().single().title)
     }
 
     @Test
@@ -284,7 +355,7 @@ class TaskRepositoryTest {
         val result = repository.getTaskById(999)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("404") == true)
+        assertEquals(404, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -414,7 +485,7 @@ class TaskRepositoryTest {
         assertTrue(result.isFailure)
         val errorMsg = result.exceptionOrNull()?.message
         assertNotNull(errorMsg)
-        assertTrue(errorMsg?.contains("version_conflict") == true || errorMsg?.contains("Failed to update status") == true)
+        assertEquals("task_version_conflict", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
     }
 
     @Test

@@ -15,8 +15,9 @@ interface CredentialStore {
     fun write(value: String?)
 }
 
-class EncryptedCredentialStore(context: Context) : CredentialStore {
-    private val file = File(context.noBackupFilesDir, "native-session.bin")
+class EncryptedCredentialStore(context: Context, private val fileName: String = "native-session.bin") : CredentialStore {
+    init { require(fileName.matches(Regex("[A-Za-z0-9_.-]+")) && fileName != "." && fileName != "..") }
+    private val file = File(context.noBackupFilesDir, fileName)
 
     private fun key(): SecretKey {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
@@ -51,7 +52,7 @@ class EncryptedCredentialStore(context: Context) : CredentialStore {
         }
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key())
-        val temporary = File(file.parentFile, "native-session.pending")
+        val temporary = File(file.parentFile, "$fileName.pending")
         temporary.writeBytes(cipher.iv + cipher.doFinal(value.toByteArray(Charsets.UTF_8)))
         check(temporary.renameTo(file)) { "Could not securely save the session. Sign in again." }
     }

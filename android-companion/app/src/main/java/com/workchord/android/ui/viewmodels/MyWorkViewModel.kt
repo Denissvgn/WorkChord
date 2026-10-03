@@ -23,7 +23,8 @@ data class MyWorkUiState(val isLoading: Boolean = true, val isRefreshing: Boolea
     val identity: Identity? = null, val projects: List<Project> = emptyList(), val iterations: List<Iteration> = emptyList(),
     val queues: Map<String, List<TaskReference>> = emptyMap(), val workState: String? = null,
     val selection: WorkSelection = WorkSelection(), val hasMore: Boolean = false, val nextAfterId: Int? = null,
-    val filtersSupported: Boolean = false, val errorMessage: String? = null) {
+    val filtersSupported: Boolean = false, val errorMessage: String? = null,
+    val source: String = "unknown", val fetchedAt: Long? = null) {
     val selectedFilter get() = TaskFilter.entries.firstOrNull { it.queue == selection.queue } ?: TaskFilter.ALL
     val visibleWork get() = if (selectedFilter == TaskFilter.ALL) queues.values.flatten().distinctBy { it.id }
         else queues[selection.queue].orEmpty()
@@ -34,6 +35,8 @@ class MyWorkViewModel(private val repository: TaskRepository) : ViewModel() {
     val uiState = state.asStateFlow()
     private var loadJob: Job? = null
     private var generation = 0L
+    private var cached: MyWorkUiState? = null
+    private var cachedScope: String? = null
 
     init {
         loadData()
@@ -51,6 +54,7 @@ class MyWorkViewModel(private val repository: TaskRepository) : ViewModel() {
     fun selectBacklog() = select(state.value.selection.copy(iterationId = null, backlogOnly = true))
     fun clearScope() = select(WorkSelection(queue = state.value.selection.queue))
     private fun select(selection: WorkSelection) {
+        cached = null
         repository.workSelection = selection
         state.value = state.value.copy(selection = selection, queues = emptyMap(), nextAfterId = null, hasMore = false)
         reload(false)
@@ -99,12 +103,25 @@ class MyWorkViewModel(private val repository: TaskRepository) : ViewModel() {
                 } else work.queues.orEmpty()
                 state.value = state.value.copy(isLoading = false, isRefreshing = false, identity = identity,
                     projects = projects, iterations = iterations, queues = queues, workState = work.state,
-                    hasMore = work.hasMore != false, nextAfterId = work.nextAfterId, filtersSupported = filters)
+                    hasMore = work.hasMore != false, nextAfterId = work.nextAfterId, filtersSupported = filters,
+                    source = "remote", fetchedAt = System.currentTimeMillis())
+                cached = state.value
+                cachedScope = repository.draftScope
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) {
-                if (current == generation) state.value = state.value.copy(isLoading = false, isRefreshing = false,
-                    identity = null, projects = emptyList(), iterations = emptyList(), filtersSupported = false,
-                    queues = emptyMap(), hasMore = false, nextAfterId = null, errorMessage = error.localizedMessage ?: "Could not refresh your work.")
+                if (current == generation) {
+                    val temporary = error is java.io.IOException || error is ApiProblem && error.statusCode >= 500
+                    val snapshot = cached?.takeIf { temporary && cachedScope == repository.draftScope }
+                    if (snapshot != null) state.value = snapshot.copy(isLoading = false, isRefreshing = false, source = "cache",
+                        errorMessage = "Cached read-only work. Current access and acceptance are unverified until refresh.")
+                    else {
+                        cached = null
+                        state.value = state.value.copy(isLoading = false, isRefreshing = false,
+                            identity = null, projects = emptyList(), iterations = emptyList(), filtersSupported = false,
+                            queues = emptyMap(), hasMore = false, nextAfterId = null, source = "unavailable",
+                            errorMessage = error.localizedMessage ?: "Could not refresh your work.")
+                    }
+                }
             }
         }
     }

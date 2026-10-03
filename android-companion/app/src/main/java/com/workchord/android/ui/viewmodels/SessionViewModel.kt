@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.MessageDigest
@@ -25,7 +26,10 @@ class SessionViewModel(private val tokens: TokenManager, private val api: () -> 
     val uiState = state.asStateFlow()
     private var operation: Job? = null
 
-    init { refresh() }
+    init {
+        refresh()
+        viewModelScope.launch { tokens.sessionInvalidations.drop(1).collect { refresh() } }
+    }
 
     private fun work(action: suspend () -> Unit) {
         operation?.cancel()
@@ -90,6 +94,7 @@ class SessionViewModel(private val tokens: TokenManager, private val api: () -> 
 
     fun logout() = work {
         try {
+            tokens.clearSavedDrafts()
             val response = api().logout()
             if (!response.isSuccessful && response.code() != 401) throw IllegalStateException("Could not revoke the server session (${response.code()}).")
         } finally {

@@ -5,9 +5,12 @@ import android.content.SharedPreferences
 import com.workchord.android.BuildConfig
 import com.google.gson.Gson
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.security.MessageDigest
 
 open class TokenManager(context: Context? = null, private val store: CredentialStore? = context?.let { EncryptedCredentialStore(it) },
-    private val allowDebugHttp: Boolean = BuildConfig.DEBUG) {
+    private val allowDebugHttp: Boolean = BuildConfig.DEBUG, val draftStorage: DraftStorage? = context?.let { EncryptedDraftStorage(it) }) {
     private val prefs: SharedPreferences? = try {
         context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     } catch (e: Exception) {
@@ -21,6 +24,16 @@ open class TokenManager(context: Context? = null, private val store: CredentialS
     private var secrets: NativeSecrets = store?.read()?.let { gson.fromJson(it, NativeSecrets::class.java) } ?: NativeSecrets()
     private var generation = 0L
     val scopeGeneration: Long get() = generation
+    private val invalidations = MutableStateFlow(0L)
+    val sessionInvalidations = invalidations.asStateFlow()
+
+    fun draftScope(): String? {
+        val principal = principalId?.takeIf { it > 0 } ?: return null
+        val value = "$baseUrl\n$principal"
+        return MessageDigest.getInstance("SHA-256").digest(value.toByteArray()).joinToString("") { "%02x".format(it) }
+    }
+    fun invalidateSession() { clearCredentials(); invalidations.value++ }
+    fun clearSavedDrafts() { draftScope()?.let { draftStorage?.clear(it) } }
 
     @Synchronized
     private fun persist() { secrets = secrets.copy(serverUrl = baseUrl); store?.write(gson.toJson(secrets)) }
