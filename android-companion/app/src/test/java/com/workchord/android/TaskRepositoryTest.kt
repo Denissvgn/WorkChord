@@ -1,6 +1,7 @@
 package com.workchord.android
 
 import com.workchord.android.data.api.AuthInterceptor
+import com.workchord.android.data.api.SessionCookieJar
 import com.workchord.android.data.api.TokenManager
 import com.workchord.android.data.api.WorkChordApi
 import com.workchord.android.data.models.Assignee
@@ -46,7 +47,7 @@ class TaskRepositoryTest {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        tokenManager = TokenManager().apply {
+        tokenManager = TokenManager(allowDebugHttp = true).apply {
             baseUrl = mockWebServer.url("/").toString()
             agentApiKey = "test-agent-key-123"
         }
@@ -54,6 +55,7 @@ class TaskRepositoryTest {
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(2, TimeUnit.SECONDS)
             .readTimeout(2, TimeUnit.SECONDS)
+            .cookieJar(SessionCookieJar(tokenManager))
             .addInterceptor(AuthInterceptor(tokenManager))
             .build()
 
@@ -469,7 +471,7 @@ class TaskRepositoryTest {
 
     @Test
     fun testAuthInterceptorAttachesTokenAndCapturesCookie() = runTest(testDispatcher) {
-        tokenManager.sessionToken = "existing_session_token_xyz"
+        tokenManager.nativeAccessToken = "existing_native_token_xyz"
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -480,11 +482,9 @@ class TaskRepositoryTest {
         repository.getWhoAmI()
 
         val recordedRequest = mockWebServer.takeRequest()
-        assertEquals(null, recordedRequest.getHeader("Authorization"))
-        assertEquals("workchord_session=existing_session_token_xyz", recordedRequest.getHeader("Cookie"))
-
-        // Verify new cookie token was persisted in tokenManager
-        assertEquals("new_refreshed_token_abc", tokenManager.sessionToken)
+        assertEquals("Bearer existing_native_token_xyz", recordedRequest.getHeader("Authorization"))
+        assertEquals(null, recordedRequest.getHeader("Cookie"))
+        assertEquals("workchord_session=new_refreshed_token_abc", tokenManager.cookies.single().substringBefore(';'))
     }
     @Test
     fun identityComesFromAuthenticatedEndpointAndClearsPriorCache() = runTest(testDispatcher) {

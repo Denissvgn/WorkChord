@@ -14,24 +14,12 @@ class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {
             builder.header("X-Agent-API-Key", apiKey)
         }
 
-        // The backend's opaque browser session is carried in its named cookie.
-        tokenManager.sessionToken?.takeIf { it.isNotBlank() }?.let { token ->
-            builder.header("Cookie", "workchord_session=$token")
+        tokenManager.nativeAccessToken?.takeIf { it.isNotBlank() }?.let { token ->
+            builder.header("Authorization", "Bearer $token")
         }
-
-        val response = chain.proceed(builder.build())
-
-        // Extract and persist session cookies if present
-        val cookies = response.headers("Set-Cookie")
-        for (cookie in cookies) {
-            if (cookie.startsWith("workchord_session=")) {
-                val token = cookie.substringAfter("workchord_session=").substringBefore(";")
-                if (token.isNotBlank()) {
-                    tokenManager.sessionToken = token
-                }
-            }
+        if (originalRequest.method !in setOf("GET", "HEAD", "OPTIONS") && tokenManager.cookies.isNotEmpty()) {
+            tokenManager.csrfToken?.let { builder.header("X-CSRF-Token", it) }
         }
-
-        return response
+        return chain.proceed(builder.build())
     }
 }

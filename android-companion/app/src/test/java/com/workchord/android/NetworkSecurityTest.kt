@@ -20,7 +20,7 @@ class NetworkSecurityTest {
     fun releaseRejectsHttpBeforeCredentialsAreSent() {
         MockWebServer().use { server ->
             server.start()
-            val tokens = TokenManager().apply {
+            val tokens = TokenManager(allowDebugHttp = true).apply {
                 baseUrl = server.url("/").toString()
                 sessionToken = "private-session"
                 agentApiKey = "private-agent-key"

@@ -12,9 +12,19 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface WorkChordApi {
+
+    @POST("api/auth/native-connections/start")
+    suspend fun startNativeConnection(@Body request: NativeStartRequest): Response<NativeStartResponse>
+
+    @POST("api/auth/native-connections/exchange")
+    suspend fun exchangeNativeConnection(@Body request: NativeExchangeRequest): Response<NativeTokenResponse>
+
+    @POST("api/auth/logout")
+    suspend fun logout(): Response<Map<String, Boolean>>
 
     @GET("api/auth/me")
     suspend fun getIdentity(): Response<Identity>
@@ -50,3 +60,15 @@ interface WorkChordApi {
     @GET("api/projects")
     suspend fun getProjects(): Response<List<Project>>
 }
+
+data class NativeStartRequest(@com.google.gson.annotations.SerializedName("code_challenge") val codeChallenge: String)
+data class NativeStartResponse(@com.google.gson.annotations.SerializedName("request_id") val requestId: String,
+    @com.google.gson.annotations.SerializedName("verification_code") val verificationCode: String,
+    @com.google.gson.annotations.SerializedName("verification_path") val verificationPath: String,
+    @com.google.gson.annotations.SerializedName("expires_at") val expiresAt: String)
+data class NativeExchangeRequest(@com.google.gson.annotations.SerializedName("request_id") val requestId: String,
+    @com.google.gson.annotations.SerializedName("code_verifier") val codeVerifier: String)
+data class NativeTokenResponse(val status: String? = null,
+    @com.google.gson.annotations.SerializedName("access_token") val accessToken: String? = null,
+    @com.google.gson.annotations.SerializedName("token_type") val tokenType: String? = null,
+    @com.google.gson.annotations.SerializedName("expires_at") val expiresAt: String? = null)

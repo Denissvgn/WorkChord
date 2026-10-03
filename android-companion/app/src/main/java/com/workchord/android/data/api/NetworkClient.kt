@@ -26,6 +26,7 @@ object NetworkClient {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .followRedirects(false)
                 .followSslRedirects(false)
+                .cookieJar(SessionCookieJar(tokenManager))
                 .addInterceptor(TransportPolicyInterceptor({ tokenManager.baseUrl }, BuildConfig.DEBUG))
                 .addInterceptor(AuthInterceptor(tokenManager))
                 .addInterceptor(logging)

@@ -26,6 +26,8 @@ KNOWN_PREFIXES = ("/tasks", "/notifications", "/iterations", "/projects", "/init
 
 
 def public_capability(path, method):
+    if path in {"/auth/native-connections/start", "/auth/native-connections/exchange"} and method == "POST":
+        return True
     if path in {"/intake/web", "/github/webhooks"} and method == "POST":
         return True
     if path.startswith("/plan-shares/") and path.count("/") == 2 and method == "GET":
