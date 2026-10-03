@@ -19,7 +19,7 @@ _Auto-generated from `CriterionProgress` in `backend/app/schemas/task_brief.py`.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `criterion_id` | `str` | `criterion_id` | Yes | No | — | max_length=64; min_length=1 | — | — |
+| `criterion_id` | `str` | `criterion_id` | Yes | No | — | min_length=1; max_length=64 | — | — |
 | `criterion_revision` | `int` | `criterion_revision` | Yes | No | — | ge=1 | — | — |
 | `state` | `Literal['pending', 'in_progress', 'completed']` | `state` | No | No | `'pending'` | — | — | — |
 | `evidence` | `str` | `evidence` | No | No | `''` | max_length=8000 | — | — |

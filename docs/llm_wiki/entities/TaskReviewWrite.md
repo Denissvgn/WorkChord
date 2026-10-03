@@ -23,7 +23,7 @@ _Auto-generated from `TaskReviewWrite` in `backend/app/schemas/task_brief.py`._
 | `brief_revision` | `int` | `brief_revision` | Yes | No | — | ge=0 | — | — |
 | `artifact_revision` | `int` | `artifact_revision` | Yes | No | — | ge=0 | — | — |
 | `verdict` | `Literal['accept', 'reject']` | `verdict` | Yes | No | — | — | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | max_length=8000; min_length=1 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=8000 | — | — |
 | `evidence` | `str` | `evidence` | No | No | `''` | max_length=8000 | — | — |
 
 ## Methods

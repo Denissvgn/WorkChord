@@ -17,7 +17,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
-| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse` |
+| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
@@ -85,6 +85,7 @@ flowchart LR
 | `record_task_progress` | *(async)* `(task_id: int, data: ProgressWrite, db: DB)` | `@router.post('/tasks/{task_id}/progress', response_model=TaskResponse)` | — |
 | `review_task` | *(async)* `(task_id: int, data: TaskReviewWrite, db: DB)` | `@router.post('/tasks/{task_id}/review', response_model=TaskResponse)` | — |
 | `task_reviews` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/reviews', response_model=list[TaskReviewResponse])` | — |
+| `current_task_review` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/reviews/current', response_model=CurrentTaskReviewResponse)` | — |
 | `brief_history_page` | *(async)* `(db, task_id, model, after_id, limit)` | — | — |
 | `task_brief_history` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=10, ge=1, le=20), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/brief/history')` | — |
 | `task_progress_history` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=10, ge=1, le=20), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/progress/history')` | — |

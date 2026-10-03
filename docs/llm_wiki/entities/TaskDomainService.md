@@ -1,6 +1,6 @@
 # TaskDomainService
 
-**Location:** `backend/app/services/task_domain_service.py:150`
+**Location:** `backend/app/services/task_domain_service.py:151`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_domain_service](../modules/task_domain_service.md)
@@ -40,9 +40,9 @@ flowchart LR
     n7["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
     n8["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
     n9["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
-    n10["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n11["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
-    n12["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n10["test_progress_availability_matches_open_leaf_execution_permission (backend/tests/test_task_domain.py)"]
+    n11["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n12["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_domain.md"
     click n10 "../modules/test_task_domain.md"
-    click n11 "../modules/test_task_domain_integrity.md"
+    click n11 "../modules/test_task_domain.md"
     click n12 "../modules/test_task_domain_integrity.md"
 ```
 
@@ -89,6 +89,8 @@ flowchart LR
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_owner_and_ids_survive_commit_uncommit` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
+| `test_progress_availability_matches_open_leaf_execution_permission` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_blocked_metrics_include_explicit_and_canceled_dependencies` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
-| `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

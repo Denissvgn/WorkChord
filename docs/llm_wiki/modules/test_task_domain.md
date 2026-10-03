@@ -13,7 +13,7 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app` | `mcp_agent_tools` |
 | `app.authority` | `Authority`, `AuthorityError` |
 | `app.commands` | `command_transaction` |
-| `app.main` | `app` |
+| `app.main` | `app`, `app` |
 | `app.models.agent` | `AgentRun`, `AgentTaskAssignment`, `AgentActor`, `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership` |
 | `app.models.task` | `Task` |
@@ -36,7 +36,7 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app.utils.time` | `utc_now`, `utc_now` |
 | `dataclasses` | `replace` |
 | `datetime` | `timedelta`, `timedelta` |
-| `httpx` | `httpx` |
+| `httpx` | `httpx`, `httpx` |
 | `json` | `json` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `func`, `select` |
@@ -88,3 +88,5 @@ flowchart LR
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | *(async)* `(delivery_store)` | — | — |
 | `test_triage_handoff_preserves_canonical_fields_and_criterion_ids` | *(async)* `(delivery_store)` | — | — |
 | `test_managed_assigned_submission_and_independent_rework` | *(async)* `(delivery_store)` | — | — |
+| `test_progress_availability_matches_open_leaf_execution_permission` | *(async)* `(delivery_store)` | — | — |
+| `test_current_review_does_not_depend_on_first_history_page` | *(async)* `(delivery_store)` | — | — |

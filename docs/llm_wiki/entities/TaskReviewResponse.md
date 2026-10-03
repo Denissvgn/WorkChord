@@ -40,14 +40,17 @@ _Auto-generated from `TaskReviewResponse` in `backend/app/schemas/task_brief.py`
 flowchart LR
     n0["TaskReviewResponse (backend/app/schemas/task_brief.py)"]
     n1["BaseModel"]
-    n2["task_reviews (backend/app/routers/task_domain.py)"]
-    n3["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
+    n2["current_task_review (backend/app/routers/task_domain.py)"]
+    n3["task_reviews (backend/app/routers/task_domain.py)"]
+    n4["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/routers_task_domain.md"
-    click n3 "../modules/generate_mobile_contract_fixtures.md"
+    click n3 "../modules/routers_task_domain.md"
+    click n4 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -66,5 +69,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `current_task_review` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_reviews` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |

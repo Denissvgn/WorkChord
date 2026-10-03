@@ -10,6 +10,8 @@ Shared domain policy projects allowed actions and typed blockers across REST and
 
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
 
+Progress availability follows open-leaf execution permission and excludes direct agent evidence writes, which use their fenced work protocol. Current review projection support is advertised only with the adopted domain state; current verdicts and bounded history have distinct read surfaces.
+
 ## Imports
 
 | Source | Symbols |
@@ -62,7 +64,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 150 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 151 | — | — |
 
 ## Functions
 

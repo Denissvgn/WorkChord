@@ -42,7 +42,7 @@ flowchart LR
     n3["backend/app/routers/task_domain.py"]
     n4["TaskBriefService.record_review (backend/app/services/task_brief_service.py)"]
     n5["backend/app/services/task_recovery_service.py"]
-    n6["backend/tests/test_task_domain.py"]
+    n6["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -78,4 +78,4 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskBriefService.record_review` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |
-| `test_task_domain` | import | [test_task_domain](../modules/test_task_domain.md) | — |
+| `test_current_review_does_not_depend_on_first_history_page` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |

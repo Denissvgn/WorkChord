@@ -635,3 +635,43 @@ Documented canonical mobile examples, explicit unknown/nullable state, stable cr
 ## 2026-10-03 — Scoped mobile work navigation
 
 Documented typed human ownership and independent-review queues with scope filtering before live pagination. Native navigation keeps reference projections separate from richer task detail and scopes saved selections to server/account identity.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:622d6ba072997e938d105b2a64e1e32bc47ef68b37e69b3ca54c93ba9b6b0b8f`
+- Pages created: 0
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2770
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:109d58c53f2f31ead25526d6bd602a25c05cd8614001cd06de91649f0a513a58`
+- Pages created: 2
+- Pages updated: 18
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2754
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-03 — Mobile evidence and independent verdicts
+
+Documented current action/ownership snapshots, canonical criterion evidence with stable revisions, retained drafts under conflicts, and permission-scoped current-verdict lookup separate from bounded review history.

@@ -31,16 +31,17 @@ _Auto-generated from `TaskDetailService` in `backend/app/services/task_detail_se
 flowchart LR
     n0["TaskDetailService (backend/app/services/task_detail_service.py)"]
     n1["get_task_detail (backend/app/mcp_agent_tools.py)"]
-    n2["human_my_work (backend/app/routers/task_domain.py)"]
-    n3["lookup_tasks (backend/app/routers/task_domain.py)"]
-    n4["task_detail (backend/app/routers/task_domain.py)"]
-    n5["task_review_queue (backend/app/routers/task_domain.py)"]
-    n6["task_reviews (backend/app/routers/task_domain.py)"]
-    n7["test_lookup_matches_id_case_and_literal_wildcards_without_private_counts (backend/tests/test_human_work_queries.py)"]
-    n8["test_my_work_filters_before_pagination_and_preserves_scope (backend/tests/test_human_work_queries.py)"]
-    n9["test_my_work_includes_nested_and_backlog_without_private_work (backend/tests/test_human_work_queries.py)"]
-    n10["test_withdrawn_acceptance_stays_visible_in_owned_blocked_work (backend/tests/test_human_work_queries.py)"]
-    n11["test_bounded_detail_does_not_populate_execution_children (backend/tests/test_task_domain.py)"]
+    n2["current_task_review (backend/app/routers/task_domain.py)"]
+    n3["human_my_work (backend/app/routers/task_domain.py)"]
+    n4["lookup_tasks (backend/app/routers/task_domain.py)"]
+    n5["task_detail (backend/app/routers/task_domain.py)"]
+    n6["task_review_queue (backend/app/routers/task_domain.py)"]
+    n7["task_reviews (backend/app/routers/task_domain.py)"]
+    n8["test_lookup_matches_id_case_and_literal_wildcards_without_private_counts (backend/tests/test_human_work_queries.py)"]
+    n9["test_my_work_filters_before_pagination_and_preserves_scope (backend/tests/test_human_work_queries.py)"]
+    n10["test_my_work_includes_nested_and_backlog_without_private_work (backend/tests/test_human_work_queries.py)"]
+    n11["test_withdrawn_acceptance_stays_visible_in_owned_blocked_work (backend/tests/test_human_work_queries.py)"]
+    n12["test_bounded_detail_does_not_populate_execution_children (backend/tests/test_task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -52,6 +53,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/task_detail_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_task_domain.md"
@@ -59,11 +61,12 @@ flowchart LR
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/routers_task_domain.md"
     click n6 "../modules/routers_task_domain.md"
-    click n7 "../modules/test_human_work_queries.md"
+    click n7 "../modules/routers_task_domain.md"
     click n8 "../modules/test_human_work_queries.md"
     click n9 "../modules/test_human_work_queries.md"
     click n10 "../modules/test_human_work_queries.md"
-    click n11 "../modules/test_task_domain.md"
+    click n11 "../modules/test_human_work_queries.md"
+    click n12 "../modules/test_task_domain.md"
 ```
 
 ### Summary
@@ -77,6 +80,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `get_task_detail` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `current_task_review` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `human_my_work` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `lookup_tasks` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `task_detail` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |

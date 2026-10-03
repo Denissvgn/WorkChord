@@ -111,3 +111,4 @@ flowchart LR
 | [ProgressWrite](../entities/ProgressWrite.md) | 64 | `BaseModel` | — |
 | [TaskReviewWrite](../entities/TaskReviewWrite.md) | 80 | `BaseModel` | — |
 | [TaskReviewResponse](../entities/TaskReviewResponse.md) | 90 | `BaseModel` | — |
+| [CurrentTaskReviewResponse](../entities/CurrentTaskReviewResponse.md) | 103 | `BaseModel` | — |
