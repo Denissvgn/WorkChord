@@ -675,3 +675,7 @@ Documented typed human ownership and independent-review queues with scope filter
 ## 2026-10-03 — Mobile evidence and independent verdicts
 
 Documented current action/ownership snapshots, canonical criterion evidence with stable revisions, retained drafts under conflicts, and permission-scoped current-verdict lookup separate from bounded review history.
+
+## 2026-10-03 — Mobile freshness and private drafts
+
+Reviewed native reads, identity/server isolation, monotonic cache versions, explicit device-only saved drafts, and read-only timestamped recovery. Kotlin extraction is unavailable; these behaviors are supported by direct source inspection and native build checks, rather than generated architectural coverage.
