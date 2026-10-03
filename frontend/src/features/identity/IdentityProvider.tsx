@@ -25,7 +25,8 @@ const clearDrafts = (scope?: string) => {
     }
 };
 
-export const IdentityProvider = ({ children }: { children: ReactNode }) => {
+export const IdentityProvider = ({ children, navigateAfterSignOut = target => window.location.assign(target) }:
+    { children: ReactNode; navigateAfterSignOut?: (target: string) => void }) => {
     const { t } = useTranslation();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -108,7 +109,10 @@ export const IdentityProvider = ({ children }: { children: ReactNode }) => {
             previous.current = null;
             queryClient.clear();
             workClient.clear();
-            window.location.assign('/');
+            const request = new URLSearchParams(location.search).get('request');
+            const destination = location.pathname === '/mobile/connect' && request && /^[A-Za-z0-9_-]{43}$/.test(request)
+                ? `/mobile/connect?request=${encodeURIComponent(request)}` : '/';
+            navigateAfterSignOut(destination);
         } catch (cause) { setError(getApiErrorMessage(cause, t('identity.logoutFailed'))); }
     };
     const signOut = async () => {

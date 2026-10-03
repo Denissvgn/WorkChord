@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.workchord.android.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -45,7 +47,13 @@ fun StatusChip(
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
-            text = status.displayName,
+            text = stringResource(when (status) {
+                TaskStatus.PLANNED -> R.string.status_planned
+                TaskStatus.ACTIVE -> R.string.status_active
+                TaskStatus.RESOLVED -> R.string.status_resolved
+                TaskStatus.CLOSED -> R.string.status_closed
+                TaskStatus.UNKNOWN -> R.string.status_unknown
+            }),
             color = textColor,
             style = MaterialTheme.typography.labelMedium
         )

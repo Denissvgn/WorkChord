@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -37,9 +38,13 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         requestedTaskId = taskLink(intent)
     }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("pending-task-link", requestedTaskId ?: 0)
+        super.onSaveInstanceState(outState)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedTaskId = taskLink(intent)
+        requestedTaskId = if (savedInstanceState != null) savedInstanceState.getInt("pending-task-link").takeIf { it > 0 } else taskLink(intent)
         enableEdgeToEdge()
 
         val app = application as WorkChordApplication
@@ -61,11 +66,11 @@ class MainActivity : ComponentActivity() {
                             val navController = rememberNavController()
                             Column(Modifier.safeDrawingPadding()) {
                                 TextButton(onClick = { session.logout() }, enabled = !state.loading) {
-                                    Text("${state.identity?.principal?.displayName ?: "Signed in"} · Sign out")
+                                    Text(stringResource(R.string.account_sign_out, state.identity?.principal?.displayName ?: stringResource(R.string.account_signed_in)))
                                 }
                                 AppNavigation(navController = navController, taskRepository = repository,
                                     initialTaskId = requestedTaskId,
-                                    onInitialTaskOpened = { requestedTaskId = null },
+                                    onInitialTaskOpened = { requestedTaskId = null; intent.data = null },
                                     modifier = Modifier.weight(1f))
                             }
                         }

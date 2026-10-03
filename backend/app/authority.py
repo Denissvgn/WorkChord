@@ -216,7 +216,11 @@ def _check_bulk_write(state, authority):
                 action = "execute"
     if not authority.operator and not authority.local and table is not None:
         from app.database import Base
-        if "project_id" in table.c:
+        if name == "application_snapshots":
+            target = Base.metadata.tables["iterations"]
+            project_column = func.coalesce(table.c.project_id, target.c.project_id)
+            source = table.outerjoin(target, table.c.iteration_id == target.c.id)
+        elif "project_id" in table.c:
             project_column = table.c.project_id
             source = table
         elif name == "triage_items":

@@ -5,6 +5,7 @@ import asyncio
 import os
 
 import uvicorn
+from fastapi import Request
 
 from tests.support.database import assert_safe_test_database_url
 
@@ -22,6 +23,11 @@ def main():
         async with async_session_maker() as db:
             scenario = await seed_delivery_scenario(db)
             if os.environ.get("WORKCHORD_AUTH_MODE") == "managed":
+                from app.models.task import Task
+                for name in ("planned", "active", "resolved", "closed_urgent", "closed_low", "nested", "other_project"):
+                    task = await db.get(Task, scenario.tasks[name])
+                    task.owner_profile_id = scenario.profile
+                    task.ownership_provenance = "explicit"
                 from app.models.identity import Principal, IdentitySubject, ProjectMembership, PrincipalProfileLink
                 for index, name in enumerate(["alice", "bob", "charlie"]):
                     principal = Principal(kind="human", display_name=name.title())
@@ -38,9 +44,36 @@ def main():
     from app.main import app
     nonce = os.environ.get("WORKCHORD_FIXTURE_NONCE")
     if nonce:
+        from fastapi import HTTPException
+        from fastapi.responses import JSONResponse
+        import time
+        faults = {}
+
+        @app.post("/api/tasks/{task_id}/_fixture/read-fault")
+        async def read_fault(request: Request, task_id: int):
+            if request.headers.get("X-Fixture-Key") != nonce:
+                raise HTTPException(403)
+            body = await request.json()
+            if not isinstance(body, dict):
+                raise HTTPException(422)
+            status = body.get("status")
+            if body.get("task_id") != task_id:
+                raise HTTPException(422)
+            if type(task_id) is not int or not 0 < task_id <= 2147483647 or status not in {0, 403, 404, 503}:
+                raise HTTPException(422)
+            faults.clear()
+            faults[task_id] = (status, time.monotonic() + 30)
+            return {"configured": True}
+
         @app.middleware("http")
         async def identify_fixture(request, call_next):
-            response = await call_next(request)
+            segments = request.url.path.split("/")
+            task_id = int(segments[3]) if len(segments) >= 4 and segments[1:3] == ["api", "tasks"] and segments[3].isdigit() else None
+            status, expires = faults.get(task_id, (0, 0))
+            if request.method == "GET" and status and time.monotonic() < expires:
+                response = JSONResponse({"detail": "Disposable injected read failure"}, status_code=status)
+            else:
+                response = await call_next(request)
             response.headers["X-WorkChord-Fixture"] = nonce
             return response
     if os.environ.get("WORKCHORD_AUTH_MODE") == "managed":

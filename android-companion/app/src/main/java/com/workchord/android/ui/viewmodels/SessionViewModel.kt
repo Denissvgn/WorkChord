@@ -110,5 +110,6 @@ class SessionViewModel(private val tokens: TokenManager, private val api: () -> 
             try { tokens.clearCredentials() }
             finally { state.value = SessionUiState(false, scope = tokens.scopeGeneration) }
         }
+        loadIdentity()
     }
 }

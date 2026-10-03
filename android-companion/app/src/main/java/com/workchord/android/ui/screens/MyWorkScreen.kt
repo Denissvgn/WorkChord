@@ -44,32 +44,34 @@ fun MyWorkScreen(viewModel: MyWorkViewModel, onTaskClick: (Int) -> Unit, modifie
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item { Text(stringResource(R.string.work_help), style = MaterialTheme.typography.bodyLarge) }
             state.fetchedAt?.let { timestamp -> item {
-                Text("${state.source} · ${java.time.Instant.ofEpochMilli(timestamp)}", style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(if (state.source == "cache") R.string.work_cached_at else R.string.work_refreshed_at,
+                    java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT).format(java.util.Date(timestamp))),
+                    style = MaterialTheme.typography.bodyMedium)
             } }
             item {
                 ScopeMenu(if (state.selection.projectId == null) stringResource(R.string.work_all_projects)
                     else state.projects.firstOrNull { it.id == state.selection.projectId }?.name ?: stringResource(R.string.work_selection_unavailable),
-                    state.filtersSupported && !state.isLoading) { dismiss ->
+                    state.filtersSupported && !state.isLoading && !state.isRefreshing) { dismiss ->
                     DropdownMenuItem(text = { Text(stringResource(R.string.work_all_projects)) }, onClick = { dismiss(); viewModel.selectProject(null) })
                     state.projects.forEach { project -> DropdownMenuItem(text = { Text(project.name) }, onClick = { dismiss(); viewModel.selectProject(project.id) }) }
                 }
                 ScopeMenu(if (state.selection.backlogOnly) stringResource(R.string.work_backlog)
                     else if (state.selection.iterationId == null) stringResource(R.string.work_all_iterations)
                     else state.iterations.firstOrNull { it.id == state.selection.iterationId }?.name ?: stringResource(R.string.work_selection_unavailable),
-                    state.filtersSupported && !state.isLoading) { dismiss ->
+                    state.filtersSupported && !state.isLoading && !state.isRefreshing) { dismiss ->
                     DropdownMenuItem(text = { Text(stringResource(R.string.work_all_iterations)) }, onClick = { dismiss(); viewModel.selectIteration(null) })
                     DropdownMenuItem(text = { Text(stringResource(R.string.work_backlog)) }, onClick = { dismiss(); viewModel.selectBacklog() })
                     state.iterations.filter { state.selection.projectId == null || it.projectId == null || it.projectId == state.selection.projectId }
                         .forEach { iteration -> DropdownMenuItem(text = { Text(iteration.name) }, onClick = { dismiss(); viewModel.selectIteration(iteration.id) }) }
                 }
                 if (state.selection.projectId != null || state.selection.iterationId != null || state.selection.backlogOnly) {
-                    TextButton(onClick = { viewModel.clearScope() }, enabled = !state.isLoading) { Text(stringResource(R.string.work_clear_scope)) }
+                    TextButton(onClick = { viewModel.clearScope() }, enabled = !state.isLoading && !state.isRefreshing) { Text(stringResource(R.string.work_clear_scope)) }
                 }
             }
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(TaskFilter.entries) { filter -> FilterChip(selected = state.selectedFilter == filter,
-                        onClick = { viewModel.setFilter(filter) }, label = { Text(queueTitle(filter)) }, enabled = !state.isLoading) }
+                        onClick = { viewModel.setFilter(filter) }, label = { Text(queueTitle(filter)) }, enabled = !state.isLoading && !state.isRefreshing) }
                 }
             }
             if (state.isLoading || state.isRefreshing) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }

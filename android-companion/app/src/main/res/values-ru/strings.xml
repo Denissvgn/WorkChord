@@ -31,4 +31,14 @@
     <string name="action_start">Начать задачу</string>
     <string name="action_resolve">Выполнить задачу</string>
     <string name="action_block">Заблокировать задачу</string>
+    <string name="status_unknown">Неподдерживаемое состояние</string>
+    <string name="account_signed_in">Вход выполнен</string>
+    <string name="account_sign_out">%1$s · Выйти</string>
+    <string name="work_refreshed_at">Обновлено %1$s</string>
+    <string name="work_cached_at">Сохранённая копия от %1$s</string>
+    <string name="brief_missing">Добавьте описание в веб-редакторе: цель задачи и ожидаемый результат.</string>
+    <string name="criteria_missing">Добавьте критерии приёмки в веб-редакторе, чтобы сохранять подтверждения.</string>
+    <string name="priority_high">P%1$d Высокий</string>
+    <string name="priority_medium">P%1$d Средний</string>
+    <string name="priority_low">P%1$d Низкий</string>
 </resources>

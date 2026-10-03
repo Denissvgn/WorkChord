@@ -8,6 +8,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.workchord.android.R
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -71,7 +73,7 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                 if (state.detail?.children?.hasMore != false) item { Text("Additional child work may be available. This is a bounded page.") }
                 item {
                     Text("Brief", style = MaterialTheme.typography.titleLarge)
-                    Text(task.brief?.goal?.takeIf { it.isNotBlank() } ?: task.description.orEmpty())
+                    Text(task.brief?.goal?.takeIf { it.isNotBlank() } ?: task.description?.takeIf { it.isNotBlank() } ?: stringResource(R.string.brief_missing))
                     listOf("Context" to task.brief?.context, "Scope" to task.brief?.scope, "Exclusions" to task.brief?.exclusions,
                         "Verification" to task.brief?.verification, "Artifacts" to task.brief?.artifactExpectations)
                         .filter { !it.second.isNullOrBlank() }.forEach { (label, value) ->
@@ -83,7 +85,7 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                     Text("Recorded progress is separate from independent acceptance.")
                     if (state.draft == null) OutlinedButton(onClick = { viewModel.beginEvidenceEdit() },
                         enabled = state.allowed("record_progress") && task.brief?.schemaVersion == 1) { Text("Edit evidence") }
-                    if (task.brief?.schemaVersion != 1) Text("Legacy checklist text is read-only. Convert it to canonical criteria in the web editor before recording criterion progress.")
+                    if (task.brief?.schemaVersion != 1) Text(stringResource(R.string.criteria_missing))
                 }
                 state.acceptanceCriteria.forEach { criterion -> item(key = "criterion-${criterion.id ?: criterion.text}") {
                     val draft = state.draft?.criteria?.firstOrNull { it.criterionId == criterion.id }

@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.workchord.android.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -23,9 +25,9 @@ fun PriorityBadge(
 ) {
     val dark = MaterialTheme.colorScheme.surface.luminance() < 0.2f
     val (textColor, label) = when {
-        priority <= 3 -> (if (dark) Color(0xFFFCA5A5) else Color(0xFFB91C1C)) to "P$priority High"
-        priority <= 6 -> (if (dark) Color(0xFFFCD34D) else Color(0xFF92400E)) to "P$priority Med"
-        else -> (if (dark) Color(0xFF6EE7B7) else Color(0xFF047857)) to "P$priority Low"
+        priority <= 3 -> (if (dark) Color(0xFFFCA5A5) else Color(0xFFB91C1C)) to stringResource(R.string.priority_high, priority)
+        priority <= 6 -> (if (dark) Color(0xFFFCD34D) else Color(0xFF92400E)) to stringResource(R.string.priority_medium, priority)
+        else -> (if (dark) Color(0xFF6EE7B7) else Color(0xFF047857)) to stringResource(R.string.priority_low, priority)
     }
     val bgColor = textColor.copy(alpha = 0.12f)
 

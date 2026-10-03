@@ -328,3 +328,38 @@ async def test_opposite_backlog_moves_use_one_project_lock_order(delivery_store)
             return await TaskService(db).update(task_id, TaskUpdate(expected_version=version, project_id=project_id))
     results = await asyncio.wait_for(asyncio.gather(*(move(*values) for values in inputs)), timeout=20)
     assert [(task.id, task.project_id) for task in results] == [(task_id, project) for task_id, _, project in inputs]
+
+
+@pytest.mark.parametrize("scope", ["iteration", "backlog"])
+async def test_scoped_snapshot_retention_keeps_human_commands_available(delivery_store, monkeypatch, scope):
+    factory, scenario, _ = delivery_store
+    monkeypatch.setenv("SNAPSHOT_RETENTION_COUNT", "2")
+    from app.config import get_settings
+    from app.models.identity import Principal
+    get_settings.cache_clear()
+    try:
+        async with factory() as db:
+            principal = Principal(kind="human", display_name="Scoped manager")
+            db.add(principal)
+            await db.commit()
+            principal_id = principal.id
+            # Keep an unrelated recovery point to prove retention isolation.
+            await SnapshotService(db).create_snapshot(scenario.iterations[1], "unrelated")
+            db.info["authority"] = Authority(principal_id, "human", profile_id=scenario.profile,
+                projects={scenario.projects[0]: "manager"})
+            service = TaskDomainService(db)
+            task_id = scenario.tasks["planned"]
+            if scope == "backlog":
+                task_id = (await TaskService(db).create(None, TaskCreate(title="Retention workload", project_id=scenario.projects[0]))).id
+            for action in ("block", "unblock", "block", "unblock"):
+                task = await TaskService(db).get_by_id(task_id)
+                await service.command(task_id, TaskActionRequest(action=action, expected_version=task.version, reason="Scoped retention verification"))
+            owned_scope = ApplicationSnapshot.iteration_id == scenario.iterations[0] if scope == "iteration" else ApplicationSnapshot.project_id == scenario.projects[0]
+            assert await db.scalar(select(func.count()).select_from(ApplicationSnapshot).where(owned_scope)) == 2
+            # Unauthorized iteration access must still fail without affecting history.
+            with pytest.raises((AuthorityError, ValueError), match="Iteration not found or inaccessible|requires access"):
+                await SnapshotService(db).rotate_snapshots(scenario.iterations[1], 1)
+        async with factory() as db:
+            assert await db.scalar(select(func.count()).select_from(ApplicationSnapshot).where(ApplicationSnapshot.iteration_id == scenario.iterations[1])) == 1
+    finally:
+        get_settings.cache_clear()

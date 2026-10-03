@@ -31,4 +31,14 @@
     <string name="work_selection_unavailable">Selected scope unavailable</string>
     <string name="work_clear_scope">Clear scope selection</string>
     <string name="work_acceptance_unverified">Acceptance needs reconciliation</string>
+    <string name="status_unknown">Unsupported state</string>
+    <string name="account_signed_in">Signed in</string>
+    <string name="account_sign_out">%1$s · Sign out</string>
+    <string name="work_refreshed_at">Last refreshed %1$s</string>
+    <string name="work_cached_at">Saved copy from %1$s</string>
+    <string name="brief_missing">Add a brief in the web editor to explain the goal and expected result.</string>
+    <string name="criteria_missing">Add acceptance criteria in the web editor to record evidence.</string>
+    <string name="priority_high">P%1$d High</string>
+    <string name="priority_medium">P%1$d Medium</string>
+    <string name="priority_low">P%1$d Low</string>
 </resources>
