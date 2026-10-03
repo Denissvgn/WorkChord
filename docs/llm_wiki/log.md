@@ -679,3 +679,7 @@ Documented current action/ownership snapshots, canonical criterion evidence with
 ## 2026-10-03 — Mobile freshness and private drafts
 
 Reviewed native reads, identity/server isolation, monotonic cache versions, explicit device-only saved drafts, and read-only timestamped recovery. Kotlin extraction is unavailable; these behaviors are supported by direct source inspection and native build checks, rather than generated architectural coverage.
+
+## 2026-10-03 — Native release transport and storage
+
+Reviewed explicit server configuration, HTTPS and origin enforcement, request-scoped cookie persistence, Keystore storage, backup/transfer exclusions and release logging. Native Kotlin behavior remains outside extractor coverage and requires direct source, build and device evidence.
