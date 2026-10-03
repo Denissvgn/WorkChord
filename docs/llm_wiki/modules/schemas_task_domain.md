@@ -20,34 +20,39 @@ Explicit task commands and typed action availability.
 flowchart LR
     n0["backend/app/mcp_agent_tools.py"]
     n1["backend/app/routers/task_domain.py"]
-    n2["backend/app/schemas/task_domain.py"]
-    n3["backend/app/services/task_domain_service.py"]
-    n4["backend/tests/test_delivery_dependencies.py"]
-    n5["backend/tests/test_task_domain.py"]
-    n6["backend/tests/test_task_domain_integrity.py"]
-    n7["scripts/generate_mobile_contract_fixtures.py"]
-    n0 --> n2
+    n2["backend/app/schemas/task_detail.py"]
+    n3["backend/app/schemas/task_domain.py"]
+    n4["backend/app/services/task_domain_service.py"]
+    n5["backend/tests/test_delivery_dependencies.py"]
+    n6["backend/tests/test_task_domain.py"]
+    n7["backend/tests/test_task_domain_integrity.py"]
+    n8["scripts/generate_mobile_contract_fixtures.py"]
     n0 --> n3
+    n0 --> n4
     n1 --> n2
     n1 --> n3
-    n3 --> n2
-    n4 --> n2
+    n1 --> n4
+    n2 --> n3
     n4 --> n3
-    n5 --> n0
-    n5 --> n2
     n5 --> n3
-    n6 --> n2
+    n5 --> n4
+    n6 --> n0
     n6 --> n3
-    n6 --> n5
-    n7 --> n2
+    n6 --> n4
+    n7 --> n3
+    n7 --> n4
+    n7 --> n6
+    n8 --> n2
+    n8 --> n3
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_task_domain.md"
-    click n2 "../modules/schemas_task_domain.md"
-    click n3 "../modules/task_domain_service.md"
-    click n4 "../modules/test_delivery_dependencies.md"
-    click n5 "../modules/test_task_domain.md"
-    click n6 "../modules/test_task_domain_integrity.md"
-    click n7 "../modules/generate_mobile_contract_fixtures.md"
+    click n2 "../modules/task_detail.md"
+    click n3 "../modules/schemas_task_domain.md"
+    click n4 "../modules/task_domain_service.md"
+    click n5 "../modules/test_delivery_dependencies.md"
+    click n6 "../modules/test_task_domain.md"
+    click n7 "../modules/test_task_domain_integrity.md"
+    click n8 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +61,7 @@ flowchart LR
 |---|---|
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
+| Inbound | [task_detail](../modules/task_detail.md) |
 | Inbound | [task_domain_service](../modules/task_domain_service.md) |
 | Inbound | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) |
 | Inbound | [test_task_domain](../modules/test_task_domain.md) |

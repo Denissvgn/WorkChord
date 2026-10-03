@@ -10,7 +10,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority`, `require_project`, `require_operator` |
+| `app.authority` | `internal_authority`, `require_project`, `require_operator`, `require_project` |
 | `app.database` | `get_db` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.task` | `Task` |
@@ -18,7 +18,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse` |
-| `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage` |
+| `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
@@ -72,10 +72,10 @@ flowchart LR
 | `domain_result` | *(async)* `(awaitable)` | — | — |
 | `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
-| `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/my-work')` | — |
+| `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/my-work', response_model=HumanWorkResponse)` | — |
 | `task_owner_options` | *(async)* `(db: DB, project_id: int \| None = None, after_id: int = Query(default=0, ge=0), limit: int = Query(default=100, ge=1, le=100))` | `@router.get('/tasks/owner-options')` | — |
 | `task_migration_diagnostics` | *(async)* `(db: DB, after_id: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100))` | `@router.get('/tasks/migration-diagnostics')` | — |
-| `task_review_queue` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/review-queue', response_model=TaskReferencePage)` | — |
+| `task_review_queue` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/review-queue', response_model=TaskReferencePage)` | — |
 | `task_detail` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), children_after_id: int = Query(default=0, ge=0), dependencies_after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/detail', response_model=TaskDetailResponse)` | — |
 | `create_backlog_task` | *(async)* `(project_id: int, data: TaskCreate, db: DB)` | `@router.post('/projects/{project_id}/backlog', response_model=TaskResponse, status_code=201)` | — |
 | `task_actions` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/actions', response_model=TaskActionsResponse)` | — |

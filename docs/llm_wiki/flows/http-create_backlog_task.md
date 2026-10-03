@@ -87,17 +87,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_backlog_task | HTTPException (backend/app/routers/task_…ain.py:create_backlog_task) | 109 | `HTTPException(422, detail=[...])` |
-| create_backlog_task | domain_result | 110 | `domain_result(...)` |
+| create_backlog_task | HTTPException (backend/app/routers/task_…ain.py:create_backlog_task) | 125 | `HTTPException(422, detail=[...])` |
+| create_backlog_task | domain_result | 126 | `domain_result(...)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_backlog_task | TaskService(…).create | 110 | `TaskService(db).create(None, data.model_copy(...))` |
-| create_backlog_task | TaskService | 110 | `TaskService(db)` |
-| create_backlog_task | data.model_copy | 110 | `data.model_copy(update={...})` |
-| create_backlog_task | TaskService(…).task_to_response | 111 | `TaskService(db).task_to_response(task)` |
+| create_backlog_task | TaskService(…).create | 126 | `TaskService(db).create(None, data.model_copy(...))` |
+| create_backlog_task | TaskService | 126 | `TaskService(db)` |
+| create_backlog_task | data.model_copy | 126 | `data.model_copy(update={...})` |
+| create_backlog_task | TaskService(…).task_to_response | 127 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
@@ -107,14 +107,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `create_backlog_task` | `HTTPException` | 109 |
+| external_call | `create_backlog_task` | `HTTPException` | 125 |
 | external_call | `domain_result` | `HTTPException` | 29 |
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 110 |
-| unresolved_call | `create_backlog_task` | `data.model_copy` | 110 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).task_to_response` | 111 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 126 |
+| unresolved_call | `create_backlog_task` | `data.model_copy` | 126 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).task_to_response` | 127 |
 | step_limit | `create_backlog_task` | `first 12 steps` | 0 |
 
 ## Behavior

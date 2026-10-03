@@ -12,8 +12,12 @@ sequenceDiagram
     participant p0 as human_my_work
     participant p1 as TaskDetailService(…).my_work
     participant p2 as TaskDetailService
+    participant p3 as HTTPException
+    participant p4 as str
     p0-->>p1: TaskDetailService(…).my_work
     p0->>p2: TaskDetailService
+    p0-->>p3: HTTPException
+    p0-->>p4: str
 ```
 
 ## Data flow
@@ -24,8 +28,12 @@ flowchart LR
     s1["1. human_my_work"]
     s2["2. TaskDetailService(…).my_work"]
     s3["3. TaskDetailService"]
-    s1 -. "TaskDetailService(…).my_work(limit=limit, after_id=after_id)" .-> s2
+    s4["4. HTTPException"]
+    s5["5. str"]
+    s1 -. "TaskDetailService(…).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)" .-> s2
     s1 -->|"TaskDetailService(db)"| s3
+    s1 -. "HTTPException(422, detail=[...])" .-> s4
+    s1 -. "str(exc)" .-> s5
     click s1 "../modules/routers_task_domain.md"
     click s3 "../modules/task_detail_service.md"
 ```
@@ -34,16 +42,20 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `human_my_work` | `db: DB`, `limit: int`, `after_id: int` | - | - | `...` |
+| `human_my_work` | `db: DB`, `limit: int`, `after_id: int`, `project_id: int \| None`, `iteration_id: int \| None`, `backlog_only: bool` | - | - | `...` |
 | `TaskDetailService(…).my_work` | - | - | - | - |
 | `TaskDetailService` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| human_my_work | TaskDetailService(…).my_work | 51 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id)` |
-| human_my_work | TaskDetailService | 51 | `TaskDetailService(db)` |
+| human_my_work | TaskDetailService(…).my_work | 53 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
+| human_my_work | TaskDetailService | 53 | `TaskDetailService(db)` |
+| human_my_work | HTTPException | 56 | `HTTPException(422, detail=[...])` |
+| human_my_work | str | 56 | `str(exc)` |
 
 ### Boundary effects
 
@@ -53,8 +65,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `human_my_work` | `TaskDetailService(db).my_work` | 51 |
+| unresolved_call | `human_my_work` | `TaskDetailService(db).my_work` | 53 |
+| external_call | `human_my_work` | `HTTPException` | 56 |
 
 ## Behavior
 
-Returns bounded, authenticated human ownership queues across visible projects, including nested and backlog work. Missing profile or membership is explicit. Closed work without current attributed acceptance remains in reconciliation; exact-agent work selection is a separate protocol.
+Returns authenticated ownership queues across visible projects, including nested/backlog work. Optional project, iteration and backlog filters apply before cursor pagination; incompatible iteration/backlog selection fails explicitly. Missing profile or membership is explicit. Page cursors are live observations rather than a frozen complete inventory.

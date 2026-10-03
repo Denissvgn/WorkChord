@@ -10,7 +10,7 @@ Human ownership queries and exact-ID lookup respect project visibility.
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `Authority` |
+| `app.authority` | `Authority`, `AuthorityError` |
 | `app.models.task` | `Task` |
 | `app.schemas.task` | `TaskCreate` |
 | `app.services.task_detail_service` | `TaskDetailService` |
@@ -96,3 +96,4 @@ flowchart LR
 | `test_my_work_includes_nested_and_backlog_without_private_work` | *(async)* `(delivery_store)` | — | — |
 | `test_lookup_matches_id_case_and_literal_wildcards_without_private_counts` | *(async)* `(delivery_store)` | — | — |
 | `test_withdrawn_acceptance_stays_visible_in_owned_blocked_work` | *(async)* `(delivery_store)` | — | — |
+| `test_my_work_filters_before_pagination_and_preserves_scope` | *(async)* `(delivery_store)` | — | — |

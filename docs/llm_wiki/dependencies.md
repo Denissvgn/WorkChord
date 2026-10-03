@@ -113,6 +113,7 @@ flowchart TD
 | [models_outbound_webhook](modules/models_outbound_webhook.md) | 8 | 2 |
 | [recovery](modules/recovery.md) | 8 | 3 |
 | [schemas_project](modules/schemas_project.md) | 8 | 3 |
+| [schemas_task_domain](modules/schemas_task_domain.md) | 8 | 0 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [calendar_service](modules/calendar_service.md) | 8 | 4 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
@@ -124,7 +125,6 @@ flowchart TD
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
-| [schemas_task_domain](modules/schemas_task_domain.md) | 7 | 0 |
 | [project_service](modules/project_service.md) | 7 | 12 |
 | [task_brief_service](modules/task_brief_service.md) | 7 | 5 |
 | [task_domain_service](modules/task_domain_service.md) | 7 | 12 |
@@ -239,7 +239,7 @@ flowchart TD
 | [schemas_intake](modules/schemas_intake.md) | 3 | 0 |
 | [schemas_llm](modules/schemas_llm.md) | 3 | 1 |
 | [schemas_outbound_webhook](modules/schemas_outbound_webhook.md) | 3 | 1 |
-| [task_detail](modules/task_detail.md) | 3 | 1 |
+| [task_detail](modules/task_detail.md) | 3 | 2 |
 | [discussion_service](modules/discussion_service.md) | 3 | 6 |
 | [github_status_automation_service](modules/github_status_automation_service.md) | 3 | 7 |
 | [llm_service](modules/llm_service.md) | 3 | 6 |

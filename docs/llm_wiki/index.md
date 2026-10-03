@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1452 | [Open section](#entities) |
+| Entities | 1454 | [Open section](#entities) |
 | Modules | 632 | [Open section](#modules) |
-| Workflows | 168 | [Open section](#workflows) |
+| Workflows | 169 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 516 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
@@ -395,6 +395,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [HierarchyScopeError](entities/HierarchyScopeError.md)
 - [HistoryGroup](entities/HistoryGroup.md)
 - [HolidayImportRequest](entities/HolidayImportRequest.md)
+- [HumanWorkReference](entities/HumanWorkReference.md)
+- [HumanWorkResponse](entities/HumanWorkResponse.md)
 - [IdentityContextValue](entities/IdentityContextValue.md)
 - [IdentityService](entities/IdentityService.md)
 - [IdentitySubject](entities/IdentitySubject.md)
@@ -2205,6 +2207,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskBriefService_require_review](workflows/TaskBriefService_require_review.md) - entry: `task_brief_service.TaskBriefService.require_review`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
+- [TaskDetailService_my_work](workflows/TaskDetailService_my_work.md) - entry: `task_detail_service.TaskDetailService.my_work`
 - [TaskDomainService_allowed_actions](workflows/TaskDomainService_allowed_actions.md) - entry: `task_domain_service.TaskDomainService.allowed_actions`
 - [TaskDomainService_command](workflows/TaskDomainService_command.md) - entry: `task_domain_service.TaskDomainService.command`
 - [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`

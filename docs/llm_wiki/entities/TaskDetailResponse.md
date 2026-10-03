@@ -1,6 +1,6 @@
 # TaskDetailResponse
 
-**Location:** `backend/app/schemas/task_detail.py:33`
+**Location:** `backend/app/schemas/task_detail.py:34`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)

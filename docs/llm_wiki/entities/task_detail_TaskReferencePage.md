@@ -1,6 +1,6 @@
 # TaskReferencePage
 
-**Location:** `backend/app/schemas/task_detail.py:25`
+**Location:** `backend/app/schemas/task_detail.py:26`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)

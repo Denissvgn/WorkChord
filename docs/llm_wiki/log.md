@@ -611,3 +611,27 @@ Documented browser-approved S256 native session exchange, explicit consent and r
 ## 2026-10-03 — Mobile contract alignment
 
 Documented canonical mobile examples, explicit unknown/nullable state, stable criterion identities and current progress revisions, and compatibility checks derived from backend schemas.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bfb006d31480c6d501956e0b1bb5aca830fbec84c108fa74026e9fd6d9c7fbf2`
+- Pages created: 3
+- Pages updated: 32
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2739
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-03 — Scoped mobile work navigation
+
+Documented typed human ownership and independent-review queues with scope filtering before live pagination. Native navigation keeps reference projections separate from richer task detail and scopes saved selections to server/account identity.

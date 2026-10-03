@@ -82,16 +82,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| review_task | domain_result | 144 | `domain_result(...)` |
+| review_task | domain_result | 160 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| review_task | TaskBriefService(…).review | 144 | `TaskBriefService(db).review(task_id, data)` |
-| review_task | TaskBriefService | 144 | `TaskBriefService(db)` |
-| review_task | TaskService(…).task_to_response | 145 | `TaskService(db).task_to_response(task)` |
-| review_task | TaskService | 145 | `TaskService(db)` |
+| review_task | TaskBriefService(…).review | 160 | `TaskBriefService(db).review(task_id, data)` |
+| review_task | TaskBriefService | 160 | `TaskBriefService(db)` |
+| review_task | TaskService(…).task_to_response | 161 | `TaskService(db).task_to_response(task)` |
+| review_task | TaskService | 161 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -105,8 +105,8 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `review_task` | `TaskBriefService(db).review` | 144 |
-| unresolved_call | `review_task` | `TaskService(db).task_to_response` | 145 |
+| unresolved_call | `review_task` | `TaskBriefService(db).review` | 160 |
+| unresolved_call | `review_task` | `TaskService(db).task_to_response` | 161 |
 
 ## Behavior
 

@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1452,
+      "entities": 1454,
       "flows": 516,
       "guides": 0,
       "index": 1,
@@ -26,10 +26,10 @@
       "load-order": 1,
       "log": 1,
       "modules": 632,
-      "workflows": 168
+      "workflows": 169
     },
     "dependency_architecture": 2,
-    "total": 2783
+    "total": 2786
   },
   "dependency_pages": {
     "count": 2,
@@ -1996,7 +1996,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 133,
+              "line": 149,
               "step": "convert_task_brief",
               "target": "TaskBriefService(db).conversion"
             }
@@ -2734,7 +2734,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 109,
+              "line": 125,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -2764,19 +2764,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 110,
+              "line": 126,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
             {
               "kind": "unresolved_call",
-              "line": 110,
+              "line": 126,
               "step": "create_backlog_task",
               "target": "data.model_copy"
             },
             {
               "kind": "unresolved_call",
-              "line": 111,
+              "line": 127,
               "step": "create_backlog_task",
               "target": "TaskService(db).task_to_response"
             },
@@ -10744,14 +10744,20 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 51,
+              "line": 53,
               "step": "human_my_work",
               "target": "TaskDetailService(db).my_work"
+            },
+            {
+              "kind": "external_call",
+              "line": 56,
+              "step": "human_my_work",
+              "target": "HTTPException"
             }
           ],
           "generated": true,
-          "step_count": 3,
-          "transfer_count": 2,
+          "step_count": 5,
+          "transfer_count": 4,
           "truncated": false
         },
         "flow": {
@@ -10759,7 +10765,7 @@
             "backend/app/routers/task_domain.py",
             "backend/app/services/task_detail_service.py"
           ],
-          "step_count": 3,
+          "step_count": 5,
           "truncated": false
         }
       },
@@ -15469,13 +15475,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 138,
+              "line": 154,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
             {
               "kind": "unresolved_call",
-              "line": 139,
+              "line": 155,
               "step": "record_task_progress",
               "target": "TaskService(db).task_to_response"
             }
@@ -16334,7 +16340,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 197,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -16590,13 +16596,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 144,
+              "line": 160,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 161,
               "step": "review_task",
               "target": "TaskService(db).task_to_response"
             }
@@ -17848,7 +17854,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 116,
+              "line": 132,
               "step": "task_actions",
               "target": "TaskDomainService(db).allowed_actions"
             }
@@ -17884,55 +17890,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 172,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -18058,13 +18064,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 121,
+              "line": 137,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
             {
               "kind": "unresolved_call",
-              "line": 122,
+              "line": 138,
               "step": "task_command",
               "target": "TaskService(db).task_to_response"
             }
@@ -18186,7 +18192,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 103,
+              "line": 119,
               "step": "task_detail",
               "target": "TaskDetailService(db).detail"
             }
@@ -18289,43 +18295,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 77,
+              "line": 82,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -18379,25 +18385,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 61,
+              "line": 66,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 61,
+              "line": 66,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 61,
+              "line": 66,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 62,
+              "line": 67,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -18440,55 +18446,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 171,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 172,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 173,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -18529,63 +18535,45 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 86,
+              "line": 92,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 94,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 94,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 94,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 94,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
-              "kind": "unresolved_call",
-              "line": 91,
-              "step": "task_review_queue",
-              "target": "query.where"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 91,
-              "step": "task_review_queue",
-              "target": "Task.project_id.in_"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 91,
-              "step": "task_review_queue",
-              "target": "authority.allows"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 93,
-              "step": "task_review_queue",
-              "target": "query.where"
-            },
-            {
               "kind": "external_call",
-              "line": 93,
+              "line": 96,
               "step": "task_review_queue",
-              "target": "or_"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 69,
+              "step": "require_project",
+              "target": "db.info.get"
             },
             {
               "kind": "step_limit",
@@ -18602,9 +18590,11 @@
         "flow": {
           "modules_touched": [
             "backend/app/routers/task_domain.py",
-            "backend/app/services/task_detail_service.py"
+            "backend/app/services/task_detail_service.py",
+            "backend/app/authority.py",
+            "backend/app/config.py"
           ],
-          "step_count": 18,
+          "step_count": 30,
           "truncated": false
         }
       },
@@ -18649,19 +18639,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 150,
+              "line": 166,
               "step": "task_reviews",
               "target": "TaskDetailService(db).detail"
             },
             {
               "kind": "unresolved_call",
-              "line": 151,
+              "line": 167,
               "step": "task_reviews",
               "target": "(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 151,
+              "line": 167,
               "step": "task_reviews",
               "target": "db.scalars"
             },
@@ -21685,13 +21675,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 143,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
             {
               "kind": "unresolved_call",
-              "line": 128,
+              "line": 144,
               "step": "write_task_brief",
               "target": "TaskService(db).task_to_response"
             }
@@ -37563,6 +37553,8 @@
         "entities/HierarchyScopeError.md",
         "entities/HistoryGroup.md",
         "entities/HolidayImportRequest.md",
+        "entities/HumanWorkReference.md",
+        "entities/HumanWorkResponse.md",
         "entities/IdentityContextValue.md",
         "entities/IdentityService.md",
         "entities/IdentitySubject.md",
@@ -39905,6 +39897,7 @@
         "workflows/TaskBriefService_require_review.md",
         "workflows/TaskBulkOperationService_run.md",
         "workflows/TaskDetailService_detail.md",
+        "workflows/TaskDetailService_my_work.md",
         "workflows/TaskDomainService_allowed_actions.md",
         "workflows/TaskDomainService_command.md",
         "workflows/TaskImportService_bulk_update_tasks_from_text.md",
@@ -45550,6 +45543,31 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/calendar.py",
       "title": "HolidayImportRequest"
+    },
+    {
+      "canonical_path": "entities/HumanWorkReference.md",
+      "id": "HumanWorkReference",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/HumanWorkReference",
+      "outgoing_internal_links": [
+        "modules/task_detail.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_detail.py",
+      "title": "HumanWorkReference"
+    },
+    {
+      "canonical_path": "entities/HumanWorkResponse.md",
+      "id": "HumanWorkResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/HumanWorkResponse",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/task_detail.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_detail.py",
+      "title": "HumanWorkResponse"
     },
     {
       "canonical_path": "entities/IdentityContextValue.md",
@@ -52549,7 +52567,8 @@
       "mcp_uri": "llm-wiki://entities/schemas_task_domain_TaskActionAvailability",
       "outgoing_internal_links": [
         "modules/generate_mobile_contract_fixtures.md",
-        "modules/schemas_task_domain.md"
+        "modules/schemas_task_domain.md",
+        "modules/task_detail.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_domain.py",
@@ -67218,6 +67237,7 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_domain.md",
+        "modules/task_detail.md",
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_task_domain.md",
@@ -68097,12 +68117,15 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/task_detail",
       "outgoing_internal_links": [
+        "entities/HumanWorkReference.md",
+        "entities/HumanWorkResponse.md",
         "entities/task_detail_TaskReference.md",
         "entities/task_detail_TaskReferencePage.md",
         "entities/TaskDetailResponse.md",
         "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
+        "modules/schemas_task_domain.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md"
       ],
@@ -73550,6 +73573,21 @@
       "title": "TaskDetailService_detail"
     },
     {
+      "canonical_path": "workflows/TaskDetailService_my_work.md",
+      "id": "TaskDetailService_my_work",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskDetailService_my_work",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/delivery_dependency_service.md",
+        "modules/task_detail_service.md",
+        "modules/task_domain_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_detail_service.py",
+      "title": "TaskDetailService_my_work"
+    },
+    {
       "canonical_path": "workflows/TaskDomainService_allowed_actions.md",
       "id": "TaskDomainService_allowed_actions",
       "kind": "workflows",
@@ -77915,6 +77953,8 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/http-task_review_queue",
       "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/config.md",
         "modules/routers_task_domain.md",
         "modules/task_detail_service.md"
       ],
@@ -83646,5 +83686,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f88d75cd16aefaf8687469e92c9ffb93a375f01e46d9f453eff79fd373e34a6f"
+  "source_hash": "sha256:803109322608461b481c9dca2bdc76b0539bbb08944b257aa9310b61b87e7f17"
 }
