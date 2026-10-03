@@ -24,6 +24,7 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `Label`, `LabelGroup` |
+| `app.models.native_connection` | `NativeConnection` |
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
@@ -59,6 +60,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (27) |
+| Outbound | `backend` (28) |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

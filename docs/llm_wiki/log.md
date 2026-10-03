@@ -526,3 +526,59 @@ Aligned canonical availability, shared planning reservations, delivery prerequis
 ## 2026-09-30 — Browser worker runtime identity
 
 Documented explicit interpreter propagation from the native runner through the managed browser to inbox delivery, preserving virtual-environment identity and the disposable database boundary.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e12ae4d2ae068695dea0709d564cbf991194fa99c1be312d49c680604b478785`
+- Pages created: 19
+- Pages updated: 51
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2693
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 4 (http=4)
+- Workflow pages created: 4
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-03 — Native device sign-in
+
+Documented browser-approved S256 native session exchange, explicit consent and replay/expiry boundaries, account revocation lock order, and device credential isolation.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3089c587bbbf3bcf8e9a30e3cfd031adbffa5d24714a19b86d99dd5888a9c199`
+- Pages created: 0
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2759
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:cf410509e5340f19ea7946ae9fa9f2fd81e2dbd63a807cba549e2c1ce3f48369`
+- Pages created: 5
+- Pages updated: 26
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2736
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

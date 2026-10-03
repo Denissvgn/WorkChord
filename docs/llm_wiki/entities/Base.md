@@ -141,4 +141,4 @@ flowchart LR
 | `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
 | `github` | import | [models_github](../modules/models_github.md) | — |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

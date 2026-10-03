@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:d4d0c267aaaddd87289929a1de2bab2fbd9a16dfb20389011f2c197b16768fe4",
-    "knowledge_index_hash": "sha256:5be752e5cf4525212f58796e5123f779cc7c701b3dccd7d20aa7af0f57abac08",
-    "surface_index_hash": "sha256:5edc700042b28e81d07d8af88f761a06ba4034e118716ef47d3d4785ced1e87e"
+    "evaluated_envelope_hash": "sha256:19690d64d9758b524cb518f5d270e6d2961ab5b12d543179af3bba44a9531141",
+    "knowledge_index_hash": "sha256:d58c6594ce537483830c8d69c58599a9f7ac863bb19d17f247889be083449159",
+    "surface_index_hash": "sha256:eae633b49880cbd5685e57a1b59dc07fd39c02c154f34e4edc99d49460c7cbb8"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1890,7 +1890,7 @@
         "concept_observation_hash": "sha256:db2d3096da2e350742281cf217f7fffb4cf96b648db1ee59a4e1aa5e013f876a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -3660,7 +3660,7 @@
         "concept_observation_hash": "sha256:7c71732f257cb90bc5bff6ce421cf51d3e9f66b2b17af6e919a7607e853aa189",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -4510,7 +4510,7 @@
         "concept_observation_hash": "sha256:efeca88cc1fd1657e478fef83201cb2a7ded88dddd2f2eadd8991f0665f4304d",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -4755,6 +4755,16 @@
       },
       "state": "known"
     },
+    "entities/NativeApprovalResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:13c1058f5153b9cb3d10e6f53726de587b6fe581df0dcf75e02bc0a28af27bd1",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
     "entities/NativeChecks.md": {
       "basis": {
         "concept_observation_hash": "sha256:83b5d86e4e3a42c0b67306534b5d1e9936d6f0e003259be500be1beb4e0ebbdd",
@@ -4762,6 +4772,96 @@
         "scope": "entity",
         "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnection.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f10a76336e7f9b0a58de3d2a7ca368d6f76656b57a8a7ac1f4250dc60bef4a85",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6f80cd491c0d4857f35caa9f07d6174fcec5481a07d928acd1ec93152d539834",
+        "source_path": "backend/app/models/native_connection.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnectionApproval.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8687618674e25256334b81ab46b264c622bc20aad5aed20bb078a508d65ac2e4",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnectionDetails.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b9e2abbe2125294d525c5478c3d65a9b4c060db2e87777d15572e8ec868da92e",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnectionExchange.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0d835994d34aaf6f168eabfb490f51a2a01a4b1dd3d9d83d0aafb2d867f2f311",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnectionResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:65f75169c7e3b46ab229afbf969099437058a5911d13118d5e2d674ea9f3027f",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeConnectionStart.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:22c6b7a5ca610c07053dfbaeb38b3848d5c36ebac1f4411e9ae83aea8170efa3",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativePendingResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:76769851bb424732ecd79e1b2b34aaa84310726fe7b985d4c607bf1aa9227918",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeSessionService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:2fd4a034eeb1ce02123ce5f47841931e78e5307a18a93f4af88d391d75a250a7",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:f81538fd7f071b322035fbc4484830420331b19b1810e80af151b85f80f7de2f",
+        "source_path": "backend/app/services/native_session_service.py"
+      },
+      "state": "known"
+    },
+    "entities/NativeTokenResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:9737af43b7233501927cbe3282dba5fee526aabdf1d9152dfcfc3c66819b2733",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
+        "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
     },
@@ -5450,7 +5550,7 @@
         "concept_observation_hash": "sha256:80d3b3f696a07d77484dbd7dc62444c67dcb6b7013a54bcbf62f461ae8077760",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -5480,7 +5580,7 @@
         "concept_observation_hash": "sha256:6e195a9ae476333eace79806c91d8527261504253cc87d395e8315a8db751a89",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -6370,7 +6470,7 @@
         "concept_observation_hash": "sha256:e153c2ad78d9e781416058bb2f9bd88855f39a39f96d03d265de4074184794be",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:cf69dbec3c9f839df8e7f0ade6744ebce50acd476d82ae0988e59f98028053b4",
+        "source_content_hash": "sha256:2368737b35f38cee5fca24805d012841221c27b6dc39149935d330e61935688e",
         "source_path": "frontend/src/navigation/routeModules.ts"
       },
       "state": "known"
@@ -6380,7 +6480,7 @@
         "concept_observation_hash": "sha256:ddc15c92839c0f130ce639a24cd3c4f92027d0b13e5f75965a9f7a81e5fb107c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:cf69dbec3c9f839df8e7f0ade6744ebce50acd476d82ae0988e59f98028053b4",
+        "source_content_hash": "sha256:2368737b35f38cee5fca24805d012841221c27b6dc39149935d330e61935688e",
         "source_path": "frontend/src/navigation/routeModules.ts"
       },
       "state": "known"
@@ -10620,7 +10720,7 @@
         "concept_observation_hash": "sha256:3a4e25ea180cef5795250f2ca64e8689e1528d23dca8deca718896d360fce763",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -14475,6 +14575,16 @@
       },
       "state": "known"
     },
+    "modules/20261003_0005_native_connections.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a8a669d4c75031d07ee1eead6822cf4180a7d48f6250ab654c64de5eb95a09b9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:7112d4030e94df70bac2d93263dad474490da78ef88e76a8ba1b2320b6e6f5ef",
+        "source_path": "backend/app/migrations/versions/20261003_0005_native_connections.py"
+      },
+      "state": "known"
+    },
     "modules/AdminAccessGate.md": {
       "basis": {
         "concept_observation_hash": "sha256:bd5ccd73cc449656091115c1d25baa577fff497da78b84a1c282cf7dff1d4abf",
@@ -14597,10 +14707,10 @@
     },
     "modules/App.md": {
       "basis": {
-        "concept_observation_hash": "sha256:fad63f1cf17b9ea9ac6faeb92f1380cea287ba65d4c2d85f3474dad1b83c8037",
+        "concept_observation_hash": "sha256:c07d4b62858fdfe3a9038ab383a3d973b11807a6da04c2b0dac0768683bdfa24",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:5920194b2bd07041aaa302d53a0c26e3e9792fbc9183041e6667a7d4db3f6aa5",
+        "source_content_hash": "sha256:aaeee3bfdb308f0a845c48adea936136e10f0af81e898469aef8ad05f4effb82",
         "source_path": "frontend/src/App.tsx"
       },
       "state": "known"
@@ -15202,6 +15312,26 @@
         "scope": "module",
         "source_content_hash": "sha256:37088feb49061178ef8b903b6d6b253802b37ade40f0c7089b96f0ae8c6f7c86",
         "source_path": "frontend/src/pages/MyWorkPage.tsx"
+      },
+      "state": "known"
+    },
+    "modules/NativeConnectionPage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:5a10ea89940eeaac88a30d2b05e9143c6587e5d6f912d7ab989dc487a35ead2c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:fcb4ccd1c7af19545dba9e6ed9c8910b3b53aaab1c01dcdfe5ec8ce4e1877147",
+        "source_path": "frontend/src/pages/NativeConnectionPage.tsx"
+      },
+      "state": "known"
+    },
+    "modules/NativeConnectionPage.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8063f226dd91d9b35e12504aca2be57acff48bdef5fdf2a3a2acfe29e3404036",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:85852402843c069245890d117c25a0d717d00a9ba4fc78e97bb7337790166f00",
+        "source_path": "frontend/src/pages/NativeConnectionPage.test.tsx"
       },
       "state": "known"
     },
@@ -17340,7 +17470,7 @@
         "concept_observation_hash": "sha256:d57eb66c5f94392bddd1d1ff0f3fb3d6943f3c6791b8e73356f2d6514c4fb98a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f5d74f5ca83bd527a22ea6133337853c7de3fb70bd6e5e1e7756dd3723888a88",
+        "source_content_hash": "sha256:c42c278a17906420b1b05ea4887b6ae81d109c7a1ba339be0c06c7e13871e681",
         "source_path": "backend/app/http_authority.py"
       },
       "state": "known"
@@ -17617,10 +17747,10 @@
     },
     "modules/models___init__.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e0b0b4013b714244a0ee8c8389f0555ede92d72a68b2b07de395663ae3b9f62f",
+        "concept_observation_hash": "sha256:89fd9e351368259c45d235c8abb173802f9739a6b707d84c0cea643c3f8ae465",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:48a3b64167460d03ba56d8dd064611885d6ea62403202504d4531c6072920578",
+        "source_content_hash": "sha256:2bc470b0e550043d2474aa43b42aea60319d8c1769f5d06f02e77e97b4edda81",
         "source_path": "backend/app/models/__init__.py"
       },
       "state": "known"
@@ -17842,6 +17972,26 @@
         "scope": "module",
         "source_content_hash": "sha256:e5b76b07b6038f8f110e0ed81d60885856820f7ebf9f3af56c245e50d0341186",
         "source_path": "backend/app/models/triage.py"
+      },
+      "state": "known"
+    },
+    "modules/native_connection.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c340a66fae2f6fcae66e19f796b6e08c7e7418adae97e74d9c84171f09b9ba2b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:6f80cd491c0d4857f35caa9f07d6174fcec5481a07d928acd1ec93152d539834",
+        "source_path": "backend/app/models/native_connection.py"
+      },
+      "state": "known"
+    },
+    "modules/native_session_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:66278677495d5dec51c146937366e18db9ed930f200e59843e1e5b56cbddcd32",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:f81538fd7f071b322035fbc4484830420331b19b1810e80af151b85f80f7de2f",
+        "source_path": "backend/app/services/native_session_service.py"
       },
       "state": "known"
     },
@@ -18320,7 +18470,7 @@
         "concept_observation_hash": "sha256:cc34ec50b5600085cf0267ac0d1974f7328cbc2d786f34f6091d297e1a858351",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:cf69dbec3c9f839df8e7f0ade6744ebce50acd476d82ae0988e59f98028053b4",
+        "source_content_hash": "sha256:2368737b35f38cee5fca24805d012841221c27b6dc39149935d330e61935688e",
         "source_path": "frontend/src/navigation/routeModules.ts"
       },
       "state": "known"
@@ -18407,10 +18557,10 @@
     },
     "modules/routers_identity.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e5a28dc7262542a88a087b8a0c4b1e8f6067fe55abcf2176abf76f0f74e75e4e",
+        "concept_observation_hash": "sha256:b015405462acf287917d8fab2c3d9fca19606218443f8098e28738cb09122cfa",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+        "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
       },
       "state": "known"
@@ -19490,7 +19640,7 @@
         "concept_observation_hash": "sha256:8ad807491ae8888df87daa2deaea6675ab3448703e0b4974973caa48dd51464e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:4a3c86b9b7ca6ed643ad854a36059770c3b26ff630a438d0974e58843c8b8b53",
+        "source_content_hash": "sha256:ba49502983504126c09a00d7fc0cf5d9e0a3bc800fbb64a658914b67bcf57e36",
         "source_path": "frontend/src/i18n/teamwork.en.ts"
       },
       "state": "known"
@@ -19500,7 +19650,7 @@
         "concept_observation_hash": "sha256:d70e36ee811fd1785a5a11098d153f74e93d24d90bc3b956bbf57c7b8bd2dfb7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:f4962d28bd3cd2cc8e0211c377c08adb5877cdd45942c4855af098fe1ba95c55",
+        "source_content_hash": "sha256:99fd207fddf541d273ced12156abbd3b3c5c21824bf08e28e7861cab9b8ca6c4",
         "source_path": "frontend/src/i18n/teamwork.ru.ts"
       },
       "state": "known"
@@ -19600,7 +19750,7 @@
         "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2252109266b317369ef555e8a467a21435c49564287ba3cb5d6fc6eeeedaed1b",
+        "source_content_hash": "sha256:e3dee4cb0eee013efcb2cf86b9e1856068be12b5744c4f8a6d7d33b6c20abfe9",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -19740,7 +19890,7 @@
         "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a1e4d8b1b12c6387b7e6057b659e1e87f9416b08fbe7705d9061e111c7f4b733",
+        "source_content_hash": "sha256:a6038325027de2d7719aac0bcd002aa90cc9c89439e09548948cb1d4790a874a",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -19800,7 +19950,7 @@
         "concept_observation_hash": "sha256:bff9798a1901e3f1b6953659a4bd5e2c766fe8fa64bfd067e60ff2b971f6113e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:6c5543c32223ce1649939c92b8dbd37acbc83d803773767a0772797cb4ba79e7",
+        "source_content_hash": "sha256:a47d17e29b704e20b5fc863980b3808f94c78067d7fa2fe85d7897252862833f",
         "source_path": "backend/tests/test_database_harness.py"
       },
       "state": "known"
@@ -19902,6 +20052,16 @@
         "scope": "module",
         "source_content_hash": "sha256:5464f57f00c8ef40d2ddce13489a3393a6a3299b745411014f82c2a343f1a483",
         "source_path": "backend/tests/test_managed_authority.py"
+      },
+      "state": "known"
+    },
+    "modules/test_native_connections.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:959c386bfeeafe7732eac144ed08d8b9b4a2214240216cc7e2dfd83d19817ea7",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:befdc7ce6281991292918c103c7d3e63255c0a562591c037c9c5eb0ea4f51471",
+        "source_path": "backend/tests/test_native_connections.py"
       },
       "state": "known"
     },
@@ -20100,7 +20260,7 @@
         "concept_observation_hash": "sha256:b9fce811ee473a186ac3b66fee3bc1ee7fe5621f3f511f1437a50757424bb552",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:c829ee2a55b2d4ce7d8f6fe8499d749f1c289579294e926c65e8fc845cb7752a",
+        "source_content_hash": "sha256:68f2364edbfc3afe13cc36662fc14b93ba34a54ac0d07a082c6cb93832e921b8",
         "source_path": "backend/tests/database_migration/test_source_preflight.py"
       },
       "state": "known"
@@ -20110,7 +20270,7 @@
         "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:31ade05e107d781642396dba00a0ebe16120f86c87dd303ea4635c6ef599f960",
+        "source_content_hash": "sha256:4a4c9f01e079dabb4e248320a4509f82650c59a2f6513b44aeea507ca400b4b4",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -20880,13 +21040,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:1b94db95d50192b213209ed3eeee7f9f295a0ddd7fddb612a73542ef48513572",
-      "lifecycle_hash": "sha256:75f8a9b24b5d17a2b7e04ee227efb4614a7475f2ba50cf887bdfb2bd97dd882e",
-      "markdown_snapshot_hash": "sha256:ed7e7ff05b494722266cee82a00ff32c7a3d8212f87cd58385fac763bd4734a5",
-      "observation_inputs_hash": "sha256:8fb16230766f779b4269c84c9698b4db22b90673335420003c9555f1cf8471eb",
+      "inventory_hash": "sha256:4c04d837ba1b99bcb5fd9b9303f0749ad0308bf269730ec2b7cb6b4cbbb7df2d",
+      "lifecycle_hash": "sha256:0ae4a9e307e3258538e86773bce36bf315134d84a697afb12b6e3a215c289af7",
+      "markdown_snapshot_hash": "sha256:5fdccaa2b48734ba0f9e2e390aa0e8cd503f89a47474ca63ae06fa887debfc3d",
+      "observation_inputs_hash": "sha256:a84e5e70150c749cf7243a6b7da0c9678eb9038435e183b59d161007247a7cca",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:2a249433148e3e51ffa2450dd121b99124701e53b4565d6bdd1b37c3c1346743"
+      "source_snapshot_hash": "sha256:cf410509e5340f19ea7946ae9fa9f2fd81e2dbd63a807cba549e2c1ce3f48369"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -23745,11 +23905,71 @@
       "scope": "entity",
       "source_path": "backend/app/services/agent_model_catalog_service.py"
     },
+    "entities/NativeApprovalResponse.md": {
+      "entity_name": "NativeApprovalResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
     "entities/NativeChecks.md": {
       "entity_name": "NativeChecks",
       "occurrence": 1,
       "scope": "entity",
       "source_path": "scripts/ci/tests/test_native_runtimes.py"
+    },
+    "entities/NativeConnection.md": {
+      "entity_name": "NativeConnection",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/native_connection.py"
+    },
+    "entities/NativeConnectionApproval.md": {
+      "entity_name": "NativeConnectionApproval",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativeConnectionDetails.md": {
+      "entity_name": "NativeConnectionDetails",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativeConnectionExchange.md": {
+      "entity_name": "NativeConnectionExchange",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativeConnectionResponse.md": {
+      "entity_name": "NativeConnectionResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativeConnectionStart.md": {
+      "entity_name": "NativeConnectionStart",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativePendingResponse.md": {
+      "entity_name": "NativePendingResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/NativeSessionService.md": {
+      "entity_name": "NativeSessionService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/native_session_service.py"
+    },
+    "entities/NativeTokenResponse.md": {
+      "entity_name": "NativeTokenResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/identity.py"
     },
     "entities/NavItem.md": {
       "entity_name": "NavItem",
@@ -29567,6 +29787,10 @@
       "scope": "module",
       "source_path": "backend/app/migrations/versions/20260930_0004_discussion.py"
     },
+    "modules/20261003_0005_native_connections.md": {
+      "scope": "module",
+      "source_path": "backend/app/migrations/versions/20261003_0005_native_connections.py"
+    },
     "modules/AdminAccessGate.md": {
       "scope": "module",
       "source_path": "frontend/src/components/settings/AdminAccessGate.tsx"
@@ -29858,6 +30082,14 @@
     "modules/MyWorkPage.md": {
       "scope": "module",
       "source_path": "frontend/src/pages/MyWorkPage.tsx"
+    },
+    "modules/NativeConnectionPage.md": {
+      "scope": "module",
+      "source_path": "frontend/src/pages/NativeConnectionPage.tsx"
+    },
+    "modules/NativeConnectionPage.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/pages/NativeConnectionPage.test.tsx"
     },
     "modules/NotFoundPage.md": {
       "scope": "module",
@@ -30915,6 +31147,14 @@
       "scope": "module",
       "source_path": "backend/app/models/triage.py"
     },
+    "modules/native_connection.md": {
+      "scope": "module",
+      "source_path": "backend/app/models/native_connection.py"
+    },
+    "modules/native_session_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/native_session_service.py"
+    },
     "modules/notification_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/notification_service.py"
@@ -31738,6 +31978,10 @@
     "modules/test_managed_authority.md": {
       "scope": "module",
       "source_path": "backend/tests/test_managed_authority.py"
+    },
+    "modules/test_native_connections.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_native_connections.py"
     },
     "modules/test_native_runtimes.md": {
       "scope": "module",
@@ -36124,10 +36368,10 @@
           }
         }
       },
-      "hash": "sha256:f5d74f5ca83bd527a22ea6133337853c7de3fb70bd6e5e1e7756dd3723888a88",
+      "hash": "sha256:c42c278a17906420b1b05ea4887b6ae81d109c7a1ba339be0c06c7e13871e681",
       "language": "python",
       "module_page": "http_authority",
-      "semantic_hash": "sha256:cefd39b91da6d7204640099da44b1342409643575cfb301e80a8299454f4d7fc"
+      "semantic_hash": "sha256:9665def4617187fa804ec1923311507aa85d9c3c7867d5530e351a3ab89926ac"
     },
     "backend/app/main.py": {
       "entities": [],
@@ -36605,6 +36849,26 @@
       "module_page": "20260930_0004_discussion",
       "semantic_hash": "sha256:035547ded3a73cc83e45ca3c4da2a81dc6956431c21e8569e60ed197501bc591"
     },
+    "backend/app/migrations/versions/20261003_0005_native_connections.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Add short-lived browser-approved native connections.",
+          "functions": {
+            "downgrade": "—",
+            "upgrade": "—"
+          }
+        }
+      },
+      "hash": "sha256:7112d4030e94df70bac2d93263dad474490da78ef88e76a8ba1b2320b6e6f5ef",
+      "language": "python",
+      "module_page": "20261003_0005_native_connections",
+      "semantic_hash": "sha256:00dac105cec26779c0d900c55b4b1000f23a75f9cbb1ad286654e7ac91a365b6"
+    },
     "backend/app/models/__init__.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -36617,10 +36881,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:48a3b64167460d03ba56d8dd064611885d6ea62403202504d4531c6072920578",
+      "hash": "sha256:2bc470b0e550043d2474aa43b42aea60319d8c1769f5d06f02e77e97b4edda81",
       "language": "python",
       "module_page": "models___init__",
-      "semantic_hash": "sha256:79ad341c72291d721cea8fb846f0a01fd82a7ca81a174b77b354ac7bcc9649f5"
+      "semantic_hash": "sha256:203e6602d9e8803ee53a9ca69882028f373788e7dacd3525a0f3a5bcc030bab2"
     },
     "backend/app/models/agent.py": {
       "entities": [
@@ -38114,6 +38378,50 @@
       "language": "python",
       "module_page": "models_label",
       "semantic_hash": "sha256:1b36f968aa8ff2a61939b5692a8974fd80181f35430ae7a7741e654f25bba32d"
+    },
+    "backend/app/models/native_connection.py": {
+      "entities": [
+        "NativeConnection"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "NativeConnection",
+          "occurrence": 1,
+          "page": "NativeConnection"
+        }
+      ],
+      "entity_pages": {
+        "NativeConnection": "NativeConnection"
+      },
+      "generated_semantics": {
+        "entities": {
+          "NativeConnection": {
+            "attributes": {
+              "approved_session_id": "—",
+              "code_challenge": "—",
+              "consumed_at": "—",
+              "created_at": "—",
+              "expires_at": "—",
+              "request_hash": "—",
+              "request_ip_hash": "—",
+              "verification_code": "—"
+            },
+            "description": "_Auto-generated from `NativeConnection` in `backend/app/models/native_connection.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "NativeConnection": "—"
+          },
+          "description": "Short-lived browser consent for a proof-bound native session.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:6f80cd491c0d4857f35caa9f07d6174fcec5481a07d928acd1ec93152d539834",
+      "language": "python",
+      "module_page": "native_connection",
+      "semantic_hash": "sha256:6b36e59d2a769f55219ec86e1819351bbd172e7efb5e62f5d824d46397130ec9"
     },
     "backend/app/models/outbound_webhook.py": {
       "entities": [
@@ -40227,6 +40535,14 @@
       "entities": [
         "Database",
         "BootstrapOwner",
+        "NativeConnectionStart",
+        "NativeConnectionExchange",
+        "NativeConnectionApproval",
+        "NativeConnectionResponse",
+        "NativeConnectionDetails",
+        "NativeApprovalResponse",
+        "NativePendingResponse",
+        "NativeTokenResponse",
         "MembershipChange",
         "ProfileLinkRequest",
         "GuestTransferRequest",
@@ -40242,6 +40558,46 @@
           "name": "BootstrapOwner",
           "occurrence": 1,
           "page": "BootstrapOwner"
+        },
+        {
+          "name": "NativeConnectionStart",
+          "occurrence": 1,
+          "page": "NativeConnectionStart"
+        },
+        {
+          "name": "NativeConnectionExchange",
+          "occurrence": 1,
+          "page": "NativeConnectionExchange"
+        },
+        {
+          "name": "NativeConnectionApproval",
+          "occurrence": 1,
+          "page": "NativeConnectionApproval"
+        },
+        {
+          "name": "NativeConnectionResponse",
+          "occurrence": 1,
+          "page": "NativeConnectionResponse"
+        },
+        {
+          "name": "NativeConnectionDetails",
+          "occurrence": 1,
+          "page": "NativeConnectionDetails"
+        },
+        {
+          "name": "NativeApprovalResponse",
+          "occurrence": 1,
+          "page": "NativeApprovalResponse"
+        },
+        {
+          "name": "NativePendingResponse",
+          "occurrence": 1,
+          "page": "NativePendingResponse"
+        },
+        {
+          "name": "NativeTokenResponse",
+          "occurrence": 1,
+          "page": "NativeTokenResponse"
         },
         {
           "name": "MembershipChange",
@@ -40269,6 +40625,14 @@
         "Database": "routers_identity_Database",
         "GuestTransferRequest": "GuestTransferRequest",
         "MembershipChange": "MembershipChange",
+        "NativeApprovalResponse": "NativeApprovalResponse",
+        "NativeConnectionApproval": "NativeConnectionApproval",
+        "NativeConnectionDetails": "NativeConnectionDetails",
+        "NativeConnectionExchange": "NativeConnectionExchange",
+        "NativeConnectionResponse": "NativeConnectionResponse",
+        "NativeConnectionStart": "NativeConnectionStart",
+        "NativePendingResponse": "NativePendingResponse",
+        "NativeTokenResponse": "NativeTokenResponse",
         "PrincipalRecoveryRequest": "PrincipalRecoveryRequest",
         "ProfileLinkRequest": "ProfileLinkRequest"
       },
@@ -40304,6 +40668,70 @@
             "description": "_Auto-generated from `MembershipChange` in `backend/app/routers/identity.py`._",
             "methods": {}
           },
+          "NativeApprovalResponse": {
+            "attributes": {
+              "approved": "—"
+            },
+            "description": "_Auto-generated from `NativeApprovalResponse` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeConnectionApproval": {
+            "attributes": {
+              "verification_code": "—"
+            },
+            "description": "_Auto-generated from `NativeConnectionApproval` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeConnectionDetails": {
+            "attributes": {
+              "approved": "—",
+              "expires_at": "—",
+              "verification_code": "—"
+            },
+            "description": "_Auto-generated from `NativeConnectionDetails` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeConnectionExchange": {
+            "attributes": {
+              "code_verifier": "—",
+              "request_id": "—"
+            },
+            "description": "_Auto-generated from `NativeConnectionExchange` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeConnectionResponse": {
+            "attributes": {
+              "expires_at": "—",
+              "request_id": "—",
+              "verification_code": "—",
+              "verification_path": "—"
+            },
+            "description": "_Auto-generated from `NativeConnectionResponse` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeConnectionStart": {
+            "attributes": {
+              "code_challenge": "—"
+            },
+            "description": "_Auto-generated from `NativeConnectionStart` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativePendingResponse": {
+            "attributes": {
+              "status": "—"
+            },
+            "description": "_Auto-generated from `NativePendingResponse` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
+          "NativeTokenResponse": {
+            "attributes": {
+              "access_token": "—",
+              "expires_at": "—",
+              "token_type": "—"
+            },
+            "description": "_Auto-generated from `NativeTokenResponse` in `backend/app/routers/identity.py`._",
+            "methods": {}
+          },
           "PrincipalRecoveryRequest": {
             "attributes": {
               "enabled": "—",
@@ -40327,14 +40755,25 @@
             "Database": "—",
             "GuestTransferRequest": "—",
             "MembershipChange": "—",
+            "NativeApprovalResponse": "—",
+            "NativeConnectionApproval": "—",
+            "NativeConnectionDetails": "—",
+            "NativeConnectionExchange": "—",
+            "NativeConnectionResponse": "—",
+            "NativeConnectionStart": "—",
+            "NativePendingResponse": "—",
+            "NativeTokenResponse": "—",
             "PrincipalRecoveryRequest": "—",
             "ProfileLinkRequest": "—"
           },
           "description": "Human sign-in, owner bootstrap, membership and session management.",
           "functions": {
+            "approve_native_connection": "—",
             "bootstrap": "—",
             "callback": "—",
             "cleanup": "—",
+            "describe_native_connection": "—",
+            "exchange_native_connection": "—",
             "link_profile": "—",
             "list_principals": "—",
             "login": "—",
@@ -40345,15 +40784,16 @@
             "recover_principal": "—",
             "revoke_owned_session": "—",
             "sessions": "—",
+            "start_native_connection": "—",
             "transfer_guest": "—",
             "workspace_member": "—"
           }
         }
       },
-      "hash": "sha256:50dbef2ef816208e3175a502586357c507f330c7f492f7ade3ea20b3413c70f0",
+      "hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
       "language": "python",
       "module_page": "routers_identity",
-      "semantic_hash": "sha256:06a91a1f3b4a7ccbac084a774fd52e08a52595609e5c005406b45e2c94189d3d"
+      "semantic_hash": "sha256:b8474695de7be3008954f75302b2c323c567b8955e6f490b91c8f0719a72d484"
     },
     "backend/app/routers/intake.py": {
       "entities": [],
@@ -53166,6 +53606,49 @@
       "module_page": "llm_service",
       "semantic_hash": "sha256:c29a7a52db5ab8e42fac75292687b19a849ca8d135eff3b8826c1e6903f79058"
     },
+    "backend/app/services/native_session_service.py": {
+      "entities": [
+        "NativeSessionService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "NativeSessionService",
+          "occurrence": 1,
+          "page": "NativeSessionService"
+        }
+      ],
+      "entity_pages": {
+        "NativeSessionService": "NativeSessionService"
+      },
+      "generated_semantics": {
+        "entities": {
+          "NativeSessionService": {
+            "attributes": {},
+            "description": "_Auto-generated from `NativeSessionService` in `backend/app/services/native_session_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "approve": "—",
+              "connection": "—",
+              "describe": "—",
+              "exchange": "—",
+              "human": "—",
+              "start": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "NativeSessionService": "—"
+          },
+          "description": "Explicit browser consent and one-use proof-bound native authentication.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:f81538fd7f071b322035fbc4484830420331b19b1810e80af151b85f80f7de2f",
+      "language": "python",
+      "module_page": "native_session_service",
+      "semantic_hash": "sha256:a799b1ef339e38cc4370f70057bbf2d0153429db5363e97dc45f2fa60a184257"
+    },
     "backend/app/services/notification_service.py": {
       "entities": [
         "NotificationService"
@@ -55699,7 +56182,7 @@
           }
         }
       },
-      "hash": "sha256:a1e4d8b1b12c6387b7e6057b659e1e87f9416b08fbe7705d9061e111c7f4b733",
+      "hash": "sha256:a6038325027de2d7719aac0bcd002aa90cc9c89439e09548948cb1d4790a874a",
       "language": "python",
       "module_page": "test_autonomy_migrations",
       "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
@@ -56201,7 +56684,7 @@
           }
         }
       },
-      "hash": "sha256:c829ee2a55b2d4ce7d8f6fe8499d749f1c289579294e926c65e8fc845cb7752a",
+      "hash": "sha256:68f2364edbfc3afe13cc36662fc14b93ba34a54ac0d07a082c6cb93832e921b8",
       "language": "python",
       "module_page": "test_source_preflight",
       "semantic_hash": "sha256:86e4830f43eddcdcf277ede91513dddafabcf761d398f9648d4bd984cd69cd80"
@@ -56336,7 +56819,7 @@
           }
         }
       },
-      "hash": "sha256:31ade05e107d781642396dba00a0ebe16120f86c87dd303ea4635c6ef599f960",
+      "hash": "sha256:4a4c9f01e079dabb4e248320a4509f82650c59a2f6513b44aeea507ca400b4b4",
       "language": "python",
       "module_page": "test_sqlite_migrations",
       "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
@@ -56918,7 +57401,7 @@
           }
         }
       },
-      "hash": "sha256:2252109266b317369ef555e8a467a21435c49564287ba3cb5d6fc6eeeedaed1b",
+      "hash": "sha256:e3dee4cb0eee013efcb2cf86b9e1856068be12b5744c4f8a6d7d33b6c20abfe9",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
       "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"
@@ -57457,7 +57940,7 @@
           }
         }
       },
-      "hash": "sha256:6c5543c32223ce1649939c92b8dbd37acbc83d803773767a0772797cb4ba79e7",
+      "hash": "sha256:a47d17e29b704e20b5fc863980b3808f94c78067d7fa2fe85d7897252862833f",
       "language": "python",
       "module_page": "test_database_harness",
       "semantic_hash": "sha256:8aa2e3c36005907481aace31819f3a17775d38d5c81bdbdf8d871aa8b7b20084"
@@ -57607,6 +58090,33 @@
       "language": "python",
       "module_page": "test_managed_authority",
       "semantic_hash": "sha256:1f4287ae9bca7f096377666a8fd9d6eedaf6d5a89faceb6fdc3d5ea1e1a92ea7"
+    },
+    "backend/tests/test_native_connections.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Browser-approved native sessions preserve proof, identity and revocation.",
+          "functions": {
+            "approve": "—",
+            "exchange": "—",
+            "start_connection": "—",
+            "test_concurrent_native_exchange_issues_one_session": "—",
+            "test_native_approval_cannot_be_switched_to_another_account": "—",
+            "test_native_connection_details_require_a_human_session": "—",
+            "test_native_expiration_and_input_bounds": "—",
+            "test_native_handoff_rechecks_approving_session_revocation": "—",
+            "test_native_handoff_requires_browser_consent_and_exact_proof": "—"
+          }
+        }
+      },
+      "hash": "sha256:befdc7ce6281991292918c103c7d3e63255c0a562591c037c9c5eb0ea4f51471",
+      "language": "python",
+      "module_page": "test_native_connections",
+      "semantic_hash": "sha256:00168476ff1295e9afa60427673d1c4c512632fc77f44bb58c87a3c1b4ede2ec"
     },
     "backend/tests/test_plan_shares.py": {
       "entities": [],
@@ -58030,10 +58540,10 @@
           }
         }
       },
-      "hash": "sha256:5920194b2bd07041aaa302d53a0c26e3e9792fbc9183041e6667a7d4db3f6aa5",
+      "hash": "sha256:aaeee3bfdb308f0a845c48adea936136e10f0af81e898469aef8ad05f4effb82",
       "language": "typescript",
       "module_page": "App",
-      "semantic_hash": "sha256:885b9d610f26faf3b6633804cb78cd0c05c6860412c75ee1a02722b7e77f53f0"
+      "semantic_hash": "sha256:ceef5d0c94b7d25538ba76d6a37aea96c40649732aae70474610b094785b9e0e"
     },
     "frontend/src/components/UserSessionBadge.test.tsx": {
       "entities": [],
@@ -65185,7 +65695,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:4a3c86b9b7ca6ed643ad854a36059770c3b26ff630a438d0974e58843c8b8b53",
+      "hash": "sha256:ba49502983504126c09a00d7fc0cf5d9e0a3bc800fbb64a658914b67bcf57e36",
       "language": "typescript",
       "module_page": "teamwork.en",
       "semantic_hash": "sha256:5a2e5a086f8e265d21d03aa23653ce9ec95ada8bcb647706a4b0a836dea865d4"
@@ -65202,7 +65712,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:f4962d28bd3cd2cc8e0211c377c08adb5877cdd45942c4855af098fe1ba95c55",
+      "hash": "sha256:99fd207fddf541d273ced12156abbd3b3c5c21824bf08e28e7861cab9b8ca6c4",
       "language": "typescript",
       "module_page": "teamwork.ru",
       "semantic_hash": "sha256:26f27806d6d52e9cf7b6c843c041c07cd55725685ba239e13e254acb679c1c17"
@@ -65320,10 +65830,10 @@
           }
         }
       },
-      "hash": "sha256:cf69dbec3c9f839df8e7f0ade6744ebce50acd476d82ae0988e59f98028053b4",
+      "hash": "sha256:2368737b35f38cee5fca24805d012841221c27b6dc39149935d330e61935688e",
       "language": "typescript",
       "module_page": "routeModules",
-      "semantic_hash": "sha256:3074dd76da4e3b5067e81333b1bec81ca6d2c9d4f39188a8eb9f65d2a5eac837"
+      "semantic_hash": "sha256:59539f64150797355fd51cae7997eaad44f3a9d50025f8e4742d88dd8cc9d3a6"
     },
     "frontend/src/navigation/workspaces.test.ts": {
       "entities": [],
@@ -65817,6 +66327,42 @@
       "language": "typescript",
       "module_page": "MyWorkPage",
       "semantic_hash": "sha256:a1f9a6a230ca08ee55a5357c4e2e1d36f82fee75ccb1a57a23137b3714a8490d"
+    },
+    "frontend/src/pages/NativeConnectionPage.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/pages/NativeConnectionPage.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:85852402843c069245890d117c25a0d717d00a9ba4fc78e97bb7337790166f00",
+      "language": "typescript",
+      "module_page": "NativeConnectionPage.test",
+      "semantic_hash": "sha256:237a8873d06e34e26b07bf13f9c6829a0c92fdd4f2dd73b8ab99de7fa3ba6458"
+    },
+    "frontend/src/pages/NativeConnectionPage.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/pages/NativeConnectionPage.tsx`._",
+          "functions": {
+            "NativeConnectionPage": "—"
+          }
+        }
+      },
+      "hash": "sha256:fcb4ccd1c7af19545dba9e6ed9c8910b3b53aaab1c01dcdfe5ec8ce4e1877147",
+      "language": "typescript",
+      "module_page": "NativeConnectionPage",
+      "semantic_hash": "sha256:9c447bef8080c5e5cb55b1f57e1e09f4af012ba42747c3743697fef6d375031b"
     },
     "frontend/src/pages/NotFoundPage.tsx": {
       "entities": [],

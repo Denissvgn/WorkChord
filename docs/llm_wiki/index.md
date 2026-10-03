@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1442 | [Open section](#entities) |
-| Modules | 624 | [Open section](#modules) |
-| Workflows | 163 | [Open section](#workflows) |
+| Entities | 1452 | [Open section](#entities) |
+| Modules | 630 | [Open section](#modules) |
+| Workflows | 167 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 511 | [Open section](#entry-point-flows) |
+| Entry-point flows | 515 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -493,7 +493,17 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ModelLatencyTier](entities/ModelLatencyTier.md)
 - [ModelReasoningTier](entities/ModelReasoningTier.md)
 - [MutationResult](entities/MutationResult.md)
+- [NativeApprovalResponse](entities/NativeApprovalResponse.md)
 - [NativeChecks](entities/NativeChecks.md)
+- [NativeConnection](entities/NativeConnection.md)
+- [NativeConnectionApproval](entities/NativeConnectionApproval.md)
+- [NativeConnectionDetails](entities/NativeConnectionDetails.md)
+- [NativeConnectionExchange](entities/NativeConnectionExchange.md)
+- [NativeConnectionResponse](entities/NativeConnectionResponse.md)
+- [NativeConnectionStart](entities/NativeConnectionStart.md)
+- [NativePendingResponse](entities/NativePendingResponse.md)
+- [NativeSessionService](entities/NativeSessionService.md)
+- [NativeTokenResponse](entities/NativeTokenResponse.md)
 - [NavItem](entities/NavItem.md)
 - [NormalizedApiError](entities/NormalizedApiError.md)
 - [NotFoundException](entities/NotFoundException.md)
@@ -1468,6 +1478,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20260930_0002_profile_capacity](modules/20260930_0002_profile_capacity.md) - Add durable profile availability without changing the frozen initial schema.
 - [20260930_0003_delivery_dependencies](modules/20260930_0003_delivery_dependencies.md) - Persist delivery dependencies separately from local schedule edges.
 - [20260930_0004_discussion](modules/20260930_0004_discussion.md) - Add retained discussion, subscriptions and the personal inbox transport.
+- [20261003_0005_native_connections](modules/20261003_0005_native_connections.md) - Add short-lived browser-approved native connections.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1541,6 +1552,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
 - [MyWorkPage](modules/MyWorkPage.md) - `frontend/src/pages/MyWorkPage.tsx`
+- [NativeConnectionPage](modules/NativeConnectionPage.md) - `frontend/src/pages/NativeConnectionPage.tsx`
+- [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) - `frontend/src/pages/NativeConnectionPage.test.tsx`
 - [NotFoundPage](modules/NotFoundPage.md) - `frontend/src/pages/NotFoundPage.tsx`
 - [NotificationsPanel](modules/NotificationsPanel.md) - `frontend/src/components/notifications/NotificationsPanel.tsx`
 - [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) - `frontend/src/components/settings/OutboundWebhooksPanel.tsx`
@@ -1805,6 +1818,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_triage](modules/models_triage.md) - Triage item model.
+- [native_connection](modules/native_connection.md) - Short-lived browser consent for a proof-bound native session.
+- [native_session_service](modules/native_session_service.md) - Explicit browser consent and one-use proof-bound native authentication.
 - [notification_service](modules/notification_service.md) - Email notification service for task status changes.
 - [observability](modules/observability.md) - Database-backed readiness, drain state, and low-cardinality instrumentation.
 - [orchestration](modules/orchestration.md) - External-journal-first DAG and fenced verification state machines.
@@ -2011,6 +2026,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
@@ -2162,6 +2178,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [IterationService__reconcile_tasks_for_project_scope](workflows/IterationService__reconcile_tasks_for_project_scope.md) - entry: `iteration_service.IterationService._reconcile_tasks_for_project_scope`
 - [IterationService_get_summary](workflows/IterationService_get_summary.md) - entry: `iteration_service.IterationService.get_summary`
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
+- [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
+- [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
+- [NativeSessionService_exchange](workflows/NativeSessionService_exchange.md) - entry: `native_session_service.NativeSessionService.exchange`
+- [NativeSessionService_start](workflows/NativeSessionService_start.md) - entry: `native_session_service.NativeSessionService.start`
 - [OutboundWebhookService__attempt_delivery](workflows/OutboundWebhookService__attempt_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService._attempt_delivery`
 - [OutboundWebhookService__enqueue_event_records](workflows/OutboundWebhookService__enqueue_event_records.md) - entry: `outbound_webhook_service.OutboundWebhookService._enqueue_event_records`
 - [OutboundWebhookService_retry_delivery](workflows/OutboundWebhookService_retry_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService.retry_delivery`
@@ -2271,6 +2291,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-apply_agent_profile_preset](flows/http-apply_agent_profile_preset.md) - entry: `apply_agent_profile_preset`
 - [http-apply_agent_team_reconciliation](flows/http-apply_agent_team_reconciliation.md) - entry: `apply_agent_team_reconciliation`
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
+- [http-approve_native_connection](flows/http-approve_native_connection.md) - entry: `approve_native_connection`
 - [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
 - [http-authorize](flows/http-authorize.md) - entry: `authorize`
 - [http-backlog_snapshots](flows/http-backlog_snapshots.md) - entry: `backlog_snapshots`
@@ -2351,12 +2372,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-delete_team_member_profile](flows/http-delete_team_member_profile.md) - entry: `delete_team_member_profile`
 - [http-delete_team_member_profile_skill](flows/http-delete_team_member_profile_skill.md) - entry: `delete_team_member_profile_skill`
 - [http-delete_vacation](flows/http-delete_vacation.md) - entry: `delete_vacation`
+- [http-describe_native_connection](flows/http-describe_native_connection.md) - entry: `describe_native_connection`
 - [http-disable_agent_model_binding](flows/http-disable_agent_model_binding.md) - entry: `disable_agent_model_binding`
 - [http-disable_agent_model_catalog_entry](flows/http-disable_agent_model_catalog_entry.md) - entry: `disable_agent_model_catalog_entry`
 - [http-discover_agent_skill_bundles](flows/http-discover_agent_skill_bundles.md) - entry: `discover_agent_skill_bundles`
 - [http-download_agent_skill_bundle](flows/http-download_agent_skill_bundle.md) - entry: `download_agent_skill_bundle`
 - [http-draft_triage_task](flows/http-draft_triage_task.md) - entry: `draft_triage_task`
 - [http-duplicate_saved_view](flows/http-duplicate_saved_view.md) - entry: `duplicate_saved_view`
+- [http-exchange_native_connection](flows/http-exchange_native_connection.md) - entry: `exchange_native_connection`
 - [http-expire](flows/http-expire.md) - entry: `expire`
 - [http-explain_schedule](flows/http-explain_schedule.md) - entry: `explain_schedule`
 - [http-export_iteration](flows/http-export_iteration.md) - entry: `export_iteration`
@@ -2529,6 +2552,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-snooze_planning_triage_item](flows/http-snooze_planning_triage_item.md) - entry: `snooze_planning_triage_item`
 - [http-snooze_triage_item](flows/http-snooze_triage_item.md) - entry: `snooze_triage_item`
 - [http-start_agent_run](flows/http-start_agent_run.md) - entry: `start_agent_run`
+- [http-start_native_connection](flows/http-start_native_connection.md) - entry: `start_native_connection`
 - [http-submit_my_agent_review_verdict](flows/http-submit_my_agent_review_verdict.md) - entry: `submit_my_agent_review_verdict`
 - [http-submit_my_agent_work](flows/http-submit_my_agent_work.md) - entry: `submit_my_agent_work`
 - [http-suggest_existing_task](flows/http-suggest_existing_task.md) - entry: `suggest_existing_task`

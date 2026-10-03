@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1442,
-      "flows": 511,
+      "entities": 1452,
+      "flows": 515,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 624,
-      "workflows": 163
+      "modules": 630,
+      "workflows": 167
     },
     "dependency_architecture": 2,
-    "total": 2755
+    "total": 2779
   },
   "dependency_pages": {
     "count": 2,
@@ -828,6 +828,42 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "approve_native_connection",
+        "source_path": "backend/app/routers/identity.py",
+        "symbol": "approve_native_connection"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "approve_native_connection",
+              "target": "NativeSessionService(db).approve"
+            }
+          ],
+          "generated": true,
+          "step_count": 3,
+          "transfer_count": 2,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/identity.py",
+            "backend/app/services/native_session_service.py"
+          ],
+          "step_count": 3,
+          "truncated": false
+        }
+      },
+      "id": "http-approve_native_connection",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "audit_hierarchy",
         "source_path": "backend/app/routers/snapshots.py",
         "symbol": "audit_hierarchy"
@@ -1187,7 +1223,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 192,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1195,7 +1231,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 121,
+              "line": 193,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1210,13 +1246,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 108,
+              "line": 180,
               "step": "bootstrap",
               "target": "db.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 111,
+              "line": 183,
               "step": "bootstrap",
               "target": "db.get"
             },
@@ -1424,13 +1460,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 166,
               "step": "callback",
               "target": "IdentityService(db).finish_login"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 166,
               "step": "callback",
               "target": "request.cookies.get"
             },
@@ -1798,7 +1834,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 268,
+              "line": 340,
               "step": "cleanup",
               "target": "IdentityService(db).cleanup_sessions"
             }
@@ -6078,6 +6114,42 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "describe_native_connection",
+        "source_path": "backend/app/routers/identity.py",
+        "symbol": "describe_native_connection"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 94,
+              "step": "describe_native_connection",
+              "target": "NativeSessionService(db).describe"
+            }
+          ],
+          "generated": true,
+          "step_count": 3,
+          "transfer_count": 2,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/identity.py",
+            "backend/app/services/native_session_service.py"
+          ],
+          "step_count": 3,
+          "truncated": false
+        }
+      },
+      "id": "http-describe_native_connection",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "disable_agent_model_binding",
         "source_path": "backend/app/routers/agent_catalog.py",
         "symbol": "disable_agent_model_binding"
@@ -6533,6 +6605,86 @@
         }
       },
       "id": "http-duplicate_saved_view",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "exchange_native_connection",
+        "source_path": "backend/app/routers/identity.py",
+        "symbol": "exchange_native_connection"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 86,
+              "step": "exchange_native_connection",
+              "target": "NativeSessionService(db).exchange"
+            },
+            {
+              "kind": "external_call",
+              "line": 52,
+              "step": "get_client_ip",
+              "target": "ip_address"
+            },
+            {
+              "kind": "external_call",
+              "line": 53,
+              "step": "get_client_ip",
+              "target": "any"
+            },
+            {
+              "kind": "external_call",
+              "line": 54,
+              "step": "get_client_ip",
+              "target": "ip_network"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 60,
+              "step": "get_client_ip",
+              "target": "request.headers.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 62,
+              "step": "get_client_ip",
+              "target": "forwarded_for.split(',')[0].strip"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 62,
+              "step": "get_client_ip",
+              "target": "forwarded_for.split"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "exchange_native_connection",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/identity.py",
+            "backend/app/services/native_session_service.py",
+            "backend/app/services/session_service.py",
+            "backend/app/config.py"
+          ],
+          "step_count": 15,
+          "truncated": false
+        }
+      },
+      "id": "http-exchange_native_connection",
       "language": "python"
     },
     {
@@ -11249,7 +11401,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 203,
+              "line": 275,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -11257,7 +11409,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 205,
+              "line": 277,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -11278,7 +11430,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 264,
               "step": "link_profile",
               "target": "db.get"
             },
@@ -12295,31 +12447,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 202,
               "step": "list_principals",
               "target": "(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 202,
               "step": "list_principals",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 202,
               "step": "list_principals",
               "target": "select(Principal).order_by(Principal.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 202,
               "step": "list_principals",
               "target": "select(Principal).order_by"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 202,
               "step": "list_principals",
               "target": "select"
             }
@@ -13532,25 +13684,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 80,
+              "line": 152,
               "step": "login",
               "target": "IdentityService(db).begin_login"
             },
             {
               "kind": "external_call",
-              "line": 81,
+              "line": 153,
               "step": "login",
               "target": "RedirectResponse"
             },
             {
               "kind": "unresolved_call",
-              "line": 83,
+              "line": 155,
               "step": "login",
               "target": "response.set_cookie"
             },
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 156,
               "step": "login",
               "target": "request.cookies.get"
             },
@@ -13607,7 +13759,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 258,
+              "line": 330,
               "step": "logout",
               "target": "db.get"
             },
@@ -13891,18 +14043,10 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 66,
+              "line": 138,
               "step": "me",
               "step_index": 1,
               "target": "result.update"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 59,
-              "step": "resolve_http_identity",
-              "step_index": 2,
-              "target": "contexts.append"
             },
             {
               "confidence": "unknown",
@@ -13915,7 +14059,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 71,
+              "line": 63,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -13923,7 +14067,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 82,
+              "line": 73,
+              "step": "resolve_http_identity",
+              "step_index": 2,
+              "target": "contexts.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 84,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "tokens.append"
@@ -13931,7 +14083,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 90,
+              "line": 92,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "tokens.append"
@@ -13939,7 +14091,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 95,
+              "line": 97,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -13948,19 +14100,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 42,
-              "step": "resolve_http_identity",
-              "target": "request.headers.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 43,
-              "step": "resolve_http_identity",
-              "target": "request.headers.get"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 44,
+              "step": "resolve_http_identity",
+              "target": "request.headers.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 45,
+              "step": "resolve_http_identity",
+              "target": "request.headers.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 46,
               "step": "resolve_http_identity",
               "target": "request.headers.get"
             },
@@ -13972,7 +14124,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 48,
+              "line": 50,
               "step": "resolve_http_identity",
               "target": "AgentService(db).authenticate"
             },
@@ -14238,7 +14390,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 225,
+              "line": 297,
               "step": "native_token",
               "target": "IdentityService(db).issue_session"
             },
@@ -15005,7 +15157,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 179,
+              "line": 251,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -15013,7 +15165,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 180,
+              "line": 252,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -15022,7 +15174,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 163,
+              "line": 235,
               "step": "project_member",
               "target": "authority.allows"
             },
@@ -15034,7 +15186,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 170,
+              "line": 242,
               "step": "project_member",
               "target": "db.get"
             },
@@ -15360,7 +15512,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 289,
+              "line": 361,
               "step": "recover_principal",
               "step_index": 1,
               "target": "db.add"
@@ -15381,7 +15533,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 282,
+              "line": 354,
               "step": "recover_principal",
               "target": "db.get"
             },
@@ -16487,19 +16639,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 317,
               "step": "revoke_owned_session",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 317,
               "step": "revoke_owned_session",
               "target": "select(UserSession).where"
             },
             {
               "kind": "external_call",
-              "line": 245,
+              "line": 317,
               "step": "revoke_owned_session",
               "target": "select"
             },
@@ -16848,43 +17000,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "select(UserSession).where"
             },
             {
               "kind": "external_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 307,
               "step": "sessions",
               "target": "UserSession.created_at.desc"
             }
@@ -17219,6 +17371,86 @@
         }
       },
       "id": "http-start_agent_run",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "start_native_connection",
+        "source_path": "backend/app/routers/identity.py",
+        "symbol": "start_native_connection"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 79,
+              "step": "start_native_connection",
+              "target": "NativeSessionService(db).start"
+            },
+            {
+              "kind": "external_call",
+              "line": 52,
+              "step": "get_client_ip",
+              "target": "ip_address"
+            },
+            {
+              "kind": "external_call",
+              "line": 53,
+              "step": "get_client_ip",
+              "target": "any"
+            },
+            {
+              "kind": "external_call",
+              "line": 54,
+              "step": "get_client_ip",
+              "target": "ip_network"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 60,
+              "step": "get_client_ip",
+              "target": "request.headers.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 62,
+              "step": "get_client_ip",
+              "target": "forwarded_for.split(',')[0].strip"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 62,
+              "step": "get_client_ip",
+              "target": "forwarded_for.split"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "start_native_connection",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/identity.py",
+            "backend/app/services/native_session_service.py",
+            "backend/app/services/session_service.py",
+            "backend/app/config.py"
+          ],
+          "step_count": 14,
+          "truncated": false
+        }
+      },
+      "id": "http-start_native_connection",
       "language": "python"
     },
     {
@@ -18686,19 +18918,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 214,
+              "line": 286,
               "step": "transfer_guest",
               "target": "IdentityService(db).transfer_guest"
             },
             {
               "kind": "unresolved_call",
-              "line": 214,
+              "line": 286,
               "step": "transfer_guest",
               "target": "request.cookies.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 216,
+              "line": 288,
               "step": "transfer_guest",
               "target": "response.delete_cookie"
             }
@@ -21366,7 +21598,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 153,
+              "line": 225,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -21374,7 +21606,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 154,
+              "line": 226,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -37365,7 +37597,17 @@
         "entities/models_triage_TriageItem.md",
         "entities/models_triage_TriageItemStatus.md",
         "entities/MutationResult.md",
+        "entities/NativeApprovalResponse.md",
         "entities/NativeChecks.md",
+        "entities/NativeConnection.md",
+        "entities/NativeConnectionApproval.md",
+        "entities/NativeConnectionDetails.md",
+        "entities/NativeConnectionExchange.md",
+        "entities/NativeConnectionResponse.md",
+        "entities/NativeConnectionStart.md",
+        "entities/NativePendingResponse.md",
+        "entities/NativeSessionService.md",
+        "entities/NativeTokenResponse.md",
         "entities/NavItem.md",
         "entities/NormalizedApiError.md",
         "entities/NotFoundException.md",
@@ -38261,6 +38503,7 @@
         "flows/http-apply_agent_profile_preset.md",
         "flows/http-apply_agent_team_reconciliation.md",
         "flows/http-apply_schedule.md",
+        "flows/http-approve_native_connection.md",
         "flows/http-audit_hierarchy.md",
         "flows/http-authorize.md",
         "flows/http-backlog_snapshots.md",
@@ -38341,12 +38584,14 @@
         "flows/http-delete_team_member_profile.md",
         "flows/http-delete_team_member_profile_skill.md",
         "flows/http-delete_vacation.md",
+        "flows/http-describe_native_connection.md",
         "flows/http-disable_agent_model_binding.md",
         "flows/http-disable_agent_model_catalog_entry.md",
         "flows/http-discover_agent_skill_bundles.md",
         "flows/http-download_agent_skill_bundle.md",
         "flows/http-draft_triage_task.md",
         "flows/http-duplicate_saved_view.md",
+        "flows/http-exchange_native_connection.md",
         "flows/http-expire.md",
         "flows/http-explain_schedule.md",
         "flows/http-export_iteration.md",
@@ -38519,6 +38764,7 @@
         "flows/http-snooze_planning_triage_item.md",
         "flows/http-snooze_triage_item.md",
         "flows/http-start_agent_run.md",
+        "flows/http-start_native_connection.md",
         "flows/http-submit_my_agent_review_verdict.md",
         "flows/http-submit_my_agent_work.md",
         "flows/http-suggest_existing_task.md",
@@ -38779,6 +39025,7 @@
         "modules/20260930_0002_profile_capacity.md",
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
+        "modules/20261003_0005_native_connections.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -39012,6 +39259,10 @@
         "modules/models_template.md",
         "modules/models_triage.md",
         "modules/MyWorkPage.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md",
         "modules/NotFoundPage.md",
         "modules/notification_service.md",
         "modules/NotificationsPanel.md",
@@ -39315,6 +39566,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
@@ -39494,6 +39746,10 @@
         "workflows/logout.md",
         "workflows/main.md",
         "workflows/native_token.md",
+        "workflows/NativeSessionService_approve.md",
+        "workflows/NativeSessionService_connection.md",
+        "workflows/NativeSessionService_exchange.md",
+        "workflows/NativeSessionService_start.md",
         "workflows/OutboundWebhookService__attempt_delivery.md",
         "workflows/OutboundWebhookService__enqueue_event_records.md",
         "workflows/OutboundWebhookService_retry_delivery.md",
@@ -45202,6 +45458,7 @@
         "modules/http_authority.md",
         "modules/identity_service.md",
         "modules/mcp_server.md",
+        "modules/native_session_service.md",
         "modules/routers_identity.md",
         "modules/test_task_domain.md"
       ],
@@ -47242,6 +47499,18 @@
       "title": "_MutationResult"
     },
     {
+      "canonical_path": "entities/NativeApprovalResponse.md",
+      "id": "NativeApprovalResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeApprovalResponse",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeApprovalResponse"
+    },
+    {
       "canonical_path": "entities/NativeChecks.md",
       "id": "NativeChecks",
       "kind": "entities",
@@ -47252,6 +47521,119 @@
       "role": "semantic",
       "source_path": "scripts/ci/tests/test_native_runtimes.py",
       "title": "NativeChecks"
+    },
+    {
+      "canonical_path": "entities/NativeConnection.md",
+      "id": "NativeConnection",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnection",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/test_native_connections.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/native_connection.py",
+      "title": "NativeConnection"
+    },
+    {
+      "canonical_path": "entities/NativeConnectionApproval.md",
+      "id": "NativeConnectionApproval",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnectionApproval",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeConnectionApproval"
+    },
+    {
+      "canonical_path": "entities/NativeConnectionDetails.md",
+      "id": "NativeConnectionDetails",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnectionDetails",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeConnectionDetails"
+    },
+    {
+      "canonical_path": "entities/NativeConnectionExchange.md",
+      "id": "NativeConnectionExchange",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnectionExchange",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeConnectionExchange"
+    },
+    {
+      "canonical_path": "entities/NativeConnectionResponse.md",
+      "id": "NativeConnectionResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnectionResponse",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeConnectionResponse"
+    },
+    {
+      "canonical_path": "entities/NativeConnectionStart.md",
+      "id": "NativeConnectionStart",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeConnectionStart",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeConnectionStart"
+    },
+    {
+      "canonical_path": "entities/NativePendingResponse.md",
+      "id": "NativePendingResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativePendingResponse",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativePendingResponse"
+    },
+    {
+      "canonical_path": "entities/NativeSessionService.md",
+      "id": "NativeSessionService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeSessionService",
+      "outgoing_internal_links": [
+        "modules/native_session_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "NativeSessionService"
+    },
+    {
+      "canonical_path": "entities/NativeTokenResponse.md",
+      "id": "NativeTokenResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NativeTokenResponse",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "NativeTokenResponse"
     },
     {
       "canonical_path": "entities/NavItem.md",
@@ -58811,7 +59193,7 @@
         "modules/models_outbound_webhook.md",
         "modules/models_plan_share.md",
         "modules/models_project.md",
-        "modules/recovery.md",
+        "modules/native_connection.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -59545,6 +59927,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20260930_0004_discussion.py",
       "title": "20260930_0004_discussion Module"
+    },
+    {
+      "canonical_path": "modules/20261003_0005_native_connections.md",
+      "id": "20261003_0005_native_connections",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261003_0005_native_connections",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261003_0005_native_connections.py",
+      "title": "20261003_0005_native_connections Module"
     },
     {
       "canonical_path": "modules/accessibilityInvariants.md",
@@ -62383,6 +62775,8 @@
         "modules/IdentityProvider.md",
         "modules/identityService.md",
         "modules/MyWorkPage.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/TaskForm.md",
@@ -63678,6 +64072,78 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.tsx",
       "title": "MyWorkPage Module"
+    },
+    {
+      "canonical_path": "modules/native_connection.md",
+      "id": "native_connection",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/native_connection",
+      "outgoing_internal_links": [
+        "entities/NativeConnection.md",
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/test_native_connections.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/native_connection.py",
+      "title": "native_connection Module"
+    },
+    {
+      "canonical_path": "modules/native_session_service.md",
+      "id": "native_session_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/native_session_service",
+      "outgoing_internal_links": [
+        "entities/NativeSessionService.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/models_identity.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/routers_identity.md",
+        "modules/time.md",
+        "modules/user_session.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "native_session_service Module"
+    },
+    {
+      "canonical_path": "modules/NativeConnectionPage.md",
+      "id": "NativeConnectionPage",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/NativeConnectionPage",
+      "outgoing_internal_links": [
+        "modules/api.md",
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/identityContext.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/NativeConnectionPage.tsx",
+      "title": "NativeConnectionPage Module"
+    },
+    {
+      "canonical_path": "modules/NativeConnectionPage.test.md",
+      "id": "NativeConnectionPage.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/NativeConnectionPage.test",
+      "outgoing_internal_links": [
+        "modules/identityContext.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/NativeConnectionPage.test.tsx",
+      "title": "NativeConnectionPage.test Module"
     },
     {
       "canonical_path": "modules/NotFoundPage.md",
@@ -65280,6 +65746,14 @@
         "entities/BootstrapOwner.md",
         "entities/GuestTransferRequest.md",
         "entities/MembershipChange.md",
+        "entities/NativeApprovalResponse.md",
+        "entities/NativeConnectionApproval.md",
+        "entities/NativeConnectionDetails.md",
+        "entities/NativeConnectionExchange.md",
+        "entities/NativeConnectionResponse.md",
+        "entities/NativeConnectionStart.md",
+        "entities/NativePendingResponse.md",
+        "entities/NativeTokenResponse.md",
         "entities/PrincipalRecoveryRequest.md",
         "entities/ProfileLinkRequest.md",
         "entities/routers_identity_Database.md",
@@ -69079,6 +69553,24 @@
       "title": "test_managed_authority Module"
     },
     {
+      "canonical_path": "modules/test_native_connections.md",
+      "id": "test_native_connections",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_native_connections",
+      "outgoing_internal_links": [
+        "modules/identity_service.md",
+        "modules/native_connection.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_managed_authority.md",
+        "modules/test_native_connections.md",
+        "modules/time.md",
+        "modules/user_session.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_native_connections.py",
+      "title": "test_native_connections Module"
+    },
+    {
       "canonical_path": "modules/test_native_runtimes.md",
       "id": "test_native_runtimes",
       "kind": "modules",
@@ -72175,6 +72667,68 @@
       "title": "native_token"
     },
     {
+      "canonical_path": "workflows/NativeSessionService_approve.md",
+      "id": "NativeSessionService_approve",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/NativeSessionService_approve",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/identity_service.md",
+        "modules/native_session_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "NativeSessionService_approve"
+    },
+    {
+      "canonical_path": "workflows/NativeSessionService_connection.md",
+      "id": "NativeSessionService_connection",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/NativeSessionService_connection",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/identity_service.md",
+        "modules/native_session_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "NativeSessionService_connection"
+    },
+    {
+      "canonical_path": "workflows/NativeSessionService_exchange.md",
+      "id": "NativeSessionService_exchange",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/NativeSessionService_exchange",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/identity_service.md",
+        "modules/native_session_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "NativeSessionService_exchange"
+    },
+    {
+      "canonical_path": "workflows/NativeSessionService_start.md",
+      "id": "NativeSessionService_start",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/NativeSessionService_start",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/native_session_service.py",
+      "title": "NativeSessionService_start"
+    },
+    {
       "canonical_path": "workflows/OutboundWebhookService__attempt_delivery.md",
       "id": "OutboundWebhookService__attempt_delivery",
       "kind": "workflows",
@@ -73406,6 +73960,19 @@
       "title": "apply_schedule"
     },
     {
+      "canonical_path": "flows/http-approve_native_connection.md",
+      "id": "http-approve_native_connection",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-approve_native_connection",
+      "outgoing_internal_links": [
+        "modules/native_session_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "approve_native_connection"
+    },
+    {
       "canonical_path": "flows/http-audit_hierarchy.md",
       "id": "http-audit_hierarchy",
       "kind": "flows",
@@ -74511,6 +75078,19 @@
       "title": "delete_vacation"
     },
     {
+      "canonical_path": "flows/http-describe_native_connection.md",
+      "id": "http-describe_native_connection",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-describe_native_connection",
+      "outgoing_internal_links": [
+        "modules/native_session_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "describe_native_connection"
+    },
+    {
       "canonical_path": "flows/http-disable_agent_model_binding.md",
       "id": "http-disable_agent_model_binding",
       "kind": "flows",
@@ -74591,6 +75171,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/saved_views.py",
       "title": "duplicate_saved_view"
+    },
+    {
+      "canonical_path": "flows/http-exchange_native_connection.md",
+      "id": "http-exchange_native_connection",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-exchange_native_connection",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/native_session_service.md",
+        "modules/routers_identity.md",
+        "modules/session_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "exchange_native_connection"
     },
     {
       "canonical_path": "flows/http-expire.md",
@@ -76943,6 +77538,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/agent.py",
       "title": "start_agent_run"
+    },
+    {
+      "canonical_path": "flows/http-start_native_connection.md",
+      "id": "http-start_native_connection",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-start_native_connection",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/native_session_service.md",
+        "modules/routers_identity.md",
+        "modules/session_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "start_native_connection"
     },
     {
       "canonical_path": "flows/http-submit_my_agent_review_verdict.md",
@@ -81567,6 +82177,7 @@
         "modules/20260930_0002_profile_capacity.md",
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
+        "modules/20261003_0005_native_connections.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -81800,6 +82411,10 @@
         "modules/models_template.md",
         "modules/models_triage.md",
         "modules/MyWorkPage.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md",
         "modules/NotFoundPage.md",
         "modules/notification_service.md",
         "modules/NotificationsPanel.md",
@@ -82103,6 +82718,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
@@ -82202,6 +82818,7 @@
         "modules/20260930_0002_profile_capacity.md",
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
+        "modules/20261003_0005_native_connections.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -82435,6 +83052,10 @@
         "modules/models_template.md",
         "modules/models_triage.md",
         "modules/MyWorkPage.md",
+        "modules/native_connection.md",
+        "modules/native_session_service.md",
+        "modules/NativeConnectionPage.md",
+        "modules/NativeConnectionPage.test.md",
         "modules/NotFoundPage.md",
         "modules/notification_service.md",
         "modules/NotificationsPanel.md",
@@ -82738,6 +83359,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
@@ -82828,5 +83450,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:12688e319260cbb2af92515a26d190cba098fa964d70ad9c53223605ab4bab2e"
+  "source_hash": "sha256:cb5361f70ebaba493eea65343ada22881a63b96f45bcd5e341acfbb2a82c8bee"
 }

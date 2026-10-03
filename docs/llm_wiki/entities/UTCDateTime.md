@@ -40,10 +40,10 @@ flowchart LR
     n7["backend/app/models/github.py"]
     n8["backend/app/models/identity.py"]
     n9["backend/app/models/label.py"]
-    n10["backend/app/models/outbound_webhook.py"]
-    n11["backend/app/models/plan_share.py"]
-    n12["backend/app/models/project.py"]
-    n13["backend/app/models/recovery.py"]
+    n10["backend/app/models/native_connection.py"]
+    n11["backend/app/models/outbound_webhook.py"]
+    n12["backend/app/models/plan_share.py"]
+    n13["backend/app/models/project.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,10 +66,10 @@ flowchart LR
     click n7 "../modules/models_github.md"
     click n8 "../modules/models_identity.md"
     click n9 "../modules/models_label.md"
-    click n10 "../modules/models_outbound_webhook.md"
-    click n11 "../modules/models_plan_share.md"
-    click n12 "../modules/models_project.md"
-    click n13 "../modules/recovery.md"
+    click n10 "../modules/native_connection.md"
+    click n11 "../modules/models_outbound_webhook.md"
+    click n12 "../modules/models_plan_share.md"
+    click n13 "../modules/models_project.md"
 ```
 
 ### Summary
@@ -96,9 +96,9 @@ flowchart LR
 | `github` | import | [models_github](../modules/models_github.md) | — |
 | `identity` | import | [models_identity](../modules/models_identity.md) | — |
 | `label` | import | [models_label](../modules/models_label.md) | — |
+| `native_connection` | import | [native_connection](../modules/native_connection.md) | — |
 | `outbound_webhook` | import | [models_outbound_webhook](../modules/models_outbound_webhook.md) | — |
 | `plan_share` | import | [models_plan_share](../modules/models_plan_share.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
-| `recovery` | import | [recovery](../modules/recovery.md) | — |
 
-> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

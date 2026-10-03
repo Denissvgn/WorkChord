@@ -127,32 +127,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| bootstrap | require_identity_writes | 106 | `require_identity_writes(data not statically known)` |
+| bootstrap | require_identity_writes | 178 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 479 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| bootstrap | internal_authority | 107 | `internal_authority(db)` |
+| bootstrap | internal_authority | 179 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| bootstrap | db.get | 108 | `db.get(Principal, data.principal_id)` |
-| bootstrap | AuthorityError | 110 | `AuthorityError('principal_not_found', "Sign in once to establish the owner's verified principal.", 404)` |
-| bootstrap | db.get | 111 | `db.get(WorkspaceAuthorityState, 1)` |
-| bootstrap | AuthorityError | 113 | `AuthorityError('identity_migration_required', 'Apply the identity migration first.', 503)` |
+| bootstrap | db.get | 180 | `db.get(Principal, data.principal_id)` |
+| bootstrap | AuthorityError | 182 | `AuthorityError('principal_not_found', "Sign in once to establish the owner's verified principal.", 404)` |
+| bootstrap | db.get | 183 | `db.get(WorkspaceAuthorityState, 1)` |
+| bootstrap | AuthorityError | 185 | `AuthorityError('identity_migration_required', 'Apply the identity migration first.', 503)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `bootstrap` | 120 |
-| mutation | `db.add` | `bootstrap` | 121 |
+| mutation | `db.add` | `bootstrap` | 192 |
+| mutation | `db.add` | `bootstrap` | 193 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `bootstrap` | `db.get` | 108 |
-| unresolved_call | `bootstrap` | `db.get` | 111 |
+| unresolved_call | `bootstrap` | `db.get` | 180 |
+| unresolved_call | `bootstrap` | `db.get` | 183 |
 | step_limit | `bootstrap` | `first 12 steps` | 0 |
 
 ## Behavior

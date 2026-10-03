@@ -28,36 +28,36 @@ flowchart TD
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
-| [app_database](modules/app_database.md) | 81 | 5 |
+| [app_database](modules/app_database.md) | 82 | 5 |
 | [models_task](modules/models_task.md) | 69 | 9 |
-| [Button](modules/Button.md) | 68 | 0 |
-| [commands](modules/commands.md) | 66 | 11 |
-| [time](modules/time.md) | 59 | 0 |
+| [Button](modules/Button.md) | 69 | 0 |
+| [commands](modules/commands.md) | 67 | 11 |
+| [time](modules/time.md) | 62 | 0 |
 | [types_task](modules/types_task.md) | 59 | 2 |
 | [QueryState](modules/QueryState.md) | 56 | 2 |
-| [config](modules/config.md) | 53 | 1 |
-| [renderWithProviders](modules/renderWithProviders.md) | 49 | 1 |
+| [config](modules/config.md) | 54 | 1 |
+| [renderWithProviders](modules/renderWithProviders.md) | 50 | 1 |
 | [models_agent](modules/models_agent.md) | 46 | 5 |
-| [apiError](modules/apiError.md) | 41 | 0 |
+| [apiError](modules/apiError.md) | 42 | 0 |
 | [task_service](modules/task_service.md) | 39 | 16 |
 | [models_iteration](modules/models_iteration.md) | 37 | 6 |
 | [team_member](modules/team_member.md) | 37 | 6 |
 | [i18n](modules/i18n.md) | 33 | 1 |
-| [api](modules/api.md) | 29 | 2 |
-| [authority](modules/authority.md) | 28 | 5 |
+| [api](modules/api.md) | 30 | 2 |
+| [authority](modules/authority.md) | 29 | 5 |
 | [formatDate](modules/formatDate.md) | 28 | 1 |
 | [models_project](modules/models_project.md) | 27 | 9 |
 | [schemas_task](modules/schemas_task.md) | 27 | 5 |
 | [Input](modules/Input.md) | 27 | 0 |
 | [taskService](modules/taskService.md) | 25 | 3 |
+| [user_session](modules/user_session.md) | 24 | 6 |
 | [index](modules/index.md) | 23 | 0 |
-| [user_session](modules/user_session.md) | 22 | 6 |
 | [agent_service](modules/agent_service.md) | 22 | 13 |
 | [upgrade_service](modules/upgrade_service.md) | 21 | 12 |
 | [models_calendar](modules/models_calendar.md) | 20 | 2 |
+| [models_identity](modules/models_identity.md) | 20 | 2 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
-| [models_identity](modules/models_identity.md) | 19 | 2 |
 | [schemas_agent](modules/schemas_agent.md) | 19 | 8 |
 | [toast](modules/toast.md) | 19 | 0 |
 | [types_team](modules/types_team.md) | 19 | 0 |
@@ -81,6 +81,7 @@ flowchart TD
 | [Checkbox](modules/Checkbox.md) | 13 | 0 |
 | [iterationStore](modules/iterationStore.md) | 13 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
+| [identity_service](modules/identity_service.md) | 12 | 7 |
 | [iteration_service](modules/iteration_service.md) | 12 | 8 |
 | [schemas_iteration](modules/schemas_iteration.md) | 11 | 2 |
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
@@ -93,12 +94,13 @@ flowchart TD
 | [runtime_telemetry](modules/runtime_telemetry.md) | 10 | 0 |
 | [schemas_task_brief](modules/schemas_task_brief.md) | 10 | 0 |
 | [security](modules/security.md) | 10 | 1 |
-| [identity_service](modules/identity_service.md) | 10 | 7 |
 | [team_service](modules/team_service.md) | 10 | 8 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
 | [mcp_agent_tools](modules/mcp_agent_tools.md) | 9 | 48 |
 | [routers_agent](modules/routers_agent.md) | 9 | 23 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 9 | 9 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
+| [identityContext](modules/identityContext.md) | 9 | 1 |
 | [useAdminAccess](modules/useAdminAccess.md) | 9 | 2 |
 | [types_gantt](modules/types_gantt.md) | 9 | 2 |
 | [types_project](modules/types_project.md) | 9 | 3 |
@@ -106,7 +108,7 @@ flowchart TD
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
-| [models___init__](modules/models___init__.md) | 8 | 27 |
+| [models___init__](modules/models___init__.md) | 8 | 28 |
 | [models_outbound_webhook](modules/models_outbound_webhook.md) | 8 | 2 |
 | [recovery](modules/recovery.md) | 8 | 3 |
 | [schemas_project](modules/schemas_project.md) | 8 | 3 |
@@ -115,7 +117,6 @@ flowchart TD
 | [session_service](modules/session_service.md) | 8 | 9 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 8 | 9 |
 | [TaskFiltersBar](modules/TaskFiltersBar.md) | 8 | 9 |
 | [planningMasters_masters](modules/planningMasters_masters.md) | 8 | 2 |
 | [types_label](modules/types_label.md) | 8 | 0 |
@@ -129,7 +130,6 @@ flowchart TD
 | [sql_semantics](modules/sql_semantics.md) | 7 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 7 | 0 |
 | [taskEditorContract](modules/taskEditorContract.md) | 7 | 2 |
-| [identityContext](modules/identityContext.md) | 7 | 1 |
 | [planningTaskIssues](modules/planningTaskIssues.md) | 7 | 2 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
@@ -226,6 +226,7 @@ flowchart TD
 | [status](modules/status.md) | 3 | 3 |
 | [database_migration_closeout](modules/database_migration_closeout.md) | 3 | 2 |
 | [models_discussion](modules/models_discussion.md) | 3 | 3 |
+| [native_connection](modules/native_connection.md) | 3 | 2 |
 | [models_release](modules/models_release.md) | 3 | 5 |
 | [task_status_log](modules/task_status_log.md) | 3 | 3 |
 | [models_template](modules/models_template.md) | 3 | 2 |
@@ -308,6 +309,7 @@ flowchart TD
 | [release_service](modules/release_service.md) | 2 | 10 |
 | [scheduling_rules_service](modules/scheduling_rules_service.md) | 2 | 0 |
 | [delivery](modules/delivery.md) | 2 | 8 |
+| [test_managed_authority](modules/test_managed_authority.md) | 2 | 12 |
 | [UserSessionBadge](modules/UserSessionBadge.md) | 2 | 3 |
 | [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) | 2 | 2 |
 | [TaskRoutingPanel](modules/TaskRoutingPanel.md) | 2 | 14 |
@@ -380,7 +382,7 @@ flowchart TD
 | [routers_capacity](modules/routers_capacity.md) | 1 | 2 |
 | [delivery_dependencies](modules/delivery_dependencies.md) | 1 | 3 |
 | [routers_discussion](modules/routers_discussion.md) | 1 | 3 |
-| [routers_identity](modules/routers_identity.md) | 1 | 13 |
+| [routers_identity](modules/routers_identity.md) | 1 | 14 |
 | [plan_shares](modules/plan_shares.md) | 1 | 6 |
 | [schemas_email_settings](modules/schemas_email_settings.md) | 1 | 1 |
 | [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) | 1 | 0 |
@@ -388,6 +390,7 @@ flowchart TD
 | [snapshot](modules/snapshot.md) | 1 | 0 |
 | [autonomy_work_package_service](modules/autonomy_work_package_service.md) | 1 | 7 |
 | [github_webhook_service](modules/github_webhook_service.md) | 1 | 14 |
+| [native_session_service](modules/native_session_service.md) | 1 | 8 |
 | [task_bulk_operation_service](modules/task_bulk_operation_service.md) | 1 | 8 |
 | [task_status_service](modules/task_status_service.md) | 1 | 9 |
 | [web_intake_service](modules/web_intake_service.md) | 1 | 4 |
@@ -399,7 +402,6 @@ flowchart TD
 | [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) | 1 | 14 |
 | [test_agent_team_setup](modules/test_agent_team_setup.md) | 1 | 14 |
 | [test_authority_migrations](modules/test_authority_migrations.md) | 1 | 2 |
-| [test_managed_authority](modules/test_managed_authority.md) | 1 | 12 |
 | [App](modules/App.md) | 1 | 3 |
 | [TaskStatusFlow](modules/TaskStatusFlow.md) | 1 | 3 |
 | [InteractiveCalendar](modules/InteractiveCalendar.md) | 1 | 1 |
@@ -440,6 +442,7 @@ flowchart TD
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 13 |
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 11 |
 | [GanttPage](modules/GanttPage.md) | 1 | 21 |
+| [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 17 |
 | [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 13 |
 | [PlanPage](modules/PlanPage.md) | 1 | 5 |
@@ -465,6 +468,7 @@ flowchart TD
 | [20260930_0002_profile_capacity](modules/20260930_0002_profile_capacity.md) | 0 | 0 |
 | [20260930_0003_delivery_dependencies](modules/20260930_0003_delivery_dependencies.md) | 0 | 0 |
 | [20260930_0004_discussion](modules/20260930_0004_discussion.md) | 0 | 0 |
+| [20261003_0005_native_connections](modules/20261003_0005_native_connections.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [task_import_service](modules/task_import_service.md) | 0 | 7 |
@@ -518,6 +522,7 @@ flowchart TD
 | [test_delivery_dependencies](modules/test_delivery_dependencies.md) | 0 | 13 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 8 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
+| [test_native_connections](modules/test_native_connections.md) | 0 | 6 |
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
 | [test_process_roles](modules/test_process_roles.md) | 0 | 3 |
@@ -600,6 +605,7 @@ flowchart TD
 | [IterationsPage](modules/IterationsPage.md) | 0 | 8 |
 | [LandingPage](modules/LandingPage.md) | 0 | 0 |
 | [MyWorkPage](modules/MyWorkPage.md) | 0 | 11 |
+| [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) | 0 | 3 |
 | [NotFoundPage](modules/NotFoundPage.md) | 0 | 2 |
 | [OverviewPage.test](modules/OverviewPage.test.md) | 0 | 6 |
 | [PlanMasterPage.test](modules/PlanMasterPage.test.md) | 0 | 10 |
@@ -683,3 +689,5 @@ Both native orchestration entry points depend on ci_runtime for command deadline
 CapacityService imports snapshot and task collaborators lazily for derived revisions. commands imports the planning model at reservation time; models registration supplies the new tables before metadata is inspected. These cycles share transaction ownership rather than create separate commits.
 
 Delivery and discussion model imports register flush listeners. The command owner invokes delivery reconciliation and outbox enqueue after flushing and before commit; previews roll back the same work. Outbound dispatch imports the discussion sink lazily, and the sink uses the existing transport error type lazily to avoid eager initialization cycles. Typed transfer references remain present where aggregate constraints forbid staging them as null.
+
+NativeSessionService reuses IdentityService session issuance and the command transaction owner. Native exchange locks the principal before its approving browser session to align with account revocation. The Android session and cookie implementation requires direct platform evidence because Kotlin extraction is unavailable in the configured analyzer.
