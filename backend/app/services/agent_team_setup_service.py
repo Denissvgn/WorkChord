@@ -2351,6 +2351,7 @@ class AgentTeamSetupService:
             topology_revision=topology.revision,
             actor_key=member.actor_key,
             actor_id=actor.id,
+            previous_acknowledgement_digest=member_record.runtime_acknowledgement_digest,
             role=member.role,
             server_url=manifest.server_url,
             required_server_features=manifest.required_server_features,
@@ -2918,6 +2919,7 @@ class AgentTeamSetupService:
             binding_revisions: dict[str, int] = {}
             connection_state = "unobserved"
             package_acknowledged = False
+            acknowledgement_state = "missing"
             handoff = None
             lifecycle = (
                 AgentTeamMemberLifecycle(record.lifecycle_state)
@@ -2979,6 +2981,26 @@ class AgentTeamSetupService:
                     and ack_payload.get("skill_package")
                     == desired.skill_package.model_dump(mode="json")
                 )
+                if ack_payload:
+                    try:
+                        valid_ack = AgentTeamRuntimeAcknowledgement.model_validate(ack_payload)
+                    except ValueError:
+                        valid_ack = None
+                    acknowledgement_current = (
+                        valid_ack is not None
+                        and package_acknowledged
+                        and ack_payload.get("topology_key") == topology.topology_key
+                        and ack_payload.get("topology_revision") == topology.revision
+                        and ack_payload.get("actor_key") == desired.actor_key
+                        and ack_payload.get("role") == desired.role
+                        and ack_payload.get("profile_revision") == profile_revision
+                        and ack_payload.get("model_binding_revisions") == binding_revisions
+                        and set(handoff.required_server_features).issubset(valid_ack.server_features)
+                        and set(handoff.supported_assignment_modes).issubset(valid_ack.supported_assignment_modes)
+                    )
+                    acknowledgement_state = "current" if acknowledgement_current else "stale"
+                    if not acknowledgement_current:
+                        blockers.add("runtime_acknowledgement_stale")
                 if not package_acknowledged:
                     blockers.add("role_package_not_acknowledged")
                 if credential_state not in {"delivered", "not_required"}:
@@ -3041,6 +3063,7 @@ class AgentTeamSetupService:
                     binding_revisions=binding_revisions,
                     skill_package=desired.skill_package,
                     package_acknowledged=package_acknowledged,
+                    acknowledgement_state=acknowledgement_state,
                     credential_delivery_state=credential_state,
                     connection_state=connection_state,
                     last_seen_at=actor.last_seen_at if actor else None,
@@ -3354,7 +3377,8 @@ class AgentTeamSetupService:
         desired = AgentTeamMemberSpec.model_validate_json(
             member.desired_member_payload
         )
-        ack_digest = _digest(acknowledgement.model_dump(mode="json"))
+        ack_content = acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"})
+        ack_digest = _digest(ack_content)
         if member.runtime_acknowledgement_digest is not None:
             if secrets.compare_digest(
                 member.runtime_acknowledgement_digest,
@@ -3375,9 +3399,16 @@ class AgentTeamSetupService:
                     topology_runtime_ready=status.runtime_ready,
                     blocker_codes=status.blocker_codes,
                 )
+            previous = acknowledgement.expected_previous_acknowledgement_digest
+            if previous is None or not secrets.compare_digest(previous, member.runtime_acknowledgement_digest):
+                raise AgentTeamSetupConflictError(
+                    "agent_team_ack_replay_conflict",
+                    "Refresh requires the exact previous acknowledgement digest and current handoff.",
+                )
+        elif acknowledgement.expected_previous_acknowledgement_digest is not None:
             raise AgentTeamSetupConflictError(
                 "agent_team_ack_replay_conflict",
-                "Runtime already acknowledged another handoff",
+                "There is no previous acknowledgement to refresh.",
             )
         if acknowledgement.skill_package != desired.skill_package:
             raise AgentTeamSetupConflictError(
@@ -3419,9 +3450,7 @@ class AgentTeamSetupService:
                 "Credential delivery is not confirmed",
             )
         member.runtime_acknowledgement_digest = ack_digest
-        member.runtime_acknowledgement_payload = _canonical_json(
-            acknowledgement.model_dump(mode="json")
-        )
+        member.runtime_acknowledgement_payload = _canonical_json(ack_content)
         member.runtime_acknowledged_at = utc_now()
         member.lifecycle_state = "runtime_ready"
         member.object_revision += 1

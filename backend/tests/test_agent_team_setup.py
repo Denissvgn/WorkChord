@@ -20,6 +20,7 @@ from app.mcp_server import mcp
 from app.models.agent import (
     AgentActor,
     AgentModelCatalogEntry,
+    AgentModelBinding,
     AgentTeamTopologyMember,
 )
 from app.schemas.agent_planning import AgentPlanningCommandContext
@@ -42,6 +43,7 @@ from app.services.agent_team_setup_service import (
     AgentTeamSetupService,
 )
 from app.utils.time import utc_now
+from tests.test_delivery_scenarios import delivery_store
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -524,6 +526,41 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
         await client.aclose()
         main_app.dependency_overrides.clear()
 
+    # A prior acknowledgement cannot validate changed model configuration.
+    from app.authority import internal_authority
+    worker_id = next(member.actor_id for member in ready.members if member.role == "worker")
+    with internal_authority(db_session):
+        binding = await db_session.scalar(select(AgentModelBinding).where(AgentModelBinding.actor_id == worker_id).limit(1))
+        binding.revision += 1
+        await db_session.commit()
+    changed = await service.status(admin, topology_key=manifest.topology_key)
+    member = next(item for item in changed.members if item.actor_id == worker_id)
+    assert member.runtime_ready is False
+    assert "runtime_acknowledgement_stale" in member.blocker_codes
+    assert changed.runtime_ready is False
+    handoff = member.handoff
+    assert handoff is not None
+    record = await db_session.scalar(select(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == worker_id))
+    previous_digest = record.runtime_acknowledgement_digest
+    refreshed = AgentTeamRuntimeAcknowledgement(
+        topology_key=handoff.topology_key, topology_revision=handoff.topology_revision,
+        actor_key=handoff.actor_key, role=handoff.role, skill_package=handoff.skill_package,
+        profile_revision=handoff.profile_revision, model_binding_revisions=handoff.model_binding_revisions,
+        server_features=handoff.required_server_features, supported_assignment_modes=handoff.supported_assignment_modes,
+        expected_previous_acknowledgement_digest=previous_digest)
+    # The restricted HTTP acknowledgement boundary starts with a fresh identity context.
+    db_session.info.pop("authority", None)
+    with pytest.raises(AgentTeamSetupConflictError, match="exact previous acknowledgement"):
+        await service.acknowledge_runtime(sink.keys[member.actor_key], refreshed.model_copy(update={"expected_previous_acknowledgement_digest": None}))
+    with pytest.raises(AgentTeamSetupConflictError, match="exact previous acknowledgement"):
+        await service.acknowledge_runtime(sink.keys[member.actor_key], refreshed.model_copy(update={"expected_previous_acknowledgement_digest": "0" * 64}))
+    response = await service.acknowledge_runtime(sink.keys[member.actor_key], refreshed)
+    assert response.acknowledgement_digest != previous_digest
+    current = await service.status(admin, topology_key=manifest.topology_key)
+    assert next(item for item in current.members if item.actor_id == worker_id).acknowledgement_state == "current"
+    assert current.runtime_ready is True
+    assert all(item.availability == "availability_unknown" for item in current.members)
+
 
 @pytest.mark.asyncio
 async def test_confirmed_identity_replacement_disables_old_actor(
@@ -894,3 +931,9 @@ async def test_topologies_share_catalog_and_profile_references_not_identities(
     assert controller_action.blocker_code == (
         "cross_topology_runtime_reference"
     )
+
+
+async def test_revision_bound_acknowledgement_with_database_scenarios(delivery_store, onboarding_access_mode):
+    factory, _, _ = delivery_store
+    async with factory() as db:
+        await test_fresh_apply_replay_onboarding_and_runtime_readiness(db, onboarding_access_mode)

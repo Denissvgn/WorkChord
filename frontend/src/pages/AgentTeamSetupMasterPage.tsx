@@ -1240,6 +1240,14 @@ const AgentTeamSetupMasterPage = () => {
                                         </dd>
                                     </div>
                                     <div>
+                                        <dt>{t('agentTeamSetup.acknowledgement')}</dt>
+                                        <dd>{t(`agentTeamSetup.acknowledgementStates.${member.acknowledgement_state ?? 'unknown'}`)}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>{t('agentTeamSetup.modelAttestation')}</dt>
+                                        <dd>{t('agentTeamSetup.notIndependentlyAttested')}</dd>
+                                    </div>
+                                    <div>
                                         <dt>{t('agentTeamSetup.memberLifecycle')}</dt>
                                         <dd>{t(`agentTeamSetup.lifecycleStates.${member.lifecycle_state}`)}</dd>
                                     </div>

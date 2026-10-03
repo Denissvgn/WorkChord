@@ -142,6 +142,7 @@ export interface ModelAwareRoutingStatus {
 }
 
 export interface AgentCapabilities {
+    readiness_semantics?: Record<string, string>;
     server_version: string;
     api_contract: string;
     actor: AgentActor;
@@ -470,6 +471,9 @@ export interface AgentRoutingExclusion {
 }
 
 export interface AgentRoutingPreviewResponse {
+    runtime_availability?: 'unknown';
+    eligibility_basis?: 'task_policy_and_configuration';
+    model_attestation?: 'not_independently_attested';
     preview_id: string;
     preview_digest: string;
     input_digest: string;
@@ -751,6 +755,7 @@ export interface AgentTeamApplyResponse {
 }
 
 export interface AgentTeamRuntimeHandoff {
+    previous_acknowledgement_digest?: string | null;
     schema_version: 'agent-team-runtime-handoff-v1';
     topology_key: string;
     topology_revision: number;
@@ -783,6 +788,8 @@ export interface AgentTeamMemberStatus {
     binding_revisions: Record<string, number>;
     skill_package: AgentTeamSkillPackage;
     package_acknowledged: boolean;
+    acknowledgement_state?: 'missing' | 'current' | 'stale';
+    model_attestation?: 'not_independently_attested';
     credential_delivery_state: 'pending' | 'delivered' | 'uncertain' | 'not_required';
     connection_state: 'unobserved' | 'observed' | 'stale';
     last_seen_at: string | null;

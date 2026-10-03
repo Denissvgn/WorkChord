@@ -485,6 +485,7 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
                 enabled: true,
                 profile_key: 'backend',
                 profile_revision: 'profile-rev-4',
+                acknowledgement_state: 'stale',
                 binding_revisions: { balanced: 3 },
                 skill_package: {
                     name: 'workchord-worker',
@@ -551,6 +552,8 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
                 name: 'Backend Worker',
             }),
         ).closest('summary')).not.toBeNull();
+        expect(memberView.getByText(i18n.t('agentTeamSetup.acknowledgementStates.stale'))).toBeVisible();
+        expect(memberView.getByText(i18n.t('agentTeamSetup.notIndependentlyAttested'))).toBeVisible();
         expect(member).not.toHaveTextContent('availability_unknown');
         expect(member).not.toHaveTextContent('runtime_ready');
     });

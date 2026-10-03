@@ -699,6 +699,13 @@ class AgentCapabilitiesResponse(BaseModel):
     skill_catalog_url: Optional[str] = None
     skill_discovery_url: Optional[str] = None
     model_aware_routing: AgentRoutingRolloutStatusResponse
+    readiness_semantics: dict[str, str] = Field(default_factory=lambda: {
+        "configuration": "actor_and_model_metadata",
+        "acknowledgement": "exact_revision_bound_runtime_self_report",
+        "task_eligibility": "requires_current_task_and_fenced_work_decision",
+        "runtime_availability": "unknown_without_observation",
+        "model_attestation": "not_independently_attested",
+    })
 
 
 class AgentActorRosterProfileSkill(BaseModel):

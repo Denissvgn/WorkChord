@@ -267,6 +267,7 @@ async def acknowledge_member(
             model_binding_revisions=handoff.model_binding_revisions,
             server_features=handoff.required_server_features,
             supported_assignment_modes=handoff.supported_assignment_modes,
+            expected_previous_acknowledgement_digest=handoff.previous_acknowledgement_digest,
         ),
     )
     assert response.actor_key == actor_key
@@ -1287,12 +1288,7 @@ async def test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed(
         key="setup-qa-membership-revision",
     )
     assert changed.resulting_topology_revision == 2
-    await acknowledge_member(
-        primary.service,
-        topology_key=changed_manifest.topology_key,
-        actor_key=changed_manifest.workers[0].actor_key,
-        api_key=primary.sink.keys[changed_manifest.workers[0].actor_key],
-    )
+    await acknowledge_all(primary.service, changed_manifest, primary.sink.keys)
     with pytest.raises(AgentRoutingConflictError) as stale:
         await _dispatch(
             db_session,
