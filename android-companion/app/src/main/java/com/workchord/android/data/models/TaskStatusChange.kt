@@ -30,9 +30,9 @@ data class TaskStatusChangeResponse(
     @SerializedName("task")
     val task: Task,
     @SerializedName("cascade_updates")
-    val cascadeUpdates: List<CascadeUpdateInfo> = emptyList(),
+    val cascadeUpdates: List<CascadeUpdateInfo>? = null,
     @SerializedName("notifications_sent")
-    val notificationsSent: Boolean = false
+    val notificationsSent: Boolean? = null
 )
 
 data class TaskUpdateRequest(

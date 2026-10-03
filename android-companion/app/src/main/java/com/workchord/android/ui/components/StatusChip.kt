@@ -33,7 +33,7 @@ fun StatusChip(
         TaskStatus.ACTIVE -> StatusActiveBg to StatusActiveColor
         TaskStatus.RESOLVED -> StatusResolvedBg to StatusResolvedColor
         TaskStatus.CLOSED -> StatusClosedBg to StatusClosedColor
-        TaskStatus.BLOCKED -> StatusBlockedBg to StatusBlockedColor
+        TaskStatus.UNKNOWN -> StatusPlannedBg to StatusPlannedColor
     }
 
     Box(

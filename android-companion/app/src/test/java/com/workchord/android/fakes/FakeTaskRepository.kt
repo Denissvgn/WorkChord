@@ -5,6 +5,7 @@ import com.workchord.android.data.models.Session
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.data.models.TaskUpdateRequest
+import com.workchord.android.data.models.TaskCommandRequest
 import com.workchord.android.data.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,18 @@ class FakeTaskRepository(
     var lastUpdatedStatus: TaskStatus? = null
     var lastReason: String? = null
     var lastExpectedVersion: Int? = null
+    var lastCommand: String? = null
+
+    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> {
+        lastCommand = request.action
+        lastReason = request.reason
+        lastExpectedVersion = request.expectedVersion
+        val task = _tasksFlow.value.firstOrNull { it.id == taskId } ?: return Result.failure(Exception("Task unavailable"))
+        val updated = task.copy(blockedReason = if (request.action == "block") request.reason else null,
+            version = request.expectedVersion + 1)
+        _tasksFlow.value = _tasksFlow.value.map { if (it.id == taskId) updated else it }
+        return Result.success(updated)
+    }
 
     fun setTasks(tasks: List<Task>) {
         _tasksFlow.value = tasks
@@ -99,7 +112,7 @@ class FakeTaskRepository(
             }
             val updatedTask = oldTask.copy(
                 statusRaw = newStatus.value,
-                version = oldTask.version + 1
+                version = requireNotNull(oldTask.version) + 1
             )
             currentList[index] = updatedTask
             _tasksFlow.value = currentList
@@ -124,7 +137,7 @@ class FakeTaskRepository(
                 description = request.description ?: old.description,
                 priority = request.priority ?: old.priority,
                 effortHours = request.effortHours ?: old.effortHours,
-                version = old.version + 1
+                version = requireNotNull(old.version) + 1
             )
             currentList[index] = updated
             _tasksFlow.value = currentList

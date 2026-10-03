@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.workchord.android.data.models.AcceptanceCriterion
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
+import com.workchord.android.data.models.TaskCommandRequest
 import com.workchord.android.data.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -85,7 +86,14 @@ class TaskDetailViewModel(
     }
 
     fun blockTask(reason: String = "Blocked pending investigation") {
-        transitionStatus(TaskStatus.BLOCKED, reason)
+        val task = _uiState.value.task ?: return
+        val version = task.authoritativeVersion ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUpdatingStatus = true, errorMessage = null) }
+            repository.executeCommand(task.id, TaskCommandRequest("block", version, reason)).fold(
+                onSuccess = { updated -> _uiState.update { it.copy(task = updated, isUpdatingStatus = false, successMessage = "Work is blocked") } },
+                onFailure = { error -> _uiState.update { it.copy(isUpdatingStatus = false, errorMessage = error.localizedMessage) } })
+        }
     }
 
     fun reopenTask() {
@@ -130,17 +138,8 @@ class TaskDetailViewModel(
     }
 
     fun toggleAcceptanceCriterion(index: Int) {
-        _uiState.update { state ->
-            val currentList = state.acceptanceCriteria
-            if (index in currentList.indices) {
-                val updated = currentList.toMutableList()
-                val item = updated[index]
-                updated[index] = item.copy(isCompleted = !item.isCompleted)
-                state.copy(acceptanceCriteria = updated)
-            } else {
-                state
-            }
-        }
+        if (index !in _uiState.value.acceptanceCriteria.indices) return
+        _uiState.update { it.copy(errorMessage = "Criterion completion requires a canonical criterion and persisted execution evidence.") }
     }
 
     fun clearMessages() {

@@ -415,17 +415,7 @@ private fun TaskActionsBar(
                         Text("Block")
                     }
                 }
-                TaskStatus.BLOCKED -> {
-                    Button(
-                        onClick = onStart,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = StatusActiveColor)
-                    ) {
-                        Icon(Icons.Default.PlayArrow, contentDescription = null)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Resume")
-                    }
-                }
+                TaskStatus.UNKNOWN -> Text("This server status is unsupported. Refresh before taking action.")
                 TaskStatus.RESOLVED, TaskStatus.CLOSED -> {
                     OutlinedButton(
                         onClick = onReopen,

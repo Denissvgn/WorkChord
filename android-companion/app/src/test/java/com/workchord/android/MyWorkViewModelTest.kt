@@ -51,7 +51,8 @@ class MyWorkViewModelTest {
             id = 3,
             title = "Blocked Task",
             description = "## Goal\nWait for dependency",
-            statusRaw = "blocked",
+            statusRaw = "planned",
+            blockedReason = "Waiting for an unavailable prerequisite",
             priority = 6,
             version = 1
         ),
@@ -108,10 +109,10 @@ class MyWorkViewModelTest {
         assertEquals(1, state.activeTasks[0].id)
         assertEquals(TaskStatus.ACTIVE, state.activeTasks[0].status)
 
-        // Queued tasks (status == PLANNED || status == BLOCKED)
+        // Planned tasks include explicit blockage as a separate facet.
         assertEquals(2, state.assignedQueue.size)
         assertTrue(state.assignedQueue.any { it.id == 2 && it.status == TaskStatus.PLANNED })
-        assertTrue(state.assignedQueue.any { it.id == 3 && it.status == TaskStatus.BLOCKED })
+        assertTrue(state.assignedQueue.any { it.id == 3 && it.blockedReason != null })
 
         // Resolved tasks (status == RESOLVED || status == CLOSED)
         assertEquals(2, state.resolvedTasks.size)

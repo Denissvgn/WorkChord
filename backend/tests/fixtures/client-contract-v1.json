@@ -311,6 +311,179 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "IterationCreate": {
+        "description": "Schema for creating an iteration.",
+        "properties": {
+          "calendar_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calendar Id"
+          },
+          "end_date": {
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "manager_email": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manager Email"
+          },
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "start_date",
+          "end_date"
+        ],
+        "title": "IterationCreate",
+        "type": "object"
+      },
+      "IterationProjectSummary": {
+        "description": "Compact project identity embedded in iteration responses.",
+        "properties": {
+          "health": {
+            "title": "Health",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "health"
+        ],
+        "title": "IterationProjectSummary",
+        "type": "object"
+      },
+      "IterationResponse": {
+        "properties": {
+          "calendar_id": {
+            "title": "Calendar Id",
+            "type": "integer"
+          },
+          "end_date": {
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "manager_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manager Email"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "nominal_day_hours": {
+            "default": 8,
+            "title": "Nominal Day Hours",
+            "type": "number"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IterationProjectSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "revision": {
+            "default": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "working_days": {
+            "default": 0,
+            "title": "Working Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "calendar_id",
+          "start_date",
+          "end_date"
+        ],
+        "title": "IterationResponse",
+        "type": "object"
+      },
       "MessageResponse": {
         "description": "Simple message response.",
         "properties": {
@@ -328,6 +501,163 @@
           "message"
         ],
         "title": "MessageResponse",
+        "type": "object"
+      },
+      "NativeApprovalResponse": {
+        "properties": {
+          "approved": {
+            "const": true,
+            "title": "Approved",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "approved"
+        ],
+        "title": "NativeApprovalResponse",
+        "type": "object"
+      },
+      "NativeConnectionApproval": {
+        "additionalProperties": false,
+        "properties": {
+          "verification_code": {
+            "pattern": "^[A-Z2-9]{4}-[A-Z2-9]{4}$",
+            "title": "Verification Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "verification_code"
+        ],
+        "title": "NativeConnectionApproval",
+        "type": "object"
+      },
+      "NativeConnectionDetails": {
+        "properties": {
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "verification_code": {
+            "title": "Verification Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "verification_code",
+          "expires_at",
+          "approved"
+        ],
+        "title": "NativeConnectionDetails",
+        "type": "object"
+      },
+      "NativeConnectionExchange": {
+        "additionalProperties": false,
+        "properties": {
+          "code_verifier": {
+            "pattern": "^[A-Za-z0-9._~-]{43,128}$",
+            "title": "Code Verifier",
+            "type": "string"
+          },
+          "request_id": {
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "code_verifier"
+        ],
+        "title": "NativeConnectionExchange",
+        "type": "object"
+      },
+      "NativeConnectionResponse": {
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "verification_code": {
+            "title": "Verification Code",
+            "type": "string"
+          },
+          "verification_path": {
+            "title": "Verification Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "verification_code",
+          "verification_path",
+          "expires_at"
+        ],
+        "title": "NativeConnectionResponse",
+        "type": "object"
+      },
+      "NativeConnectionStart": {
+        "additionalProperties": false,
+        "properties": {
+          "code_challenge": {
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "title": "Code Challenge",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code_challenge"
+        ],
+        "title": "NativeConnectionStart",
+        "type": "object"
+      },
+      "NativePendingResponse": {
+        "properties": {
+          "status": {
+            "const": "pending",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "NativePendingResponse",
+        "type": "object"
+      },
+      "NativeTokenResponse": {
+        "properties": {
+          "access_token": {
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "token_type": {
+            "const": "Bearer",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_at"
+        ],
+        "title": "NativeTokenResponse",
         "type": "object"
       },
       "ProgressWrite": {
@@ -361,6 +691,371 @@
         ],
         "title": "ProgressWrite",
         "type": "object"
+      },
+      "ProjectCreate": {
+        "description": "Schema for creating a project.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "health": {
+            "$ref": "#/components/schemas/ProjectHealth",
+            "default": "unknown"
+          },
+          "initiative_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Initiative Id"
+          },
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "owner_profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Profile Id"
+          },
+          "sort_order": {
+            "default": 0,
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus",
+            "default": "planned"
+          },
+          "target_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Date"
+          },
+          "timezone": {
+            "default": "UTC",
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ProjectCreate",
+        "type": "object"
+      },
+      "ProjectHealth": {
+        "description": "Project delivery health.",
+        "enum": [
+          "unknown",
+          "on_track",
+          "at_risk",
+          "off_track"
+        ],
+        "title": "ProjectHealth",
+        "type": "string"
+      },
+      "ProjectInitiativeSummary": {
+        "description": "Compact initiative identity embedded in project responses.",
+        "properties": {
+          "health": {
+            "title": "Health",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeamMemberOptionResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "owner_profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeamMemberProfileCompact"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owner_profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Profile Id"
+          },
+          "target_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Date"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "health"
+        ],
+        "title": "ProjectInitiativeSummary",
+        "type": "object"
+      },
+      "ProjectResponse": {
+        "description": "Schema for project response.",
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "health": {
+            "title": "Health",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "initiative": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProjectInitiativeSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "initiative_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Initiative Id"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeamMemberOptionResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "owner_profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeamMemberProfileCompact"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owner_profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Profile Id"
+          },
+          "sort_order": {
+            "default": 0,
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Date"
+          },
+          "timezone": {
+            "default": "UTC",
+            "title": "Timezone",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "health",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ProjectResponse",
+        "type": "object"
+      },
+      "ProjectStatus": {
+        "description": "Project lifecycle status.",
+        "enum": [
+          "proposed",
+          "planned",
+          "active",
+          "paused",
+          "completed",
+          "canceled"
+        ],
+        "title": "ProjectStatus",
+        "type": "string"
       },
       "TaskActionAvailability": {
         "properties": {
@@ -1895,6 +2590,67 @@
         "title": "TaskResponse",
         "type": "object"
       },
+      "TaskReviewResponse": {
+        "properties": {
+          "artifact_revision": {
+            "title": "Artifact Revision",
+            "type": "integer"
+          },
+          "brief_revision": {
+            "title": "Brief Revision",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "evidence": {
+            "title": "Evidence",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "principal_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Principal Id"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "task_version": {
+            "title": "Task Version",
+            "type": "integer"
+          },
+          "verdict": {
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "task_version",
+          "brief_revision",
+          "artifact_revision",
+          "principal_id",
+          "verdict",
+          "reason",
+          "evidence",
+          "created_at"
+        ],
+        "title": "TaskReviewResponse",
+        "type": "object"
+      },
       "TaskReviewWrite": {
         "additionalProperties": false,
         "properties": {
@@ -2300,6 +3056,213 @@
           }
         },
         "title": "TaskUpdate",
+        "type": "object"
+      },
+      "TeamMemberOptionResponse": {
+        "description": "Compact team-member identity for owner and assignee selectors.",
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "iteration_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iteration Id"
+          },
+          "iteration_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iteration Name"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "position"
+        ],
+        "title": "TeamMemberOptionResponse",
+        "type": "object"
+      },
+      "TeamMemberProfileCompact": {
+        "description": "Compact profile data embedded in team-member responses.",
+        "properties": {
+          "assignment_modes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assignment Modes",
+            "type": "array"
+          },
+          "automation_enabled": {
+            "title": "Automation Enabled",
+            "type": "boolean"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "headline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "profile_kind": {
+            "default": "human",
+            "title": "Profile Kind",
+            "type": "string"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/TeamMemberProfileSkillResponse"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "display_name",
+          "automation_enabled"
+        ],
+        "title": "TeamMemberProfileCompact",
+        "type": "object"
+      },
+      "TeamMemberProfileSkillResponse": {
+        "description": "Schema for profile skill responses.",
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "interest": {
+            "title": "Interest",
+            "type": "integer"
+          },
+          "is_weakness": {
+            "title": "Is Weakness",
+            "type": "boolean"
+          },
+          "keywords_json": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Keywords Json",
+            "type": "array"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "profile_id": {
+            "title": "Profile Id",
+            "type": "integer"
+          },
+          "skill_key": {
+            "title": "Skill Key",
+            "type": "string"
+          },
+          "skill_name": {
+            "title": "Skill Name",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "profile_id",
+          "skill_key",
+          "skill_name",
+          "level",
+          "interest",
+          "is_weakness",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "TeamMemberProfileSkillResponse",
         "type": "object"
       },
       "TriageConvertToBacklogRequest": {
@@ -3018,6 +3981,378 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout_api_auth_logout_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Logout",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "me_api_auth_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Me",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/native-connections/exchange": {
+      "post": {
+        "operationId": "exchange_native_connection_api_auth_native_connections_exchange_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NativeConnectionExchange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NativePendingResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NativeTokenResponse"
+                    }
+                  ],
+                  "title": "Response Exchange Native Connection Api Auth Native Connections Exchange Post"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Exchange Native Connection",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/native-connections/start": {
+      "post": {
+        "operationId": "start_native_connection_api_auth_native_connections_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NativeConnectionStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeConnectionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Native Connection",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/native-connections/{request_id}": {
+      "get": {
+        "operationId": "describe_native_connection_api_auth_native_connections__request_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeConnectionDetails"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Describe Native Connection",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/native-connections/{request_id}/approve": {
+      "post": {
+        "operationId": "approve_native_connection_api_auth_native_connections__request_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NativeConnectionApproval"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeApprovalResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve Native Connection",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/auth/native-token": {
+      "post": {
+        "operationId": "native_token_api_auth_native_token_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeTokenResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Native Token",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/iterations": {
+      "get": {
+        "description": "Get the compatible small list or one explicit stable keyset page.",
+        "operationId": "get_iterations_api_iterations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 500,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor_start_date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor Start Date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/IterationResponse"
+                  },
+                  "title": "Response Get Iterations Api Iterations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Iterations",
+        "tags": [
+          "Iterations"
+        ]
+      },
+      "post": {
+        "description": "Create a new iteration.",
+        "operationId": "create_iteration_api_iterations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IterationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IterationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Iteration",
+        "tags": [
+          "Iterations"
+        ]
+      }
+    },
     "/api/iterations/{iteration_id}/tasks": {
       "get": {
         "description": "Get all tasks for an iteration (tree structure).",
@@ -3116,6 +4451,72 @@
         ]
       }
     },
+    "/api/projects": {
+      "get": {
+        "description": "List all projects.",
+        "operationId": "list_projects_api_projects_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResponse"
+                  },
+                  "title": "Response List Projects Api Projects Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Projects",
+        "tags": [
+          "Projects"
+        ]
+      },
+      "post": {
+        "description": "Create a project.",
+        "operationId": "create_project_api_projects_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Project",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
     "/api/projects/{project_id}/backlog": {
       "post": {
         "operationId": "create_backlog_task_api_projects__project_id__backlog_post",
@@ -3187,6 +4588,25 @@
         "summary": "Whoami",
         "tags": [
           "Session"
+        ]
+      }
+    },
+    "/api/tasks/capabilities": {
+      "get": {
+        "operationId": "task_capabilities_api_tasks_capabilities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Task Capabilities",
+        "tags": [
+          "Task domain"
         ]
       }
     },
@@ -3300,6 +4720,116 @@
           }
         },
         "summary": "Lookup Tasks",
+        "tags": [
+          "Task domain"
+        ]
+      }
+    },
+    "/api/tasks/my-work": {
+      "get": {
+        "operationId": "human_my_work_api_tasks_my_work_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Human My Work",
+        "tags": [
+          "Task domain"
+        ]
+      }
+    },
+    "/api/tasks/review-queue": {
+      "get": {
+        "operationId": "task_review_queue_api_tasks_review_queue_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskReferencePage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Task Review Queue",
         "tags": [
           "Task domain"
         ]
@@ -3896,6 +5426,75 @@
           }
         },
         "summary": "Review Task",
+        "tags": [
+          "Task domain"
+        ]
+      }
+    },
+    "/api/tasks/{task_id}/reviews": {
+      "get": {
+        "operationId": "task_reviews_api_tasks__task_id__reviews_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "title": "Task Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TaskReviewResponse"
+                  },
+                  "title": "Response Task Reviews Api Tasks  Task Id  Reviews Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Task Reviews",
         "tags": [
           "Task domain"
         ]

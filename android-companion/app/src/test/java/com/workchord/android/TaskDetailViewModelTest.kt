@@ -74,7 +74,7 @@ class TaskDetailViewModelTest {
         assertFalse(state.acceptanceCriteria[0].isCompleted)
 
         assertEquals("Mock HTTP tests verifying WorkChord contracts", state.acceptanceCriteria[1].text)
-        assertTrue(state.acceptanceCriteria[1].isCompleted)
+        assertFalse(state.acceptanceCriteria[1].isCompleted)
 
         assertEquals("All tests passing", state.acceptanceCriteria[2].text)
         assertFalse(state.acceptanceCriteria[2].isCompleted)
@@ -121,7 +121,7 @@ class TaskDetailViewModelTest {
     }
 
     @Test
-    fun testBlockTaskTransitionsToBlocked() = runTest {
+    fun testBlockTaskSetsBlockedFacet() = runTest {
         val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
 
         viewModel.blockTask("Blocked on API specification")
@@ -130,10 +130,11 @@ class TaskDetailViewModelTest {
         assertFalse(state.isUpdatingStatus)
         assertNull(state.errorMessage)
         assertNotNull(state.successMessage)
-        assertTrue(state.successMessage?.contains("Blocked") == true)
+        assertTrue(state.successMessage?.contains("blocked") == true)
 
-        assertEquals(TaskStatus.BLOCKED, state.task?.status)
-        assertEquals(TaskStatus.BLOCKED, fakeRepository.lastUpdatedStatus)
+        assertEquals(TaskStatus.PLANNED, state.task?.status)
+        assertEquals("Blocked on API specification", state.task?.blockedReason)
+        assertEquals("block", fakeRepository.lastCommand)
         assertEquals("Blocked on API specification", fakeRepository.lastReason)
     }
 
@@ -186,29 +187,12 @@ class TaskDetailViewModelTest {
     }
 
     @Test
-    fun testChecklistToggles() = runTest {
+    fun legacyChecklistCannotClaimPersistedCompletion() = runTest {
         val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        // Initially item 0 is false, item 1 is true, item 2 is false
-        assertFalse(viewModel.uiState.value.acceptanceCriteria[0].isCompleted)
-        assertTrue(viewModel.uiState.value.acceptanceCriteria[1].isCompleted)
-        assertFalse(viewModel.uiState.value.acceptanceCriteria[2].isCompleted)
-
-        // Toggle item 0 -> should become true
         viewModel.toggleAcceptanceCriterion(0)
-        assertTrue(viewModel.uiState.value.acceptanceCriteria[0].isCompleted)
-
-        // Toggle item 0 again -> should become false
-        viewModel.toggleAcceptanceCriterion(0)
-        assertFalse(viewModel.uiState.value.acceptanceCriteria[0].isCompleted)
-
-        // Toggle item 1 -> should become false
-        viewModel.toggleAcceptanceCriterion(1)
-        assertFalse(viewModel.uiState.value.acceptanceCriteria[1].isCompleted)
-
-        // Out of bounds toggle -> should not crash or mutate list
-        viewModel.toggleAcceptanceCriterion(999)
-        assertEquals(3, viewModel.uiState.value.acceptanceCriteria.size)
+        assertTrue(viewModel.uiState.value.acceptanceCriteria.all { !it.isCompleted })
+        assertTrue(viewModel.uiState.value.errorMessage.orEmpty().contains("persisted execution evidence"))
+        assertNull(fakeRepository.lastUpdatedStatus)
     }
 
     @Test
@@ -250,7 +234,7 @@ class TaskDetailViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(TaskStatus.ACTIVE, state.task?.status)
         assertEquals(1, state.acceptanceCriteria.size)
-        assertTrue(state.acceptanceCriteria[0].isCompleted)
+        assertFalse(state.acceptanceCriteria[0].isCompleted)
         assertEquals("All done!", state.acceptanceCriteria[0].text)
     }
 }

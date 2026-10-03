@@ -79,6 +79,22 @@ class TaskRepositoryTest {
     }
 
     @Test
+    fun unsupportedStatusOrMissingVersionCannotIssueAMutation() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("""[
+            {"id":99,"title":"Future work","status":"future_status","version":7},
+            {"id":100,"title":"Incomplete work","status":"planned"}
+        ]"""))
+        assertTrue(repository.fetchTasks(1).isSuccess)
+        val unsupported = repository.updateTaskStatus(99, TaskStatus.ACTIVE, "Start", 7)
+        assertTrue(unsupported.isFailure)
+        assertEquals("unsupported_task_status", (unsupported.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        val unknownVersion = repository.updateTaskStatus(100, TaskStatus.ACTIVE, "Start", null)
+        assertEquals("task_version_required", (unknownVersion.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertTrue(repository.updateTask(100, TaskUpdateRequest(title = "Unversioned draft")).isFailure)
+        assertEquals(1, mockWebServer.requestCount)
+    }
+
+    @Test
     fun testGetWhoAmISuccess() = runTest(testDispatcher) {
         val sessionJson = """
             {
@@ -210,7 +226,7 @@ class TaskRepositoryTest {
 
         val criteria = task?.extractAcceptanceCriteria()
         assertEquals(2, criteria?.size)
-        assertTrue(criteria?.get(0)?.isCompleted == true)
+        assertFalse(criteria?.get(0)?.isCompleted == true)
         assertFalse(criteria?.get(1)?.isCompleted == true)
 
         // Verify local cache updated

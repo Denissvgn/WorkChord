@@ -113,14 +113,16 @@ class MyWorkViewModel(
         while (pending.isNotEmpty()) {
             val task = pending.removeFirst()
             val existing = byId[task.id]
-            if (existing == null || task.version >= existing.version) byId[task.id] = task
+            if (existing == null || task.authoritativeVersion?.let { next ->
+                existing.authoritativeVersion?.let { next >= it } ?: true
+            } == true) byId[task.id] = task
             if (expanded.add(task.id)) pending.addAll(task.children.orEmpty())
         }
         val tasks = if (owner == null) emptyList() else byId.values.filter {
             it.ownerProfileId == owner && !it.isComposite && it.children.isNullOrEmpty() && it.canceledAt == null
         }
         val active = tasks.filter { it.status == TaskStatus.ACTIVE }
-        val queued = tasks.filter { it.status == TaskStatus.PLANNED || it.status == TaskStatus.BLOCKED }
+        val queued = tasks.filter { it.status == TaskStatus.PLANNED }
         val resolved = tasks.filter { it.status == TaskStatus.RESOLVED || it.status == TaskStatus.CLOSED }
 
         _uiState.update { state ->

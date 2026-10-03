@@ -8,6 +8,9 @@ import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.data.models.TaskStatusChangeRequest
 import com.workchord.android.data.models.TaskUpdateRequest
+import com.workchord.android.data.models.TaskCommandRequest
+import com.workchord.android.data.models.ApiProblem
+import com.workchord.android.data.models.ProblemDetail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +38,7 @@ interface TaskRepository {
         request: TaskUpdateRequest
     ): Result<Task>
     fun observeTask(taskId: Int): Flow<Task?>
+    suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task>
 }
 
 class TaskRepositoryImpl(
@@ -47,6 +51,18 @@ class TaskRepositoryImpl(
     override val cachedTasks: Flow<List<Task>> = _tasksFlow.asStateFlow()
     private val cacheLock = Any()
     private var cacheGeneration = 0L
+
+    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> = withContext(ioDispatcher) {
+        try {
+            val response = api.executeTaskCommand(taskId, request)
+            if (response.isSuccessful && response.body() != null) {
+                val updated = response.body()!!
+                updateLocalTask(updated)
+                Result.success(updated)
+            } else Result.failure(ApiProblem.parse(response.code(), response.errorBody()?.string()))
+        } catch (error: CancellationException) { throw error }
+        catch (error: Exception) { Result.failure(error) }
+    }
 
     override suspend fun getIdentity(): Result<Identity> = withContext(ioDispatcher) {
         synchronized(cacheLock) {
@@ -133,6 +149,12 @@ class TaskRepositoryImpl(
         try {
             val currentTask = _tasksFlow.value.firstOrNull { it.id == taskId }
             val versionToUse = expectedVersion ?: currentTask?.version
+            if (newStatus == TaskStatus.UNKNOWN || currentTask?.status == TaskStatus.UNKNOWN) {
+                return@withContext Result.failure(ApiProblem(422, ProblemDetail("unsupported_task_status", "This lifecycle state is unsupported. Refresh before taking action.")))
+            }
+            if (versionToUse == null || versionToUse < 1) {
+                return@withContext Result.failure(ApiProblem(428, ProblemDetail("task_version_required", "Reload authoritative task state before changing it.")))
+            }
 
             val request = TaskStatusChangeRequest(
                 status = newStatus.value,
@@ -158,6 +180,9 @@ class TaskRepositoryImpl(
         request: TaskUpdateRequest
     ): Result<Task> = withContext(ioDispatcher) {
         try {
+            if (request.expectedVersion == null || request.expectedVersion < 1) {
+                return@withContext Result.failure(ApiProblem(428, ProblemDetail("task_version_required", "Reload authoritative task state before changing it.")))
+            }
             val response = api.updateTask(taskId, request)
             if (response.isSuccessful && response.body() != null) {
                 val updatedTask = response.body()!!
