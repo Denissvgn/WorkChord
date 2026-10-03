@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1455 | [Open section](#entities) |
-| Modules | 632 | [Open section](#modules) |
+| Modules | 633 | [Open section](#modules) |
 | Workflows | 169 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 517 | [Open section](#entry-point-flows) |
+| Entry-point flows | 518 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1531,6 +1531,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GitHubSettingsPanel.test](modules/GitHubSettingsPanel.test.md) - `frontend/src/components/settings/GitHubSettingsPanel.test.tsx`
 - [GuardedTaskModal](modules/GuardedTaskModal.md) - `frontend/src/components/tasks/GuardedTaskModal.tsx`
 - [IdentityProvider](modules/IdentityProvider.md) - `frontend/src/features/identity/IdentityProvider.tsx`
+- [IdentityProvider.test](modules/IdentityProvider.test.md) - `frontend/src/features/identity/IdentityProvider.test.tsx`
 - [ImportTasksModal](modules/ImportTasksModal.md) - `frontend/src/components/tasks/ImportTasksModal.tsx`
 - [ImportTeamModal](modules/ImportTeamModal.md) - `frontend/src/components/team/ImportTeamModal.tsx`
 - [ImportTeamModal.test](modules/ImportTeamModal.test.md) - `frontend/src/components/team/ImportTeamModal.test.tsx`
@@ -2526,6 +2527,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
 - [http-project_member](flows/http-project_member.md) - entry: `project_member`
 - [http-read](flows/http-read.md) - entry: `read`
+- [http-read_fault](flows/http-read_fault.md) - entry: `read_fault`
 - [http-read_snapshot](flows/http-read_snapshot.md) - entry: `read_snapshot`
 - [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
 - [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`

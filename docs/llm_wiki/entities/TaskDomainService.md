@@ -93,4 +93,4 @@ flowchart LR
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_blocked_metrics_include_explicit_and_canceled_dependencies` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

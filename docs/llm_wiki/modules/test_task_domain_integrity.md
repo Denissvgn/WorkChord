@@ -12,7 +12,9 @@ Task context, recovery and project projections stay consistent across commands.
 |--------|---------|
 | `app.authority` | `Authority`, `AuthorityError` |
 | `app.commands` | `command_transaction` |
+| `app.config` | `get_settings` |
 | `app.models.calendar` | `Calendar` |
+| `app.models.identity` | `Principal` |
 | `app.models.recovery` | `ApplicationSnapshot`, `TaskDeletionFence`, `TaskDeletionFence` |
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.models.task_brief` | `TaskProgressRecord` |
@@ -52,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (20) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -80,3 +82,4 @@ flowchart LR
 | `test_restore_removals_record_deletion_fences` | *(async)* `(delivery_store)` | — | — |
 | `test_project_move_rolls_back_both_scope_snapshots_on_failure` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_opposite_backlog_moves_use_one_project_lock_order` | *(async)* `(delivery_store)` | — | — |
+| `test_scoped_snapshot_retention_keeps_human_commands_available` | *(async)* `(delivery_store, monkeypatch, scope)` | `@pytest.mark.parametrize('scope', ['iteration', 'backlog'])` | — |

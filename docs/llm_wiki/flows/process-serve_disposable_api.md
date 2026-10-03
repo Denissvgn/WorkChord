@@ -23,7 +23,7 @@
 - [template_service](../modules/template_service.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), and 2 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), and 3 more
 
 **Complete related modules:**
 
@@ -31,6 +31,7 @@
 - [app_main](../modules/app_main.md)
 - [delivery](../modules/delivery.md)
 - [models_identity](../modules/models_identity.md)
+- [models_task](../modules/models_task.md)
 - [support_database](../modules/support_database.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
@@ -179,7 +180,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | assert_safe_test_database_url | 13 | `assert_safe_test_database_url(os.environ[...])` |
+| main | assert_safe_test_database_url | 14 | `assert_safe_test_database_url(os.environ[...])` |
 | assert_safe_test_database_url | _deployment_environment | 49 | `_deployment_environment(deployment_environment)` |
 | _deployment_environment | os.environ.get (backend/tests/support/dat…y:_deployment_environment) | 32 | `os.environ.get('DEPLOYMENT_ENVIRONMENT', '')` |
 | assert_safe_test_database_url | UnsafeDatabaseTarget | 50 | `UnsafeDatabaseTarget('Destructive database fixtures require DEPLOYMENT_ENVIRONMENT=test')` |
@@ -195,12 +196,12 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.environ[...]` | `main` | 13 |
-| environment_read | `os.environ.get` | `main` | 39 |
-| environment_read | `os.environ.get` | `main` | 46 |
-| process | `subprocess.Popen` | `main` | 50 |
-| environment_read | `os.environ.get` | `main` | 52 |
-| environment_read | `os.environ.get` | `main` | 57 |
+| environment_read | `os.environ[...]` | `main` | 14 |
+| environment_read | `os.environ.get` | `main` | 45 |
+| environment_read | `os.environ.get` | `main` | 79 |
+| process | `subprocess.Popen` | `main` | 83 |
+| environment_read | `os.environ.get` | `main` | 85 |
+| environment_read | `os.environ.get` | `main` | 90 |
 | environment_read | `os.environ.get` | `_deployment_environment` | 32 |
 
 ### Static analysis gaps
@@ -216,4 +217,4 @@ flowchart LR
 
 ## Behavior
 
-The process validates the configured URL against the existing temporary-database safety fence before running migrations or seeding records. It permits only SQLite for this browser fixture. The real web lifespan then validates the schema and serves the application. Running the production app directly is a separate operation.
+The process validates the configured URL against the existing temporary-database safety fence before running migrations or seeding records. It permits only SQLite for this browser fixture. Managed fixture seeding adds canonical human ownership and explicit identity/profile/project links. When a nonce is configured, responses expose it and a single expiring override can simulate task-read failures. The real web lifespan then validates the schema and serves the application. Running the production app directly is a separate operation.

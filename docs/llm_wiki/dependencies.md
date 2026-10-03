@@ -29,14 +29,14 @@ flowchart TD
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
 | [app_database](modules/app_database.md) | 82 | 5 |
-| [models_task](modules/models_task.md) | 69 | 9 |
+| [models_task](modules/models_task.md) | 70 | 9 |
 | [Button](modules/Button.md) | 69 | 0 |
 | [commands](modules/commands.md) | 67 | 11 |
 | [time](modules/time.md) | 62 | 0 |
 | [types_task](modules/types_task.md) | 59 | 2 |
 | [QueryState](modules/QueryState.md) | 56 | 2 |
-| [config](modules/config.md) | 54 | 1 |
-| [renderWithProviders](modules/renderWithProviders.md) | 50 | 1 |
+| [config](modules/config.md) | 55 | 1 |
+| [renderWithProviders](modules/renderWithProviders.md) | 51 | 1 |
 | [models_agent](modules/models_agent.md) | 46 | 5 |
 | [apiError](modules/apiError.md) | 42 | 0 |
 | [task_service](modules/task_service.md) | 40 | 16 |
@@ -53,9 +53,9 @@ flowchart TD
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [index](modules/index.md) | 23 | 0 |
 | [agent_service](modules/agent_service.md) | 22 | 13 |
+| [models_identity](modules/models_identity.md) | 21 | 2 |
 | [upgrade_service](modules/upgrade_service.md) | 21 | 12 |
 | [models_calendar](modules/models_calendar.md) | 20 | 2 |
-| [models_identity](modules/models_identity.md) | 20 | 2 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 19 | 8 |
@@ -259,6 +259,7 @@ flowchart TD
 | [TaskList](modules/TaskList.md) | 3 | 19 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 3 | 1 |
+| [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [resources.en](modules/resources.en.md) | 3 | 1 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
@@ -350,7 +351,6 @@ flowchart TD
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 7 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
 | [statusScopes](modules/statusScopes.md) | 2 | 1 |
-| [IdentityProvider](modules/IdentityProvider.md) | 2 | 9 |
 | [identityService](modules/identityService.md) | 2 | 1 |
 | [attentionRanking](modules/attentionRanking.md) | 2 | 1 |
 | [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) | 2 | 1 |
@@ -532,7 +532,7 @@ flowchart TD
 | [test_runtime_boundaries](modules/test_runtime_boundaries.md) | 0 | 9 |
 | [test_saved_view_service](modules/test_saved_view_service.md) | 0 | 3 |
 | [test_task_discussion](modules/test_task_discussion.md) | 0 | 16 |
-| [test_task_domain_integrity](modules/test_task_domain_integrity.md) | 0 | 20 |
+| [test_task_domain_integrity](modules/test_task_domain_integrity.md) | 0 | 22 |
 | [test_task_domain_migrations](modules/test_task_domain_migrations.md) | 0 | 2 |
 | [test_work_correctness](modules/test_work_correctness.md) | 0 | 23 |
 | [eslint.config](modules/eslint.config.md) | 0 | 0 |
@@ -589,6 +589,7 @@ flowchart TD
 | [tone.test](modules/tone.test.md) | 0 | 1 |
 | [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) | 0 | 3 |
 | [statusScopes.test](modules/statusScopes.test.md) | 0 | 2 |
+| [IdentityProvider.test](modules/IdentityProvider.test.md) | 0 | 2 |
 | [attentionRanking.test](modules/attentionRanking.test.md) | 0 | 2 |
 | [planningMasters_masters.test](modules/planningMasters_masters.test.md) | 0 | 1 |
 | [planningNavigationInvalidation.test](modules/planningNavigationInvalidation.test.md) | 0 | 2 |
@@ -644,7 +645,7 @@ flowchart TD
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
-| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 6 |
+| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 7 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
 | [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |
 | [test_native_runtimes](modules/test_native_runtimes.md) | 0 | 0 |

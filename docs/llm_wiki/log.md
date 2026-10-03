@@ -683,3 +683,99 @@ Reviewed native reads, identity/server isolation, monotonic cache versions, expl
 ## 2026-10-03 — Native release transport and storage
 
 Reviewed explicit server configuration, HTTPS and origin enforcement, request-scoped cookie persistence, Keystore storage, backup/transfer exclusions and release logging. Native Kotlin behavior remains outside extractor coverage and requires direct source, build and device evidence.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1b6a3fb3943ea42ef9275961ae220a88bf2ee3c7a19c7bb3358b6fa0ed8ca71d`
+- Pages created: 1
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2773
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:07dc7162b10ad5e19a573d50dac71fb65422b7360360e732a65582266da0db53`
+- Pages created: 0
+- Pages updated: 7
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2770
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:af213fe4d9f5a0741bec2fbdecbc09ceb6d9ab405aed80308461d0570a6bfe24`
+- Pages created: 0
+- Pages updated: 11
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2767
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-10-03 — Scoped recovery retention
+
+Aligned recovery cleanup with iteration/project ownership so authorized execution and independent review can continue after pruning older recovery points. Unrelated scopes remain protected by the shared ORM guard.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:be1bcd7dd604253dec1aff37e4fe7ea1196955be95f3cec409da6c5c844713eb`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2775
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:18641827172f93666eb9249126f184f448c72fa808664cb46b803b13d5aad5a2`
+- Pages created: 1
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2772
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-03 — Browser account switching for device consent
+
+Preserved a validated device-consent request across explicit browser logout after clearing private account state. The next sign-in returns to a fresh account-specific confirmation.
+
+## 2026-10-03 — Native delivery and recovery boundaries
+
+Reviewed scoped human delivery, explicit device-only drafts, independent verdicts, account switching, consumed task links and recovery after interrupted transport. Kotlin remains outside extraction coverage; native behavior requires direct source and device evidence.

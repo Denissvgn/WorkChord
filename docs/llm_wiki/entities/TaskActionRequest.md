@@ -57,6 +57,7 @@ flowchart LR
     n9["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
     n10["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
     n11["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n12["test_scoped_snapshot_retention_keeps_human_commands_available (backend/tests/test_task_domain_integrity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -68,6 +69,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_task_domain.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_task_domain.md"
@@ -79,6 +81,7 @@ flowchart LR
     click n9 "../modules/test_task_domain.md"
     click n10 "../modules/test_task_domain_integrity.md"
     click n11 "../modules/test_task_domain_integrity.md"
+    click n12 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -107,3 +110,4 @@ flowchart LR
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_blocked_metrics_include_explicit_and_canceled_dependencies` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
 | `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
+| `test_scoped_snapshot_retention_keeps_human_commands_available` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |

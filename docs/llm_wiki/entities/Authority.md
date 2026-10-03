@@ -107,4 +107,4 @@ flowchart LR
 | `test_inbox_retry_idempotency_and_read_state_are_separate` | call | [test_task_discussion](../modules/test_task_discussion.md) | 1 |
 | `test_worker_rechecks_unsubscribe_or_revocation` | call | [test_task_discussion](../modules/test_task_discussion.md) | 2 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
