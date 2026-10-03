@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import com.workchord.android.data.models.AcceptanceCriterion
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
+import com.workchord.android.data.models.TaskReference
 import com.workchord.android.ui.components.ErrorBanner
 import com.workchord.android.ui.components.PriorityBadge
 import com.workchord.android.ui.components.StatusChip
@@ -68,6 +70,7 @@ import com.workchord.android.ui.viewmodels.TaskDetailViewModel
 fun TaskDetailScreen(
     viewModel: TaskDetailViewModel,
     onNavigateBack: () -> Unit,
+    onNavigateTask: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -128,6 +131,10 @@ fun TaskDetailScreen(
                     onBlock = { viewModel.blockTask() },
                     onReopen = { viewModel.reopenTask() },
                     onRetry = { viewModel.loadTask() },
+                    ancestors = uiState.detail?.ancestors.orEmpty(),
+                    children = uiState.detail?.children?.items.orEmpty(),
+                    childrenPartial = uiState.detail?.children?.hasMore != false,
+                    onNavigateTask = onNavigateTask,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -159,6 +166,10 @@ private fun TaskDetailContent(
     onBlock: () -> Unit,
     onReopen: () -> Unit,
     onRetry: () -> Unit,
+    ancestors: List<TaskReference>,
+    children: List<TaskReference>,
+    childrenPartial: Boolean,
+    onNavigateTask: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -169,6 +180,19 @@ private fun TaskDetailContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (ancestors.isNotEmpty()) {
+            Text("Parent context", style = MaterialTheme.typography.titleMedium)
+            ancestors.forEach { ancestor ->
+                TextButton(onClick = { onNavigateTask(ancestor.id) }) { Text("#${ancestor.id} · ${ancestor.title}") }
+            }
+        }
+        if (children.isNotEmpty()) {
+            Text("Child work", style = MaterialTheme.typography.titleMedium)
+            children.forEach { child ->
+                TextButton(onClick = { onNavigateTask(child.id) }) { Text("#${child.id} · ${child.title}") }
+            }
+        }
+        if (childrenPartial) Text("This is a bounded child-work page. Additional child work may be available.", style = MaterialTheme.typography.bodyMedium)
         // Feedback banners
         errorMessage?.let { error ->
             ErrorBanner(errorMessage = error, onRetry = onRetry)

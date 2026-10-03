@@ -64,3 +64,25 @@ async def test_withdrawn_acceptance_stays_visible_in_owned_blocked_work(delivery
         page = await TaskDetailService(db).my_work()
         assert [item["id"] for item in page["queues"]["blocked"]] == [task.id]
         assert page["queues"]["blocked"][0]["acceptance_current"] is False
+
+
+async def test_my_work_filters_before_pagination_and_preserves_scope(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        worker, _ = await human_context(db, scenario.projects[0])
+        service = TaskService(db)
+        backlog = await service.create(None, TaskCreate(title="Backlog follow-up", project_id=scenario.projects[0], owner_profile_id=worker.profile_id))
+        scheduled = await service.create(scenario.iterations[0], TaskCreate(title="Iteration follow-up", project_id=scenario.projects[0], owner_profile_id=worker.profile_id))
+        await db.commit()
+        db.info["authority"] = worker
+        query = TaskDetailService(db)
+        page = await query.my_work(project_id=scenario.projects[0], backlog_only=True, limit=1)
+        assert [item["id"] for values in page["queues"].values() for item in values] == [backlog.id]
+        assert page["has_more"] is False
+        page = await query.my_work(iteration_id=scenario.iterations[0], limit=1)
+        assert [item["id"] for values in page["queues"].values() for item in values] == [scheduled.id]
+        with pytest.raises(ValueError, match="not both"):
+            await query.my_work(iteration_id=scenario.iterations[0], backlog_only=True)
+        from app.authority import AuthorityError
+        with pytest.raises(AuthorityError):
+            await query.my_work(project_id=scenario.projects[1])

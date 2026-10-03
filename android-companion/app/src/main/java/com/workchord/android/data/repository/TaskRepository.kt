@@ -11,6 +11,9 @@ import com.workchord.android.data.models.TaskUpdateRequest
 import com.workchord.android.data.models.TaskCommandRequest
 import com.workchord.android.data.models.ApiProblem
 import com.workchord.android.data.models.ProblemDetail
+import com.workchord.android.data.models.*
+import com.workchord.android.data.api.WorkSelection
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +28,7 @@ interface TaskRepository {
     val cachedTasks: Flow<List<Task>>
     suspend fun getWhoAmI(): Result<Session>
     suspend fun getIdentity(): Result<Identity>
-    suspend fun fetchTasks(iterationId: Int = 1): Result<List<Task>>
+    suspend fun fetchTasks(iterationId: Int): Result<List<Task>>
     suspend fun getTaskById(taskId: Int): Result<Task>
     suspend fun updateTaskStatus(
         taskId: Int,
@@ -39,6 +42,14 @@ interface TaskRepository {
     ): Result<Task>
     fun observeTask(taskId: Int): Flow<Task?>
     suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task>
+    val workChanges: Flow<Long> get() = emptyFlow()
+    var workSelection: WorkSelection
+    suspend fun fetchMyWork(selection: WorkSelection, afterId: Int = 0): Result<HumanWork>
+    suspend fun fetchReviewQueue(selection: WorkSelection, afterId: Int = 0): Result<TaskReferencePage>
+    suspend fun getProjects(): Result<List<Project>>
+    suspend fun getIterations(): Result<List<Iteration>>
+    suspend fun getCapabilities(): Result<DomainCapabilities>
+    suspend fun getTaskDetail(taskId: Int): Result<TaskDetail>
 }
 
 class TaskRepositoryImpl(
@@ -51,6 +62,37 @@ class TaskRepositoryImpl(
     override val cachedTasks: Flow<List<Task>> = _tasksFlow.asStateFlow()
     private val cacheLock = Any()
     private var cacheGeneration = 0L
+    private var verifiedPrincipal: Int? = null
+    private var verifiedServer: String? = null
+    private val changes = MutableStateFlow(0L)
+    override val workChanges: Flow<Long> = changes.asStateFlow()
+    override var workSelection: WorkSelection
+        get() = tokenManager.workSelection
+        set(value) { tokenManager.workSelection = value }
+
+    private suspend fun <T> read(response: suspend () -> retrofit2.Response<T>): Result<T> = withContext(ioDispatcher) {
+        try {
+            val result = response()
+            if (result.isSuccessful && result.body() != null) Result.success(result.body()!!)
+            else Result.failure(ApiProblem.parse(result.code(), result.errorBody()?.string()))
+        } catch (error: CancellationException) { throw error }
+        catch (error: Exception) { Result.failure(error) }
+    }
+
+    override suspend fun fetchMyWork(selection: WorkSelection, afterId: Int): Result<HumanWork> = read {
+        api.getMyWork(selection.projectId, selection.iterationId, selection.backlogOnly, afterId)
+    }
+    override suspend fun fetchReviewQueue(selection: WorkSelection, afterId: Int): Result<TaskReferencePage> = read {
+        api.getReviewQueue(selection.projectId, selection.iterationId, selection.backlogOnly, afterId)
+    }
+    override suspend fun getProjects(): Result<List<Project>> = read { api.getProjects() }
+    override suspend fun getIterations(): Result<List<Iteration>> = read { api.getIterations() }
+    override suspend fun getCapabilities(): Result<DomainCapabilities> = read { api.getCapabilities() }
+    override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> {
+        val result = read { api.getTaskDetail(taskId) }
+        result.getOrNull()?.task?.let { updateLocalTask(it) }
+        return result
+    }
 
     override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> = withContext(ioDispatcher) {
         try {
@@ -58,6 +100,7 @@ class TaskRepositoryImpl(
             if (response.isSuccessful && response.body() != null) {
                 val updated = response.body()!!
                 updateLocalTask(updated)
+                changes.value++
                 Result.success(updated)
             } else Result.failure(ApiProblem.parse(response.code(), response.errorBody()?.string()))
         } catch (error: CancellationException) { throw error }
@@ -65,15 +108,21 @@ class TaskRepositoryImpl(
     }
 
     override suspend fun getIdentity(): Result<Identity> = withContext(ioDispatcher) {
-        synchronized(cacheLock) {
-            cacheGeneration++
-            _tasksFlow.value = emptyList()
-        }
         try {
             val response = api.getIdentity()
             val identity = response.body()
-            if (response.isSuccessful && identity != null) Result.success(identity)
-            else Result.failure(Exception("Failed to verify identity: ${response.code()}"))
+            if (response.isSuccessful && identity != null) {
+                synchronized(cacheLock) {
+                    val principal = identity.principal?.id?.takeIf { identity.authenticated }
+                    if (verifiedPrincipal != principal || verifiedServer != tokenManager.baseUrl || !identity.authenticated) {
+                        cacheGeneration++
+                        _tasksFlow.value = emptyList()
+                    }
+                    verifiedPrincipal = principal
+                    verifiedServer = tokenManager.baseUrl
+                }
+                Result.success(identity)
+            } else Result.failure(ApiProblem.parse(response.code(), response.errorBody()?.string()))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -165,6 +214,7 @@ class TaskRepositoryImpl(
             if (response.isSuccessful && response.body() != null) {
                 val updatedTask = response.body()!!.task
                 updateLocalTask(updatedTask)
+                changes.value++
                 Result.success(updatedTask)
             } else {
                 val errorBody = response.errorBody()?.string() ?: response.message()
@@ -187,6 +237,7 @@ class TaskRepositoryImpl(
             if (response.isSuccessful && response.body() != null) {
                 val updatedTask = response.body()!!
                 updateLocalTask(updatedTask)
+                changes.value++
                 Result.success(updatedTask)
             } else {
                 val errorBody = response.errorBody()?.string() ?: response.message()

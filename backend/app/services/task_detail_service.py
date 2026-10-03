@@ -53,7 +53,7 @@ class TaskDetailService:
             statement = statement.where(predicate)
         return await self.page(statement, limit=limit, after_id=after_id)
 
-    async def my_work(self, *, limit=50, after_id=0):
+    async def my_work(self, *, limit=50, after_id=0, project_id=None, iteration_id=None, backlog_only=False):
         """Bounded human ownership queues, independent of exact-agent assignment decisions."""
         from app.services.task_domain_service import TaskDomainService
         authority = self.db.info.get("authority")
@@ -62,9 +62,20 @@ class TaskDetailService:
             return {"state": "profile_unlinked", "queues": queues, "has_more": False, "next_after_id": None}
         if not authority.operator and not authority.local and not authority.projects and not authority.workspace_role:
             return {"state": "membership_required", "queues": queues, "has_more": False, "next_after_id": None}
-        page = await self.page(self.references().where(Task.owner_profile_id == authority.profile_id,
+        statement = self.references().where(Task.owner_profile_id == authority.profile_id,
             or_(Task.status != "closed", Task.accepted_at.is_(None), Task.accepted_by_principal_id.is_(None), Task.accepted_version.is_(None), Task.accepted_version != Task.version),
-            Task.canceled_at.is_(None), Task.is_summary.is_(False)), limit=limit, after_id=after_id)
+            Task.canceled_at.is_(None), Task.is_summary.is_(False))
+        if backlog_only and iteration_id is not None:
+            raise ValueError("Select backlog or an iteration, not both")
+        if project_id is not None:
+            from app.authority import require_project
+            require_project(self.db, project_id)
+            statement = statement.where(Task.project_id == project_id)
+        if iteration_id is not None:
+            statement = statement.where(Task.iteration_id == iteration_id)
+        if backlog_only:
+            statement = statement.where(Task.iteration_id.is_(None))
+        page = await self.page(statement, limit=limit, after_id=after_id)
         for item in page.items:
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(

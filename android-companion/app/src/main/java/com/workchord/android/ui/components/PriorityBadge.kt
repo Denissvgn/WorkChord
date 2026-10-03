@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import com.workchord.android.ui.theme.PriorityHighColor
 import com.workchord.android.ui.theme.PriorityLowColor
@@ -20,11 +21,13 @@ fun PriorityBadge(
     priority: Int,
     modifier: Modifier = Modifier
 ) {
-    val (bgColor, textColor, label) = when {
-        priority >= 8 -> Triple(Color(0x22EF4444), PriorityHighColor, "P$priority High")
-        priority >= 5 -> Triple(Color(0x22F59E0B), PriorityMediumColor, "P$priority Med")
-        else -> Triple(Color(0x2210B981), PriorityLowColor, "P$priority Low")
+    val dark = MaterialTheme.colorScheme.surface.luminance() < 0.2f
+    val (textColor, label) = when {
+        priority <= 3 -> (if (dark) Color(0xFFFCA5A5) else Color(0xFFB91C1C)) to "P$priority High"
+        priority <= 6 -> (if (dark) Color(0xFFFCD34D) else Color(0xFF92400E)) to "P$priority Med"
+        else -> (if (dark) Color(0xFF6EE7B7) else Color(0xFF047857)) to "P$priority Low"
     }
+    val bgColor = textColor.copy(alpha = 0.12f)
 
     Box(
         modifier = modifier
@@ -35,7 +38,7 @@ fun PriorityBadge(
         Text(
             text = label,
             color = textColor,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }

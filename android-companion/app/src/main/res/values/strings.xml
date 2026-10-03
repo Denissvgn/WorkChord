@@ -12,4 +12,23 @@
     <string name="status_resolved">Resolved</string>
     <string name="status_closed">Closed</string>
     <string name="status_blocked">Blocked</string>
+    <string name="work_help">Your work and independent review requests across projects.</string>
+    <string name="work_refresh">Refresh work</string>
+    <string name="work_all_projects">All accessible projects</string>
+    <string name="work_all_iterations">All iterations and backlog</string>
+    <string name="work_backlog">Backlog</string>
+    <string name="work_all">All work</string>
+    <string name="work_queued">Queued</string>
+    <string name="work_awaiting_review">Awaiting review</string>
+    <string name="work_review">Review work</string>
+    <string name="work_profile_unlinked">Ask a workspace operator to link your account to a human work profile. Independent review is available through Review work when permitted.</string>
+    <string name="work_no_membership">Ask a project manager to grant access to the work you need.</string>
+    <string name="work_no_results">No work in this queue and selection.</string>
+    <string name="work_partial">This list is a live page. Additional work may be available.</string>
+    <string name="work_load_more">Load more work</string>
+    <string name="work_parent">Parent task #%1$d</string>
+    <string name="work_iteration">Iteration #%1$d</string>
+    <string name="work_selection_unavailable">Selected scope unavailable</string>
+    <string name="work_clear_scope">Clear scope selection</string>
+    <string name="work_acceptance_unverified">Acceptance needs reconciliation</string>
 </resources>

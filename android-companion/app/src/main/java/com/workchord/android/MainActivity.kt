@@ -1,6 +1,7 @@
 package com.workchord.android
 
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,8 +23,22 @@ import com.workchord.android.ui.navigation.AppNavigation
 import com.workchord.android.ui.theme.WorkChordTheme
 
 class MainActivity : ComponentActivity() {
+    private var requestedTaskId by mutableStateOf<Int?>(null)
+
+    private fun taskLink(intent: Intent): Int? {
+        val uri = intent.data ?: return null
+        if (intent.action != Intent.ACTION_VIEW || uri.scheme != "workchord" || uri.host != "task" || uri.pathSegments.size != 1) return null
+        return uri.pathSegments.single().toIntOrNull()?.takeIf { it > 0 }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        requestedTaskId = taskLink(intent)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedTaskId = taskLink(intent)
         enableEdgeToEdge()
 
         val app = application as WorkChordApplication
@@ -39,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         override fun <T : ViewModel> create(modelClass: Class<T>): T = SessionViewModel(app.tokenManager) as T
                     })
                     val state by session.uiState.collectAsState()
-                    if (state.identity?.authenticated == true) {
+                    if (state.identity?.authenticated == true && state.identity?.principal?.kind == "human") {
                         key(state.scope) {
                             val repository = remember(state.scope) { app.reconnect(); app.taskRepository }
                             val navController = rememberNavController()
@@ -48,6 +63,8 @@ class MainActivity : ComponentActivity() {
                                     Text("${state.identity?.principal?.displayName ?: "Signed in"} · Sign out")
                                 }
                                 AppNavigation(navController = navController, taskRepository = repository,
+                                    initialTaskId = requestedTaskId,
+                                    onInitialTaskOpened = { requestedTaskId = null },
                                     modifier = Modifier.weight(1f))
                             }
                         }

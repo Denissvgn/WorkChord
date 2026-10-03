@@ -2,136 +2,110 @@ package com.workchord.android.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.workchord.android.data.models.Identity
-import com.workchord.android.data.models.Session
-import com.workchord.android.data.models.Task
-import com.workchord.android.data.models.TaskStatus
+import com.workchord.android.data.api.WorkSelection
+import com.workchord.android.data.models.*
 import com.workchord.android.data.repository.TaskRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import java.util.ArrayDeque
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
-data class MyWorkUiState(
-    val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false,
-    val session: Session? = null,
-    val identity: Identity? = null,
-    val allTasks: List<Task> = emptyList(),
-    val activeTasks: List<Task> = emptyList(),
-    val assignedQueue: List<Task> = emptyList(),
-    val resolvedTasks: List<Task> = emptyList(),
-    val errorMessage: String? = null,
-    val selectedFilter: TaskFilter = TaskFilter.ALL
-)
-
-enum class TaskFilter(val title: String) {
-    ALL("All Tasks"),
-    ACTIVE("Active"),
-    QUEUED("Assigned"),
-    RESOLVED("Resolved")
+enum class TaskFilter(val title: String, val queue: String) {
+    ALL("All work", "all"), ACTIVE("Active", "active"), QUEUED("Queued", "queued"),
+    BLOCKED("Blocked", "blocked"), RESOLVED("Awaiting review", "awaiting_review"), REVIEW("Review work", "review")
 }
 
-class MyWorkViewModel(
-    private val repository: TaskRepository
-) : ViewModel() {
+data class MyWorkUiState(val isLoading: Boolean = true, val isRefreshing: Boolean = false,
+    val identity: Identity? = null, val projects: List<Project> = emptyList(), val iterations: List<Iteration> = emptyList(),
+    val queues: Map<String, List<TaskReference>> = emptyMap(), val workState: String? = null,
+    val selection: WorkSelection = WorkSelection(), val hasMore: Boolean = false, val nextAfterId: Int? = null,
+    val filtersSupported: Boolean = false, val errorMessage: String? = null) {
+    val selectedFilter get() = TaskFilter.entries.firstOrNull { it.queue == selection.queue } ?: TaskFilter.ALL
+    val visibleWork get() = if (selectedFilter == TaskFilter.ALL) queues.values.flatten().distinctBy { it.id }
+        else queues[selection.queue].orEmpty()
+}
 
-    private val _uiState = MutableStateFlow(MyWorkUiState(isLoading = true))
-    val uiState: StateFlow<MyWorkUiState> = _uiState.asStateFlow()
-
+class MyWorkViewModel(private val repository: TaskRepository) : ViewModel() {
+    private val state = MutableStateFlow(MyWorkUiState(selection = repository.workSelection))
+    val uiState = state.asStateFlow()
     private var loadJob: Job? = null
-    private var loadGeneration = 0L
+    private var generation = 0L
 
     init {
         loadData()
-        observeRepositoryTasks()
+        viewModelScope.launch { repository.workChanges.drop(1).collect { refresh() } }
     }
 
-    private fun observeRepositoryTasks() {
-        viewModelScope.launch {
-            repository.cachedTasks.collect { tasks ->
-                updateTaskLists(tasks)
-            }
-        }
+    fun loadData() = reload(false)
+    fun refresh() = reload(true)
+    fun loadMore() {
+        if (!state.value.isLoading && state.value.hasMore && state.value.nextAfterId != null) reload(true, true)
+    }
+    fun setFilter(filter: TaskFilter) = select(state.value.selection.copy(queue = filter.queue))
+    fun selectProject(id: Int?) = select(state.value.selection.copy(projectId = id, iterationId = null))
+    fun selectIteration(id: Int?) = select(state.value.selection.copy(iterationId = id, backlogOnly = false))
+    fun selectBacklog() = select(state.value.selection.copy(iterationId = null, backlogOnly = true))
+    fun clearScope() = select(WorkSelection(queue = state.value.selection.queue))
+    private fun select(selection: WorkSelection) {
+        repository.workSelection = selection
+        state.value = state.value.copy(selection = selection, queues = emptyMap(), nextAfterId = null, hasMore = false)
+        reload(false)
     }
 
-    fun loadData() = reload(refreshing = false)
-
-    fun refresh() = reload(refreshing = true)
-
-    private fun reload(refreshing: Boolean) {
-        val generation = ++loadGeneration
+    private fun reload(refreshing: Boolean, append: Boolean = false) {
+        val current = ++generation
         loadJob?.cancel()
-        _uiState.update { it.copy(isLoading = !refreshing, isRefreshing = refreshing,
-            identity = null, session = null, allTasks = emptyList(), activeTasks = emptyList(),
-            assignedQueue = emptyList(), resolvedTasks = emptyList(), errorMessage = null) }
+        val selection = state.value.selection
+        val cursor = if (append) state.value.nextAfterId ?: 0 else 0
+        state.value = state.value.copy(isLoading = !refreshing, isRefreshing = refreshing, errorMessage = null)
         loadJob = viewModelScope.launch {
-            val identityResult = repository.getIdentity()
-            if (generation != loadGeneration) return@launch
-            val identity = identityResult.getOrNull()
-            if (identity?.humanOwnerProfileId == null) {
-                _uiState.update { it.copy(isLoading = false, isRefreshing = false,
-                    errorMessage = identityResult.exceptionOrNull()?.localizedMessage
-                        ?: "My Work requires an authenticated human identity with a linked profile.") }
-                return@launch
-            }
-            val session = repository.getWhoAmI().getOrNull()
-            if (generation != loadGeneration) return@launch
-            _uiState.update { it.copy(identity = identity, session = session) }
-            val result = repository.fetchTasks(iterationId = 1)
-            if (generation != loadGeneration) return@launch
-            result.fold(
-                onSuccess = { tasks ->
-                    _uiState.update { it.copy(isLoading = false, isRefreshing = false, errorMessage = null) }
-                    updateTaskLists(tasks)
-                },
-                onFailure = { failure ->
-                    _uiState.update { it.copy(isLoading = false, isRefreshing = false, identity = null, session = null,
-                        allTasks = emptyList(), activeTasks = emptyList(), assignedQueue = emptyList(), resolvedTasks = emptyList(),
-                        errorMessage = failure.localizedMessage ?: "Failed to refresh your work") }
+            try {
+                val identity = repository.getIdentity().getOrThrow()
+                coroutineContext.ensureActive()
+                if (!identity.authenticated || identity.principal?.kind != "human" || identity.principal.id < 1) {
+                    throw ApiProblem(401, ProblemDetail("authentication_required", "Sign in with a human account to load your work."))
                 }
-            )
-        }
-    }
-
-    fun setFilter(filter: TaskFilter) {
-        _uiState.update { it.copy(selectedFilter = filter) }
-    }
-
-    fun clearError() {
-        _uiState.update { it.copy(errorMessage = null) }
-    }
-
-    private fun updateTaskLists(incoming: List<Task>) {
-        val owner = _uiState.value.identity?.humanOwnerProfileId
-        val pending = ArrayDeque(incoming)
-        val byId = linkedMapOf<Int, Task>()
-        val expanded = mutableSetOf<Int>()
-        while (pending.isNotEmpty()) {
-            val task = pending.removeFirst()
-            val existing = byId[task.id]
-            if (existing == null || task.authoritativeVersion?.let { next ->
-                existing.authoritativeVersion?.let { next >= it } ?: true
-            } == true) byId[task.id] = task
-            if (expanded.add(task.id)) pending.addAll(task.children.orEmpty())
-        }
-        val tasks = if (owner == null) emptyList() else byId.values.filter {
-            it.ownerProfileId == owner && !it.isComposite && it.children.isNullOrEmpty() && it.canceledAt == null
-        }
-        val active = tasks.filter { it.status == TaskStatus.ACTIVE }
-        val queued = tasks.filter { it.status == TaskStatus.PLANNED }
-        val resolved = tasks.filter { it.status == TaskStatus.RESOLVED || it.status == TaskStatus.CLOSED }
-
-        _uiState.update { state ->
-            state.copy(
-                allTasks = tasks,
-                activeTasks = active,
-                assignedQueue = queued,
-                resolvedTasks = resolved
-            )
+                val capabilities = repository.getCapabilities().getOrThrow()
+                require(capabilities.supports("human-my-work-v1")) { "This server cannot provide canonical human work queues. Ask its operator to complete the domain setup." }
+                val filters = capabilities.supports("human-my-work-filters-v1")
+                val projects = repository.getProjects().getOrThrow()
+                val iterations = repository.getIterations().getOrThrow()
+                coroutineContext.ensureActive()
+                if (current != generation) return@launch
+                state.value = state.value.copy(identity = identity, projects = projects, iterations = iterations, filtersSupported = filters)
+                require(filters || selection.projectId == null && selection.iterationId == null && !selection.backlogOnly) {
+                    "This server cannot apply the saved work filters. Clear the selection or upgrade the server."
+                }
+                require(selection.projectId == null || projects.any { it.id == selection.projectId }) {
+                    "The selected project is no longer accessible. Choose another project."
+                }
+                require(selection.iterationId == null || iterations.any { it.id == selection.iterationId }) {
+                    "The selected iteration is no longer accessible. Choose another scope."
+                }
+                val work = if (selection.queue == "review") {
+                    val page = repository.fetchReviewQueue(selection, cursor).getOrThrow()
+                    HumanWork("ready", mapOf("review" to page.items.orEmpty()), page.hasMore, page.nextAfterId)
+                } else repository.fetchMyWork(selection, cursor).getOrThrow()
+                coroutineContext.ensureActive()
+                if (current != generation) return@launch
+                require(work.state in setOf("ready", "profile_unlinked", "membership_required")) { "The server returned an unsupported work state." }
+                val queues = if (append) (state.value.queues.keys + work.queues.orEmpty().keys).associateWith { key ->
+                    (state.value.queues[key].orEmpty() + work.queues.orEmpty()[key].orEmpty()).groupBy { it.id }
+                        .map { (_, rows) -> rows.maxByOrNull { it.version ?: -1 }!! }
+                } else work.queues.orEmpty()
+                state.value = state.value.copy(isLoading = false, isRefreshing = false, identity = identity,
+                    projects = projects, iterations = iterations, queues = queues, workState = work.state,
+                    hasMore = work.hasMore != false, nextAfterId = work.nextAfterId, filtersSupported = filters)
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) {
+                if (current == generation) state.value = state.value.copy(isLoading = false, isRefreshing = false,
+                    identity = null, projects = emptyList(), iterations = emptyList(), filtersSupported = false,
+                    queues = emptyMap(), hasMore = false, nextAfterId = null, errorMessage = error.localizedMessage ?: "Could not refresh your work.")
+            }
         }
     }
 }

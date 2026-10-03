@@ -1,281 +1,84 @@
 package com.workchord.android.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Assignment
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.TaskAlt
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.workchord.android.data.models.Task
-import com.workchord.android.ui.components.ErrorBanner
-import com.workchord.android.ui.components.TaskCard
-import com.workchord.android.ui.theme.BrandPrimary
-import com.workchord.android.ui.viewmodels.MyWorkUiState
+import com.workchord.android.R
+import com.workchord.android.data.models.TaskReference
+import com.workchord.android.data.models.TaskStatus
+import com.workchord.android.ui.components.StatusChip
 import com.workchord.android.ui.viewmodels.MyWorkViewModel
 import com.workchord.android.ui.viewmodels.TaskFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyWorkScreen(
-    viewModel: MyWorkViewModel,
-    onTaskClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "WorkChord",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        (uiState.identity?.principal?.displayName ?: uiState.session?.displayName)?.let { displayName ->
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .padding(horizontal = 8.dp, vertical = 2.dp)
-                            ) {
-                                Text(
-                                    text = displayName,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
-    ) { innerPadding ->
-        PullToRefreshBox(
-            isRefreshing = uiState.isRefreshing,
-            onRefresh = { viewModel.refresh() },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            when {
-                uiState.isLoading && uiState.allTasks.isEmpty() -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = BrandPrimary)
-                    }
-                }
-                else -> {
-                    MyWorkContent(
-                        uiState = uiState,
-                        onTaskClick = onTaskClick,
-                        onFilterSelected = { viewModel.setFilter(it) },
-                        onRetry = { viewModel.loadData() }
-                    )
-                }
+fun MyWorkScreen(viewModel: MyWorkViewModel, onTaskClick: (Int) -> Unit, modifier: Modifier = Modifier) {
+    val state by viewModel.uiState.collectAsState()
+    Scaffold(modifier.fillMaxSize(), topBar = {
+        TopAppBar(title = { Text(stringResource(R.string.my_work_title)) }, actions = {
+            IconButton(onClick = { viewModel.refresh() }, enabled = !state.isLoading && !state.isRefreshing) {
+                Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.work_refresh))
             }
-        }
-    }
-}
-
-@Composable
-private fun MyWorkContent(
-    uiState: MyWorkUiState,
-    onTaskClick: (Int) -> Unit,
-    onFilterSelected: (TaskFilter) -> Unit,
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Error banner if any
-        uiState.errorMessage?.let { error ->
+        })
+    }) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            item { Text(stringResource(R.string.work_help), style = MaterialTheme.typography.bodyLarge) }
             item {
-                ErrorBanner(
-                    errorMessage = error,
-                    onRetry = onRetry
-                )
-            }
-        }
-
-        // Filter chips row
-        item {
-            FilterChipsRow(
-                selectedFilter = uiState.selectedFilter,
-                onFilterSelected = onFilterSelected,
-                activeCount = uiState.activeTasks.size,
-                queuedCount = uiState.assignedQueue.size,
-                resolvedCount = uiState.resolvedTasks.size,
-                allCount = uiState.allTasks.size
-            )
-        }
-
-        when (uiState.selectedFilter) {
-            TaskFilter.ALL -> {
-                // Active Section
-                if (uiState.activeTasks.isNotEmpty()) {
-                    item {
-                        SectionHeader(
-                            title = "In Progress",
-                            count = uiState.activeTasks.size,
-                            icon = Icons.Default.PlayArrow
-                        )
-                    }
-                    items(uiState.activeTasks, key = { "active_${it.id}" }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
+                ScopeMenu(if (state.selection.projectId == null) stringResource(R.string.work_all_projects)
+                    else state.projects.firstOrNull { it.id == state.selection.projectId }?.name ?: stringResource(R.string.work_selection_unavailable),
+                    state.filtersSupported && !state.isLoading) { dismiss ->
+                    DropdownMenuItem(text = { Text(stringResource(R.string.work_all_projects)) }, onClick = { dismiss(); viewModel.selectProject(null) })
+                    state.projects.forEach { project -> DropdownMenuItem(text = { Text(project.name) }, onClick = { dismiss(); viewModel.selectProject(project.id) }) }
                 }
-
-                // Assigned Queue Section
-                if (uiState.assignedQueue.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SectionHeader(
-                            title = "Assigned Queue",
-                            count = uiState.assignedQueue.size,
-                            icon = Icons.Default.Assignment
-                        )
-                    }
-                    items(uiState.assignedQueue, key = { "queued_${it.id}" }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
+                ScopeMenu(if (state.selection.backlogOnly) stringResource(R.string.work_backlog)
+                    else if (state.selection.iterationId == null) stringResource(R.string.work_all_iterations)
+                    else state.iterations.firstOrNull { it.id == state.selection.iterationId }?.name ?: stringResource(R.string.work_selection_unavailable),
+                    state.filtersSupported && !state.isLoading) { dismiss ->
+                    DropdownMenuItem(text = { Text(stringResource(R.string.work_all_iterations)) }, onClick = { dismiss(); viewModel.selectIteration(null) })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.work_backlog)) }, onClick = { dismiss(); viewModel.selectBacklog() })
+                    state.iterations.filter { state.selection.projectId == null || it.projectId == null || it.projectId == state.selection.projectId }
+                        .forEach { iteration -> DropdownMenuItem(text = { Text(iteration.name) }, onClick = { dismiss(); viewModel.selectIteration(iteration.id) }) }
                 }
-
-                // Resolved Section
-                if (uiState.resolvedTasks.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SectionHeader(
-                            title = "Completed",
-                            count = uiState.resolvedTasks.size,
-                            icon = Icons.Default.TaskAlt
-                        )
-                    }
-                    items(uiState.resolvedTasks, key = { "resolved_${it.id}" }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
-                }
-
-                if (uiState.allTasks.isEmpty() && uiState.errorMessage == null) {
-                    item {
-                        EmptyStateView(message = "No tasks found in current iteration")
-                    }
+                if (state.selection.projectId != null || state.selection.iterationId != null || state.selection.backlogOnly) {
+                    TextButton(onClick = { viewModel.clearScope() }, enabled = !state.isLoading) { Text(stringResource(R.string.work_clear_scope)) }
                 }
             }
-
-            TaskFilter.ACTIVE -> {
-                if (uiState.activeTasks.isEmpty() && uiState.errorMessage == null) {
-                    item {
-                        EmptyStateView(message = "No tasks currently in progress")
-                    }
-                } else {
-                    items(uiState.activeTasks, key = { it.id }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
+            item {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(TaskFilter.entries) { filter -> FilterChip(selected = state.selectedFilter == filter,
+                        onClick = { viewModel.setFilter(filter) }, label = { Text(queueTitle(filter)) }, enabled = !state.isLoading) }
                 }
             }
-
-            TaskFilter.QUEUED -> {
-                if (uiState.assignedQueue.isEmpty() && uiState.errorMessage == null) {
-                    item {
-                        EmptyStateView(message = "No queued tasks assigned")
-                    }
-                } else {
-                    items(uiState.assignedQueue, key = { it.id }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
-                }
+            if (state.isLoading || state.isRefreshing) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+            state.errorMessage?.let { message -> item {
+                Text(message, color = MaterialTheme.colorScheme.error)
+                TextButton(onClick = { viewModel.loadData() }) { Text(stringResource(R.string.work_refresh)) }
+            } }
+            when (state.workState) {
+                "profile_unlinked" -> item { Text(stringResource(R.string.work_profile_unlinked)) }
+                "membership_required" -> item { Text(stringResource(R.string.work_no_membership)) }
             }
-
-            TaskFilter.RESOLVED -> {
-                if (uiState.resolvedTasks.isEmpty() && uiState.errorMessage == null) {
-                    item {
-                        EmptyStateView(message = "No resolved tasks yet")
-                    }
-                } else {
-                    items(uiState.resolvedTasks, key = { it.id }) { task ->
-                        TaskCard(
-                            task = task,
-                            onClick = { onTaskClick(task.id) }
-                        )
-                    }
+            if (!state.isLoading && state.errorMessage == null && state.workState == "ready" && state.visibleWork.isEmpty() && !state.hasMore) {
+                item { Text(stringResource(R.string.work_no_results), style = MaterialTheme.typography.bodyLarge) }
+            }
+            items(state.visibleWork, key = { it.id }) { task ->
+                WorkRow(task, onClick = { onTaskClick(task.id) }, onParent = { id -> onTaskClick(id) })
+            }
+            if (state.hasMore) item {
+                Text(stringResource(R.string.work_partial), style = MaterialTheme.typography.bodyMedium)
+                if (state.nextAfterId != null) OutlinedButton(onClick = { viewModel.loadMore() }, enabled = !state.isRefreshing) {
+                    Text(stringResource(R.string.work_load_more))
                 }
             }
         }
@@ -283,93 +86,38 @@ private fun MyWorkContent(
 }
 
 @Composable
-private fun FilterChipsRow(
-    selectedFilter: TaskFilter,
-    onFilterSelected: (TaskFilter) -> Unit,
-    activeCount: Int,
-    queuedCount: Int,
-    resolvedCount: Int,
-    allCount: Int,
-    modifier: Modifier = Modifier
-) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(TaskFilter.entries) { filter ->
-            val count = when (filter) {
-                TaskFilter.ALL -> allCount
-                TaskFilter.ACTIVE -> activeCount
-                TaskFilter.QUEUED -> queuedCount
-                TaskFilter.RESOLVED -> resolvedCount
-            }
-            FilterChip(
-                selected = selectedFilter == filter,
-                onClick = { onFilterSelected(filter) },
-                label = { Text("${filter.title} ($count)") },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+private fun queueTitle(filter: TaskFilter) = stringResource(when (filter) {
+    TaskFilter.ALL -> R.string.work_all
+    TaskFilter.ACTIVE -> R.string.status_active
+    TaskFilter.QUEUED -> R.string.work_queued
+    TaskFilter.BLOCKED -> R.string.status_blocked
+    TaskFilter.RESOLVED -> R.string.work_awaiting_review
+    TaskFilter.REVIEW -> R.string.work_review
+})
+
+@Composable
+private fun ScopeMenu(label: String, enabled: Boolean, content: @Composable ((() -> Unit) -> Unit)) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        OutlinedButton(onClick = { expanded = true }, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
+            Text(label, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
+        DropdownMenu(expanded, onDismissRequest = { expanded = false }) { content { expanded = false } }
     }
 }
 
 @Composable
-private fun SectionHeader(
-    title: String,
-    count: Int,
-    icon: ImageVector,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(18.dp)
-        )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Box(
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(horizontal = 8.dp, vertical = 2.dp)
-        ) {
-            Text(
-                text = count.toString(),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+private fun WorkRow(task: TaskReference, onClick: () -> Unit, onParent: (Int) -> Unit) {
+    Column(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(task.title, style = MaterialTheme.typography.titleMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
+        Text(listOfNotNull(task.projectName, task.iterationName ?: if (task.iterationId == null) stringResource(R.string.work_backlog)
+            else stringResource(R.string.work_iteration, task.iterationId)).joinToString(" · "),
+            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        StatusChip(TaskStatus.fromString(task.status))
+        if (task.status == "closed" && task.acceptanceCurrent != true) Text(stringResource(R.string.work_acceptance_unverified))
+        task.blockedReason?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
+        task.parentId?.let { id -> TextButton(onClick = { onParent(id) }) { Text(stringResource(R.string.work_parent, id)) } }
     }
-}
-
-@Composable
-private fun EmptyStateView(
-    message: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 48.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    HorizontalDivider()
 }

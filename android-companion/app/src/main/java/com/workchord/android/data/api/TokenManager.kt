@@ -50,6 +50,10 @@ open class TokenManager(context: Context? = null, private val store: CredentialS
             secrets = secrets.copy(principalId = value); persist()
         }
 
+    var workSelection: WorkSelection
+        get() = secrets.selection ?: WorkSelection()
+        set(value) { secrets = secrets.copy(selection = value); persist() }
+
     open var sessionToken: String?
         get() = prefs?.getString(KEY_SESSION_TOKEN, null) ?: inMemorySessionToken
         set(value) {
@@ -113,7 +117,11 @@ open class TokenManager(context: Context? = null, private val store: CredentialS
 }
 
 data class NativeSecrets(val serverUrl: String? = null, val accessToken: String? = null, val cookies: List<String>? = emptyList(),
-    val csrfToken: String? = null, val principalId: Int? = null, val pending: PendingConnection? = null)
+    val csrfToken: String? = null, val principalId: Int? = null, val pending: PendingConnection? = null,
+    val selection: WorkSelection? = null)
 
 data class PendingConnection(val requestId: String, val verifier: String, val verificationCode: String,
     val verificationPath: String, val expiresAt: String)
+
+data class WorkSelection(val projectId: Int? = null, val iterationId: Int? = null,
+    val backlogOnly: Boolean = false, val queue: String = "all")

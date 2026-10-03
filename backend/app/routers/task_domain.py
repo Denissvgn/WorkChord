@@ -12,7 +12,7 @@ from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
-from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage
+from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.task_domain_service import TaskDomainService
 from app.services.task_brief_service import TaskBriefService
@@ -46,9 +46,14 @@ async def task_capabilities(db: DB):
     return await domain_capabilities(db)
 
 
-@router.get("/tasks/my-work")
-async def human_my_work(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
-    return await TaskDetailService(db).my_work(limit=limit, after_id=after_id)
+@router.get("/tasks/my-work", response_model=HumanWorkResponse)
+async def human_my_work(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
+                       project_id: int | None = Query(default=None, ge=1), iteration_id: int | None = Query(default=None, ge=1), backlog_only: bool = False):
+    try:
+        return await TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id,
+            iteration_id=iteration_id, backlog_only=backlog_only)
+    except ValueError as exc:
+        raise HTTPException(422, detail=[{"type": "value_error", "loc": ["query"], "msg": str(exc)}]) from exc
 
 
 @router.get("/tasks/owner-options")
@@ -81,11 +86,22 @@ async def task_migration_diagnostics(db: DB, after_id: int = Query(default=0, ge
 
 
 @router.get("/tasks/review-queue", response_model=TaskReferencePage)
-async def task_review_queue(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
+async def task_review_queue(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
+                          project_id: int | None = Query(default=None, ge=1), iteration_id: int | None = Query(default=None, ge=1), backlog_only: bool = False):
     from sqlalchemy import or_
     authority = db.info.get("authority")
     service = TaskDetailService(db)
     query = service.references().where(Task.status == "resolved", Task.canceled_at.is_(None), Task.is_summary.is_(False))
+    if backlog_only and iteration_id is not None:
+        raise HTTPException(422, detail="Select backlog or an iteration, not both")
+    if project_id is not None:
+        from app.authority import require_project
+        require_project(db, project_id)
+        query = query.where(Task.project_id == project_id)
+    if iteration_id is not None:
+        query = query.where(Task.iteration_id == iteration_id)
+    if backlog_only:
+        query = query.where(Task.iteration_id.is_(None))
     if authority is not None:
         if not authority.local and not authority.operator:
             query = query.where(Task.project_id.in_([project_id for project_id in authority.projects if authority.allows(project_id, "review")]))

@@ -74,14 +74,17 @@ class NativeSessionTest {
         first.baseUrl = "https://workspace.example/"
         first.nativeAccessToken = "opaque"
         first.principalId = 19
+        first.workSelection = WorkSelection(projectId = 9, iterationId = 12, queue = "review")
         first.pendingConnection = PendingConnection("request", "proof", "ABCD-EFGH", "/mobile/connect?request=request", "future")
         val reopened = TokenManager(store = store)
         assertEquals("opaque", reopened.nativeAccessToken)
         assertNotNull(reopened.pendingConnection)
+        assertEquals(first.workSelection, reopened.workSelection)
         reopened.principalId = 20
         assertNull(reopened.nativeAccessToken)
         assertNull(reopened.pendingConnection)
         assertEquals(20, reopened.principalId)
+        assertEquals(WorkSelection(), reopened.workSelection)
         reopened.nativeAccessToken = "second-account"
         reopened.baseUrl = "https://different.example/"
         assertNull(reopened.nativeAccessToken)

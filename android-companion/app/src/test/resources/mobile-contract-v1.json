@@ -312,6 +312,181 @@
           "title": "HTTPValidationError",
           "type": "object"
         },
+        "HumanWorkReference": {
+          "properties": {
+            "acceptance_current": {
+              "default": false,
+              "title": "Acceptance Current",
+              "type": "boolean"
+            },
+            "actions": {
+              "items": {
+                "$ref": "#/components/schemas/TaskActionAvailability"
+              },
+              "title": "Actions",
+              "type": "array"
+            },
+            "blocked_reason": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Blocked Reason"
+            },
+            "canceled_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Canceled At"
+            },
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "iteration_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Id"
+            },
+            "iteration_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Name"
+            },
+            "owner_profile_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Owner Profile Id"
+            },
+            "parent_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parent Id"
+            },
+            "project_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Id"
+            },
+            "project_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Name"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "version": {
+              "title": "Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "version",
+            "status",
+            "project_id",
+            "iteration_id",
+            "parent_id",
+            "owner_profile_id",
+            "actions"
+          ],
+          "title": "HumanWorkReference",
+          "type": "object"
+        },
+        "HumanWorkResponse": {
+          "properties": {
+            "has_more": {
+              "title": "Has More",
+              "type": "boolean"
+            },
+            "next_after_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next After Id"
+            },
+            "queues": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "#/components/schemas/HumanWorkReference"
+                },
+                "type": "array"
+              },
+              "title": "Queues",
+              "type": "object"
+            },
+            "state": {
+              "title": "State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "state",
+            "queues",
+            "has_more",
+            "next_after_id"
+          ],
+          "title": "HumanWorkResponse",
+          "type": "object"
+        },
         "IterationCreate": {
           "description": "Schema for creating an iteration.",
           "properties": {
@@ -4752,13 +4927,59 @@
                 "title": "After Id",
                 "type": "integer"
               }
+            },
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "backlog_only",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Backlog Only",
+                "type": "boolean"
+              }
             }
           ],
           "responses": {
             "200": {
               "content": {
                 "application/json": {
-                  "schema": {}
+                  "schema": {
+                    "$ref": "#/components/schemas/HumanWorkResponse"
+                  }
                 }
               },
               "description": "Successful Response"
@@ -4805,6 +5026,50 @@
                 "minimum": 0,
                 "title": "After Id",
                 "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "backlog_only",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Backlog Only",
+                "type": "boolean"
               }
             }
           ],

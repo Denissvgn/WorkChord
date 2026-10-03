@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">WorkChord</string>
+    <string name="my_work_title">Моя работа</string>
+    <string name="task_detail_title">Задача</string>
+    <string name="status_planned">Запланировано</string>
+    <string name="status_active">В работе</string>
+    <string name="status_resolved">Выполнено</string>
+    <string name="status_closed">Закрыто</string>
+    <string name="status_blocked">Заблокировано</string>
+    <string name="work_help">Ваша работа и запросы на независимую проверку в разных проектах.</string>
+    <string name="work_refresh">Обновить работу</string>
+    <string name="work_all_projects">Все доступные проекты</string>
+    <string name="work_all_iterations">Все итерации и бэклог</string>
+    <string name="work_backlog">Бэклог</string>
+    <string name="work_all">Вся работа</string>
+    <string name="work_queued">В очереди</string>
+    <string name="work_awaiting_review">Ожидает проверки</string>
+    <string name="work_review">Проверить работу</string>
+    <string name="work_profile_unlinked">Попросите оператора связать вашу учётную запись с рабочим профилем. Независимая проверка доступна в очереди проверки, если у вас есть разрешение.</string>
+    <string name="work_no_membership">Попросите руководителя проекта предоставить нужный доступ.</string>
+    <string name="work_no_results">В этой очереди и выбранной области нет работы.</string>
+    <string name="work_partial">Это текущая страница списка. Может быть доступна дополнительная работа.</string>
+    <string name="work_load_more">Загрузить ещё</string>
+    <string name="work_parent">Родительская задача #%1$d</string>
+    <string name="work_iteration">Итерация #%1$d</string>
+    <string name="work_selection_unavailable">Выбранная область недоступна</string>
+    <string name="work_clear_scope">Сбросить выбранную область</string>
+    <string name="work_acceptance_unverified">Приёмка требует согласования</string>
+</resources>

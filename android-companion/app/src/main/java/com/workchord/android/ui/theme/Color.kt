@@ -30,8 +30,8 @@ val LightTextMuted = Color(0xFF94A3B8)
 val StatusPlannedColor = Color(0xFF64748B) // Slate 500
 val StatusPlannedBg = Color(0x1F64748B)
 
-val StatusActiveColor = Color(0xFF2563EB) // Blue 600
-val StatusActiveBg = Color(0x242563EB)
+val StatusActiveColor = Color(0xFF0891B2)
+val StatusActiveBg = Color(0x240891B2)
 
 val StatusResolvedColor = Color(0xFF10B981) // Emerald 500
 val StatusResolvedBg = Color(0x2410B981)

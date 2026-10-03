@@ -6,6 +6,8 @@ import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.data.models.TaskUpdateRequest
 import com.workchord.android.data.models.TaskCommandRequest
+import com.workchord.android.data.models.*
+import com.workchord.android.data.api.WorkSelection
 import com.workchord.android.data.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +45,30 @@ class FakeTaskRepository(
     var lastReason: String? = null
     var lastExpectedVersion: Int? = null
     var lastCommand: String? = null
+    override var workSelection = WorkSelection()
+    var myWorkResult: Result<HumanWork> = Result.success(HumanWork("ready", emptyMap(), false, null))
+    var reviewQueueResult: Result<TaskReferencePage> = Result.success(TaskReferencePage(emptyList(), false, null))
+    var projectsResult: Result<List<Project>> = Result.success(listOf(Project(1, "Shared delivery"), Project(9, "Other delivery")))
+    var iterationsResult: Result<List<Iteration>> = Result.success(listOf(Iteration(12, "Current iteration", projectId = 1)))
+    var capabilitiesResult: Result<DomainCapabilities> = Result.success(DomainCapabilities(1, true,
+        listOf("human-my-work-v1", "human-my-work-filters-v1")))
+    var lastSelection: WorkSelection? = null
+    var lastAfterId: Int? = null
+    override suspend fun fetchMyWork(selection: WorkSelection, afterId: Int): Result<HumanWork> {
+        lastSelection = selection; lastAfterId = afterId; fetchTasksCallCount++
+        return myWorkResult
+    }
+    override suspend fun fetchReviewQueue(selection: WorkSelection, afterId: Int): Result<TaskReferencePage> {
+        lastSelection = selection; lastAfterId = afterId
+        return reviewQueueResult
+    }
+    override suspend fun getProjects() = projectsResult
+    override suspend fun getIterations() = iterationsResult
+    override suspend fun getCapabilities() = capabilitiesResult
+    override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> {
+        return getTaskById(taskId).map { TaskDetail(it, emptyList(), true,
+            TaskReferencePage(emptyList(), false, null), TaskReferencePage(emptyList(), false, null), false) }
+    }
 
     override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> {
         lastCommand = request.action

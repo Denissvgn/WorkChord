@@ -6,6 +6,7 @@ import com.workchord.android.data.models.AcceptanceCriterion
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.data.models.TaskCommandRequest
+import com.workchord.android.data.models.TaskDetail
 import com.workchord.android.data.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ data class TaskDetailUiState(
     val isLoading: Boolean = false,
     val isUpdatingStatus: Boolean = false,
     val task: Task? = null,
+    val detail: TaskDetail? = null,
     val acceptanceCriteria: List<AcceptanceCriterion> = emptyList(),
     val errorMessage: String? = null,
     val successMessage: String? = null
@@ -53,13 +55,15 @@ class TaskDetailViewModel(
     fun loadTask() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            val result = repository.getTaskById(taskId)
+            val result = repository.getTaskDetail(taskId)
             result.fold(
-                onSuccess = { task ->
+                onSuccess = { detail ->
+                    val task = detail.task
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             task = task,
+                            detail = detail,
                             acceptanceCriteria = task.extractAcceptanceCriteria(),
                             errorMessage = null
                         )

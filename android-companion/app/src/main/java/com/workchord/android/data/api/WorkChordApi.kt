@@ -20,6 +20,9 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
 import retrofit2.http.POST
+import retrofit2.http.Query
+import com.workchord.android.data.models.HumanWork
+import com.workchord.android.data.models.TaskReferencePage
 import retrofit2.http.Path
 
 interface WorkChordApi {
@@ -35,6 +38,16 @@ interface WorkChordApi {
 
     @GET("api/tasks/capabilities")
     suspend fun getCapabilities(): Response<DomainCapabilities>
+
+    @GET("api/tasks/my-work")
+    suspend fun getMyWork(@Query("project_id") projectId: Int? = null, @Query("iteration_id") iterationId: Int? = null,
+        @Query("backlog_only") backlogOnly: Boolean = false, @Query("after_id") afterId: Int = 0,
+        @Query("limit") limit: Int = 50): Response<HumanWork>
+
+    @GET("api/tasks/review-queue")
+    suspend fun getReviewQueue(@Query("project_id") projectId: Int? = null, @Query("iteration_id") iterationId: Int? = null,
+        @Query("backlog_only") backlogOnly: Boolean = false, @Query("after_id") afterId: Int = 0,
+        @Query("limit") limit: Int = 50): Response<TaskReferencePage>
 
     @GET("api/tasks/{id}/detail")
     suspend fun getTaskDetail(@Path("id") taskId: Int): Response<TaskDetail>
