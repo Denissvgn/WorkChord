@@ -95,6 +95,15 @@ class TaskRepositoryTest {
     }
 
     @Test
+    fun mismatchedCommandResponseCannotBeReportedAsASavedTask() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":999,\"title\":\"Other work\",\"status\":\"active\",\"version\":4}"))
+        val result = repository.executeCommand(72, com.workchord.android.data.models.TaskCommandRequest("start_manual", 3, "Begin work"))
+        assertTrue(result.isFailure)
+        assertEquals("unverified_write_response", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+    }
+
+    @Test
     fun testGetWhoAmISuccess() = runTest(testDispatcher) {
         val sessionJson = """
             {

@@ -108,7 +108,8 @@ class MobileContractTest {
             TaskReference::class.java to "TaskReference", TaskReferencePage::class.java to "TaskReferencePage",
             TaskActions::class.java to "TaskActionsResponse", AllowedAction::class.java to "TaskActionAvailability",
             CriterionProgress::class.java to "CriterionProgress", ProgressRequest::class.java to "ProgressWrite",
-            ReviewRequest::class.java to "TaskReviewWrite", TaskReview::class.java to "TaskReviewResponse")) {
+            ReviewRequest::class.java to "TaskReviewWrite", TaskReview::class.java to "TaskReviewResponse",
+            CurrentTaskReview::class.java to "CurrentTaskReviewResponse")) {
             val fields = schemas.getAsJsonObject(schema).getAsJsonObject("properties").keySet()
             for (field in type.declaredFields.filter { !java.lang.reflect.Modifier.isStatic(it.modifiers) }) {
                 val wireName = field.getAnnotation(SerializedName::class.java)?.value ?: field.name

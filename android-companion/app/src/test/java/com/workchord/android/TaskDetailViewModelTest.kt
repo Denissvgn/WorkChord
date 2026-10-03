@@ -1,240 +1,116 @@
 package com.workchord.android
 
-import com.workchord.android.data.models.Assignee
-import com.workchord.android.data.models.Project
-import com.workchord.android.data.models.Task
-import com.workchord.android.data.models.TaskStatus
+import com.workchord.android.data.models.*
 import com.workchord.android.fakes.FakeTaskRepository
 import com.workchord.android.ui.viewmodels.TaskDetailViewModel
 import com.workchord.android.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TaskDetailViewModelTest {
+    @get:Rule val mainDispatcherRule = MainDispatcherRule()
+    private val task = Task(72, title = "Reviewed outline", statusRaw = "active", version = 3,
+        brief = TaskBrief(1, goal = "Deliver an outline", acceptanceCriteria = listOf(BriefCriterion("outline", 2, "A clear outline", "Read revision"))),
+        briefRevision = 1, artifactRevision = 0, ownerProfileId = 7)
+    private fun repository() = FakeTaskRepository(listOf(task))
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
-
-    private lateinit var fakeRepository: FakeTaskRepository
-
-    private val testTask = Task(
-        id = 5,
-        title = "Implement Android Unit Tests & Architecture Validation",
-        description = """
-            ## Goal
-            Ensure test coverage and verify architecture contracts
-            
-            ## Acceptance criteria
-            - [ ] Unit tests for Repositories and ViewModels
-            - [x] Mock HTTP tests verifying WorkChord contracts
-            - [ ] All tests passing
-        """.trimIndent(),
-        priority = 7,
-        effortDays = 2.0,
-        effortHours = 16.0,
-        statusRaw = "planned",
-        version = 2,
-        project = Project(id = 1, name = "WorkChord Companion"),
-        assignee = Assignee(id = 3, name = "Dmitry QA")
-    )
-
-    @Before
-    fun setUp() {
-        fakeRepository = FakeTaskRepository(
-            initialTasks = listOf(testTask)
-        )
+    @Test fun unavailableActionsNeverIssueACommand() = runTest {
+        val repo = repository()
+        repo.actionsResult = Result.success(TaskActions(72, 3, listOf(AllowedAction("start_manual", false,
+            listOf(ActionBlocker("invalid_lifecycle", "Already active")))), 0, emptyList(), emptyList()))
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.setReason("Begin work")
+        viewModel.execute("start_manual")
+        assertEquals(0, repo.commandCalls)
+        assertNotNull(viewModel.uiState.value.errorMessage)
     }
 
-    @Test
-    fun testInitialLoadSuccessAndAcceptanceCriteriaParsing() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        val state = viewModel.uiState.value
-        assertFalse("isLoading should be false after load", state.isLoading)
-        assertFalse("isUpdatingStatus should be false", state.isUpdatingStatus)
-        assertNull("errorMessage should be null", state.errorMessage)
-
-        assertNotNull("Task should be present", state.task)
-        assertEquals(5, state.task?.id)
-        assertEquals(TaskStatus.PLANNED, state.task?.status)
-        assertEquals(2, state.task?.version)
-
-        // Verify acceptance criteria parsed correctly
-        assertEquals(3, state.acceptanceCriteria.size)
-        assertEquals("Unit tests for Repositories and ViewModels", state.acceptanceCriteria[0].text)
-        assertFalse(state.acceptanceCriteria[0].isCompleted)
-
-        assertEquals("Mock HTTP tests verifying WorkChord contracts", state.acceptanceCriteria[1].text)
-        assertFalse(state.acceptanceCriteria[1].isCompleted)
-
-        assertEquals("All tests passing", state.acceptanceCriteria[2].text)
-        assertFalse(state.acceptanceCriteria[2].isCompleted)
+    @Test fun canonicalBlockAndReopenUseCurrentVersionAndOwnershipEvidence() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.setReason("Waiting for input")
+        viewModel.execute("block")
+        assertEquals("block", repo.lastCommand)
+        assertEquals(3, repo.lastExpectedVersion)
+        assertEquals("Waiting for input", viewModel.uiState.value.task!!.blockedReason)
+        viewModel.setReason("Restore canceled work")
+        viewModel.execute("reopen")
+        assertEquals("reopen", repo.lastCommand)
+        assertEquals(4, repo.lastExpectedVersion)
     }
 
-    @Test
-    fun testStartTaskTransitionsToActive() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.startTask()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isUpdatingStatus)
-        assertNull(state.errorMessage)
-        assertNotNull(state.successMessage)
-        assertTrue(state.successMessage?.contains("Active") == true)
-
-        assertEquals(TaskStatus.ACTIVE, state.task?.status)
-        assertEquals(3, state.task?.version) // Version incremented
-
-        assertEquals(5, fakeRepository.lastUpdatedTaskId)
-        assertEquals(TaskStatus.ACTIVE, fakeRepository.lastUpdatedStatus)
-        assertEquals("Task started by mobile user", fakeRepository.lastReason)
-        assertEquals(2, fakeRepository.lastExpectedVersion)
+    @Test fun completionRequiresEvidenceAndPersistsStableCriterionIdentity() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.beginEvidenceEdit()
+        viewModel.setCriterion("outline", progress = "completed")
+        viewModel.saveProgress()
+        assertNull(repo.lastProgress)
+        assertNotNull(viewModel.uiState.value.draft)
+        viewModel.setCriterion("outline", evidence = "Outline revision abc123")
+        viewModel.saveProgress()
+        assertEquals(3, repo.lastProgress!!.expectedVersion)
+        assertEquals("outline", repo.lastProgress!!.criteria.single().criterionId)
+        assertEquals(2, repo.lastProgress!!.criteria.single().criterionRevision)
+        assertTrue(viewModel.uiState.value.acceptanceCriteria.single().isCompleted)
+        assertNull(viewModel.uiState.value.draft)
+        assertNull(viewModel.uiState.value.currentReview)
     }
 
-    @Test
-    fun testResolveTaskTransitionsToResolved() = runTest {
-        // Set task initially to ACTIVE
-        fakeRepository.setTasks(listOf(testTask.copy(statusRaw = "active")))
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.resolveTask()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isUpdatingStatus)
-        assertNull(state.errorMessage)
-        assertNotNull(state.successMessage)
-        assertTrue(state.successMessage?.contains("Resolved") == true)
-
-        assertEquals(TaskStatus.RESOLVED, state.task?.status)
-        assertEquals(TaskStatus.RESOLVED, fakeRepository.lastUpdatedStatus)
-        assertEquals("Task marked resolved from mobile companion", fakeRepository.lastReason)
+    @Test fun conflictPreservesDraftAndRequiresExplicitCurrentRevisionReconciliation() = runTest {
+        val repo = repository()
+        val current = task.copy(version = 4, title = "Changed outline")
+        repo.progressResult = Result.failure(ApiProblem(409, ProblemDetail("task_version_conflict", "Changed", currentTask = current)))
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.beginEvidenceEdit()
+        viewModel.setCriterion("outline", progress = "completed", evidence = "Retained evidence")
+        viewModel.saveProgress()
+        assertEquals(3, viewModel.uiState.value.draft!!.base.version)
+        assertEquals("Retained evidence", viewModel.uiState.value.draft!!.criteria.single().evidence)
+        assertFalse(viewModel.uiState.value.authoritative)
+        repo.setTasks(listOf(current))
+        viewModel.loadTask()
+        viewModel.reconcileDraft()
+        assertEquals(4, viewModel.uiState.value.draft!!.base.version)
+        repo.progressResult = null
+        viewModel.saveProgress()
+        assertEquals(4, repo.lastProgress!!.expectedVersion)
     }
 
-    @Test
-    fun testBlockTaskSetsBlockedFacet() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.blockTask("Blocked on API specification")
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isUpdatingStatus)
-        assertNull(state.errorMessage)
-        assertNotNull(state.successMessage)
-        assertTrue(state.successMessage?.contains("blocked") == true)
-
-        assertEquals(TaskStatus.PLANNED, state.task?.status)
-        assertEquals("Blocked on API specification", state.task?.blockedReason)
-        assertEquals("block", fakeRepository.lastCommand)
-        assertEquals("Blocked on API specification", fakeRepository.lastReason)
+    @Test fun changedCriterionRevisionPreventsBlindDraftReapply() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.beginEvidenceEdit()
+        val changed = task.copy(version = 4, brief = task.brief!!.copy(acceptanceCriteria = listOf(BriefCriterion("outline", 3, "New requirement"))))
+        repo.setTasks(listOf(changed))
+        viewModel.loadTask()
+        viewModel.reconcileDraft()
+        assertEquals(3, viewModel.uiState.value.draft!!.base.version)
+        assertTrue(viewModel.uiState.value.errorMessage!!.contains("Criteria changed"))
     }
 
-    @Test
-    fun testReopenTaskTransitionsToActive() = runTest {
-        fakeRepository.setTasks(listOf(testTask.copy(statusRaw = "resolved")))
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.reopenTask()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isUpdatingStatus)
-        assertEquals(TaskStatus.ACTIVE, state.task?.status)
-        assertEquals("Rework requested", fakeRepository.lastReason)
+    @Test fun independentVerdictUsesCurrentBriefAndArtifactRevisions() = runTest {
+        val repo = repository()
+        val viewModel = TaskDetailViewModel(72, repo)
+        viewModel.setReason("The result needs more detail")
+        viewModel.setReviewEvidence("Independent comparison to the brief")
+        viewModel.submitReview("reject")
+        assertEquals("reject", repo.lastReview!!.verdict)
+        assertEquals(1, repo.lastReview!!.briefRevision)
+        assertEquals(0, repo.lastReview!!.artifactRevision)
+        assertEquals("reject", viewModel.uiState.value.currentReview!!.verdict)
     }
 
-    @Test
-    fun testCloseTaskTransitionsToClosed() = runTest {
-        fakeRepository.setTasks(listOf(testTask.copy(statusRaw = "resolved")))
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.closeTask()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isUpdatingStatus)
-        assertEquals(TaskStatus.CLOSED, state.task?.status)
-        assertEquals("Task verified and closed", fakeRepository.lastReason)
-    }
-
-    @Test
-    fun testVersionMismatchErrorHandling() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        // Inject simulated version mismatch conflict error in repository
-        fakeRepository.updateTaskStatusResult = Result.failure(
-            Exception("Version conflict: expected version 2, but remote version is 3.")
-        )
-
-        viewModel.resolveTask()
-
-        val state = viewModel.uiState.value
-        assertFalse("isUpdatingStatus should reset to false", state.isUpdatingStatus)
-        assertNull("successMessage should remain null", state.successMessage)
-        assertEquals(
-            "Version conflict: expected version 2, but remote version is 3.",
-            state.errorMessage
-        )
-        // Task status should remain unchanged
-        assertEquals(TaskStatus.PLANNED, state.task?.status)
-    }
-
-    @Test
-    fun legacyChecklistCannotClaimPersistedCompletion() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-        viewModel.toggleAcceptanceCriterion(0)
-        assertTrue(viewModel.uiState.value.acceptanceCriteria.all { !it.isCompleted })
-        assertTrue(viewModel.uiState.value.errorMessage.orEmpty().contains("persisted execution evidence"))
-        assertNull(fakeRepository.lastUpdatedStatus)
-    }
-
-    @Test
-    fun testClearMessages() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-
-        viewModel.startTask()
-        assertNotNull(viewModel.uiState.value.successMessage)
-
-        viewModel.clearMessages()
-        assertNull(viewModel.uiState.value.successMessage)
-        assertNull(viewModel.uiState.value.errorMessage)
-    }
-
-    @Test
-    fun testLoadTaskFailure() = runTest {
-        fakeRepository.getTaskByIdResult = Result.failure(Exception("Task 999 not found"))
-
-        val viewModel = TaskDetailViewModel(taskId = 999, repository = fakeRepository)
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.task)
-        assertEquals("Task 999 not found", state.errorMessage)
-    }
-
-    @Test
-    fun testObserveExternalTaskUpdates() = runTest {
-        val viewModel = TaskDetailViewModel(taskId = 5, repository = fakeRepository)
-        assertEquals(TaskStatus.PLANNED, viewModel.uiState.value.task?.status)
-
-        // Simulate background task status update in repository
-        val updatedTask = testTask.copy(
-            statusRaw = "active",
-            description = "## Acceptance criteria\n- [x] All done!"
-        )
-        fakeRepository.setTasks(listOf(updatedTask))
-
-        val state = viewModel.uiState.value
-        assertEquals(TaskStatus.ACTIVE, state.task?.status)
-        assertEquals(1, state.acceptanceCriteria.size)
-        assertFalse(state.acceptanceCriteria[0].isCompleted)
-        assertEquals("All done!", state.acceptanceCriteria[0].text)
+    @Test fun mismatchedReadVersionsDisableAllMutationActions() = runTest {
+        val repo = repository()
+        repo.actionsResult = Result.success(TaskActions(72, 4, listOf(AllowedAction("record_progress", true)), 0, emptyList(), emptyList()))
+        val viewModel = TaskDetailViewModel(72, repo)
+        assertFalse(viewModel.uiState.value.authoritative)
+        assertFalse(viewModel.uiState.value.allowed("record_progress"))
+        assertNotNull(viewModel.uiState.value.errorMessage)
     }
 }

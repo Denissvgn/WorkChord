@@ -10,7 +10,7 @@ from app.database import get_db
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskResponse
-from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse
+from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.task_service import TaskService, TaskVersionConflictError
@@ -165,6 +165,16 @@ async def review_task(task_id: int, data: TaskReviewWrite, db: DB):
 async def task_reviews(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
     await domain_result(TaskDetailService(db).detail(task_id, limit=1))
     return list((await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all())
+
+
+@router.get("/tasks/{task_id}/reviews/current", response_model=CurrentTaskReviewResponse)
+async def current_task_review(task_id: int, db: DB):
+    detail = await domain_result(TaskDetailService(db).detail(task_id, limit=1))
+    task = detail.task
+    review = await db.scalar(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id,
+        TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision,
+        TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit(1))
+    return {"task_version": task.version, "review": review}
 
 
 async def brief_history_page(db, task_id, model, after_id, limit):

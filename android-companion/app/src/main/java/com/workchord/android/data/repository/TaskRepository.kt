@@ -50,6 +50,11 @@ interface TaskRepository {
     suspend fun getIterations(): Result<List<Iteration>>
     suspend fun getCapabilities(): Result<DomainCapabilities>
     suspend fun getTaskDetail(taskId: Int): Result<TaskDetail>
+    suspend fun getTaskActions(taskId: Int): Result<TaskActions>
+    suspend fun getReviews(taskId: Int): Result<List<TaskReview>>
+    suspend fun getCurrentReview(taskId: Int): Result<CurrentTaskReview>
+    suspend fun recordProgress(taskId: Int, request: ProgressRequest): Result<Task>
+    suspend fun reviewTask(taskId: Int, request: ReviewRequest): Result<Task>
 }
 
 class TaskRepositoryImpl(
@@ -88,24 +93,29 @@ class TaskRepositoryImpl(
     override suspend fun getProjects(): Result<List<Project>> = read { api.getProjects() }
     override suspend fun getIterations(): Result<List<Iteration>> = read { api.getIterations() }
     override suspend fun getCapabilities(): Result<DomainCapabilities> = read { api.getCapabilities() }
+    override suspend fun getTaskActions(taskId: Int): Result<TaskActions> = read { api.getTaskActions(taskId) }
+    override suspend fun getReviews(taskId: Int): Result<List<TaskReview>> = read { api.getReviews(taskId) }
+    override suspend fun getCurrentReview(taskId: Int): Result<CurrentTaskReview> = read { api.getCurrentReview(taskId) }
+    override suspend fun recordProgress(taskId: Int, request: ProgressRequest): Result<Task> = mutation(taskId, request.expectedVersion) { api.recordProgress(taskId, request) }
+    override suspend fun reviewTask(taskId: Int, request: ReviewRequest): Result<Task> = mutation(taskId, request.expectedVersion) { api.reviewTask(taskId, request) }
+    private suspend fun mutation(taskId: Int, expectedVersion: Int, call: suspend () -> retrofit2.Response<Task>): Result<Task> {
+        val result = read(call)
+        result.getOrNull()?.let { task ->
+            if (task.id != taskId || task.authoritativeVersion == null || task.authoritativeVersion!! < expectedVersion) {
+                return Result.failure(ApiProblem(502, ProblemDetail("unverified_write_response", "The write response could not be verified. Reload and compare before submitting again.")))
+            }
+        }
+        result.getOrNull()?.let { updateLocalTask(it); changes.value++ }
+        return result
+    }
     override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> {
         val result = read { api.getTaskDetail(taskId) }
         result.getOrNull()?.task?.let { updateLocalTask(it) }
         return result
     }
 
-    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> = withContext(ioDispatcher) {
-        try {
-            val response = api.executeTaskCommand(taskId, request)
-            if (response.isSuccessful && response.body() != null) {
-                val updated = response.body()!!
-                updateLocalTask(updated)
-                changes.value++
-                Result.success(updated)
-            } else Result.failure(ApiProblem.parse(response.code(), response.errorBody()?.string()))
-        } catch (error: CancellationException) { throw error }
-        catch (error: Exception) { Result.failure(error) }
-    }
+    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> =
+        mutation(taskId, request.expectedVersion) { api.executeTaskCommand(taskId, request) }
 
     override suspend fun getIdentity(): Result<Identity> = withContext(ioDispatcher) {
         try {

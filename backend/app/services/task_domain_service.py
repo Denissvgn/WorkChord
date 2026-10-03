@@ -57,7 +57,8 @@ async def domain_capabilities(db):
     ready = pending is None
     return {"schema_version": 1, "ready": ready, "reason": None if ready else "domain_backfill_pending",
         "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1"] if ready else [],
-        "legacy_iteration_routes": True, "legacy_task_versions_required": False}
+        "legacy_iteration_routes": True, "legacy_task_versions_required": False,
+        "current_review_projection": ready}
 
 
 async def require_owner(db, profile_id, project_id):
@@ -189,6 +190,14 @@ class TaskDomainService:
                     availability["allowed"] = False
                     availability["blockers"] = [{"code": getattr(exc, "code", "current_evidence_required"), "message": str(exc)}]
         actions.append(accept_action)
+        progress_blockers = []
+        if authority is not None and not authority.allows(task.project_id, "execute"):
+            progress_blockers.append({"code": "permission_denied", "message": "Execution permission is required to record evidence."})
+        if authority is not None and authority.kind == "agent":
+            progress_blockers.append({"code": "agent_protocol_required", "message": "Submit evidence through assigned work with its current fence."})
+        if task.canceled_at or task.status == "closed" or task.is_summary:
+            progress_blockers.append({"code": "open_leaf_required", "message": "Evidence requires open leaf work."})
+        actions.append({"action": "record_progress", "allowed": not progress_blockers, "blockers": progress_blockers})
         if authority is not None and authority.kind == "agent":
             from app.services.agent_work_service import AgentWorkService
             from app.utils.time import as_utc

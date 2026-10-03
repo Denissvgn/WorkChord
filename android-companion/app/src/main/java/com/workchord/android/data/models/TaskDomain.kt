@@ -22,6 +22,7 @@ data class TaskReview(val id: Int, @SerializedName("task_version") val taskVersi
     @SerializedName("brief_revision") val briefRevision: Int, @SerializedName("artifact_revision") val artifactRevision: Int,
     @SerializedName("principal_id") val principalId: Int?, val verdict: String, val reason: String, val evidence: String,
     @SerializedName("created_at") val createdAt: String)
+data class CurrentTaskReview(@SerializedName("task_version") val taskVersion: Int, val review: TaskReview?)
 
 data class ActionBlocker(val code: String, val message: String)
 data class AllowedAction(val action: String, val allowed: Boolean, val blockers: List<ActionBlocker>? = null)
@@ -36,7 +37,8 @@ data class TaskCommandRequest(val action: String, @SerializedName("expected_vers
 
 data class DomainCapabilities(@SerializedName("schema_version") val schemaVersion: Int? = null,
     val ready: Boolean? = null, val features: List<String>? = null, val reason: String? = null,
-    @SerializedName("legacy_task_versions_required") val legacyTaskVersionsRequired: Boolean? = null) {
+    @SerializedName("legacy_task_versions_required") val legacyTaskVersionsRequired: Boolean? = null,
+    @SerializedName("current_review_projection") val currentReviewProjection: Boolean? = null) {
     fun supports(feature: String) = schemaVersion == 1 && ready == true && features?.contains(feature) == true
 }
 

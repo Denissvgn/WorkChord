@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.lifecycle.ViewModel
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
                         key(state.scope) {
                             val repository = remember(state.scope) { app.reconnect(); app.taskRepository }
                             val navController = rememberNavController()
-                            Column {
+                            Column(Modifier.safeDrawingPadding()) {
                                 TextButton(onClick = { session.logout() }, enabled = !state.loading) {
                                     Text("${state.identity?.principal?.displayName ?: "Signed in"} · Sign out")
                                 }

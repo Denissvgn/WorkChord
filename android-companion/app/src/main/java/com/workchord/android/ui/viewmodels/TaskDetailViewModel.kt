@@ -2,151 +2,162 @@ package com.workchord.android.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.workchord.android.data.models.AcceptanceCriterion
-import com.workchord.android.data.models.Task
-import com.workchord.android.data.models.TaskStatus
-import com.workchord.android.data.models.TaskCommandRequest
-import com.workchord.android.data.models.TaskDetail
+import com.workchord.android.data.models.*
 import com.workchord.android.data.repository.TaskRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
-data class TaskDetailUiState(
-    val isLoading: Boolean = false,
-    val isUpdatingStatus: Boolean = false,
-    val task: Task? = null,
-    val detail: TaskDetail? = null,
-    val acceptanceCriteria: List<AcceptanceCriterion> = emptyList(),
-    val errorMessage: String? = null,
-    val successMessage: String? = null
-)
+data class EvidenceDraft(val base: Task, val criteria: List<CriterionProgress>, val artifacts: String = "")
+data class TaskDetailUiState(val isLoading: Boolean = true, val isUpdatingStatus: Boolean = false,
+    val task: Task? = null, val detail: TaskDetail? = null, val actions: TaskActions? = null,
+    val reviews: List<TaskReview> = emptyList(), val reviewSnapshot: CurrentTaskReview? = null, val draft: EvidenceDraft? = null,
+    val reason: String = "", val reviewEvidence: String = "", val errorMessage: String? = null,
+    val successMessage: String? = null, val conflict: Task? = null, val authoritative: Boolean = false) {
+    val acceptanceCriteria get() = task?.extractAcceptanceCriteria().orEmpty()
+    val hasUnsavedInputs get() = draft != null || reason.isNotBlank() || reviewEvidence.isNotBlank()
+    val currentReview get() = reviewSnapshot?.review?.takeIf { reviewSnapshot?.taskVersion == task?.version &&
+        it.taskVersion == task?.version && it.briefRevision == task?.briefRevision && it.artifactRevision == task?.artifactRevision }
+    fun allowed(action: String) = authoritative && !isLoading && !isUpdatingStatus && actions?.version == task?.version &&
+        actions?.actions.orEmpty().any { it.action == action && it.allowed }
+    fun blockers(action: String) = actions?.actions.orEmpty().firstOrNull { it.action == action }?.blockers.orEmpty()
+}
 
-class TaskDetailViewModel(
-    private val taskId: Int,
-    private val repository: TaskRepository
-) : ViewModel() {
+class TaskDetailViewModel(private val taskId: Int, private val repository: TaskRepository) : ViewModel() {
+    private val state = MutableStateFlow(TaskDetailUiState())
+    val uiState = state.asStateFlow()
+    private var load: Job? = null
+    private var generation = 0L
+    init { loadTask() }
 
-    private val _uiState = MutableStateFlow(TaskDetailUiState(isLoading = true))
-    val uiState: StateFlow<TaskDetailUiState> = _uiState.asStateFlow()
-
-    init {
-        loadTask()
-        observeTask()
-    }
-
-    private fun observeTask() {
-        viewModelScope.launch {
-            repository.observeTask(taskId).collect { updatedTask ->
-                if (updatedTask != null) {
-                    _uiState.update {
-                        it.copy(
-                            task = updatedTask,
-                            acceptanceCriteria = updatedTask.extractAcceptanceCriteria()
-                        )
-                    }
+    fun loadTask() {
+        val current = ++generation
+        load?.cancel()
+        state.value = state.value.copy(isLoading = true, authoritative = false, errorMessage = null)
+        load = viewModelScope.launch {
+            try {
+                val capabilities = repository.getCapabilities().getOrThrow()
+                require(capabilities.supports("task-actions-v1") && capabilities.currentReviewProjection == true) {
+                    "Upgrade or reconcile the server to provide current action and review projections."
                 }
+                val detail = repository.getTaskDetail(taskId).getOrThrow()
+                val actions = repository.getTaskActions(taskId).getOrThrow()
+                val reviews = repository.getReviews(taskId).getOrThrow()
+                val currentReview = repository.getCurrentReview(taskId).getOrThrow()
+                coroutineContext.ensureActive()
+                if (current != generation) return@launch
+                require(detail.task.authoritativeVersion != null && actions.taskId == taskId && actions.version == detail.task.version && currentReview.taskVersion == detail.task.version) {
+                    "Task state changed while loading. Refresh before taking action."
+                }
+                state.value = state.value.copy(isLoading = false, task = detail.task, detail = detail,
+                    actions = actions, reviews = reviews, reviewSnapshot = currentReview,
+                    authoritative = detail.task.status != TaskStatus.UNKNOWN,
+                    errorMessage = if (detail.task.status == TaskStatus.UNKNOWN) "This lifecycle state is unsupported. Upgrade the client before executing or reviewing." else null)
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) {
+                if (current == generation) state.value = state.value.copy(isLoading = false, authoritative = false,
+                    errorMessage = error.localizedMessage ?: "Could not load current work.")
             }
         }
     }
 
-    fun loadTask() {
+    fun setReason(value: String) { state.value = state.value.copy(reason = value) }
+    fun setReviewEvidence(value: String) { state.value = state.value.copy(reviewEvidence = value) }
+    fun execute(action: String) {
+        val before = state.value
+        val task = before.task ?: return
+        val actions = before.actions ?: return
+        if (!before.allowed(action) || before.reason.isBlank()) {
+            state.value = before.copy(errorMessage = "Choose an available action and explain the reason.")
+            return
+        }
+        if (actions.claimGeneration == null || actions.runningRunIds == null || actions.liveAssignmentIds == null) {
+            state.value = before.copy(errorMessage = "Ownership evidence is incomplete. Refresh before changing this work.")
+            return
+        }
+        mutate(clearInputs = true) { repository.executeCommand(task.id, TaskCommandRequest(action, requireNotNull(task.authoritativeVersion),
+            before.reason, actions.claimGeneration, actions.runningRunIds, actions.liveAssignmentIds)) }
+    }
+
+    fun beginEvidenceEdit() {
+        val before = state.value
+        val task = before.task ?: return
+        if (!before.allowed("record_progress") || task.brief?.schemaVersion != 1) {
+            state.value = before.copy(errorMessage = "A canonical brief and evidence permission are required. Convert legacy text in the web editor first.")
+            return
+        }
+        val criteria = task.extractAcceptanceCriteria().map { CriterionProgress(requireNotNull(it.id), requireNotNull(it.revision), it.state, it.evidence.orEmpty()) }
+        state.value = before.copy(draft = EvidenceDraft(task, criteria, task.progress?.artifacts.orEmpty().joinToString("\n")))
+    }
+    fun setCriterion(id: String, progress: String? = null, evidence: String? = null) {
+        val draft = state.value.draft ?: return
+        state.value = state.value.copy(draft = draft.copy(criteria = draft.criteria.map {
+            if (it.criterionId == id) it.copy(state = progress ?: it.state, evidence = evidence ?: it.evidence) else it
+        }))
+    }
+    fun setArtifacts(value: String) { state.value.draft?.let { state.value = state.value.copy(draft = it.copy(artifacts = value)) } }
+    fun discardDraft() { state.value = state.value.copy(draft = null, conflict = null, errorMessage = null) }
+    fun discardInputs() { state.value = state.value.copy(draft = null, reason = "", reviewEvidence = "", conflict = null) }
+    fun saveProgress() {
+        val before = state.value
+        val draft = before.draft ?: return
+        if (!before.allowed("record_progress")) return
+        if (draft.criteria.any { it.state == "completed" && it.evidence.isNullOrBlank() }) {
+            state.value = before.copy(errorMessage = "Completed criteria require evidence. Your draft is retained.")
+            return
+        }
+        mutate(clearDraft = true) { repository.recordProgress(taskId, ProgressRequest(requireNotNull(draft.base.authoritativeVersion),
+            draft.criteria, draft.artifacts.lines().map { it.trim() }.filter { it.isNotBlank() })) }
+    }
+    fun reconcileDraft() {
+        val before = state.value
+        val draft = before.draft ?: return
+        val task = before.task ?: return
+        if (!before.authoritative || task.brief?.schemaVersion != 1) return
+        val current = task.brief.acceptanceCriteria.orEmpty().associate { it.id to it.revision }
+        if (draft.criteria.any { current[it.criterionId] != it.criterionRevision } || current.size != draft.criteria.size) {
+            state.value = before.copy(errorMessage = "Criteria changed. Compare your retained draft with the current brief before starting a new evidence draft.")
+            return
+        }
+        state.value = before.copy(draft = draft.copy(base = task), conflict = null, errorMessage = null)
+    }
+    fun submitReview(verdict: String) {
+        val before = state.value
+        val task = before.task ?: return
+        val action = if (verdict == "accept") "accept_review" else "review"
+        if (verdict !in setOf("accept", "reject") || !before.allowed(action) || before.reason.isBlank() || task.briefRevision == null || task.artifactRevision == null) {
+            state.value = before.copy(errorMessage = "Review requires current revisions, an available independent verdict, and a reason.")
+            return
+        }
+        mutate(clearInputs = true) { repository.reviewTask(taskId, ReviewRequest(requireNotNull(task.authoritativeVersion), task.briefRevision,
+            task.artifactRevision, verdict, before.reason, before.reviewEvidence)) }
+    }
+
+    private fun mutate(clearDraft: Boolean = false, clearInputs: Boolean = false, call: suspend () -> Result<Task>) {
+        if (state.value.isUpdatingStatus) return
+        state.value = state.value.copy(isUpdatingStatus = true, errorMessage = null, successMessage = null)
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            val result = repository.getTaskDetail(taskId)
-            result.fold(
-                onSuccess = { detail ->
-                    val task = detail.task
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            task = task,
-                            detail = detail,
-                            acceptanceCriteria = task.extractAcceptanceCriteria(),
-                            errorMessage = null
-                        )
-                    }
-                },
-                onFailure = { exception ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = exception.localizedMessage ?: "Failed to load task details"
-                        )
-                    }
-                }
-            )
+            try {
+                call().fold(onSuccess = { task ->
+                    state.value = state.value.copy(task = task, isUpdatingStatus = false, authoritative = false,
+                        draft = if (clearDraft) null else state.value.draft, conflict = null,
+                        reason = if (clearInputs) "" else state.value.reason,
+                        reviewEvidence = if (clearInputs) "" else state.value.reviewEvidence,
+                        successMessage = "Saved on the server. Reloading current work.")
+                    loadTask()
+                }, onFailure = { error ->
+                    state.value = state.value.copy(isUpdatingStatus = false, authoritative = false,
+                        conflict = (error as? ApiProblem)?.problem?.currentTask,
+                        errorMessage = error.localizedMessage ?: "Save failed. Your inputs are retained.")
+                })
+            } catch (error: CancellationException) { state.value = state.value.copy(isUpdatingStatus = false, authoritative = false); throw error }
+            catch (error: Exception) { state.value = state.value.copy(isUpdatingStatus = false, authoritative = false,
+                errorMessage = error.localizedMessage ?: "Save could not be verified. Reload before submitting again.") }
         }
     }
-
-    fun startTask() {
-        transitionStatus(TaskStatus.ACTIVE, "Task started by mobile user")
-    }
-
-    fun resolveTask() {
-        transitionStatus(TaskStatus.RESOLVED, "Task marked resolved from mobile companion")
-    }
-
-    fun blockTask(reason: String = "Blocked pending investigation") {
-        val task = _uiState.value.task ?: return
-        val version = task.authoritativeVersion ?: return
-        viewModelScope.launch {
-            _uiState.update { it.copy(isUpdatingStatus = true, errorMessage = null) }
-            repository.executeCommand(task.id, TaskCommandRequest("block", version, reason)).fold(
-                onSuccess = { updated -> _uiState.update { it.copy(task = updated, isUpdatingStatus = false, successMessage = "Work is blocked") } },
-                onFailure = { error -> _uiState.update { it.copy(isUpdatingStatus = false, errorMessage = error.localizedMessage) } })
-        }
-    }
-
-    fun reopenTask() {
-        transitionStatus(TaskStatus.ACTIVE, "Rework requested")
-    }
-
-    fun closeTask() {
-        transitionStatus(TaskStatus.CLOSED, "Task verified and closed")
-    }
-
-    private fun transitionStatus(newStatus: TaskStatus, reason: String) {
-        val currentTask = _uiState.value.task ?: return
-        viewModelScope.launch {
-            _uiState.update { it.copy(isUpdatingStatus = true, errorMessage = null, successMessage = null) }
-            val result = repository.updateTaskStatus(
-                taskId = currentTask.id,
-                newStatus = newStatus,
-                reason = reason,
-                expectedVersion = currentTask.version
-            )
-            result.fold(
-                onSuccess = { updatedTask ->
-                    _uiState.update {
-                        it.copy(
-                            isUpdatingStatus = false,
-                            task = updatedTask,
-                            acceptanceCriteria = updatedTask.extractAcceptanceCriteria(),
-                            successMessage = "Status transitioned to ${newStatus.displayName}"
-                        )
-                    }
-                },
-                onFailure = { exception ->
-                    _uiState.update {
-                        it.copy(
-                            isUpdatingStatus = false,
-                            errorMessage = exception.localizedMessage ?: "Status transition failed"
-                        )
-                    }
-                }
-            )
-        }
-    }
-
-    fun toggleAcceptanceCriterion(index: Int) {
-        if (index !in _uiState.value.acceptanceCriteria.indices) return
-        _uiState.update { it.copy(errorMessage = "Criterion completion requires a canonical criterion and persisted execution evidence.") }
-    }
-
-    fun clearMessages() {
-        _uiState.update { it.copy(errorMessage = null, successMessage = null) }
-    }
+    fun clearMessages() { state.value = state.value.copy(errorMessage = null, successMessage = null) }
 }

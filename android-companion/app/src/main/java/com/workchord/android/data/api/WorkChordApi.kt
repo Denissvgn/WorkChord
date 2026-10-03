@@ -15,6 +15,7 @@ import com.workchord.android.data.models.DomainCapabilities
 import com.workchord.android.data.models.ProgressRequest
 import com.workchord.android.data.models.ReviewRequest
 import com.workchord.android.data.models.TaskReview
+import com.workchord.android.data.models.CurrentTaskReview
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -66,6 +67,9 @@ interface WorkChordApi {
 
     @GET("api/tasks/{id}/reviews")
     suspend fun getReviews(@Path("id") taskId: Int): Response<List<TaskReview>>
+
+    @GET("api/tasks/{id}/reviews/current")
+    suspend fun getCurrentReview(@Path("id") taskId: Int): Response<CurrentTaskReview>
 
     @GET("api/auth/me")
     suspend fun getIdentity(): Response<Identity>

@@ -186,6 +186,30 @@
           "title": "CriterionProgress",
           "type": "object"
         },
+        "CurrentTaskReviewResponse": {
+          "properties": {
+            "review": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TaskReviewResponse"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "task_version": {
+              "title": "Task Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "task_version",
+            "review"
+          ],
+          "title": "CurrentTaskReviewResponse",
+          "type": "object"
+        },
         "ExternalLinkResponse": {
           "description": "Schema for external link responses, including synthetic legacy links.",
           "properties": {
@@ -5761,6 +5785,48 @@
             }
           },
           "summary": "Task Reviews",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/{task_id}/reviews/current": {
+        "get": {
+          "operationId": "current_task_review_api_tasks__task_id__reviews_current_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "task_id",
+              "required": true,
+              "schema": {
+                "title": "Task Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CurrentTaskReviewResponse"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Current Task Review",
           "tags": [
             "Task domain"
           ]
