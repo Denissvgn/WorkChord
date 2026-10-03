@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentCommand
 
-**Location:** `frontend/src/types/agent.ts:324`
+**Location:** `frontend/src/types/agent.ts:325`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

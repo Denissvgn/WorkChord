@@ -1,6 +1,6 @@
 # RoutingExclusionSummary
 
-**Location:** `backend/app/schemas/agent_routing.py:1250`
+**Location:** `backend/app/schemas/agent_routing.py:1253`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -19,8 +19,8 @@ Compact actionable exclusion evidence retained on assignment.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `model_binding_id` | `int \| None` | `model_binding_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `model_binding_id` | `int \| None` | `model_binding_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `hard_blocker_codes` | `tuple[RoutingBlockerCode, ...]` | `hard_blocker_codes` | Yes | No | — | min_length=1; max_length=unknown (len(RoutingBlockerCode)) | — | — |
 
 ## Methods

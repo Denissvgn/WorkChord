@@ -1,6 +1,6 @@
 # AgentDiscoveryTriageCreate
 
-**Location:** `backend/app/schemas/agent.py:1084`
+**Location:** `backend/app/schemas/agent.py:1091`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -28,11 +28,11 @@ Claim-bound report of work discovered outside the assigned scope.
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
-| `title` | `str` | `title` | Yes | No | — | max_length=500; min_length=1 | — | — |
-| `description` | `str` | `description` | Yes | No | — | max_length=12000; min_length=1 | — | — |
+| `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `description` | `str` | `description` | Yes | No | — | min_length=1; max_length=12000 | — | — |
 | `blocking` | `bool` | `blocking` | No | No | `False` | — | — | — |
 | `evidence` | `dict[str, Any]` | `evidence` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
 | `suggested_labels` | `list[str]` | `suggested_labels` | No | No | factory: `list` | max_length=50 | — | — |

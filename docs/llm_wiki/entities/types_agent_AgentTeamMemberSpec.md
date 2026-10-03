@@ -1,6 +1,6 @@
 # AgentTeamMemberSpec
 
-**Location:** `frontend/src/types/agent.ts:649`
+**Location:** `frontend/src/types/agent.ts:653`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

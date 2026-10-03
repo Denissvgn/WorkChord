@@ -1,6 +1,6 @@
 # AgentRecoveryRequeue
 
-**Location:** `backend/app/schemas/agent.py:1011`
+**Location:** `backend/app/schemas/agent.py:1018`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

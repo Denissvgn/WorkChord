@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentMutationReceipt
 
-**Location:** `frontend/src/types/agent.ts:371`
+**Location:** `frontend/src/types/agent.ts:372`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

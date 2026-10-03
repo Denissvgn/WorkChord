@@ -1,6 +1,6 @@
 # FailingOnceCredentialSink
 
-**Location:** `backend/tests/test_agent_team_setup.py:90`
+**Location:** `backend/tests/test_agent_team_setup.py:92`
 **Kind:** Class
 **Bases:** `CapturingCredentialSink`
 **Module:** [test_agent_team_setup](../modules/test_agent_team_setup.md)

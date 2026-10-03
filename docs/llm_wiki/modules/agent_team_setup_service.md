@@ -6,7 +6,7 @@
 
 Operator-only agent-team validation, reconciliation, setup, and readiness.
 
-Runtime acknowledgement remains scoped to its exact issued handoff credential. Managed controllers receive workspace membership explicitly, and account disablement remains separate from runtime readiness and model-binding observations.
+Runtime acknowledgement remains scoped to its exact issued handoff credential. Readiness compares every current handoff revision, and a stale acknowledgement blocks dispatch. An explicit refresh requires the prior receipt digest plus current package, profile, bindings, topology, features and modes; normal duplicate replay retains its existing semantics. Managed controllers receive workspace membership explicitly, and account disablement remains separate from runtime readiness and model-binding observations.
 
 ## Imports
 

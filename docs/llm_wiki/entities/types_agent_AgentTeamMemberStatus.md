@@ -1,6 +1,6 @@
 # AgentTeamMemberStatus
 
-**Location:** `frontend/src/types/agent.ts:771`
+**Location:** `frontend/src/types/agent.ts:776`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -27,6 +27,8 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 | `binding_revisions` | `Record<string, number>` | Yes | — | — |
 | `skill_package` | `AgentTeamSkillPackage` | Yes | — | — |
 | `package_acknowledged` | `boolean` | Yes | — | — |
+| `acknowledgement_state` | `'missing' \| 'current' \| 'stale'` | No | — | — |
+| `model_attestation` | `'not_independently_attested'` | No | — | — |
 | `credential_delivery_state` | `'pending' \| 'delivered' \| 'uncertain' \| 'not_required'` | Yes | — | — |
 | `connection_state` | `'unobserved' \| 'observed' \| 'stale'` | Yes | — | — |
 | `last_seen_at` | `string \| null` | Yes | — | — |
@@ -51,4 +53,4 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `accepted_assignments`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired`, `display_name` |
+| [types_agent](../modules/types_agent.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired` |

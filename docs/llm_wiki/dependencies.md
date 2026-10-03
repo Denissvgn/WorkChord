@@ -43,8 +43,8 @@ flowchart TD
 | [models_iteration](modules/models_iteration.md) | 37 | 6 |
 | [team_member](modules/team_member.md) | 37 | 6 |
 | [i18n](modules/i18n.md) | 33 | 1 |
+| [authority](modules/authority.md) | 30 | 5 |
 | [api](modules/api.md) | 30 | 2 |
-| [authority](modules/authority.md) | 29 | 5 |
 | [schemas_task](modules/schemas_task.md) | 28 | 5 |
 | [formatDate](modules/formatDate.md) | 28 | 1 |
 | [models_project](modules/models_project.md) | 27 | 9 |
@@ -96,10 +96,10 @@ flowchart TD
 | [security](modules/security.md) | 10 | 1 |
 | [team_service](modules/team_service.md) | 10 | 8 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 10 | 9 |
 | [mcp_agent_tools](modules/mcp_agent_tools.md) | 9 | 48 |
 | [routers_agent](modules/routers_agent.md) | 9 | 23 |
 | [session_service](modules/session_service.md) | 9 | 9 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 9 | 9 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
 | [identityContext](modules/identityContext.md) | 9 | 1 |
 | [useAdminAccess](modules/useAdminAccess.md) | 9 | 2 |
@@ -400,7 +400,7 @@ flowchart TD
 | [faults](modules/faults.md) | 1 | 0 |
 | [schema](modules/schema.md) | 1 | 0 |
 | [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) | 1 | 14 |
-| [test_agent_team_setup](modules/test_agent_team_setup.md) | 1 | 14 |
+| [test_agent_team_setup](modules/test_agent_team_setup.md) | 1 | 16 |
 | [test_authority_migrations](modules/test_authority_migrations.md) | 1 | 2 |
 | [App](modules/App.md) | 1 | 3 |
 | [TaskStatusFlow](modules/TaskStatusFlow.md) | 1 | 3 |

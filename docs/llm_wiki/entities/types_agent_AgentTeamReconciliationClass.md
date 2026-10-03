@@ -1,6 +1,6 @@
 # AgentTeamReconciliationClass
 
-**Location:** `frontend/src/types/agent.ts:688`
+**Location:** `frontend/src/types/agent.ts:692`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -13,6 +13,7 @@ _Auto-generated from `AgentCapabilities` in `frontend/src/types/agent.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `readiness_semantics` | `Record<string, string>` | No | — | — |
 | `server_version` | `string` | Yes | — | — |
 | `api_contract` | `string` | Yes | — | — |
 | `actor` | `AgentActor` | Yes | — | — |
@@ -55,7 +56,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `actor`, `api_contract`, `features`, `lease_limits`, `lifecycle_actions`, `model_aware_routing`, `recommended_skills`, `scopes`, `server_version`, `skill_catalog_url`, `skill_catalog_version`, `skill_discovery_url` |
+| [types_agent](../modules/types_agent.md) | 0 | `actor`, `api_contract`, `features`, `lease_limits`, `lifecycle_actions`, `model_aware_routing`, `readiness_semantics`, `recommended_skills`, `scopes`, `server_version`, `skill_catalog_url`, `skill_catalog_version` |
 
 ### References
 

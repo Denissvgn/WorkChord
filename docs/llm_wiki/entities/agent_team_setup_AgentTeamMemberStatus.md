@@ -1,13 +1,13 @@
 # AgentTeamMemberStatus
 
-**Location:** `backend/app/schemas/agent_team_setup.py:890`
+**Location:** `backend/app/schemas/agent_team_setup.py:892`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
 ## Description
 
-_Auto-generated from `AgentTeamMemberStatus` in `backend/app/schemas/agent_team_setup.py`._
+Separates desired/configured identity, package acknowledgement, current or stale handoff acknowledgement, observed API connection freshness and task-independent runtime checks. Availability remains unknown without independent runtime observation; model metadata and worker reports do not establish independently attested execution.
 
 ## Attributes
 
@@ -27,6 +27,8 @@ _Auto-generated from `AgentTeamMemberStatus` in `backend/app/schemas/agent_team_
 | `binding_revisions` | `dict[str, int]` | `binding_revisions` | No | No | factory: `dict` | — | — | — |
 | `skill_package` | `AgentTeamSkillPackage` | `skill_package` | Yes | No | — | — | — | — |
 | `package_acknowledged` | `bool` | `package_acknowledged` | Yes | No | — | — | — | — |
+| `acknowledgement_state` | `Literal['missing', 'current', 'stale']` | `acknowledgement_state` | No | No | `'missing'` | — | — | — |
+| `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
 | `credential_delivery_state` | `Literal['pending', 'delivered', 'uncertain', 'not_required']` | `credential_delivery_state` | Yes | No | — | — | — | — |
 | `connection_state` | `Literal['unobserved', 'observed', 'stale']` | `connection_state` | Yes | No | — | — | — | — |
 | `last_seen_at` | `datetime \| None` | `last_seen_at` | No | Yes | `None` | — | — | — |
@@ -61,7 +63,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `accepted_assignments`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired`, `display_name` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired` |
 
 ### Structure
 

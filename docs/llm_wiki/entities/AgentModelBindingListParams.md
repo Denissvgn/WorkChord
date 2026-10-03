@@ -1,6 +1,6 @@
 # AgentModelBindingListParams
 
-**Location:** `frontend/src/types/agent.ts:560`
+**Location:** `frontend/src/types/agent.ts:564`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

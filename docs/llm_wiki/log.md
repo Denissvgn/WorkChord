@@ -779,3 +779,55 @@ Preserved a validated device-consent request across explicit browser logout afte
 ## 2026-10-03 — Native delivery and recovery boundaries
 
 Reviewed scoped human delivery, explicit device-only drafts, independent verdicts, account switching, consumed task links and recovery after interrupted transport. Kotlin remains outside extraction coverage; native behavior requires direct source and device evidence.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4aa547b114bfa9d7cf5f0f85b9e7a9d1e399e7413adc1321935ac595666ba65f`
+- Pages created: 0
+- Pages updated: 80
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2698
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5975002bc18d1e7d3aff7935aad21f7bb63d033e0c630c88f97cde6bdda8452b`
+- Pages created: 0
+- Pages updated: 71
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2707
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-03 — Revision-bound runtime acknowledgement
+
+Separated configuration, acknowledgement, task eligibility, connection observation and unknown provider/runtime availability. Added explicit prior-digest refresh for changed handoffs while retaining credential and role boundaries.
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b6508bfdb9560ee3df43972582129b182f5c34b83d6e1ff2e07a43eacc308bae`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2778
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

@@ -1,6 +1,6 @@
 # AgentTeamStatus
 
-**Location:** `frontend/src/types/agent.ts:805`
+**Location:** `frontend/src/types/agent.ts:812`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

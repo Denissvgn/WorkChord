@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `frontend/src/types/agent.ts:433`
+**Location:** `frontend/src/types/agent.ts:434`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -1,6 +1,6 @@
 # AgentRun
 
-**Location:** `frontend/src/types/agent.ts:578`
+**Location:** `frontend/src/types/agent.ts:582`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

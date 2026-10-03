@@ -22,7 +22,7 @@ Bounded server-owned topology readiness exposed to agent clients.
 | `schema_version` | `Literal['model-aware-routing-topology-readiness-v1']` | `schema_version` | Yes | No | — | — | — | — |
 | `status` | `Literal['unavailable', 'not_ready', 'ready']` | `status` | Yes | No | — | — | — | — |
 | `source` | `Literal['unavailable', 'agent-team-master-v1']` | `source` | Yes | No | — | — | — | — |
-| `topology_id` | `Optional[str]` | `topology_id` | No | Yes | `None` | max_length=100; min_length=1; pattern='^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$' | — | — |
+| `topology_id` | `Optional[str]` | `topology_id` | No | Yes | `None` | min_length=1; max_length=100; pattern='^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$' | — | — |
 | `topology_revision` | `Optional[int]` | `topology_revision` | No | Yes | `None` | ge=1 | — | — |
 | `blocker_codes` | `list[str]` | `blocker_codes` | No | No | factory: `list` | max_length=20 | — | — |
 

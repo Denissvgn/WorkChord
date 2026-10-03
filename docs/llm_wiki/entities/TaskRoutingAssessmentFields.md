@@ -34,7 +34,7 @@ Immutable assessment bound to one concrete task version.
 | `confidence` | `float` | `confidence` | Yes | No | — | ge=0.0; le=1.0 | — | — |
 | `reason_codes` | `list[AssessmentReasonCode]` | `reason_codes` | No | No | factory: `list` | — | — | — |
 | `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=unknown (MAX_ROUTING_TEXT_LENGTH) | — | — |
-| `assessor` | `str` | `assessor` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `assessor` | `str` | `assessor` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `assessor_actor_id` | `int \| None` | `assessor_actor_id` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods

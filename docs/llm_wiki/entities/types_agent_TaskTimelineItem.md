@@ -1,6 +1,6 @@
 # TaskTimelineItem
 
-**Location:** `frontend/src/types/agent.ts:617`
+**Location:** `frontend/src/types/agent.ts:621`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

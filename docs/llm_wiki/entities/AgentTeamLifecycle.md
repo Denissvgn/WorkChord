@@ -1,6 +1,6 @@
 # AgentTeamLifecycle
 
-**Location:** `frontend/src/types/agent.ts:634`
+**Location:** `frontend/src/types/agent.ts:638`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -1,6 +1,6 @@
 # AgentTeamSetupStep
 
-**Location:** `backend/app/schemas/agent_team_setup.py:926`
+**Location:** `backend/app/schemas/agent_team_setup.py:930`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

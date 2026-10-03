@@ -1,6 +1,6 @@
 # AgentTeamRole
 
-**Location:** `frontend/src/types/agent.ts:632`
+**Location:** `frontend/src/types/agent.ts:636`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

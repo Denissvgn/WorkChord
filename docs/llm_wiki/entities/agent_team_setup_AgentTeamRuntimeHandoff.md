@@ -1,6 +1,6 @@
 # AgentTeamRuntimeHandoff
 
-**Location:** `backend/app/schemas/agent_team_setup.py:863`
+**Location:** `backend/app/schemas/agent_team_setup.py:864`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -24,6 +24,7 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `backend/app/schemas/agent_tea
 | `topology_revision` | `int` | `topology_revision` | Yes | No | — | ge=1 | — | — |
 | `actor_key` | `str` | `actor_key` | Yes | No | — | pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
+| `previous_acknowledgement_digest` | `str \| None` | `previous_acknowledgement_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `server_url` | `str` | `server_url` | Yes | No | — | — | — | — |
 | `required_server_features` | `tuple[str, ...]` | `required_server_features` | Yes | No | — | — | — | — |
@@ -32,8 +33,8 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `backend/app/schemas/agent_tea
 | `profile_revision` | `str` | `profile_revision` | Yes | No | — | — | — | — |
 | `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | — | — | — |
 | `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | — | — | — |
-| `startup_instructions` | `tuple[str, ...]` | `startup_instructions` | Yes | No | — | max_length=16; min_length=1 | — | — |
-| `credential_ref` | `str` | `credential_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
+| `startup_instructions` | `tuple[str, ...]` | `startup_instructions` | Yes | No | — | min_length=1; max_length=16 | — | — |
+| `credential_ref` | `str` | `credential_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
 
 ## Methods
 
@@ -63,7 +64,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 1 | `actor_id`, `actor_key`, `credential_ref`, `model_binding_revisions`, `profile_key`, `profile_revision`, `required_server_features`, `role`, `schema_version`, `server_url`, `skill_package`, `startup_instructions` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 1 | `actor_id`, `actor_key`, `credential_ref`, `model_binding_revisions`, `previous_acknowledgement_digest`, `profile_key`, `profile_revision`, `required_server_features`, `role`, `schema_version`, `server_url`, `skill_package` |
 
 ### Structure
 
