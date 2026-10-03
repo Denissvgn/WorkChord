@@ -33,12 +33,15 @@ flowchart LR
     n1["BaseModel"]
     n2["task_actions (backend/app/routers/task_domain.py)"]
     n3["TaskDomainService.allowed_actions (backend/app/services/task_domain_service.py)"]
+    n4["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/schemas_task_domain.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/task_domain_service.md"
+    click n4 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -59,3 +62,4 @@ flowchart LR
 |---|---|---|---:|
 | `task_actions` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskDomainService.allowed_actions` | call | [task_domain_service](../modules/task_domain_service.md) | 1 |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |

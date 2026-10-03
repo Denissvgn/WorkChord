@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:19690d64d9758b524cb518f5d270e6d2961ab5b12d543179af3bba44a9531141",
-    "knowledge_index_hash": "sha256:d58c6594ce537483830c8d69c58599a9f7ac863bb19d17f247889be083449159",
-    "surface_index_hash": "sha256:eae633b49880cbd5685e57a1b59dc07fd39c02c154f34e4edc99d49460c7cbb8"
+    "evaluated_envelope_hash": "sha256:cd3bf86cbe3d619cc37eb86f5ad48c04f2f3a4022651887e484dfbb5c7df085a",
+    "knowledge_index_hash": "sha256:745c8272b0ba90f9f57267db03bdaa2d40af49b8cbdae1bc68b4983cbcb88317",
+    "surface_index_hash": "sha256:eaff962ee01803a8fecf303c38d90349d9170478420d88d5108de5535da8f4ff"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -17370,8 +17370,18 @@
         "concept_observation_hash": "sha256:2fd803ef587af2f91da8fdba24e7b7275c89d4aae0bcfda0b7d092601bf78d6c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:0583044a2c4bfa1deb104f0c6687a6f4940a1b08b461aefb102fe66ed23f415c",
+        "source_content_hash": "sha256:2af2f0b1dd570b20aec44a085f036e45e71046e46210df8b9f8703945ff1a919",
         "source_path": "scripts/generate_client_contract.py"
+      },
+      "state": "known"
+    },
+    "modules/generate_mobile_contract_fixtures.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:06689d65a4438e4d3a51f95a7bccc8f9895078caa9a450afd43e92a8dbfc1b1b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:2c3a6fe6e54cab517812645ccbd718d035266ce3fde2cfbace8dc019b595b4f5",
+        "source_path": "scripts/generate_mobile_contract_fixtures.py"
       },
       "state": "known"
     },
@@ -20055,6 +20065,16 @@
       },
       "state": "known"
     },
+    "modules/test_mobile_contract.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f51d310c3a4ca1898bf76d470dc4c2c84e732625307a97b331921ad7b358a463",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:dd589955ab646c3f033be54401408511c2f0b07bdb1e0b5f1651d28771a7c466",
+        "source_path": "backend/tests/test_mobile_contract.py"
+      },
+      "state": "known"
+    },
     "modules/test_native_connections.md": {
       "basis": {
         "concept_observation_hash": "sha256:959c386bfeeafe7732eac144ed08d8b9b4a2214240216cc7e2dfd83d19817ea7",
@@ -20883,12 +20903,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:d5b0246c32c2043f5f99a83345a7fc526dec040f6abd45a256f5003083553455",
-            "source_content_hash": "sha256:84f50e135f273a61e4b573fae692c084e61a2e9398b9da4b752fcb17bee2758a"
+            "observation_hash": "sha256:9830bb298cdd184ad16def4b2b436bc50cef9b9a6aece56c4e1720fb2d8bf9a2",
+            "source_content_hash": "sha256:950bbfb0d8a228c86a761bae4034f72b552ebd435bfebbe4120e54c026bbf69f"
           },
-          "observation_hash": "sha256:d5b0246c32c2043f5f99a83345a7fc526dec040f6abd45a256f5003083553455",
+          "observation_hash": "sha256:9830bb298cdd184ad16def4b2b436bc50cef9b9a6aece56c4e1720fb2d8bf9a2",
           "page_path": "infrastructure/_github_workflows_ci_yml.md",
-          "source_content_hash": "sha256:84f50e135f273a61e4b573fae692c084e61a2e9398b9da4b752fcb17bee2758a",
+          "source_content_hash": "sha256:950bbfb0d8a228c86a761bae4034f72b552ebd435bfebbe4120e54c026bbf69f",
           "source_path": ".github/workflows/ci.yml",
           "state": "current"
         },
@@ -21040,13 +21060,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:4c04d837ba1b99bcb5fd9b9303f0749ad0308bf269730ec2b7cb6b4cbbb7df2d",
-      "lifecycle_hash": "sha256:0ae4a9e307e3258538e86773bce36bf315134d84a697afb12b6e3a215c289af7",
-      "markdown_snapshot_hash": "sha256:5fdccaa2b48734ba0f9e2e390aa0e8cd503f89a47474ca63ae06fa887debfc3d",
-      "observation_inputs_hash": "sha256:a84e5e70150c749cf7243a6b7da0c9678eb9038435e183b59d161007247a7cca",
+      "inventory_hash": "sha256:e3afea5e5410b45c9b139aa4a5d3369a223ded29834d7fd3877f7884e945c20f",
+      "lifecycle_hash": "sha256:bac19669f6aec473d92d7482efe811e21c23e69820b990e0c39b347cc4164933",
+      "markdown_snapshot_hash": "sha256:9510184d0a88182ce75f141169ab1a6f9649873486e45d2ae2fb29d7ad9b87c2",
+      "observation_inputs_hash": "sha256:0258c22a49bcfb22cf8adaf907b45deb2a85d91e4dd5225a5e8fa24eb2a0f552",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:cf410509e5340f19ea7946ae9fa9f2fd81e2dbd63a807cba549e2c1ce3f48369"
+      "source_snapshot_hash": "sha256:f04daeda471ef1ed5194d69186c971330947ba0497c03469eab865b43fc6b510"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -30907,6 +30927,10 @@
       "scope": "module",
       "source_path": "scripts/generate_client_contract.py"
     },
+    "modules/generate_mobile_contract_fixtures.md": {
+      "scope": "module",
+      "source_path": "scripts/generate_mobile_contract_fixtures.py"
+    },
     "modules/generate_workchord_keys.md": {
       "scope": "module",
       "source_path": "scripts/api_keys/generate_workchord_keys.py"
@@ -31978,6 +32002,10 @@
     "modules/test_managed_authority.md": {
       "scope": "module",
       "source_path": "backend/tests/test_managed_authority.py"
+    },
+    "modules/test_mobile_contract.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_mobile_contract.py"
     },
     "modules/test_native_connections.md": {
       "scope": "module",
@@ -58091,6 +58119,25 @@
       "module_page": "test_managed_authority",
       "semantic_hash": "sha256:1f4287ae9bca7f096377666a8fd9d6eedaf6d5a89faceb6fdc3d5ea1e1a92ea7"
     },
+    "backend/tests/test_mobile_contract.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Android's golden examples are derived from current canonical backend schemas.",
+          "functions": {
+            "test_mobile_examples_are_current_and_deterministic": "—"
+          }
+        }
+      },
+      "hash": "sha256:dd589955ab646c3f033be54401408511c2f0b07bdb1e0b5f1651d28771a7c466",
+      "language": "python",
+      "module_page": "test_mobile_contract",
+      "semantic_hash": "sha256:be90fcf0cd242e7348cd0c369f464b37a82a002abc94c974e5e73908615253ad"
+    },
     "backend/tests/test_native_connections.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -76295,10 +76342,31 @@
           }
         }
       },
-      "hash": "sha256:0583044a2c4bfa1deb104f0c6687a6f4940a1b08b461aefb102fe66ed23f415c",
+      "hash": "sha256:2af2f0b1dd570b20aec44a085f036e45e71046e46210df8b9f8703945ff1a919",
       "language": "python",
       "module_page": "generate_client_contract",
       "semantic_hash": "sha256:367155ffebfc2bcf5710139f37f8843bc2653dd26db57c7f24da2aab80865ac7"
+    },
+    "scripts/generate_mobile_contract_fixtures.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Export deterministic mobile examples through the backend's canonical schemas.",
+          "functions": {
+            "build_examples": "—",
+            "main": "—",
+            "serialized_examples": "—"
+          }
+        }
+      },
+      "hash": "sha256:2c3a6fe6e54cab517812645ccbd718d035266ce3fde2cfbace8dc019b595b4f5",
+      "language": "python",
+      "module_page": "generate_mobile_contract_fixtures",
+      "semantic_hash": "sha256:6cb922936ac78048942c25666bc76d7abb824181ba019498a4fb9d7151e1dbb1"
     },
     "scripts/load/collect.py": {
       "entities": [],

@@ -165,4 +165,4 @@ flowchart LR
 | `write_task_brief` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `apply_batch_update_items` | type_reference | [tasks](../modules/tasks.md) | — |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.

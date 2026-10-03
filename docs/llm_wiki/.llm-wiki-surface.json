@@ -19,17 +19,17 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1452,
-      "flows": 515,
+      "flows": 516,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 630,
-      "workflows": 167
+      "modules": 632,
+      "workflows": 168
     },
     "dependency_architecture": 2,
-    "total": 2779
+    "total": 2783
   },
   "dependency_pages": {
     "count": 2,
@@ -34852,7 +34852,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 75,
+              "line": 79,
               "step": "main",
               "step_index": 1,
               "target": "args.output.read_text"
@@ -34860,7 +34860,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 79,
+              "line": 83,
               "step": "main",
               "step_index": 1,
               "target": "args.output.write_text"
@@ -34869,49 +34869,49 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 69,
+              "line": 73,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 70,
+              "line": 74,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 71,
+              "line": 75,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 72,
+              "line": 76,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 65,
+              "line": 69,
               "step": "serialized_contract",
               "target": "json.dumps"
             },
             {
               "kind": "unresolved_call",
-              "line": 24,
+              "line": 28,
               "step": "build_contract",
               "target": "app.openapi"
             },
             {
               "kind": "unresolved_call",
-              "line": 25,
+              "line": 29,
               "step": "build_contract",
               "target": "schema['paths'].keys"
             },
             {
               "kind": "external_call",
-              "line": 27,
+              "line": 31,
               "step": "build_contract",
               "target": "ValueError"
             },
@@ -34936,6 +34936,117 @@
         }
       },
       "id": "process-generate_client_contract",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "generate_mobile_contract_fixtures",
+        "source_path": "scripts/generate_mobile_contract_fixtures.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 78,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.output.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 82,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.output.write_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 53,
+              "step": "build_examples",
+              "step_index": 8,
+              "target": "legacy.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 54,
+              "step": "build_examples",
+              "step_index": 8,
+              "target": "legacy.update"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 72,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 73,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 74,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 75,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "serialized_examples",
+              "target": "json.dumps"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 33,
+              "step": "build_examples",
+              "target": "leaf.model_copy"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/generate_mobile_contract_fixtures.py",
+            "backend/app/schemas/task_brief.py",
+            "backend/app/schemas/task.py",
+            "backend/app/schemas/task_detail.py",
+            "backend/app/schemas/task_domain.py",
+            "backend/app/services/session_service.py",
+            "backend/app/config.py",
+            "backend/app/services/task_service.py"
+          ],
+          "step_count": 48,
+          "truncated": false
+        }
+      },
+      "id": "process-generate_mobile_contract_fixtures",
       "language": "python"
     },
     {
@@ -38988,6 +39099,7 @@
         "flows/process-generate_agent_team_contract.md",
         "flows/process-generate_agent_team_report_contract.md",
         "flows/process-generate_client_contract.md",
+        "flows/process-generate_mobile_contract_fixtures.md",
         "flows/process-generate_workchord_keys.md",
         "flows/process-installed_wheel_postgresql_qualification.md",
         "flows/process-mcp_server.md",
@@ -39171,6 +39283,7 @@
         "modules/generate_agent_team_contract.md",
         "modules/generate_agent_team_report_contract.md",
         "modules/generate_client_contract.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/generate_workchord_keys.md",
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
@@ -39566,6 +39679,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_mobile_contract.md",
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
@@ -39698,6 +39812,7 @@
         "workflows/BacklogSnapshotService_restore.md",
         "workflows/batch_update_tasks.md",
         "workflows/bootstrap.md",
+        "workflows/build_examples.md",
         "workflows/callback.md",
         "workflows/CapacityService_invalidate_profile.md",
         "workflows/CapacityService_save_absence.md",
@@ -52370,6 +52485,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_task_brief_BriefCriterion",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task_brief.md",
         "modules/task_brief_service.md",
         "modules/test_task_domain.md",
@@ -52418,6 +52534,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_task_CascadeUpdateInfo",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task.md",
         "modules/tasks.md"
       ],
@@ -52431,6 +52548,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_task_domain_TaskActionAvailability",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task_domain.md"
       ],
       "role": "semantic",
@@ -52739,6 +52857,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_task_TaskStatusChangeResponse",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task.md",
         "modules/tasks.md"
       ],
@@ -54471,6 +54590,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/task_detail_TaskReference",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md"
       ],
@@ -54484,6 +54604,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/task_detail_TaskReferencePage",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md"
@@ -54570,6 +54691,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskActionsResponse",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_domain.md",
         "modules/task_domain_service.md"
@@ -54833,6 +54955,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskDetailResponse",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md"
@@ -55394,6 +55517,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskReviewResponse",
       "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_brief.md"
       ],
@@ -62495,6 +62619,24 @@
       "title": "generate_client_contract Module"
     },
     {
+      "canonical_path": "modules/generate_mobile_contract_fixtures.md",
+      "id": "generate_mobile_contract_fixtures",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/generate_mobile_contract_fixtures",
+      "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
+        "modules/schemas_task.md",
+        "modules/schemas_task_brief.md",
+        "modules/schemas_task_domain.md",
+        "modules/session_service.md",
+        "modules/task_detail.md",
+        "modules/task_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/generate_mobile_contract_fixtures.py",
+      "title": "generate_mobile_contract_fixtures Module"
+    },
+    {
       "canonical_path": "modules/generate_workchord_keys.md",
       "id": "generate_workchord_keys",
       "kind": "modules",
@@ -67043,6 +67185,7 @@
         "entities/schemas_task_brief_TaskBrief.md",
         "entities/TaskReviewResponse.md",
         "entities/TaskReviewWrite.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_agent.md",
@@ -67071,6 +67214,7 @@
         "entities/TaskActionBlocker.md",
         "entities/TaskActionRequest.md",
         "entities/TaskActionsResponse.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_domain.md",
@@ -67956,6 +68100,7 @@
         "entities/task_detail_TaskReference.md",
         "entities/task_detail_TaskReferencePage.md",
         "entities/TaskDetailResponse.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
         "modules/task_detail.md",
@@ -69551,6 +69696,16 @@
       "role": "semantic",
       "source_path": "backend/tests/test_managed_authority.py",
       "title": "test_managed_authority Module"
+    },
+    {
+      "canonical_path": "modules/test_mobile_contract.md",
+      "id": "test_mobile_contract",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_mobile_contract",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/tests/test_mobile_contract.py",
+      "title": "test_mobile_contract Module"
     },
     {
       "canonical_path": "modules/test_native_connections.md",
@@ -71917,6 +72072,24 @@
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
       "title": "bootstrap"
+    },
+    {
+      "canonical_path": "workflows/build_examples.md",
+      "id": "build_examples",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/build_examples",
+      "outgoing_internal_links": [
+        "modules/generate_mobile_contract_fixtures.md",
+        "modules/schemas_task.md",
+        "modules/schemas_task_brief.md",
+        "modules/schemas_task_domain.md",
+        "modules/session_service.md",
+        "modules/task_detail.md",
+        "modules/task_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/generate_mobile_contract_fixtures.py",
+      "title": "build_examples"
     },
     {
       "canonical_path": "workflows/callback.md",
@@ -81724,6 +81897,25 @@
       "title": "generate_client_contract"
     },
     {
+      "canonical_path": "flows/process-generate_mobile_contract_fixtures.md",
+      "id": "process-generate_mobile_contract_fixtures",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-generate_mobile_contract_fixtures",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/generate_mobile_contract_fixtures.md",
+        "modules/schemas_task.md",
+        "modules/schemas_task_brief.md",
+        "modules/schemas_task_domain.md",
+        "modules/session_service.md",
+        "modules/task_detail.md",
+        "modules/task_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/generate_mobile_contract_fixtures.py",
+      "title": "generate_mobile_contract_fixtures"
+    },
+    {
       "canonical_path": "flows/process-generate_workchord_keys.md",
       "id": "process-generate_workchord_keys",
       "kind": "flows",
@@ -82323,6 +82515,7 @@
         "modules/generate_agent_team_contract.md",
         "modules/generate_agent_team_report_contract.md",
         "modules/generate_client_contract.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/generate_workchord_keys.md",
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
@@ -82718,6 +82911,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_mobile_contract.md",
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
@@ -82964,6 +83158,7 @@
         "modules/generate_agent_team_contract.md",
         "modules/generate_agent_team_report_contract.md",
         "modules/generate_client_contract.md",
+        "modules/generate_mobile_contract_fixtures.md",
         "modules/generate_workchord_keys.md",
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
@@ -83359,6 +83554,7 @@
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
         "modules/test_managed_authority.md",
+        "modules/test_mobile_contract.md",
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
@@ -83450,5 +83646,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:cb5361f70ebaba493eea65343ada22881a63b96f45bcd5e341acfbb2a82c8bee"
+  "source_hash": "sha256:f88d75cd16aefaf8687469e92c9ffb93a375f01e46d9f453eff79fd373e34a6f"
 }

@@ -28,8 +28,11 @@ _Auto-generated from `TaskActionAvailability` in `backend/app/schemas/task_domai
 flowchart LR
     n0["TaskActionAvailability (backend/app/schemas/task_domain.py)"]
     n1["BaseModel"]
+    n2["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
+    n2 --> n0
     click n0 "../modules/schemas_task_domain.md"
+    click n2 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -43,3 +46,9 @@ flowchart LR
 | Kind | Entity | Module |
 |---|---|---|
 | Base | `BaseModel` | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 2 |

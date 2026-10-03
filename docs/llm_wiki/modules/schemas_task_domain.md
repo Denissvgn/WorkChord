@@ -25,6 +25,7 @@ flowchart LR
     n4["backend/tests/test_delivery_dependencies.py"]
     n5["backend/tests/test_task_domain.py"]
     n6["backend/tests/test_task_domain_integrity.py"]
+    n7["scripts/generate_mobile_contract_fixtures.py"]
     n0 --> n2
     n0 --> n3
     n1 --> n2
@@ -38,6 +39,7 @@ flowchart LR
     n6 --> n2
     n6 --> n3
     n6 --> n5
+    n7 --> n2
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_task_domain.md"
     click n2 "../modules/schemas_task_domain.md"
@@ -45,6 +47,7 @@ flowchart LR
     click n4 "../modules/test_delivery_dependencies.md"
     click n5 "../modules/test_task_domain.md"
     click n6 "../modules/test_task_domain_integrity.md"
+    click n7 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Internal neighbors
@@ -57,6 +60,7 @@ flowchart LR
 | Inbound | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) |
 | Inbound | [test_task_domain](../modules/test_task_domain.md) |
 | Inbound | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) |
+| Inbound | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) |
 
 ### External packages
 

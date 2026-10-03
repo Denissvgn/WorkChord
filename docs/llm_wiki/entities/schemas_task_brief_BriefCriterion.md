@@ -51,6 +51,7 @@ flowchart LR
     n7["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
     n8["test_triage_handoff_preserves_canonical_fields_and_criterion_ids (backend/tests/test_task_domain.py)"]
     n9["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n10["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -60,6 +61,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/task_brief_service.md"
     click n3 "../modules/test_task_domain.md"
@@ -69,6 +71,7 @@ flowchart LR
     click n7 "../modules/test_task_domain.md"
     click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_domain_integrity.md"
+    click n10 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -95,3 +98,4 @@ flowchart LR
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_triage_handoff_preserves_canonical_fields_and_criterion_ids` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |

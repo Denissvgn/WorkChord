@@ -23,16 +23,20 @@ flowchart LR
     n1["backend/app/schemas/task.py"]
     n2["backend/app/schemas/task_detail.py"]
     n3["backend/app/services/task_detail_service.py"]
+    n4["scripts/generate_mobile_contract_fixtures.py"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
     n2 --> n1
     n3 --> n1
     n3 --> n2
+    n4 --> n1
+    n4 --> n2
     click n0 "../modules/routers_task_domain.md"
     click n1 "../modules/schemas_task.md"
     click n2 "../modules/task_detail.md"
     click n3 "../modules/task_detail_service.md"
+    click n4 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Internal neighbors
@@ -41,6 +45,7 @@ flowchart LR
 |---|---|
 | Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
 | Inbound | [task_detail_service](../modules/task_detail_service.md) |
+| Inbound | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |
 
 ### External packages

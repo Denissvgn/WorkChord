@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1452 | [Open section](#entities) |
-| Modules | 630 | [Open section](#modules) |
-| Workflows | 167 | [Open section](#workflows) |
+| Modules | 632 | [Open section](#modules) |
+| Workflows | 168 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 515 | [Open section](#entry-point-flows) |
+| Entry-point flows | 516 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1758,6 +1758,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.
 - [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) - Generate the JSON Schema for the bounded agent-team setup report.
 - [generate_client_contract](modules/generate_client_contract.md) - Export a deterministic client contract from the registered backend schemas.
+- [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md) - Export deterministic mobile examples through the backend's canonical schemas.
 - [generate_workchord_keys](modules/generate_workchord_keys.md) - Generate local secrets consumed by WorkChord.
 - [githubService](modules/githubService.md) - `frontend/src/services/githubService.ts`
 - [github_status_automation_service](modules/github_status_automation_service.md) - GitHub status automation rule service.
@@ -2026,6 +2027,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
@@ -2230,6 +2232,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
 - [batch_update_tasks](workflows/batch_update_tasks.md) - entry: `tasks.batch_update_tasks`
 - [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`
+- [build_examples](workflows/build_examples.md) - entry: `generate_mobile_contract_fixtures.build_examples`
 - [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
@@ -2782,6 +2785,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-generate_agent_team_contract](flows/process-generate_agent_team_contract.md) - entry: `main`
 - [process-generate_agent_team_report_contract](flows/process-generate_agent_team_report_contract.md) - entry: `main`
 - [process-generate_client_contract](flows/process-generate_client_contract.md) - entry: `main`
+- [process-generate_mobile_contract_fixtures](flows/process-generate_mobile_contract_fixtures.md) - entry: `main`
 - [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
 - [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
 - [process-mcp_server](flows/process-mcp_server.md) - entry: `main`

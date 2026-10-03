@@ -39,15 +39,15 @@ flowchart TD
 | [renderWithProviders](modules/renderWithProviders.md) | 50 | 1 |
 | [models_agent](modules/models_agent.md) | 46 | 5 |
 | [apiError](modules/apiError.md) | 42 | 0 |
-| [task_service](modules/task_service.md) | 39 | 16 |
+| [task_service](modules/task_service.md) | 40 | 16 |
 | [models_iteration](modules/models_iteration.md) | 37 | 6 |
 | [team_member](modules/team_member.md) | 37 | 6 |
 | [i18n](modules/i18n.md) | 33 | 1 |
 | [api](modules/api.md) | 30 | 2 |
 | [authority](modules/authority.md) | 29 | 5 |
+| [schemas_task](modules/schemas_task.md) | 28 | 5 |
 | [formatDate](modules/formatDate.md) | 28 | 1 |
 | [models_project](modules/models_project.md) | 27 | 9 |
-| [schemas_task](modules/schemas_task.md) | 27 | 5 |
 | [Input](modules/Input.md) | 27 | 0 |
 | [taskService](modules/taskService.md) | 25 | 3 |
 | [user_session](modules/user_session.md) | 24 | 6 |
@@ -84,6 +84,7 @@ flowchart TD
 | [identity_service](modules/identity_service.md) | 12 | 7 |
 | [iteration_service](modules/iteration_service.md) | 12 | 8 |
 | [schemas_iteration](modules/schemas_iteration.md) | 11 | 2 |
+| [schemas_task_brief](modules/schemas_task_brief.md) | 11 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
 | [agent_work_service](modules/agent_work_service.md) | 11 | 20 |
 | [useConfirmDialog](modules/useConfirmDialog.md) | 11 | 1 |
@@ -92,12 +93,12 @@ flowchart TD
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [runtime_telemetry](modules/runtime_telemetry.md) | 10 | 0 |
-| [schemas_task_brief](modules/schemas_task_brief.md) | 10 | 0 |
 | [security](modules/security.md) | 10 | 1 |
 | [team_service](modules/team_service.md) | 10 | 8 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
 | [mcp_agent_tools](modules/mcp_agent_tools.md) | 9 | 48 |
 | [routers_agent](modules/routers_agent.md) | 9 | 23 |
+| [session_service](modules/session_service.md) | 9 | 9 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 9 | 9 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
 | [identityContext](modules/identityContext.md) | 9 | 1 |
@@ -114,7 +115,6 @@ flowchart TD
 | [schemas_project](modules/schemas_project.md) | 8 | 3 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [calendar_service](modules/calendar_service.md) | 8 | 4 |
-| [session_service](modules/session_service.md) | 8 | 9 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
 | [TaskFiltersBar](modules/TaskFiltersBar.md) | 8 | 9 |
@@ -124,6 +124,7 @@ flowchart TD
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
+| [schemas_task_domain](modules/schemas_task_domain.md) | 7 | 0 |
 | [project_service](modules/project_service.md) | 7 | 12 |
 | [task_brief_service](modules/task_brief_service.md) | 7 | 5 |
 | [task_domain_service](modules/task_domain_service.md) | 7 | 12 |
@@ -143,7 +144,6 @@ flowchart TD
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
 | [models_task_brief](modules/models_task_brief.md) | 6 | 2 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
-| [schemas_task_domain](modules/schemas_task_domain.md) | 6 | 0 |
 | [scheduler_service](modules/scheduler_service.md) | 6 | 9 |
 | [services_work_metrics](modules/services_work_metrics.md) | 6 | 8 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 12 |
@@ -239,6 +239,7 @@ flowchart TD
 | [schemas_intake](modules/schemas_intake.md) | 3 | 0 |
 | [schemas_llm](modules/schemas_llm.md) | 3 | 1 |
 | [schemas_outbound_webhook](modules/schemas_outbound_webhook.md) | 3 | 1 |
+| [task_detail](modules/task_detail.md) | 3 | 1 |
 | [discussion_service](modules/discussion_service.md) | 3 | 6 |
 | [github_status_automation_service](modules/github_status_automation_service.md) | 3 | 7 |
 | [llm_service](modules/llm_service.md) | 3 | 6 |
@@ -299,7 +300,6 @@ flowchart TD
 | [routers_triage](modules/routers_triage.md) | 2 | 9 |
 | [schemas_autonomy](modules/schemas_autonomy.md) | 2 | 0 |
 | [schemas_plan_share](modules/schemas_plan_share.md) | 2 | 0 |
-| [task_detail](modules/task_detail.md) | 2 | 1 |
 | [agent_readiness](modules/agent_readiness.md) | 2 | 5 |
 | [capacity_service](modules/capacity_service.md) | 2 | 6 |
 | [github_status_service](modules/github_status_service.md) | 2 | 6 |
@@ -522,6 +522,7 @@ flowchart TD
 | [test_delivery_dependencies](modules/test_delivery_dependencies.md) | 0 | 13 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 8 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
+| [test_mobile_contract](modules/test_mobile_contract.md) | 0 | 0 |
 | [test_native_connections](modules/test_native_connections.md) | 0 | 6 |
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
@@ -650,6 +651,7 @@ flowchart TD
 | [generate_agent_team_contract](modules/generate_agent_team_contract.md) | 0 | 1 |
 | [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) | 0 | 1 |
 | [generate_client_contract](modules/generate_client_contract.md) | 0 | 1 |
+| [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md) | 0 | 6 |
 | [collect](modules/collect.md) | 0 | 1 |
 | [compare](modules/compare.md) | 0 | 2 |
 | [finalize](modules/finalize.md) | 0 | 2 |
@@ -663,8 +665,8 @@ flowchart TD
 
 ### python
 
-- **Used:** `aiosmtplib`, `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
-- ⚠️ **Undeclared:** `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- **Used:** `aiosmtplib`, `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- ⚠️ **Undeclared:** `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
 - **Unused (declared, not imported):** `aiosqlite`, `email-validator`, `psycopg`, `python-dotenv`, `python-multipart`, `uvicorn`
 
 ### typescript

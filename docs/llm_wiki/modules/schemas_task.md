@@ -27,8 +27,10 @@ Task schemas.
 flowchart LR
     n0["backend"]
     n1["backend/app/schemas/task.py"]
+    n2["scripts"]
     n0 --> n1
     n1 --> n0
+    n2 --> n1
     click n1 "../modules/schemas_task.md"
 ```
 
@@ -39,6 +41,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (27) |
+| Inbound | `scripts` (1) |
 | Outbound | `backend` (5) |
 
 ### External packages
@@ -47,7 +50,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

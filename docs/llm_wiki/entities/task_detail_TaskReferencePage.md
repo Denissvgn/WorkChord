@@ -33,14 +33,17 @@ flowchart LR
     n2["lookup_tasks (backend/app/routers/task_domain.py)"]
     n3["task_review_queue (backend/app/routers/task_domain.py)"]
     n4["TaskDetailService.page (backend/app/services/task_detail_service.py)"]
+    n5["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/task_detail.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/task_detail_service.md"
+    click n5 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -62,3 +65,4 @@ flowchart LR
 | `lookup_tasks` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_review_queue` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskDetailService.page` | call | [task_detail_service](../modules/task_detail_service.md) | 1 |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 2 |

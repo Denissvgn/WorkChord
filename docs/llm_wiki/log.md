@@ -582,3 +582,32 @@ Documented browser-approved S256 native session exchange, explicit consent and r
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+## 2026-10-03
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f04daeda471ef1ed5194d69186c971330947ba0497c03469eab865b43fc6b510`
+- Pages created: 4
+- Pages updated: 23
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2745
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+## 2026-10-03 — Mobile contract alignment
+
+Documented canonical mobile examples, explicit unknown/nullable state, stable criterion identities and current progress revisions, and compatibility checks derived from backend schemas.

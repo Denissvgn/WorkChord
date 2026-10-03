@@ -45,10 +45,13 @@ flowchart LR
     n0["TaskReference (backend/app/schemas/task_detail.py)"]
     n1["BaseModel"]
     n2["backend/app/services/task_detail_service.py"]
+    n3["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/task_detail.md"
     click n2 "../modules/task_detail_service.md"
+    click n3 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -68,3 +71,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `task_detail_service` | import | [task_detail_service](../modules/task_detail_service.md) | — |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |

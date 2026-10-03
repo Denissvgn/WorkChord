@@ -32,10 +32,13 @@ flowchart LR
     n0["CascadeUpdateInfo (backend/app/schemas/task.py)"]
     n1["BaseModel"]
     n2["change_task_status (backend/app/routers/tasks.py)"]
+    n3["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/schemas_task.md"
     click n2 "../modules/tasks.md"
+    click n3 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -55,3 +58,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `change_task_status` | call | [tasks](../modules/tasks.md) | 1 |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |
