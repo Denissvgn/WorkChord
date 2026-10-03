@@ -7,6 +7,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class SessionCookieJar(private val tokens: TokenManager) : CookieJar {
     private fun sameOrigin(url: HttpUrl): Boolean {
+        if (!tokens.requestScopeIsCurrent()) return false
         val configured = tokens.baseUrl.toHttpUrlOrNull() ?: return false
         return configured.scheme == url.scheme && configured.host == url.host && configured.port == url.port
     }

@@ -13,7 +13,7 @@ object NetworkClient {
     private var currentTokenManager: TokenManager? = null
 
     fun getApi(tokenManager: TokenManager): WorkChordApi {
-        val baseUrl = tokenManager.baseUrl.let {
+        val baseUrl = tokenManager.baseUrl.ifBlank { "https://unconfigured.invalid/" }.let {
             if (it.endsWith("/")) it else "$it/"
         }
 

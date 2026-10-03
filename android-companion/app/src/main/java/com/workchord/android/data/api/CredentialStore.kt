@@ -29,8 +29,7 @@ class EncryptedCredentialStore(context: Context, private val fileName: String = 
         }.generateKey()
     }
 
-    @Synchronized
-    override fun read(): String? {
+    override fun read(): String? = synchronized(storageLock) {
         if (!file.exists()) return null
         return try {
             val payload = file.readBytes()
@@ -39,25 +38,28 @@ class EncryptedCredentialStore(context: Context, private val fileName: String = 
             cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, payload.copyOfRange(0, 12)))
             String(cipher.doFinal(payload.copyOfRange(12, payload.size)), Charsets.UTF_8)
         } catch (_: Exception) {
-            file.delete()
+            check(file.delete() || !file.exists()) { "Could not discard invalid device credentials." }
             null // Invalidated device keys require a fresh sign-in.
         }
     }
 
-    @Synchronized
-    override fun write(value: String?) {
+    override fun write(value: String?) = synchronized(storageLock) {
         if (value == null) {
-            file.delete()
-            return
+            check(file.delete() || !file.exists()) { "Could not delete private device data." }
+            val pending = File(file.parentFile, "$fileName.pending")
+            check(pending.delete() || !pending.exists()) { "Could not delete pending private device data." }
+            return@synchronized
         }
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key())
         val temporary = File(file.parentFile, "$fileName.pending")
         temporary.writeBytes(cipher.iv + cipher.doFinal(value.toByteArray(Charsets.UTF_8)))
-        check(temporary.renameTo(file)) { "Could not securely save the session. Sign in again." }
+        check(temporary.renameTo(file)) { "Could not securely save private device data." }
+        Unit
     }
 
     companion object {
+        private val storageLock = Any()
         private const val ALIAS = "workchord-native-session"
     }
 }

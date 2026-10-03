@@ -12,6 +12,27 @@ import org.junit.Test
 
 class NativeSessionTest {
     @Test
+    fun delayedCookieResponseCannotReplaceNewAccountCredentials() {
+        MockWebServer().use { server ->
+            server.start()
+            val tokens = TokenManager(allowDebugHttp = true).apply { baseUrl = server.url("/").toString(); principalId = 19 }
+            val jar = SessionCookieJar(tokens)
+            val client = OkHttpClient.Builder().cookieJar(jar).addInterceptor(AuthInterceptor(tokens)).build()
+            server.enqueue(MockResponse().addHeader("Set-Cookie", "old_account=secret; Path=/; Max-Age=3600")
+                .setHeadersDelay(200, java.util.concurrent.TimeUnit.MILLISECONDS).setBody("{}"))
+            val executor = java.util.concurrent.Executors.newSingleThreadExecutor()
+            try {
+                val pending = executor.submit<Int> { client.newCall(Request.Builder().url(server.url("/api/auth/me")).build()).execute().use { it.code } }
+                assertNotNull(server.takeRequest(3, java.util.concurrent.TimeUnit.SECONDS))
+                tokens.principalId = 20
+                jar.saveFromResponse(server.url("/"), listOf(Cookie.parse(server.url("/"), "new_account=current; Path=/; Max-Age=3600")!!))
+                assertEquals(200, pending.get(3, java.util.concurrent.TimeUnit.SECONDS).toInt())
+                assertEquals("new_account", jar.loadForRequest(server.url("/api/auth/me")).single().name)
+            } finally { executor.shutdownNow() }
+        }
+    }
+
+    @Test
     fun cookiePathRotationExpiryAndOriginArePreserved() {
         val tokens = TokenManager(allowDebugHttp = true).apply { baseUrl = "http://localhost:8080/" }
         val jar = SessionCookieJar(tokens)

@@ -50,8 +50,16 @@ class SessionViewModel(private val tokens: TokenManager, private val api: () -> 
     fun refresh() = work { loadIdentity() }
 
     private suspend fun loadIdentity() {
+        if (tokens.baseUrl.isBlank()) {
+            state.value = SessionUiState(false, error = "Enter your workspace server address.", scope = tokens.scopeGeneration)
+            return
+        }
         val response = api().getIdentity()
         coroutineContext.ensureActive()
+        if (response.code() in setOf(401, 403)) {
+            try { tokens.clearCredentials() }
+            finally { state.value = SessionUiState(false, scope = tokens.scopeGeneration) }
+        }
         if (!response.isSuccessful) throw IllegalStateException("Could not verify the session (${response.code()}). Sign in again.")
         val identity = response.body() ?: throw IllegalStateException("The server returned an incomplete identity.")
         if (!identity.authenticated && (tokens.nativeAccessToken != null || tokens.principalId != null)) tokens.clearCredentials()
@@ -99,8 +107,8 @@ class SessionViewModel(private val tokens: TokenManager, private val api: () -> 
             if (!response.isSuccessful && response.code() != 401) throw IllegalStateException("Could not revoke the server session (${response.code()}).")
         } finally {
             coroutineContext.ensureActive()
-            tokens.clearCredentials()
-            state.value = SessionUiState(false, scope = tokens.scopeGeneration)
+            try { tokens.clearCredentials() }
+            finally { state.value = SessionUiState(false, scope = tokens.scopeGeneration) }
         }
     }
 }

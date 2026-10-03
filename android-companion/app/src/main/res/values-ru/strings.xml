@@ -26,4 +26,9 @@
     <string name="work_selection_unavailable">Выбранная область недоступна</string>
     <string name="work_clear_scope">Сбросить выбранную область</string>
     <string name="work_acceptance_unverified">Приёмка требует согласования</string>
+    <string name="active_tasks_header">Задачи в работе</string>
+    <string name="assigned_tasks_header">Назначенные задачи</string>
+    <string name="action_start">Начать задачу</string>
+    <string name="action_resolve">Выполнить задачу</string>
+    <string name="action_block">Заблокировать задачу</string>
 </resources>

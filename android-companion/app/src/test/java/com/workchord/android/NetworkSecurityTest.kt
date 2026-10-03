@@ -22,8 +22,7 @@ class NetworkSecurityTest {
             server.start()
             val tokens = TokenManager(allowDebugHttp = true).apply {
                 baseUrl = server.url("/").toString()
-                sessionToken = "private-session"
-                agentApiKey = "private-agent-key"
+                nativeAccessToken = "private-native-session"
             }
             val client = OkHttpClient.Builder()
                 .addInterceptor(TransportPolicyInterceptor({ tokens.baseUrl }, false))
@@ -96,14 +95,39 @@ class NetworkSecurityTest {
     }
 
     @Test
+    fun failedCredentialDeletionStillClearsInMemoryAuthority() {
+        val store = object : com.workchord.android.data.api.CredentialStore {
+            override fun read(): String? = null
+            override fun write(value: String?) { if (value == null) throw java.io.IOException("Device storage unavailable") }
+        }
+        val tokens = TokenManager(store = store)
+        tokens.nativeAccessToken = "private-token"
+        try { tokens.clearCredentials(); fail("Storage deletion failure must be visible") }
+        catch (_: java.io.IOException) { }
+        assertNull(tokens.nativeAccessToken)
+        assertTrue(tokens.cookies.isEmpty())
+    }
+
+    @Test
+    fun damagedOrUnsafePersistedSessionsRequireNewConfiguration() {
+        val store = object : com.workchord.android.data.api.CredentialStore {
+            var value: String? = "{broken-json"
+            override fun read() = value
+            override fun write(value: String?) { this.value = value }
+        }
+        assertNull(TokenManager(store = store, allowDebugHttp = false).nativeAccessToken)
+        store.value = """{"serverUrl":"http://remote.example/","accessToken":"private-token"}"""
+        assertNull(TokenManager(store = store, allowDebugHttp = false).nativeAccessToken)
+        assertNull(store.value)
+    }
+
+    @Test
     fun changingServersClearsCredentials() {
         val tokens = TokenManager().apply {
-            sessionToken = "private-session"
-            agentApiKey = "private-agent-key"
+            nativeAccessToken = "private-native-session"
         }
         tokens.baseUrl = "https://new.example/"
-        assertNull(tokens.sessionToken)
-        assertNull(tokens.agentApiKey)
-        assertEquals(if (BuildConfig.DEBUG) "http://10.0.2.2/" else "https://localhost/", TokenManager.DEFAULT_BASE_URL)
+        assertNull(tokens.nativeAccessToken)
+        assertEquals(if (BuildConfig.DEBUG) "http://10.0.2.2/" else "", TokenManager.DEFAULT_BASE_URL)
     }
 }

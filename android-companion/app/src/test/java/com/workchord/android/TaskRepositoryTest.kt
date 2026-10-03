@@ -54,7 +54,7 @@ class TaskRepositoryTest {
 
         tokenManager = TokenManager(allowDebugHttp = true).apply {
             baseUrl = mockWebServer.url("/").toString()
-            agentApiKey = "test-agent-key-123"
+            nativeAccessToken = "test-native-session-123"
         }
 
         val okHttpClient = OkHttpClient.Builder()
@@ -202,7 +202,8 @@ class TaskRepositoryTest {
         val recordedRequest = mockWebServer.takeRequest()
         assertEquals("/api/session/whoami", recordedRequest.path)
         assertEquals("GET", recordedRequest.method)
-        assertEquals("test-agent-key-123", recordedRequest.getHeader("X-Agent-API-Key"))
+        assertEquals("Bearer test-native-session-123", recordedRequest.getHeader("Authorization"))
+        assertNull(recordedRequest.getHeader("X-Agent-API-Key"))
     }
 
     @Test
