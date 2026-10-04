@@ -1,7 +1,7 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:ee0b8247218b7ec323cbe8225e0f699c6d4b21e0201f84c3d8b659a37280bc9a",
-    "knowledge_index_hash": "sha256:f85201b347a5c0e40354252173070d48ce0fe2819f08b75804b194c2657de5cd",
+    "evaluated_envelope_hash": "sha256:a46a09d0f839c268ba23cd080b042bb558640b002f89e4cbc7819a1fb510cd4f",
+    "knowledge_index_hash": "sha256:45dc15332a63a2e1d28cbd23772ea64d79d53892789eaf6ba5da60cff3ddefe6",
     "surface_index_hash": "sha256:d864c5592fb44b9c46eaca5bf684c3ea5686cae247350a129e8e6f6a867a3999"
   },
   "evidence_baselines": {
@@ -21544,7 +21544,7 @@
       "lifecycle_hash": "sha256:c4d1f1506f8e2767c043f7b1ce92040aa1af0258938baee3342d83d5693f2f7d",
       "markdown_snapshot_hash": "sha256:60ab31914a54333087e703c966ca5c1951f16e45125697c032adf91b10dea4af",
       "observation_inputs_hash": "sha256:313c6ea64171ef899719b58695640889c6556538db2d5776fe99dcd60fa30795",
-      "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
+      "repository_hash": "sha256:acc3901bfd36dd6f2564de7ccb315de144b339dba0b47e64a6a228009d9596aa",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
       "source_snapshot_hash": "sha256:f7d978be62f6c3a1e1d3b611d588fc9892bec60f90bee556b64b05e21f164ed5"
     },
