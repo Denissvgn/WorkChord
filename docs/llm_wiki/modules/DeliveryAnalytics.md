@@ -4,7 +4,7 @@
 
 ## Description
 
-The human Analytics extension reads delivery reports through ordinary project/iteration authority. A compact duration table exposes means, medians, sample counts, missing starts and incomplete histories. Project selection works without an iteration or agent credential. Failed reads hide cached private queues; loading, retry, empty scopes and missing samples remain explicit.
+The human Analytics extension reads delivery reports through ordinary project/iteration authority. A compact duration table exposes means, medians, sample counts, missing starts and incomplete histories. Nonzero durations below the displayed precision use a less-than label, preserving the distinction between a short elapsed interval, zero and an unknown sample. Project selection works without an iteration or agent credential. Failed reads hide cached private queues; loading, retry, empty scopes and missing samples remain explicit.
 
 _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.tsx`._
 

@@ -1,7 +1,7 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:a46a09d0f839c268ba23cd080b042bb558640b002f89e4cbc7819a1fb510cd4f",
-    "knowledge_index_hash": "sha256:45dc15332a63a2e1d28cbd23772ea64d79d53892789eaf6ba5da60cff3ddefe6",
+    "evaluated_envelope_hash": "sha256:14aff76d77c5af00f7464f510af40b4739313de2bef91fa4ff66c6d35066def7",
+    "knowledge_index_hash": "sha256:61a6218026b5f16d98cd35ec024cdeb4d299a91753391d9e0cf5572ec164ae43",
     "surface_index_hash": "sha256:d864c5592fb44b9c46eaca5bf684c3ea5686cae247350a129e8e6f6a867a3999"
   },
   "evidence_baselines": {
@@ -880,7 +880,7 @@
         "concept_observation_hash": "sha256:d45c960be56ae76f82411d85e924979591cfa1fdccbcdbdadfa039abb0d2366a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -1190,7 +1190,7 @@
         "concept_observation_hash": "sha256:8283baaddea80e9b31c578495f724e77dcd81b1d8e9b1f4987c05e889d509e07",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -7810,7 +7810,7 @@
         "concept_observation_hash": "sha256:822d6ba74bdd1130dc83a4189e51ebf0f89bb874649590ef964042ed7425abce",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -9800,7 +9800,7 @@
         "concept_observation_hash": "sha256:6282b218eecab1e3a545c1fe5254a583b06905895325bbbcaa2886d172e5ef8d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -9810,7 +9810,7 @@
         "concept_observation_hash": "sha256:abd51c438acbb04dddb5a24dc5ecbbfe31ce5e022cc359d8406967ea2a1fbb8d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -14940,17 +14940,17 @@
         "concept_observation_hash": "sha256:6e972196285bbb90ff48c1f6bb5005ccd040cb0b2389de5a2135b2b2bd278696",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
     },
     "modules/AgentTeamSetupMasterPage.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d2e035c1ce4f4b5dec9c892e1b9d3b1941a51d22e15412f7c8fd1339af012365",
+        "concept_observation_hash": "sha256:61578e39e21297eaa5e7e7135e2bf90f674249bef6ff0dceafcc4b612c9eca13",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:33afabe9cd4ca4328a822a0b9c63d24781131216dae43c39ea9104817c77759a",
+        "source_content_hash": "sha256:0e96dc040e83c7330117464408316778c30485045080b8e52ffa87b600f669b9",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
       },
       "state": "known"
@@ -15180,7 +15180,7 @@
         "concept_observation_hash": "sha256:aa4ee71efe09c185c5a9a81959c08d3c715f671b6e30665236c1e3239f866a38",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d0235ef3035cb7ce4084e55abc3f7cde63f4571bf95e467f5f1d1b27134dc475",
+        "source_content_hash": "sha256:0e3806366aef1e6b12b3f932407f2d9b04cb53232d5fb0596015155d51b23d0b",
         "source_path": "frontend/src/components/analytics/DeliveryAnalytics.tsx"
       },
       "state": "known"
@@ -15190,7 +15190,7 @@
         "concept_observation_hash": "sha256:5f988a37e1d1a07ee1e28b1ac38d5bc0c5f6c48f0ec629e699735c7e959bc51c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:a7ccda1b97e00697d72707ca79ba5a08b3399282cfab7366c45d2e6d645394de",
+        "source_content_hash": "sha256:b90257f8e199aac6bd52d92990c927a66539482eb61372c5f962a6fb2ba57ad8",
         "source_path": "frontend/src/components/analytics/DeliveryAnalytics.test.tsx"
       },
       "state": "known"
@@ -18870,7 +18870,7 @@
         "concept_observation_hash": "sha256:afade8d832a51a02d6d2591f03d13dca01e938ff5a9c696aec5aa74e2e1d7be6",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:c380a3848668d27c215e8ff9bd83074a67abd965043bc27c26b9c684439a5788",
+        "source_content_hash": "sha256:426f5d4b87f2552332c6105275f402b037500e84b78faea0c640bd4c93a29c95",
         "source_path": "frontend/src/i18n/resources.en.ts"
       },
       "state": "known"
@@ -18880,7 +18880,7 @@
         "concept_observation_hash": "sha256:be455eed22d5cf2726226c607497b2556dff99452815197e81ef46d1440bd2aa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:584573f4021cb991f5ea07e0270a147a35cdc094dccd13af07850f5a77cc1f6b",
+        "source_content_hash": "sha256:139ceeb2a512ecf86713831ffd284e53d291e05ac3d366cbcf43cc015f27a840",
         "source_path": "frontend/src/i18n/resources.ru.ts"
       },
       "state": "known"
@@ -20500,7 +20500,7 @@
         "concept_observation_hash": "sha256:303a96b9cf64ae500f476fe70149039396864a6af80826ecd3c3a92070ef141e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8d2c8ff124672e620aefa77e4561878ba5e291577ef4f5d8a2254080ee2c8a42",
+        "source_content_hash": "sha256:6d7a8448aed1d1de80ee8d9afb7a22c17a07736a0b83116b665ab533e21bfb35",
         "source_path": "backend/tests/migrations/test_initial_schema.py"
       },
       "state": "known"
@@ -21540,13 +21540,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:2ea8cbb988f7d61a021747506a5c8b8670a667fd17af08f98ecd0e7195e7293a",
-      "lifecycle_hash": "sha256:c4d1f1506f8e2767c043f7b1ce92040aa1af0258938baee3342d83d5693f2f7d",
-      "markdown_snapshot_hash": "sha256:60ab31914a54333087e703c966ca5c1951f16e45125697c032adf91b10dea4af",
+      "inventory_hash": "sha256:b9797a2356adfbd1d4e3647c59641d03973a0f73a7a210f461524cc38e64f626",
+      "lifecycle_hash": "sha256:2d352618f88113c53e74cfcab23db022a11374647748debf0bd2ec3567cd9a81",
+      "markdown_snapshot_hash": "sha256:12dd55501988ad66c048127b7eec85bfa20c7c92d3b2f2f9f59895d0732022c9",
       "observation_inputs_hash": "sha256:313c6ea64171ef899719b58695640889c6556538db2d5776fe99dcd60fa30795",
-      "repository_hash": "sha256:acc3901bfd36dd6f2564de7ccb315de144b339dba0b47e64a6a228009d9596aa",
+      "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:f7d978be62f6c3a1e1d3b611d588fc9892bec60f90bee556b64b05e21f164ed5"
+      "source_snapshot_hash": "sha256:1e011b2c864020bdab751620c948b24d17fca80f2f1b2faea257d922dd1464e3"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -58136,10 +58136,10 @@
           }
         }
       },
-      "hash": "sha256:8d2c8ff124672e620aefa77e4561878ba5e291577ef4f5d8a2254080ee2c8a42",
+      "hash": "sha256:6d7a8448aed1d1de80ee8d9afb7a22c17a07736a0b83116b665ab533e21bfb35",
       "language": "python",
       "module_page": "test_initial_schema",
-      "semantic_hash": "sha256:a01f63f33ee642a32b9bd2a54d011df3e7c254ddd8b3a7f5b4d3d9fa126a40e2"
+      "semantic_hash": "sha256:d0786f94ccccccd995c25fa330147387639d83e9e218cebd68bd27c28a4df0d8"
     },
     "backend/tests/migrations/test_postgresql_migrations.py": {
       "entities": [],
@@ -60256,7 +60256,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:a7ccda1b97e00697d72707ca79ba5a08b3399282cfab7366c45d2e6d645394de",
+      "hash": "sha256:b90257f8e199aac6bd52d92990c927a66539482eb61372c5f962a6fb2ba57ad8",
       "language": "typescript",
       "module_page": "DeliveryAnalytics.test",
       "semantic_hash": "sha256:aaffb1dab6a0b869bacb53e5e3e5fd9da3da6ad24f1193de18c2a2c322ae428d"
@@ -60275,10 +60275,10 @@
           }
         }
       },
-      "hash": "sha256:d0235ef3035cb7ce4084e55abc3f7cde63f4571bf95e467f5f1d1b27134dc475",
+      "hash": "sha256:0e3806366aef1e6b12b3f932407f2d9b04cb53232d5fb0596015155d51b23d0b",
       "language": "typescript",
       "module_page": "DeliveryAnalytics",
-      "semantic_hash": "sha256:bd6ffebfd1b682e4ab11f5b9a71522d1b7e0feb7299961dab80418c8213d67af"
+      "semantic_hash": "sha256:6fbf5d8bea63929091e8294b0aa0a0ab262e1c58458a2a78944ee420f59eaf96"
     },
     "frontend/src/components/analytics/ExecutionUsagePanel.test.tsx": {
       "entities": [],
@@ -67242,7 +67242,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:c380a3848668d27c215e8ff9bd83074a67abd965043bc27c26b9c684439a5788",
+      "hash": "sha256:426f5d4b87f2552332c6105275f402b037500e84b78faea0c640bd4c93a29c95",
       "language": "typescript",
       "module_page": "resources.en",
       "semantic_hash": "sha256:71ca1ac0d43406f2dc0b15b120f647a14385465f44d5e9d662077680def4fd3d"
@@ -67259,7 +67259,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:584573f4021cb991f5ea07e0270a147a35cdc094dccd13af07850f5a77cc1f6b",
+      "hash": "sha256:139ceeb2a512ecf86713831ffd284e53d291e05ac3d366cbcf43cc015f27a840",
       "language": "typescript",
       "module_page": "resources.ru",
       "semantic_hash": "sha256:ebdc0093465ad90e4020ed6dde008806ceeafe3df2ca8717c734f28b754886c4"
@@ -67627,10 +67627,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:33afabe9cd4ca4328a822a0b9c63d24781131216dae43c39ea9104817c77759a",
+      "hash": "sha256:0e96dc040e83c7330117464408316778c30485045080b8e52ffa87b600f669b9",
       "language": "typescript",
       "module_page": "AgentTeamSetupMasterPage.test",
-      "semantic_hash": "sha256:edc544ce28df7777112ad2d3c3cdf68b6f223a6a84e1004e37af8f3dac497297"
+      "semantic_hash": "sha256:bdf76b5c9187700a3cba88c0cb0dd14e11428a8a6606662b1f62ce8e0c9041af"
     },
     "frontend/src/pages/AgentTeamSetupMasterPage.tsx": {
       "entities": [
@@ -67718,7 +67718,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:887f8bac914a71487e3f9243fdc2e77ba0bdbe502dfe24fdbcbd6c88f2d9c791",
+      "hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
       "language": "typescript",
       "module_page": "AgentTeamSetupMasterPage",
       "semantic_hash": "sha256:36a96a46e09b794474517faa6899dc3bc3606614fee987fa1bd9ad33c59225cc"

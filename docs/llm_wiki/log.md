@@ -1023,3 +1023,39 @@ Separated configuration, acknowledgement, task eligibility, connection observati
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1e011b2c864020bdab751620c948b24d17fca80f2f1b2faea257d922dd1464e3`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2835
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+### Reviewed presentation and qualification corrections
+
+Mobile setup blockers now pair localized recovery instructions with secondary diagnostics. Delivery duration presentation preserves very short nonzero intervals. Native presentation qualification establishes its own connection origin; initial-schema downgrade assertions and representative role-package pins follow the current immutable contracts.
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1e011b2c864020bdab751620c948b24d17fca80f2f1b2faea257d922dd1464e3`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2835
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

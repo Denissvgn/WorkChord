@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`._
 
 | Source | Symbols |
 |--------|---------|
-| `../i18n/i18n` | `i18n` |
+| `../i18n/i18n` | `i18n`, `ensureLanguageResources` |
 | `../test/accessibilityInvariants` | `accessibleNameViolations`, `summaryNameViolations` |
 | `../test/renderWithProviders` | `renderWithProviders` |
 | `../types/agent` | `AgentTeamStatus` |
