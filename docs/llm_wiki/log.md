@@ -935,3 +935,55 @@ Separated configuration, acknowledgement, task eligibility, connection observati
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c82bab27f632ffce440d0988fb4ee23f2cce011883d2dfe45a6730c3a136310a`
+- Pages created: 19
+- Pages updated: 76
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2717
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3fd6d9b0388f7dfc44366295ce53410010028538851fc0a4fd6ae2a2347ffa90`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2805
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:16a01158f144d3d62d88a32bec8beb7d33cb6b32aaad2d0a59590c9a9c874611`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2807
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

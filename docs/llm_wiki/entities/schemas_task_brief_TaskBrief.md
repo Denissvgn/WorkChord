@@ -57,7 +57,7 @@ flowchart LR
     n9["TaskBriefService.apply_brief (backend/app/services/task_brief_service.py)"]
     n10["seed_work (backend/tests/test_agent_runtime_recovery.py)"]
     n11["test_worker_context_identifies_authoritative_brief (backend/tests/test_agent_work_routing_lineage.py)"]
-    n12["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n12["accepted_work (backend/tests/test_delivery_metrics.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -81,7 +81,7 @@ flowchart LR
     click n9 "../modules/task_brief_service.md"
     click n10 "../modules/test_agent_runtime_recovery.md"
     click n11 "../modules/test_agent_work_routing_lineage.md"
-    click n12 "../modules/test_task_domain.md"
+    click n12 "../modules/test_delivery_metrics.md"
 ```
 
 ### Summary
@@ -111,6 +111,6 @@ flowchart LR
 | `TaskBriefService.apply_brief` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
 | `seed_work` | call | [test_agent_runtime_recovery](../modules/test_agent_runtime_recovery.md) | 1 |
 | `test_worker_context_identifies_authoritative_brief` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
-| `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

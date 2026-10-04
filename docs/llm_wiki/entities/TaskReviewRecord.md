@@ -39,23 +39,26 @@ flowchart LR
     n0["TaskReviewRecord (backend/app/models/task_brief.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["backend/app/routers/task_domain.py"]
-    n4["TaskBriefService.record_review (backend/app/services/task_brief_service.py)"]
-    n5["backend/app/services/task_recovery_service.py"]
-    n6["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
+    n3["backend/app/models/delivery_observation.py"]
+    n4["backend/app/routers/task_domain.py"]
+    n5["TaskBriefService.record_review (backend/app/services/task_brief_service.py)"]
+    n6["backend/app/services/task_recovery_service.py"]
+    n7["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/models_task_brief.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/routers_task_domain.md"
-    click n4 "../modules/task_brief_service.md"
-    click n5 "../modules/task_recovery_service.md"
-    click n6 "../modules/test_task_domain.md"
+    click n3 "../modules/delivery_observation.md"
+    click n4 "../modules/routers_task_domain.md"
+    click n5 "../modules/task_brief_service.md"
+    click n6 "../modules/task_recovery_service.md"
+    click n7 "../modules/test_task_domain.md"
 ```
 
 ### Summary
@@ -75,6 +78,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskBriefService.record_review` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |

@@ -36,22 +36,25 @@ flowchart LR
     n0["CriterionProgress (backend/app/schemas/task_brief.py)"]
     n1["BaseModel"]
     n2["backend/app/schemas/agent.py"]
-    n3["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n4["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
-    n5["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n6["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n3["accepted_work (backend/tests/test_delivery_metrics.py)"]
+    n4["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n5["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n6["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n7["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/schemas_agent.md"
-    click n3 "../modules/test_task_domain.md"
+    click n3 "../modules/test_delivery_metrics.md"
     click n4 "../modules/test_task_domain.md"
     click n5 "../modules/test_task_domain.md"
-    click n6 "../modules/test_task_domain_integrity.md"
+    click n6 "../modules/test_task_domain.md"
+    click n7 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -71,6 +74,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `agent` | import | [schemas_agent](../modules/schemas_agent.md) | — |
+| `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

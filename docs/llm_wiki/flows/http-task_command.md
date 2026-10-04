@@ -82,16 +82,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_command | domain_result | 137 | `domain_result(...)` |
+| task_command | domain_result | 147 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_command | TaskDomainService(…).command | 137 | `TaskDomainService(db).command(task_id, data)` |
-| task_command | TaskDomainService | 137 | `TaskDomainService(db)` |
-| task_command | TaskService(…).task_to_response | 138 | `TaskService(db).task_to_response(task)` |
-| task_command | TaskService | 138 | `TaskService(db)` |
+| task_command | TaskDomainService(…).command | 147 | `TaskDomainService(db).command(task_id, data)` |
+| task_command | TaskDomainService | 147 | `TaskDomainService(db)` |
+| task_command | TaskService(…).task_to_response | 148 | `TaskService(db).task_to_response(task)` |
+| task_command | TaskService | 148 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -105,8 +105,8 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `task_command` | `TaskDomainService(db).command` | 137 |
-| unresolved_call | `task_command` | `TaskService(db).task_to_response` | 138 |
+| unresolved_call | `task_command` | `TaskDomainService(db).command` | 147 |
+| unresolved_call | `task_command` | `TaskService(db).task_to_response` | 148 |
 
 ## Behavior
 

@@ -92,17 +92,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| current_task_review | domain_result | 172 | `domain_result(...)` |
+| current_task_review | domain_result | 182 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| current_task_review | TaskDetailService(…).detail | 172 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| current_task_review | TaskDetailService | 172 | `TaskDetailService(db)` |
-| current_task_review | db.scalar | 174 | `db.scalar(...)` |
-| current_task_review | select(…).where(…).order_by(…).limit | 174 | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit(1)` |
-| current_task_review | select(…).where(…).order_by | 174 | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc(...))` |
+| current_task_review | TaskDetailService(…).detail | 182 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| current_task_review | TaskDetailService | 182 | `TaskDetailService(db)` |
+| current_task_review | db.scalar | 184 | `db.scalar(...)` |
+| current_task_review | select(…).where(…).order_by(…).limit | 184 | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit(1)` |
+| current_task_review | select(…).where(…).order_by | 184 | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc(...))` |
 
 ### Boundary effects
 
@@ -116,10 +116,10 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `current_task_review` | `TaskDetailService(db).detail` | 172 |
-| unresolved_call | `current_task_review` | `db.scalar` | 174 |
-| unresolved_call | `current_task_review` | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit` | 174 |
-| unresolved_call | `current_task_review` | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by` | 174 |
+| unresolved_call | `current_task_review` | `TaskDetailService(db).detail` | 182 |
+| unresolved_call | `current_task_review` | `db.scalar` | 184 |
+| unresolved_call | `current_task_review` | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit` | 184 |
+| unresolved_call | `current_task_review` | `select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by` | 184 |
 | step_limit | `current_task_review` | `first 12 steps` | 0 |
 
 ## Behavior

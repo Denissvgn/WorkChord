@@ -28,14 +28,14 @@ flowchart LR
     n2["convert_task_brief (backend/app/routers/task_domain.py)"]
     n3["create_backlog_task (backend/app/routers/task_domain.py)"]
     n4["current_task_review (backend/app/routers/task_domain.py)"]
-    n5["human_my_work (backend/app/routers/task_domain.py)"]
-    n6["lookup_tasks (backend/app/routers/task_domain.py)"]
-    n7["record_task_progress (backend/app/routers/task_domain.py)"]
-    n8["restore_backlog (backend/app/routers/task_domain.py)"]
-    n9["review_task (backend/app/routers/task_domain.py)"]
-    n10["task_actions (backend/app/routers/task_domain.py)"]
-    n11["task_brief_history (backend/app/routers/task_domain.py)"]
-    n12["task_capabilities (backend/app/routers/task_domain.py)"]
+    n5["delivery_metrics (backend/app/routers/task_domain.py)"]
+    n6["human_my_work (backend/app/routers/task_domain.py)"]
+    n7["lookup_tasks (backend/app/routers/task_domain.py)"]
+    n8["record_task_progress (backend/app/routers/task_domain.py)"]
+    n9["restore_backlog (backend/app/routers/task_domain.py)"]
+    n10["review_task (backend/app/routers/task_domain.py)"]
+    n11["task_actions (backend/app/routers/task_domain.py)"]
+    n12["task_brief_history (backend/app/routers/task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -77,6 +77,7 @@ flowchart LR
 | `convert_task_brief` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `create_backlog_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `current_task_review` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `delivery_metrics` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `human_my_work` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `lookup_tasks` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
@@ -84,6 +85,5 @@ flowchart LR
 | `review_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_actions` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_brief_history` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `task_capabilities` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

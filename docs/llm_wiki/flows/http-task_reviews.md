@@ -94,17 +94,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_reviews | domain_result | 166 | `domain_result(...)` |
+| task_reviews | domain_result | 176 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 31 | `str(exc)` |
 | domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_reviews | TaskDetailService(…).detail | 166 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| task_reviews | TaskDetailService | 166 | `TaskDetailService(db)` |
-| task_reviews | list | 167 | `list(...)` |
-| task_reviews | (…).all | 167 | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all(data not statically known)` |
-| task_reviews | db.scalars | 167 | `db.scalars(...)` |
+| task_reviews | TaskDetailService(…).detail | 176 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| task_reviews | TaskDetailService | 176 | `TaskDetailService(db)` |
+| task_reviews | list | 177 | `list(...)` |
+| task_reviews | (…).all | 177 | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all(data not statically known)` |
+| task_reviews | db.scalars | 177 | `db.scalars(...)` |
 
 ### Boundary effects
 
@@ -118,9 +118,9 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `task_reviews` | `TaskDetailService(db).detail` | 166 |
-| unresolved_call | `task_reviews` | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all` | 167 |
-| unresolved_call | `task_reviews` | `db.scalars` | 167 |
+| unresolved_call | `task_reviews` | `TaskDetailService(db).detail` | 176 |
+| unresolved_call | `task_reviews` | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all` | 177 |
+| unresolved_call | `task_reviews` | `db.scalars` | 177 |
 | step_limit | `task_reviews` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -16,11 +16,13 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.models.team_member` | `TeamMemberProfile` |
+| `app.schemas.delivery_metrics` | `DeliveryMetricsResponse` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
+| `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
@@ -49,7 +51,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (4) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -57,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -70,6 +72,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `domain_result` | *(async)* `(awaitable)` | — | — |
+| `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
 | `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
 | `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/my-work', response_model=HumanWorkResponse)` | — |

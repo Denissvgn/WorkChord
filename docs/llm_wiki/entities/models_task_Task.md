@@ -116,12 +116,12 @@ flowchart LR
     n5["backend/app/models/__init__.py"]
     n6["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
     n7["backend/app/models/delivery_dependency.py"]
-    n8["backend/app/models/discussion.py"]
-    n9["backend/app/models/iteration.py"]
-    n10["backend/app/models/project.py"]
-    n11["backend/app/models/recovery.py"]
-    n12["backend/app/models/release.py"]
-    n13["backend/app/models/request_source.py"]
+    n8["backend/app/models/delivery_observation.py"]
+    n9["backend/app/models/discussion.py"]
+    n10["backend/app/models/iteration.py"]
+    n11["backend/app/models/project.py"]
+    n12["backend/app/models/recovery.py"]
+    n13["backend/app/models/release.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -143,12 +143,12 @@ flowchart LR
     click n5 "../modules/models___init__.md"
     click n6 "../modules/models_agent.md"
     click n7 "../modules/delivery_dependency.md"
-    click n8 "../modules/models_discussion.md"
-    click n9 "../modules/models_iteration.md"
-    click n10 "../modules/models_project.md"
-    click n11 "../modules/recovery.md"
-    click n12 "../modules/models_release.md"
-    click n13 "../modules/models_request_source.md"
+    click n8 "../modules/delivery_observation.md"
+    click n9 "../modules/models_discussion.md"
+    click n10 "../modules/models_iteration.md"
+    click n11 "../modules/models_project.md"
+    click n12 "../modules/recovery.md"
+    click n13 "../modules/models_release.md"
 ```
 
 ### Summary
@@ -173,11 +173,11 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `_reject_routing_assessment_mutation` | type_reference | [models_agent](../modules/models_agent.md) | — |
 | `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
-| `request_source` | import | [models_request_source](../modules/models_request_source.md) | — |
 
-> References: showing 12 of 243 logical references; 231 omitted by the 12-row generated summary limit.
+> References: showing 12 of 246 logical references; 234 omitted by the 12-row generated summary limit.

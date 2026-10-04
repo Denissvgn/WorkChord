@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1459 | [Open section](#entities) |
-| Modules | 638 | [Open section](#modules) |
-| Workflows | 171 | [Open section](#workflows) |
+| Entities | 1467 | [Open section](#entities) |
+| Modules | 647 | [Open section](#modules) |
+| Workflows | 172 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 520 | [Open section](#entry-point-flows) |
+| Entry-point flows | 521 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -300,6 +300,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DeliveryDependency](entities/DeliveryDependency.md)
 - [DeliveryDependencyInput](entities/DeliveryDependencyInput.md)
 - [DeliveryDependencyService](entities/DeliveryDependencyService.md)
+- [DeliveryMetrics](entities/DeliveryMetrics.md)
+- [DeliveryMetricsResponse](entities/DeliveryMetricsResponse.md)
+- [DeliveryMetricsService](entities/DeliveryMetricsService.md)
+- [DeliveryObservation](entities/DeliveryObservation.md)
 - [DeliveryScenario](entities/DeliveryScenario.md)
 - [Dependency](entities/Dependency.md)
 - [DetachedSignatureEnvelope](entities/DetachedSignatureEnvelope.md)
@@ -1026,6 +1030,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_team_setup_AgentTeamRuntimeHandoff](entities/agent_team_setup_AgentTeamRuntimeHandoff.md)
 - [agent_team_setup_AgentTeamSetupStep](entities/agent_team_setup_AgentTeamSetupStep.md)
 - [agent_team_setup_AgentTeamSkillPackage](entities/agent_team_setup_AgentTeamSkillPackage.md)
+- [deliveryMetrics_DeliveryQueueItem](entities/deliveryMetrics_DeliveryQueueItem.md)
+- [deliveryMetrics_DurationSamples](entities/deliveryMetrics_DurationSamples.md)
+- [delivery_metrics_DeliveryQueueItem](entities/delivery_metrics_DeliveryQueueItem.md)
+- [delivery_metrics_DurationSamples](entities/delivery_metrics_DurationSamples.md)
 - [discussionService_TaskComment](entities/discussionService_TaskComment.md)
 - [emailSettings_EmailSettings](entities/emailSettings_EmailSettings.md)
 - [emailSettings_EmailSettingsUpdate](entities/emailSettings_EmailSettingsUpdate.md)
@@ -1486,6 +1494,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20260930_0003_delivery_dependencies](modules/20260930_0003_delivery_dependencies.md) - Persist delivery dependencies separately from local schedule edges.
 - [20260930_0004_discussion](modules/20260930_0004_discussion.md) - Add retained discussion, subscriptions and the personal inbox transport.
 - [20261003_0005_native_connections](modules/20261003_0005_native_connections.md) - Add short-lived browser-approved native connections.
+- [20261004_0006_delivery_observations](modules/20261004_0006_delivery_observations.md) - Retain event-time delivery observations without guessing older history.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1519,6 +1528,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ConstraintsPanel](modules/ConstraintsPanel.md) - `frontend/src/components/settings/ConstraintsPanel.tsx`
 - [ContextHelp](modules/ContextHelp.md) - `frontend/src/components/layout/ContextHelp.tsx`
 - [ContextHelp.test](modules/ContextHelp.test.md) - `frontend/src/components/layout/ContextHelp.test.tsx`
+- [DeliveryAnalytics](modules/DeliveryAnalytics.md) - `frontend/src/components/analytics/DeliveryAnalytics.tsx`
+- [DeliveryAnalytics.test](modules/DeliveryAnalytics.test.md) - `frontend/src/components/analytics/DeliveryAnalytics.test.tsx`
 - [DeliveryDependencies](modules/DeliveryDependencies.md) - `frontend/src/components/tasks/DeliveryDependencies.tsx`
 - [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
 - [DraftDismissalDialog](modules/DraftDismissalDialog.md) - `frontend/src/components/tasks/DraftDismissalDialog.tsx`
@@ -1741,9 +1752,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [database_runtime](modules/database_runtime.md) - PostgreSQL error classification and bounded transaction retry policy.
 - [dateLocale](modules/dateLocale.md) - `frontend/src/i18n/dateLocale.ts`
 - [delivery](modules/delivery.md) - Deterministic shared delivery graph for database and HTTP scenarios.
+- [deliveryMetrics](modules/deliveryMetrics.md) - `frontend/src/types/deliveryMetrics.ts`
+- [deliveryMetricsService](modules/deliveryMetricsService.md) - `frontend/src/services/deliveryMetricsService.ts`
 - [delivery_dependencies](modules/delivery_dependencies.md) - Versioned delivery prerequisite commands.
 - [delivery_dependency](modules/delivery_dependency.md) - Delivery prerequisites are separate from iteration-local scheduling edges.
 - [delivery_dependency_service](modules/delivery_dependency_service.md) - Authorized delivery readiness, global cycles and downstream evidence invalidation.
+- [delivery_metrics](modules/delivery_metrics.md) - Delivery duration samples and queues with explicit observation coverage.
+- [delivery_metrics_service](modules/delivery_metrics_service.md) - Event-based scoped delivery metrics; status dates never supply missing instants.
+- [delivery_observation](modules/delivery_observation.md) - Immutable workflow observations with scope captured at the event boundary.
 - [dialogLayer](modules/dialogLayer.md) - `frontend/src/components/common/dialogLayer.ts`
 - [discussionService](modules/discussionService.md) - `frontend/src/services/discussionService.ts`
 - [discussion_service](modules/discussion_service.md) - Versioned discussion and inbox delivery with live recipient authorization.
@@ -2030,6 +2046,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
 - [test_database_harness](modules/test_database_harness.md) - Fast unit coverage for the Wave 0 database test infrastructure.
 - [test_delivery_dependencies](modules/test_delivery_dependencies.md) - Cross-project readiness, cycle prevention and retained acceptance history.
+- [test_delivery_metrics](modules/test_delivery_metrics.md) - Recorded workflow instants, durable scope and missing history stay distinct.
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_documentation_boundary](modules/test_documentation_boundary.md) - A concise entrypoint still binds release evidence to authoritative operator policy.
@@ -2172,6 +2189,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DeliveryDependencyService_add](workflows/DeliveryDependencyService_add.md) - entry: `delivery_dependency_service.DeliveryDependencyService.add`
 - [DeliveryDependencyService_reconcile](workflows/DeliveryDependencyService_reconcile.md) - entry: `delivery_dependency_service.DeliveryDependencyService.reconcile`
 - [DeliveryDependencyService_remove](workflows/DeliveryDependencyService_remove.md) - entry: `delivery_dependency_service.DeliveryDependencyService.remove`
+- [DeliveryMetricsService_report](workflows/DeliveryMetricsService_report.md) - entry: `delivery_metrics_service.DeliveryMetricsService.report`
 - [DiscussionService_deliver](workflows/DiscussionService_deliver.md) - entry: `discussion_service.DiscussionService.deliver`
 - [DiscussionService_retry](workflows/DiscussionService_retry.md) - entry: `discussion_service.DiscussionService.retry`
 - [DiscussionService_save](workflows/DiscussionService_save.md) - entry: `discussion_service.DiscussionService.save`
@@ -2392,6 +2410,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-delete_team_member_profile](flows/http-delete_team_member_profile.md) - entry: `delete_team_member_profile`
 - [http-delete_team_member_profile_skill](flows/http-delete_team_member_profile_skill.md) - entry: `delete_team_member_profile_skill`
 - [http-delete_vacation](flows/http-delete_vacation.md) - entry: `delete_vacation`
+- [http-delivery_metrics](flows/http-delivery_metrics.md) - entry: `delivery_metrics`
 - [http-describe_native_connection](flows/http-describe_native_connection.md) - entry: `describe_native_connection`
 - [http-disable_agent_model_binding](flows/http-disable_agent_model_binding.md) - entry: `disable_agent_model_binding`
 - [http-disable_agent_model_catalog_entry](flows/http-disable_agent_model_catalog_entry.md) - entry: `disable_agent_model_catalog_entry`

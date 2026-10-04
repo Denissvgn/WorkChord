@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1459,
-      "flows": 520,
+      "entities": 1467,
+      "flows": 521,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 638,
-      "workflows": 171
+      "modules": 647,
+      "workflows": 172
     },
     "dependency_architecture": 2,
-    "total": 2803
+    "total": 2822
   },
   "dependency_pages": {
     "count": 2,
@@ -2010,7 +2010,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 149,
+              "line": 159,
               "step": "convert_task_brief",
               "target": "TaskBriefService(db).conversion"
             }
@@ -2748,7 +2748,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 135,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -2778,19 +2778,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 126,
+              "line": 136,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
             {
               "kind": "unresolved_call",
-              "line": 126,
+              "line": 136,
               "step": "create_backlog_task",
               "target": "data.model_copy"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 137,
               "step": "create_backlog_task",
               "target": "TaskService(db).task_to_response"
             },
@@ -5126,25 +5126,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 172,
+              "line": 182,
               "step": "current_task_review",
               "target": "TaskDetailService(db).detail"
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 184,
               "step": "current_task_review",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 184,
               "step": "current_task_review",
               "target": "select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 184,
               "step": "current_task_review",
               "target": "select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision, TaskReviewRecord.artifact_revision == task.artifact_revision).order_by"
             },
@@ -6206,6 +6206,66 @@
         }
       },
       "id": "http-delete_vacation",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "delivery_metrics",
+        "source_path": "backend/app/routers/task_domain.py",
+        "symbol": "delivery_metrics"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 44,
+              "step": "delivery_metrics",
+              "target": "DeliveryMetricsService(db).report"
+            }
+          ],
+          "generated": true,
+          "step_count": 9,
+          "transfer_count": 8,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/delivery_metrics_service.py"
+          ],
+          "step_count": 9,
+          "truncated": false
+        }
+      },
+      "id": "http-delivery_metrics",
       "language": "python"
     },
     {
@@ -10921,13 +10981,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 53,
+              "line": 63,
               "step": "human_my_work",
               "target": "TaskDetailService(db).my_work"
             },
             {
               "kind": "external_call",
-              "line": 56,
+              "line": 66,
               "step": "human_my_work",
               "target": "HTTPException"
             }
@@ -13995,7 +14055,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 40,
+              "line": 50,
               "step": "lookup_tasks",
               "target": "TaskDetailService(db).lookup"
             }
@@ -15758,13 +15818,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 164,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 165,
               "step": "record_task_progress",
               "target": "TaskService(db).task_to_response"
             }
@@ -16635,7 +16695,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 217,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -16891,13 +16951,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 160,
+              "line": 170,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
             {
               "kind": "unresolved_call",
-              "line": 161,
+              "line": 171,
               "step": "review_task",
               "target": "TaskService(db).task_to_response"
             }
@@ -18149,7 +18209,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 132,
+              "line": 142,
               "step": "task_actions",
               "target": "TaskDomainService(db).allowed_actions"
             }
@@ -18185,55 +18245,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 182,
+              "line": 192,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -18360,13 +18420,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 137,
+              "line": 147,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
             {
               "kind": "unresolved_call",
-              "line": 138,
+              "line": 148,
               "step": "task_command",
               "target": "TaskService(db).task_to_response"
             }
@@ -18488,7 +18548,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 119,
+              "line": 129,
               "step": "task_detail",
               "target": "TaskDetailService(db).detail"
             }
@@ -18591,43 +18651,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 82,
+              "line": 92,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -18681,25 +18741,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 76,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 66,
+              "line": 76,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 76,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 67,
+              "line": 77,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -18742,55 +18802,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 181,
+              "line": 191,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 182,
+              "line": 192,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 193,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -18831,37 +18891,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 102,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 104,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 104,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 104,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 104,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 106,
               "step": "task_review_queue",
               "target": "HTTPException"
             },
@@ -18935,19 +18995,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 166,
+              "line": 176,
               "step": "task_reviews",
               "target": "TaskDetailService(db).detail"
             },
             {
               "kind": "unresolved_call",
-              "line": 167,
+              "line": 177,
               "step": "task_reviews",
               "target": "(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 167,
+              "line": 177,
               "step": "task_reviews",
               "target": "db.scalars"
             },
@@ -21971,13 +22031,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 143,
+              "line": 153,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
             {
               "kind": "unresolved_call",
-              "line": 144,
+              "line": 154,
               "step": "write_task_brief",
               "target": "TaskService(db).task_to_response"
             }
@@ -37858,10 +37918,18 @@
         "entities/DateListProps.md",
         "entities/DateRange.md",
         "entities/DB.md",
+        "entities/delivery_metrics_DeliveryQueueItem.md",
+        "entities/delivery_metrics_DurationSamples.md",
         "entities/DeliveryDatabase.md",
         "entities/DeliveryDependency.md",
         "entities/DeliveryDependencyInput.md",
         "entities/DeliveryDependencyService.md",
+        "entities/DeliveryMetrics.md",
+        "entities/deliveryMetrics_DeliveryQueueItem.md",
+        "entities/deliveryMetrics_DurationSamples.md",
+        "entities/DeliveryMetricsResponse.md",
+        "entities/DeliveryMetricsService.md",
+        "entities/DeliveryObservation.md",
         "entities/DeliveryScenario.md",
         "entities/Dependency.md",
         "entities/DetachedSignatureEnvelope.md",
@@ -39103,6 +39171,7 @@
         "flows/http-delete_team_member_profile.md",
         "flows/http-delete_team_member_profile_skill.md",
         "flows/http-delete_vacation.md",
+        "flows/http-delivery_metrics.md",
         "flows/http-describe_native_connection.md",
         "flows/http-disable_agent_model_binding.md",
         "flows/http-disable_agent_model_catalog_entry.md",
@@ -39549,6 +39618,7 @@
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
         "modules/20261003_0005_native_connections.md",
+        "modules/20261004_0006_delivery_observations.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -39659,7 +39729,14 @@
         "modules/delivery_dependencies.md",
         "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
@@ -40086,6 +40163,7 @@
         "modules/test_database_configuration.md",
         "modules/test_database_harness.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -40242,6 +40320,7 @@
         "workflows/DeliveryDependencyService_add.md",
         "workflows/DeliveryDependencyService_reconcile.md",
         "workflows/DeliveryDependencyService_remove.md",
+        "workflows/DeliveryMetricsService_report.md",
         "workflows/DiscussionService_deliver.md",
         "workflows/DiscussionService_retry.md",
         "workflows/DiscussionService_save.md",
@@ -43158,11 +43237,11 @@
         "modules/identity_service.md",
         "modules/routers_identity.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_human_work_queries.md",
         "modules/test_managed_authority.md",
         "modules/test_mutation_versions.md",
-        "modules/test_profile_capacity.md",
-        "modules/test_task_discussion.md"
+        "modules/test_profile_capacity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -43371,6 +43450,7 @@
         "modules/authority.md",
         "modules/catalog.md",
         "modules/delivery_dependency.md",
+        "modules/delivery_observation.md",
         "modules/migrations_env.md",
         "modules/models_agent.md",
         "modules/models_autonomy.md",
@@ -43378,8 +43458,7 @@
         "modules/models_capacity.md",
         "modules/models_database_migration.md",
         "modules/models_discussion.md",
-        "modules/models_external_link.md",
-        "modules/models_github.md"
+        "modules/models_external_link.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/database.py",
@@ -43926,6 +44005,7 @@
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/app_main.md",
+        "modules/delivery_metrics_service.md",
         "modules/iteration_service.md",
         "modules/project_service.md",
         "modules/query_limits.md"
@@ -44626,6 +44706,32 @@
       "title": "DB"
     },
     {
+      "canonical_path": "entities/delivery_metrics_DeliveryQueueItem.md",
+      "id": "delivery_metrics_DeliveryQueueItem",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/delivery_metrics_DeliveryQueueItem",
+      "outgoing_internal_links": [
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_metrics.py",
+      "title": "DeliveryQueueItem"
+    },
+    {
+      "canonical_path": "entities/delivery_metrics_DurationSamples.md",
+      "id": "delivery_metrics_DurationSamples",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/delivery_metrics_DurationSamples",
+      "outgoing_internal_links": [
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_metrics.py",
+      "title": "DurationSamples"
+    },
+    {
       "canonical_path": "entities/DeliveryDatabase.md",
       "id": "DeliveryDatabase",
       "kind": "entities",
@@ -44686,6 +44792,89 @@
       "role": "semantic",
       "source_path": "backend/app/services/delivery_dependency_service.py",
       "title": "DeliveryDependencyService"
+    },
+    {
+      "canonical_path": "entities/DeliveryMetrics.md",
+      "id": "DeliveryMetrics",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryMetrics",
+      "outgoing_internal_links": [
+        "modules/DeliveryAnalytics.test.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/deliveryMetrics.ts",
+      "title": "DeliveryMetrics"
+    },
+    {
+      "canonical_path": "entities/deliveryMetrics_DeliveryQueueItem.md",
+      "id": "deliveryMetrics_DeliveryQueueItem",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/deliveryMetrics_DeliveryQueueItem",
+      "outgoing_internal_links": [
+        "modules/DeliveryAnalytics.md",
+        "modules/deliveryMetrics.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/deliveryMetrics.ts",
+      "title": "DeliveryQueueItem"
+    },
+    {
+      "canonical_path": "entities/deliveryMetrics_DurationSamples.md",
+      "id": "deliveryMetrics_DurationSamples",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/deliveryMetrics_DurationSamples",
+      "outgoing_internal_links": [
+        "modules/deliveryMetrics.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/deliveryMetrics.ts",
+      "title": "DurationSamples"
+    },
+    {
+      "canonical_path": "entities/DeliveryMetricsResponse.md",
+      "id": "DeliveryMetricsResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryMetricsResponse",
+      "outgoing_internal_links": [
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/routers_task_domain.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_metrics.py",
+      "title": "DeliveryMetricsResponse"
+    },
+    {
+      "canonical_path": "entities/DeliveryMetricsService.md",
+      "id": "DeliveryMetricsService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryMetricsService",
+      "outgoing_internal_links": [
+        "modules/delivery_metrics_service.md",
+        "modules/routers_task_domain.md",
+        "modules/test_delivery_metrics.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/delivery_metrics_service.py",
+      "title": "DeliveryMetricsService"
+    },
+    {
+      "canonical_path": "entities/DeliveryObservation.md",
+      "id": "DeliveryObservation",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryObservation",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/models___init__.md",
+        "modules/test_delivery_metrics.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/delivery_observation.py",
+      "title": "DeliveryObservation"
     },
     {
       "canonical_path": "entities/DeliveryScenario.md",
@@ -47756,6 +47945,7 @@
         "modules/agent_work_service.md",
         "modules/app_database.md",
         "modules/commands.md",
+        "modules/delivery_metrics_service.md",
         "modules/iteration_service.md",
         "modules/models___init__.md",
         "modules/models_iteration.md",
@@ -47764,7 +47954,6 @@
         "modules/models_request_source.md",
         "modules/models_task.md",
         "modules/models_triage.md",
-        "modules/project_service.md",
         "modules/routers_identity.md",
         "modules/team_member.md"
       ],
@@ -47980,6 +48169,7 @@
         "modules/authority.md",
         "modules/commands.md",
         "modules/delivery_dependency.md",
+        "modules/delivery_observation.md",
         "modules/http_authority.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
@@ -47987,7 +48177,6 @@
         "modules/models_iteration.md",
         "modules/models_project.md",
         "modules/models_release.md",
-        "modules/models_request_source.md",
         "modules/models_task.md",
         "modules/recovery.md"
       ],
@@ -49347,6 +49536,7 @@
         "modules/routers_task_domain.md",
         "modules/schemas_task_brief.md",
         "modules/task_brief_service.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -52989,6 +53179,7 @@
         "modules/task_brief_service.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -53004,6 +53195,7 @@
       "outgoing_internal_links": [
         "modules/schemas_agent.md",
         "modules/schemas_task_brief.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -53025,7 +53217,7 @@
         "modules/task_brief_service.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
-        "modules/test_task_domain.md"
+        "modules/test_delivery_metrics.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -55182,6 +55374,7 @@
         "modules/schemas_task_domain.md",
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -55393,9 +55586,11 @@
       "mcp_uri": "llm-wiki://entities/TaskDeletionFence",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/delivery_observation.md",
         "modules/models___init__.md",
         "modules/recovery.md",
         "modules/task_recovery_service.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
@@ -55534,8 +55729,8 @@
         "modules/task_detail_service.md",
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
-        "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/test_delivery_metrics.md",
+        "modules/test_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_domain_service.py",
@@ -55672,8 +55867,8 @@
         "modules/agent_model_catalog_service.md",
         "modules/agent_service.md",
         "modules/agent_team_setup_service.md",
-        "modules/agent_work_service.md",
         "modules/app_database.md",
+        "modules/delivery_observation.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
         "modules/models_task.md"
@@ -56017,6 +56212,7 @@
       "mcp_uri": "llm-wiki://entities/TaskReviewRecord",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/delivery_observation.md",
         "modules/models___init__.md",
         "modules/models_task_brief.md",
         "modules/routers_task_domain.md",
@@ -56051,6 +56247,7 @@
         "modules/routers_task_domain.md",
         "modules/schemas_task_brief.md",
         "modules/task_brief_service.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -59838,6 +60035,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/UTCDateTime",
       "outgoing_internal_links": [
+        "modules/delivery_observation.md",
         "modules/models_agent.md",
         "modules/models_autonomy.md",
         "modules/models_database_migration.md",
@@ -59848,7 +60046,6 @@
         "modules/models_label.md",
         "modules/models_outbound_webhook.md",
         "modules/models_plan_share.md",
-        "modules/models_project.md",
         "modules/native_connection.md",
         "modules/time.md"
       ],
@@ -60593,6 +60790,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261003_0005_native_connections.py",
       "title": "20261003_0005_native_connections Module"
+    },
+    {
+      "canonical_path": "modules/20261004_0006_delivery_observations.md",
+      "id": "20261004_0006_delivery_observations",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261004_0006_delivery_observations",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261004_0006_delivery_observations.py",
+      "title": "20261004_0006_delivery_observations Module"
     },
     {
       "canonical_path": "modules/accessibilityInvariants.md",
@@ -61355,6 +61562,7 @@
       "outgoing_internal_links": [
         "entities/HistoryGroup.md",
         "modules/AnalyticsPage.md",
+        "modules/DeliveryAnalytics.md",
         "modules/index.md",
         "modules/iterationService.md",
         "modules/iterationStore.md",
@@ -62574,6 +62782,102 @@
       "title": "delivery_dependency_service Module"
     },
     {
+      "canonical_path": "modules/delivery_metrics.md",
+      "id": "delivery_metrics",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/delivery_metrics",
+      "outgoing_internal_links": [
+        "entities/delivery_metrics_DeliveryQueueItem.md",
+        "entities/delivery_metrics_DurationSamples.md",
+        "entities/DeliveryMetricsResponse.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/routers_task_domain.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_metrics.py",
+      "title": "delivery_metrics Module"
+    },
+    {
+      "canonical_path": "modules/delivery_metrics_service.md",
+      "id": "delivery_metrics_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/delivery_metrics_service",
+      "outgoing_internal_links": [
+        "entities/DeliveryMetricsService.md",
+        "modules/authority.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/models_agent.md",
+        "modules/models_iteration.md",
+        "modules/models_project.md",
+        "modules/models_task.md",
+        "modules/query_limits.md",
+        "modules/routers_task_domain.md",
+        "modules/test_delivery_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/delivery_metrics_service.py",
+      "title": "delivery_metrics_service Module"
+    },
+    {
+      "canonical_path": "modules/delivery_observation.md",
+      "id": "delivery_observation",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/delivery_observation",
+      "outgoing_internal_links": [
+        "entities/DeliveryObservation.md",
+        "modules/app_database.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/models___init__.md",
+        "modules/models_agent.md",
+        "modules/models_task.md",
+        "modules/models_task_brief.md",
+        "modules/recovery.md",
+        "modules/test_delivery_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/delivery_observation.py",
+      "title": "delivery_observation Module"
+    },
+    {
+      "canonical_path": "modules/DeliveryAnalytics.md",
+      "id": "DeliveryAnalytics",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/DeliveryAnalytics",
+      "outgoing_internal_links": [
+        "modules/AnalyticsPage.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md",
+        "modules/projectService.md",
+        "modules/QueryState.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/analytics/DeliveryAnalytics.tsx",
+      "title": "DeliveryAnalytics Module"
+    },
+    {
+      "canonical_path": "modules/DeliveryAnalytics.test.md",
+      "id": "DeliveryAnalytics.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/DeliveryAnalytics.test",
+      "outgoing_internal_links": [
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
+        "modules/deliveryMetrics.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/analytics/DeliveryAnalytics.test.tsx",
+      "title": "DeliveryAnalytics.test Module"
+    },
+    {
       "canonical_path": "modules/DeliveryDependencies.md",
       "id": "DeliveryDependencies",
       "kind": "modules",
@@ -62593,6 +62897,39 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/DeliveryDependencies.tsx",
       "title": "DeliveryDependencies Module"
+    },
+    {
+      "canonical_path": "modules/deliveryMetrics.md",
+      "id": "deliveryMetrics",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/deliveryMetrics",
+      "outgoing_internal_links": [
+        "entities/DeliveryMetrics.md",
+        "entities/deliveryMetrics_DeliveryQueueItem.md",
+        "entities/deliveryMetrics_DurationSamples.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/deliveryMetrics.ts",
+      "title": "deliveryMetrics Module"
+    },
+    {
+      "canonical_path": "modules/deliveryMetricsService.md",
+      "id": "deliveryMetricsService",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/deliveryMetricsService",
+      "outgoing_internal_links": [
+        "modules/api.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/deliveryMetricsService.ts",
+      "title": "deliveryMetricsService Module"
     },
     {
       "canonical_path": "modules/dialogLayer.md",
@@ -64682,6 +65019,7 @@
         "entities/TaskProgressRecord.md",
         "entities/TaskReviewRecord.md",
         "modules/app_database.md",
+        "modules/delivery_observation.md",
         "modules/models___init__.md",
         "modules/models_task_brief.md",
         "modules/routers_task_domain.md",
@@ -67777,6 +68115,7 @@
         "modules/task_detail.md",
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -70179,6 +70518,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_delivery_dependencies.py",
       "title": "test_delivery_dependencies Module"
+    },
+    {
+      "canonical_path": "modules/test_delivery_metrics.md",
+      "id": "test_delivery_metrics",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_delivery_metrics",
+      "outgoing_internal_links": [
+        "modules/test_delivery_metrics.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_delivery_metrics.py",
+      "title": "test_delivery_metrics Module"
     },
     {
       "canonical_path": "modules/test_delivery_scenarios.md",
@@ -72892,6 +73243,22 @@
       "role": "mixed",
       "source_path": "backend/app/services/delivery_dependency_service.py",
       "title": "DeliveryDependencyService_remove"
+    },
+    {
+      "canonical_path": "workflows/DeliveryMetricsService_report.md",
+      "id": "DeliveryMetricsService_report",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/DeliveryMetricsService_report",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/query_limits.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/delivery_metrics_service.py",
+      "title": "DeliveryMetricsService_report"
     },
     {
       "canonical_path": "workflows/DiscussionService_deliver.md",
@@ -75928,6 +76295,19 @@
       "role": "mixed",
       "source_path": "backend/app/routers/team.py",
       "title": "delete_vacation"
+    },
+    {
+      "canonical_path": "flows/http-delivery_metrics.md",
+      "id": "http-delivery_metrics",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-delivery_metrics",
+      "outgoing_internal_links": [
+        "modules/delivery_metrics_service.md",
+        "modules/routers_task_domain.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "delivery_metrics"
     },
     {
       "canonical_path": "flows/http-describe_native_connection.md",
@@ -83101,6 +83481,7 @@
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
         "modules/20261003_0005_native_connections.md",
+        "modules/20261004_0006_delivery_observations.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -83211,7 +83592,14 @@
         "modules/delivery_dependencies.md",
         "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
@@ -83638,6 +84026,7 @@
         "modules/test_database_configuration.md",
         "modules/test_database_harness.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -83750,6 +84139,7 @@
         "modules/20260930_0003_delivery_dependencies.md",
         "modules/20260930_0004_discussion.md",
         "modules/20261003_0005_native_connections.md",
+        "modules/20261004_0006_delivery_observations.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -83860,7 +84250,14 @@
         "modules/delivery_dependencies.md",
         "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
+        "modules/delivery_metrics.md",
+        "modules/delivery_metrics_service.md",
+        "modules/delivery_observation.md",
+        "modules/DeliveryAnalytics.md",
+        "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/deliveryMetrics.md",
+        "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
@@ -84287,6 +84684,7 @@
         "modules/test_database_configuration.md",
         "modules/test_database_harness.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -84389,5 +84787,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:d2ed83b420d7abc85da49bf90406e91bd6b2693c70e72198e3689b9f3cc05d61"
+  "source_hash": "sha256:643e096b1a35c22f8343299fb984dcc93afe78314b0ff5f1c5734f66cf3f60ae"
 }

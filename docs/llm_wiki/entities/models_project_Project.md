@@ -59,8 +59,8 @@ flowchart LR
     n9["backend/app/models/triage.py"]
     n10["backend/app/routers/identity.py"]
     n11["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
-    n12["IterationService._response_project (backend/app/services/iteration_service.py)"]
-    n13["ProjectService._aggregated_milestone_groups (backend/app/services/project_service.py)"]
+    n12["backend/app/services/delivery_metrics_service.py"]
+    n13["IterationService._response_project (backend/app/services/iteration_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -86,8 +86,8 @@ flowchart LR
     click n9 "../modules/models_triage.md"
     click n10 "../modules/routers_identity.md"
     click n11 "../modules/agent_work_service.md"
-    click n12 "../modules/iteration_service.md"
-    click n13 "../modules/project_service.md"
+    click n12 "../modules/delivery_metrics_service.md"
+    click n13 "../modules/iteration_service.md"
 ```
 
 ### Summary
@@ -116,7 +116,7 @@ flowchart LR
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 | `IterationService._response_project` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
-| `ProjectService._aggregated_milestone_groups` | type_reference | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

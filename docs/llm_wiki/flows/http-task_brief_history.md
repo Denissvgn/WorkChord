@@ -93,17 +93,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_brief_history | brief_history_page | 190 | `brief_history_page(db, task_id, TaskBriefRevision, after_id, limit)` |
-| brief_history_page | db.scalar | 181 | `db.scalar(...)` |
-| brief_history_page | select(…).where (backend/app/routers/task_…main.py:brief_history_page) | 181 | `select(Task.id).where(...)` |
-| brief_history_page | select | 181 | `select(Task.id)` |
-| brief_history_page | HTTPException | 182 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| brief_history_page | list | 183 | `list(...)` |
-| brief_history_page | (…).all | 183 | `(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all(data not statically known)` |
-| brief_history_page | db.scalars | 183 | `db.scalars(...)` |
-| brief_history_page | select(…).where(…).order_by(…).limit | 183 | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(...)` |
-| brief_history_page | select(…).where(…).order_by | 183 | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id)` |
-| brief_history_page | select(…).where (backend/app/routers/task_…n.py:brief_history_page, 1) | 183 | `select(model).where(..., ...)` |
+| task_brief_history | brief_history_page | 200 | `brief_history_page(db, task_id, TaskBriefRevision, after_id, limit)` |
+| brief_history_page | db.scalar | 191 | `db.scalar(...)` |
+| brief_history_page | select(…).where (backend/app/routers/task_…main.py:brief_history_page) | 191 | `select(Task.id).where(...)` |
+| brief_history_page | select | 191 | `select(Task.id)` |
+| brief_history_page | HTTPException | 192 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| brief_history_page | list | 193 | `list(...)` |
+| brief_history_page | (…).all | 193 | `(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all(data not statically known)` |
+| brief_history_page | db.scalars | 193 | `db.scalars(...)` |
+| brief_history_page | select(…).where(…).order_by(…).limit | 193 | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(...)` |
+| brief_history_page | select(…).where(…).order_by | 193 | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id)` |
+| brief_history_page | select(…).where (backend/app/routers/task_…n.py:brief_history_page, 1) | 193 | `select(model).where(..., ...)` |
 
 ### Boundary effects
 
@@ -113,15 +113,15 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `brief_history_page` | `db.scalar` | 181 |
-| unresolved_call | `brief_history_page` | `select(Task.id).where` | 181 |
-| external_call | `brief_history_page` | `select` | 181 |
-| external_call | `brief_history_page` | `HTTPException` | 182 |
-| unresolved_call | `brief_history_page` | `(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all` | 183 |
-| unresolved_call | `brief_history_page` | `db.scalars` | 183 |
-| unresolved_call | `brief_history_page` | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit` | 183 |
-| unresolved_call | `brief_history_page` | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by` | 183 |
-| unresolved_call | `brief_history_page` | `select(model).where` | 183 |
+| unresolved_call | `brief_history_page` | `db.scalar` | 191 |
+| unresolved_call | `brief_history_page` | `select(Task.id).where` | 191 |
+| external_call | `brief_history_page` | `select` | 191 |
+| external_call | `brief_history_page` | `HTTPException` | 192 |
+| unresolved_call | `brief_history_page` | `(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all` | 193 |
+| unresolved_call | `brief_history_page` | `db.scalars` | 193 |
+| unresolved_call | `brief_history_page` | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit` | 193 |
+| unresolved_call | `brief_history_page` | `select(model).where(model.original_task_id == task_id, model.id > after_id).order_by` | 193 |
+| unresolved_call | `brief_history_page` | `select(model).where` | 193 |
 | step_limit | `task_brief_history` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -34,11 +34,11 @@ flowchart LR
     n6["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
     n7["AgentService.get_pipeline (backend/app/services/agent_service.py)"]
     n8["AgentWorkService.list_actor_roster (backend/app/services/agent_work_service.py)"]
-    n9["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
-    n10["IterationService.get_all (backend/app/services/iteration_service.py)"]
-    n11["ProjectService.get_tasks (backend/app/services/project_service.py)"]
-    n12["ProjectService.list_initiatives (backend/app/services/project_service.py)"]
-    n13["ProjectService.list_iterations (backend/app/services/project_service.py)"]
+    n9["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
+    n10["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n11["IterationService.get_all (backend/app/services/iteration_service.py)"]
+    n12["ProjectService.get_tasks (backend/app/services/project_service.py)"]
+    n13["ProjectService.list_initiatives (backend/app/services/project_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -60,9 +60,9 @@ flowchart LR
     click n6 "../modules/agent_routing_service.md"
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/iteration_service.md"
+    click n9 "../modules/delivery_metrics_service.md"
     click n10 "../modules/iteration_service.md"
-    click n11 "../modules/project_service.md"
+    click n11 "../modules/iteration_service.md"
     click n12 "../modules/project_service.md"
     click n13 "../modules/project_service.md"
 ```
@@ -90,10 +90,10 @@ flowchart LR
 | `AgentRoutingService._preview_context` | call | [agent_routing_service](../modules/agent_routing_service.md) | 4 |
 | `AgentService.get_pipeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService.list_actor_roster` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
+| `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `IterationService.get_all` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `ProjectService.get_tasks` | call | [project_service](../modules/project_service.md) | 1 |
 | `ProjectService.list_initiatives` | call | [project_service](../modules/project_service.md) | 1 |
-| `ProjectService.list_iterations` | call | [project_service](../modules/project_service.md) | 1 |
 
-> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

@@ -51,13 +51,14 @@ flowchart LR
     n3["task_command (backend/app/routers/task_domain.py)"]
     n4["TaskDomainService.command (backend/app/services/task_domain_service.py)"]
     n5["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
-    n6["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n7["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
-    n8["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
-    n9["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n10["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
-    n11["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
-    n12["test_scoped_snapshot_retention_keeps_human_commands_available (backend/tests/test_task_domain_integrity.py)"]
+    n6["accepted_work (backend/tests/test_delivery_metrics.py)"]
+    n7["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
+    n8["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n9["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
+    n10["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
+    n11["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n12["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
+    n13["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,18 +71,20 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_task_domain.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/task_domain_service.md"
     click n5 "../modules/test_delivery_dependencies.md"
-    click n6 "../modules/test_task_domain.md"
-    click n7 "../modules/test_task_domain.md"
+    click n6 "../modules/test_delivery_metrics.md"
+    click n7 "../modules/test_delivery_metrics.md"
     click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_domain.md"
-    click n10 "../modules/test_task_domain_integrity.md"
-    click n11 "../modules/test_task_domain_integrity.md"
+    click n10 "../modules/test_task_domain.md"
+    click n11 "../modules/test_task_domain.md"
     click n12 "../modules/test_task_domain_integrity.md"
+    click n13 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -104,10 +107,13 @@ flowchart LR
 | `task_command` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskDomainService.command` | type_reference | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_dependency_requires_current_acceptance_and_blocks_manual_start` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 1 |
+| `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
+| `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_owner_and_ids_survive_commit_uncommit` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_blocked_metrics_include_explicit_and_canceled_dependencies` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
 | `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
-| `test_scoped_snapshot_retention_keeps_human_commands_available` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

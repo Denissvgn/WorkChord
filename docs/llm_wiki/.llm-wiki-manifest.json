@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:5cb57afd44fa3ab48cc02395e5014a6f81ccad4f09adc7ef74c72c0d99ef9608",
-    "knowledge_index_hash": "sha256:5d51ab4337ba584aa741d6ce740a533d9f42922606d67f1a598076053f638cff",
-    "surface_index_hash": "sha256:5a43de757f7e5589f49687134fe988c9452a15241623268e5858896c49805514"
+    "evaluated_envelope_hash": "sha256:2124bb8a7eb8e2a007417779d4b83f411c38ce89b8ea6e16d3f91d4d2edb8254",
+    "knowledge_index_hash": "sha256:2291eec1da7e0df73fd3cb94c6cbe70d71ab2f79f1367cb9b20c7d47fde21f9b",
+    "surface_index_hash": "sha256:15c729c207d2df622e37953ee26aeabf4241fbe131f376dab7e4f00a7f612455"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -2590,7 +2590,7 @@
         "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d9b1749e38ed9301335cf320288f5a9d8cdf67fe6fa9767defb4b3e5cf73bd50",
+        "source_content_hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -2822,6 +2822,46 @@
         "scope": "entity",
         "source_content_hash": "sha256:d95493b50abd10c58dcc116add7e88f571f9b6f1665237da1036698c0743fb2d",
         "source_path": "backend/app/services/delivery_dependency_service.py"
+      },
+      "state": "known"
+    },
+    "entities/DeliveryMetrics.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:4a90acf3ae4d6fe124a14a81fd794b0e3fb890f02d4567031a0f7ac69b1920f0",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:21d91b484d1a2eeabe0fc34ca6231d1f511231d7fb850858c58f0925a8986b7e",
+        "source_path": "frontend/src/types/deliveryMetrics.ts"
+      },
+      "state": "known"
+    },
+    "entities/DeliveryMetricsResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:bb1ca3ef5e84db60e3cbf50f2019d275c4470d543954c2fa0c1cef7b91bb2362",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bfd4e64a48d15dba4f79f97e969045ce24763396ca55c186a2ea23e90feec92c",
+        "source_path": "backend/app/schemas/delivery_metrics.py"
+      },
+      "state": "known"
+    },
+    "entities/DeliveryMetricsService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:507a34b514bd280870e633979a23c2bfee81698e333b20f1f0af361f036c4344",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:ac494c981eb99be0775b04ae58f8b6c4e7a190b7c6c2a25d74169960a97e41bd",
+        "source_path": "backend/app/services/delivery_metrics_service.py"
+      },
+      "state": "known"
+    },
+    "entities/DeliveryObservation.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:1cdf853ba6d758a84f6b325fc23748e508f14cdf3a86ba26987388bbdd0f95c0",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:54b7350dcfd4398cd81e1d88c32a079c91c880e39dd2595b8d644931c7bc96fa",
+        "source_path": "backend/app/models/delivery_observation.py"
       },
       "state": "known"
     },
@@ -3770,7 +3810,7 @@
         "concept_observation_hash": "sha256:38bb73a5531b875d97c1649fd3497a8df3208faf8e0f2c96f59b3c1ed83c1e5e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:62cac371562fef7123fd51302bf3b355d265c7c1c01147975be6199026d93a06",
+        "source_content_hash": "sha256:c95253f18c8ca8a6bd571454a85dbab9e5e69ecc0b4932b3a34dc54d4ef12d8f",
         "source_path": "frontend/src/pages/AnalyticsPage.tsx"
       },
       "state": "known"
@@ -7560,7 +7600,7 @@
         "concept_observation_hash": "sha256:b3e3cec11cb9f1ba3c3f99b9825278948e9ea4ca6a24d41a8a22bf7027af86ee",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:17692740448c35427f4981b3c50e0f2655019805a053b24717ad05b3ea551aeb",
+        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -7580,7 +7620,7 @@
         "concept_observation_hash": "sha256:b60a07b26631c7d7d91a56638d4c1a2f57afe93ec00195cd0a4ba8dc2e9658c2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:17692740448c35427f4981b3c50e0f2655019805a053b24717ad05b3ea551aeb",
+        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -8150,7 +8190,7 @@
         "concept_observation_hash": "sha256:09661d1f22b0d8a0767ba6e222af7c54e5ec3482330566e161883bf10ff4f416",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8ce4f50f58a62462025900342e1720309e9e4f1f067abd21412f123a4db3404a",
+        "source_content_hash": "sha256:70f708062432c526d04131003ff117b8e7e206748f6883ade00d67e331b9d32a",
         "source_path": "backend/app/services/task_domain_service.py"
       },
       "state": "known"
@@ -10082,6 +10122,46 @@
         "scope": "entity",
         "source_content_hash": "sha256:391a75f5288e69b79a39977eabe053078f96c4a5496e020852550069b4adf8dd",
         "source_path": "backend/app/schemas/agent_team_setup.py"
+      },
+      "state": "known"
+    },
+    "entities/deliveryMetrics_DeliveryQueueItem.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c1f856f4b9d89b6e3ee68e3eac57b37ac1d8e65a1dc6c18c6441380d6d0e8d07",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:21d91b484d1a2eeabe0fc34ca6231d1f511231d7fb850858c58f0925a8986b7e",
+        "source_path": "frontend/src/types/deliveryMetrics.ts"
+      },
+      "state": "known"
+    },
+    "entities/deliveryMetrics_DurationSamples.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:1043531413303ecbcc122b7e3993e2fae8cefa501c977d2ea5122a3897590974",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:21d91b484d1a2eeabe0fc34ca6231d1f511231d7fb850858c58f0925a8986b7e",
+        "source_path": "frontend/src/types/deliveryMetrics.ts"
+      },
+      "state": "known"
+    },
+    "entities/delivery_metrics_DeliveryQueueItem.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:19be89dfbb7962ac15509b24580c8d51b353fe79408e12a3e7b25bd69042d923",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bfd4e64a48d15dba4f79f97e969045ce24763396ca55c186a2ea23e90feec92c",
+        "source_path": "backend/app/schemas/delivery_metrics.py"
+      },
+      "state": "known"
+    },
+    "entities/delivery_metrics_DurationSamples.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d6882e8febc5a69f3d97094870c933f0225f442954e3c220ebce3864a0f787eb",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:bfd4e64a48d15dba4f79f97e969045ce24763396ca55c186a2ea23e90feec92c",
+        "source_path": "backend/app/schemas/delivery_metrics.py"
       },
       "state": "known"
     },
@@ -14655,6 +14735,16 @@
       },
       "state": "known"
     },
+    "modules/20261004_0006_delivery_observations.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a8a669d4c75031d07ee1eead6822cf4180a7d48f6250ab654c64de5eb95a09b9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:d06ba2913754505efc2c92eec21d7aab22dcfba4bf94c6ff1aa74f8c545c5e12",
+        "source_path": "backend/app/migrations/versions/20261004_0006_delivery_observations.py"
+      },
+      "state": "known"
+    },
     "modules/AdminAccessGate.md": {
       "basis": {
         "concept_observation_hash": "sha256:bd5ccd73cc449656091115c1d25baa577fff497da78b84a1c282cf7dff1d4abf",
@@ -14767,10 +14857,10 @@
     },
     "modules/AnalyticsPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:bc20d3accb02bab1c697597a714f554e0376b468bff9352928d901aacf0ff4bd",
+        "concept_observation_hash": "sha256:6fd1b78d0e71a2254219a9894609d1956221938263e2b1100309503d29eeb811",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:62cac371562fef7123fd51302bf3b355d265c7c1c01147975be6199026d93a06",
+        "source_content_hash": "sha256:c95253f18c8ca8a6bd571454a85dbab9e5e69ecc0b4932b3a34dc54d4ef12d8f",
         "source_path": "frontend/src/pages/AnalyticsPage.tsx"
       },
       "state": "known"
@@ -14982,6 +15072,26 @@
         "scope": "module",
         "source_content_hash": "sha256:3492109cd2d27f1bbbac621f877ccac9d2c9c08e1bc636f8f4863126e7d8ea68",
         "source_path": "frontend/src/components/layout/ContextHelp.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/DeliveryAnalytics.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ddac084a1819eead4c3ee7ebeab023b4556a0daa7ef202e858cd9ad550f7b621",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:da9ea51d96dd50172556ca428eac751470318d70e2b3e7a83407718012fcd2ef",
+        "source_path": "frontend/src/components/analytics/DeliveryAnalytics.tsx"
+      },
+      "state": "known"
+    },
+    "modules/DeliveryAnalytics.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:52280f874552be6ebe48abcb639e4006c692f9b74582669eaaaa09d04e84a52f",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:923a379484d851778d585a38cd49c47fb71c7c387a5c1fbcea5d030982b3770b",
+        "source_path": "frontend/src/components/analytics/DeliveryAnalytics.test.tsx"
       },
       "state": "known"
     },
@@ -17205,6 +17315,26 @@
       },
       "state": "known"
     },
+    "modules/deliveryMetrics.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f946a6940d1e7085332cfedf2ba73d33f044c5857625f47eff2a4630ac9d03fc",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:21d91b484d1a2eeabe0fc34ca6231d1f511231d7fb850858c58f0925a8986b7e",
+        "source_path": "frontend/src/types/deliveryMetrics.ts"
+      },
+      "state": "known"
+    },
+    "modules/deliveryMetricsService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7cca72616de3a7a88cf7d238d050daf210583dc8ebda5969b29657a2abd4bf4f",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:b79320eaa748291dabe06cee8ba1f3f4a71c2ec28d3dd5917fef4e3984ca16e4",
+        "source_path": "frontend/src/services/deliveryMetricsService.ts"
+      },
+      "state": "known"
+    },
     "modules/delivery_dependencies.md": {
       "basis": {
         "concept_observation_hash": "sha256:c4267adf0431874021642c89526b3ec25fb777ac77922c0f2e62b74f9f3f46fa",
@@ -17232,6 +17362,36 @@
         "scope": "module",
         "source_content_hash": "sha256:d95493b50abd10c58dcc116add7e88f571f9b6f1665237da1036698c0743fb2d",
         "source_path": "backend/app/services/delivery_dependency_service.py"
+      },
+      "state": "known"
+    },
+    "modules/delivery_metrics.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:40e61f7de1d2fdbef74c3b631e1d1b0beb5bc9d50d8b1136571b72e36062a4e6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:bfd4e64a48d15dba4f79f97e969045ce24763396ca55c186a2ea23e90feec92c",
+        "source_path": "backend/app/schemas/delivery_metrics.py"
+      },
+      "state": "known"
+    },
+    "modules/delivery_metrics_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8f1974d326e952568b495007e7098153a293bd8cf390d63c8211980f207232ca",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:ac494c981eb99be0775b04ae58f8b6c4e7a190b7c6c2a25d74169960a97e41bd",
+        "source_path": "backend/app/services/delivery_metrics_service.py"
+      },
+      "state": "known"
+    },
+    "modules/delivery_observation.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8df9263255a34f1b765f0d039f94b411ad772f57a58e90e02c49509544fb84d8",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:54b7350dcfd4398cd81e1d88c32a079c91c880e39dd2595b8d644931c7bc96fa",
+        "source_path": "backend/app/models/delivery_observation.py"
       },
       "state": "known"
     },
@@ -17847,10 +18007,10 @@
     },
     "modules/models___init__.md": {
       "basis": {
-        "concept_observation_hash": "sha256:89fd9e351368259c45d235c8abb173802f9739a6b707d84c0cea643c3f8ae465",
+        "concept_observation_hash": "sha256:4babbd0e0d27ed944ff4d017ab6f7d211dc45c3d2012cebe8ec1daf6099b6394",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2bc470b0e550043d2474aa43b42aea60319d8c1769f5d06f02e77e97b4edda81",
+        "source_content_hash": "sha256:a9cd36d06f344617a72cd1ca1271b3af35d9609db4f6960191128b26c2432b6f",
         "source_path": "backend/app/models/__init__.py"
       },
       "state": "known"
@@ -18550,7 +18710,7 @@
         "concept_observation_hash": "sha256:afade8d832a51a02d6d2591f03d13dca01e938ff5a9c696aec5aa74e2e1d7be6",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:fddbe9454dafa01ac6fa0f83116dbd1dd8039782a910e32b9633c6328aaba58b",
+        "source_content_hash": "sha256:48a2e8b2c8c68ea251255d794b4dc0b06b58d47dd713d9194c787958538b2b4d",
         "source_path": "frontend/src/i18n/resources.en.ts"
       },
       "state": "known"
@@ -18560,7 +18720,7 @@
         "concept_observation_hash": "sha256:be455eed22d5cf2726226c607497b2556dff99452815197e81ef46d1440bd2aa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:7f096f5c7d5fd739a28f8803e2c20268d0ae1b92e1e48eec3b4d1bb9637e1f7a",
+        "source_content_hash": "sha256:6d4a8c41a8b0d7a610a3357581f4c4ed57ebac6a02b02d862d9ea948660a20ab",
         "source_path": "frontend/src/i18n/resources.ru.ts"
       },
       "state": "known"
@@ -18727,10 +18887,10 @@
     },
     "modules/routers_task_domain.md": {
       "basis": {
-        "concept_observation_hash": "sha256:52827773e103aef347b376264d9fdf68b4919a98fd5c89e2d3f83be312f285fc",
+        "concept_observation_hash": "sha256:1715bfea853f80ea7d5a567b0ac9d7cb9e44763c3192da6e5563e8505dd419ca",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d9b1749e38ed9301335cf320288f5a9d8cdf67fe6fa9767defb4b3e5cf73bd50",
+        "source_content_hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -19400,7 +19560,7 @@
         "concept_observation_hash": "sha256:cd31e6f58cbdebbd98a14f8355070850323614fc568d57c2cbc8b45cbe29d407",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:17692740448c35427f4981b3c50e0f2655019805a053b24717ad05b3ea551aeb",
+        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -19650,7 +19810,7 @@
         "concept_observation_hash": "sha256:be103d42905e891426291e704d8b793b63758f85404fae40ad842cdbfa54ad54",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8ce4f50f58a62462025900342e1720309e9e4f1f067abd21412f123a4db3404a",
+        "source_content_hash": "sha256:70f708062432c526d04131003ff117b8e7e206748f6883ade00d67e331b9d32a",
         "source_path": "backend/app/services/task_domain_service.py"
       },
       "state": "known"
@@ -19870,7 +20030,7 @@
         "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:e3dee4cb0eee013efcb2cf86b9e1856068be12b5744c4f8a6d7d33b6c20abfe9",
+        "source_content_hash": "sha256:408457c1453ecba75839a6c43f442085ebdd44f34f1b3159297c191637d0657d",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -20020,7 +20180,7 @@
         "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a6038325027de2d7719aac0bcd002aa90cc9c89439e09548948cb1d4790a874a",
+        "source_content_hash": "sha256:8145380c94c5896cd44f9ba0581437b5c6e69a27cae98c890f3b6debfb3129ee",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -20080,7 +20240,7 @@
         "concept_observation_hash": "sha256:bff9798a1901e3f1b6953659a4bd5e2c766fe8fa64bfd067e60ff2b971f6113e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a47d17e29b704e20b5fc863980b3808f94c78067d7fa2fe85d7897252862833f",
+        "source_content_hash": "sha256:fa71590f27f27890112630b42a23cf6a1b52ac18f442e7845849d2fbe110a82a",
         "source_path": "backend/tests/test_database_harness.py"
       },
       "state": "known"
@@ -20092,6 +20252,16 @@
         "scope": "module",
         "source_content_hash": "sha256:38c87a9c6d68ea18fce3463ec66173915c20cd29c0c3707e02a123f745790f63",
         "source_path": "backend/tests/test_delivery_dependencies.py"
+      },
+      "state": "known"
+    },
+    "modules/test_delivery_metrics.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:1d13eecafdf65043ac180e16c2225c03435b150686dd6e9ac21874f24de776dc",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:f74ed7a772c4654443be9979e1e103ed5f0a4328a14e57051a31de94e15b513e",
+        "source_path": "backend/tests/test_delivery_metrics.py"
       },
       "state": "known"
     },
@@ -20410,7 +20580,7 @@
         "concept_observation_hash": "sha256:b9fce811ee473a186ac3b66fee3bc1ee7fe5621f3f511f1437a50757424bb552",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:68f2364edbfc3afe13cc36662fc14b93ba34a54ac0d07a082c6cb93832e921b8",
+        "source_content_hash": "sha256:ceb27d873d11c5efd6d61a485299d94870e0a6fb85c4dbdedc4522da81b21bcb",
         "source_path": "backend/tests/database_migration/test_source_preflight.py"
       },
       "state": "known"
@@ -20420,7 +20590,7 @@
         "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:4a4c9f01e079dabb4e248320a4509f82650c59a2f6513b44aeea507ca400b4b4",
+        "source_content_hash": "sha256:a5b0ce0baab8cb7d7c95d938cb6446f6e97381b82d19a641c70fc0412870d19d",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -21190,13 +21360,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:bc46a57ddd96e65444f6a86b7a4a6f5d5c5409f797da97b3bd571f4d7019b63e",
-      "lifecycle_hash": "sha256:a4e7e4df03b14960d47448c5946376c1e28b95c2c132169a1be3a6ca2f728159",
-      "markdown_snapshot_hash": "sha256:6a646ab9f96ebe083c93f8f84dbf1f9fc5d0887a999eae9bcde1ef1904f3659c",
-      "observation_inputs_hash": "sha256:dda54e6bd1a61b585d5be17e18dd221e0ac9dcf45f643be519e527c385eee508",
+      "inventory_hash": "sha256:4ad5e51fcf12a9c812e5e52a0011a24c776e7b6684691a2f2d44b12cdb52bb00",
+      "lifecycle_hash": "sha256:8c16d6e2dd1182888d675bbfc8d85bc3234e4709256d9a671ec550dc74e39bc8",
+      "markdown_snapshot_hash": "sha256:5cdf0596aad1d2e2eee588ed11b1df2f67e7501ab2e605c250447b61b8367cd7",
+      "observation_inputs_hash": "sha256:0d2d5fc58e848a74b0a57258b687832ba216d810afb51a7469d89d517103940e",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:4e168673e3a7d6ea4839d3decd130ed3cb882d73618f3c2b41b9c636ae6ae7f0"
+      "source_snapshot_hash": "sha256:16a01158f144d3d62d88a32bec8beb7d33cb6b32aaad2d0a59590c9a9c874611"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -22896,6 +23066,30 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/services/delivery_dependency_service.py"
+    },
+    "entities/DeliveryMetrics.md": {
+      "entity_name": "DeliveryMetrics",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/types/deliveryMetrics.ts"
+    },
+    "entities/DeliveryMetricsResponse.md": {
+      "entity_name": "DeliveryMetricsResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/delivery_metrics.py"
+    },
+    "entities/DeliveryMetricsService.md": {
+      "entity_name": "DeliveryMetricsService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/delivery_metrics_service.py"
+    },
+    "entities/DeliveryObservation.md": {
+      "entity_name": "DeliveryObservation",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/delivery_observation.py"
     },
     "entities/DeliveryScenario.md": {
       "entity_name": "DeliveryScenario",
@@ -27253,6 +27447,30 @@
       "scope": "entity",
       "source_path": "backend/app/schemas/agent_team_setup.py"
     },
+    "entities/deliveryMetrics_DeliveryQueueItem.md": {
+      "entity_name": "DeliveryQueueItem",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/types/deliveryMetrics.ts"
+    },
+    "entities/deliveryMetrics_DurationSamples.md": {
+      "entity_name": "DurationSamples",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/types/deliveryMetrics.ts"
+    },
+    "entities/delivery_metrics_DeliveryQueueItem.md": {
+      "entity_name": "DeliveryQueueItem",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/delivery_metrics.py"
+    },
+    "entities/delivery_metrics_DurationSamples.md": {
+      "entity_name": "DurationSamples",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/delivery_metrics.py"
+    },
     "entities/discussionService_TaskComment.md": {
       "entity_name": "TaskComment",
       "occurrence": 1,
@@ -29983,6 +30201,10 @@
       "scope": "module",
       "source_path": "backend/app/migrations/versions/20261003_0005_native_connections.py"
     },
+    "modules/20261004_0006_delivery_observations.md": {
+      "scope": "module",
+      "source_path": "backend/app/migrations/versions/20261004_0006_delivery_observations.py"
+    },
     "modules/AdminAccessGate.md": {
       "scope": "module",
       "source_path": "frontend/src/components/settings/AdminAccessGate.tsx"
@@ -30114,6 +30336,14 @@
     "modules/ContextHelp.test.md": {
       "scope": "module",
       "source_path": "frontend/src/components/layout/ContextHelp.test.tsx"
+    },
+    "modules/DeliveryAnalytics.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/analytics/DeliveryAnalytics.tsx"
+    },
+    "modules/DeliveryAnalytics.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/analytics/DeliveryAnalytics.test.tsx"
     },
     "modules/DeliveryDependencies.md": {
       "scope": "module",
@@ -31003,6 +31233,14 @@
       "scope": "module",
       "source_path": "backend/tests/support/delivery.py"
     },
+    "modules/deliveryMetrics.md": {
+      "scope": "module",
+      "source_path": "frontend/src/types/deliveryMetrics.ts"
+    },
+    "modules/deliveryMetricsService.md": {
+      "scope": "module",
+      "source_path": "frontend/src/services/deliveryMetricsService.ts"
+    },
     "modules/delivery_dependencies.md": {
       "scope": "module",
       "source_path": "backend/app/routers/delivery_dependencies.py"
@@ -31014,6 +31252,18 @@
     "modules/delivery_dependency_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/delivery_dependency_service.py"
+    },
+    "modules/delivery_metrics.md": {
+      "scope": "module",
+      "source_path": "backend/app/schemas/delivery_metrics.py"
+    },
+    "modules/delivery_metrics_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/delivery_metrics_service.py"
+    },
+    "modules/delivery_observation.md": {
+      "scope": "module",
+      "source_path": "backend/app/models/delivery_observation.py"
     },
     "modules/dialogLayer.md": {
       "scope": "module",
@@ -32158,6 +32408,10 @@
     "modules/test_delivery_dependencies.md": {
       "scope": "module",
       "source_path": "backend/tests/test_delivery_dependencies.py"
+    },
+    "modules/test_delivery_metrics.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_delivery_metrics.py"
     },
     "modules/test_delivery_scenarios.md": {
       "scope": "module",
@@ -37097,6 +37351,26 @@
       "module_page": "20261003_0005_native_connections",
       "semantic_hash": "sha256:00dac105cec26779c0d900c55b4b1000f23a75f9cbb1ad286654e7ac91a365b6"
     },
+    "backend/app/migrations/versions/20261004_0006_delivery_observations.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Retain event-time delivery observations without guessing older history.",
+          "functions": {
+            "downgrade": "—",
+            "upgrade": "—"
+          }
+        }
+      },
+      "hash": "sha256:d06ba2913754505efc2c92eec21d7aab22dcfba4bf94c6ff1aa74f8c545c5e12",
+      "language": "python",
+      "module_page": "20261004_0006_delivery_observations",
+      "semantic_hash": "sha256:a4b296f7928f00559944358f6368df4362366515324f6d3f5f7731ed3a55d9f1"
+    },
     "backend/app/models/__init__.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -37109,10 +37383,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:2bc470b0e550043d2474aa43b42aea60319d8c1769f5d06f02e77e97b4edda81",
+      "hash": "sha256:a9cd36d06f344617a72cd1ca1271b3af35d9609db4f6960191128b26c2432b6f",
       "language": "python",
       "module_page": "models___init__",
-      "semantic_hash": "sha256:203e6602d9e8803ee53a9ca69882028f373788e7dacd3525a0f3a5bcc030bab2"
+      "semantic_hash": "sha256:04563572dfca5edb60516c908c01f7f78da46b582c006bb27e9bbb139822ef00"
     },
     "backend/app/models/agent.py": {
       "entities": [
@@ -38048,6 +38322,61 @@
       "language": "python",
       "module_page": "delivery_dependency",
       "semantic_hash": "sha256:d22ba00c12482f87e218463f0ab0e0297ac7c400f5bcb3bc6610e32faee4d0ad"
+    },
+    "backend/app/models/delivery_observation.py": {
+      "entities": [
+        "DeliveryObservation"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "DeliveryObservation",
+          "occurrence": 1,
+          "page": "DeliveryObservation"
+        }
+      ],
+      "entity_pages": {
+        "DeliveryObservation": "DeliveryObservation"
+      },
+      "generated_semantics": {
+        "entities": {
+          "DeliveryObservation": {
+            "attributes": {
+              "id": "—",
+              "iteration_id": "—",
+              "kind": "—",
+              "observed_at": "—",
+              "original_iteration_id": "—",
+              "original_project_id": "—",
+              "original_task_id": "—",
+              "project_id": "—",
+              "source": "—",
+              "task_version": "—"
+            },
+            "description": "Retain delivery identity and scope independently of later hierarchy edits.",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "DeliveryObservation": "Retain delivery identity and scope independently of later hierarchy edits."
+          },
+          "description": "Immutable workflow observations with scope captured at the event boundary.",
+          "functions": {
+            "_record": "Join the owning transaction without exposing a client-authored ledger write.",
+            "_task_row": "—",
+            "immutable_observation": "—",
+            "observe_review": "—",
+            "observe_task_delete": "—",
+            "observe_task_event": "—",
+            "observe_task_insert": "—",
+            "observe_task_update": "—"
+          }
+        }
+      },
+      "hash": "sha256:54b7350dcfd4398cd81e1d88c32a079c91c880e39dd2595b8d644931c7bc96fa",
+      "language": "python",
+      "module_page": "delivery_observation",
+      "semantic_hash": "sha256:e99c50a028a0d1e8c726db96833ce8bb28a56e92d003eaf98dd401959a6a8c6c"
     },
     "backend/app/models/discussion.py": {
       "entities": [
@@ -41478,6 +41807,7 @@
             "convert_task_brief": "—",
             "create_backlog_task": "—",
             "current_task_review": "—",
+            "delivery_metrics": "—",
             "domain_result": "—",
             "human_my_work": "—",
             "lookup_tasks": "—",
@@ -41498,10 +41828,10 @@
           }
         }
       },
-      "hash": "sha256:d9b1749e38ed9301335cf320288f5a9d8cdf67fe6fa9767defb4b3e5cf73bd50",
+      "hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
       "language": "python",
       "module_page": "routers_task_domain",
-      "semantic_hash": "sha256:b06ac2243364d1da0cd5f8079f0748bd3f5d9e3b48658d87ecf2d6055536b818"
+      "semantic_hash": "sha256:6b9a0c0da71955d5902651ca0ff67b25404da34dffeb548bf9608a12187ff079"
     },
     "backend/app/routers/tasks.py": {
       "entities": [],
@@ -45527,6 +45857,96 @@
       "language": "python",
       "module_page": "schemas_common",
       "semantic_hash": "sha256:dbfc857c07bcb525f3ae639c7528991d949c403823738b19610848e2b936b873"
+    },
+    "backend/app/schemas/delivery_metrics.py": {
+      "entities": [
+        "DurationSamples",
+        "DeliveryQueueItem",
+        "DeliveryMetricsResponse"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "DurationSamples",
+          "occurrence": 1,
+          "page": "delivery_metrics_DurationSamples"
+        },
+        {
+          "name": "DeliveryQueueItem",
+          "occurrence": 1,
+          "page": "delivery_metrics_DeliveryQueueItem"
+        },
+        {
+          "name": "DeliveryMetricsResponse",
+          "occurrence": 1,
+          "page": "DeliveryMetricsResponse"
+        }
+      ],
+      "entity_pages": {
+        "DeliveryMetricsResponse": "DeliveryMetricsResponse",
+        "DeliveryQueueItem": "delivery_metrics_DeliveryQueueItem",
+        "DurationSamples": "delivery_metrics_DurationSamples"
+      },
+      "generated_semantics": {
+        "entities": {
+          "DeliveryMetricsResponse": {
+            "attributes": {
+              "acceptance_events": "—",
+              "accepted_leaf_tasks": "—",
+              "canceled_leaf_tasks": "—",
+              "contract_version": "—",
+              "coverage": "—",
+              "cycle_time": "—",
+              "lead_time": "—",
+              "queues_truncated": "—",
+              "recovery_queue": "—",
+              "rejection_events": "—",
+              "reopened_events": "—",
+              "review_delay": "—",
+              "review_queue": "—",
+              "scope_basis": "—",
+              "window_end": "—",
+              "window_start": "—"
+            },
+            "description": "_Auto-generated from `DeliveryMetricsResponse` in `backend/app/schemas/delivery_metrics.py`._",
+            "methods": {}
+          },
+          "DeliveryQueueItem": {
+            "attributes": {
+              "age_seconds": "—",
+              "reason": "—",
+              "task_id": "—",
+              "title": "—"
+            },
+            "description": "_Auto-generated from `DeliveryQueueItem` in `backend/app/schemas/delivery_metrics.py`._",
+            "methods": {}
+          },
+          "DurationSamples": {
+            "attributes": {
+              "censored_count": "—",
+              "mean": "—",
+              "median": "—",
+              "sample_count": "—",
+              "unit": "—",
+              "unknown_count": "—"
+            },
+            "description": "_Auto-generated from `DurationSamples` in `backend/app/schemas/delivery_metrics.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "DeliveryMetricsResponse": "—",
+            "DeliveryQueueItem": "—",
+            "DurationSamples": "—"
+          },
+          "description": "Delivery duration samples and queues with explicit observation coverage.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:bfd4e64a48d15dba4f79f97e969045ce24763396ca55c186a2ea23e90feec92c",
+      "language": "python",
+      "module_page": "delivery_metrics",
+      "semantic_hash": "sha256:bc6dd35c0c30c1e2345fe1a95e2d8fcfcb0c51f208f1f96b0cdc30809c8f297e"
     },
     "backend/app/schemas/email_settings.py": {
       "entities": [
@@ -53108,6 +53528,47 @@
       "module_page": "delivery_dependency_service",
       "semantic_hash": "sha256:25828e255e331ae07095064c74d060835e52e956767b604f78dc2928d94bf7e8"
     },
+    "backend/app/services/delivery_metrics_service.py": {
+      "entities": [
+        "DeliveryMetricsService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "DeliveryMetricsService",
+          "occurrence": 1,
+          "page": "DeliveryMetricsService"
+        }
+      ],
+      "entity_pages": {
+        "DeliveryMetricsService": "DeliveryMetricsService"
+      },
+      "generated_semantics": {
+        "entities": {
+          "DeliveryMetricsService": {
+            "attributes": {},
+            "description": "_Auto-generated from `DeliveryMetricsService` in `backend/app/services/delivery_metrics_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "report": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "DeliveryMetricsService": "—"
+          },
+          "description": "Event-based scoped delivery metrics; status dates never supply missing instants.",
+          "functions": {
+            "_samples": "—",
+            "summarize_observations": "Use immutable leaf facts, keeping reopened episodes and incomplete histories visible."
+          }
+        }
+      },
+      "hash": "sha256:ac494c981eb99be0775b04ae58f8b6c4e7a190b7c6c2a25d74169960a97e41bd",
+      "language": "python",
+      "module_page": "delivery_metrics_service",
+      "semantic_hash": "sha256:b7ead7db73205ef0d4cde2365cc5eaf5ab29f5d8e18b6d411ad24a8f922ddbe0"
+    },
     "backend/app/services/discussion_service.py": {
       "entities": [
         "DiscussionService"
@@ -54978,10 +55439,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:17692740448c35427f4981b3c50e0f2655019805a053b24717ad05b3ea551aeb",
+      "hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
       "language": "python",
       "module_page": "snapshot_service",
-      "semantic_hash": "sha256:440d66a0294fb8756adfc9ad3f2c5e1d90f62a7c85cc9ecf17f75790e6be5378"
+      "semantic_hash": "sha256:8c32f41f9a362f9cbdf2cead8ab0e9605c016b16f22f4cc522cc5debf83df41c"
     },
     "backend/app/services/system_settings_service.py": {
       "entities": [
@@ -55348,7 +55809,7 @@
           }
         }
       },
-      "hash": "sha256:8ce4f50f58a62462025900342e1720309e9e4f1f067abd21412f123a4db3404a",
+      "hash": "sha256:70f708062432c526d04131003ff117b8e7e206748f6883ade00d67e331b9d32a",
       "language": "python",
       "module_page": "task_domain_service",
       "semantic_hash": "sha256:64e802cee248391a3d3f1ab798c150d8165a5f4d26df8bf51bfe164fe1b8baf8"
@@ -56530,7 +56991,7 @@
           }
         }
       },
-      "hash": "sha256:a6038325027de2d7719aac0bcd002aa90cc9c89439e09548948cb1d4790a874a",
+      "hash": "sha256:8145380c94c5896cd44f9ba0581437b5c6e69a27cae98c890f3b6debfb3129ee",
       "language": "python",
       "module_page": "test_autonomy_migrations",
       "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
@@ -57032,7 +57493,7 @@
           }
         }
       },
-      "hash": "sha256:68f2364edbfc3afe13cc36662fc14b93ba34a54ac0d07a082c6cb93832e921b8",
+      "hash": "sha256:ceb27d873d11c5efd6d61a485299d94870e0a6fb85c4dbdedc4522da81b21bcb",
       "language": "python",
       "module_page": "test_source_preflight",
       "semantic_hash": "sha256:86e4830f43eddcdcf277ede91513dddafabcf761d398f9648d4bd984cd69cd80"
@@ -57167,7 +57628,7 @@
           }
         }
       },
-      "hash": "sha256:4a4c9f01e079dabb4e248320a4509f82650c59a2f6513b44aeea507ca400b4b4",
+      "hash": "sha256:a5b0ce0baab8cb7d7c95d938cb6446f6e97381b82d19a641c70fc0412870d19d",
       "language": "python",
       "module_page": "test_sqlite_migrations",
       "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
@@ -57768,7 +58229,7 @@
           }
         }
       },
-      "hash": "sha256:e3dee4cb0eee013efcb2cf86b9e1856068be12b5744c4f8a6d7d33b6c20abfe9",
+      "hash": "sha256:408457c1453ecba75839a6c43f442085ebdd44f34f1b3159297c191637d0657d",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
       "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"
@@ -58337,7 +58798,7 @@
           }
         }
       },
-      "hash": "sha256:a47d17e29b704e20b5fc863980b3808f94c78067d7fa2fe85d7897252862833f",
+      "hash": "sha256:fa71590f27f27890112630b42a23cf6a1b52ac18f442e7845849d2fbe110a82a",
       "language": "python",
       "module_page": "test_database_harness",
       "semantic_hash": "sha256:8aa2e3c36005907481aace31819f3a17775d38d5c81bdbdf8d871aa8b7b20084"
@@ -58364,6 +58825,30 @@
       "language": "python",
       "module_page": "test_delivery_dependencies",
       "semantic_hash": "sha256:341be5517bfdf0196a73c561aceb35e47e8593f647b46f345bf99e66153817e8"
+    },
+    "backend/tests/test_delivery_metrics.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Recorded workflow instants, durable scope and missing history stay distinct.",
+          "functions": {
+            "accepted_work": "—",
+            "test_duration_samples_use_events_and_keep_unknown_and_censored_histories": "—",
+            "test_ledger_is_immutable_and_restoration_does_not_create_capture_history": "—",
+            "test_observation_rollback_and_unknown_legacy_dates": "—",
+            "test_observations_survive_hierarchy_moves_reopen_and_deletion": "—",
+            "test_scope_at_event_and_permission_isolation_are_preserved": "—"
+          }
+        }
+      },
+      "hash": "sha256:f74ed7a772c4654443be9979e1e103ed5f0a4328a14e57051a31de94e15b513e",
+      "language": "python",
+      "module_page": "test_delivery_metrics",
+      "semantic_hash": "sha256:b3ebd5c086b5cf768cea31b200d17467d512aba0c02b990c55c07dad9216d9f4"
     },
     "backend/tests/test_delivery_scenarios.py": {
       "entities": [
@@ -59169,6 +59654,42 @@
       "language": "typescript",
       "module_page": "TaskRoutingPanel",
       "semantic_hash": "sha256:8ba46ab9a97283d9c4d5cc007a2c5443c05ecd3ee991b11e865422a76942a020"
+    },
+    "frontend/src/components/analytics/DeliveryAnalytics.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:923a379484d851778d585a38cd49c47fb71c7c387a5c1fbcea5d030982b3770b",
+      "language": "typescript",
+      "module_page": "DeliveryAnalytics.test",
+      "semantic_hash": "sha256:146f1af2b8759c5b2f5f3ade9e2e48663750bca9d4c712720aedc1a23ad73db3"
+    },
+    "frontend/src/components/analytics/DeliveryAnalytics.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.tsx`._",
+          "functions": {
+            "DeliveryAnalytics": "—"
+          }
+        }
+      },
+      "hash": "sha256:da9ea51d96dd50172556ca428eac751470318d70e2b3e7a83407718012fcd2ef",
+      "language": "typescript",
+      "module_page": "DeliveryAnalytics",
+      "semantic_hash": "sha256:1b42e4bf5a8bc8d221ab8e74fd97c204e778eb7d3dae4ebdcb60eb53aa48a0be"
     },
     "frontend/src/components/analytics/TaskStatusFlow.tsx": {
       "entities": [
@@ -66096,7 +66617,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:fddbe9454dafa01ac6fa0f83116dbd1dd8039782a910e32b9633c6328aaba58b",
+      "hash": "sha256:48a2e8b2c8c68ea251255d794b4dc0b06b58d47dd713d9194c787958538b2b4d",
       "language": "typescript",
       "module_page": "resources.en",
       "semantic_hash": "sha256:71ca1ac0d43406f2dc0b15b120f647a14385465f44d5e9d662077680def4fd3d"
@@ -66113,7 +66634,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:7f096f5c7d5fd739a28f8803e2c20268d0ae1b92e1e48eec3b4d1bb9637e1f7a",
+      "hash": "sha256:6d4a8c41a8b0d7a610a3357581f4c4ed57ebac6a02b02d862d9ea948660a20ab",
       "language": "typescript",
       "module_page": "resources.ru",
       "semantic_hash": "sha256:ebdc0093465ad90e4020ed6dde008806ceeafe3df2ca8717c734f28b754886c4"
@@ -66610,10 +67131,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:62cac371562fef7123fd51302bf3b355d265c7c1c01147975be6199026d93a06",
+      "hash": "sha256:c95253f18c8ca8a6bd571454a85dbab9e5e69ecc0b4932b3a34dc54d4ef12d8f",
       "language": "typescript",
       "module_page": "AnalyticsPage",
-      "semantic_hash": "sha256:bf39f2272b3d42a9b53a3eda37dbd1ae3d4dad73f2616da04f3611350b6f0896"
+      "semantic_hash": "sha256:794c4e84290e97d13bd22d176328fefa68561771c13c6bb5c2f164cc111d8c96"
     },
     "frontend/src/pages/CalendarPage.tsx": {
       "entities": [
@@ -68136,6 +68657,23 @@
       "language": "typescript",
       "module_page": "calendarService",
       "semantic_hash": "sha256:d0cfcfa05e04ca31063190f0ad11bc19917d6b30fc17a16c27695ea433202150"
+    },
+    "frontend/src/services/deliveryMetricsService.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/services/deliveryMetricsService.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:b79320eaa748291dabe06cee8ba1f3f4a71c2ec28d3dd5917fef4e3984ca16e4",
+      "language": "typescript",
+      "module_page": "deliveryMetricsService",
+      "semantic_hash": "sha256:73522eb282f5cfd882e436f2f6f93bbe9b597d2bc89cc721b102934b6c8b039d"
     },
     "frontend/src/services/discussionService.ts": {
       "entities": [
@@ -70939,6 +71477,96 @@
       "language": "typescript",
       "module_page": "types_calendar",
       "semantic_hash": "sha256:b9cdaff73b89060cb1760fb253b077dde9446e79645784eff265bace47a13b7e"
+    },
+    "frontend/src/types/deliveryMetrics.ts": {
+      "entities": [
+        "DurationSamples",
+        "DeliveryQueueItem",
+        "DeliveryMetrics"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "DurationSamples",
+          "occurrence": 1,
+          "page": "deliveryMetrics_DurationSamples"
+        },
+        {
+          "name": "DeliveryQueueItem",
+          "occurrence": 1,
+          "page": "deliveryMetrics_DeliveryQueueItem"
+        },
+        {
+          "name": "DeliveryMetrics",
+          "occurrence": 1,
+          "page": "DeliveryMetrics"
+        }
+      ],
+      "entity_pages": {
+        "DeliveryMetrics": "DeliveryMetrics",
+        "DeliveryQueueItem": "deliveryMetrics_DeliveryQueueItem",
+        "DurationSamples": "deliveryMetrics_DurationSamples"
+      },
+      "generated_semantics": {
+        "entities": {
+          "DeliveryMetrics": {
+            "attributes": {
+              "acceptance_events": "—",
+              "accepted_leaf_tasks": "—",
+              "canceled_leaf_tasks": "—",
+              "contract_version": "—",
+              "coverage": "—",
+              "cycle_time": "—",
+              "lead_time": "—",
+              "queues_truncated": "—",
+              "recovery_queue": "—",
+              "rejection_events": "—",
+              "reopened_events": "—",
+              "review_delay": "—",
+              "review_queue": "—",
+              "scope_basis": "—",
+              "window_end": "—",
+              "window_start": "—"
+            },
+            "description": "_Auto-generated from `DeliveryMetrics` in `frontend/src/types/deliveryMetrics.ts`._",
+            "methods": {}
+          },
+          "DeliveryQueueItem": {
+            "attributes": {
+              "age_seconds": "—",
+              "reason": "—",
+              "task_id": "—",
+              "title": "—"
+            },
+            "description": "_Auto-generated from `DeliveryQueueItem` in `frontend/src/types/deliveryMetrics.ts`._",
+            "methods": {}
+          },
+          "DurationSamples": {
+            "attributes": {
+              "censored_count": "—",
+              "mean": "—",
+              "median": "—",
+              "sample_count": "—",
+              "unit": "—",
+              "unknown_count": "—"
+            },
+            "description": "_Auto-generated from `DurationSamples` in `frontend/src/types/deliveryMetrics.ts`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "DeliveryMetrics": "—",
+            "DeliveryQueueItem": "—",
+            "DurationSamples": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/types/deliveryMetrics.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:21d91b484d1a2eeabe0fc34ca6231d1f511231d7fb850858c58f0925a8986b7e",
+      "language": "typescript",
+      "module_page": "deliveryMetrics",
+      "semantic_hash": "sha256:c8b4d7310cf684c99e8fc0440a6798e32280874544098153952bcb6e40ba70db"
     },
     "frontend/src/types/emailSettings.ts": {
       "entities": [
