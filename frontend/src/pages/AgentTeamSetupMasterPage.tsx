@@ -736,7 +736,12 @@ const AgentTeamSetupMasterPage = () => {
                                 aria-label={t('agentTeamSetup.blockersLabel')}
                             >
                                 {mobileBlockerCodes.map(code => (
-                                    <li key={code} className="pill warn mono">{code}</li>
+                                    <li key={code} className="pill warn">
+                                        <span>{t(`agentTeamSetup.blockerRecovery.${code}`, {
+                                            defaultValue: t('agentTeamSetup.blockerRecovery.unknown'),
+                                        })}</span>
+                                        <small className="mono">{code}</small>
+                                    </li>
                                 ))}
                             </ul>
                         )}

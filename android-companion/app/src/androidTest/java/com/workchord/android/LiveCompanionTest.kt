@@ -421,6 +421,10 @@ class LiveCompanionTest {
         assumeTrue("Presentation capture must be explicitly selected",
             InstrumentationRegistry.getArguments().getString("presentationControl") == "enabled")
         qualify()
+        if (tokens.baseUrl.trimEnd('/') != origin) {
+            app.onNodeWithText("Server address").performTextReplacement(origin)
+            click("Use this server")
+        }
         val locales = context.getSystemService(android.app.LocaleManager::class.java)
         locales.applicationLocales = android.os.LocaleList.getEmptyLocaleList()
         device.executeShellCommand("cmd uimode night no")

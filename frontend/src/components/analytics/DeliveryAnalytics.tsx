@@ -24,7 +24,8 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
     // feedback-policy: query loading,error,retry,empty
     const report = useQuery({ queryKey: ['deliveryMetrics', params], queryFn: () => deliveryMetricsService.get(params), enabled });
     const number = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 });
-    const duration = (seconds: number | null) => seconds === null ? t('deliveryAnalytics.unknown') : number.format(seconds / 86400);
+    const duration = (seconds: number | null) => seconds === null ? t('deliveryAnalytics.unknown')
+        : seconds > 0 && seconds < 864 ? `<${number.format(0.01)}` : number.format(seconds / 86400);
     const queue = (title: string, items: DeliveryQueueItem[]) => <section className="min-w-0">
         <h4 className="mb-3 font-semibold">{title}</h4>
         {items.length === 0 ? <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueEmpty')}</p> : <ul className="divide-y divide-border-subtle">

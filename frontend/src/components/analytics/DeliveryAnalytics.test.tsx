@@ -14,7 +14,7 @@ const sample = (mean: number | null) => ({ unit: 'elapsed_seconds' as const, sam
     mean, median: mean, censored_count: 0, unknown_count: mean === null ? 1 : 0 });
 const report: DeliveryMetrics = { contract_version: 1, window_start: '2026-09-01T00:00:00Z', window_end: '2026-10-01T00:00:00Z',
     scope_basis: 'scope_at_observation', accepted_leaf_tasks: 1, acceptance_events: 1, rejection_events: 0,
-    canceled_leaf_tasks: 0, reopened_events: 0, lead_time: sample(null), cycle_time: sample(0), review_delay: sample(86400),
+    canceled_leaf_tasks: 0, reopened_events: 0, lead_time: sample(null), cycle_time: sample(0), review_delay: sample(3),
     coverage: { observation_count: 3, current_leaves_without_capture: 2, legacy_closed_acceptance_unknown: 1 },
     review_queue: [{ task_id: 7, title: 'Ready artifact', reason: 'awaiting_review', age_seconds: null }],
     recovery_queue: [], queues_truncated: false };
@@ -26,6 +26,7 @@ describe('Delivery evidence', () => {
         renderWithProviders(<DeliveryAnalytics iterationId={9} />);
         expect(await screen.findByRole('link', { name: 'Ready artifact' })).toHaveAttribute('href', '/tasks?task=7');
         expect(screen.getAllByText('Unknown').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('<0.01').length).toBeGreaterThan(0);
         expect(screen.getByText('3 recorded events. 2 current deliverables have no capture event; 1 closed deliverables have unknown acceptance.')).toBeVisible();
         expect(metrics.get).toHaveBeenCalledWith({ iteration_id: 9, lookback_days: 30 });
         expect(projects.getAll).not.toHaveBeenCalled();
