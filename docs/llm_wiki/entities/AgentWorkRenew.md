@@ -40,14 +40,17 @@ flowchart LR
     n2["renew_my_work (backend/app/mcp_agent_tools.py)"]
     n3["renew_my_agent_work (backend/app/routers/agent.py)"]
     n4["AgentWorkService.renew_work (backend/app/services/agent_work_service.py)"]
+    n5["backend/tests/support/runtime_peer.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_work_service.md"
+    click n5 "../modules/runtime_peer.md"
 ```
 
 ### Summary
@@ -69,3 +72,4 @@ flowchart LR
 | `renew_my_work` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `renew_my_agent_work` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService.renew_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |

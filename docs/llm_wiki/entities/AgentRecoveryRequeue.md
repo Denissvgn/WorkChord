@@ -41,17 +41,20 @@ flowchart LR
     n2["requeue_agent_recovery (backend/app/mcp_agent_tools.py)"]
     n3["requeue_agent_recovery_task (backend/app/routers/agent.py)"]
     n4["AgentWorkService.requeue_recovery (backend/app/services/agent_work_service.py)"]
-    n5["test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed (backend/tests/test_agent_team_setup_qualification.py)"]
+    n5["backend/tests/support/runtime_peer.py"]
+    n6["test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed (backend/tests/test_agent_team_setup_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_work_service.md"
-    click n5 "../modules/test_agent_team_setup_qualification.md"
+    click n5 "../modules/runtime_peer.md"
+    click n6 "../modules/test_agent_team_setup_qualification.md"
 ```
 
 ### Summary
@@ -73,4 +76,5 @@ flowchart LR
 | `requeue_agent_recovery` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `requeue_agent_recovery_task` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService.requeue_recovery` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |

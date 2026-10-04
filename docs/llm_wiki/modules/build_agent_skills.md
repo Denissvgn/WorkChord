@@ -4,6 +4,8 @@
 
 ## Description
 
+Generated submission tables include the optional typed `criterion_progress` packet alongside artifacts and version/fence fields. A complete schema-field parity assertion guards against the prose and generated table advertising different submission contracts.
+
 Canonical role guidance requires stable criterion IDs and revisions for submission and independent review. Package identities and example manifest checksum pins must advance together; frozen published role and catalog identities remain append-only.
 
 Validate and reproducibly package WorkChord role skills.

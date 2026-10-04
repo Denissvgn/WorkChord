@@ -16,7 +16,7 @@ Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
 | `app.main` | `app` |
 | `app.mcp_server` | `mcp` |
 | `app.routers` | `agent` |
-| `app.schemas.agent` | `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
+| `app.schemas.agent` | `AgentWorkSubmit`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
 | `json` | `json` |
 | `pathlib` | `Path` |
@@ -99,3 +99,4 @@ flowchart LR
 | `test_model_aware_package_contract_matches_live_rest_and_mcp` | *(async)* `() -> None` | `@pytest.mark.contract`, `@pytest.mark.asyncio` | — |
 | `test_server_advertises_complete_model_aware_feature` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_role_versions_are_new_frozen_identities` | `() -> None` | `@pytest.mark.contract` | — |
+| `test_generated_submission_contract_includes_canonical_progress` | `() -> None` | `@pytest.mark.contract` | — |

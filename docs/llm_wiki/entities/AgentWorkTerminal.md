@@ -54,6 +54,7 @@ flowchart LR
     n5["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
     n6["AgentWorkService.fail (backend/app/services/agent_work_service.py)"]
     n7["AgentWorkService.submit (backend/app/services/agent_work_service.py)"]
+    n8["backend/tests/support/runtime_peer.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,6 +62,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -68,6 +70,7 @@ flowchart LR
     click n5 "../modules/agent_work_service.md"
     click n6 "../modules/agent_work_service.md"
     click n7 "../modules/agent_work_service.md"
+    click n8 "../modules/runtime_peer.md"
 ```
 
 ### Summary
@@ -92,3 +95,4 @@ flowchart LR
 | `AgentWorkService._terminal_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.fail` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.submit` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |

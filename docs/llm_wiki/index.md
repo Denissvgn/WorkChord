@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1455 | [Open section](#entities) |
-| Modules | 633 | [Open section](#modules) |
+| Modules | 635 | [Open section](#modules) |
 | Workflows | 169 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 518 | [Open section](#entry-point-flows) |
+| Entry-point flows | 519 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1893,6 +1893,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
 - [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper.
 - [run_disposable_checks](modules/run_disposable_checks.md) - Run database, frontend and browser checks using isolated native processes.
+- [runtime_peer](modules/runtime_peer.md) - Disposable protocol peer: each invocation uses a new process and connection.
 - [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
 - [safeUrl](modules/safeUrl.md) - `frontend/src/utils/safeUrl.ts`
 - [savedView](modules/savedView.md) - `frontend/src/types/savedView.ts`
@@ -2007,6 +2008,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_routing_wave3_contract](modules/test_agent_routing_wave3_contract.md) - Focused policy and schema contracts for deterministic Wave 3 routing.
 - [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) - Cross-surface qualification scenarios for model-aware agent routing.
 - [test_agent_run_trust_compatibility](modules/test_agent_run_trust_compatibility.md) - Compatibility coverage for persisted and projected run-model trust evidence.
+- [test_agent_runtime_recovery](modules/test_agent_runtime_recovery.md) - Separate-process protocol simulation; no provider or pilot acceptance implied.
 - [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) - Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
 - [test_agent_team_setup](modules/test_agent_team_setup.md) - Contract and service coverage for portable agent-team setup.
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
@@ -2802,6 +2804,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-run](flows/process-run.md) - entry: `main`
 - [process-run_android_checks](flows/process-run_android_checks.md) - entry: `main`
 - [process-run_disposable_checks](flows/process-run_disposable_checks.md) - entry: `main`
+- [process-runtime_peer](flows/process-runtime_peer.md) - entry: `__main__`
 - [process-seal](flows/process-seal.md) - entry: `main`
 - [process-seed](flows/process-seed.md) - entry: `main`
 - [process-serve_disposable_api](flows/process-serve_disposable_api.md) - entry: `main`

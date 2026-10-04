@@ -19,17 +19,17 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1455,
-      "flows": 518,
+      "flows": 519,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 633,
+      "modules": 635,
       "workflows": 169
     },
     "dependency_architecture": 2,
-    "total": 2790
+    "total": 2793
   },
   "dependency_pages": {
     "count": 2,
@@ -36327,6 +36327,119 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "runtime_peer",
+        "source_path": "backend/tests/support/runtime_peer.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 105,
+              "step": "command_transaction",
+              "step_index": 8,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 118,
+              "step": "command_transaction",
+              "step_index": 8,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 120,
+              "step": "command_transaction",
+              "step_index": 8,
+              "target": "db.info.pop"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 63,
+              "step": "__main__",
+              "target": "print"
+            },
+            {
+              "kind": "external_call",
+              "line": 63,
+              "step": "__main__",
+              "target": "json.dumps"
+            },
+            {
+              "kind": "external_call",
+              "line": 63,
+              "step": "__main__",
+              "target": "asyncio.run"
+            },
+            {
+              "kind": "external_call",
+              "line": 22,
+              "step": "execute",
+              "target": "create_async_engine"
+            },
+            {
+              "kind": "external_call",
+              "line": 28,
+              "step": "execute",
+              "target": "async_sessionmaker"
+            },
+            {
+              "kind": "external_call",
+              "line": 71,
+              "step": "current_command",
+              "target": "getattr"
+            },
+            {
+              "kind": "external_call",
+              "line": 72,
+              "step": "current_command",
+              "target": "isinstance"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 72,
+              "step": "current_command",
+              "target": "info.get"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "__main__",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/tests/support/runtime_peer.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/services/agent_work_service.py"
+          ],
+          "step_count": 57,
+          "truncated": false
+        }
+      },
+      "id": "process-runtime_peer",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "seal",
         "source_path": "scripts/load/seal.py",
         "symbol": "main"
@@ -39292,6 +39405,7 @@
         "flows/process-run.md",
         "flows/process-run_android_checks.md",
         "flows/process-run_disposable_checks.md",
+        "flows/process-runtime_peer.md",
         "flows/process-seal.md",
         "flows/process-seed.md",
         "flows/process-serve_disposable_api.md",
@@ -39668,6 +39782,7 @@
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
+        "modules/runtime_peer.md",
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
@@ -39839,6 +39954,7 @@
         "modules/test_agent_routing_wave3_contract.md",
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_run_trust_compatibility.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
@@ -41317,6 +41433,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_team_setup_qualification.md"
       ],
@@ -41361,6 +41478,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_routing_rollout.md",
         "modules/test_agent_routing_service.md",
@@ -41711,6 +41829,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md"
@@ -41743,6 +41862,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_wave6_qualification.md"
@@ -42354,6 +42474,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_model_catalog_api.md"
       ],
@@ -42466,6 +42587,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md"
       ],
       "role": "semantic",
@@ -42494,7 +42616,9 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md",
+        "modules/test_agent_skill_routing_guidance.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -42510,6 +42634,7 @@
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/runtime_peer.md",
         "modules/schemas_agent.md"
       ],
       "role": "semantic",
@@ -43275,6 +43400,7 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_brief.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -52712,6 +52838,7 @@
         "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task_brief.md",
         "modules/task_brief_service.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
@@ -52747,6 +52874,7 @@
         "modules/schemas_template.md",
         "modules/schemas_triage.md",
         "modules/task_brief_service.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_task_domain.md"
       ],
@@ -66357,6 +66485,22 @@
       "title": "run_disposable_checks Module"
     },
     {
+      "canonical_path": "modules/runtime_peer.md",
+      "id": "runtime_peer",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/runtime_peer",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/agent_work_service.md",
+        "modules/commands.md",
+        "modules/runtime_peer.md",
+        "modules/schemas_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/support/runtime_peer.py",
+      "title": "runtime_peer Module"
+    },
+    {
       "canonical_path": "modules/runtime_telemetry.md",
       "id": "runtime_telemetry",
       "kind": "modules",
@@ -69578,6 +69722,28 @@
       "role": "semantic",
       "source_path": "backend/tests/test_agent_run_trust_compatibility.py",
       "title": "test_agent_run_trust_compatibility Module"
+    },
+    {
+      "canonical_path": "modules/test_agent_runtime_recovery.md",
+      "id": "test_agent_runtime_recovery",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_runtime_recovery",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_main.md",
+        "modules/models_agent.md",
+        "modules/models_task.md",
+        "modules/schemas_task.md",
+        "modules/schemas_task_brief.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/test_agent_runtime_recovery.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_runtime_recovery.py",
+      "title": "test_agent_runtime_recovery Module"
     },
     {
       "canonical_path": "modules/test_agent_skill_routing_guidance.md",
@@ -82348,6 +82514,24 @@
       "title": "run_disposable_checks"
     },
     {
+      "canonical_path": "flows/process-runtime_peer.md",
+      "id": "process-runtime_peer",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-runtime_peer",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/agent_work_service.md",
+        "modules/commands.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/runtime_peer.md",
+        "modules/schemas_agent.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/tests/support/runtime_peer.py",
+      "title": "runtime_peer"
+    },
+    {
       "canonical_path": "flows/process-seal.md",
       "id": "process-seal",
       "kind": "flows",
@@ -82987,6 +83171,7 @@
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
+        "modules/runtime_peer.md",
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
@@ -83158,6 +83343,7 @@
         "modules/test_agent_routing_wave3_contract.md",
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_run_trust_compatibility.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
@@ -83631,6 +83817,7 @@
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
+        "modules/runtime_peer.md",
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
@@ -83802,6 +83989,7 @@
         "modules/test_agent_routing_wave3_contract.md",
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_run_trust_compatibility.md",
+        "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
@@ -83918,5 +84106,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:85982944df075972de3e6379aeab46c3d93c57316ee5a5de64fbffbd1115cc86"
+  "source_hash": "sha256:9332f12c905df33b0ebd93aa64ab8ba68f5a0c2b025ae49c592832814b3c54d8"
 }
