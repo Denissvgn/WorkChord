@@ -68,12 +68,12 @@ workspace, that guide also describes the explicit trusted-local mode.
 
 ## Documentation
 
-- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md)
+- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md) · [delivery analytics](docs/delivery-analytics.md)
 - **Accounts and recovery:** [sign-in, permissions, sessions, and snapshots](docs/identity-and-recovery.md)
 - **Configuration:** [environment settings](.env.example)
 - **Self-hosting:** [server setup](docs/runbooks/self-hosted-server-acceptance.md) · [deployment topology](docs/runbooks/postgresql-deployment.md)
 - **Database operations:** [operator guide and runbook index](docs/runbooks/postgresql-operations.md) · [backup and restore](docs/runbooks/postgresql-backup-restore.md) · [troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
-- **Agent integrations:** [team setup](docs/agent-team-setup.md) · [planner role](agent-skills/workchord-pm/SKILL.md) · [worker role](agent-skills/workchord-worker/SKILL.md) · [model routing](docs/runbooks/model-aware-routing.md)
+- **Agent integrations:** [external runtime and role references](docs/external-agent-runtime.md) · [team setup](docs/agent-team-setup.md) · [usage and pricing](docs/execution-usage.md)
 - **API reference:** interactive documentation at `/docs` on your backend instance
 
 ## License
