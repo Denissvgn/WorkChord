@@ -1059,3 +1059,39 @@ Mobile setup blockers now pair localized recovery instructions with secondary di
 - Pages deprecated: 0
 - Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ff73a103dcafa7d96795e72e3ba6a5538977069658bd36aedc9c382d6cf0c47c`
+- Pages created: 0
+- Pages updated: 14
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2822
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+### Bounded delivery histories and truthful effort coverage
+
+Delivery reports select their observation window plus bounded prior episode state, preserving unfinished histories and independently checking current capture coverage. Usage coverage treats explicit human effort as a measured value alongside quantities and cost, retaining zero versus unknown semantics.
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b6b8f16a474786dd9a8c674e2d28a9ccbcc10469b68beecac4da11df2fb941eb`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2836
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

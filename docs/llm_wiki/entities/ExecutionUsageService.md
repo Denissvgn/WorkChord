@@ -39,10 +39,11 @@ flowchart LR
     n5["record_execution_usage (backend/app/routers/agent.py)"]
     n6["execution_usage_summary (backend/app/routers/task_domain.py)"]
     n7["test_concurrent_usage_corrections_reserve_one_head (backend/tests/test_execution_usage.py)"]
-    n8["test_reported_zero_and_unknown_are_not_repriced_by_live_metadata (backend/tests/test_execution_usage.py)"]
-    n9["test_usage_correction_is_versioned_and_atomic (backend/tests/test_execution_usage.py)"]
-    n10["test_usage_replay_correction_and_currency_buckets (backend/tests/test_execution_usage.py)"]
-    n11["test_usage_unknown_without_reports_and_foreign_reporter_is_denied (backend/tests/test_execution_usage.py)"]
+    n8["test_human_only_usage_summary_preserves_zero_and_unknown (backend/tests/test_execution_usage.py)"]
+    n9["test_reported_zero_and_unknown_are_not_repriced_by_live_metadata (backend/tests/test_execution_usage.py)"]
+    n10["test_usage_correction_is_versioned_and_atomic (backend/tests/test_execution_usage.py)"]
+    n11["test_usage_replay_correction_and_currency_buckets (backend/tests/test_execution_usage.py)"]
+    n12["test_usage_unknown_without_reports_and_foreign_reporter_is_denied (backend/tests/test_execution_usage.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -54,6 +55,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/execution_usage_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -66,6 +68,7 @@ flowchart LR
     click n9 "../modules/test_execution_usage.md"
     click n10 "../modules/test_execution_usage.md"
     click n11 "../modules/test_execution_usage.md"
+    click n12 "../modules/test_execution_usage.md"
 ```
 
 ### Summary
@@ -85,6 +88,7 @@ flowchart LR
 | `record_execution_usage` | call | [routers_agent](../modules/routers_agent.md) | 1 |
 | `execution_usage_summary` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `test_concurrent_usage_corrections_reserve_one_head` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |
+| `test_human_only_usage_summary_preserves_zero_and_unknown` | call | [test_execution_usage](../modules/test_execution_usage.md) | 2 |
 | `test_reported_zero_and_unknown_are_not_repriced_by_live_metadata` | call | [test_execution_usage](../modules/test_execution_usage.md) | 2 |
 | `test_usage_correction_is_versioned_and_atomic` | call | [test_execution_usage](../modules/test_execution_usage.md) | 3 |
 | `test_usage_replay_correction_and_currency_buckets` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |

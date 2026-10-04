@@ -4,7 +4,7 @@
 
 ## Description
 
-Permission-scoped reports aggregate immutable observations within a declared elapsed-time window. Accepted delivery counts use distinct task identities, with acceptance/rejection/reopen events reported separately. Each duration has its own sample, missing-start and incomplete-episode counts; missing history is never reconstructed from status dates. Bounded current review/recovery queues recheck task visibility and expose unknown ages explicitly.
+Permission-scoped reports load window observations and at most four pre-window state facts per relevant or unfinished identity. SQL ranking retains first capture, latest execution reset, resolution and pending-state boundaries with timestamp/ID ordering; the row cap applies to this selected context rather than lifetime history. Current-leaf capture coverage is queried separately so completed old histories do not appear uncovered. Accepted delivery counts use distinct task identities, with acceptance/rejection/reopen events reported separately. Each duration has its own sample, missing-start and incomplete-episode counts; missing history is never reconstructed from status dates. Bounded current review/recovery queues recheck task visibility and expose unknown ages explicitly.
 
 Event-based scoped delivery metrics; status dates never supply missing instants.
 
@@ -23,7 +23,7 @@ Event-based scoped delivery metrics; status dates never supply missing instants.
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `collections` | `defaultdict` |
 | `datetime` | `timedelta` |
-| `sqlalchemy` | `select` |
+| `sqlalchemy` | `and_`, `case`, `func`, `or_`, `select` |
 | `statistics` | `mean`, `median` |
 
 ## Local dependency map

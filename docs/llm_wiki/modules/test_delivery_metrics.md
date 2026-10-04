@@ -15,9 +15,11 @@ Recorded workflow instants, durable scope and missing history stay distinct.
 | `app.models.delivery_observation` | `DeliveryObservation` |
 | `app.models.recovery` | `TaskDeletionFence` |
 | `app.models.task` | `Task` |
+| `app.query_limits` | `CollectionLimitExceededError` |
 | `app.schemas.task` | `TaskCreate` |
 | `app.schemas.task_brief` | `BriefCriterion`, `CriterionProgress`, `ProgressWrite`, `TaskBrief`, `TaskReviewWrite` |
 | `app.schemas.task_domain` | `TaskActionRequest` |
+| `app.services` | `delivery_metrics_service` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService`, `summarize_observations` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_domain_service` | `TaskDomainService` |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (14) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -54,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -66,3 +68,5 @@ flowchart LR
 | `test_scope_at_event_and_permission_isolation_are_preserved` | *(async)* `(delivery_store)` | — | — |
 | `test_observation_rollback_and_unknown_legacy_dates` | *(async)* `(delivery_store)` | — | — |
 | `test_ledger_is_immutable_and_restoration_does_not_create_capture_history` | *(async)* `(delivery_store)` | — | — |
+| `test_window_report_ignores_large_completed_history_and_seeds_episodes` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories` | *(async)* `(delivery_store)` | — | — |

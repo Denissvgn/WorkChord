@@ -56,10 +56,10 @@ flowchart TD
 | [models_identity](modules/models_identity.md) | 21 | 2 |
 | [upgrade_service](modules/upgrade_service.md) | 21 | 12 |
 | [models_calendar](modules/models_calendar.md) | 20 | 2 |
+| [query_limits](modules/query_limits.md) | 20 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 20 | 8 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
-| [query_limits](modules/query_limits.md) | 19 | 0 |
 | [toast](modules/toast.md) | 19 | 0 |
 | [types_team](modules/types_team.md) | 19 | 0 |
 | [app_main](modules/app_main.md) | 17 | 45 |
@@ -537,7 +537,7 @@ flowchart TD
 | [test_client_contract](modules/test_client_contract.md) | 0 | 5 |
 | [test_database_harness](modules/test_database_harness.md) | 0 | 5 |
 | [test_delivery_dependencies](modules/test_delivery_dependencies.md) | 0 | 13 |
-| [test_delivery_metrics](modules/test_delivery_metrics.md) | 0 | 14 |
+| [test_delivery_metrics](modules/test_delivery_metrics.md) | 0 | 15 |
 | [test_execution_usage](modules/test_execution_usage.md) | 0 | 11 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 8 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |

@@ -10,8 +10,8 @@
 2. `time.as_utc`
 3. `time.utc_now`
 4. `query_limits.CollectionLimitExceededError`
-5. `query_limits.CollectionLimitExceededError`
-6. `authority.internal_authority`
+5. `authority.internal_authority`
+6. `time.as_utc`
 7. `delivery_metrics.DeliveryQueueItem`
 8. `time.as_utc`
 9. `query_limits.CollectionLimitExceededError`

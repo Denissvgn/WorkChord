@@ -1,6 +1,6 @@
 # ExecutionUsageSummary
 
-**Location:** `backend/app/schemas/execution_usage.py:72`
+**Location:** `backend/app/schemas/execution_usage.py:74`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_execution_usage](../modules/schemas_execution_usage.md)

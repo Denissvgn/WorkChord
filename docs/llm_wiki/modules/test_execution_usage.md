@@ -127,3 +127,5 @@ flowchart LR
 | `test_reported_zero_and_unknown_are_not_repriced_by_live_metadata` | *(async)* `(delivery_store)` | — | — |
 | `test_usage_correction_is_versioned_and_atomic` | *(async)* `(delivery_store)` | — | — |
 | `test_concurrent_usage_corrections_reserve_one_head` | *(async)* `(delivery_store)` | — | — |
+| `test_human_effort_is_a_measurement_for_coverage` | `(effort, coverage)` | `@pytest.mark.parametrize('effort', [None, Decimal('0'), Decimal('12.5')])`, `@pytest.mark.parametrize('coverage', ['complete', 'partial', 'unavailable'])` | — |
+| `test_human_only_usage_summary_preserves_zero_and_unknown` | *(async)* `(delivery_store)` | — | — |
