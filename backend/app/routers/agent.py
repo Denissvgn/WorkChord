@@ -105,6 +105,8 @@ from app.services.agent_team_setup_service import (
 )
 from app.routers.agent_skill_bundles import get_agent_skill_bundle_service
 from app.services.task_service import TaskVersionConflictError
+from app.schemas.execution_usage import ExecutionUsageResponse, ExecutionUsageWrite
+from app.services.execution_usage_service import ExecutionUsageService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -1334,3 +1336,21 @@ async def get_agent_run_detail(
     if not run:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent run not found")
     return _run_detail_response(service, run)
+
+
+@router.get("/agent/runs/{run_id}/usage", response_model=ExecutionUsageResponse | None)
+async def get_execution_usage(run_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]):
+    try:
+        return await ExecutionUsageService(db).latest(actor, run_id)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post("/agent/runs/{run_id}/usage", response_model=ExecutionUsageResponse)
+async def record_execution_usage(run_id: int, data: ExecutionUsageWrite, actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]):
+    try:
+        return await ExecutionUsageService(db).write(actor, run_id, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)

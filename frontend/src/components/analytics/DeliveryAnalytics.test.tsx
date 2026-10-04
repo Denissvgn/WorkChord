@@ -8,6 +8,7 @@ const metrics = vi.hoisted(() => ({ get: vi.fn() }));
 const projects = vi.hoisted(() => ({ getAll: vi.fn() }));
 vi.mock('../../services/deliveryMetricsService', () => ({ deliveryMetricsService: metrics }));
 vi.mock('../../services/projectService', () => ({ projectService: projects }));
+vi.mock('./ExecutionUsagePanel', () => ({ ExecutionUsagePanel: () => null }));
 
 const sample = (mean: number | null) => ({ unit: 'elapsed_seconds' as const, sample_count: mean === null ? 0 : 1,
     mean, median: mean, censored_count: 0, unknown_count: mean === null ? 1 : 0 });

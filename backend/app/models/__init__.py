@@ -143,3 +143,4 @@ from app.models.delivery_dependency import DeliveryDependency
 from app.models.discussion import TaskComment, TaskCommentRevision, TaskSubscription, InboxNotification
 from app.models.native_connection import NativeConnection
 from app.models.delivery_observation import DeliveryObservation
+from app.models.execution_usage import ExecutionUsageRecord

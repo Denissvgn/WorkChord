@@ -6,6 +6,7 @@ import { deliveryMetricsService } from '../../services/deliveryMetricsService';
 import { projectService } from '../../services/projectService';
 import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
+import { ExecutionUsagePanel } from './ExecutionUsagePanel';
 
 export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => {
     const { t, i18n } = useTranslation();
@@ -80,6 +81,7 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
                 missing: data.coverage.current_leaves_without_capture, legacy: data.coverage.legacy_closed_acceptance_unknown })}</p>
             <div className="grid gap-6 lg:grid-cols-2">{queue(t('deliveryAnalytics.reviewQueue'), data.review_queue)}{queue(t('deliveryAnalytics.recoveryQueue'), data.recovery_queue)}</div>
             {data.queues_truncated && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueLimit')}</p>}
+            <ExecutionUsagePanel key={`${params.project_id ?? ''}-${params.iteration_id ?? ''}-${days}`} scope={params} />
         </>}
     </section>;
 };

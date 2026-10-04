@@ -27,6 +27,8 @@ async def domain_result(awaitable):
         result = await awaitable
     except TaskVersionConflictError as exc:
         raise HTTPException(409, detail=exc.detail()) from exc
+    except LookupError as exc:
+        raise HTTPException(404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(422, detail=[{"type": "value_error", "loc": ["body"], "msg": str(exc)}]) from exc
     if result is None:
@@ -36,12 +38,24 @@ async def domain_result(awaitable):
 
 from app.schemas.delivery_metrics import DeliveryMetricsResponse
 from app.services.delivery_metrics_service import DeliveryMetricsService
+from decimal import Decimal
+from app.schemas.execution_usage import ExecutionUsageSummary
+from app.services.execution_usage_service import ExecutionUsageService
 
 
 @router.get("/tasks/delivery-metrics", response_model=DeliveryMetricsResponse)
 async def delivery_metrics(db: DB, project_id: int | None = Query(default=None, ge=1),
     iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366)):
     return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days))
+
+
+@router.get("/tasks/execution-usage", response_model=ExecutionUsageSummary)
+async def execution_usage_summary(db: DB, project_id: int | None = Query(default=None, ge=1),
+    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366),
+    budget_amount: Decimal | None = Query(default=None, ge=0, max_digits=18, decimal_places=6),
+    budget_currency: str | None = Query(default=None, pattern=r"^[A-Z]{3}$")):
+    return await domain_result(ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id,
+        lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
 
 
 @router.get("/tasks/lookup", response_model=TaskReferencePage)

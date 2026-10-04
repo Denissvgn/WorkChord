@@ -51,6 +51,17 @@ execution capacity while the task is still active.
 
 ## Handle Model Evidence and Escalation
 
+Use `agent_get_execution_usage_summary` or `/api/tasks/execution-usage` for an
+authorized project/iteration and stated observation window. Compare reports
+with accepted task identities, rejection/reopen events and review/recovery
+coverage. Unreported attempts and unknown costs remain visible; a succeeded
+run is not an accepted outcome. Simulated reports have separate totals.
+Worker-reported provider costs and immutable price-based estimates stay
+separate, with no implicit currency conversion or live repricing. Optional
+budgets are advisory comparisons for covered reports and do not authorize or
+block execution. Independently reconcile actual provider receipts before
+claiming measured delivery economics or pilot acceptance.
+
 Read the execution assignment's selected binding and routing snapshot beside
 the run's configured alias, binding ID/revision, observed resolved model, and
 trust state. Keep the evidence classes distinct:

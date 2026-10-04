@@ -5,6 +5,8 @@ the same audited command and read-model paths.
 """
 
 from app.commands import commit_or_flush
+from app.schemas.execution_usage import ExecutionUsageWrite
+from app.services.execution_usage_service import ExecutionUsageService
 import asyncio
 import hashlib
 import json
@@ -1878,6 +1880,28 @@ async def get_agent_pipeline(
         key: [task.model_dump(mode="json") for task in tasks]
         for key, tasks in pipeline.items()
     }
+
+
+async def get_execution_usage(db: AsyncSession, actor: AgentActor, run_id: int):
+    result = await ExecutionUsageService(db).latest(actor, run_id)
+    return result.model_dump(mode="json") if result else None
+
+
+async def record_execution_usage(db: AsyncSession, actor: AgentActor, run_id: int, payload: dict[str, Any]):
+    result = await ExecutionUsageService(db).write(actor, run_id, ExecutionUsageWrite.model_validate(payload))
+    return result.model_dump(mode="json")
+
+
+async def get_execution_usage_summary(db: AsyncSession, actor: AgentActor, *, project_id=None, iteration_id=None,
+    lookback_days=30, budget_amount=None, budget_currency=None):
+    from decimal import Decimal
+    from app.services.agent_service import actor_has_scope, AgentPermissionError
+    if not any(actor_has_scope(actor, scope) for scope in ("tasks:read", "planning:read", "admin")):
+        raise AgentPermissionError("The actor cannot read execution usage summaries")
+    amount = TypeAdapter(Decimal).validate_python(budget_amount) if budget_amount is not None else None
+    result = await ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id,
+        lookback_days=lookback_days, budget_amount=amount, budget_currency=budget_currency)
+    return result.model_dump(mode="json")
 
 
 async def get_agent_run_detail(

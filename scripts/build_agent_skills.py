@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.9.0"
+CATALOG_VERSION = "1.10.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.7.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -720,13 +720,31 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             path_required=("run_id",),
             tool_required=("run_id",),
         ),
+        _assigned_work_operation(
+            "execution-usage-read", "PM/worker", "GET", "/api/agent/runs/{run_id}/usage", "agent_get_execution_usage",
+            "Read the attempt's current immutable usage report and correction digest.",
+            path_required=("run_id",), tool_required=("run_id",), required_feature="execution-usage-v1",
+        ),
+        _assigned_work_operation(
+            "execution-usage-write", "worker", "POST", "/api/agent/runs/{run_id}/usage", "agent_record_execution_usage",
+            "Record attempt-total units with explicit provenance and coverage; preserve pricing and corrections.",
+            body_model="ExecutionUsageWrite", body_required=("report_id", "source", "provenance", "reporting_mode", "interval_start", "interval_end", "coverage"),
+            body_optional=("expected_previous_digest", "quantities", "reported_cost", "currency", "pricing_basis", "reported_human_effort_minutes"),
+            path_required=("run_id",), tool_required=("run_id", "payload"), required_feature="execution-usage-v1",
+        ),
+        _assigned_work_operation(
+            "execution-usage-summary", "PM/worker", "GET", "/api/tasks/execution-usage", "agent_get_execution_usage_summary",
+            "Compare scoped reported usage, accepted outcomes and advisory budgets with coverage.",
+            query_optional=("project_id", "iteration_id", "lookback_days", "budget_amount", "budget_currency"),
+            tool_optional=("project_id", "iteration_id", "lookback_days", "budget_amount", "budget_currency"), required_feature="execution-usage-v1",
+        ),
     ],
 }
 
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.9.0",
+        "version": "1.10.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -766,7 +784,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.8.0",
+        "version": "1.9.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

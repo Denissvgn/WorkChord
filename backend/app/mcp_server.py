@@ -934,6 +934,26 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool()
+    async def agent_get_execution_usage(run_id: int) -> dict[str, Any] | None:
+        """Read the current immutable usage report for an authorized attempt."""
+        return await _tool_call(("tasks:read", "runs:write", "work:execute", "planning:read"),
+            lambda db, actor: mcp_agent_tools.get_execution_usage(db, actor, run_id))
+
+    @mcp.tool()
+    async def agent_record_execution_usage(run_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        """Append an idempotent attempt-total usage report or explicit correction."""
+        return await _tool_call(("runs:write", "work:execute"),
+            lambda db, actor: mcp_agent_tools.record_execution_usage(db, actor, run_id, payload))
+
+    @mcp.tool()
+    async def agent_get_execution_usage_summary(project_id: Optional[int] = None, iteration_id: Optional[int] = None,
+        lookback_days: int = 30, budget_amount: Optional[str] = None, budget_currency: Optional[str] = None) -> dict[str, Any]:
+        """Read scoped reported usage, immutable price estimates and advisory coverage."""
+        return await _tool_call(("tasks:read", "planning:read"),
+            lambda db, actor: mcp_agent_tools.get_execution_usage_summary(db, actor, project_id=project_id, iteration_id=iteration_id,
+                lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
+
+    @mcp.tool()
     async def agent_list_ready_tasks(
         iteration_id: Optional[int] = None,
         tags: Optional[list[str]] = None,

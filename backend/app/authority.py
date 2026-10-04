@@ -330,6 +330,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
             owned_personal = True
         project_id = _object_project(session, obj)
         action = "edit"
+        if table == "execution_usage_records":
+            approved = (obj.run_identity, obj.report_id, obj.sequence, obj.digest)
+            if obj not in session.new or approved not in session.info.get("usage_report_authorizations", set()):
+                raise AuthorityError("usage_command_required", "Use the attributable execution usage command.")
+            action = "read"
         if protocol and table == "agent_runs" and obj.actor_id == authority.actor_id:
             action = "execute"
         if protocol and table == "agent_task_assignments":
