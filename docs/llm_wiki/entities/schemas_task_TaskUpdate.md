@@ -20,11 +20,11 @@ Schema for updating a task.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_version` | `Optional[int]` | `expected_version` | No | Yes | `None` | ge=1 | — | — |
-| `title` | `Optional[str]` | `title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
+| `title` | `Optional[str]` | `title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `priority` | `Optional[int]` | `priority` | No | Yes | `None` | ge=1; le=10 | — | — |
-| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | allow_inf_nan=False; ge=0 | — | — |
-| `effort_hours` | `Optional[float]` | `effort_hours` | No | Yes | `None` | allow_inf_nan=False; ge=0 | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | ge=0; allow_inf_nan=False | — | — |
+| `effort_hours` | `Optional[float]` | `effort_hours` | No | Yes | `None` | ge=0; allow_inf_nan=False | — | — |
 | `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | ge=1 | — | — |
 | `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
 | `estimate_provenance` | `Optional[Literal['unknown', 'assumed', 'estimated']]` | `estimate_provenance` | No | Yes | `None` | — | — | — |

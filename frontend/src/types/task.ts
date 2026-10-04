@@ -278,6 +278,13 @@ export type TaskImportDestination = 'tasks' | 'triage' | 'auto';
 export interface TasksImportRequest {
     text: string;
     destination?: TaskImportDestination;
+    expected_revision?: number;
+}
+
+export interface TaskTextContext {
+    text: string;
+    iteration_id: number;
+    iteration_revision: number;
 }
 
 export interface TasksImportResponse {

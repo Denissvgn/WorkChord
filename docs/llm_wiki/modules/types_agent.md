@@ -50,52 +50,52 @@ flowchart LR
 | [ModelAwareRoutingTopologyReadiness](../entities/ModelAwareRoutingTopologyReadiness.md) | Class | 127 | — | — |
 | [ModelAwareRoutingStatus](../entities/ModelAwareRoutingStatus.md) | Class | 136 | — | — |
 | [AgentCapabilities](../entities/AgentCapabilities.md) | Class | 144 | — | — |
-| [AgentProfileSkillCatalogItem](../entities/AgentProfileSkillCatalogItem.md) | Class | 159 | — | — |
-| [AgentActorRosterProfileSkill](../entities/types_agent_AgentActorRosterProfileSkill.md) | Class | 166 | — | — |
-| [AgentActorRosterProfile](../entities/types_agent_AgentActorRosterProfile.md) | Class | 177 | — | — |
-| [AgentModelCatalogEntry](../entities/types_agent_AgentModelCatalogEntry.md) | Class | 188 | — | — |
-| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Class | 205 | — | — |
-| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Class | 219 | — | — |
-| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Class | 233 | — | — |
-| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Class | 238 | — | — |
-| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Class | 257 | — | — |
-| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Class | 267 | — | — |
-| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Class | 276 | — | — |
-| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Class | 281 | — | — |
-| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Class | 298 | `AgentActor` | — |
-| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Class | 308 | — | — |
-| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Class | 316 | — | — |
-| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Class | 324 | — | — |
-| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Class | 336 | — | — |
-| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Class | 356 | — | — |
-| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Class | 363 | — | — |
-| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Class | 371 | — | — |
-| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Class | 385 | — | — |
-| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Class | 392 | — | — |
-| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Class | 433 | — | — |
-| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Class | 472 | — | — |
-| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Class | 496 | — | — |
-| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Class | 514 | — | — |
-| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Class | 529 | — | — |
-| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Class | 552 | — | — |
-| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Class | 560 | — | — |
-| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Class | 565 | — | — |
-| [AgentRun](../entities/types_agent_AgentRun.md) | Class | 578 | — | — |
-| [AgentPipeline](../entities/AgentPipeline.md) | Class | 606 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Class | 617 | — | — |
-| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Class | 627 | — | — |
-| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Class | 643 | — | — |
-| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Class | 649 | — | — |
-| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Class | 664 | — | — |
-| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Class | 680 | — | — |
-| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Class | 697 | — | — |
-| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Class | 714 | — | — |
-| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Class | 724 | — | — |
-| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Class | 738 | — | — |
-| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Class | 753 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Class | 771 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Class | 798 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Class | 805 | — | — |
+| [AgentProfileSkillCatalogItem](../entities/AgentProfileSkillCatalogItem.md) | Class | 160 | — | — |
+| [AgentActorRosterProfileSkill](../entities/types_agent_AgentActorRosterProfileSkill.md) | Class | 167 | — | — |
+| [AgentActorRosterProfile](../entities/types_agent_AgentActorRosterProfile.md) | Class | 178 | — | — |
+| [AgentModelCatalogEntry](../entities/types_agent_AgentModelCatalogEntry.md) | Class | 189 | — | — |
+| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Class | 206 | — | — |
+| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Class | 220 | — | — |
+| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Class | 234 | — | — |
+| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Class | 239 | — | — |
+| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Class | 258 | — | — |
+| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Class | 268 | — | — |
+| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Class | 277 | — | — |
+| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Class | 282 | — | — |
+| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Class | 299 | `AgentActor` | — |
+| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Class | 309 | — | — |
+| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Class | 317 | — | — |
+| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Class | 325 | — | — |
+| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Class | 337 | — | — |
+| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Class | 357 | — | — |
+| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Class | 364 | — | — |
+| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Class | 372 | — | — |
+| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Class | 386 | — | — |
+| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Class | 393 | — | — |
+| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Class | 434 | — | — |
+| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Class | 473 | — | — |
+| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Class | 500 | — | — |
+| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Class | 518 | — | — |
+| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Class | 533 | — | — |
+| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Class | 556 | — | — |
+| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Class | 564 | — | — |
+| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Class | 569 | — | — |
+| [AgentRun](../entities/types_agent_AgentRun.md) | Class | 582 | — | — |
+| [AgentPipeline](../entities/AgentPipeline.md) | Class | 610 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Class | 621 | — | — |
+| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Class | 631 | — | — |
+| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Class | 647 | — | — |
+| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Class | 653 | — | — |
+| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Class | 668 | — | — |
+| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Class | 684 | — | — |
+| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Class | 701 | — | — |
+| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Class | 718 | — | — |
+| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Class | 728 | — | — |
+| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Class | 742 | — | — |
+| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Class | 757 | — | — |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Class | 776 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Class | 805 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Class | 812 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | — | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | — | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | — | — |
@@ -119,7 +119,7 @@ flowchart LR
 | [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 116 | — | — |
 | [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 118 | — | — |
 | [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 123 | — | — |
-| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 632 | — | — |
-| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 633 | — | — |
-| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 634 | — | — |
-| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 688 | — | — |
+| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 636 | — | — |
+| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 637 | — | — |
+| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 638 | — | — |
+| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 692 | — | — |

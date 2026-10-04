@@ -26,6 +26,14 @@ Use this reference to evaluate resolved work independently, close accepted tasks
 
 Do not accept a succeeded run, green local check, commit link, or worker summary as sufficient by itself. Verify the task's stated outcome.
 
+When `task.brief` exists, review its ordered canonical criteria by stable `id`
+and `revision`, their verification instructions, and the current
+`brief_revision`/`artifact_revision`. The legacy Markdown `task_brief` is not
+authoritative. Require current criterion-level progress and independently
+check each artifact. Evidence from an older brief or artifact revision cannot
+support acceptance. Read the task again before sending the versioned verdict;
+on conflict, re-evaluate the changed packet instead of retrying blindly.
+
 Create a verification-purpose assignment only after the task is `resolved`, its
 execution run is terminal, and its claim is released. Under
 `model-aware-routing-v1`, request a fresh verification-purpose routing preview
@@ -42,6 +50,17 @@ rank and task priority; do not place it in an implementation queue or reserve
 execution capacity while the task is still active.
 
 ## Handle Model Evidence and Escalation
+
+Use `agent_get_execution_usage_summary` or `/api/tasks/execution-usage` for an
+authorized project/iteration and stated observation window. Compare reports
+with accepted task identities, rejection/reopen events and review/recovery
+coverage. Unreported attempts and unknown costs remain visible; a succeeded
+run is not an accepted outcome. Simulated reports have separate totals.
+Worker-reported provider costs and immutable price-based estimates stay
+separate, with no implicit currency conversion or live repricing. Optional
+budgets are advisory comparisons for covered reports and do not authorize or
+block execution. Independently reconcile actual provider receipts before
+claiming measured delivery economics or pilot acceptance.
 
 Read the execution assignment's selected binding and routing snapshot beside
 the run's configured alias, binding ID/revision, observed resolved model, and

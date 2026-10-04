@@ -23,8 +23,8 @@ _Auto-generated from `frontend/src/App.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `RouteLoadingState`, `default` |
-| Constants | `OverviewPage`, `LandingPage`, `PlanPage`, `PlanMasterPage`, `PlanSharePage`, `CalendarPage`, `IterationsPage`, `TeamPage`, `TasksPage`, `MyWorkPage`, `TriagePage`, `ProjectsPage`, `ProjectDetailPage`, `ProjectReleaseDetailPage`, `RoadmapPage`, `GanttPage`, `AnalyticsPage`, `SettingsPage`, `AgentPipelinePage`, `AgentTeamSetupMasterPage`, `NotFoundPage` |
-| Module calls | `OverviewPage = lazy`, `LandingPage = lazy`, `PlanPage = lazy`, `PlanMasterPage = lazy`, `PlanSharePage = lazy`, `CalendarPage = lazy`, `IterationsPage = lazy`, `TeamPage = lazy`, `TasksPage = lazy`, `MyWorkPage = lazy`, `TriagePage = lazy`, `ProjectsPage = lazy`, `ProjectDetailPage = lazy`, `ProjectReleaseDetailPage = lazy`, `RoadmapPage = lazy`, `GanttPage = lazy`, `AnalyticsPage = lazy`, `SettingsPage = lazy`, `AgentPipelinePage = lazy`, `AgentTeamSetupMasterPage = lazy`, `NotFoundPage = lazy` |
+| Constants | `OverviewPage`, `LandingPage`, `PlanPage`, `PlanMasterPage`, `PlanSharePage`, `CalendarPage`, `IterationsPage`, `TeamPage`, `TasksPage`, `MyWorkPage`, `NativeConnectionPage`, `TriagePage`, `ProjectsPage`, `ProjectDetailPage`, `ProjectReleaseDetailPage`, `RoadmapPage`, `GanttPage`, `AnalyticsPage`, `SettingsPage`, `AgentPipelinePage`, `AgentTeamSetupMasterPage`, `NotFoundPage` |
+| Module calls | `OverviewPage = lazy`, `LandingPage = lazy`, `PlanPage = lazy`, `PlanMasterPage = lazy`, `PlanSharePage = lazy`, `CalendarPage = lazy`, `IterationsPage = lazy`, `TeamPage = lazy`, `TasksPage = lazy`, `MyWorkPage = lazy`, `NativeConnectionPage = lazy`, `TriagePage = lazy`, `ProjectsPage = lazy`, `ProjectDetailPage = lazy`, `ProjectReleaseDetailPage = lazy`, `RoadmapPage = lazy`, `GanttPage = lazy`, `AnalyticsPage = lazy`, `SettingsPage = lazy`, `AgentPipelinePage = lazy`, `AgentTeamSetupMasterPage = lazy`, `NotFoundPage = lazy` |
 
 ## Local dependency map
 

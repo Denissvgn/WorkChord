@@ -7,7 +7,7 @@ profiles, provider-neutral model bindings, immutable role-package checksums,
 runtime references, and external credential references.
 
 The server remains authoritative for actor IDs, scopes, profile and binding
-revisions, lifecycle state, topology revision, and runtime readiness. A
+revisions, lifecycle state, topology revision, and handoff checks. A
 manifest is desired state, not proof that a runtime is connected or available
 for a particular task.
 
@@ -116,12 +116,14 @@ Operators may select a topology; a PM can read only its bound topology.
 - `configured` means desired server objects exist.
 - `onboarding` means at least one required runtime has not acknowledged its
   exact handoff.
-- `runtime_ready` means the controller and required workers are current, with
-  an independent verifier ready when the policy requires one.
+- `runtime_ready` means configuration and current revision-bound handoff checks
+  pass for required members. It does not establish provider availability or
+  independent model attestation.
 - `blocked` includes stable blocker codes and an operator next action.
 - `connection_state` describes observed freshness.
-- `availability_unknown` is intentional. Availability is evaluated only for a
-  concrete task, queue, capacity, and model-binding context.
+- `availability_unknown` is intentional without independent runtime/provider
+  observations. Concrete task eligibility uses queue, capacity and binding
+  checks and remains separate from availability.
 
 Routing previews and every exact-actor assignment, reassignment, verification,
 rework, and recovery command enforce the caller's current topology revision
@@ -178,3 +180,6 @@ master, plan, handoff, status payload, screenshot, task, or commit. Protect the
 credential sink directory and its backup policy independently from WorkChord.
 Setup receipts and events contain only bounded identifiers, revisions,
 digests, blocker codes, and non-secret references.
+
+For external model startup, exact assigned execution, fenced recovery, review
+and usage evidence, follow the [external runtime guide](external-agent-runtime.md).

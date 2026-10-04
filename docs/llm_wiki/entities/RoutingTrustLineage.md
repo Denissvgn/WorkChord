@@ -1,6 +1,6 @@
 # RoutingTrustLineage
 
-**Location:** `backend/app/schemas/agent_routing.py:1281`
+**Location:** `backend/app/schemas/agent_routing.py:1284`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -29,12 +29,12 @@ Secret-free identities responsible for each routing evidence boundary.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `assessment_assessor` | `str` | `assessment_assessor` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `assessment_assessor_actor_id` | `int \| None` | `assessment_assessor_actor_id` | No | Yes | `None` | ge=1; strict=True | — | — |
-| `preview_requested_by_actor_id` | `int` | `preview_requested_by_actor_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `assignment_created_by_actor_id` | `int` | `assignment_created_by_actor_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `execution_actor_id` | `int` | `execution_actor_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `observed_model_reported_by_actor_id` | `int \| None` | `observed_model_reported_by_actor_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `assessment_assessor` | `str` | `assessment_assessor` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `assessment_assessor_actor_id` | `int \| None` | `assessment_assessor_actor_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `preview_requested_by_actor_id` | `int` | `preview_requested_by_actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `assignment_created_by_actor_id` | `int` | `assignment_created_by_actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `execution_actor_id` | `int` | `execution_actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `observed_model_reported_by_actor_id` | `int \| None` | `observed_model_reported_by_actor_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 
 ## Methods
 

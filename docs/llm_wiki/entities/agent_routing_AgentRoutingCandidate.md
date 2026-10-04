@@ -21,19 +21,19 @@ One eligible actor plus exact model-binding candidate.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
 | `actor_revision` | `PositiveRevision` | `actor_revision` | Yes | No | — | — | — | — |
 | `actor_queue_revision` | `PositiveRevision` | `actor_queue_revision` | Yes | No | — | — | — | — |
-| `profile_id` | `int` | `profile_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `profile_revision` | `str` | `profile_revision` | Yes | No | — | max_length=120; min_length=1 | — | — |
-| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | ge=1; strict=True | — | — |
-| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
-| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `profile_id` | `int` | `profile_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `profile_revision` | `str` | `profile_revision` | Yes | No | — | min_length=1; max_length=120 | — | — |
+| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | strict=True; ge=1 | — | — |
 | `model_binding_revision` | `PositiveRevision` | `model_binding_revision` | Yes | No | — | — | — | — |
-| `model_catalog_id` | `int` | `model_catalog_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `model_catalog_id` | `int` | `model_catalog_id` | Yes | No | — | strict=True; ge=1 | — | — |
 | `model_catalog_key` | `RoutingKey` | `model_catalog_key` | Yes | No | — | — | — | — |
 | `model_catalog_revision` | `PositiveRevision` | `model_catalog_revision` | Yes | No | — | — | — | — |
-| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `eligible` | `Literal[True]` | `eligible` | No | No | `True` | — | — | — |
 | `hard_blocker_codes` | `list[RoutingBlockerCode]` | `hard_blocker_codes` | No | No | factory: `list` | max_length=0 | — | — |
 | `matched_skill_levels` | `dict[str, SkillLevel]` | `matched_skill_levels` | No | No | factory: `dict` | — | — | — |
@@ -50,15 +50,15 @@ One eligible actor plus exact model-binding candidate.
 | `committed_effort_days` | `float` | `committed_effort_days` | Yes | No | — | ge=0 | — | — |
 | `workload_ratio` | `float` | `workload_ratio` | Yes | No | — | ge=0 | — | — |
 | `vacation_conflict` | `Literal[False]` | `vacation_conflict` | No | No | `False` | — | — | — |
-| `queued_assignments` | `int` | `queued_assignments` | Yes | No | — | ge=0; strict=True | — | — |
-| `accepted_assignments` | `int` | `accepted_assignments` | Yes | No | — | ge=0; strict=True | — | — |
-| `running_runs` | `int` | `running_runs` | Yes | No | — | ge=0; strict=True | — | — |
+| `queued_assignments` | `int` | `queued_assignments` | Yes | No | — | strict=True; ge=0 | — | — |
+| `accepted_assignments` | `int` | `accepted_assignments` | Yes | No | — | strict=True; ge=0 | — | — |
+| `running_runs` | `int` | `running_runs` | Yes | No | — | strict=True; ge=0 | — | — |
 | `schedule_delay_days` | `float` | `schedule_delay_days` | Yes | No | — | ge=0 | — | — |
 | `schedule_eligible` | `Literal[True]` | `schedule_eligible` | No | No | `True` | — | — | — |
-| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | ge=0; strict=True | — | — |
-| `rank` | `int` | `rank` | Yes | No | — | ge=1; strict=True | — | — |
+| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | strict=True; ge=0 | — | — |
+| `rank` | `int` | `rank` | Yes | No | — | strict=True; ge=1 | — | — |
 | `confidence` | `float` | `confidence` | Yes | No | — | le=1.0; ge=unknown (MIN_ROUTING_ASSESSMENT_CONFIDENCE) | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
 
 ## Methods
 

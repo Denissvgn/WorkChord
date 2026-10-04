@@ -1,6 +1,6 @@
 # AgentActorRosterProfile
 
-**Location:** `frontend/src/types/agent.ts:177`
+**Location:** `frontend/src/types/agent.ts:178`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

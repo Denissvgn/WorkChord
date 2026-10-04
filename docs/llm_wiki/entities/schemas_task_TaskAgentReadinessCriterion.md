@@ -1,6 +1,6 @@
 # TaskAgentReadinessCriterion
 
-**Location:** `backend/app/schemas/task.py:167`
+**Location:** `backend/app/schemas/task.py:168`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

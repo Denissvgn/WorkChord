@@ -67,7 +67,7 @@ flowchart LR
 | [TeamMemberOptionResponse](../entities/TeamMemberOptionResponse.md) | 303 | `BaseModel` | Compact team-member identity for owner and assignee selectors. |
 | [MemberCapacity](../entities/schemas_team_MemberCapacity.md) | 315 | `BaseModel` | Capacity calculation for a team member. |
 | [MemberWorkload](../entities/schemas_team_MemberWorkload.md) | 330 | `BaseModel` | Workload information for a team member. |
-| [TeamImportRequest](../entities/TeamImportRequest.md) | 341 | `BaseModel` | Request for importing team members from text. |
+| [TeamImportRequest](../entities/TeamImportRequest.md) | 341 | `PlanningInputRevisions` | Request for importing team members from text. |
 | [TeamImportResponse](../entities/TeamImportResponse.md) | 346 | `BaseModel` | Response for team import. |
 | [AssigneeRecommendationResponse](../entities/AssigneeRecommendationResponse.md) | 352 | `BaseModel` | Explainable candidate score for assigning a task or triage item. |
 

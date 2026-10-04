@@ -17,6 +17,7 @@ from app.main import app as main_app
 from app.mcp_server import mcp
 from app.routers import agent as agent_router
 from app.schemas.agent import (
+    AgentWorkSubmit,
     ModelAwareAgentTaskAssignmentCreate,
     ModelAwareAgentTaskAssignmentUpdate,
     ModelAwareAgentWorkBegin,
@@ -26,6 +27,7 @@ from app.schemas.agent_routing import (
     TaskRoutingAssessmentCommand,
 )
 from scripts import build_agent_skills
+from app.schemas.execution_usage import ExecutionUsageWrite
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -313,9 +315,9 @@ def test_role_versions_are_new_frozen_identities() -> None:
     }
     catalogs = {catalog["version"] for catalog in baseline["catalogs"]}
 
-    assert build_agent_skills.CATALOG_VERSION == "1.7.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.7.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.6.0"
+    assert build_agent_skills.CATALOG_VERSION == "1.10.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.10.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.9.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
@@ -331,3 +333,22 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert ("workchord-pm", "1.7.0") in releases
     assert ("workchord-worker", "1.6.0") in releases
     assert "1.7.0" in catalogs
+    assert ("workchord-pm", "1.8.0") in releases
+    assert ("workchord-worker", "1.7.0") in releases
+    assert "1.8.0" in catalogs
+
+
+@pytest.mark.contract
+def test_generated_submission_contract_includes_canonical_progress() -> None:
+    fields = _operation("submit")["rest"]["body"]["fields"]
+    assert {field["name"]: field["required"] for field in fields} == {
+        name: field.is_required() for name, field in AgentWorkSubmit.model_fields.items()
+    }
+
+
+@pytest.mark.contract
+def test_generated_usage_contract_matches_the_registered_schema() -> None:
+    fields = _operation("execution-usage-write")["rest"]["body"]["fields"]
+    assert {field["name"]: field["required"] for field in fields} == {
+        name: field.is_required() for name, field in ExecutionUsageWrite.model_fields.items()
+    }

@@ -73,14 +73,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_principals | require_operator | 129 | `require_operator(db)` |
+| list_principals | require_operator | 201 | `require_operator(db)` |
 | require_operator | db.info.get | 79 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| list_principals | (…).all | 130 | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all(data not statically known)` |
-| list_principals | db.scalars | 130 | `db.scalars(...)` |
-| list_principals | select(…).order_by(…).limit | 130 | `select(Principal).order_by(Principal.id).limit(limit)` |
-| list_principals | select(…).order_by | 130 | `select(Principal).order_by(Principal.id)` |
-| list_principals | select | 130 | `select(Principal)` |
+| list_principals | (…).all | 202 | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all(data not statically known)` |
+| list_principals | db.scalars | 202 | `db.scalars(...)` |
+| list_principals | select(…).order_by(…).limit | 202 | `select(Principal).order_by(Principal.id).limit(limit)` |
+| list_principals | select(…).order_by | 202 | `select(Principal).order_by(Principal.id)` |
+| list_principals | select | 202 | `select(Principal)` |
 
 ### Boundary effects
 
@@ -91,11 +91,11 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `require_operator` | `db.info.get` | 79 |
-| unresolved_call | `list_principals` | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all` | 130 |
-| unresolved_call | `list_principals` | `db.scalars` | 130 |
-| unresolved_call | `list_principals` | `select(Principal).order_by(Principal.id).limit` | 130 |
-| unresolved_call | `list_principals` | `select(Principal).order_by` | 130 |
-| external_call | `list_principals` | `select` | 130 |
+| unresolved_call | `list_principals` | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all` | 202 |
+| unresolved_call | `list_principals` | `db.scalars` | 202 |
+| unresolved_call | `list_principals` | `select(Principal).order_by(Principal.id).limit` | 202 |
+| unresolved_call | `list_principals` | `select(Principal).order_by` | 202 |
+| external_call | `list_principals` | `select` | 202 |
 
 ## Behavior
 

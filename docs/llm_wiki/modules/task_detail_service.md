@@ -4,7 +4,7 @@
 
 ## Description
 
-Provides bounded task references, title/ID lookup and human ownership queues without loading the full execution graph. Projections include project/backlog context and current attributed acceptance. Owned closed work with withdrawn or unknown acceptance stays visible for reconciliation. Exact-agent dispatch continues to use its separate complete context.
+Provides bounded task references, title/ID lookup and human ownership queues without loading the full execution graph. Human work can be filtered by authorized project, iteration or backlog before pagination. Queue categorization remains server-owned, including blocked prerequisites and acceptance reconciliation. Reference projections do not establish complete execution context.
 
 ## Imports
 

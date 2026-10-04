@@ -1,6 +1,6 @@
 # AgentTeamMaster
 
-**Location:** `frontend/src/types/agent.ts:664`
+**Location:** `frontend/src/types/agent.ts:668`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

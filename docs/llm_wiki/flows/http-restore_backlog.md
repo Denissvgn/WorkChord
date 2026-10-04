@@ -22,6 +22,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: BacklogSnapshotService(…).restore
     p0->>p6: BacklogSnapshotService
 ```
@@ -38,19 +40,23 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. BacklogSnapshotService(…).restore"]
-    s9["9. BacklogSnapshotService"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. BacklogSnapshotService(…).restore"]
+    s11["11. BacklogSnapshotService"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "BacklogSnapshotService(…).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)" .-> s8
-    s1 -->|"BacklogSnapshotService(db)"| s9
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "BacklogSnapshotService(…).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)" .-> s10
+    s1 -->|"BacklogSnapshotService(db)"| s11
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/backlog_snapshot_service.md"
+    click s11 "../modules/backlog_snapshot_service.md"
 ```
 
 ### Step data
@@ -64,6 +70,8 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `BacklogSnapshotService(…).restore` | - | - | - | - |
 | `BacklogSnapshotService` | - | - | - | - |
 
@@ -71,14 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| restore_backlog | domain_result | 181 | `domain_result(...)` |
+| restore_backlog | domain_result | 231 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| restore_backlog | BacklogSnapshotService(…).restore | 181 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
-| restore_backlog | BacklogSnapshotService | 181 | `BacklogSnapshotService(db)` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| restore_backlog | BacklogSnapshotService(…).restore | 231 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
+| restore_backlog | BacklogSnapshotService | 231 | `BacklogSnapshotService(db)` |
 
 ### Boundary effects
 
@@ -92,7 +102,8 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 181 |
+| external_call | `domain_result` | `HTTPException` | 35 |
+| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 231 |
 
 ## Behavior
 

@@ -1,6 +1,6 @@
 # AgentWorkTerminal
 
-**Location:** `backend/app/schemas/agent.py:949`
+**Location:** `backend/app/schemas/agent.py:965`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -27,7 +27,7 @@ Atomically fail or cancel an active assignment.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `status` | `Literal['failed', 'canceled']` | `status` | Yes | No | — | — | — | — |
@@ -54,6 +54,7 @@ flowchart LR
     n5["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
     n6["AgentWorkService.fail (backend/app/services/agent_work_service.py)"]
     n7["AgentWorkService.submit (backend/app/services/agent_work_service.py)"]
+    n8["backend/tests/support/runtime_peer.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,6 +62,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -68,6 +70,7 @@ flowchart LR
     click n5 "../modules/agent_work_service.md"
     click n6 "../modules/agent_work_service.md"
     click n7 "../modules/agent_work_service.md"
+    click n8 "../modules/runtime_peer.md"
 ```
 
 ### Summary
@@ -92,3 +95,4 @@ flowchart LR
 | `AgentWorkService._terminal_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.fail` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.submit` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |

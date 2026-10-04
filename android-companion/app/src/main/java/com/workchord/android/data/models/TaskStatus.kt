@@ -15,12 +15,11 @@ enum class TaskStatus(val value: String, val displayName: String) {
     @SerializedName("closed")
     CLOSED("closed", "Closed"),
 
-    @SerializedName("blocked")
-    BLOCKED("blocked", "Blocked");
+    UNKNOWN("unknown", "Unsupported status");
 
     companion object {
         fun fromString(value: String?): TaskStatus {
-            return entries.firstOrNull { it.value.equals(value, ignoreCase = true) } ?: PLANNED
+            return entries.firstOrNull { it.value.equals(value, ignoreCase = true) } ?: UNKNOWN
         }
     }
 }

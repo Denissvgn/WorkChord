@@ -1,6 +1,7 @@
 package com.workchord.android
 
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -8,17 +9,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.workchord.android.ui.screens.ServerSetupScreen
+import com.workchord.android.ui.viewmodels.SessionViewModel
 import androidx.navigation.compose.rememberNavController
 import com.workchord.android.ui.navigation.AppNavigation
 import com.workchord.android.ui.theme.WorkChordTheme
 
 class MainActivity : ComponentActivity() {
+    private var requestedTaskId by mutableStateOf<Int?>(null)
+
+    private fun taskLink(intent: Intent): Int? {
+        val uri = intent.data ?: return null
+        if (intent.action != Intent.ACTION_VIEW || uri.scheme != "workchord" || uri.host != "task" || uri.pathSegments.size != 1) return null
+        return uri.pathSegments.single().toIntOrNull()?.takeIf { it > 0 }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        requestedTaskId = taskLink(intent)
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("pending-task-link", requestedTaskId ?: 0)
+        super.onSaveInstanceState(outState)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedTaskId = if (savedInstanceState != null) savedInstanceState.getInt("pending-task-link").takeIf { it > 0 } else taskLink(intent)
         enableEdgeToEdge()
 
         val app = application as WorkChordApplication
-        val repository = app.taskRepository
 
         setContent {
             WorkChordTheme {
@@ -26,11 +55,26 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    AppNavigation(
-                        navController = navController,
-                        taskRepository = repository
-                    )
+                    val session: SessionViewModel = viewModel(factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T = SessionViewModel(app.tokenManager) as T
+                    })
+                    val state by session.uiState.collectAsState()
+                    if (state.identity?.authenticated == true && state.identity?.principal?.kind == "human") {
+                        key(state.scope) {
+                            val repository = remember(state.scope) { app.reconnect(); app.taskRepository }
+                            val navController = rememberNavController()
+                            Column(Modifier.safeDrawingPadding()) {
+                                TextButton(onClick = { session.logout() }, enabled = !state.loading) {
+                                    Text(stringResource(R.string.account_sign_out, state.identity?.principal?.displayName ?: stringResource(R.string.account_signed_in)))
+                                }
+                                AppNavigation(navController = navController, taskRepository = repository,
+                                    initialTaskId = requestedTaskId,
+                                    onInitialTaskOpened = { requestedTaskId = null; intent.data = null },
+                                    modifier = Modifier.weight(1f))
+                            }
+                        }
+                    } else ServerSetupScreen(session, app.tokenManager.baseUrl)
                 }
             }
         }

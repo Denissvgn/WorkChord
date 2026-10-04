@@ -1,6 +1,6 @@
 # AgentWorkSubmit
 
-**Location:** `backend/app/schemas/agent.py:912`
+**Location:** `backend/app/schemas/agent.py:928`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -30,7 +30,7 @@ Atomically submit an active assignment for verification.
 | `criterion_progress` | `list[CriterionProgress]` | `criterion_progress` | No | No | factory: `list` | max_length=100 | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `summary` | `str` | `summary` | Yes | No | — | min_length=1; max_length=unknown (MAX_AGENT_TEXT_LENGTH) | — | — |
@@ -58,19 +58,25 @@ flowchart LR
     n3["submit_my_agent_work (backend/app/routers/agent.py)"]
     n4["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
     n5["AgentWorkService.submit (backend/app/services/agent_work_service.py)"]
-    n6["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n6["backend/tests/support/runtime_peer.py"]
+    n7["backend/tests/test_agent_skill_routing_guidance.py"]
+    n8["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_work_service.md"
     click n5 "../modules/agent_work_service.md"
-    click n6 "../modules/test_task_domain.md"
+    click n6 "../modules/runtime_peer.md"
+    click n7 "../modules/test_agent_skill_routing_guidance.md"
+    click n8 "../modules/test_task_domain.md"
 ```
 
 ### Summary
@@ -93,4 +99,6 @@ flowchart LR
 | `submit_my_agent_work` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService._terminal_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.submit` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
+| `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

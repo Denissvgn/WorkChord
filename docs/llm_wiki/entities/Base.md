@@ -45,9 +45,9 @@ flowchart LR
     n20["backend/app/models/capacity.py"]
     n21["backend/app/models/database_migration.py"]
     n22["backend/app/models/delivery_dependency.py"]
-    n23["backend/app/models/discussion.py"]
-    n24["backend/app/models/external_link.py"]
-    n25["backend/app/models/github.py"]
+    n23["backend/app/models/delivery_observation.py"]
+    n24["backend/app/models/discussion.py"]
+    n25["backend/app/models/execution_usage.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -95,9 +95,9 @@ flowchart LR
     click n20 "../modules/models_capacity.md"
     click n21 "../modules/models_database_migration.md"
     click n22 "../modules/delivery_dependency.md"
-    click n23 "../modules/models_discussion.md"
-    click n24 "../modules/models_external_link.md"
-    click n25 "../modules/models_github.md"
+    click n23 "../modules/delivery_observation.md"
+    click n24 "../modules/models_discussion.md"
+    click n25 "../modules/models_execution_usage.md"
 ```
 
 ### Summary
@@ -137,8 +137,8 @@ flowchart LR
 | `capacity` | import | [models_capacity](../modules/models_capacity.md) | — |
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
 | `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
-| `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
-| `github` | import | [models_github](../modules/models_github.md) | — |
+| `execution_usage` | import | [models_execution_usage](../modules/models_execution_usage.md) | — |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.

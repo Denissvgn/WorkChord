@@ -23,6 +23,19 @@ editing planning fields.
 
 ## Require An Executable Brief
 
+Use `context.task.brief` whenever it exists (`brief_source: canonical`). Its
+`goal`, `context`, `scope`, `exclusions`, `artifact_expectations`, `verification`,
+and ordered `acceptance_criteria` are authoritative. `task_brief` is a legacy
+Markdown projection; it can disagree with the canonical brief. Use it only
+when the typed brief is absent. Never derive criterion identities from text,
+checkboxes, list positions, or the legacy description.
+
+Retain each criterion's exact `id`, `revision`, `text`, and `verification`,
+along with `task.version`, `brief_revision`, and `artifact_revision`. Treat
+`task.progress` as current execution evidence only when its revision bindings
+match the current brief and artifact. Historical progress is evidence of an
+earlier attempt, not proof that the current criteria are complete.
+
 Require these sections or equivalent typed fields:
 
 | Section | Worker question |
@@ -112,3 +125,11 @@ Before success, map every acceptance criterion to:
 Keep evidence concise and reproducible. Store large outputs in the designated
 artifact system and link them. Re-fetch context after verification; do not
 submit against a stale task, assignment, claim, or run.
+
+For canonical success, include `criterion_progress` in the typed submit body:
+one entry per current criterion with `criterion_id`, `criterion_revision`,
+`state: completed`, and non-empty `evidence`. Include durable artifact URLs in
+`artifact_links`. Send the current `expected_task_version` and the exact
+assignment/run/claim-generation tuple. Submit records implementation evidence;
+independent review records acceptance. A stale criterion revision or changed
+scope requires recovery and a fresh assignment, not relabeling old evidence.

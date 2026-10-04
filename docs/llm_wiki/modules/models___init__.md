@@ -18,12 +18,15 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.capacity` | `PlanningState`, `ProfileAvailability`, `ProfileAbsence` |
 | `app.models.database_migration` | `DatabaseMigrationGate` |
 | `app.models.delivery_dependency` | `DeliveryDependency` |
+| `app.models.delivery_observation` | `DeliveryObservation` |
 | `app.models.discussion` | `TaskComment`, `TaskCommentRevision`, `TaskSubscription`, `InboxNotification` |
+| `app.models.execution_usage` | `ExecutionUsageRecord` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType`, `ExternalLinkProvider` |
 | `app.models.github` | `GitHubStatusAutomationRule` |
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `Label`, `LabelGroup` |
+| `app.models.native_connection` | `NativeConnection` |
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
@@ -59,6 +62,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (27) |
+| Outbound | `backend` (30) |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

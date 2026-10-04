@@ -1,6 +1,10 @@
 {
   "catalogs": [
     {
+      "catalog_sha256": "44f6d07f3a503242ac1172b1f7db7e69979920ba27b6a227aaffbc48b821c31f",
+      "version": "1.10.0"
+    },
+    {
       "catalog_sha256": "ee8e1dcd76b7c75c7f503ddc4b10c5c1c6729ddfc26cb03cf154f9afbf36524f",
       "version": "1.3.0"
     },
@@ -19,9 +23,22 @@
     {
       "catalog_sha256": "3b6a33884b1fc67ffe87e2646dc4f813a01799b47fc02d8798c61866ae57a7ef",
       "version": "1.7.0"
+    },
+    {
+      "catalog_sha256": "058d24c99c72be549afcad98230cac42d33d82d4e5faf3836a40c8a23470e01a",
+      "version": "1.8.0"
+    },
+    {
+      "catalog_sha256": "74480ff89b0f9c82e6a5e8024ca8647432b8842110d760fcca924443038f2b04",
+      "version": "1.9.0"
     }
   ],
   "releases": [
+    {
+      "catalog_entry_sha256": "8206a833e13ae937594b27e2a0cbb5fe6309e5f56afae9934552674eec250e1a",
+      "name": "workchord-pm",
+      "version": "1.10.0"
+    },
     {
       "catalog_entry_sha256": "557c1f2f026da7d305dde4eb9e366ff3b4d584d6a86fc6c8567f65d324ec64c0",
       "name": "workchord-pm",
@@ -48,6 +65,16 @@
       "version": "1.7.0"
     },
     {
+      "catalog_entry_sha256": "eb6015ebe62c0908af46acc5d12348dd3e60cde1273af2a2694c55b74010d6d4",
+      "name": "workchord-pm",
+      "version": "1.8.0"
+    },
+    {
+      "catalog_entry_sha256": "b58f2f73115074bbdea60b0f3e6e7292daff7a32724156afab2c3e782ddfdf59",
+      "name": "workchord-pm",
+      "version": "1.9.0"
+    },
+    {
       "catalog_entry_sha256": "c5d8fc003ae547b6478a808347181eb2952d1ffd4ae1603153bbc44f57e42602",
       "name": "workchord-worker",
       "version": "1.2.0"
@@ -71,6 +98,21 @@
       "catalog_entry_sha256": "f7a309605cf5437d8bade1e6c1139b191825b4fc0dc3fa73f0b92e45cf3b6c55",
       "name": "workchord-worker",
       "version": "1.6.0"
+    },
+    {
+      "catalog_entry_sha256": "513839cab2d93902acde9e254c9ab2e33977e49afe4ee4d1ecf73d83a42ab469",
+      "name": "workchord-worker",
+      "version": "1.7.0"
+    },
+    {
+      "catalog_entry_sha256": "e838ae38fdf6da4b8051d06e43e3c363efd2733d5a53530144f78e495f09b7c0",
+      "name": "workchord-worker",
+      "version": "1.8.0"
+    },
+    {
+      "catalog_entry_sha256": "9dab768ec687f8cd26b187a35429db8f03948d24c1f2406e72f1a7c2e14ec7c9",
+      "name": "workchord-worker",
+      "version": "1.9.0"
     }
   ],
   "schema_version": "workchord-agent-skills-baseline/v2"

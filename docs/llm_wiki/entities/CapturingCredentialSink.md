@@ -1,6 +1,6 @@
 # CapturingCredentialSink
 
-**Location:** `backend/tests/test_agent_team_setup.py:69`
+**Location:** `backend/tests/test_agent_team_setup.py:71`
 **Kind:** Class
 **Bases:** —
 **Module:** [test_agent_team_setup](../modules/test_agent_team_setup.md)

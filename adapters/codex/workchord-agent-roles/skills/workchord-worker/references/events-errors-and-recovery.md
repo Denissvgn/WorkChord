@@ -5,6 +5,29 @@ when state becomes uncertain.
 
 ## Emit Bounded Evidence
 
+When `execution-usage-v1` is advertised, report usage for the exact run through
+`POST /api/agent/runs/{run_id}/usage` or `agent_record_execution_usage`.
+Declare `reporting_mode: attempt_total`, source, provenance, UTC interval and
+coverage. Send provider/runtime-reported counters as named quantities; an
+unavailable counter is `null`, while an observed zero is `0`. Do not derive
+usage from planned effort, elapsed workflow time or model cost tiers.
+
+Use a deterministic `report_id`. Exact replay returns the same receipt;
+changed content under that ID conflicts. Append a correction with a new ID
+and the current `expected_previous_digest` from the usage read. Corrections
+preserve earlier reports; the current attempt total is counted once. At most
+32 report revisions are retained per attempt. Reporting does not change task
+execution evidence, its lease or acceptance.
+
+Optional `reported_cost` requires its explicit currency. Optional
+`pricing_basis` captures currency, reported unit, price amount/quantity,
+source, quote time and version; it remains an immutable estimate basis.
+Keep currencies separate. Use `provenance: simulated` for artificial inputs;
+they are excluded from measured and reported-spend totals. All reports remain
+actor declarations with `independently_reconciled: false`. Report explicit
+manual human effort only with manual/simulated provenance, never inferred from
+waiting or review duration. Include no credentials, prompts or private logs.
+
 Prefer typed lifecycle actions when the server advertises them. Otherwise use
 task/run event types consistently, for example:
 

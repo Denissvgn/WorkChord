@@ -1,6 +1,6 @@
 # TasksImportResponse
 
-**Location:** `frontend/src/types/task.ts:283`
+**Location:** `frontend/src/types/task.ts:290`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

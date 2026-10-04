@@ -3717,6 +3717,15 @@
     white-space: normal;
     overflow-wrap: anywhere;
   }
+  .wc .agent-team-mobile-blockers .pill {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .wc .agent-team-mobile-blockers small {
+    color: var(--ink-3);
+    font-size: var(--wc-type-meta);
+  }
   .wc .agent-team-mobile-context-progress {
     margin: 0;
     color: var(--ink-3);

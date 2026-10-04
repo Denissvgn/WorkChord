@@ -1,6 +1,7 @@
 """Fail-closed HTTP identity resolution and explicit public capability boundaries."""
 
 from dataclasses import replace
+import json
 import secrets
 from typing import Annotated
 
@@ -26,6 +27,8 @@ KNOWN_PREFIXES = ("/tasks", "/notifications", "/iterations", "/projects", "/init
 
 
 def public_capability(path, method):
+    if path in {"/auth/native-connections/start", "/auth/native-connections/exchange"} and method == "POST":
+        return True
     if path in {"/intake/web", "/github/webhooks"} and method == "POST":
         return True
     if path.startswith("/plan-shares/") and path.count("/") == 2 and method == "GET":
@@ -142,6 +145,19 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
             raise AuthorityError("agent_scope_required", "The agent credential does not permit this operation.")
     request.state.authority = authority
     db.info["authority"] = authority
+    revision_header = request.headers.get("X-Expected-Revisions")
+    if revision_header is not None:
+        try:
+            if len(revision_header) > 16_384:
+                raise ValueError("Revision context is too large")
+            revisions = json.loads(revision_header)
+            if not isinstance(revisions, dict) or len(revisions) > 500:
+                raise ValueError("Expected a bounded revision map")
+            if any(not str(key).isdigit() or int(key) <= 0 or type(value) is not int or value < 1 for key, value in revisions.items()):
+                raise ValueError("Use positive iteration IDs and revisions")
+            db.info["request_expected_revisions"] = {int(key): value for key, value in revisions.items()}
+        except (ValueError, TypeError) as exc:
+            raise AuthorityError("invalid_revision_context", "X-Expected-Revisions must contain a bounded JSON map of positive iteration IDs to revisions.", 422) from exc
     if path in {"/health/ready", "/metrics"}:
         if not authority.operator and not authority.local:
             raise AuthorityError()

@@ -105,17 +105,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| revoke_owned_session | require_identity_writes | 242 | `require_identity_writes(data not statically known)` |
+| revoke_owned_session | require_identity_writes | 314 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| revoke_owned_session | internal_authority | 244 | `internal_authority(db)` |
+| revoke_owned_session | internal_authority | 316 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| revoke_owned_session | db.scalar | 245 | `db.scalar(...)` |
-| revoke_owned_session | select(…).where | 245 | `select(UserSession).where(..., ...)` |
-| revoke_owned_session | select | 245 | `select(UserSession)` |
-| revoke_owned_session | AuthorityError | 247 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
+| revoke_owned_session | db.scalar | 317 | `db.scalar(...)` |
+| revoke_owned_session | select(…).where | 317 | `select(UserSession).where(..., ...)` |
+| revoke_owned_session | select | 317 | `select(UserSession)` |
+| revoke_owned_session | AuthorityError | 319 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
 
 ### Boundary effects
 
@@ -126,9 +126,9 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `revoke_owned_session` | `db.scalar` | 245 |
-| unresolved_call | `revoke_owned_session` | `select(UserSession).where` | 245 |
-| external_call | `revoke_owned_session` | `select` | 245 |
+| unresolved_call | `revoke_owned_session` | `db.scalar` | 317 |
+| unresolved_call | `revoke_owned_session` | `select(UserSession).where` | 317 |
+| external_call | `revoke_owned_session` | `select` | 317 |
 | step_limit | `revoke_owned_session` | `first 12 steps` | 0 |
 
 ## Behavior

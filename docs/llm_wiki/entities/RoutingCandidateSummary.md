@@ -1,6 +1,6 @@
 # RoutingCandidateSummary
 
-**Location:** `backend/app/schemas/agent_routing.py:1236`
+**Location:** `backend/app/schemas/agent_routing.py:1239`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -13,13 +13,13 @@ Compact ordered eligible-candidate evidence retained on assignment.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `profile_id` | `int` | `profile_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `profile_id` | `int` | `profile_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | strict=True; ge=1 | — | — |
 | `model_binding_revision` | `PositiveRevision` | `model_binding_revision` | Yes | No | — | — | — | — |
 | `model_catalog_key` | `RoutingKey` | `model_catalog_key` | Yes | No | — | — | — | — |
-| `rank` | `int` | `rank` | Yes | No | — | ge=1; strict=True | — | — |
-| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | ge=0; strict=True | — | — |
+| `rank` | `int` | `rank` | Yes | No | — | strict=True; ge=1 | — | — |
+| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | strict=True; ge=0 | — | — |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
 | `latency_tier` | `ModelLatencyTier` | `latency_tier` | Yes | No | — | — | — | — |
 

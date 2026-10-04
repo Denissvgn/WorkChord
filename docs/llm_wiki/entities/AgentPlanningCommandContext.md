@@ -102,4 +102,4 @@ flowchart LR
 | `apply_agent_profile_preset` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `apply_agent_team_reconciliation` | call | [routers_agent](../modules/routers_agent.md) | 1 |
 
-> References: showing 12 of 92 logical references; 80 omitted by the 12-row generated summary limit.
+> References: showing 12 of 93 logical references; 81 omitted by the 12-row generated summary limit.

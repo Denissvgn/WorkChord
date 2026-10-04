@@ -106,15 +106,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| native_token | AuthorityError | 224 | `AuthorityError(data not statically known)` |
-| native_token | IdentityService(…).issue_session | 225 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
-| native_token | IdentityService | 225 | `IdentityService(db)` |
-| native_token | get_client_ip | 225 | `get_client_ip(request)` |
+| native_token | AuthorityError | 296 | `AuthorityError(data not statically known)` |
+| native_token | IdentityService(…).issue_session | 297 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
+| native_token | IdentityService | 297 | `IdentityService(db)` |
+| native_token | get_client_ip | 297 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 
@@ -126,7 +126,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `native_token` | `IdentityService(db).issue_session` | 225 |
+| unresolved_call | `native_token` | `IdentityService(db).issue_session` | 297 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |

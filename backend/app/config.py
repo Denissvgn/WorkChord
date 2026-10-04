@@ -46,6 +46,7 @@ class Settings(BaseSettings):
     # API
     api_prefix: str = "/api"
     debug: bool = False
+    strict_mutation_versions: bool = False
 
     # LLM (optional)
     llm_provider: Literal["openai", "openrouter", "nvidia", "custom"] = "openai"

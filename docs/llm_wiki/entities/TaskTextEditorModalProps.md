@@ -1,6 +1,6 @@
 # TaskTextEditorModalProps
 
-**Location:** `frontend/src/components/tasks/TaskTextEditorModal.tsx:11`
+**Location:** `frontend/src/components/tasks/TaskTextEditorModal.tsx:12`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskTextEditorModal](../modules/TaskTextEditorModal.md)

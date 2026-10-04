@@ -10,9 +10,9 @@ data class Project(
     @SerializedName("description")
     val description: String? = null,
     @SerializedName("status")
-    val status: String? = "active",
+    val status: String? = null,
     @SerializedName("health")
-    val health: String? = "on_track"
+    val health: String? = null
 )
 
 data class Iteration(

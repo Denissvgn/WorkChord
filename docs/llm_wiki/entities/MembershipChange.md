@@ -1,6 +1,6 @@
 # MembershipChange
 
-**Location:** `backend/app/routers/identity.py:32`
+**Location:** `backend/app/routers/identity.py:104`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)
@@ -20,7 +20,7 @@ _Auto-generated from `MembershipChange` in `backend/app/routers/identity.py`._
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `role` | `Literal['owner', 'operator', 'member', 'viewer', 'editor', 'executor', 'reviewer', 'manager'] \| None` | `role` | Yes | Yes | — | — | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | max_length=2000; min_length=8 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | min_length=8; max_length=2000 | — | — |
 
 ## Methods
 

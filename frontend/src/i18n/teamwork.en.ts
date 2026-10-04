@@ -1,4 +1,13 @@
 export const teamworkEnglish = {
+    "connectDevice": "Connect your Android companion",
+    "connectHelp": "Approve only a connection you started on your device. Compare the code before continuing.",
+    "connectInvalid": "This connection is missing or invalid. Start sign-in again on your device.",
+    "connectHumanRequired": "Sign in with a human account to connect your device.",
+    "connectFailed": "Could not load or approve this connection. Start again on your device if it has expired.",
+    "connectAccount": "Your device will sign in as {{name}}.",
+    "connectConfirm": "I started this connection and the code matches my device.",
+    "connectApprove": "Approve connection",
+    "connectApproved": "Connection approved. Return to your device and check the connection.",
     "delivery_suppressed": "Stopped by access or subscription settings",
     "acceptanceNeedsReview": "Closed · acceptance needs reconciliation",
     "executionDates": "Schedule and execution dates",

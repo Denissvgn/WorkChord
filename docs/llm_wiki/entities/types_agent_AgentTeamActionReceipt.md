@@ -1,6 +1,6 @@
 # AgentTeamActionReceipt
 
-**Location:** `frontend/src/types/agent.ts:724`
+**Location:** `frontend/src/types/agent.ts:728`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

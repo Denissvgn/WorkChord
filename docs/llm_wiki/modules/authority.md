@@ -4,9 +4,11 @@
 
 ## Description
 
+Execution usage inserts require a short-lived authorization marker from the attributable command, then use normal scoped authorization and command audit. A generic ORM write cannot replace ownership, digest and attempt-window checks. Usage grants no task mutation or acceptance authority.
+
 Principal-bound authorization shared by transport adapters and ORM commands.
 
-Managed authority combines a durable principal, workspace/project roles, and actor scopes. ORM reads constrain related records and writes require the relevant action; review is distinct from execution. Trusted-local collaboration is an explicit deployment mode. Narrow internal identity resolution and verified system integrations are server-owned boundaries, not caller-provided identity claims.
+Managed authority combines a durable principal, workspace/project roles, and actor scopes. ORM reads constrain related records and writes require the relevant action; review is distinct from execution. Trusted-local collaboration is an explicit deployment mode. Narrow internal identity resolution and verified system integrations are server-owned boundaries, not caller-provided identity claims. Recovery retention resolves scheduled snapshots through their owning iteration and backlog snapshots through their explicit project, preserving action permissions across both scopes.
 
 Principal-bound policy scopes task, project, backlog and triage reads/writes across transport adapters and ORM operations. Human ownership IDs never authenticate a caller. Narrow protocol bookkeeping permissions cover an actor’s own runs, assignments, claims and idempotency records; verifier rework uses a server-owned review marker. Triage command scope is carried into its event/outbox records without granting workspace access.
 
@@ -47,7 +49,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
+| Inbound | `backend` (35) |
 | Outbound | `backend` (5) |
 
 ### External packages
@@ -56,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

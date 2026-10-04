@@ -4,11 +4,14 @@ from app.commands import command_transaction, commit_or_flush, lock_iterations
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Response, status
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.task import Task
+from app.models.iteration import Iteration
+from app.schemas.task import TaskTextContext
+from app.commands import AggregateVersionConflict
 
 from app.database import get_db
 from app.schemas.task import (
@@ -247,7 +250,7 @@ async def batch_update_tasks(
 
     try:
         async with command_transaction(db):
-            await lock_iterations(db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
+            await lock_iterations(db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
             updated_tasks_list, results = await apply_batch_update_items(
                 service, iteration_id, iteration.end_date, data.tasks
             )
@@ -614,7 +617,9 @@ async def add_dependency(
 ):
     """Add a dependency to a task."""
     try:
-        success = await service.add_dependency(task_id, data.depends_on_id)
+        success = await service.add_dependency(task_id, data.depends_on_id, expected_version=data.expected_version)
+    except TaskVersionConflictError as exc:
+        _raise_task_version_conflict(exc)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -638,10 +643,14 @@ async def add_dependency(
 async def remove_dependency(
     task_id: int,
     depends_on_id: int,
-    service: Annotated[TaskService, Depends(get_task_service)]
+    service: Annotated[TaskService, Depends(get_task_service)],
+    expected_version: int | None = Query(default=None, ge=1),
 ):
     """Remove a dependency from a task."""
-    success = await service.remove_dependency(task_id, depends_on_id)
+    try:
+        success = await service.remove_dependency(task_id, depends_on_id, expected_version=expected_version)
+    except TaskVersionConflictError as exc:
+        _raise_task_version_conflict(exc)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -778,6 +787,7 @@ async def import_tasks(
             iteration_id,
             data.text,
             data.destination,
+            expected_revision=data.expected_revision,
         )
         return TasksImportResponse(
             imported_count=len(tasks) + len(triage_items),
@@ -824,6 +834,21 @@ async def get_tasks_text(
         )
 
 
+@router.get("/iterations/{iteration_id}/tasks/text-context", response_model=TaskTextContext)
+async def get_tasks_text_context(iteration_id: int,
+    service: Annotated[TaskService, Depends(get_task_service)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")]):
+    """Reject a racing read instead of associating old text with a new revision."""
+    before = await db.scalar(select(Iteration.revision).where(Iteration.id == iteration_id))
+    if before is None:
+        raise HTTPException(404, detail="Iteration not found or inaccessible")
+    text = await service.get_tasks_as_text(iteration_id)
+    after = await db.scalar(select(Iteration.revision).where(Iteration.id == iteration_id))
+    if before != after:
+        raise AggregateVersionConflict(iteration_id, before, after)
+    return TaskTextContext(text=text, iteration_id=iteration_id, iteration_revision=before)
+
+
 @router.post(
     "/iterations/{iteration_id}/tasks/bulk-update",
     response_model=TasksImportResponse,
@@ -853,6 +878,7 @@ async def bulk_update_tasks(
             iteration_id,
             data.text,
             data.destination,
+            expected_revision=data.expected_revision,
         )
         return TasksImportResponse(
             imported_count=len(tasks) + len(triage_items),

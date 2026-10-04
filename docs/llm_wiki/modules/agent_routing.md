@@ -87,10 +87,10 @@ flowchart LR
 | [AgentRoutingCandidate](../entities/agent_routing_AgentRoutingCandidate.md) | Pydantic model | 926 | `RoutingContractModel` | One eligible actor plus exact model-binding candidate. |
 | [AgentRoutingExclusion](../entities/agent_routing_AgentRoutingExclusion.md) | Pydantic model | 1005 | `RoutingContractModel` | Bounded reason evidence for one ineligible actor/binding pair. |
 | [AgentRoutingPreviewResponse](../entities/agent_routing_AgentRoutingPreviewResponse.md) | Pydantic model | 1123 | `RoutingContractModel` | Expiring non-dispatch result over a digest-bound routing input snapshot. |
-| [RoutingCandidateSummary](../entities/RoutingCandidateSummary.md) | Pydantic model | 1236 | `RoutingContractModel` | Compact ordered eligible-candidate evidence retained on assignment. |
-| [RoutingExclusionSummary](../entities/RoutingExclusionSummary.md) | Pydantic model | 1250 | `RoutingContractModel` | Compact actionable exclusion evidence retained on assignment. |
-| [RoutingTrustLineage](../entities/RoutingTrustLineage.md) | Pydantic model | 1281 | `RoutingContractModel` | Secret-free identities responsible for each routing evidence boundary. |
-| [RoutingDecisionSnapshot](../entities/RoutingDecisionSnapshot.md) | Pydantic model | 1316 | `RoutingContractModel` | Immutable server-generated evidence for one exact routing selection. |
+| [RoutingCandidateSummary](../entities/RoutingCandidateSummary.md) | Pydantic model | 1239 | `RoutingContractModel` | Compact ordered eligible-candidate evidence retained on assignment. |
+| [RoutingExclusionSummary](../entities/RoutingExclusionSummary.md) | Pydantic model | 1253 | `RoutingContractModel` | Compact actionable exclusion evidence retained on assignment. |
+| [RoutingTrustLineage](../entities/RoutingTrustLineage.md) | Pydantic model | 1284 | `RoutingContractModel` | Secret-free identities responsible for each routing evidence boundary. |
+| [RoutingDecisionSnapshot](../entities/RoutingDecisionSnapshot.md) | Pydantic model | 1319 | `RoutingContractModel` | Immutable server-generated evidence for one exact routing selection. |
 
 ## Functions
 

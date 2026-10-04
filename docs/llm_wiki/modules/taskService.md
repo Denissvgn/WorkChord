@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/services/taskService.ts`._
 
 | Source | Symbols |
 |--------|---------|
-| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskActions`, `TaskCommand`, `TaskDetail`, `TaskBrief`, `CriterionProgress`, `TaskReferencePage` |
+| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskTextContext`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskActions`, `TaskCommand`, `TaskDetail`, `TaskBrief`, `CriterionProgress`, `TaskReferencePage` |
 | `../types/team` | `AssigneeRecommendation` |
 | `./api` | `api` |
 

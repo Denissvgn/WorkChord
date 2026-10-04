@@ -1,6 +1,6 @@
 # TaskMoveRequest
 
-**Location:** `backend/app/schemas/task.py:116`
+**Location:** `backend/app/schemas/task.py:117`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

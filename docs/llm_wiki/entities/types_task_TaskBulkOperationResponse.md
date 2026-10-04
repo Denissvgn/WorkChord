@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `frontend/src/types/task.ts:334`
+**Location:** `frontend/src/types/task.ts:341`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

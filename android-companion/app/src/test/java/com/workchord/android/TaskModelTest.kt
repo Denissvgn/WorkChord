@@ -15,8 +15,8 @@ class TaskModelTest {
         assertEquals(TaskStatus.ACTIVE, TaskStatus.fromString("active"))
         assertEquals(TaskStatus.RESOLVED, TaskStatus.fromString("resolved"))
         assertEquals(TaskStatus.CLOSED, TaskStatus.fromString("closed"))
-        assertEquals(TaskStatus.BLOCKED, TaskStatus.fromString("blocked"))
-        assertEquals(TaskStatus.PLANNED, TaskStatus.fromString("unknown_status"))
+        assertEquals(TaskStatus.UNKNOWN, TaskStatus.fromString("blocked"))
+        assertEquals(TaskStatus.UNKNOWN, TaskStatus.fromString("unknown_status"))
     }
 
     @Test
@@ -46,7 +46,7 @@ class TaskModelTest {
         assertFalse(criteria[0].isCompleted)
 
         assertEquals("Jetpack Compose BOM and Material3 theme", criteria[1].text)
-        assertTrue(criteria[1].isCompleted)
+        assertFalse(criteria[1].isCompleted)
 
         assertEquals("Application boots with MainActivity", criteria[2].text)
         assertFalse(criteria[2].isCompleted)

@@ -12,12 +12,13 @@ Contract and service coverage for portable agent-team setup.
 |--------|---------|
 | `__future__` | `annotations` |
 | `app` | `mcp_agent_tools` |
+| `app.authority` | `internal_authority` |
 | `app.commands` | `command_transaction` |
 | `app.config` | `get_settings` |
 | `app.database` | `get_db` |
 | `app.main` | `app` |
 | `app.mcp_server` | `mcp` |
-| `app.models.agent` | `AgentActor`, `AgentModelCatalogEntry`, `AgentTeamTopologyMember` |
+| `app.models.agent` | `AgentActor`, `AgentModelCatalogEntry`, `AgentModelBinding`, `AgentTeamTopologyMember` |
 | `app.models.identity` | `Principal`, `Principal`, `WorkspaceMembership` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_team_setup` | `MAX_AGENT_TEAM_MANIFEST_BYTES`, `AgentTeamApplyRequest`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamRuntimeAcknowledgement`, `parse_agent_team_master`, `reconcile_agent_team_master` |
@@ -33,6 +34,7 @@ Contract and service coverage for portable agent-team setup.
 | `pytest` | `pytest` |
 | `sqlalchemy` | `select` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
+| `tests.test_delivery_scenarios` | `delivery_store` |
 | `typing` | `Any` |
 
 ## Local dependency map
@@ -54,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (14) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -62,14 +64,14 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CapturingCredentialSink](../entities/CapturingCredentialSink.md) | 69 | — | — |
-| [FailingOnceCredentialSink](../entities/FailingOnceCredentialSink.md) | 90 | `CapturingCredentialSink` | — |
+| [CapturingCredentialSink](../entities/CapturingCredentialSink.md) | 71 | — | — |
+| [FailingOnceCredentialSink](../entities/FailingOnceCredentialSink.md) | 92 | `CapturingCredentialSink` | — |
 
 ## Functions
 
@@ -86,3 +88,4 @@ flowchart LR
 | `test_uncertain_delivery_requires_explicit_new_reference_recovery` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
 | `test_mcp_registers_secret_free_setup_status_read_only` | *(async)* `() -> None` | `@pytest.mark.asyncio` | — |
 | `test_topologies_share_catalog_and_profile_references_not_identities` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
+| `test_revision_bound_acknowledgement_with_database_scenarios` | *(async)* `(delivery_store, onboarding_access_mode)` | — | — |

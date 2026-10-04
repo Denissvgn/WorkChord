@@ -2,15 +2,17 @@
 
 **Entry point:** `batch_update_tasks` (`http`)
 **Source:** [tasks](../modules/tasks.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [discussion_service](../modules/discussion_service.md), and 3 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 5 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
+- [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [iteration_service](../modules/iteration_service.md)
+- [mutation_versions](../modules/mutation_versions.md)
 - [schemas_task](../modules/schemas_task.md)
 - [tasks](../modules/tasks.md)
 
@@ -75,7 +77,7 @@ sequenceDiagram
     p22->>p23: lock_planning
 ```
 
-> Call sequence diagram shows 30 of 113 interactions; 83 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -143,37 +145,37 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| batch_update_tasks | IterationService | 240 | `IterationService(db)` |
-| batch_update_tasks | iteration_service.get_by_id | 241 | `iteration_service.get_by_id(iteration_id)` |
-| batch_update_tasks | HTTPException (backend/app/routers/tasks.py:batch_update_tasks) | 243 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| batch_update_tasks | command_transaction | 249 | `command_transaction(db)` |
-| command_transaction | current_command | 85 | `current_command(db)` |
-| current_command | getattr | 71 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 72 | `isinstance(info, dict)` |
-| current_command | info.get | 72 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 88 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 95 | `CommandState(mode=mode)` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 100 | `RuntimeError('A failed nested command cannot commit')` |
+| batch_update_tasks | IterationService | 243 | `IterationService(db)` |
+| batch_update_tasks | iteration_service.get_by_id | 244 | `iteration_service.get_by_id(iteration_id)` |
+| batch_update_tasks | HTTPException (backend/app/routers/tasks.py:batch_update_tasks) | 246 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| batch_update_tasks | command_transaction | 252 | `command_transaction(db)` |
+| command_transaction | current_command | 87 | `current_command(db)` |
+| current_command | getattr | 73 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 74 | `isinstance(info, dict)` |
+| current_command | info.get | 74 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 90 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 97 | `CommandState(mode=mode)` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 102 | `RuntimeError('A failed nested command cannot commit')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 105 |
-| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 122 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `batch_update_tasks` | `iteration_service.get_by_id` | 241 |
-| external_call | `batch_update_tasks` | `HTTPException` | 243 |
-| external_call | `current_command` | `getattr` | 71 |
-| external_call | `current_command` | `isinstance` | 72 |
-| unresolved_call | `current_command` | `info.get` | 72 |
-| external_call | `command_transaction` | `RuntimeError` | 88 |
-| external_call | `command_transaction` | `RuntimeError` | 100 |
+| unresolved_call | `batch_update_tasks` | `iteration_service.get_by_id` | 244 |
+| external_call | `batch_update_tasks` | `HTTPException` | 246 |
+| external_call | `current_command` | `getattr` | 73 |
+| external_call | `current_command` | `isinstance` | 74 |
+| unresolved_call | `current_command` | `info.get` | 74 |
+| external_call | `command_transaction` | `RuntimeError` | 90 |
+| external_call | `command_transaction` | `RuntimeError` | 102 |
 | step_limit | `batch_update_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

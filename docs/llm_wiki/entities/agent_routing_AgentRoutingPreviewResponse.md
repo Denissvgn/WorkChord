@@ -21,26 +21,29 @@ Expiring non-dispatch result over a digest-bound routing input snapshot.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `preview_id` | `str` | `preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `runtime_availability` | `Literal['unknown']` | `runtime_availability` | No | No | `'unknown'` | — | — | — |
+| `eligibility_basis` | `Literal['task_policy_and_configuration']` | `eligibility_basis` | No | No | `'task_policy_and_configuration'` | — | — | — |
+| `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
+| `preview_id` | `str` | `preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `preview_digest` | `RoutingDigest` | `preview_digest` | Yes | No | — | — | — | — |
 | `input_digest` | `RoutingDigest` | `input_digest` | Yes | No | — | — | — | — |
-| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | max_length=100; min_length=1 | — | — |
-| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | min_length=1; max_length=100 | — | — |
+| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `purpose` | `Literal['execution', 'verification']` | `purpose` | Yes | No | — | — | — | — |
-| `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | ge=1; strict=True | — | — |
-| `current_task_version` | `int` | `current_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `assessment_id` | `int` | `assessment_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `current_task_version` | `int` | `current_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
 | `policy_version` | `Literal['model-aware-routing-v1']` | `policy_version` | No | No | `ROUTING_POLICY_VERSION` | — | — | — |
 | `review_mode` | `TaskReviewMode` | `review_mode` | Yes | No | — | — | — | — |
-| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `generated_at` | `datetime` | `generated_at` | Yes | No | — | — | — | — |
 | `expires_at` | `datetime` | `expires_at` | Yes | No | — | — | — | — |
 | `recommended_candidate` | `AgentRoutingCandidate \| None` | `recommended_candidate` | No | Yes | `None` | — | — | — |
 | `eligible_candidates` | `list[AgentRoutingCandidate]` | `eligible_candidates` | No | No | factory: `list` | max_length=unknown (MAX_ROUTING_CANDIDATES) | — | — |
 | `exclusions` | `list[AgentRoutingExclusion]` | `exclusions` | No | No | factory: `list` | max_length=unknown (MAX_ROUTING_EXCLUSIONS) | — | — |
-| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | ge=0; strict=True | — | — |
-| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | ge=0; strict=True | — | — |
+| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
+| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
 | `hard_blocker_codes` | `list[RoutingBlockerCode]` | `hard_blocker_codes` | No | No | factory: `list` | — | — | — |
 
 ## Methods
@@ -91,7 +94,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 3 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest`, `policy_version` |
+| [agent_routing](../modules/agent_routing.md) | 3 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest` |
 
 ### Structure
 

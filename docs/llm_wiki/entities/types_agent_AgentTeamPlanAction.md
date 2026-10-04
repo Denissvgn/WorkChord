@@ -1,6 +1,6 @@
 # AgentTeamPlanAction
 
-**Location:** `frontend/src/types/agent.ts:697`
+**Location:** `frontend/src/types/agent.ts:701`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

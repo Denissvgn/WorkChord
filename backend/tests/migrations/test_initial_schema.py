@@ -56,7 +56,7 @@ def test_current_upgrade_is_idempotent_and_downgrade_is_refused(tmp_path, config
     with engine.begin() as connection:
         connection.execute(text("INSERT INTO task_deletion_fences VALUES (918, 43)"))
     run_alembic_upgrade(backup=False, run_repairs=False)
-    with pytest.raises(RuntimeError, match="cannot be downgraded"):
+    with pytest.raises(RuntimeError, match="cannot be downgraded|immutable history"):
         command.downgrade(alembic_config(), 'base')
     assert inspect_database().current_revision == head_revision()
     with engine.connect() as connection:

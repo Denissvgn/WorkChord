@@ -8,8 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.workchord.android.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import com.workchord.android.data.models.TaskStatus
 import com.workchord.android.ui.theme.StatusActiveBg
@@ -28,13 +31,14 @@ fun StatusChip(
     status: TaskStatus,
     modifier: Modifier = Modifier
 ) {
-    val (bgColor, textColor) = when (status) {
-        TaskStatus.PLANNED -> StatusPlannedBg to StatusPlannedColor
-        TaskStatus.ACTIVE -> StatusActiveBg to StatusActiveColor
-        TaskStatus.RESOLVED -> StatusResolvedBg to StatusResolvedColor
-        TaskStatus.CLOSED -> StatusClosedBg to StatusClosedColor
-        TaskStatus.BLOCKED -> StatusBlockedBg to StatusBlockedColor
+    val dark = MaterialTheme.colorScheme.surface.luminance() < 0.2f
+    val textColor = when (status) {
+        TaskStatus.PLANNED, TaskStatus.UNKNOWN -> if (dark) Color(0xFFCBD5E1) else Color(0xFF334155)
+        TaskStatus.ACTIVE -> if (dark) Color(0xFF67E8F9) else Color(0xFF0E7490)
+        TaskStatus.RESOLVED -> if (dark) Color(0xFF6EE7B7) else Color(0xFF047857)
+        TaskStatus.CLOSED -> if (dark) Color(0xFFC4B5FD) else Color(0xFF6D28D9)
     }
+    val bgColor = textColor.copy(alpha = 0.12f)
 
     Box(
         modifier = modifier
@@ -43,9 +47,15 @@ fun StatusChip(
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
-            text = status.displayName,
+            text = stringResource(when (status) {
+                TaskStatus.PLANNED -> R.string.status_planned
+                TaskStatus.ACTIVE -> R.string.status_active
+                TaskStatus.RESOLVED -> R.string.status_resolved
+                TaskStatus.CLOSED -> R.string.status_closed
+                TaskStatus.UNKNOWN -> R.string.status_unknown
+            }),
             color = textColor,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }

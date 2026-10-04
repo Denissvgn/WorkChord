@@ -39,15 +39,15 @@ flowchart LR
     n0["TaskEvent (backend/app/models/agent.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["backend/app/models/task.py"]
-    n4["AgentModelCatalogService._invalidation_events (backend/app/services/agent_model_catalog_service.py)"]
-    n5["AgentModelCatalogService._mutation_audit_event (backend/app/services/agent_model_catalog_service.py)"]
-    n6["AgentService._task_event_from_idempotency (backend/app/services/agent_service.py)"]
-    n7["AgentService._task_event_matches (backend/app/services/agent_service.py)"]
-    n8["AgentService.append_task_event (backend/app/services/agent_service.py)"]
-    n9["AgentService.create_actor (backend/app/services/agent_service.py)"]
-    n10["AgentTeamSetupService._stage_event (backend/app/services/agent_team_setup_service.py)"]
-    n11["backend/app/services/agent_work_service.py"]
+    n3["backend/app/models/delivery_observation.py"]
+    n4["backend/app/models/task.py"]
+    n5["AgentModelCatalogService._invalidation_events (backend/app/services/agent_model_catalog_service.py)"]
+    n6["AgentModelCatalogService._mutation_audit_event (backend/app/services/agent_model_catalog_service.py)"]
+    n7["AgentService._task_event_from_idempotency (backend/app/services/agent_service.py)"]
+    n8["AgentService._task_event_matches (backend/app/services/agent_service.py)"]
+    n9["AgentService.append_task_event (backend/app/services/agent_service.py)"]
+    n10["AgentService.create_actor (backend/app/services/agent_service.py)"]
+    n11["AgentTeamSetupService._stage_event (backend/app/services/agent_team_setup_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -62,15 +62,15 @@ flowchart LR
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_task.md"
-    click n4 "../modules/agent_model_catalog_service.md"
+    click n3 "../modules/delivery_observation.md"
+    click n4 "../modules/models_task.md"
     click n5 "../modules/agent_model_catalog_service.md"
-    click n6 "../modules/agent_service.md"
+    click n6 "../modules/agent_model_catalog_service.md"
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_service.md"
     click n9 "../modules/agent_service.md"
-    click n10 "../modules/agent_team_setup_service.md"
-    click n11 "../modules/agent_work_service.md"
+    click n10 "../modules/agent_service.md"
+    click n11 "../modules/agent_team_setup_service.md"
 ```
 
 ### Summary
@@ -90,6 +90,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
 | `AgentModelCatalogService._invalidation_events` | call | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 1 |
 | `AgentModelCatalogService._invalidation_events` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
@@ -100,6 +101,5 @@ flowchart LR
 | `AgentService.append_task_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService._stage_event` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
-| `agent_work_service` | import | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.

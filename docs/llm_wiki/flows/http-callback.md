@@ -107,15 +107,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| callback | IdentityService(…).finish_login | 94 | `IdentityService(db).finish_login(code, state, request.cookies.get(...), ip_address=..., user_agent=request.headers.get(...))` |
-| callback | IdentityService | 94 | `IdentityService(db)` |
-| callback | request.cookies.get | 94 | `request.cookies.get('workchord_login')` |
-| callback | get_client_ip | 95 | `get_client_ip(request)` |
+| callback | IdentityService(…).finish_login | 166 | `IdentityService(db).finish_login(code, state, request.cookies.get(...), ip_address=..., user_agent=request.headers.get(...))` |
+| callback | IdentityService | 166 | `IdentityService(db)` |
+| callback | request.cookies.get | 166 | `request.cookies.get('workchord_login')` |
+| callback | get_client_ip | 167 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 
@@ -127,8 +127,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `callback` | `IdentityService(db).finish_login` | 94 |
-| unresolved_call | `callback` | `request.cookies.get` | 94 |
+| unresolved_call | `callback` | `IdentityService(db).finish_login` | 166 |
+| unresolved_call | `callback` | `request.cookies.get` | 166 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |

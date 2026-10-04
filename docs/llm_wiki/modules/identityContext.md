@@ -35,6 +35,8 @@ flowchart LR
     n6["frontend/src/features/identity/identityService.ts"]
     n7["frontend/src/hooks/useAdminAccess.ts"]
     n8["frontend/src/pages/MyWorkPage.tsx"]
+    n9["frontend/src/pages/NativeConnectionPage.test.tsx"]
+    n10["frontend/src/pages/NativeConnectionPage.tsx"]
     n0 --> n1
     n0 --> n4
     n1 --> n4
@@ -47,6 +49,9 @@ flowchart LR
     n5 --> n6
     n7 --> n4
     n8 --> n4
+    n9 --> n4
+    n9 --> n10
+    n10 --> n4
     click n0 "../modules/TaskDiscussion.test.md"
     click n1 "../modules/TaskDiscussion.md"
     click n2 "../modules/TaskForm.md"
@@ -56,6 +61,8 @@ flowchart LR
     click n6 "../modules/identityService.md"
     click n7 "../modules/useAdminAccess.md"
     click n8 "../modules/MyWorkPage.md"
+    click n9 "../modules/NativeConnectionPage.test.md"
+    click n10 "../modules/NativeConnectionPage.md"
 ```
 
 ### Internal neighbors
@@ -69,6 +76,8 @@ flowchart LR
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [useAdminAccess](../modules/useAdminAccess.md) |
 | Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
+| Inbound | [NativeConnectionPage.test](../modules/NativeConnectionPage.test.md) |
+| Inbound | [NativeConnectionPage](../modules/NativeConnectionPage.md) |
 | Outbound | [identityService](../modules/identityService.md) |
 
 ### External packages

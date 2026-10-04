@@ -24,18 +24,18 @@ Raised when an agent lacks a required scope.
 flowchart LR
     n0["AgentPermissionError (backend/app/services/agent_service.py)"]
     n1["Exception"]
-    n2["_require_scope_requirement (backend/app/mcp_server.py)"]
-    n3["backend/app/routers/agent.py"]
-    n4["backend/app/routers/agent_planning.py"]
-    n5["AgentModelCatalogService._execute (backend/app/services/agent_model_catalog_service.py)"]
-    n6["AgentModelCatalogService._require_read (backend/app/services/agent_model_catalog_service.py)"]
-    n7["AgentRoutingService._require_assessment_write (backend/app/services/agent_routing_service.py)"]
-    n8["AgentRoutingService._require_read (backend/app/services/agent_routing_service.py)"]
-    n9["AgentRoutingService.preview_task_routing (backend/app/services/agent_routing_service.py)"]
-    n10["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
-    n11["AgentService._validate_run_fence (backend/app/services/agent_service.py)"]
-    n12["AgentService.claim_task (backend/app/services/agent_service.py)"]
-    n13["AgentService.create_task (backend/app/services/agent_service.py)"]
+    n2["get_execution_usage_summary (backend/app/mcp_agent_tools.py)"]
+    n3["_require_scope_requirement (backend/app/mcp_server.py)"]
+    n4["backend/app/routers/agent.py"]
+    n5["backend/app/routers/agent_planning.py"]
+    n6["AgentModelCatalogService._execute (backend/app/services/agent_model_catalog_service.py)"]
+    n7["AgentModelCatalogService._require_read (backend/app/services/agent_model_catalog_service.py)"]
+    n8["AgentRoutingService._require_assessment_write (backend/app/services/agent_routing_service.py)"]
+    n9["AgentRoutingService._require_read (backend/app/services/agent_routing_service.py)"]
+    n10["AgentRoutingService.preview_task_routing (backend/app/services/agent_routing_service.py)"]
+    n11["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
+    n12["AgentService._validate_run_fence (backend/app/services/agent_service.py)"]
+    n13["AgentService.claim_task (backend/app/services/agent_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -50,16 +50,16 @@ flowchart LR
     n12 --> n0
     n13 --> n0
     click n0 "../modules/agent_service.md"
-    click n2 "../modules/mcp_server.md"
-    click n3 "../modules/routers_agent.md"
-    click n4 "../modules/routers_agent_planning.md"
-    click n5 "../modules/agent_model_catalog_service.md"
+    click n2 "../modules/mcp_agent_tools.md"
+    click n3 "../modules/mcp_server.md"
+    click n4 "../modules/routers_agent.md"
+    click n5 "../modules/routers_agent_planning.md"
     click n6 "../modules/agent_model_catalog_service.md"
-    click n7 "../modules/agent_routing_service.md"
+    click n7 "../modules/agent_model_catalog_service.md"
     click n8 "../modules/agent_routing_service.md"
     click n9 "../modules/agent_routing_service.md"
     click n10 "../modules/agent_routing_service.md"
-    click n11 "../modules/agent_service.md"
+    click n11 "../modules/agent_routing_service.md"
     click n12 "../modules/agent_service.md"
     click n13 "../modules/agent_service.md"
 ```
@@ -80,6 +80,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `get_execution_usage_summary` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `_require_scope_requirement` | call | [mcp_server](../modules/mcp_server.md) | 1 |
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
 | `agent_planning` | import | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
@@ -91,6 +92,5 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `AgentService._validate_run_fence` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentService.claim_task` | call | [agent_service](../modules/agent_service.md) | 1 |
-| `AgentService.create_task` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

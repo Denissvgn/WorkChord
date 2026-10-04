@@ -84,16 +84,16 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `_check_bulk_write` | call | [authority](../modules/authority.md) | 4 |
-| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 8 |
+| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 9 |
 | `require_operator` | call | [authority](../modules/authority.md) | 1 |
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
 | `scope_orm_operation` | call | [authority](../modules/authority.md) | 2 |
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
-| `enforce_http_authority` | call | [http_authority](../modules/http_authority.md) | 10 |
+| `enforce_http_authority` | call | [http_authority](../modules/http_authority.md) | 11 |
 | `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 11 |
 | `authority_error` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 | `link_profile` | call | [routers_identity](../modules/routers_identity.md) | 2 |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.

@@ -115,7 +115,7 @@ fun TaskCard(
                         modifier = Modifier.height(14.dp).width(14.dp)
                     )
                     val effortText = when {
-                        task.effortHours != null -> "${task.effortHours.toInt()}h"
+                        task.effortHours != null -> "${task.effortHours}h"
                         task.effortDays != null -> "${task.effortDays}d"
                         else -> "—"
                     }

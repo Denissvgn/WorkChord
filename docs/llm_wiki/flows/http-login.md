@@ -118,16 +118,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| login | IdentityService(…).begin_login | 80 | `IdentityService(db).begin_login(return_to)` |
-| login | IdentityService | 80 | `IdentityService(db)` |
-| login | RedirectResponse | 81 | `RedirectResponse(url, status_code=303, headers={...})` |
-| login | _cookie_options | 82 | `_cookie_options(data not statically known)` |
+| login | IdentityService(…).begin_login | 152 | `IdentityService(db).begin_login(return_to)` |
+| login | IdentityService | 152 | `IdentityService(db)` |
+| login | RedirectResponse | 153 | `RedirectResponse(url, status_code=303, headers={...})` |
+| login | _cookie_options | 154 | `_cookie_options(data not statically known)` |
 | _cookie_options | get_settings | 37 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
-| login | response.set_cookie | 83 | `response.set_cookie('workchord_login', browser, max_age=600, httponly=True, secure=options[...], samesite='lax', path=options[...])` |
-| login | request.cookies.get | 84 | `request.cookies.get(...)` |
-| login | get_settings | 84 | `get_settings(data not statically known)` |
-| login | _get_session_by_token | 86 | `_get_session_by_token(db, guest)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| login | response.set_cookie | 155 | `response.set_cookie('workchord_login', browser, max_age=600, httponly=True, secure=options[...], samesite='lax', path=options[...])` |
+| login | request.cookies.get | 156 | `request.cookies.get(...)` |
+| login | get_settings | 156 | `get_settings(data not statically known)` |
+| login | _get_session_by_token | 158 | `_get_session_by_token(db, guest)` |
 | _get_session_by_token | _SESSION_TOKEN_PATTERN.fullmatch | 73 | `_SESSION_TOKEN_PATTERN.fullmatch(token)` |
 
 ### Boundary effects
@@ -138,10 +138,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `login` | `IdentityService(db).begin_login` | 80 |
-| external_call | `login` | `RedirectResponse` | 81 |
-| unresolved_call | `login` | `response.set_cookie` | 83 |
-| unresolved_call | `login` | `request.cookies.get` | 84 |
+| unresolved_call | `login` | `IdentityService(db).begin_login` | 152 |
+| external_call | `login` | `RedirectResponse` | 153 |
+| unresolved_call | `login` | `response.set_cookie` | 155 |
+| unresolved_call | `login` | `request.cookies.get` | 156 |
 | unresolved_call | `_get_session_by_token` | `_SESSION_TOKEN_PATTERN.fullmatch` | 73 |
 | step_limit | `login` | `first 12 steps` | 0 |
 

@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `AgentTeamRuntimeAcknowledgement` in `backend/app/schemas/agent_team_setup.py`._
+Revision-bound runtime self-report for an exact actor, role package, profile, bindings, topology, features and assignment modes. A refresh supplies the exact previous acknowledgement digest; the control field is excluded from semantic hashing so existing replay receipts remain compatible. Current configuration must still match before any updated receipt is accepted.
 
 ## Validators
 
@@ -21,15 +21,16 @@ _Auto-generated from `AgentTeamRuntimeAcknowledgement` in `backend/app/schemas/a
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['agent-team-runtime-ack-v1']` | `schema_version` | No | No | `AGENT_TEAM_ACK_SCHEMA_VERSION` | — | — | — |
+| `expected_previous_acknowledgement_digest` | `str \| None` | `expected_previous_acknowledgement_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |
 | `topology_key` | `str` | `topology_key` | Yes | No | — | pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `topology_revision` | `int` | `topology_revision` | Yes | No | — | ge=1 | — | — |
 | `actor_key` | `str` | `actor_key` | Yes | No | — | pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `skill_package` | `AgentTeamSkillPackage` | `skill_package` | Yes | No | — | — | — | — |
-| `profile_revision` | `str` | `profile_revision` | Yes | No | — | max_length=128; min_length=1 | — | — |
-| `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | max_length=16; min_length=1 | — | — |
-| `server_features` | `tuple[str, ...]` | `server_features` | Yes | No | — | max_length=64; min_length=1 | — | — |
-| `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | max_length=4; min_length=1 | — | — |
+| `profile_revision` | `str` | `profile_revision` | Yes | No | — | min_length=1; max_length=128 | — | — |
+| `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | min_length=1; max_length=16 | — | — |
+| `server_features` | `tuple[str, ...]` | `server_features` | Yes | No | — | min_length=1; max_length=64 | — | — |
+| `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | min_length=1; max_length=4 | — | — |
 
 ## Methods
 
@@ -69,7 +70,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 2 | `actor_key`, `model_binding_revisions`, `profile_revision`, `role`, `schema_version`, `server_features`, `skill_package`, `supported_assignment_modes`, `topology_key`, `topology_revision` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 2 | `actor_key`, `expected_previous_acknowledgement_digest`, `model_binding_revisions`, `profile_revision`, `role`, `schema_version`, `server_features`, `skill_package`, `supported_assignment_modes`, `topology_key`, `topology_revision` |
 
 ### Structure
 
@@ -83,6 +84,6 @@ flowchart LR
 |---|---|---|---:|
 | `acknowledge_agent_team_runtime` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentTeamSetupService.acknowledge_runtime` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
-| `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
+| `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `acknowledge_member` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_03_runtime_handoff_failure_resumes_in_place` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |

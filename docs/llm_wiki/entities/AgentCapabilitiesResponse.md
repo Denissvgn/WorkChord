@@ -7,7 +7,7 @@
 
 ## Description
 
-Authenticated compatibility and actor capability handshake.
+Authenticated REST/MCP compatibility handshake with shared readiness semantics. Actor/model configuration and revision-bound self-report are distinct from concrete-task eligibility, provider/runtime availability and independent model attestation. Lease and role limits remain authoritative.
 
 ## Attributes
 
@@ -25,6 +25,7 @@ Authenticated compatibility and actor capability handshake.
 | `skill_catalog_url` | `Optional[str]` | `skill_catalog_url` | No | Yes | `None` | — | — | — |
 | `skill_discovery_url` | `Optional[str]` | `skill_discovery_url` | No | Yes | `None` | — | — | — |
 | `model_aware_routing` | `AgentRoutingRolloutStatusResponse` | `model_aware_routing` | Yes | No | — | — | — | — |
+| `readiness_semantics` | `dict[str, str]` | `readiness_semantics` | No | No | factory: `lambda: {'configuration': 'actor_and_model_metadata', 'acknowledgement': 'exact_revision_bound_runtime_self_report', 'task_eligibility': 'requires_current_task_and_fenced_work_decision', 'runtime_availability': 'unknown_without_observation', 'model_attestation': 'not_independently_attested'}` | — | — | — |
 
 ## Methods
 
@@ -51,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor`, `api_contract`, `features`, `lease_limits`, `lifecycle_actions`, `model_aware_routing`, `recommended_skills`, `scopes`, `server_version`, `skill_catalog_url`, `skill_catalog_version`, `skill_discovery_url` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor`, `api_contract`, `features`, `lease_limits`, `lifecycle_actions`, `model_aware_routing`, `readiness_semantics`, `recommended_skills`, `scopes`, `server_version`, `skill_catalog_url`, `skill_catalog_version` |
 
 ### Structure
 

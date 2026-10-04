@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState, useRef } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Upload, FileText, AlertCircle, CheckCircle, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { taskService } from '../../services/taskService';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { iterationService } from '../../services/iterationService';
+import { QueryErrorState } from '../feedback/QueryState';
+import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
 import type { TaskImportDestination } from '../../types/task';
 import clsx from 'clsx';
 
@@ -15,18 +17,41 @@ interface ImportTasksModalProps {
 }
 
 export const ImportTasksModal = ({ iterationId, onClose }: ImportTasksModalProps) => {
+    const baseQuery = useQuery({ queryKey: ['iteration', 'task-import-base', iterationId],
+        queryFn: () => iterationService.getById(iterationId),
+        refetchOnWindowFocus: false, refetchOnReconnect: false });
+    return <ImportTasksBody key={`${iterationId}-${Boolean(baseQuery.data)}`} iterationId={iterationId} onClose={onClose}
+        initialRevision={baseQuery.data?.revision} isLoading={baseQuery.isLoading} queryError={baseQuery.isError ? baseQuery.error : null}
+        unsupported={Boolean(baseQuery.data && baseQuery.data.revision === undefined)} onRetry={() => { void baseQuery.refetch(); }} />;
+};
+
+interface ImportTasksBodyProps extends ImportTasksModalProps {
+    initialRevision?: number;
+    isLoading: boolean;
+    queryError: unknown;
+    unsupported: boolean;
+    onRetry: () => void;
+}
+
+const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, queryError, unsupported, onRetry }: ImportTasksBodyProps) => {
     const [text, setText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [destination, setDestination] = useState<TaskImportDestination>('tasks');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const editorRef = useRef<HTMLTextAreaElement>(null);
+    const readerRef = useRef<FileReader | null>(null);
+    const readGeneration = useRef(0);
+    const [isReadingFile, setIsReadingFile] = useState(false);
     const queryClient = useQueryClient();
     const { t } = useTranslation();
+    const [baseRevision, setBaseRevision] = useState(initialRevision);
+    const [conflict, setConflict] = useState(false);
+    useEffect(() => () => { readGeneration.current += 1; readerRef.current?.abort(); }, []);
 
     const importMutation = useMutation({
         mutationFn: (payload: { text: string; destination: TaskImportDestination }) => (
-            taskService.importFromText(iterationId, payload.text, { destination: payload.destination })
+            taskService.importFromText(iterationId, payload.text, { destination: payload.destination, expectedRevision: baseRevision })
         ),
         onSuccess: (data) => {
             if (data.task_count > 0) {
@@ -45,23 +70,36 @@ export const ImportTasksModal = ({ iterationId, onClose }: ImportTasksModalProps
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('taskImport.importError')));
+            setConflict(normalizeApiError(err, t('taskImport.importError')).code === 'iteration_version_conflict');
         }
     });
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            const generation = ++readGeneration.current;
+            readerRef.current?.abort();
             const reader = new FileReader();
+            readerRef.current = reader;
+            setIsReadingFile(true);
             reader.onload = (event) => {
+                if (readGeneration.current !== generation) return;
                 const content = event.target?.result as string;
                 setText(content);
                 setError(null);
+                setIsReadingFile(false);
             };
+            reader.onerror = () => {
+                if (readGeneration.current !== generation) return;
+                setError(t('taskImport.fileError')); setIsReadingFile(false);
+            };
+            reader.onabort = () => { if (readGeneration.current === generation) setIsReadingFile(false); };
             reader.readAsText(file);
         }
     };
 
     const handleImport = () => {
+        if (baseRevision === undefined || conflict || isReadingFile) return;
         if (!text.trim()) {
             setError(t('taskImport.emptyError'));
             return;
@@ -87,9 +125,19 @@ export const ImportTasksModal = ({ iterationId, onClose }: ImportTasksModalProps
             closeDisabled={importMutation.isPending}
             fullScreen={isFullScreen}
             initialFocusRef={isFullScreen ? editorRef : undefined}
-            footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={onClose} disabled={importMutation.isPending}>{t('actions.cancel')}</Button><Button onClick={handleImport} disabled={importMutation.isPending || !text.trim()} isLoading={importMutation.isPending}>{destination === 'triage' ? t('taskImport.importTriage') : t('taskImport.importTasks')}</Button></div>}
+            footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={onClose} disabled={importMutation.isPending}>{t('actions.cancel')}</Button><Button onClick={handleImport} disabled={importMutation.isPending || isReadingFile || !text.trim() || baseRevision === undefined || conflict || Boolean(queryError)} isLoading={importMutation.isPending}>{destination === 'triage' ? t('taskImport.importTriage') : t('taskImport.importTasks')}</Button></div>}
         >
                 <div className="flex min-h-0 flex-1 flex-col space-y-4">
+                    {isLoading && <p role="status">{t('common.loading')}</p>}
+                    {isReadingFile && <p role="status">{t('taskImport.readingFile')}</p>}
+                    {queryError !== null && <QueryErrorState error={queryError} onRetry={onRetry} />}
+                    {unsupported && <p role="alert">{t('taskImport.versionUnsupported')}</p>}
+                    {conflict && <Button variant="secondary" onClick={async () => {
+                        try {
+                            const current = await iterationService.getById(iterationId);
+                            setBaseRevision(current.revision); setConflict(false);
+                        } catch (err) { setError(getApiErrorMessage(err, t('taskImport.importError'))); }
+                    }}>{t('taskImport.reloadContext')}</Button>}
                     {/* Format example */}
                     {!isFullScreen && (
                         <div className="bg-surface-muted rounded-lg p-4 text-sm shrink-0">
@@ -151,12 +199,14 @@ export const ImportTasksModal = ({ iterationId, onClose }: ImportTasksModalProps
                             <input
                                 ref={fileInputRef}
                                 type="file"
+                                disabled={importMutation.isPending || isLoading || baseRevision === undefined}
                                 accept=".txt"
                                 onChange={handleFileUpload}
                                 className="hidden"
                             />
                             <Button
                                 variant="secondary"
+                                disabled={importMutation.isPending || isLoading || baseRevision === undefined}
                                 onClick={() => fileInputRef.current?.click()}
                                 className="w-full"
                             >
@@ -170,6 +220,7 @@ export const ImportTasksModal = ({ iterationId, onClose }: ImportTasksModalProps
                     <textarea
                         ref={editorRef}
                         value={text}
+                        readOnly={importMutation.isPending || isLoading || baseRevision === undefined}
                         onChange={(e) => {
                             setText(e.target.value);
                             setError(null);

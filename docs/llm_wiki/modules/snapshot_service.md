@@ -4,6 +4,8 @@
 
 ## Description
 
+Scheduled restoration appends a per-task restoration event after rebuilding the task state. This marks an execution-history boundary without inventing a new capture time or acceptance, while retaining the existing aggregate recovery audit and version-allocation safeguards.
+
 Stores bounded recovery points within the owning planning transaction. Iteration restoration preserves current shared person availability and delivery prerequisites, while legacy unlinked allocation absences retain local recovery. Incoming delivery references block destructive restoration. Restored task versions exceed retained fences and history; current evidence and acceptance are invalidated.
 
 ## Imports

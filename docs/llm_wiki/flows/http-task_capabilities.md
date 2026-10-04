@@ -2,7 +2,7 @@
 
 **Entry point:** `task_capabilities` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [routers_task_domain](../modules/routers_task_domain.md), [task_domain_service](../modules/task_domain_service.md)
+**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [routers_task_domain](../modules/routers_task_domain.md), [task_domain_service](../modules/task_domain_service.md)
 
 ## Call sequence
 
@@ -17,6 +17,8 @@ sequenceDiagram
     participant p5 as select(…).where(…).limit
     participant p6 as select(…).where
     participant p7 as select
+    participant p8 as get_settings
+    participant p9 as Settings
     p0->>p1: domain_capabilities
     p1->>p2: internal_authority
     p2-->>p3: db.info.get
@@ -24,6 +26,9 @@ sequenceDiagram
     p1-->>p5: select(…).where(…).limit
     p1-->>p6: select(…).where
     p1-->>p7: select
+    p1->>p8: get_settings
+    p8->>p9: Settings
+    p1->>p8: get_settings
 ```
 
 ## Data flow
@@ -39,6 +44,9 @@ flowchart LR
     s6["6. select(…).where(…).limit"]
     s7["7. select(…).where"]
     s8["8. select"]
+    s9["9. get_settings"]
+    s10["10. Settings"]
+    s11["11. get_settings"]
     s1 -->|"domain_capabilities(db)"| s2
     s2 -->|"internal_authority(db)"| s3
     s3 -. "db.info.get('authority_internal', False)" .-> s4
@@ -46,9 +54,15 @@ flowchart LR
     s2 -. "select(…).where(…).limit(1)" .-> s6
     s2 -. "select(…).where(...)" .-> s7
     s2 -. "select(Task.id)" .-> s8
+    s2 -->|"get_settings(data not statically known)"| s9
+    s9 -->|"Settings(data not statically known)"| s10
+    s2 -->|"get_settings(data not statically known)"| s11
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/task_domain_service.md"
     click s3 "../modules/authority.md"
+    click s9 "../modules/config.md"
+    click s10 "../modules/config.md"
+    click s11 "../modules/config.md"
 ```
 
 ### Step data
@@ -63,18 +77,24 @@ flowchart LR
 | `select(…).where(…).limit` | - | - | - | - |
 | `select(…).where` | - | - | - | - |
 | `select` | - | - | - | - |
+| `get_settings` | - | - | - | `Settings(...)` |
+| `Settings` | - | - | - | - |
+| `get_settings` | - | - | - | `Settings(...)` |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_capabilities | domain_capabilities | 46 | `domain_capabilities(db)` |
-| domain_capabilities | internal_authority | 55 | `internal_authority(db)` |
+| task_capabilities | domain_capabilities | 70 | `domain_capabilities(db)` |
+| domain_capabilities | internal_authority | 56 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| domain_capabilities | db.scalar | 56 | `db.scalar(...)` |
-| domain_capabilities | select(…).where(…).limit | 56 | `select(Task.id).where(Task.domain_backfill_version < 1).limit(1)` |
-| domain_capabilities | select(…).where | 56 | `select(Task.id).where(...)` |
-| domain_capabilities | select | 56 | `select(Task.id)` |
+| domain_capabilities | db.scalar | 57 | `db.scalar(...)` |
+| domain_capabilities | select(…).where(…).limit | 57 | `select(Task.id).where(Task.domain_backfill_version < 1).limit(1)` |
+| domain_capabilities | select(…).where | 57 | `select(Task.id).where(...)` |
+| domain_capabilities | select | 57 | `select(Task.id)` |
+| domain_capabilities | get_settings | 61 | `get_settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| domain_capabilities | get_settings | 62 | `get_settings(data not statically known)` |
 
 ### Boundary effects
 
@@ -85,10 +105,10 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `domain_capabilities` | `db.scalar` | 56 |
-| unresolved_call | `domain_capabilities` | `select(Task.id).where(Task.domain_backfill_version < 1).limit` | 56 |
-| unresolved_call | `domain_capabilities` | `select(Task.id).where` | 56 |
-| external_call | `domain_capabilities` | `select` | 56 |
+| unresolved_call | `domain_capabilities` | `db.scalar` | 57 |
+| unresolved_call | `domain_capabilities` | `select(Task.id).where(Task.domain_backfill_version < 1).limit` | 57 |
+| unresolved_call | `domain_capabilities` | `select(Task.id).where` | 57 |
+| external_call | `domain_capabilities` | `select` | 57 |
 
 ## Behavior
 

@@ -158,6 +158,7 @@ jobs:
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.7.0'"
           .venv/bin/python scripts/generate_client_contract.py --check
+          .venv/bin/python scripts/generate_mobile_contract_fixtures.py --check
           .venv/bin/python scripts/generate_agent_team_contract.py --output /tmp/agent-team-master-v1.schema.json
           .venv/bin/python scripts/generate_agent_team_report_contract.py --output /tmp/agent-team-setup-report-v1.schema.json
       - name: Validate the PostgreSQL qualification harness contract

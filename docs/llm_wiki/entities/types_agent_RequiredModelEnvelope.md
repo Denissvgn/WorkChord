@@ -1,6 +1,6 @@
 # RequiredModelEnvelope
 
-**Location:** `frontend/src/types/agent.ts:316`
+**Location:** `frontend/src/types/agent.ts:317`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

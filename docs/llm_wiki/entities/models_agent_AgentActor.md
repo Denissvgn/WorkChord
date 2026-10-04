@@ -118,4 +118,4 @@ flowchart LR
 | `classify_triage_item` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `convert_triage_to_task` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 
-> References: showing 12 of 344 logical references; 332 omitted by the 12-row generated summary limit.
+> References: showing 12 of 353 logical references; 341 omitted by the 12-row generated summary limit.

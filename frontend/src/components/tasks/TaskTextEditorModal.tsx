@@ -5,7 +5,8 @@ import { Save, FileText, AlertCircle, CheckCircle, Loader2, Maximize2, Minimize2
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { taskService } from '../../services/taskService';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
+import type { TaskTextContext } from '../../types/task';
 import clsx from 'clsx';
 
 interface TaskTextEditorModalProps {
@@ -14,17 +15,19 @@ interface TaskTextEditorModalProps {
 }
 
 export const TaskTextEditorModal = ({ iterationId, onClose }: TaskTextEditorModalProps) => {
-    const { data: initialText = '', isLoading, isError, error, refetch } = useQuery({
-        queryKey: ['tasks', 'text', iterationId],
-        queryFn: () => taskService.getTasksAsText(iterationId),
+    const { data: initialContext, isLoading, isError, error, refetch } = useQuery({
+        queryKey: ['tasks', 'text-context', iterationId],
+        queryFn: () => taskService.getTasksTextContext(iterationId),
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     });
 
     return (
         <TaskTextEditorBody
-            key={`${iterationId}-${initialText}`}
+            key={`${iterationId}-${Boolean(initialContext)}`}
             iterationId={iterationId}
-            initialText={initialText}
+            initialText={initialContext?.text ?? ''}
+            initialRevision={initialContext?.iteration_revision}
             isLoading={isLoading}
             queryError={isError ? error : null}
             onRetry={() => void refetch()}
@@ -35,21 +38,26 @@ export const TaskTextEditorModal = ({ iterationId, onClose }: TaskTextEditorModa
 
 interface TaskTextEditorBodyProps extends TaskTextEditorModalProps {
     initialText: string;
+    initialRevision?: number;
     isLoading: boolean;
     queryError: unknown;
     onRetry: () => void;
 }
 
-const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, onRetry, onClose }: TaskTextEditorBodyProps) => {
+const TaskTextEditorBody = ({ iterationId, initialText, initialRevision, isLoading, queryError, onRetry, onClose }: TaskTextEditorBodyProps) => {
     const [text, setText] = useState(initialText);
     const [error, setError] = useState<string | null>(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [baseRevision, setBaseRevision] = useState(initialRevision);
+    const [conflict, setConflict] = useState(false);
+    const [comparison, setComparison] = useState<TaskTextContext | null>(null);
+    const [comparing, setComparing] = useState(false);
     const editorRef = useRef<HTMLTextAreaElement>(null);
     const queryClient = useQueryClient();
     const { t } = useTranslation();
 
     const updateMutation = useMutation({
-        mutationFn: (text: string) => taskService.bulkUpdateTasks(iterationId, text, { destination: 'auto' }),
+        mutationFn: (text: string) => taskService.bulkUpdateTasks(iterationId, text, { destination: 'auto', expectedRevision: baseRevision }),
         onSuccess: (data) => {
             if (data.task_count > 0) {
                 queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
@@ -63,14 +71,27 @@ const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, o
             if (data.triage_count > 0) {
                 queryClient.invalidateQueries({ queryKey: ['triage'] });
             }
+            onClose();
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('taskTextEditor.saveError')));
+            setConflict(normalizeApiError(err, t('taskTextEditor.saveError')).code === 'iteration_version_conflict');
         }
     });
 
+    const compareCurrent = async () => {
+        setComparing(true);
+        try {
+            setComparison(await taskService.getTasksTextContext(iterationId));
+        } catch (err) {
+            setError(getApiErrorMessage(err, t('taskTextEditor.saveError')));
+        } finally {
+            setComparing(false);
+        }
+    };
+
     const handleSave = () => {
-        if (!text.trim()) {
+        if (!text.trim() || baseRevision === undefined || conflict) {
             return;
         }
         setError(null);
@@ -102,7 +123,7 @@ const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, o
             fullScreen={isFullScreen}
             initialFocusRef={editorRef}
             className={isFullScreen ? undefined : 'h-[90vh] max-w-5xl'}
-            footer={<div className="flex items-center justify-between"><span className="text-xs text-content-tertiary">{t('taskTextEditor.instantApply')}</span><div className="flex gap-3"><Button variant="secondary" onClick={onClose} disabled={updateMutation.isPending}>{t('actions.close')}</Button><Button onClick={handleSave} disabled={updateMutation.isPending || isLoading || Boolean(queryError)} isLoading={updateMutation.isPending} className="min-w-[120px]"><Save className="mr-2 h-4 w-4" />{t('actions.apply')}</Button></div></div>}
+            footer={<div className="flex items-center justify-between"><span className="text-xs text-content-tertiary">{t('taskTextEditor.instantApply')}</span><div className="flex gap-3"><Button variant="secondary" onClick={onClose} disabled={updateMutation.isPending}>{t('actions.close')}</Button><Button onClick={handleSave} disabled={updateMutation.isPending || isLoading || Boolean(queryError) || baseRevision === undefined || conflict} isLoading={updateMutation.isPending} className="min-w-[120px]"><Save className="mr-2 h-4 w-4" />{t('actions.apply')}</Button></div></div>}
         >
                 <div className="flex-1 flex overflow-hidden">
                     {/* Main Editor */}
@@ -115,6 +136,7 @@ const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, o
                         <textarea
                             ref={editorRef}
                             value={text}
+                            readOnly={isLoading || updateMutation.isPending || baseRevision === undefined}
                             onChange={(e) => {
                                 setText(e.target.value);
                                 setError(null);
@@ -135,6 +157,16 @@ const TaskTextEditorBody = ({ iterationId, initialText, isLoading, queryError, o
                         isFullScreen ? "w-64" : "w-80"
                     )}>
                         <div className="p-4 border-b bg-surface-card">
+                            {conflict && <div className="mb-4 space-y-3">
+                                <p className="text-sm">{t('taskTextEditor.changed')}</p>
+                                <Button variant="secondary" onClick={() => void compareCurrent()} disabled={comparing} isLoading={comparing}>{t('taskTextEditor.compare')}</Button>
+                                {comparison && <>
+                                    <label className="block text-sm">{t('taskTextEditor.currentText')}
+                                        <textarea className="mt-2 w-full rounded border p-2 text-sm" rows={8} readOnly value={comparison.text} />
+                                    </label>
+                                    <Button variant="secondary" onClick={() => { setBaseRevision(comparison.iteration_revision); setConflict(false); setComparison(null); }}>{t('taskTextEditor.confirmComparison')}</Button>
+                                </>}
+                            </div>}
                             <h3 className="font-semibold text-sm mb-2">{t('taskTextEditor.formatHelpTitle')}</h3>
                             <div className="text-xs text-content-secondary space-y-2">
                                 <p>{t('taskTextEditor.eachLine')}</p>

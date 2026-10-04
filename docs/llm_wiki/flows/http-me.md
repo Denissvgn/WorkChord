@@ -155,39 +155,39 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| me | resolve_http_identity | 55 | `resolve_http_identity(request, db)` |
-| resolve_http_identity | get_settings | 39 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
-| resolve_http_identity | IdentityService | 41 | `IdentityService(db)` |
-| resolve_http_identity | request.headers.get | 42 | `request.headers.get('X-Agent-API-Key')` |
-| resolve_http_identity | request.headers.get | 43 | `request.headers.get('X-Admin-API-Key')` |
-| resolve_http_identity | request.headers.get | 44 | `request.headers.get('Authorization')` |
-| resolve_http_identity | internal_authority | 45 | `internal_authority(db)` |
+| me | resolve_http_identity | 127 | `resolve_http_identity(request, db)` |
+| resolve_http_identity | get_settings | 42 | `get_settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| resolve_http_identity | IdentityService | 44 | `IdentityService(db)` |
+| resolve_http_identity | request.headers.get | 45 | `request.headers.get('X-Agent-API-Key')` |
+| resolve_http_identity | request.headers.get | 46 | `request.headers.get('X-Admin-API-Key')` |
+| resolve_http_identity | request.headers.get | 47 | `request.headers.get('Authorization')` |
+| resolve_http_identity | internal_authority | 48 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| resolve_http_identity | AgentService(…).authenticate | 48 | `AgentService(db).authenticate(agent_key, touch=False)` |
-| resolve_http_identity | AgentService | 48 | `AgentService(db)` |
+| resolve_http_identity | AgentService(…).authenticate | 51 | `AgentService(db).authenticate(agent_key, touch=False)` |
+| resolve_http_identity | AgentService | 51 | `AgentService(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `result.update` | `me` | 66 |
-| mutation | `contexts.append` | `resolve_http_identity` | 59 |
-| mutation | `contexts.append` | `resolve_http_identity` | 61 |
-| mutation | `contexts.append` | `resolve_http_identity` | 71 |
-| mutation | `tokens.append` | `resolve_http_identity` | 82 |
-| mutation | `tokens.append` | `resolve_http_identity` | 90 |
-| mutation | `contexts.append` | `resolve_http_identity` | 95 |
+| mutation | `result.update` | `me` | 138 |
+| mutation | `contexts.append` | `resolve_http_identity` | 62 |
+| mutation | `contexts.append` | `resolve_http_identity` | 64 |
+| mutation | `contexts.append` | `resolve_http_identity` | 74 |
+| mutation | `tokens.append` | `resolve_http_identity` | 85 |
+| mutation | `tokens.append` | `resolve_http_identity` | 93 |
+| mutation | `contexts.append` | `resolve_http_identity` | 98 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 42 |
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 43 |
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 44 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 45 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 46 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 47 |
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `resolve_http_identity` | `AgentService(db).authenticate` | 48 |
+| unresolved_call | `resolve_http_identity` | `AgentService(db).authenticate` | 51 |
 | step_limit | `me` | `first 12 steps` | 0 |
 
 ## Behavior

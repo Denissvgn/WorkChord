@@ -4,6 +4,8 @@
 
 ## Description
 
+The responsive setup workflow keeps current blockers and recovery actions reachable outside the desktop rail. Known mobile blocker codes have English and Russian recovery labels; raw codes remain secondary diagnostics. Unknown codes retain a general recovery instruction and their original diagnostic value. Configuration, package acknowledgment and observed runtime readiness remain distinct.
+
 _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 
 ## Imports

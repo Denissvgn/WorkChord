@@ -98,15 +98,15 @@ flowchart LR
 | [AgentTeamActionReceipt](../entities/agent_team_setup_AgentTeamActionReceipt.md) | Pydantic model | 762 | `AgentTeamSetupModel` | — |
 | [AgentTeamApplyResponse](../entities/agent_team_setup_AgentTeamApplyResponse.md) | Pydantic model | 776 | `AgentTeamSetupModel` | — |
 | [AgentTeamRuntimeAcknowledgement](../entities/AgentTeamRuntimeAcknowledgement.md) | Pydantic model | 801 | `AgentTeamSetupModel` | — |
-| [AgentTeamRuntimeAcknowledgementResponse](../entities/AgentTeamRuntimeAcknowledgementResponse.md) | Pydantic model | 846 | `AgentTeamSetupModel` | — |
-| [AgentTeamRuntimeHandoff](../entities/agent_team_setup_AgentTeamRuntimeHandoff.md) | Pydantic model | 863 | `AgentTeamSetupModel` | — |
-| [AgentTeamMemberStatus](../entities/agent_team_setup_AgentTeamMemberStatus.md) | Pydantic model | 890 | `AgentTeamSetupModel` | — |
-| [AgentTeamSetupStep](../entities/agent_team_setup_AgentTeamSetupStep.md) | Pydantic model | 926 | `AgentTeamSetupModel` | — |
-| [AgentTeamStatusResponse](../entities/AgentTeamStatusResponse.md) | Pydantic model | 941 | `AgentTeamSetupModel` | — |
-| [AgentTeamSetupReportCounts](../entities/AgentTeamSetupReportCounts.md) | Pydantic model | 975 | `AgentTeamSetupModel` | Bounded lifecycle and current-work counts without member internals. |
-| [AgentTeamSetupReportEvidence](../entities/AgentTeamSetupReportEvidence.md) | Pydantic model | 1012 | `AgentTeamSetupModel` | Durable reconciliation evidence summarized without action payloads. |
-| [AgentTeamDispatchAvailability](../entities/AgentTeamDispatchAvailability.md) | Pydantic model | 1030 | `AgentTeamSetupModel` | Explicitly withhold availability claims without task-bound evidence. |
-| [AgentTeamSetupReport](../entities/AgentTeamSetupReport.md) | Pydantic model | 1060 | `AgentTeamSetupModel` | Portable redacted topology report derived only from current server state. |
+| [AgentTeamRuntimeAcknowledgementResponse](../entities/AgentTeamRuntimeAcknowledgementResponse.md) | Pydantic model | 847 | `AgentTeamSetupModel` | — |
+| [AgentTeamRuntimeHandoff](../entities/agent_team_setup_AgentTeamRuntimeHandoff.md) | Pydantic model | 864 | `AgentTeamSetupModel` | — |
+| [AgentTeamMemberStatus](../entities/agent_team_setup_AgentTeamMemberStatus.md) | Pydantic model | 892 | `AgentTeamSetupModel` | — |
+| [AgentTeamSetupStep](../entities/agent_team_setup_AgentTeamSetupStep.md) | Pydantic model | 930 | `AgentTeamSetupModel` | — |
+| [AgentTeamStatusResponse](../entities/AgentTeamStatusResponse.md) | Pydantic model | 945 | `AgentTeamSetupModel` | — |
+| [AgentTeamSetupReportCounts](../entities/AgentTeamSetupReportCounts.md) | Pydantic model | 979 | `AgentTeamSetupModel` | Bounded lifecycle and current-work counts without member internals. |
+| [AgentTeamSetupReportEvidence](../entities/AgentTeamSetupReportEvidence.md) | Pydantic model | 1016 | `AgentTeamSetupModel` | Durable reconciliation evidence summarized without action payloads. |
+| [AgentTeamDispatchAvailability](../entities/AgentTeamDispatchAvailability.md) | Pydantic model | 1034 | `AgentTeamSetupModel` | Explicitly withhold availability claims without task-bound evidence. |
+| [AgentTeamSetupReport](../entities/AgentTeamSetupReport.md) | Pydantic model | 1064 | `AgentTeamSetupModel` | Portable redacted topology report derived only from current server state. |
 
 ## Functions
 

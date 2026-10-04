@@ -1,6 +1,7 @@
 package com.workchord.android
 
 import com.workchord.android.data.api.AuthInterceptor
+import com.workchord.android.data.api.SessionCookieJar
 import com.workchord.android.data.api.TokenManager
 import com.workchord.android.data.api.WorkChordApi
 import com.workchord.android.data.models.Assignee
@@ -15,6 +16,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -26,6 +31,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -46,14 +52,15 @@ class TaskRepositoryTest {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        tokenManager = TokenManager().apply {
+        tokenManager = TokenManager(allowDebugHttp = true).apply {
             baseUrl = mockWebServer.url("/").toString()
-            agentApiKey = "test-agent-key-123"
+            nativeAccessToken = "test-native-session-123"
         }
 
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(2, TimeUnit.SECONDS)
             .readTimeout(2, TimeUnit.SECONDS)
+            .cookieJar(SessionCookieJar(tokenManager))
             .addInterceptor(AuthInterceptor(tokenManager))
             .build()
 
@@ -74,6 +81,100 @@ class TaskRepositoryTest {
     @After
     fun tearDown() {
         mockWebServer.shutdown()
+    }
+
+    @Test
+    fun unsupportedStatusOrMissingVersionCannotIssueAMutation() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("""[
+            {"id":99,"title":"Future work","status":"future_status","version":7},
+            {"id":100,"title":"Incomplete work","status":"planned"}
+        ]"""))
+        assertTrue(repository.fetchTasks(1).isSuccess)
+        val unsupported = repository.updateTaskStatus(99, TaskStatus.ACTIVE, "Start", 7)
+        assertTrue(unsupported.isFailure)
+        assertEquals("unsupported_task_status", (unsupported.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        val unknownVersion = repository.updateTaskStatus(100, TaskStatus.ACTIVE, "Start", null)
+        assertEquals("task_version_required", (unknownVersion.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertTrue(repository.updateTask(100, TaskUpdateRequest(title = "Unversioned draft")).isFailure)
+        assertEquals(1, mockWebServer.requestCount)
+    }
+
+    @Test
+    fun mismatchedCommandResponseCannotBeReportedAsASavedTask() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":999,\"title\":\"Other work\",\"status\":\"active\",\"version\":4}"))
+        val result = repository.executeCommand(72, com.workchord.android.data.models.TaskCommandRequest("start_manual", 3, "Begin work"))
+        assertTrue(result.isFailure)
+        assertEquals("unverified_write_response", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+    }
+
+    @Test
+    fun deletedOrForbiddenTaskIsRemovedInsteadOfReturnedAsCachedSuccess() = runTest(testDispatcher) {
+        for (code in listOf(403, 404)) {
+            mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Private work\",\"status\":\"planned\",\"version\":3}"))
+            assertTrue(repository.getTaskById(5).isSuccess)
+            mockWebServer.enqueue(MockResponse().setResponseCode(code).setBody("{\"detail\":\"Unavailable\"}"))
+            val result = repository.getTaskById(5)
+            assertTrue(result.isFailure)
+            assertEquals(code, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
+            assertTrue(repository.cachedTasks.first().isEmpty())
+        }
+    }
+
+    @Test
+    fun olderResponseCannotReplaceNewerTaskVersion() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Old work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val older = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"New work\",\"status\":\"active\",\"version\":4}"))
+        assertTrue(repository.getTaskById(5).isSuccess)
+        assertTrue(older.await().isFailure)
+        assertEquals(4, repository.cachedTasks.first().single().version)
+        assertEquals("New work", repository.cachedTasks.first().single().title)
+    }
+
+    @Test
+    fun serverSwitchAndCanceledRequestsCannotPublishOldPrivateData() = runTest(testDispatcher) {
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Old private work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val request = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        tokenManager.baseUrl = "https://different.example/"
+        assertTrue(request.await().isFailure)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+        tokenManager.baseUrl = mockWebServer.url("/").toString()
+        mockWebServer.enqueue(MockResponse().setBody("{\"id\":5,\"title\":\"Canceled work\",\"status\":\"planned\",\"version\":3}").setBodyDelay(200, TimeUnit.MILLISECONDS))
+        val canceled = async { repository.getTaskById(5) }
+        withContext(Dispatchers.IO) { assertNotNull(mockWebServer.takeRequest(3, TimeUnit.SECONDS)) }
+        canceled.cancelAndJoin()
+        assertTrue(canceled.isCancelled)
+        assertTrue(repository.cachedTasks.first().isEmpty())
+    }
+
+    @Test
+    fun savedPrivateDraftIsIsolatedAcrossServerAndAccountChanges() {
+        val storage = object : com.workchord.android.data.api.DraftStorage {
+            val values = mutableMapOf<String, String>()
+            override fun read(scope: String, taskId: Int) = values["$scope:$taskId"]
+            override fun write(scope: String, taskId: Int, value: String?) {
+                if (value == null) values.remove("$scope:$taskId") else values["$scope:$taskId"] = value
+            }
+            override fun clear(scope: String) { values.keys.filter { it.startsWith("$scope:") }.toList().forEach { values.remove(it) } }
+        }
+        val tokens = TokenManager(draftStorage = storage).apply { baseUrl = "https://workspace.example/"; principalId = 19 }
+        val first = TaskRepositoryImpl(api, tokens, testDispatcher)
+        val draft = com.workchord.android.data.models.SavedTaskDraft(reason = "Private review notes", savedAt = 1000)
+        val originalScope = first.draftScope
+        first.saveDraft(72, draft, originalScope)
+        assertEquals("Private review notes", TaskRepositoryImpl(api, tokens, testDispatcher).savedDraft(72)!!.reason)
+        tokens.principalId = 20
+        assertNull(first.savedDraft(72))
+        try { first.saveDraft(72, draft, originalScope); fail("An old account must not save into the new scope") }
+        catch (_: IllegalStateException) { }
+        tokens.principalId = 19
+        assertEquals("Private review notes", first.savedDraft(72)!!.reason)
+        tokens.baseUrl = "https://other.example/"
+        tokens.principalId = 19
+        assertNull(first.savedDraft(72))
     }
 
     @Test
@@ -101,7 +202,8 @@ class TaskRepositoryTest {
         val recordedRequest = mockWebServer.takeRequest()
         assertEquals("/api/session/whoami", recordedRequest.path)
         assertEquals("GET", recordedRequest.method)
-        assertEquals("test-agent-key-123", recordedRequest.getHeader("X-Agent-API-Key"))
+        assertEquals("Bearer test-native-session-123", recordedRequest.getHeader("Authorization"))
+        assertNull(recordedRequest.getHeader("X-Agent-API-Key"))
     }
 
     @Test
@@ -111,7 +213,7 @@ class TaskRepositoryTest {
         val result = repository.getWhoAmI()
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("401") == true)
+        assertEquals(401, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -168,7 +270,7 @@ class TaskRepositoryTest {
         val result = repository.fetchTasks(iterationId = 1)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("Failed to fetch tasks") == true)
+        assertEquals(500, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -208,7 +310,7 @@ class TaskRepositoryTest {
 
         val criteria = task?.extractAcceptanceCriteria()
         assertEquals(2, criteria?.size)
-        assertTrue(criteria?.get(0)?.isCompleted == true)
+        assertFalse(criteria?.get(0)?.isCompleted == true)
         assertFalse(criteria?.get(1)?.isCompleted == true)
 
         // Verify local cache updated
@@ -221,7 +323,7 @@ class TaskRepositoryTest {
     }
 
     @Test
-    fun testGetTaskByIdOfflineFallbackToCacheOnNetworkFailure() = runTest(testDispatcher) {
+    fun temporaryFailureIsNotAReportedCachedSuccess() = runTest(testDispatcher) {
         // Step 1: Pre-populate cache via fetchTasks
         val initialTasks = """
             [
@@ -242,12 +344,9 @@ class TaskRepositoryTest {
 
         val result = repository.getTaskById(5)
 
-        // Should return the cached task gracefully
-        assertTrue(result.isSuccess)
-        val task = result.getOrNull()
-        assertNotNull(task)
-        assertEquals(5, task?.id)
-        assertEquals("Cached Task", task?.title)
+        assertTrue(result.isFailure)
+        assertEquals(503, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
+        assertEquals("Cached Task", repository.cachedTasks.first().single().title)
     }
 
     @Test
@@ -257,7 +356,7 @@ class TaskRepositoryTest {
         val result = repository.getTaskById(999)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message?.contains("404") == true)
+        assertEquals(404, (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).statusCode)
     }
 
     @Test
@@ -387,7 +486,7 @@ class TaskRepositoryTest {
         assertTrue(result.isFailure)
         val errorMsg = result.exceptionOrNull()?.message
         assertNotNull(errorMsg)
-        assertTrue(errorMsg?.contains("version_conflict") == true || errorMsg?.contains("Failed to update status") == true)
+        assertEquals("task_version_conflict", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
     }
 
     @Test
@@ -469,7 +568,7 @@ class TaskRepositoryTest {
 
     @Test
     fun testAuthInterceptorAttachesTokenAndCapturesCookie() = runTest(testDispatcher) {
-        tokenManager.sessionToken = "existing_session_token_xyz"
+        tokenManager.nativeAccessToken = "existing_native_token_xyz"
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -480,11 +579,9 @@ class TaskRepositoryTest {
         repository.getWhoAmI()
 
         val recordedRequest = mockWebServer.takeRequest()
-        assertEquals(null, recordedRequest.getHeader("Authorization"))
-        assertEquals("workchord_session=existing_session_token_xyz", recordedRequest.getHeader("Cookie"))
-
-        // Verify new cookie token was persisted in tokenManager
-        assertEquals("new_refreshed_token_abc", tokenManager.sessionToken)
+        assertEquals("Bearer existing_native_token_xyz", recordedRequest.getHeader("Authorization"))
+        assertEquals(null, recordedRequest.getHeader("Cookie"))
+        assertEquals("workchord_session=new_refreshed_token_abc", tokenManager.cookies.single().substringBefore(';'))
     }
     @Test
     fun identityComesFromAuthenticatedEndpointAndClearsPriorCache() = runTest(testDispatcher) {

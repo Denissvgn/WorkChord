@@ -14,6 +14,7 @@ Schema for creating a task dependency.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `depends_on_id` | `int` | `depends_on_id` | Yes | No | — | — | — | — |
+| `expected_version` | `Optional[int]` | `expected_version` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods
 
@@ -40,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `depends_on_id` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `depends_on_id`, `expected_version` |
 
 ### Structure
 

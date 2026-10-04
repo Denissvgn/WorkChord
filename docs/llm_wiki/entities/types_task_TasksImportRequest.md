@@ -15,6 +15,7 @@ _Auto-generated from `TasksImportRequest` in `frontend/src/types/task.ts`._
 |------|------|----------|---------|-------------|
 | `text` | `string` | Yes | — | — |
 | `destination` | `TaskImportDestination` | No | — | — |
+| `expected_revision` | `number` | No | — | — |
 
 ## Methods
 
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `destination`, `text` |
+| [types_task](../modules/types_task.md) | 0 | `destination`, `expected_revision`, `text` |
 
 ### References
 

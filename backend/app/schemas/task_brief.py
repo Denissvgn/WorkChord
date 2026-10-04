@@ -98,3 +98,8 @@ class TaskReviewResponse(BaseModel):
     reason: str
     evidence: str
     created_at: datetime
+
+
+class CurrentTaskReviewResponse(BaseModel):
+    task_version: int
+    review: TaskReviewResponse | None

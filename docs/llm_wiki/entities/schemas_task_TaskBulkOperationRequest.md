@@ -1,6 +1,6 @@
 # TaskBulkOperationRequest
 
-**Location:** `backend/app/schemas/task.py:293`
+**Location:** `backend/app/schemas/task.py:294`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -15,7 +15,7 @@ Request schema for selected-task bulk operations.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_versions` | `dict[int, int]` | `expected_versions` | No | No | factory: `dict` | — | — | — |
 | `expected_revisions` | `dict[int, int]` | `expected_revisions` | No | No | factory: `dict` | — | — | — |
-| `task_ids` | `list[int]` | `task_ids` | Yes | No | — | max_length=200; min_length=1 | — | — |
+| `task_ids` | `list[int]` | `task_ids` | Yes | No | — | min_length=1; max_length=200 | — | — |
 | `action` | `TaskBulkAction` | `action` | Yes | No | — | — | — | — |
 | `payload` | `dict[str, Any]` | `payload` | No | No | factory: `dict` | — | — | — |
 | `dry_run` | `bool` | `dry_run` | No | No | `True` | — | — | — |

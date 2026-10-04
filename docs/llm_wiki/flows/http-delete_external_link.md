@@ -47,9 +47,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_external_link | link_service.delete_link | 548 | `link_service.delete_link(link_id)` |
-| delete_external_link | HTTPException | 550 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_external_link | MessageResponse | 554 | `MessageResponse(message=..., success=True)` |
+| delete_external_link | link_service.delete_link | 551 | `link_service.delete_link(link_id)` |
+| delete_external_link | HTTPException | 553 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_external_link | MessageResponse | 557 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,8 +59,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_external_link` | `link_service.delete_link` | 548 |
-| external_call | `delete_external_link` | `HTTPException` | 550 |
+| unresolved_call | `delete_external_link` | `link_service.delete_link` | 551 |
+| external_call | `delete_external_link` | `HTTPException` | 553 |
 
 ## Behavior
 

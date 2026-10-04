@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `frontend/src/types/agent.ts:219`
+**Location:** `frontend/src/types/agent.ts:220`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

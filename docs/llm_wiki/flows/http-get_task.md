@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task | service.get_by_id | 291 | `service.get_by_id(task_id)` |
-| get_task | HTTPException | 293 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task | IterationService | 298 | `IterationService(db)` |
-| get_task | iteration_service.get_by_id | 299 | `iteration_service.get_by_id(task.iteration_id)` |
-| get_task | service.task_to_response | 301 | `service.task_to_response(task, ...)` |
+| get_task | service.get_by_id | 294 | `service.get_by_id(task_id)` |
+| get_task | HTTPException | 296 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task | IterationService | 301 | `IterationService(db)` |
+| get_task | iteration_service.get_by_id | 302 | `iteration_service.get_by_id(task.iteration_id)` |
+| get_task | service.task_to_response | 304 | `service.task_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task` | `service.get_by_id` | 291 |
-| external_call | `get_task` | `HTTPException` | 293 |
-| unresolved_call | `get_task` | `iteration_service.get_by_id` | 299 |
-| unresolved_call | `get_task` | `service.task_to_response` | 301 |
+| unresolved_call | `get_task` | `service.get_by_id` | 294 |
+| external_call | `get_task` | `HTTPException` | 296 |
+| unresolved_call | `get_task` | `iteration_service.get_by_id` | 302 |
+| unresolved_call | `get_task` | `service.task_to_response` | 304 |
 
 ## Behavior
 

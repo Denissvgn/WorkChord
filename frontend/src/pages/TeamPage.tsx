@@ -196,7 +196,7 @@ const TeamPage = () => {
             {canRenderTeamWorkspace && (
                 <>
                     {isImporting && hasSelectedIteration && (
-                        <ImportTeamModal iterationId={selectedIterationId} onClose={() => setIsImporting(false)}/>
+                        <ImportTeamModal iterationId={selectedIterationId} expectedRevision={selectedIteration?.revision} onClose={() => setIsImporting(false)}/>
                     )}
 
                     {isManagingIterationMember ? (

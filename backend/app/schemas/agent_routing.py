@@ -1123,6 +1123,9 @@ class AgentRoutingExclusion(RoutingContractModel):
 class AgentRoutingPreviewResponse(RoutingContractModel):
     """Expiring non-dispatch result over a digest-bound routing input snapshot."""
 
+    runtime_availability: Literal["unknown"] = "unknown"
+    eligibility_basis: Literal["task_policy_and_configuration"] = "task_policy_and_configuration"
+    model_attestation: Literal["not_independently_attested"] = "not_independently_attested"
     preview_id: str = Field(..., min_length=1, max_length=255)
     preview_digest: RoutingDigest
     input_digest: RoutingDigest

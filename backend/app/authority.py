@@ -216,7 +216,11 @@ def _check_bulk_write(state, authority):
                 action = "execute"
     if not authority.operator and not authority.local and table is not None:
         from app.database import Base
-        if "project_id" in table.c:
+        if name == "application_snapshots":
+            target = Base.metadata.tables["iterations"]
+            project_column = func.coalesce(table.c.project_id, target.c.project_id)
+            source = table.outerjoin(target, table.c.iteration_id == target.c.id)
+        elif "project_id" in table.c:
             project_column = table.c.project_id
             source = table
         elif name == "triage_items":
@@ -326,6 +330,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
             owned_personal = True
         project_id = _object_project(session, obj)
         action = "edit"
+        if table == "execution_usage_records":
+            approved = (obj.run_identity, obj.report_id, obj.sequence, obj.digest)
+            if obj not in session.new or approved not in session.info.get("usage_report_authorizations", set()):
+                raise AuthorityError("usage_command_required", "Use the attributable execution usage command.")
+            action = "read"
         if protocol and table == "agent_runs" and obj.actor_id == authority.actor_id:
             action = "execute"
         if protocol and table == "agent_task_assignments":

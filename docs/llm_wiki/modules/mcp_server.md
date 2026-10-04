@@ -19,6 +19,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
 | `app.maintenance` | `MaintenanceModeError`, `enforce_mcp_access` |
 | `app.models.agent` | `AgentActor` |
+| `app.mutation_versions` | `MissingMutationRevision` |
 | `app.services.agent_model_catalog_service` | `AgentModelConflictError` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `require_scope` |
@@ -60,8 +61,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
-| Outbound | `backend` (14) |
+| Inbound | `backend` (7) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -69,17 +70,17 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MCPAuthError](../entities/MCPAuthError.md) | Class | 46 | `PermissionError` | Raised when MCP agent authentication fails. |
-| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 69 | — | Reject untrusted MCP Host/Origin values before database authentication. |
-| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 104 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
-| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 150 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
-| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 216 | `Optional[str \| tuple[str, ...]]` | — |
+| [MCPAuthError](../entities/MCPAuthError.md) | Class | 47 | `PermissionError` | Raised when MCP agent authentication fails. |
+| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 70 | — | Reject untrusted MCP Host/Origin values before database authentication. |
+| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 105 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
+| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 151 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
+| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 217 | `Optional[str \| tuple[str, ...]]` | — |
 
 ## Functions
 

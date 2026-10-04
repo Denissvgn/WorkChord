@@ -97,4 +97,4 @@ flowchart LR
 | `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
 | `TaskService.update` | call | [task_service](../modules/task_service.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

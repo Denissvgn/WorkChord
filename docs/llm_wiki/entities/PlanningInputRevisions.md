@@ -30,16 +30,17 @@ flowchart LR
     n3["CalendarUpdate (backend/app/schemas/calendar.py)"]
     n4["IterationUpdate (backend/app/schemas/iteration.py)"]
     n5["ProjectUpdate (backend/app/schemas/project.py)"]
-    n6["TeamMemberCreate (backend/app/schemas/team.py)"]
-    n7["TeamMemberProfileSkillUpdate (backend/app/schemas/team.py)"]
-    n8["TeamMemberProfileUpdate (backend/app/schemas/team.py)"]
-    n9["TeamMemberUpdate (backend/app/schemas/team.py)"]
-    n10["VacationCreate (backend/app/schemas/team.py)"]
-    n11["VacationUpdate (backend/app/schemas/team.py)"]
-    n12["backend/app/schemas/calendar.py"]
-    n13["backend/app/schemas/iteration.py"]
-    n14["backend/app/schemas/project.py"]
-    n15["backend/app/schemas/team.py"]
+    n6["TeamImportRequest (backend/app/schemas/team.py)"]
+    n7["TeamMemberCreate (backend/app/schemas/team.py)"]
+    n8["TeamMemberProfileSkillUpdate (backend/app/schemas/team.py)"]
+    n9["TeamMemberProfileUpdate (backend/app/schemas/team.py)"]
+    n10["TeamMemberUpdate (backend/app/schemas/team.py)"]
+    n11["VacationCreate (backend/app/schemas/team.py)"]
+    n12["VacationUpdate (backend/app/schemas/team.py)"]
+    n13["backend/app/schemas/calendar.py"]
+    n14["backend/app/schemas/iteration.py"]
+    n15["backend/app/schemas/project.py"]
+    n16["backend/app/schemas/team.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -55,6 +56,7 @@ flowchart LR
     n13 --> n0
     n14 --> n0
     n15 --> n0
+    n16 --> n0
     click n0 "../modules/planning_inputs.md"
     click n2 "../modules/schemas_calendar.md"
     click n3 "../modules/schemas_calendar.md"
@@ -66,10 +68,11 @@ flowchart LR
     click n9 "../modules/schemas_team.md"
     click n10 "../modules/schemas_team.md"
     click n11 "../modules/schemas_team.md"
-    click n12 "../modules/schemas_calendar.md"
-    click n13 "../modules/schemas_iteration.md"
-    click n14 "../modules/schemas_project.md"
-    click n15 "../modules/schemas_team.md"
+    click n12 "../modules/schemas_team.md"
+    click n13 "../modules/schemas_calendar.md"
+    click n14 "../modules/schemas_iteration.md"
+    click n15 "../modules/schemas_project.md"
+    click n16 "../modules/schemas_team.md"
 ```
 
 ### Summary
@@ -87,6 +90,7 @@ flowchart LR
 | Subclass | `CalendarUpdate` | [schemas_calendar](../modules/schemas_calendar.md) |
 | Subclass | `IterationUpdate` | [schemas_iteration](../modules/schemas_iteration.md) |
 | Subclass | `ProjectUpdate` | [schemas_project](../modules/schemas_project.md) |
+| Subclass | `TeamImportRequest` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberCreate` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberProfileSkillUpdate` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberProfileUpdate` | [schemas_team](../modules/schemas_team.md) |

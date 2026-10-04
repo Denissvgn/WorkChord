@@ -115,10 +115,10 @@ export const teamService = {
         return response.data;
     },
 
-    importFromText: async (iterationId: number, text: string) => {
+    importFromText: async (iterationId: number, text: string, expectedRevisions?: Record<number, number>) => {
         const response = await api.post<{ imported_count: number; members: TeamMember[] }>(
             `/iterations/${iterationId}/team/import`,
-            { text }
+            { text, expected_revisions: expectedRevisions }
         );
         return response.data;
     }

@@ -94,9 +94,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| health_check | maintenance_state | 236 | `maintenance_state(data not statically known)` |
+| health_check | maintenance_state | 242 | `maintenance_state(data not statically known)` |
 | maintenance_state | get_settings | 57 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | maintenance_state | socket.gethostname | 59 | `socket.gethostname(data not statically known)` |
 | maintenance_state | maintenance_configuration_fingerprint | 68 | `maintenance_configuration_fingerprint(data not statically known)` |
 | maintenance_configuration_fingerprint | get_settings | 46 | `get_settings(data not statically known)` |

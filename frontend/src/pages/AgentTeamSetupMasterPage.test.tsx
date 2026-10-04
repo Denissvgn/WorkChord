@@ -1,7 +1,7 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import i18n from '../i18n/i18n';
+import i18n, { ensureLanguageResources } from '../i18n/i18n';
 import { renderWithProviders } from '../test/renderWithProviders';
 import {
     accessibleNameViolations,
@@ -202,6 +202,28 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
         expect(await screen.findByRole('button', {
             name: i18n.t('actions.refresh'),
         })).toBeEnabled();
+    });
+
+    it('explains runtime blockers with localized recovery labels and secondary codes', async () => {
+        useAdminAccessMock.mockReturnValue({ hasAdminKey: false });
+        const codes = ['actor_not_active', 'role_package_not_acknowledged', 'runtime_unobserved'];
+        agentServiceMock.getAgentTeamStatus.mockResolvedValue({ ...statusFixture, blocker_codes: codes });
+        renderWithProviders(<AgentTeamSetupMasterPage />);
+        const context = await screen.findByRole('region', {
+            name: i18n.t('agentTeamSetup.readinessTitle'),
+        });
+        for (const code of codes) {
+            expect(within(context).getByText(i18n.t(`agentTeamSetup.blockerRecovery.${code}`)))
+                .toBeVisible();
+            expect(within(context).getByText(code).tagName).toBe('SMALL');
+        }
+        for (const locale of ['en', 'ru']) {
+            await ensureLanguageResources(locale);
+            for (const code of codes) {
+                expect(i18n.getResource(locale, 'translation', `agentTeamSetup.blockerRecovery.${code}`))
+                    .toEqual(expect.any(String));
+            }
+        }
     });
 
     it('keeps the current blocker and runtime recovery reachable outside desktop rails', async () => {
@@ -485,6 +507,7 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
                 enabled: true,
                 profile_key: 'backend',
                 profile_revision: 'profile-rev-4',
+                acknowledgement_state: 'stale',
                 binding_revisions: { balanced: 3 },
                 skill_package: {
                     name: 'workchord-worker',
@@ -551,6 +574,8 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
                 name: 'Backend Worker',
             }),
         ).closest('summary')).not.toBeNull();
+        expect(memberView.getByText(i18n.t('agentTeamSetup.acknowledgementStates.stale'))).toBeVisible();
+        expect(memberView.getByText(i18n.t('agentTeamSetup.notIndependentlyAttested'))).toBeVisible();
         expect(member).not.toHaveTextContent('availability_unknown');
         expect(member).not.toHaveTextContent('runtime_ready');
     });

@@ -47,9 +47,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_task | service.delete | 399 | `service.delete(task_id, expected_version=expected_version, expected_revision=expected_revision)` |
-| delete_task | HTTPException | 401 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_task | MessageResponse | 405 | `MessageResponse(message=..., success=True)` |
+| delete_task | service.delete | 402 | `service.delete(task_id, expected_version=expected_version, expected_revision=expected_revision)` |
+| delete_task | HTTPException | 404 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_task | MessageResponse | 408 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,8 +59,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_task` | `service.delete` | 399 |
-| external_call | `delete_task` | `HTTPException` | 401 |
+| unresolved_call | `delete_task` | `service.delete` | 402 |
+| external_call | `delete_task` | `HTTPException` | 404 |
 
 ## Behavior
 

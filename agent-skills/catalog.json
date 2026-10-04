@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.7.0",
+  "catalog_version": "1.10.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,15 +8,15 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.7.0.tar.gz",
-          "sha256": "1904ce5948ba34ffa4f7b6e338515d3f7175d3eb743303952a64908c30c6475b",
+          "path": "workchord-pm-1.10.0.tar.gz",
+          "sha256": "9b82e8cd4d3a3eab9e68b7c5c64d0c3d7febbbdbf16e732c188ae49d9a0da64a",
           "size": 133153
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.7.0.zip",
-          "sha256": "ec20029aa798ae3cd2cfc11b78c857e8d187830472dbe48fe2dd6b722bfd0ad3",
-          "size": 120404
+          "path": "workchord-pm-1.10.0.zip",
+          "sha256": "947731d5e86b44378daed74a7219be3c7d43b6e47aebb50fee0755165106c6f9",
+          "size": 122875
         }
       ],
       "entrypoint": "SKILL.md",
@@ -33,8 +33,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "4c2376a89b0e71da92e534d339dde4a93a88524a87e94951d55f871dbe4b651c",
-          "size": 36753
+          "sha256": "35a059352fe176156c41b8f957a451453fec4a60e28bcfce4f82fb375526f7b4",
+          "size": 37964
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
@@ -58,8 +58,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "f23648a141bb74ebf289fc09e6ed4bb599ff6a82f2780eb29894e6cb2a4a97bb",
-          "size": 16757
+          "sha256": "4c2d5ccb8acf221aee096dbd39a38960f2ab459fe5e5ba7cfb8945247e7b69ab",
+          "size": 18017
         }
       ],
       "license": "MIT",
@@ -79,6 +79,7 @@
         "agent-team-master-v1",
         "atomic-begin-submit",
         "atomic-renew-v1",
+        "canonical-task-brief-v1",
         "complete-task-context",
         "fenced-claims",
         "my-work-v1",
@@ -102,22 +103,22 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.7.0,<2.0.0",
-      "version": "1.7.0"
+      "version": "1.10.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.6.0.tar.gz",
-          "sha256": "48d86a4f18ca0b446f439f1ba2e80b2e6d00a0aac5969eecf2aae0a7ffefb3d7",
+          "path": "workchord-worker-1.9.0.tar.gz",
+          "sha256": "a2bbfaa866ffdc6b510a29b2084bdf7363094673f6e2bd00dbba1f3a300b5cdf",
           "size": 71708
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.6.0.zip",
-          "sha256": "8e6a9cae0def70887367378de3d73ff7e2cd2ba385c6d6d60391b7b364470ba8",
-          "size": 58624
+          "path": "workchord-worker-1.9.0.zip",
+          "sha256": "a62f848f39e07d0e1078ef0d4c2385a99d71c2168e12689d717b94047b5b7c3f",
+          "size": 63137
         }
       ],
       "entrypoint": "SKILL.md",
@@ -134,8 +135,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "5e2f03ae4d184ec61d85b0a82b79ec37c4b50419c0eb37548405dfdb42f1c025",
-          "size": 20219
+          "sha256": "9cdd3d47d14d11b65318bd65dd5f0aa2a0d1f96f1cd3627d4d2dfcd015d15fd7",
+          "size": 21430
         },
         {
           "path": "references/claim-run-and-task-state.md",
@@ -144,18 +145,18 @@
         },
         {
           "path": "references/events-errors-and-recovery.md",
-          "sha256": "d9da7e69c2dec0ab0ca95fde980739538eec7b4b08a7e5a351d2c6557b1d8780",
-          "size": 6562
+          "sha256": "ef2f2ac4963b91e0af372a4a20bc6ede26b548771f1f32238514a6dfff4864f7",
+          "size": 8035
         },
         {
           "path": "references/identity-and-my-work.md",
-          "sha256": "3e32655f93a8cbc2d1bf1ce60af445775cc8519897d99120a7dceae80e5dfbf3",
-          "size": 9741
+          "sha256": "dde449b8563d19b2f6e46328f5712b1a1d7765efa439beac48f9d0cb071a2d4f",
+          "size": 10211
         },
         {
           "path": "references/task-context-and-scope.md",
-          "sha256": "70f4b7715c0546e025208e76537ef153b9ae210dff8e5ca54a4569cfc909f2e2",
-          "size": 5249
+          "sha256": "be9886c05c750e488a1c8e4a4c9eccba82f8c5e7c14ffab09a8fb02c9ff56b98",
+          "size": 6608
         }
       ],
       "license": "MIT",
@@ -172,6 +173,7 @@
         "agent-team-master-v1",
         "atomic-begin-submit",
         "atomic-renew-v1",
+        "canonical-task-brief-v1",
         "complete-task-context",
         "fenced-claims",
         "my-work-v1",
@@ -188,8 +190,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.7.0,<2.0.0",
-      "version": "1.6.0"
+      "version": "1.9.0"
     }
   ],
-  "source_revision": "sha256:6577a4ab67e0c8b540f8489ba5df141f90f87e5508816bfc93d1c0d4de091db4"
+  "source_revision": "sha256:4c927d68597a262e766225f74d8537097f2ce62d113dad77f13a3fa50070447b"
 }

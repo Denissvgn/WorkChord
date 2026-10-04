@@ -10,13 +10,14 @@ Task API router.
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command` |
+| `app.commands` | `command_transaction`, `commit_or_flush`, `lock_iterations`, `AggregateVersionConflict`, `current_command` |
 | `app.database` | `get_db` |
+| `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.schemas.agent` | `TaskTimelineResponse`, `TaskTimelineItem` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.external_link` | `ExternalLinkResponse`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `TaskExternalLinkCreate` |
-| `app.schemas.task` | `TaskCreate`, `TaskUpdate`, `TaskResponse`, `TaskDependencyCreate`, `TaskReorder`, `TaskMerge`, `TaskUnmerge`, `TaskImportTriageItemResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskStatusChange`, `TaskStatusChangeResponse`, `TaskStatusLogResponse`, `CascadeUpdateInfo`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskMoveRequest`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem` |
+| `app.schemas.task` | `TaskTextContext`, `TaskCreate`, `TaskUpdate`, `TaskResponse`, `TaskDependencyCreate`, `TaskReorder`, `TaskMerge`, `TaskUnmerge`, `TaskImportTriageItemResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskStatusChange`, `TaskStatusChangeResponse`, `TaskStatusLogResponse`, `CascadeUpdateInfo`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskMoveRequest`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.services.agent_service` | `AgentService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
@@ -28,7 +29,7 @@ Task API router.
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_bulk_operation_service` | `TaskBulkOperationService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
-| `fastapi` | `APIRouter`, `Body`, `Depends`, `HTTPException`, `Response`, `status` |
+| `fastapi` | `APIRouter`, `Body`, `Depends`, `HTTPException`, `Query`, `Response`, `status` |
 | `json` | `json`, `json` |
 | `logging` | `logging` |
 | `pydantic` | `ValidationError` |
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (18) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -63,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -97,12 +98,13 @@ flowchart LR
 | `create_subtask` | *(async)* `(task_id: int, data: TaskCreate, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/tasks/{task_id}/subtasks', response_model=TaskResponse, status_code=status.HTTP_201_CREATED)` | Create a subtask under a parent task. |
 | `get_subtasks` | *(async)* `(task_id: int, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/tasks/{task_id}/subtasks', response_model=list[TaskResponse])` | Get subtasks of a task. |
 | `add_dependency` | *(async)* `(task_id: int, data: TaskDependencyCreate, service: Annotated[TaskService, Depends(get_task_service)])` | `@router.post('/tasks/{task_id}/dependencies', response_model=MessageResponse)` | Add a dependency to a task. |
-| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, service: Annotated[TaskService, Depends(get_task_service)])` | `@router.delete('/tasks/{task_id}/dependencies/{depends_on_id}', response_model=MessageResponse)` | Remove a dependency from a task. |
+| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, service: Annotated[TaskService, Depends(get_task_service)], expected_version: int \| None = Query(default=None, ge=1))` | `@router.delete('/tasks/{task_id}/dependencies/{depends_on_id}', response_model=MessageResponse)` | Remove a dependency from a task. |
 | `reorder_tasks` | *(async)* `(data: TaskReorder, response: Response, service: Annotated[TaskService, Depends(get_task_service)])` | `@router.post('/tasks/reorder', response_model=MessageResponse)` | Reorder a list of tasks by updating their sort_order. |
 | `merge_tasks` | *(async)* `(iteration_id: int, data: TaskMerge, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/tasks/merge', response_model=TaskResponse, status_code=status.HTTP_201_CREATED)` | Merge multiple leaf tasks under a new parent task. |
 | `unmerge_task` | *(async)* `(task_id: int, data: TaskUnmerge, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/tasks/{task_id}/unmerge', response_model=list[TaskResponse], status_code=status.HTTP_200_OK)` | Promote all child tasks to top level and optionally delete the parent. |
 | `import_tasks` | *(async)* `(iteration_id: int, data: TasksImportRequest, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/tasks/import', response_model=TasksImportResponse, status_code=status.HTTP_201_CREATED)` | Import tasks from text format. |
 | `get_tasks_text` | *(async)* `(iteration_id: int, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/iterations/{iteration_id}/tasks/text', response_model=str)` | Get all tasks in text format for editing. |
+| `get_tasks_text_context` | *(async)* `(iteration_id: int, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/iterations/{iteration_id}/tasks/text-context', response_model=TaskTextContext)` | Reject a racing read instead of associating old text with a new revision. |
 | `bulk_update_tasks` | *(async)* `(iteration_id: int, data: TasksImportRequest, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/tasks/bulk-update', response_model=TasksImportResponse, status_code=status.HTTP_200_OK)` | Bulk update tasks from text format. |
 | `change_task_status` | *(async)* `(task_id: int, data: TaskStatusChange, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.put('/tasks/{task_id}/status', response_model=TaskStatusChangeResponse)` | Change task status with validation and side effects. |
 | `get_task_status_history` | *(async)* `(task_id: int, service: Annotated[TaskService, Depends(get_task_service)])` | `@router.get('/tasks/{task_id}/status-history', response_model=list[TaskStatusLogResponse])` | Get status change history for a task. |

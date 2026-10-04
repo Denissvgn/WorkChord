@@ -1,6 +1,7 @@
 package com.workchord.android.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -20,8 +21,16 @@ import com.workchord.android.ui.viewmodels.TaskDetailViewModelFactory
 fun AppNavigation(
     navController: NavHostController,
     taskRepository: TaskRepository,
+    initialTaskId: Int? = null,
+    onInitialTaskOpened: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(initialTaskId) {
+        if (initialTaskId != null && initialTaskId > 0) {
+            navController.navigate(Screen.TaskDetail.createRoute(initialTaskId)) { launchSingleTop = true }
+            onInitialTaskOpened()
+        }
+    }
     NavHost(
         navController = navController,
         startDestination = Screen.MyWork.route,
@@ -53,7 +62,8 @@ fun AppNavigation(
                 viewModel = viewModel,
                 onNavigateBack = {
                     navController.popBackStack()
-                }
+                },
+                onNavigateTask = { id -> if (id != taskId) navController.navigate(Screen.TaskDetail.createRoute(id)) }
             )
         }
     }

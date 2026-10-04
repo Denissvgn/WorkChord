@@ -125,4 +125,4 @@ flowchart LR
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.get_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.

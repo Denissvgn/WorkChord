@@ -11,11 +11,17 @@
 sequenceDiagram
     participant p0 as remove_dependency
     participant p1 as service.remove_dependency
-    participant p2 as HTTPException
-    participant p3 as MessageResponse
+    participant p2 as _raise_task_version_conflict
+    participant p3 as HTTPException (backend/app/routers/tasks…aise_task_version_conflict)
+    participant p4 as exc.detail
+    participant p5 as HTTPException (backend/app/routers/tasks.py:remove_dependency)
+    participant p6 as MessageResponse
     p0-->>p1: service.remove_dependency
-    p0-->>p2: HTTPException
-    p0->>p3: MessageResponse
+    p0->>p2: _raise_task_version_conflict
+    p2-->>p3: HTTPException (backend/app/routers/tasks…aise_task_version_conflict)
+    p2-->>p4: exc.detail
+    p0-->>p5: HTTPException (backend/app/routers/tasks.py:remove_dependency)
+    p0->>p6: MessageResponse
 ```
 
 ## Data flow
@@ -25,31 +31,44 @@ sequenceDiagram
 flowchart LR
     s1["1. remove_dependency"]
     s2["2. service.remove_dependency"]
-    s3["3. HTTPException"]
-    s4["4. MessageResponse"]
-    s1 -. "service.remove_dependency(task_id, depends_on_id)" .-> s2
-    s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s3
-    s1 -->|"MessageResponse(message=..., success=True)"| s4
+    s3["3. _raise_task_version_conflict"]
+    s4["4. HTTPException (backend/app/routers/tasks…aise_task_version_conflict)"]
+    s5["5. exc.detail"]
+    s6["6. HTTPException (backend/app/routers/tasks.py:remove_dependency)"]
+    s7["7. MessageResponse"]
+    s1 -. "service.remove_dependency(task_id, depends_on_id, expected_version=expected_version)" .-> s2
+    s1 -->|"_raise_task_version_conflict(exc)"| s3
+    s3 -. "HTTPException (backend/app/routers/tasks…aise_task_version_conflict)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))" .-> s4
+    s3 -. "exc.detail(data not statically known)" .-> s5
+    s1 -. "HTTPException (backend/app/routers/tasks.py:remove_dependency)(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s6
+    s1 -->|"MessageResponse(message=..., success=True)"| s7
     click s1 "../modules/tasks.md"
-    click s4 "../modules/schemas_common.md"
+    click s3 "../modules/tasks.md"
+    click s7 "../modules/schemas_common.md"
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `remove_dependency` | `task_id: int`, `depends_on_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]` | `status` | - | `MessageResponse(...)` |
+| `remove_dependency` | `task_id: int`, `depends_on_id: int`, `service: Annotated[TaskService, Depends(get_task_service)]`, `expected_version: int \| None` | `TaskVersionConflictError`, `status` | - | `MessageResponse(...)` |
 | `service.remove_dependency` | - | - | - | - |
-| `HTTPException` | - | - | - | - |
+| `_raise_task_version_conflict` | `exc: TaskVersionConflictError` | `status` | - | - |
+| `HTTPException (backend/app/routers/tasks…aise_task_version_conflict)` | - | - | - | - |
+| `exc.detail` | - | - | - | - |
+| `HTTPException (backend/app/routers/tasks.py:remove_dependency)` | - | - | - | - |
 | `MessageResponse` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| remove_dependency | service.remove_dependency | 644 | `service.remove_dependency(task_id, depends_on_id)` |
-| remove_dependency | HTTPException | 646 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| remove_dependency | MessageResponse | 650 | `MessageResponse(message=..., success=True)` |
+| remove_dependency | service.remove_dependency | 651 | `service.remove_dependency(task_id, depends_on_id, expected_version=expected_version)` |
+| remove_dependency | _raise_task_version_conflict | 653 | `_raise_task_version_conflict(exc)` |
+| _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 59 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _raise_task_version_conflict | exc.detail | 61 | `exc.detail(data not statically known)` |
+| remove_dependency | HTTPException (backend/app/routers/tasks.py:remove_dependency) | 655 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| remove_dependency | MessageResponse | 659 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -59,8 +78,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `remove_dependency` | `service.remove_dependency` | 644 |
-| external_call | `remove_dependency` | `HTTPException` | 646 |
+| unresolved_call | `remove_dependency` | `service.remove_dependency` | 651 |
+| external_call | `_raise_task_version_conflict` | `HTTPException` | 59 |
+| unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 61 |
+| external_call | `remove_dependency` | `HTTPException` | 655 |
 
 ## Behavior
 

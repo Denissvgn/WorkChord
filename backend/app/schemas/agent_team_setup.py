@@ -802,6 +802,7 @@ class AgentTeamRuntimeAcknowledgement(AgentTeamSetupModel):
     schema_version: Literal["agent-team-runtime-ack-v1"] = (
         AGENT_TEAM_ACK_SCHEMA_VERSION
     )
+    expected_previous_acknowledgement_digest: str | None = Field(default=None, pattern=SHA256_PATTERN)
     topology_key: str = Field(pattern=STABLE_KEY_PATTERN)
     topology_revision: int = Field(ge=1)
     actor_key: str = Field(pattern=STABLE_KEY_PATTERN)
@@ -868,6 +869,7 @@ class AgentTeamRuntimeHandoff(AgentTeamSetupModel):
     topology_revision: int = Field(ge=1)
     actor_key: str = Field(pattern=STABLE_KEY_PATTERN)
     actor_id: int = Field(ge=1)
+    previous_acknowledgement_digest: str | None = Field(default=None, pattern=SHA256_PATTERN)
     role: Literal["pm", "worker", "verifier"]
     server_url: str
     required_server_features: tuple[str, ...]
@@ -902,6 +904,8 @@ class AgentTeamMemberStatus(AgentTeamSetupModel):
     binding_revisions: dict[str, int] = Field(default_factory=dict)
     skill_package: AgentTeamSkillPackage
     package_acknowledged: bool
+    acknowledgement_state: Literal["missing", "current", "stale"] = "missing"
+    model_attestation: Literal["not_independently_attested"] = "not_independently_attested"
     credential_delivery_state: Literal[
         "pending",
         "delivered",

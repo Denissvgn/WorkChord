@@ -4,7 +4,7 @@ The adapter delegates validation and mutation behavior to the existing domain
 services, then stores an exact actor-attributed receipt in the same transaction.
 """
 
-from app.commands import commit_or_flush, atomic_command, preview_command
+from app.commands import commit_or_flush, atomic_command, current_command, preview_command
 
 import hashlib
 import json
@@ -106,10 +106,11 @@ class AgentPlanningService:
         idempotency_target_id: int,
         idempotency_key: str,
         request_payload: dict[str, Any],
+        actor_id: int | None = None,
     ) -> AgentPlanningReceipt | None:
         result = await self.db.execute(
             select(AgentIdempotencyRecord).where(
-                AgentIdempotencyRecord.actor_id == actor.id,
+                AgentIdempotencyRecord.actor_id == (actor.id if actor_id is None else actor_id),
                 AgentIdempotencyRecord.operation == operation,
                 AgentIdempotencyRecord.target_type == target_type,
                 AgentIdempotencyRecord.target_id == idempotency_target_id,
@@ -144,6 +145,7 @@ class AgentPlanningService:
         mutate: Mutation,
     ) -> AgentPlanningReceipt:
         require_scope(actor, scope)
+        actor_id = actor.id
         validated_key = validate_idempotency_key(
             command.idempotency_key,
             required=True,
@@ -156,10 +158,13 @@ class AgentPlanningService:
             },
             "payload": request_payload,
         }
+        if self.db.info.get("request_expected_revisions"):
+            audited_request["expected_revisions"] = self.db.info["request_expected_revisions"]
 
         is_preview = operation == "planning.schedule.preview"
         replay = None if is_preview else await self._replay(
             actor=actor,
+            actor_id=actor_id,
             operation=operation,
             target_type=target_type,
             idempotency_target_id=idempotency_target_id,
@@ -203,6 +208,7 @@ class AgentPlanningService:
             await self.db.rollback()
             replay = await self._replay(
                 actor=actor,
+                actor_id=actor_id,
                 operation=operation,
                 target_type=target_type,
                 idempotency_target_id=idempotency_target_id,
@@ -219,6 +225,7 @@ class AgentPlanningService:
             await self.db.rollback()
             replay = await self._replay(
                 actor=actor,
+                actor_id=actor_id,
                 operation=operation,
                 target_type=target_type,
                 idempotency_target_id=idempotency_target_id,
@@ -232,6 +239,7 @@ class AgentPlanningService:
             await self.db.rollback()
             replay = await self._replay(
                 actor=actor,
+                actor_id=actor_id,
                 operation=operation,
                 target_type=target_type,
                 idempotency_target_id=idempotency_target_id,
@@ -947,7 +955,7 @@ class AgentPlanningService:
         iteration_id: int,
         *,
         schedule_output_overrides: Mapping[
-            int, tuple[Any, Any, Any]
+            int, tuple[Any, Any, Any, int]
         ] | None = None,
     ) -> tuple[str, str]:
         """Hash every mutable input consumed by ``SchedulerService``."""
@@ -1002,6 +1010,7 @@ class AgentPlanningService:
         vacations = list(vacation_result.scalars().all())
 
         rules = self.scheduler.rules_service.get_rules_as_dict()
+        command = current_command(self.db)
         snapshot = {
             "schema": "workchord-schedule-input/v1",
             "iteration": {
@@ -1042,7 +1051,14 @@ class AgentPlanningService:
             "tasks": [
                 {
                     "id": task.id,
-                    "version": task.version,
+                    "version": (
+                        schedule_output_overrides[task.id][3]
+                        if schedule_output_overrides and task.id in schedule_output_overrides
+                        and command is not None
+                        and command.tasks.get(task.id) == schedule_output_overrides[task.id][3]
+                        and task.version == schedule_output_overrides[task.id][3] + 1
+                        else task.version
+                    ),
                     "title": task.title,
                     "parent_id": task.parent_id,
                     "assignee_id": task.assignee_id,
@@ -1204,6 +1220,7 @@ class AgentPlanningService:
                 raise AgentConflictError(
                     "Schedule inputs changed; run a new preview before apply"
                 )
+            iteration = await self._require_iteration_for_update(iteration_id)
             before = {
                 task.id: (
                     task.start_date,
@@ -1216,6 +1233,7 @@ class AgentPlanningService:
             schedule = await self.scheduler.schedule_iteration(
                 iteration_id,
                 commit=False,
+                expected_revision=iteration.revision,
             )
             if not secrets.compare_digest(
                 rules_digest,
@@ -1233,7 +1251,7 @@ class AgentPlanningService:
                 await self._schedule_input_digest(
                     iteration_id,
                     schedule_output_overrides={
-                        task_id: values[:3]
+                        task_id: values
                         for task_id, values in before.items()
                     },
                 )

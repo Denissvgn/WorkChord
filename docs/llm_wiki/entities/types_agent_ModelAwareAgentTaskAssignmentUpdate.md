@@ -1,6 +1,6 @@
 # ModelAwareAgentTaskAssignmentUpdate
 
-**Location:** `frontend/src/types/agent.ts:514`
+**Location:** `frontend/src/types/agent.ts:518`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

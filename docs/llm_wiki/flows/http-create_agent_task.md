@@ -98,17 +98,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_task | service.create_task | 1115 | `service.create_task(iteration_id, actor, data, idempotency_key)` |
-| create_agent_task | _handle_agent_error | 1117 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 252 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 254 | `str(exc)` |
+| create_agent_task | service.create_task | 1117 | `service.create_task(iteration_id, actor, data, idempotency_key)` |
+| create_agent_task | _handle_agent_error | 1119 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 254 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 256 | `str(exc)` |
-| _handle_agent_error | HTTPException | 258 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 259 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 260 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 260 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 261 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | str | 258 | `str(exc)` |
+| _handle_agent_error | HTTPException | 260 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 261 | `isinstance(exc, AgentRoutingConflictError)` |
 | _handle_agent_error | HTTPException | 262 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 262 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 263 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 264 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -118,14 +118,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_agent_task` | `service.create_task` | 1115 |
-| external_call | `_handle_agent_error` | `isinstance` | 252 |
-| external_call | `_handle_agent_error` | `HTTPException` | 258 |
-| external_call | `_handle_agent_error` | `isinstance` | 259 |
+| unresolved_call | `create_agent_task` | `service.create_task` | 1117 |
+| external_call | `_handle_agent_error` | `isinstance` | 254 |
 | external_call | `_handle_agent_error` | `HTTPException` | 260 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 260 |
 | external_call | `_handle_agent_error` | `isinstance` | 261 |
 | external_call | `_handle_agent_error` | `HTTPException` | 262 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 262 |
+| external_call | `_handle_agent_error` | `isinstance` | 263 |
+| external_call | `_handle_agent_error` | `HTTPException` | 264 |
 | step_limit | `create_agent_task` | `first 12 steps` | 0 |
 
 ## Behavior

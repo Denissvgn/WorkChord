@@ -22,14 +22,14 @@ Durable replay-safe receipt for an authoritative assessment write.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `operation` | `Literal['routing.assessment.create']` | `operation` | No | No | `'routing.assessment.create'` | — | — | — |
-| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
 | `target_type` | `Literal['task_routing_assessment']` | `target_type` | No | No | `'task_routing_assessment'` | — | — | — |
-| `target_id` | `int` | `target_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
-| `correlation_id` | `str` | `correlation_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `authoritative_task_version` | `int` | `authoritative_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `target_id` | `int` | `target_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `correlation_id` | `str` | `correlation_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `authoritative_task_version` | `int` | `authoritative_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
 | `assessment` | `TaskRoutingAssessmentResponse` | `assessment` | Yes | No | — | — | — | — |
 | `audit_event_ids` | `list[int]` | `audit_event_ids` | No | No | factory: `list` | max_length=16 | — | — |
 

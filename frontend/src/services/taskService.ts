@@ -22,6 +22,7 @@ import type {
     TaskTimelineResponse,
     TasksImportRequest,
     TasksImportResponse,
+    TaskTextContext,
     TaskBatchUpdateRequest,
     TaskBatchUpdateResponse,
 } from '../types/task';
@@ -147,9 +148,9 @@ export const taskService = {
     importFromText: async (
         iterationId: number,
         text: string,
-        options: { destination?: TaskImportDestination } = {}
+        options: { destination?: TaskImportDestination; expectedRevision?: number } = {}
     ) => {
-        const payload: TasksImportRequest = { text, destination: options.destination };
+        const payload: TasksImportRequest = { text, destination: options.destination, expected_revision: options.expectedRevision };
         const response = await api.post<TasksImportResponse>(
             `/iterations/${iterationId}/tasks/import`,
             payload
@@ -162,12 +163,16 @@ export const taskService = {
         return response.data;
     },
 
+    getTasksTextContext: async (iterationId: number) => (
+        await api.get<TaskTextContext>(`/iterations/${iterationId}/tasks/text-context`)
+    ).data,
+
     bulkUpdateTasks: async (
         iterationId: number,
         text: string,
-        options: { destination?: TaskImportDestination } = {}
+        options: { destination?: TaskImportDestination; expectedRevision?: number } = {}
     ) => {
-        const payload: TasksImportRequest = { text, destination: options.destination };
+        const payload: TasksImportRequest = { text, destination: options.destination, expected_revision: options.expectedRevision };
         const response = await api.post<TasksImportResponse>(
             `/iterations/${iterationId}/tasks/bulk-update`,
             payload

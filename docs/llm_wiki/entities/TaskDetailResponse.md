@@ -1,6 +1,6 @@
 # TaskDetailResponse
 
-**Location:** `backend/app/schemas/task_detail.py:33`
+**Location:** `backend/app/schemas/task_detail.py:34`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)
@@ -33,12 +33,15 @@ flowchart LR
     n1["BaseModel"]
     n2["task_detail (backend/app/routers/task_domain.py)"]
     n3["TaskDetailService.detail (backend/app/services/task_detail_service.py)"]
+    n4["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/task_detail.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/task_detail_service.md"
+    click n4 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -59,3 +62,4 @@ flowchart LR
 |---|---|---|---:|
 | `task_detail` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskDetailService.detail` | call | [task_detail_service](../modules/task_detail_service.md) | 1 |
+| `build_examples` | call | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) | 1 |

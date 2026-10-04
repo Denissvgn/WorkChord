@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `frontend/src/types/agent.ts:472`
+**Location:** `frontend/src/types/agent.ts:473`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -13,6 +13,9 @@ _Auto-generated from `AgentRoutingPreviewResponse` in `frontend/src/types/agent.
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `runtime_availability` | `'unknown'` | No | — | — |
+| `eligibility_basis` | `'task_policy_and_configuration'` | No | — | — |
+| `model_attestation` | `'not_independently_attested'` | No | — | — |
 | `preview_id` | `string` | Yes | — | — |
 | `preview_digest` | `string` | Yes | — | — |
 | `input_digest` | `string` | Yes | — | — |
@@ -64,7 +67,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest`, `policy_version` |
+| [types_agent](../modules/types_agent.md) | 0 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest` |
 
 ### References
 

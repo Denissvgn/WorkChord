@@ -61,7 +61,7 @@ class TaskBulkOperationService:
                 ),
             )
 
-        input_revisions = await lock_iterations(self.db, found_iteration_ids, expected=data.expected_revisions)
+        input_revisions = await lock_iterations(self.db, found_iteration_ids, expected=data.expected_revisions, require_expected=True)
         found_tasks = await self._load_found_tasks(task_ids)
         task_versions = {task.id: task.version for task in found_tasks.values()}
         for task in found_tasks.values():

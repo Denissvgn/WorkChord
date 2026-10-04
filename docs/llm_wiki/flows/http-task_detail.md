@@ -22,6 +22,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: TaskDetailService(…).detail
     p0->>p6: TaskDetailService
 ```
@@ -38,19 +40,23 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. TaskDetailService(…).detail"]
-    s9["9. TaskDetailService"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. TaskDetailService(…).detail"]
+    s11["11. TaskDetailService"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "TaskDetailService(…).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)" .-> s8
-    s1 -->|"TaskDetailService(db)"| s9
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "TaskDetailService(…).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)" .-> s10
+    s1 -->|"TaskDetailService(db)"| s11
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/task_detail_service.md"
+    click s11 "../modules/task_detail_service.md"
 ```
 
 ### Step data
@@ -64,6 +70,8 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `TaskDetailService(…).detail` | - | - | - | - |
 | `TaskDetailService` | - | - | - | - |
 
@@ -71,14 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_detail | domain_result | 103 | `domain_result(...)` |
+| task_detail | domain_result | 143 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_detail | TaskDetailService(…).detail | 103 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
-| task_detail | TaskDetailService | 103 | `TaskDetailService(db)` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_detail | TaskDetailService(…).detail | 143 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
+| task_detail | TaskDetailService | 143 | `TaskDetailService(db)` |
 
 ### Boundary effects
 
@@ -92,7 +102,8 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `task_detail` | `TaskDetailService(db).detail` | 103 |
+| external_call | `domain_result` | `HTTPException` | 35 |
+| unresolved_call | `task_detail` | `TaskDetailService(db).detail` | 143 |
 
 ## Behavior
 

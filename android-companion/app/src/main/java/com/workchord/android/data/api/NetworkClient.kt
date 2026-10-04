@@ -13,7 +13,7 @@ object NetworkClient {
     private var currentTokenManager: TokenManager? = null
 
     fun getApi(tokenManager: TokenManager): WorkChordApi {
-        val baseUrl = tokenManager.baseUrl.let {
+        val baseUrl = tokenManager.baseUrl.ifBlank { "https://unconfigured.invalid/" }.let {
             if (it.endsWith("/")) it else "$it/"
         }
 
@@ -26,6 +26,7 @@ object NetworkClient {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .followRedirects(false)
                 .followSslRedirects(false)
+                .cookieJar(SessionCookieJar(tokenManager))
                 .addInterceptor(TransportPolicyInterceptor({ tokenManager.baseUrl }, BuildConfig.DEBUG))
                 .addInterceptor(AuthInterceptor(tokenManager))
                 .addInterceptor(logging)

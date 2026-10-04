@@ -3,6 +3,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from app.schemas.task import TaskResponse
+from app.schemas.task_domain import TaskActionAvailability
 
 
 class TaskReference(BaseModel):
@@ -37,3 +38,14 @@ class TaskDetailResponse(BaseModel):
     children: TaskReferencePage
     dependencies: TaskReferencePage
     execution_context_complete: bool = False
+
+
+class HumanWorkReference(TaskReference):
+    actions: list[TaskActionAvailability]
+
+
+class HumanWorkResponse(BaseModel):
+    state: str
+    queues: dict[str, list[HumanWorkReference]]
+    has_more: bool
+    next_after_id: int | None

@@ -1,6 +1,6 @@
 """Human sign-in, owner bootstrap, membership and session management."""
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Annotated, Literal
 import secrets
 
@@ -27,6 +27,78 @@ Database = Annotated[object, Depends(get_db, scope="function")]
 
 class BootstrapOwner(BaseModel):
     principal_id: int = Field(ge=1)
+
+
+class NativeConnectionStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    code_challenge: str = Field(pattern=r"^[A-Za-z0-9_-]{43}$")
+
+
+class NativeConnectionExchange(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request_id: str = Field(pattern=r"^[A-Za-z0-9_-]{43}$")
+    code_verifier: str = Field(pattern=r"^[A-Za-z0-9._~-]{43,128}$")
+
+
+class NativeConnectionApproval(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    verification_code: str = Field(pattern=r"^[A-Z2-9]{4}-[A-Z2-9]{4}$")
+
+
+class NativeConnectionResponse(BaseModel):
+    request_id: str
+    verification_code: str
+    verification_path: str
+    expires_at: datetime
+
+
+class NativeConnectionDetails(BaseModel):
+    verification_code: str
+    expires_at: datetime
+    approved: bool
+
+
+class NativeApprovalResponse(BaseModel):
+    approved: Literal[True]
+
+
+class NativePendingResponse(BaseModel):
+    status: Literal["pending"]
+
+
+class NativeTokenResponse(BaseModel):
+    access_token: str
+    token_type: Literal["Bearer"]
+    expires_at: datetime
+
+
+@router.post("/native-connections/start", status_code=201, response_model=NativeConnectionResponse)
+async def start_native_connection(data: NativeConnectionStart, request: Request, response: Response, db: Database):
+    from app.services.native_session_service import NativeSessionService
+    response.headers["Cache-Control"] = "no-store"
+    return await NativeSessionService(db).start(data.code_challenge, await get_client_ip(request))
+
+
+@router.post("/native-connections/exchange", response_model=NativePendingResponse | NativeTokenResponse)
+async def exchange_native_connection(data: NativeConnectionExchange, request: Request, response: Response, db: Database):
+    from app.services.native_session_service import NativeSessionService
+    response.headers["Cache-Control"] = "no-store"
+    return await NativeSessionService(db).exchange(data.request_id, data.code_verifier,
+        await get_client_ip(request), request.headers.get("User-Agent"))
+
+
+@router.get("/native-connections/{request_id}", response_model=NativeConnectionDetails)
+async def describe_native_connection(request_id: str, response: Response, db: Database):
+    from app.services.native_session_service import NativeSessionService
+    response.headers["Cache-Control"] = "no-store"
+    return await NativeSessionService(db).describe(request_id)
+
+
+@router.post("/native-connections/{request_id}/approve", response_model=NativeApprovalResponse)
+async def approve_native_connection(request_id: str, data: NativeConnectionApproval, response: Response, db: Database):
+    from app.services.native_session_service import NativeSessionService
+    response.headers["Cache-Control"] = "no-store"
+    return await NativeSessionService(db).approve(request_id, data.verification_code)
 
 
 class MembershipChange(BaseModel):
@@ -217,7 +289,7 @@ async def transfer_guest(data: GuestTransferRequest, request: Request, response:
     return result
 
 
-@router.post("/native-token")
+@router.post("/native-token", response_model=NativeTokenResponse)
 async def native_token(request: Request, response: Response, db: Database):
     authority = db.info["authority"]
     if authority.kind != "human":

@@ -66,7 +66,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ReadyTopology](../entities/ReadyTopology.md) | 329 | — | — |
+| [ReadyTopology](../entities/ReadyTopology.md) | 330 | — | — |
 
 ## Functions
 

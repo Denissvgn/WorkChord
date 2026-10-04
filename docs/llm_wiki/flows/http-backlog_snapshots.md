@@ -42,8 +42,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| backlog_snapshots | BacklogSnapshotService(…).list | 175 | `BacklogSnapshotService(db).list(project_id)` |
-| backlog_snapshots | BacklogSnapshotService | 175 | `BacklogSnapshotService(db)` |
+| backlog_snapshots | BacklogSnapshotService(…).list | 225 | `BacklogSnapshotService(db).list(project_id)` |
+| backlog_snapshots | BacklogSnapshotService | 225 | `BacklogSnapshotService(db)` |
 
 ### Boundary effects
 

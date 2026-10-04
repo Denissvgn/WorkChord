@@ -736,7 +736,12 @@ const AgentTeamSetupMasterPage = () => {
                                 aria-label={t('agentTeamSetup.blockersLabel')}
                             >
                                 {mobileBlockerCodes.map(code => (
-                                    <li key={code} className="pill warn mono">{code}</li>
+                                    <li key={code} className="pill warn">
+                                        <span>{t(`agentTeamSetup.blockerRecovery.${code}`, {
+                                            defaultValue: t('agentTeamSetup.blockerRecovery.unknown'),
+                                        })}</span>
+                                        <small className="mono">{code}</small>
+                                    </li>
                                 ))}
                             </ul>
                         )}
@@ -1238,6 +1243,14 @@ const AgentTeamSetupMasterPage = () => {
                                                     : 'agentTeamSetup.statusScopes.runtime.states.blocked')}
                                             </span>
                                         </dd>
+                                    </div>
+                                    <div>
+                                        <dt>{t('agentTeamSetup.acknowledgement')}</dt>
+                                        <dd>{t(`agentTeamSetup.acknowledgementStates.${member.acknowledgement_state ?? 'unknown'}`)}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>{t('agentTeamSetup.modelAttestation')}</dt>
+                                        <dd>{t('agentTeamSetup.notIndependentlyAttested')}</dd>
                                     </div>
                                     <div>
                                         <dt>{t('agentTeamSetup.memberLifecycle')}</dt>

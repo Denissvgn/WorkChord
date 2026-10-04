@@ -22,6 +22,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: DeliveryDependencyService(…).add
     p0->>p6: DeliveryDependencyService
 ```
@@ -38,19 +40,23 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. DeliveryDependencyService(…).add"]
-    s9["9. DeliveryDependencyService"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. DeliveryDependencyService(…).add"]
+    s11["11. DeliveryDependencyService"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "DeliveryDependencyService(…).add(task_id, data.kind, data.target_id, data.expected_version)" .-> s8
-    s1 -->|"DeliveryDependencyService(db)"| s9
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "DeliveryDependencyService(…).add(task_id, data.kind, data.target_id, data.expected_version)" .-> s10
+    s1 -->|"DeliveryDependencyService(db)"| s11
     click s1 "../modules/delivery_dependencies.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/delivery_dependency_service.md"
+    click s11 "../modules/delivery_dependency_service.md"
 ```
 
 ### Step data
@@ -64,6 +70,8 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `DeliveryDependencyService(…).add` | - | - | - | - |
 | `DeliveryDependencyService` | - | - | - | - |
 
@@ -74,9 +82,11 @@ flowchart LR
 | add_delivery_dependency | domain_result | 30 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | add_delivery_dependency | DeliveryDependencyService(…).add | 30 | `DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version)` |
 | add_delivery_dependency | DeliveryDependencyService | 30 | `DeliveryDependencyService(db)` |
 
@@ -92,6 +102,7 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
+| external_call | `domain_result` | `HTTPException` | 35 |
 | unresolved_call | `add_delivery_dependency` | `DeliveryDependencyService(db).add` | 30 |
 
 ## Behavior

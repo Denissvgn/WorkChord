@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
 
 from app.schemas.agent_routing import AgentModelBindingResponse
 from app.schemas.project import ProjectHealth, ProjectUpdateEntryResponse
@@ -699,6 +699,13 @@ class AgentCapabilitiesResponse(BaseModel):
     skill_catalog_url: Optional[str] = None
     skill_discovery_url: Optional[str] = None
     model_aware_routing: AgentRoutingRolloutStatusResponse
+    readiness_semantics: dict[str, str] = Field(default_factory=lambda: {
+        "configuration": "actor_and_model_metadata",
+        "acknowledgement": "exact_revision_bound_runtime_self_report",
+        "task_eligibility": "requires_current_task_and_fenced_work_decision",
+        "runtime_availability": "unknown_without_observation",
+        "model_attestation": "not_independently_attested",
+    })
 
 
 class AgentActorRosterProfileSkill(BaseModel):
@@ -755,7 +762,10 @@ class AgentTaskContextResponse(BaseModel):
 
     task: TaskResponse
     assignment: Optional[AgentTaskAssignmentResponse] = None
-    task_brief: dict[str, str] = Field(default_factory=dict)
+    task_brief: dict[str, str] = Field(
+        default_factory=dict,
+        description="Legacy Markdown projection. When task.brief exists, its typed fields and criterion identities are authoritative.",
+    )
     parent_chain: list[dict[str, Any]] = Field(default_factory=list)
     dependencies: list[AgentDependencyContext] = Field(default_factory=list)
     request_sources: list[RequestSourceLinkWithSourceResponse] = Field(
@@ -765,6 +775,12 @@ class AgentTaskContextResponse(BaseModel):
     definition_ready: bool = False
     start_ready: bool = False
     blocker_codes: list[str] = Field(default_factory=list)
+
+    @computed_field
+    @property
+    def brief_source(self) -> Literal["canonical", "legacy_markdown"]:
+        """Identify the authoritative brief without duplicating mutable content."""
+        return "canonical" if self.task.brief is not None else "legacy_markdown"
 
 
 class AgentWorkItem(BaseModel):

@@ -57,13 +57,13 @@ flowchart LR
     n4["AgentTaskAssignmentCreate.validate_assignment_intent (backend/app/schemas/agent.py)"]
     n5["ModelAwareAgentTaskAssignmentCreate.validate_assignment_intent (backend/app/schemas/agent.py)"]
     n6["AgentWorkService.create_assignment (backend/app/services/agent_work_service.py)"]
-    n7["backend/tests/test_agent_model_catalog_api.py"]
-    n8["test_assignment_intent_table_is_closed (backend/tests/test_agent_routing_contract.py)"]
-    n9["test_at_limit_routing_snapshot_uses_the_validated_persistence_encoding (backend/tests/test_agent_routing_contract.py)"]
-    n10["test_routing_packets_share_the_agent_snapshot_byte_limit (backend/tests/test_agent_routing_contract.py)"]
-    n11["test_routing_snapshot_rejects_non_json_native_evidence (backend/tests/test_agent_routing_contract.py)"]
-    n12["test_supervised_assignment_cannot_author_server_routing_snapshots (backend/tests/test_agent_routing_contract.py)"]
-    n13["test_supervised_snapshot_handles_non_string_schema_version (backend/tests/test_agent_routing_contract.py)"]
+    n7["backend/tests/support/runtime_peer.py"]
+    n8["backend/tests/test_agent_model_catalog_api.py"]
+    n9["test_assignment_intent_table_is_closed (backend/tests/test_agent_routing_contract.py)"]
+    n10["test_at_limit_routing_snapshot_uses_the_validated_persistence_encoding (backend/tests/test_agent_routing_contract.py)"]
+    n11["test_routing_packets_share_the_agent_snapshot_byte_limit (backend/tests/test_agent_routing_contract.py)"]
+    n12["test_routing_snapshot_rejects_non_json_native_evidence (backend/tests/test_agent_routing_contract.py)"]
+    n13["test_supervised_assignment_cannot_author_server_routing_snapshots (backend/tests/test_agent_routing_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -83,8 +83,8 @@ flowchart LR
     click n4 "../modules/schemas_agent.md"
     click n5 "../modules/schemas_agent.md"
     click n6 "../modules/agent_work_service.md"
-    click n7 "../modules/test_agent_model_catalog_api.md"
-    click n8 "../modules/test_agent_routing_contract.md"
+    click n7 "../modules/runtime_peer.md"
+    click n8 "../modules/test_agent_model_catalog_api.md"
     click n9 "../modules/test_agent_routing_contract.md"
     click n10 "../modules/test_agent_routing_contract.md"
     click n11 "../modules/test_agent_routing_contract.md"
@@ -113,12 +113,12 @@ flowchart LR
 | `AgentTaskAssignmentCreate.validate_assignment_intent` | type_reference | [schemas_agent](../modules/schemas_agent.md) | — |
 | `ModelAwareAgentTaskAssignmentCreate.validate_assignment_intent` | type_reference | [schemas_agent](../modules/schemas_agent.md) | — |
 | `AgentWorkService.create_assignment` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
 | `test_assignment_intent_table_is_closed` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_at_limit_routing_snapshot_uses_the_validated_persistence_encoding` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_routing_packets_share_the_agent_snapshot_byte_limit` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_routing_snapshot_rejects_non_json_native_evidence` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_supervised_assignment_cannot_author_server_routing_snapshots` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
-| `test_supervised_snapshot_handles_non_string_schema_version` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

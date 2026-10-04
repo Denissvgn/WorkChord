@@ -10,9 +10,9 @@ from app.database import get_db
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskResponse
-from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse
+from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
-from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage
+from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.task_domain_service import TaskDomainService
 from app.services.task_brief_service import TaskBriefService
@@ -27,11 +27,35 @@ async def domain_result(awaitable):
         result = await awaitable
     except TaskVersionConflictError as exc:
         raise HTTPException(409, detail=exc.detail()) from exc
+    except LookupError as exc:
+        raise HTTPException(404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(422, detail=[{"type": "value_error", "loc": ["body"], "msg": str(exc)}]) from exc
     if result is None:
         raise HTTPException(404, detail="Task not found or inaccessible")
     return result
+
+
+from app.schemas.delivery_metrics import DeliveryMetricsResponse
+from app.services.delivery_metrics_service import DeliveryMetricsService
+from decimal import Decimal
+from app.schemas.execution_usage import ExecutionUsageSummary
+from app.services.execution_usage_service import ExecutionUsageService
+
+
+@router.get("/tasks/delivery-metrics", response_model=DeliveryMetricsResponse)
+async def delivery_metrics(db: DB, project_id: int | None = Query(default=None, ge=1),
+    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366)):
+    return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days))
+
+
+@router.get("/tasks/execution-usage", response_model=ExecutionUsageSummary)
+async def execution_usage_summary(db: DB, project_id: int | None = Query(default=None, ge=1),
+    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366),
+    budget_amount: Decimal | None = Query(default=None, ge=0, max_digits=18, decimal_places=6),
+    budget_currency: str | None = Query(default=None, pattern=r"^[A-Z]{3}$")):
+    return await domain_result(ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id,
+        lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
 
 
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
@@ -46,9 +70,14 @@ async def task_capabilities(db: DB):
     return await domain_capabilities(db)
 
 
-@router.get("/tasks/my-work")
-async def human_my_work(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
-    return await TaskDetailService(db).my_work(limit=limit, after_id=after_id)
+@router.get("/tasks/my-work", response_model=HumanWorkResponse)
+async def human_my_work(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
+                       project_id: int | None = Query(default=None, ge=1), iteration_id: int | None = Query(default=None, ge=1), backlog_only: bool = False):
+    try:
+        return await TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id,
+            iteration_id=iteration_id, backlog_only=backlog_only)
+    except ValueError as exc:
+        raise HTTPException(422, detail=[{"type": "value_error", "loc": ["query"], "msg": str(exc)}]) from exc
 
 
 @router.get("/tasks/owner-options")
@@ -81,11 +110,22 @@ async def task_migration_diagnostics(db: DB, after_id: int = Query(default=0, ge
 
 
 @router.get("/tasks/review-queue", response_model=TaskReferencePage)
-async def task_review_queue(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
+async def task_review_queue(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
+                          project_id: int | None = Query(default=None, ge=1), iteration_id: int | None = Query(default=None, ge=1), backlog_only: bool = False):
     from sqlalchemy import or_
     authority = db.info.get("authority")
     service = TaskDetailService(db)
     query = service.references().where(Task.status == "resolved", Task.canceled_at.is_(None), Task.is_summary.is_(False))
+    if backlog_only and iteration_id is not None:
+        raise HTTPException(422, detail="Select backlog or an iteration, not both")
+    if project_id is not None:
+        from app.authority import require_project
+        require_project(db, project_id)
+        query = query.where(Task.project_id == project_id)
+    if iteration_id is not None:
+        query = query.where(Task.iteration_id == iteration_id)
+    if backlog_only:
+        query = query.where(Task.iteration_id.is_(None))
     if authority is not None:
         if not authority.local and not authority.operator:
             query = query.where(Task.project_id.in_([project_id for project_id in authority.projects if authority.allows(project_id, "review")]))
@@ -149,6 +189,16 @@ async def review_task(task_id: int, data: TaskReviewWrite, db: DB):
 async def task_reviews(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):
     await domain_result(TaskDetailService(db).detail(task_id, limit=1))
     return list((await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all())
+
+
+@router.get("/tasks/{task_id}/reviews/current", response_model=CurrentTaskReviewResponse)
+async def current_task_review(task_id: int, db: DB):
+    detail = await domain_result(TaskDetailService(db).detail(task_id, limit=1))
+    task = detail.task
+    review = await db.scalar(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id,
+        TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision,
+        TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit(1))
+    return {"task_version": task.version, "review": review}
 
 
 async def brief_history_page(db, task_id, model, after_id, limit):

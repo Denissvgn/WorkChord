@@ -1,6 +1,6 @@
 # AgentModelCatalogCreate
 
-**Location:** `frontend/src/types/agent.ts:205`
+**Location:** `frontend/src/types/agent.ts:206`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

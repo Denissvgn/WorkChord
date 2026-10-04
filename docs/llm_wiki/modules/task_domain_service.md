@@ -10,13 +10,15 @@ Shared domain policy projects allowed actions and typed blockers across REST and
 
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
 
+Progress availability follows open-leaf execution permission and excludes direct agent evidence writes, which use their fenced work protocol. Current review projection support is advertised only with the adopted domain state; current verdicts and bounded history have distinct read surfaces.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `internal_authority`, `require_project` |
 | `app.commands` | `atomic_command`, `lock_iterations` |
-| `app.config` | `get_settings` |
+| `app.config` | `get_settings`, `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership`, `WorkspaceMembership` |
@@ -47,7 +49,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
+| Inbound | `backend` (8) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -56,13 +58,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 150 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 155 | — | — |
 
 ## Functions
 

@@ -318,3 +318,45 @@ async def test_managed_assigned_submission_and_independent_rework(delivery_store
         assert result.task.status == "active" and result.task.progress is None
         assert result.rework_assignment.actor_id == worker.id
         assert (await db.get(Task, task_id)).executed_by_principal_id == principals[0].id
+
+
+async def test_progress_availability_matches_open_leaf_execution_permission(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        worker, _ = await human_context(db, scenario.projects[0])
+        task = await TaskService(db).create(None, TaskCreate(title="Evidence capture", project_id=scenario.projects[0]))
+        await db.commit()
+        db.info["authority"] = worker
+        service = TaskDomainService(db)
+        available = lambda result: next(item for item in result.actions if item.action == "record_progress")
+        assert available(await service.allowed_actions(task.id)).allowed is True
+        db.info["authority"] = replace(worker, projects={scenario.projects[0]: "viewer"}, workspace_role=None)
+        assert available(await service.allowed_actions(task.id)).allowed is False
+        db.info["authority"] = worker
+        task.status = "closed"
+        await db.flush()
+        assert available(await service.allowed_actions(task.id)).allowed is False
+
+
+async def test_current_review_does_not_depend_on_first_history_page(delivery_store):
+    import httpx
+    from app.main import app
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        worker, reviewer = await human_context(db, scenario.projects[0])
+        task = await TaskService(db).create(None, TaskCreate(title="Long review history", project_id=scenario.projects[0]))
+        task.version = 99
+        for version in range(1, 56):
+            db.add(TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=version,
+                brief_revision=0, artifact_revision=0, principal_id=reviewer, verdict="reject", reason="Earlier inspection", evidence="Earlier artifact"))
+        db.add(TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=99,
+            brief_revision=0, artifact_revision=0, principal_id=reviewer, verdict="reject", reason="Current inspection", evidence="Current artifact"))
+        await db.commit()
+        task_id = task.id
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as reader:
+        history = await reader.get(f"/api/tasks/{task_id}/reviews")
+        assert len(history.json()) == 50
+        current = await reader.get(f"/api/tasks/{task_id}/reviews/current")
+        assert current.status_code == 200, current.text
+        assert current.json()["task_version"] == 99
+        assert current.json()["review"]["reason"] == "Current inspection"

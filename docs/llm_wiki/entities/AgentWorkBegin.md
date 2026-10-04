@@ -1,6 +1,6 @@
 # AgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:832`
+**Location:** `backend/app/schemas/agent.py:848`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -53,7 +53,8 @@ flowchart LR
     n6["AgentWorkService._replay_live_fence_receipt (backend/app/services/agent_work_service.py)"]
     n7["AgentWorkService.begin (backend/app/services/agent_work_service.py)"]
     n8["AgentWorkService.renew_work (backend/app/services/agent_work_service.py)"]
-    n9["backend/tests/test_agent_model_catalog_api.py"]
+    n9["backend/tests/support/runtime_peer.py"]
+    n10["backend/tests/test_agent_model_catalog_api.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,6 +64,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -71,7 +73,8 @@ flowchart LR
     click n6 "../modules/agent_work_service.md"
     click n7 "../modules/agent_work_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/test_agent_model_catalog_api.md"
+    click n9 "../modules/runtime_peer.md"
+    click n10 "../modules/test_agent_model_catalog_api.md"
 ```
 
 ### Summary
@@ -97,4 +100,5 @@ flowchart LR
 | `AgentWorkService._replay_live_fence_receipt` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.begin` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.renew_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
