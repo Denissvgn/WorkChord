@@ -21,7 +21,7 @@ Composed planning mutations share one transaction and retain exact durable mutat
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `_request_hash` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | — |
-| `_replay` | *(async)* `(*, actor: AgentActor, operation: str, target_type: str, idempotency_target_id: int, idempotency_key: str, request_payload: dict[str, Any]) -> AgentPlanningReceipt \| None` | — | — |
+| `_replay` | *(async)* `(*, actor: AgentActor, operation: str, target_type: str, idempotency_target_id: int, idempotency_key: str, request_payload: dict[str, Any], actor_id: int \| None = None) -> AgentPlanningReceipt \| None` | — | — |
 | `_execute` | *(async)* `(*, actor: AgentActor, scope: str, operation: str, target_type: str, idempotency_target_id: int, command: AgentPlanningCommandContext, request_payload: dict[str, Any], mutate: Mutation) -> AgentPlanningReceipt` | `@atomic_command` | — |
 | `create_project` | *(async)* `(actor: AgentActor, data: ProjectCreate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `update_project` | *(async)* `(project_id: int, actor: AgentActor, data: ProjectUpdate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
@@ -45,7 +45,7 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `_schedule_task_states` | `(tasks: list[Task]) -> list[AgentScheduleTaskState]` | `@staticmethod` | — |
 | `_canonical_digest` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | Return a deterministic SHA-256 digest for one JSON-safe payload. |
 | `_scheduling_rules_digest` | `() -> str` | — | Return the digest of the rules currently used by the scheduler. |
-| `_schedule_input_digest` | *(async)* `(iteration_id: int, *, schedule_output_overrides: Mapping[int, tuple[Any, Any, Any]] \| None = None) -> tuple[str, str]` | — | Hash every mutable input consumed by ``SchedulerService``. |
+| `_schedule_input_digest` | *(async)* `(iteration_id: int, *, schedule_output_overrides: Mapping[int, tuple[Any, Any, Any, int]] \| None = None) -> tuple[str, str]` | — | Hash every mutable input consumed by ``SchedulerService``. |
 | `_schedule_result_payload` | `(schedule: Any, tasks: list[Task], input_digest: str) -> dict[str, Any]` | `@staticmethod` | — |
 | `preview_schedule` | *(async)* `(iteration_id: int, actor: AgentActor, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | `@preview_command` | — |
 | `apply_schedule` | *(async)* `(iteration_id: int, actor: AgentActor, data: AgentScheduleCommand, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
@@ -118,4 +118,4 @@ flowchart LR
 | `patch_planning_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `preview_planning_schedule` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

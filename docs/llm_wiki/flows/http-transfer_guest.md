@@ -76,7 +76,7 @@ flowchart LR
 | transfer_guest | response.delete_cookie | 288 | `response.delete_cookie('workchord_guest_transfer', path=...)` |
 | transfer_guest | _cookie_options | 288 | `_cookie_options(data not statically known)` |
 | _cookie_options | get_settings | 37 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 
 ### Boundary effects
 

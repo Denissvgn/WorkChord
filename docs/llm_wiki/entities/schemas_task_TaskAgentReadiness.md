@@ -1,6 +1,6 @@
 # TaskAgentReadiness
 
-**Location:** `backend/app/schemas/task.py:175`
+**Location:** `backend/app/schemas/task.py:176`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

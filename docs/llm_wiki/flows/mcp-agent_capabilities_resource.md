@@ -88,7 +88,7 @@ sequenceDiagram
     p20-->>p25: RuntimeError
 ```
 
-> Call sequence diagram shows 30 of 154 interactions; 124 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 156 interactions; 126 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -135,7 +135,7 @@ flowchart LR
 |---|---|---|---|---|
 | `agent_capabilities_resource` | - | - | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError`, `AgentTeamSetupConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -150,11 +150,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_capabilities_resource | _json_resource | 2148 | `_json_resource(None, ...)` |
-| _json_resource | _tool_call | 330 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
+| agent_capabilities_resource | _json_resource | 2150 | `_json_resource(None, ...)` |
+| _json_resource | _tool_call | 332 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

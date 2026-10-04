@@ -1,6 +1,6 @@
 # TaskBulkOutcome
 
-**Location:** `backend/app/schemas/task.py:290`
+**Location:** `backend/app/schemas/task.py:291`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_task](../modules/schemas_task.md)

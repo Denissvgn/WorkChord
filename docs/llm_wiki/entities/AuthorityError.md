@@ -89,7 +89,7 @@ flowchart LR
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
 | `scope_orm_operation` | call | [authority](../modules/authority.md) | 2 |
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
-| `enforce_http_authority` | call | [http_authority](../modules/http_authority.md) | 10 |
+| `enforce_http_authority` | call | [http_authority](../modules/http_authority.md) | 11 |
 | `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 11 |
 | `authority_error` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |

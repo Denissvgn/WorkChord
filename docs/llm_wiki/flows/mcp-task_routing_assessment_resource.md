@@ -128,7 +128,7 @@ flowchart LR
 |---|---|---|---|---|
 | `task_routing_assessment_resource` | `task_id: str` | `ROUTING_READ_SCOPE_REQUIREMENT` | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError`, `AgentTeamSetupConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -143,11 +143,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_routing_assessment_resource | _json_resource | 2175 | `_json_resource(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
-| _json_resource | _tool_call | 330 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 302 | `enforce_mcp_access(required_scope)` |
+| task_routing_assessment_resource | _json_resource | 2177 | `_json_resource(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
+| _json_resource | _tool_call | 332 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

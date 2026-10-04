@@ -1,6 +1,6 @@
 # TaskStatusChangeResponse
 
-**Location:** `backend/app/schemas/task.py:413`
+**Location:** `backend/app/schemas/task.py:422`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

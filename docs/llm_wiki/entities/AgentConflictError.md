@@ -105,4 +105,4 @@ flowchart LR
 | `AgentService._command_receipt_replay` | call | [agent_service](../modules/agent_service.md) | 3 |
 | `AgentService._validate_run_fence` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

@@ -106,7 +106,7 @@ flowchart LR
 | download_agent_skill_bundle | service.archive_payload | 170 | `service.archive_payload(skill_name, version, archive_format)` |
 | download_agent_skill_bundle | _response | 172 | `_response(payload, request)` |
 | _response | get_settings | 92 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | _response | cache_control.replace | 93 | `cache_control.replace('public,', 'private,', 1)` |
 | _response | _etag_matches | 102 | `_etag_matches(request.headers.get(...), payload.etag)` |
 | _etag_matches | if_none_match.split | 83 | `if_none_match.split(',')` |

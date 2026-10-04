@@ -4,6 +4,8 @@
 
 ## Description
 
+After authentication and request-integrity checks, REST accepts a bounded X-Expected-Revisions JSON map. Values must be positive integer revisions keyed by positive iteration IDs. The header supplies optimistic context and grants no authority; conflicting body/header values are rejected.
+
 Fail-closed HTTP identity resolution and explicit public capability boundaries.
 
 Cookie, native bearer, actor, and operator credentials resolve to one principal; conflicting principals are rejected. Cookie writes require request integrity. Private task commands check permission before invoking services. Explicit public capabilities and the safe readiness response retain their separate policy. The backend defaults to managed mode and does not fall back to open collaboration when sign-in fails.
@@ -26,6 +28,7 @@ The restricted onboarding acknowledgement has a dedicated token-only boundary. I
 | `app.services.session_service` | `_get_session_by_token` |
 | `dataclasses` | `replace` |
 | `fastapi` | `Depends`, `Request` |
+| `json` | `json` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `select` |
 | `typing` | `Annotated` |

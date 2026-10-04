@@ -1,6 +1,6 @@
 # TaskClaimedBy
 
-**Location:** `backend/app/schemas/task.py:134`
+**Location:** `backend/app/schemas/task.py:135`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

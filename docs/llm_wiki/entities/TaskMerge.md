@@ -1,6 +1,6 @@
 # TaskMerge
 
-**Location:** `backend/app/schemas/task.py:258`
+**Location:** `backend/app/schemas/task.py:259`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -15,7 +15,7 @@ Request schema for merging tasks under a new parent.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `task_ids` | `list[int]` | `task_ids` | Yes | No | — | min_length=2 | — | IDs of tasks to merge (min 2) |
-| `parent_title` | `str` | `parent_title` | Yes | No | — | max_length=500; min_length=1 | — | — |
+| `parent_title` | `str` | `parent_title` | Yes | No | — | min_length=1; max_length=500 | — | — |
 | `parent_description` | `Optional[str]` | `parent_description` | No | Yes | `None` | — | — | — |
 
 ## Methods

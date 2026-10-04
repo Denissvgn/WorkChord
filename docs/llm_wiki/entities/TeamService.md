@@ -46,7 +46,7 @@ Service for team member operations.
 | `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@atomic_command` | Import vacation ranges for iteration team members from CSV text. |
 | `calculate_capacity` | *(async)* `(member_id: int) -> MemberCapacity \| None` | — | Calculate capacity for a team member. |
 | `get_workload` | *(async)* `(member_id: int) -> MemberWorkload \| None` | — | Get workload information for a team member. |
-| `import_members` | *(async)* `(iteration_id: int, text: str) -> list[TeamMember]` | `@schedule_input_command('member')` | Import multiple team members from text format. |
+| `import_members` | *(async)* `(iteration_id: int, text: str, *, expected_revisions: dict[int, int] \| None = None) -> list[TeamMember]` | `@schedule_input_command('member')` | Import multiple team members from text format. |
 
 ## Relationships
 

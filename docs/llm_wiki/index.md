@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1455 | [Open section](#entities) |
-| Modules | 635 | [Open section](#modules) |
-| Workflows | 169 | [Open section](#workflows) |
+| Entities | 1459 | [Open section](#entities) |
+| Modules | 638 | [Open section](#modules) |
+| Workflows | 171 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 519 | [Open section](#entry-point-flows) |
+| Entry-point flows | 520 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -405,6 +405,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ImmutableContractArchive](entities/ImmutableContractArchive.md)
 - [ImmutableInputBinding](entities/ImmutableInputBinding.md)
 - [ImmutableRoutingAssessmentError](entities/ImmutableRoutingAssessmentError.md)
+- [ImportTasksBodyProps](entities/ImportTasksBodyProps.md)
 - [ImportTasksModalProps](entities/ImportTasksModalProps.md)
 - [ImportTeamModalProps](entities/ImportTeamModalProps.md)
 - [ImproveDescriptionRequest](entities/ImproveDescriptionRequest.md)
@@ -482,6 +483,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MigrationPolicy](entities/MigrationPolicy.md)
 - [MilestoneEditorState](entities/MilestoneEditorState.md)
 - [MilestoneFormState](entities/MilestoneFormState.md)
+- [MissingMutationRevision](entities/MissingMutationRevision.md)
 - [ModalFrameProps](entities/ModalFrameProps.md)
 - [ModalProps](entities/ModalProps.md)
 - [ModelAwareAgentWorkBegin](entities/ModelAwareAgentWorkBegin.md)
@@ -1231,6 +1233,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_task_TaskStatus](entities/schemas_task_TaskStatus.md)
 - [schemas_task_TaskStatusChangeResponse](entities/schemas_task_TaskStatusChangeResponse.md)
 - [schemas_task_TaskStatusStats](entities/schemas_task_TaskStatusStats.md)
+- [schemas_task_TaskTextContext](entities/schemas_task_TaskTextContext.md)
 - [schemas_task_TaskUpdate](entities/schemas_task_TaskUpdate.md)
 - [schemas_task_TasksImportRequest](entities/schemas_task_TasksImportRequest.md)
 - [schemas_task_TasksImportResponse](entities/schemas_task_TasksImportResponse.md)
@@ -1434,6 +1437,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
 - [types_task_TaskStatusStats](entities/types_task_TaskStatusStats.md)
+- [types_task_TaskTextContext](entities/types_task_TaskTextContext.md)
 - [types_task_TaskTimelineItem](entities/types_task_TaskTimelineItem.md)
 - [types_task_TaskTimelineResponse](entities/types_task_TaskTimelineResponse.md)
 - [types_task_TaskUpdate](entities/types_task_TaskUpdate.md)
@@ -1640,6 +1644,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskSearch](modules/TaskSearch.md) - `frontend/src/components/tasks/TaskSearch.tsx`
 - [TaskStatusFlow](modules/TaskStatusFlow.md) - `frontend/src/components/analytics/TaskStatusFlow.tsx`
 - [TaskTextEditorModal](modules/TaskTextEditorModal.md) - `frontend/src/components/tasks/TaskTextEditorModal.tsx`
+- [TaskTextEditorModal.test](modules/TaskTextEditorModal.test.md) - `frontend/src/components/tasks/TaskTextEditorModal.test.tsx`
 - [TaskTimelinePanel](modules/TaskTimelinePanel.md) - `frontend/src/components/tasks/TaskTimelinePanel.tsx`
 - [TaskTimelinePanel.test](modules/TaskTimelinePanel.test.md) - `frontend/src/components/tasks/TaskTimelinePanel.test.tsx`
 - [TaskWorkPanel](modules/TaskWorkPanel.md) - `frontend/src/components/tasks/TaskWorkPanel.tsx`
@@ -1823,6 +1828,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_triage](modules/models_triage.md) - Triage item model.
+- [mutation_versions](modules/mutation_versions.md) - Server-controlled version rollout with explicit offline repair separation.
 - [native_connection](modules/native_connection.md) - Short-lived browser consent for a proof-bound native session.
 - [native_session_service](modules/native_session_service.md) - Explicit browser consent and one-use proof-bound native authentication.
 - [notification_service](modules/notification_service.md) - Email notification service for task status changes.
@@ -2034,6 +2040,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
+- [test_mutation_versions](modules/test_mutation_versions.md) - Version rollout rejects missing inputs without weakening identity or rollback.
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
@@ -2222,6 +2229,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskService_delete](workflows/TaskService_delete.md) - entry: `task_service.TaskService.delete`
 - [TaskService_merge_tasks](workflows/TaskService_merge_tasks.md) - entry: `task_service.TaskService.merge_tasks`
 - [TaskService_move_task](workflows/TaskService_move_task.md) - entry: `task_service.TaskService.move_task`
+- [TaskService_remove_dependency](workflows/TaskService_remove_dependency.md) - entry: `task_service.TaskService.remove_dependency`
 - [TaskService_task_to_response](workflows/TaskService_task_to_response.md) - entry: `task_service.TaskService.task_to_response`
 - [TaskService_update](workflows/TaskService_update.md) - entry: `task_service.TaskService.update`
 - [TaskStatusService__apply_transition](workflows/TaskStatusService__apply_transition.md) - entry: `task_status_service.TaskStatusService._apply_transition`
@@ -2280,6 +2288,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
+- [update_task](workflows/update_task.md) - entry: `mcp_agent_tools.update_task`
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
 - [workspace_member](workflows/workspace_member.md) - entry: `identity.workspace_member`
@@ -2445,6 +2454,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_task_timeline](flows/http-get_task_timeline.md) - entry: `get_task_timeline`
 - [http-get_tasks](flows/http-get_tasks.md) - entry: `get_tasks`
 - [http-get_tasks_text](flows/http-get_tasks_text.md) - entry: `get_tasks_text`
+- [http-get_tasks_text_context](flows/http-get_tasks_text_context.md) - entry: `get_tasks_text_context`
 - [http-get_team_member](flows/http-get_team_member.md) - entry: `get_team_member`
 - [http-get_team_member_profile](flows/http-get_team_member_profile.md) - entry: `get_team_member_profile`
 - [http-get_team_members](flows/http-get_team_members.md) - entry: `get_team_members`

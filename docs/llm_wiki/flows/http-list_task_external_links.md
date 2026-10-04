@@ -51,10 +51,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_task_external_links | task_service.get_by_id | 415 | `task_service.get_by_id(task_id)` |
-| list_task_external_links | HTTPException | 417 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| list_task_external_links | link_service.list_task_links | 422 | `link_service.list_task_links(task_id)` |
-| list_task_external_links | link_service.task_links_to_response | 423 | `link_service.task_links_to_response(task, ...)` |
+| list_task_external_links | task_service.get_by_id | 418 | `task_service.get_by_id(task_id)` |
+| list_task_external_links | HTTPException | 420 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| list_task_external_links | link_service.list_task_links | 425 | `link_service.list_task_links(task_id)` |
+| list_task_external_links | link_service.task_links_to_response | 426 | `link_service.task_links_to_response(task, ...)` |
 
 ### Boundary effects
 
@@ -64,10 +64,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_task_external_links` | `task_service.get_by_id` | 415 |
-| external_call | `list_task_external_links` | `HTTPException` | 417 |
-| unresolved_call | `list_task_external_links` | `link_service.list_task_links` | 422 |
-| unresolved_call | `list_task_external_links` | `link_service.task_links_to_response` | 423 |
+| unresolved_call | `list_task_external_links` | `task_service.get_by_id` | 418 |
+| external_call | `list_task_external_links` | `HTTPException` | 420 |
+| unresolved_call | `list_task_external_links` | `link_service.list_task_links` | 425 |
+| unresolved_call | `list_task_external_links` | `link_service.task_links_to_response` | 426 |
 
 ## Behavior
 

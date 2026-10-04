@@ -2,7 +2,7 @@
 
 **Location:** `backend/app/schemas/team.py:341`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 
 ## Description
@@ -25,11 +25,12 @@ Request for importing team members from text.
 ```mermaid
 flowchart LR
     n0["TeamImportRequest (backend/app/schemas/team.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["import_team_members (backend/app/routers/team.py)"]
     n0 --> n1
     n2 --> n0
     click n0 "../modules/schemas_team.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/routers_team.md"
 ```
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 

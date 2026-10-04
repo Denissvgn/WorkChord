@@ -130,7 +130,7 @@ flowchart LR
 | task_owner_options | require_project | 65 | `require_project(db, project_id)` |
 | require_project | db.info.get (backend/app/authority.py:require_project) | 69 | `db.info.get('authority')` |
 | require_project | get_settings | 71 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | require_project | AuthorityError | 73 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
 | require_project | authority.allows | 74 | `authority.allows(project_id, action)` |
 | require_project | AuthorityError | 75 | `AuthorityError(data not statically known)` |

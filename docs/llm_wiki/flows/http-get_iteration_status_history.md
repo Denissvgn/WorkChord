@@ -63,12 +63,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_status_history | IterationService | 1004 | `IterationService(db)` |
-| get_iteration_status_history | iteration_service.get_by_id | 1005 | `iteration_service.get_by_id(iteration_id)` |
-| get_iteration_status_history | HTTPException | 1007 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_iteration_status_history | service.get_iteration_status_history | 1012 | `service.get_iteration_status_history(iteration_id)` |
-| get_iteration_status_history | TaskStatusLogResponse | 1015 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, task_title=log.task_title, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
-| get_iteration_status_history | json.loads | 1024 | `json.loads(log.affected_task_ids)` |
+| get_iteration_status_history | IterationService | 1030 | `IterationService(db)` |
+| get_iteration_status_history | iteration_service.get_by_id | 1031 | `iteration_service.get_by_id(iteration_id)` |
+| get_iteration_status_history | HTTPException | 1033 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_iteration_status_history | service.get_iteration_status_history | 1038 | `service.get_iteration_status_history(iteration_id)` |
+| get_iteration_status_history | TaskStatusLogResponse | 1041 | `TaskStatusLogResponse(id=log.id, task_id=log.task_id, task_title=log.task_title, from_status=log.from_status, to_status=log.to_status, changed_at=log.changed_at, reason=log.reason, triggered_by=log.triggered_by, affected_task_ids=...)` |
+| get_iteration_status_history | json.loads | 1050 | `json.loads(log.affected_task_ids)` |
 
 ### Boundary effects
 
@@ -78,10 +78,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_iteration_status_history` | `iteration_service.get_by_id` | 1005 |
-| external_call | `get_iteration_status_history` | `HTTPException` | 1007 |
-| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1012 |
-| external_call | `get_iteration_status_history` | `json.loads` | 1024 |
+| unresolved_call | `get_iteration_status_history` | `iteration_service.get_by_id` | 1031 |
+| external_call | `get_iteration_status_history` | `HTTPException` | 1033 |
+| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1038 |
+| external_call | `get_iteration_status_history` | `json.loads` | 1050 |
 
 ## Behavior
 

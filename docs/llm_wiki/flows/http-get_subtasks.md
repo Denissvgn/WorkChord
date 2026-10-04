@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_subtasks | service.get_by_id | 595 | `service.get_by_id(task_id)` |
-| get_subtasks | HTTPException | 597 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_subtasks | IterationService | 602 | `IterationService(db)` |
-| get_subtasks | iteration_service.get_by_id | 603 | `iteration_service.get_by_id(task.iteration_id)` |
-| get_subtasks | service.task_to_response | 606 | `service.task_to_response(child, end_date)` |
+| get_subtasks | service.get_by_id | 598 | `service.get_by_id(task_id)` |
+| get_subtasks | HTTPException | 600 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_subtasks | IterationService | 605 | `IterationService(db)` |
+| get_subtasks | iteration_service.get_by_id | 606 | `iteration_service.get_by_id(task.iteration_id)` |
+| get_subtasks | service.task_to_response | 609 | `service.task_to_response(child, end_date)` |
 
 ### Boundary effects
 
@@ -71,10 +71,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_subtasks` | `service.get_by_id` | 595 |
-| external_call | `get_subtasks` | `HTTPException` | 597 |
-| unresolved_call | `get_subtasks` | `iteration_service.get_by_id` | 603 |
-| unresolved_call | `get_subtasks` | `service.task_to_response` | 606 |
+| unresolved_call | `get_subtasks` | `service.get_by_id` | 598 |
+| external_call | `get_subtasks` | `HTTPException` | 600 |
+| unresolved_call | `get_subtasks` | `iteration_service.get_by_id` | 606 |
+| unresolved_call | `get_subtasks` | `service.task_to_response` | 609 |
 
 ## Behavior
 

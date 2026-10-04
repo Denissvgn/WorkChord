@@ -4,6 +4,8 @@
 
 ## Description
 
+Aggregate reservations can require complete observed revisions for structural and shared-input commands. A bounded transport revision map is merged with body revisions only when values agree; protected iteration reservations are remembered within the command. Transport context and command observations are cleared at the owning transaction boundary.
+
 Owns apply and rollback-only transactions. Shared planning reserves the workspace coordinator before project, iteration and task locks; iterations and tasks are acquired in ascending ID order. Each command reserves one version per affected task. Before commit, delivery changes invalidate downstream evidence and notification intents join the same transaction. Failures and previews roll back snapshots, history, revisions and outbox rows together.
 
 ## Imports
@@ -16,6 +18,7 @@ Owns apply and rollback-only transactions. Shared planning reserves the workspac
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
+| `app.mutation_versions` | `require_mutation_revision` |
 | `app.runtime_telemetry` | `metrics` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.discussion_service` | `DiscussionService` |
@@ -50,8 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (68) |
-| Outbound | `backend` (11) |
+| Inbound | `backend` (69) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -59,16 +62,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 75 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 77 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 23 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 34 | `RuntimeError` | — |
-| [PlanningConflict](../entities/PlanningConflict.md) | 39 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 25 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 36 | `RuntimeError` | — |
+| [PlanningConflict](../entities/PlanningConflict.md) | 41 | `RuntimeError` | — |
 
 ## Functions
 
@@ -81,5 +84,5 @@ flowchart LR
 | `atomic_command` | `(function)` | — | Give standalone service commands an owner without committing inside another command. |
 | `preview_command` | `(function)` | — | Give a calculation a rollback boundary in every transport and direct invocation. |
 | `lock_backlog_project` | *(async)* `(db, project_id)` | — | Serialize unscheduled hierarchy writes without manufacturing an iteration. |
-| `lock_iterations` | *(async)* `(db: AsyncSession, iteration_ids, *, expected = None) -> dict[int, int]` | — | Acquire aggregate locks in ascending ID order, then task locks in ascending ID order. |
+| `lock_iterations` | *(async)* `(db: AsyncSession, iteration_ids, *, expected = None, require_expected = False, revision_field = 'expected_revisions') -> dict[int, int]` | — | Acquire aggregate locks in ascending ID order, then task locks in ascending ID order. |
 | `schedule_input_command` | `(kind)` | — | Capture and revise every affected iteration before editing shared planning inputs. |

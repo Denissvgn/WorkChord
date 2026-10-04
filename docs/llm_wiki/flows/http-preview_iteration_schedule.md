@@ -2,15 +2,17 @@
 
 **Entry point:** `preview_iteration_schedule` (`http`)
 **Source:** [routers_gantt](../modules/routers_gantt.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [discussion_service](../modules/discussion_service.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 10 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
+- [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [iteration_service](../modules/iteration_service.md)
+- [mutation_versions](../modules/mutation_versions.md)
 - [routers_gantt](../modules/routers_gantt.md)
 - [schemas_gantt](../modules/schemas_gantt.md)
 - [schemas_task](../modules/schemas_task.md)
@@ -80,7 +82,7 @@ sequenceDiagram
     p0->>p23: lock_iterations
 ```
 
-> Call sequence diagram shows 30 of 167 interactions; 137 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 183 interactions; 153 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -157,21 +159,21 @@ flowchart LR
 | preview_iteration_schedule | iteration_service.get_by_id | 74 | `iteration_service.get_by_id(iteration_id)` |
 | preview_iteration_schedule | HTTPException | 76 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | preview_iteration_schedule | command_transaction | 81 | `command_transaction(db, mode='preview')` |
-| command_transaction | current_command | 85 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 71 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 72 | `isinstance(info, dict)` |
-| current_command | info.get | 72 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 88 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 95 | `CommandState(mode=mode)` |
+| command_transaction | current_command | 87 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 73 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 74 | `isinstance(info, dict)` |
+| current_command | info.get | 74 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 90 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 97 | `CommandState(mode=mode)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | mutation | `gantt_tasks.append` | `preview_iteration_schedule` | 100 |
-| mutation | `db.info.pop` | `command_transaction` | 105 |
-| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 122 |
 
 ### Static analysis gaps
 
@@ -179,10 +181,10 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `preview_iteration_schedule` | `iteration_service.get_by_id` | 74 |
 | external_call | `preview_iteration_schedule` | `HTTPException` | 76 |
-| external_call | `current_command` | `getattr` | 71 |
-| external_call | `current_command` | `isinstance` | 72 |
-| unresolved_call | `current_command` | `info.get` | 72 |
-| external_call | `command_transaction` | `RuntimeError` | 88 |
+| external_call | `current_command` | `getattr` | 73 |
+| external_call | `current_command` | `isinstance` | 74 |
+| unresolved_call | `current_command` | `info.get` | 74 |
+| external_call | `command_transaction` | `RuntimeError` | 90 |
 | step_limit | `preview_iteration_schedule` | `first 12 steps` | 0 |
 
 ## Behavior

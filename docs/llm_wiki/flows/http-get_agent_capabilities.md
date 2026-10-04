@@ -39,17 +39,15 @@ sequenceDiagram
     participant p15 as select(…).where(…).limit
     participant p16 as select(…).where
     participant p17 as select
-    participant p18 as getattr
-    participant p19 as get_settings
-    participant p20 as Settings
+    participant p18 as get_settings
+    participant p19 as Settings
+    participant p20 as getattr
     participant p21 as actor_has_scope
     participant p22 as actor_scopes
     participant p23 as json.loads
     participant p24 as isinstance
     participant p25 as SkillBundleCatalogResponse.model_validate_json
     participant p26 as bundle_service.catalog_payload
-    participant p27 as logger.warning
-    participant p28 as features.append
     p0-->>p1: AgentRoutingRolloutService().status
     p0->>p2: AgentRoutingRolloutService
     p0-->>p3: AgentTeamSetupService(…).routing_readiness
@@ -69,20 +67,20 @@ sequenceDiagram
     p11-->>p15: select(…).where(…).limit
     p11-->>p16: select(…).where
     p11-->>p17: select
-    p0-->>p18: getattr
-    p0->>p19: get_settings
-    p19->>p20: Settings
+    p11->>p18: get_settings
+    p18->>p19: Settings
+    p11->>p18: get_settings
+    p0-->>p20: getattr
+    p0->>p18: get_settings
     p0->>p21: actor_has_scope
     p21->>p22: actor_scopes
     p22-->>p23: json.loads
     p22-->>p24: isinstance
     p0-->>p25: SkillBundleCatalogResponse.model_validate_json
     p0-->>p26: bundle_service.catalog_payload
-    p0-->>p27: logger.warning
-    p0-->>p28: features.append
 ```
 
-> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 37 interactions; 7 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

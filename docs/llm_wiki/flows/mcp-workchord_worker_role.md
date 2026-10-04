@@ -155,33 +155,33 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_worker_role | _skill_bundle_prompt | 2315 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
-| _skill_bundle_prompt | _agent_context | 336 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 246 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 199 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 199 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 248 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 249 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 180 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 181 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | command_transaction | 250 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 85 | `current_command(db)` |
+| workchord_worker_role | _skill_bundle_prompt | 2317 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
+| _skill_bundle_prompt | _agent_context | 338 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 247 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 200 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 200 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 249 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 250 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 181 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 182 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 251 | `command_transaction(db, mode=...)` |
+| command_transaction | current_command | 87 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 199 |
-| mutation | `db.info.pop` | `command_transaction` | 105 |
-| mutation | `db.info.pop` | `command_transaction` | 118 |
+| environment_read | `os.getenv` | `_current_agent_key` | 200 |
+| mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 122 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 180 |
-| external_call | `_open_db_session` | `hasattr` | 181 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 181 |
+| external_call | `_open_db_session` | `hasattr` | 182 |
 | step_limit | `workchord_worker_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_worker_role` | `depth limit` | 0 |
 

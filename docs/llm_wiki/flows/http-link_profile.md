@@ -133,7 +133,7 @@ flowchart LR
 | require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | link_profile | require_identity_writes | 261 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | link_profile | internal_authority | 263 | `internal_authority(db)` |

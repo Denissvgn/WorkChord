@@ -1,6 +1,6 @@
 # TasksImportRequest
 
-**Location:** `backend/app/schemas/task.py:328`
+**Location:** `backend/app/schemas/task.py:329`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -13,6 +13,7 @@ Request for importing tasks from text.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `expected_revision` | `Optional[int]` | `expected_revision` | No | Yes | `None` | ge=1 | — | — |
 | `text` | `str` | `text` | Yes | No | — | min_length=1; max_length=unknown (MAX_TASK_TEXT_IMPORT_CHARS) | — | Text content with tasks |
 | `destination` | `TaskImportDestination` | `destination` | No | No | `'tasks'` | — | — | Where parsed rows should be created: tasks, triage, or auto split. |
 
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `destination`, `text` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `destination`, `expected_revision`, `text` |
 
 ### Structure
 

@@ -141,36 +141,36 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | convert_triage_item_to_backlog | command_transaction | 387 | `command_transaction(service.db)` |
-| command_transaction | current_command | 85 | `current_command(db)` |
-| current_command | getattr | 71 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 72 | `isinstance(info, dict)` |
-| current_command | info.get | 72 | `info.get('command')` |
-| command_transaction | RuntimeError | 88 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 95 | `CommandState(mode=mode)` |
-| command_transaction | RuntimeError | 100 | `RuntimeError('A failed nested command cannot commit')` |
-| command_transaction | db.flush | 101 | `db.flush(data not statically known)` |
-| command_transaction | db.info.get | 102 | `db.info.get('delivery_changed_nodes')` |
-| command_transaction | db.info.get | 102 | `db.info.get('delivery_graph_changed')` |
+| command_transaction | current_command | 87 | `current_command(db)` |
+| current_command | getattr | 73 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 74 | `isinstance(info, dict)` |
+| current_command | info.get | 74 | `info.get('command')` |
+| command_transaction | RuntimeError | 90 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 97 | `CommandState(mode=mode)` |
+| command_transaction | RuntimeError | 102 | `RuntimeError('A failed nested command cannot commit')` |
+| command_transaction | db.flush | 103 | `db.flush(data not statically known)` |
+| command_transaction | db.info.get | 104 | `db.info.get('delivery_changed_nodes')` |
+| command_transaction | db.info.get | 104 | `db.info.get('delivery_graph_changed')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 105 |
-| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 122 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `current_command` | `getattr` | 71 |
-| external_call | `current_command` | `isinstance` | 72 |
-| unresolved_call | `current_command` | `info.get` | 72 |
-| external_call | `command_transaction` | `RuntimeError` | 88 |
-| external_call | `command_transaction` | `RuntimeError` | 100 |
-| unresolved_call | `command_transaction` | `db.flush` | 101 |
-| unresolved_call | `command_transaction` | `db.info.get` | 102 |
+| external_call | `current_command` | `getattr` | 73 |
+| external_call | `current_command` | `isinstance` | 74 |
+| unresolved_call | `current_command` | `info.get` | 74 |
+| external_call | `command_transaction` | `RuntimeError` | 90 |
+| external_call | `command_transaction` | `RuntimeError` | 102 |
+| unresolved_call | `command_transaction` | `db.flush` | 103 |
+| unresolved_call | `command_transaction` | `db.info.get` | 104 |
 | step_limit | `convert_triage_item_to_backlog` | `first 12 steps` | 0 |
 
 ## Behavior

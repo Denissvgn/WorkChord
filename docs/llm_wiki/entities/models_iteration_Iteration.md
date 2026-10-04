@@ -46,10 +46,10 @@ flowchart LR
     n7["backend/app/models/task.py"]
     n8["backend/app/models/team_member.py"]
     n9["backend/app/models/triage.py"]
-    n10["AgentPlanningService._require_iteration_for_update (backend/app/services/agent_planning_service.py)"]
-    n11["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
-    n12["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
-    n13["AgentRoutingService._capacity_inputs (backend/app/services/agent_routing_service.py)"]
+    n10["backend/app/routers/tasks.py"]
+    n11["AgentPlanningService._require_iteration_for_update (backend/app/services/agent_planning_service.py)"]
+    n12["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
+    n13["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -73,10 +73,10 @@ flowchart LR
     click n7 "../modules/models_task.md"
     click n8 "../modules/team_member.md"
     click n9 "../modules/models_triage.md"
-    click n10 "../modules/agent_planning_service.md"
+    click n10 "../modules/tasks.md"
     click n11 "../modules/agent_planning_service.md"
     click n12 "../modules/agent_planning_service.md"
-    click n13 "../modules/agent_routing_service.md"
+    click n13 "../modules/agent_planning_service.md"
 ```
 
 ### Summary
@@ -103,9 +103,9 @@ flowchart LR
 | `task` | import | [models_task](../modules/models_task.md) | — |
 | `team_member` | import | [team_member](../modules/team_member.md) | — |
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
+| `tasks` | import | [tasks](../modules/tasks.md) | — |
 | `AgentPlanningService._require_iteration_for_update` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
-| `AgentRoutingService._capacity_inputs` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.
+> References: showing 12 of 63 logical references; 51 omitted by the 12-row generated summary limit.

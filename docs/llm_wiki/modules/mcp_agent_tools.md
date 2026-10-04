@@ -17,6 +17,7 @@ the same audited command and read-model paths.
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
+| `app.mutation_versions` | `require_mutation_revision` |
 | `app.routers.gantt` | `get_gantt_data` |
 | `app.schemas.agent` | `AgentCapabilitiesResponse`, `AgentDiscoveryTriageCreate`, `AgentProjectUpdateCreate`, `AgentRecoveryRequeue`, `AgentReviewVerdict`, `AgentRunDetailResponse`, `AgentRunCreate`, `AgentRunEventResponse`, `AgentRunEventCreate`, `AgentRunFinish`, `AgentTaskAssignmentCreate`, `AgentTaskAssignmentUpdate`, `AgentTaskCreate`, `AgentTaskPatch`, `AgentWorkBegin`, `AgentWorkRenew`, `AgentWorkSubmit`, `AgentWorkTerminal`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin`, `TaskClaimRequest`, `TaskEventCreate` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentScheduleCommand` |
@@ -93,8 +94,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
-| Outbound | `backend` (48) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (49) |
 
 ### External packages
 
@@ -102,7 +103,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 57 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 59 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -71,14 +71,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| unmerge_task | service.get_by_id | 735 | `service.get_by_id(task_id)` |
-| unmerge_task | HTTPException | 737 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| unmerge_task | len | 742 | `len(task.children)` |
-| unmerge_task | HTTPException | 743 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
-| unmerge_task | IterationService | 748 | `IterationService(db)` |
-| unmerge_task | iteration_service.get_by_id | 749 | `iteration_service.get_by_id(task.iteration_id)` |
-| unmerge_task | service.unmerge_task | 751 | `service.unmerge_task(task_id, data.delete_parent, expected_revisions=...)` |
-| unmerge_task | service.task_to_response | 753 | `service.task_to_response(t, ...)` |
+| unmerge_task | service.get_by_id | 744 | `service.get_by_id(task_id)` |
+| unmerge_task | HTTPException | 746 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| unmerge_task | len | 751 | `len(task.children)` |
+| unmerge_task | HTTPException | 752 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
+| unmerge_task | IterationService | 757 | `IterationService(db)` |
+| unmerge_task | iteration_service.get_by_id | 758 | `iteration_service.get_by_id(task.iteration_id)` |
+| unmerge_task | service.unmerge_task | 760 | `service.unmerge_task(task_id, data.delete_parent, expected_revisions=...)` |
+| unmerge_task | service.task_to_response | 762 | `service.task_to_response(t, ...)` |
 
 ### Boundary effects
 
@@ -88,12 +88,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `unmerge_task` | `service.get_by_id` | 735 |
-| external_call | `unmerge_task` | `HTTPException` | 737 |
-| external_call | `unmerge_task` | `HTTPException` | 743 |
-| unresolved_call | `unmerge_task` | `iteration_service.get_by_id` | 749 |
-| unresolved_call | `unmerge_task` | `service.unmerge_task` | 751 |
-| unresolved_call | `unmerge_task` | `service.task_to_response` | 753 |
+| unresolved_call | `unmerge_task` | `service.get_by_id` | 744 |
+| external_call | `unmerge_task` | `HTTPException` | 746 |
+| external_call | `unmerge_task` | `HTTPException` | 752 |
+| unresolved_call | `unmerge_task` | `iteration_service.get_by_id` | 758 |
+| unresolved_call | `unmerge_task` | `service.unmerge_task` | 760 |
+| unresolved_call | `unmerge_task` | `service.task_to_response` | 762 |
 
 ## Behavior
 

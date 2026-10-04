@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/task.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
+| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
 
 ## Local dependency map
 
@@ -37,10 +37,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (59) |
+| Inbound | `frontend` (60) |
 | Outbound | `frontend` (2) |
 
-> All 60 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 61 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -68,33 +68,34 @@ flowchart LR
 | [TaskAISuggestRequest](../entities/types_task_TaskAISuggestRequest.md) | Class | 233 | — | — |
 | [GroundedAISuggestionResponse](../entities/types_task_GroundedAISuggestionResponse.md) | Class | 258 | — | — |
 | [TasksImportRequest](../entities/types_task_TasksImportRequest.md) | Class | 278 | — | — |
-| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Class | 283 | — | — |
-| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Class | 291 | — | — |
-| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Class | 315 | — | — |
-| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Class | 324 | — | — |
-| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Class | 334 | — | — |
-| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Class | 344 | — | — |
-| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Class | 353 | — | — |
-| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Class | 359 | — | — |
-| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Class | 371 | — | — |
-| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Class | 377 | — | — |
-| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Class | 387 | — | — |
-| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Class | 392 | — | — |
-| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Class | 399 | — | — |
-| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 405 | — | — |
-| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 411 | — | — |
-| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Class | 417 | — | — |
-| [TaskBrief](../entities/types_task_TaskBrief.md) | Class | 424 | — | — |
-| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Class | 435 | — | — |
-| [TaskProgress](../entities/TaskProgress.md) | Class | 442 | — | — |
-| [TaskReference](../entities/types_task_TaskReference.md) | Class | 449 | — | — |
-| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Class | 455 | — | — |
-| [TaskDetail](../entities/TaskDetail.md) | Class | 456 | — | — |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Class | 460 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Class | 461 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Class | 465 | — | — |
+| [TaskTextContext](../entities/types_task_TaskTextContext.md) | Class | 284 | — | — |
+| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Class | 290 | — | — |
+| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Class | 298 | — | — |
+| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Class | 322 | — | — |
+| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Class | 331 | — | — |
+| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Class | 341 | — | — |
+| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Class | 351 | — | — |
+| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Class | 360 | — | — |
+| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Class | 366 | — | — |
+| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Class | 378 | — | — |
+| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Class | 384 | — | — |
+| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Class | 394 | — | — |
+| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Class | 399 | — | — |
+| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Class | 406 | — | — |
+| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Class | 412 | — | — |
+| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Class | 418 | — | — |
+| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Class | 424 | — | — |
+| [TaskBrief](../entities/types_task_TaskBrief.md) | Class | 431 | — | — |
+| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Class | 442 | — | — |
+| [TaskProgress](../entities/TaskProgress.md) | Class | 449 | — | — |
+| [TaskReference](../entities/types_task_TaskReference.md) | Class | 456 | — | — |
+| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Class | 462 | — | — |
+| [TaskDetail](../entities/TaskDetail.md) | Class | 463 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Class | 467 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Class | 468 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Class | 472 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 45 | — | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 46 | — | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 276 | — | — |
-| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 298 | — | — |
-| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 313 | — | — |
+| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 305 | — | — |
+| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 320 | — | — |

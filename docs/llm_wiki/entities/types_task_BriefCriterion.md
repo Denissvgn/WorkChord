@@ -1,6 +1,6 @@
 # BriefCriterion
 
-**Location:** `frontend/src/types/task.ts:417`
+**Location:** `frontend/src/types/task.ts:424`
 **Kind:** Class
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

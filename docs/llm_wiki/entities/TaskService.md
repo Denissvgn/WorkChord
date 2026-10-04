@@ -52,13 +52,13 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `create_subtask` | *(async)* `(parent_id: int, data: TaskCreate) -> Optional[Task]` | — | Create a subtask under a parent task. |
 | `update` | *(async)* `(task_id: int, data: TaskUpdate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, commit: bool = True) -> Optional[Task]` | `@atomic_command` | Update an existing task. |
 | `delete` | *(async)* `(task_id: int, actor_type: str = 'user', actor_id: Optional[int] = None, *, expected_version: Optional[int] = None, expected_revision: Optional[int] = None) -> bool` | `@atomic_command` | Delete a task and its subtasks. |
-| `add_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | `@atomic_command` | Add a dependency to a task. |
-| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None) -> bool` | `@atomic_command` | Remove a dependency from a task. |
+| `add_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None, *, expected_version: Optional[int] = None) -> bool` | `@atomic_command` | Add a dependency to a task. |
+| `remove_dependency` | *(async)* `(task_id: int, depends_on_id: int, actor_type: str = 'user', actor_id: Optional[int] = None, *, expected_version: Optional[int] = None) -> bool` | `@atomic_command` | Remove a dependency from a task. |
 | `reorder_tasks` | *(async)* `(task_ids: list[int], iteration_id: Optional[int] = None, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None, expected_revision: int \| None = None) -> bool` | `@atomic_command` | Update sort_order for tasks within one declared sibling scope. |
 | `_reserve_structural_version` | *(async)* `(task: Task, *, preserve_inherited_facets = False)` | — | Carry existing acceptance across a rearrangement that preserves leaf work meaning. |
 | `merge_tasks` | *(async)* `(iteration_id: int, task_ids: list[int], parent_title: str, parent_description: Optional[str] = None, expected_revision: int \| None = None) -> Optional[Task]` | `@atomic_command` | Merge multiple leaf tasks under a new parent task. |
 | `unmerge_task` | *(async)* `(parent_task_id: int, delete_parent: bool = True, *, expected_revisions = None) -> list[Task]` | `@atomic_command` | Promote children into the parent's sibling scope without losing referenced work. |
-| `_lock_task_scope` | *(async)* `(task_id, *, target_iteration_id = None, target_project_id = None, expected_revisions = None)` | — | — |
+| `_lock_task_scope` | *(async)* `(task_id, *, target_iteration_id = None, target_project_id = None, expected_revisions = None, require_revisions = False, revision_field = 'expected_revisions')` | — | — |
 | `_require_unclaimed_structure` | *(async)* `(task_ids)` | — | — |
 | `_task_subtree_ids` | *(async)* `(root_task_id: int) -> set[int]` | — | Return the IDs in a task subtree, including the root. |
 | `_require_no_cross_subtree_dependencies` | *(async)* `(subtree_ids: set[int]) -> None` | — | Reject moves that would leave dependency edges crossing work scopes. |
@@ -68,9 +68,9 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `_get_next_root_sort_order` | *(async)* `(iteration_id: int) -> int` | — | Return the next root-level sort order for an iteration. |
 | `_get_next_child_sort_order` | *(async)* `(parent_id: int) -> int` | — | Return the next child sort order under a parent task. |
 | `import_service` | `()` | `@property` | Return the focused text import collaborator behind this facade. |
-| `import_tasks` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks') -> tuple[list[Task], list[TriageItem]]` | — | Delegate task and triage text imports to TaskImportService. |
+| `import_tasks` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks', *, expected_revision: int \| None = None) -> tuple[list[Task], list[TriageItem]]` | `@atomic_command` | Delegate task and triage text imports to TaskImportService. |
 | `get_tasks_as_text` | *(async)* `(iteration_id: int) -> str` | — | Delegate editable task text serialization to TaskImportService. |
-| `bulk_update_tasks_from_text` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks') -> tuple[list[Task], list[TriageItem]]` | — | Delegate bulk text edits to TaskImportService. |
+| `bulk_update_tasks_from_text` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks', *, expected_revision: int \| None = None) -> tuple[list[Task], list[TriageItem]]` | `@atomic_command` | Delegate bulk text edits to TaskImportService. |
 | `status_service` | `()` | `@property` | Return the focused status collaborator behind this facade. |
 | `change_status` | *(async)* `(task_id: int, new_status: TaskStatus \| str, reason: Optional[str] = None, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, expected_version: Optional[int] = None, commit: bool = True, reserve_version: bool = True, manual_execution: bool = False, review_evidence: str = '', review_rework: bool = False) -> tuple[Optional[Task], list[dict], bool]` | `@atomic_command` | Delegate status transitions to TaskStatusService. |
 | `_update_parent_status` | *(async)* `(parent_id: int) -> None` | — | Compatibility seam for parent reconciliation. |
@@ -148,4 +148,4 @@ flowchart LR
 | `_import_task_record` | type_reference | [export](../modules/export.md) | — |
 | `_process_import` | call | [export](../modules/export.md) | 1 |
 
-> References: showing 12 of 127 logical references; 115 omitted by the 12-row generated summary limit.
+> References: showing 12 of 128 logical references; 116 omitted by the 12-row generated summary limit.

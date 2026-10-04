@@ -53,10 +53,10 @@ flowchart LR
     n6["test_lookup_matches_id_case_and_literal_wildcards_without_private_counts (backend/tests/test_human_work_queries.py)"]
     n7["test_my_work_includes_nested_and_backlog_without_private_work (backend/tests/test_human_work_queries.py)"]
     n8["test_worker_bulk_sql_cannot_bypass_review_authority (backend/tests/test_managed_authority.py)"]
-    n9["test_absence_owner_permission_and_projection_redaction (backend/tests/test_profile_capacity.py)"]
-    n10["test_comment_authority_mentions_and_tombstone (backend/tests/test_task_discussion.py)"]
-    n11["test_inbox_retry_idempotency_and_read_state_are_separate (backend/tests/test_task_discussion.py)"]
-    n12["test_worker_rechecks_unsubscribe_or_revocation (backend/tests/test_task_discussion.py)"]
+    n9["test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit (backend/tests/test_mutation_versions.py)"]
+    n10["test_absence_owner_permission_and_projection_redaction (backend/tests/test_profile_capacity.py)"]
+    n11["test_comment_authority_mentions_and_tombstone (backend/tests/test_task_discussion.py)"]
+    n12["test_inbox_retry_idempotency_and_read_state_are_separate (backend/tests/test_task_discussion.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -78,8 +78,8 @@ flowchart LR
     click n6 "../modules/test_human_work_queries.md"
     click n7 "../modules/test_human_work_queries.md"
     click n8 "../modules/test_managed_authority.md"
-    click n9 "../modules/test_profile_capacity.md"
-    click n10 "../modules/test_task_discussion.md"
+    click n9 "../modules/test_mutation_versions.md"
+    click n10 "../modules/test_profile_capacity.md"
     click n11 "../modules/test_task_discussion.md"
     click n12 "../modules/test_task_discussion.md"
 ```
@@ -102,9 +102,9 @@ flowchart LR
 | `test_lookup_matches_id_case_and_literal_wildcards_without_private_counts` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_my_work_includes_nested_and_backlog_without_private_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_worker_bulk_sql_cannot_bypass_review_authority` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit` | call | [test_mutation_versions](../modules/test_mutation_versions.md) | 1 |
 | `test_absence_owner_permission_and_projection_redaction` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |
 | `test_comment_authority_mentions_and_tombstone` | call | [test_task_discussion](../modules/test_task_discussion.md) | 2 |
 | `test_inbox_retry_idempotency_and_read_state_are_separate` | call | [test_task_discussion](../modules/test_task_discussion.md) | 1 |
-| `test_worker_rechecks_unsubscribe_or_revocation` | call | [test_task_discussion](../modules/test_task_discussion.md) | 2 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

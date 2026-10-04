@@ -1,6 +1,6 @@
 # MCPExactPathAlias
 
-**Location:** `backend/app/mcp_server.py:150`
+**Location:** `backend/app/mcp_server.py:151`
 **Kind:** Class
 **Bases:** —
 **Module:** [mcp_server](../modules/mcp_server.md)

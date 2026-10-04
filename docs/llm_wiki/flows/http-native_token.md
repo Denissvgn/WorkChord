@@ -114,7 +114,7 @@ flowchart LR
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 479 | `Settings(data not statically known)` |
+| get_settings | Settings | 480 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 

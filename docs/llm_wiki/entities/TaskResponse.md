@@ -1,6 +1,6 @@
 # TaskResponse
 
-**Location:** `backend/app/schemas/task.py:186`
+**Location:** `backend/app/schemas/task.py:187`
 **Kind:** Pydantic model
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_task](../modules/schemas_task.md)

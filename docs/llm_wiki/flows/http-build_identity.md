@@ -127,11 +127,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| build_identity | load_backend_build_identity().model_dump | 261 | `load_backend_build_identity().model_dump(mode='json')` |
-| build_identity | load_backend_build_identity | 261 | `load_backend_build_identity(data not statically known)` |
+| build_identity | load_backend_build_identity().model_dump | 267 | `load_backend_build_identity().model_dump(mode='json')` |
+| build_identity | load_backend_build_identity | 267 | `load_backend_build_identity(data not statically known)` |
 | load_backend_build_identity | BackendBuildIdentity.model_validate_json | 44 | `BackendBuildIdentity.model_validate_json(path.read_text(...))` |
 | load_backend_build_identity | path.read_text | 44 | `path.read_text(encoding='utf-8')` |
-| build_identity | load_postgresql_contract_bundle | 263 | `load_postgresql_contract_bundle(data not statically known)` |
+| build_identity | load_postgresql_contract_bundle | 269 | `load_postgresql_contract_bundle(data not statically known)` |
 | load_postgresql_contract_bundle | resources.files | 179 | `resources.files(__package__)` |
 | load_postgresql_contract_bundle | package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle) | 181 | `package_root.joinpath('contract-manifest-v1.json').read_bytes(data not statically known)` |
 | load_postgresql_contract_bundle | package_root.joinpath | 181 | `package_root.joinpath('contract-manifest-v1.json')` |
@@ -150,7 +150,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `build_identity` | `load_backend_build_identity().model_dump` | 261 |
+| unresolved_call | `build_identity` | `load_backend_build_identity().model_dump` | 267 |
 | external_call | `load_postgresql_contract_bundle` | `resources.files` | 179 |
 | unresolved_call | `load_postgresql_contract_bundle` | `package_root.joinpath('contract-manifest-v1.json').read_bytes` | 181 |
 | unresolved_call | `load_postgresql_contract_bundle` | `package_root.joinpath` | 181 |

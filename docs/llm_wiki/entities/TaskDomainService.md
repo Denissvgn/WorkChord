@@ -1,6 +1,6 @@
 # TaskDomainService
 
-**Location:** `backend/app/services/task_domain_service.py:151`
+**Location:** `backend/app/services/task_domain_service.py:155`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_domain_service](../modules/task_domain_service.md)

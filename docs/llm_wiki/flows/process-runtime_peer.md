@@ -151,18 +151,18 @@ flowchart LR
 | execute | create_async_engine | 22 | `create_async_engine(packet[...])` |
 | execute | async_sessionmaker | 28 | `async_sessionmaker(engine, expire_on_commit=False)` |
 | execute | command_transaction | 29 | `command_transaction(db)` |
-| command_transaction | current_command | 85 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 71 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 72 | `isinstance(info, dict)` |
-| current_command | info.get | 72 | `info.get('command')` |
+| command_transaction | current_command | 87 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 73 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 74 | `isinstance(info, dict)` |
+| current_command | info.get | 74 | `info.get('command')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 105 |
-| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 122 |
 
 ### Static analysis gaps
 
@@ -173,9 +173,9 @@ flowchart LR
 | external_call | `__main__` | `asyncio.run` | 63 |
 | external_call | `execute` | `create_async_engine` | 22 |
 | external_call | `execute` | `async_sessionmaker` | 28 |
-| external_call | `current_command` | `getattr` | 71 |
-| external_call | `current_command` | `isinstance` | 72 |
-| unresolved_call | `current_command` | `info.get` | 72 |
+| external_call | `current_command` | `getattr` | 73 |
+| external_call | `current_command` | `isinstance` | 74 |
+| unresolved_call | `current_command` | `info.get` | 74 |
 | step_limit | `__main__` | `first 12 steps` | 0 |
 
 ## Behavior

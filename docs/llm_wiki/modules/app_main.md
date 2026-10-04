@@ -20,6 +20,7 @@ _Auto-generated from `backend/app/main.py`._
 | `app.http_authority` | `enforce_http_authority` |
 | `app.maintenance` | `MaintenanceModeError`, `RuntimeBoundaryMiddleware`, `maintenance_state` |
 | `app.mcp_server` | `mcp`, `mount_mcp_http` |
+| `app.mutation_versions` | `MissingMutationRevision` |
 | `app.observability` | `collect_metrics`, `readiness_snapshot` |
 | `app.query_limits` | `CollectionLimitExceededError` |
 | `app.routers` | `identity`, `task_domain`, `capacity`, `delivery_dependencies`, `discussion`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
@@ -51,9 +52,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (12) |
 | Inbound | `scripts` (4) |
-| Outbound | `backend` (44) |
+| Outbound | `backend` (45) |
 
 ### External packages
 
@@ -61,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 59 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 61 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -69,6 +70,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `lifespan` | *(async)* `(app: FastAPI)` | `@asynccontextmanager` | Application lifespan handler. |
 | `planning_conflict` | *(async)* `(request: Request, exc: PlanningConflict)` | `@app.exception_handler(PlanningConflict)` | — |
+| `missing_mutation_revision` | *(async)* `(request: Request, exc: MissingMutationRevision)` | `@app.exception_handler(MissingMutationRevision)` | — |
 | `aggregate_version_conflict` | *(async)* `(request: Request, exc: AggregateVersionConflict)` | `@app.exception_handler(AggregateVersionConflict)` | — |
 | `authority_error` | *(async)* `(request: Request, exc: AuthorityError)` | `@app.exception_handler(AuthorityError)` | — |
 | `hierarchy_scope_error` | *(async)* `(request: Request, exc: HierarchyScopeError)` | `@app.exception_handler(HierarchyScopeError)` | — |

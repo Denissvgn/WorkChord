@@ -44,14 +44,17 @@ flowchart LR
     n2["backend/app/mcp_agent_tools.py"]
     n3["apply_schedule (backend/app/routers/agent_planning.py)"]
     n4["AgentPlanningService.apply_schedule (backend/app/services/agent_planning_service.py)"]
+    n5["test_strict_agent_schedule_accepts_verified_task_versions_and_input_digest (backend/tests/test_mutation_versions.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_agent_planning.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/agent_planning_service.md"
+    click n5 "../modules/test_mutation_versions.md"
 ```
 
 ### Summary
@@ -73,3 +76,4 @@ flowchart LR
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `apply_schedule` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `AgentPlanningService.apply_schedule` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
+| `test_strict_agent_schedule_accepts_verified_task_versions_and_input_digest` | call | [test_mutation_versions](../modules/test_mutation_versions.md) | 1 |

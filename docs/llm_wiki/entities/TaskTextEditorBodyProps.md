@@ -1,6 +1,6 @@
 # TaskTextEditorBodyProps
 
-**Location:** `frontend/src/components/tasks/TaskTextEditorModal.tsx:36`
+**Location:** `frontend/src/components/tasks/TaskTextEditorModal.tsx:39`
 **Kind:** Class
 **Bases:** `TaskTextEditorModalProps`
 **Module:** [TaskTextEditorModal](../modules/TaskTextEditorModal.md)
@@ -14,6 +14,7 @@ _Auto-generated from `TaskTextEditorBodyProps` in `frontend/src/components/tasks
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `initialText` | `string` | Yes | — | — |
+| `initialRevision` | `number` | No | — | — |
 | `isLoading` | `boolean` | Yes | — | — |
 | `queryError` | `unknown` | Yes | — | — |
 | `onRetry` | `() => void` | Yes | — | — |
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskTextEditorModal](../modules/TaskTextEditorModal.md) | 0 | `initialText`, `isLoading`, `onRetry`, `queryError` |
+| [TaskTextEditorModal](../modules/TaskTextEditorModal.md) | 0 | `initialRevision`, `initialText`, `isLoading`, `onRetry`, `queryError` |
 
 ### Structure
 

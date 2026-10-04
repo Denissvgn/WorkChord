@@ -68,6 +68,7 @@ Application settings.
 | `database_slow_query_threshold_ms` | `int` | `database_slow_query_threshold_ms` | No | No | `500` | — | — | — |
 | `api_prefix` | `str` | `api_prefix` | No | No | `'/api'` | — | — | — |
 | `debug` | `bool` | `debug` | No | No | `False` | — | — | — |
+| `strict_mutation_versions` | `bool` | `strict_mutation_versions` | No | No | `False` | — | — | — |
 | `llm_provider` | `Literal['openai', 'openrouter', 'nvidia', 'custom']` | `llm_provider` | No | No | `'openai'` | — | — | — |
 | `llm_api_key` | `str` | `llm_api_key` | No | No | `''` | — | — | — |
 | `llm_api_url` | `str` | `llm_api_url` | No | No | `''` | — | — | — |

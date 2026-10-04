@@ -81,4 +81,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ImportTeamModal` | `({     iterationId,     onClose,     onSuccess: onImportSuccess,     onStateChange, }: ImportTeamModalProps)` | — | — |
+| `ImportTeamModal` | `({     iterationId,     onClose,     onSuccess: onImportSuccess,     onStateChange,     expectedRevision, }: ImportTeamModalProps)` | — | — |

@@ -17,6 +17,8 @@ _Auto-generated from `CommandState` in `backend/app/commands.py`._
 |------|------|---------|-------------|
 | `mode` | `Literal['apply', 'preview']` | `'apply'` | — |
 | `iterations` | `dict[int, int]` | `field(default_factory=dict)` | — |
+| `versioned_iterations` | `set[int]` | `field(default_factory=set)` | — |
+| `missing_revision_observations` | `set[tuple[str, str, int]]` | `field(default_factory=set)` | — |
 | `snapshots` | `set[int \| tuple[str, int]]` | `field(default_factory=set)` | — |
 | `tasks` | `dict[int, int]` | `field(default_factory=dict)` | — |
 | `backlog_projects` | `set[int]` | `field(default_factory=set)` | — |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [commands](../modules/commands.md) | 0 | `backlog_projects`, `failed`, `iterations`, `mode`, `planning_revision`, `snapshots`, `tasks` |
+| [commands](../modules/commands.md) | 0 | `backlog_projects`, `failed`, `iterations`, `missing_revision_observations`, `mode`, `planning_revision`, `snapshots`, `tasks`, `versioned_iterations` |
 
 ### References
 

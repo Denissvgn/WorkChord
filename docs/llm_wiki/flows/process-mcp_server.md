@@ -4,7 +4,7 @@
 **Source:** [mcp_server](../modules/mcp_server.md)
 **Modules touched:** [app_database](../modules/app_database.md), [config](../modules/config.md), [database_config](../modules/database_config.md), [mcp_server](../modules/mcp_server.md), [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 10 more
+**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 11 more
 
 **Complete related modules:**
 
@@ -19,6 +19,7 @@
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
+- [mutation_versions](../modules/mutation_versions.md)
 - [task_service](../modules/task_service.md)
 - [triage_service](../modules/triage_service.md)
 
@@ -156,15 +157,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 2403 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
-| main | parser.add_argument | 2404 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
-| main | parser.parse_args | 2410 | `parser.parse_args(argv)` |
-| main | os.getenv | 2412 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| main | print | 2413 | `print(..., file=sys.stderr)` |
-| main | SystemExit | 2414 | `SystemExit(2)` |
-| main | redirect_stdout | 2418 | `redirect_stdout(sys.stderr)` |
-| main | asyncio.run | 2419 | `asyncio.run(init_db(...))` |
-| main | init_db | 2419 | `init_db(data not statically known)` |
+| main | argparse.ArgumentParser | 2405 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
+| main | parser.add_argument | 2406 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
+| main | parser.parse_args | 2412 | `parser.parse_args(argv)` |
+| main | os.getenv | 2414 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| main | print | 2415 | `print(..., file=sys.stderr)` |
+| main | SystemExit | 2416 | `SystemExit(2)` |
+| main | redirect_stdout | 2420 | `redirect_stdout(sys.stderr)` |
+| main | asyncio.run | 2421 | `asyncio.run(init_db(...))` |
+| main | init_db | 2421 | `init_db(data not statically known)` |
 | init_db | assert_database_current | 71 | `assert_database_current(data not statically known)` |
 | assert_database_current | inspect_database | 377 | `inspect_database(data not statically known)` |
 
@@ -172,19 +173,19 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `main` | 2412 |
-| output | `print` | `main` | 2413 |
+| environment_read | `os.getenv` | `main` | 2414 |
+| output | `print` | `main` | 2415 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 2403 |
-| unresolved_call | `main` | `parser.add_argument` | 2404 |
-| unresolved_call | `main` | `parser.parse_args` | 2410 |
-| external_call | `main` | `SystemExit` | 2414 |
-| external_call | `main` | `redirect_stdout` | 2418 |
-| external_call | `main` | `asyncio.run` | 2419 |
+| external_call | `main` | `argparse.ArgumentParser` | 2405 |
+| unresolved_call | `main` | `parser.add_argument` | 2406 |
+| unresolved_call | `main` | `parser.parse_args` | 2412 |
+| external_call | `main` | `SystemExit` | 2416 |
+| external_call | `main` | `redirect_stdout` | 2420 |
+| external_call | `main` | `asyncio.run` | 2421 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

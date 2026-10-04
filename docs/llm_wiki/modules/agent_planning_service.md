@@ -4,6 +4,8 @@
 
 ## Description
 
+Schedule apply keeps its existing observed task-version set and input-digest proof. Under strict mode, the scheduler receives the revision of the already-locked, digest-validated aggregate. Post-apply digest comparison normalizes only the version increment recorded by the same command, retaining checks on every other mutable input. Idempotent replay uses an actor ID captured before rollback, avoiding implicit loads from expired ORM state.
+
 Safe PM setup commands for authenticated agent actors.
 
 The adapter delegates validation and mutation behavior to the existing domain
@@ -15,7 +17,7 @@ Composed planning mutations share one transaction and retain exact durable mutat
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush`, `atomic_command`, `preview_command` |
+| `app.commands` | `commit_or_flush`, `atomic_command`, `current_command`, `preview_command` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
@@ -61,7 +63,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
+| Inbound | `backend` (6) |
 | Outbound | `backend` (19) |
 
 ### External packages
@@ -70,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -18,7 +18,7 @@ Progress availability follows open-leaf execution permission and excludes direct
 |--------|---------|
 | `app.authority` | `AuthorityError`, `internal_authority`, `require_project` |
 | `app.commands` | `atomic_command`, `lock_iterations` |
-| `app.config` | `get_settings` |
+| `app.config` | `get_settings`, `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership`, `WorkspaceMembership` |
@@ -64,7 +64,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 151 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 155 | — | — |
 
 ## Functions
 
