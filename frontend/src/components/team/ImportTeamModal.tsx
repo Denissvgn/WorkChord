@@ -11,6 +11,7 @@ const MAX_IMPORT_ROWS = 500;
 
 interface ImportTeamModalProps {
     iterationId: number;
+    expectedRevision?: number;
     onClose: () => void;
     onSuccess?: () => void;
     onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
@@ -21,10 +22,12 @@ export const ImportTeamModal = ({
     onClose,
     onSuccess: onImportSuccess,
     onStateChange,
+    expectedRevision,
 }: ImportTeamModalProps) => {
     const [text, setText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isReadingFile, setIsReadingFile] = useState(false);
+    const [baseRevision] = useState(expectedRevision);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const fileReaderRef = useRef<FileReader | null>(null);
     const readRequestRef = useRef(0);
@@ -35,7 +38,8 @@ export const ImportTeamModal = ({
     const textHintId = useId();
 
     const importMutation = useMutation({
-        mutationFn: (text: string) => teamService.importFromText(iterationId, text),
+        mutationFn: (text: string) => baseRevision === undefined ? teamService.importFromText(iterationId, text)
+            : teamService.importFromText(iterationId, text, { [iterationId]: baseRevision }),
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['team', iterationId] }),

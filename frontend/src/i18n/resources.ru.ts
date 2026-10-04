@@ -529,6 +529,10 @@ export const russianResources = {
                 reorderTask: 'Изменить порядок задачи',
             },
             taskImport: {
+                reloadContext: 'Обновить контекст плана и сохранить ввод',
+                readingFile: 'Чтение файла…',
+                fileError: 'Не удалось прочитать файл. Выберите его снова или вставьте текст.',
+                versionUnsupported: 'Сервер не предоставляет ревизии плана. Обновите сервер перед импортом.',
                 title: 'Импорт задач',
                 importError: 'Ошибка импорта',
                 emptyError: 'Введите текст или загрузите файл',
@@ -548,6 +552,10 @@ export const russianResources = {
                 importTriage: 'Импортировать в Triage',
             },
             taskTextEditor: {
+                changed: 'План изменился. Ваш ввод сохранён. Сравните текущий текст перед применением.',
+                compare: 'Сравнить текущий текст',
+                currentText: 'Текущий текст на сервере',
+                confirmComparison: 'Изменения проверены; оставить мой ввод',
                 title: 'Текстовый редактор задач',
                 subtitle: 'Редактирование в формате [ID] - ...',
                 saveError: 'Ошибка сохранения',

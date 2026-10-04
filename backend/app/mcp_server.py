@@ -35,6 +35,7 @@ from app.services.agent_model_catalog_service import AgentModelConflictError
 from app.services.agent_routing_service import AgentRoutingConflictError
 from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 from app.services.task_service import TaskVersionConflictError
+from app.mutation_versions import MissingMutationRevision
 from app.services.triage_service import TriageConflictError
 
 
@@ -257,7 +258,7 @@ async def _agent_context(required_scope: ScopeRequirement = None, *, preview=Fal
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
     from app.commands import AggregateVersionConflict, HierarchyScopeError
-    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError)):
+    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError, MissingMutationRevision)):
         return json.dumps(exc.detail(), ensure_ascii=False, sort_keys=True)
     if isinstance(exc, AgentRoutingConflictError):
         payload = exc.detail()
@@ -305,6 +306,7 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
     except ToolError:
         raise
     except (
+        MissingMutationRevision,
         AggregateVersionConflict,
         HierarchyScopeError,
         AuthorityError,

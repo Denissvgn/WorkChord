@@ -367,7 +367,7 @@ async def import_team_members(
 ):
     """Import team members from text format."""
     try:
-        members = await service.import_members(iteration_id, data.text)
+        members = await service.import_members(iteration_id, data.text, expected_revisions=data.expected_revisions)
         # Re-fetch members with vacations loaded
         full_members = []
         for member in members:

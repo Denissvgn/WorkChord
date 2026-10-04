@@ -338,7 +338,7 @@ class MemberWorkload(BaseModel):
     workload_percent: float
 
 
-class TeamImportRequest(BaseModel):
+class TeamImportRequest(PlanningInputRevisions):
     """Request for importing team members from text."""
     text: str
 

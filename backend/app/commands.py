@@ -13,6 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 class CommandState:
     mode: Literal["apply", "preview"] = "apply"
     iterations: dict[int, int] = field(default_factory=dict)
+    versioned_iterations: set[int] = field(default_factory=set)
+    missing_revision_observations: set[tuple[str, str, int]] = field(default_factory=set)
     snapshots: set[int | tuple[str, int]] = field(default_factory=set)
     tasks: dict[int, int] = field(default_factory=dict)
     backlog_projects: set[int] = field(default_factory=set)
@@ -116,7 +118,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         raise
     finally:
         db.info.pop("command", None)
-        for key in ["command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events"]:
+        for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events"]:
             db.info.pop(key, None)
 
 
@@ -160,7 +162,7 @@ async def lock_backlog_project(db, project_id):
     state.backlog_projects.add(project_id)
 
 
-async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> dict[int, int]:
+async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None, require_expected=False, revision_field="expected_revisions") -> dict[int, int]:
     """Acquire aggregate locks in ascending ID order, then task locks in ascending ID order."""
     from app.models.iteration import Iteration
     from app.runtime_telemetry import metrics
@@ -170,11 +172,20 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> 
     state = current_command(db)
     if state is None:
         raise RuntimeError("Iteration reservations require a command transaction")
-    expected = expected or {}
+    expected = dict(expected or {})
+    request_expected = db.info.get("request_expected_revisions", {})
+    if any(key in expected and expected[key] != value for key, value in request_expected.items()):
+        raise PlanningConflict("conflicting_revision_context", "Body and header revisions disagree. Send one observed revision for each iteration.")
+    expected = {**request_expected, **expected}
     for iteration_id in sorted({item for item in iteration_ids if item is not None}):
+        if require_expected and iteration_id not in state.versioned_iterations:
+            from app.mutation_versions import require_mutation_revision
+            require_mutation_revision(db, expected.get(iteration_id), field=revision_field, resource="iteration", resource_id=iteration_id)
         if iteration_id in state.iterations:
             if iteration_id in expected and expected[iteration_id] != state.iterations[iteration_id]:
                 raise AggregateVersionConflict(iteration_id, expected[iteration_id], state.iterations[iteration_id])
+            if iteration_id in expected:
+                state.versioned_iterations.add(iteration_id)
             continue
         current = await db.scalar(select(Iteration.revision).where(Iteration.id == iteration_id).with_for_update())
         if current is None:
@@ -200,6 +211,8 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None) -> 
         if loaded is not None:
             set_committed_value(loaded, "revision", current + 1)
         state.iterations[iteration_id] = current
+        if iteration_id in expected:
+            state.versioned_iterations.add(iteration_id)
         if iteration_id not in expected and state.mode == "apply":
             metrics.increment("workchord_legacy_aggregate_commands_total")
     return dict(state.iterations)
@@ -249,7 +262,7 @@ def schedule_input_command(kind):
                         ids = [values["iteration_id"]]
                 if ids:
                     data = values.get("data")
-                    await lock_iterations(self.db, ids, expected=getattr(data, "expected_revisions", None))
+                    await lock_iterations(self.db, ids, expected=values.get("expected_revisions", getattr(data, "expected_revisions", None)), require_expected=True)
                     for iteration_id in sorted(set(ids)):
                         await SnapshotService(self.db).create_snapshot(iteration_id, "before_planning_input_change")
                     tasks = list((await self.db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != "closed").order_by(Task.id))).all())

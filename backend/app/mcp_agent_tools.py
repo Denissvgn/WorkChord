@@ -2007,6 +2007,8 @@ async def update_task(
     idempotency_key: Optional[str] = None,
 ) -> dict[str, Any] | None:
     """MCP handler: update a task."""
+    from app.mutation_versions import require_mutation_revision
+    require_mutation_revision(db, payload.get("expected_version"), field="expected_version", resource="task", resource_id=task_id)
     service = AgentService(db)
     task = await service.patch_task(
         task_id,

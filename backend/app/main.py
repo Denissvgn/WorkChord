@@ -21,6 +21,7 @@ from app.authority import AuthorityError
 from app.http_authority import enforce_http_authority
 from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion
 from app.runtime_telemetry import metrics
+from app.mutation_versions import MissingMutationRevision
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
 
@@ -55,6 +56,11 @@ app = FastAPI(
 @app.exception_handler(PlanningConflict)
 async def planning_conflict(request: Request, exc: PlanningConflict):
     return JSONResponse(status_code=409, content={"detail": exc.detail()})
+
+
+@app.exception_handler(MissingMutationRevision)
+async def missing_mutation_revision(request: Request, exc: MissingMutationRevision):
+    return JSONResponse(status_code=422, content={"detail": exc.detail()}, headers={"Cache-Control": "no-store"})
 
 
 @app.exception_handler(AggregateVersionConflict)

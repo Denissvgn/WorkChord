@@ -442,6 +442,8 @@ class TaskService:
 
     def ensure_expected_version(self, task: Task, expected_version: int | None) -> None:
         """Fail early for an already-stale caller before filesystem side effects."""
+        from app.mutation_versions import require_mutation_revision
+        require_mutation_revision(self.db, expected_version, field="expected_version", resource="task", resource_id=task.id)
         command = current_command(self.db)
         version = command.tasks.get(task.id, task.version) if command is not None else task.version
         if expected_version is not None and version != expected_version:
@@ -670,7 +672,7 @@ class TaskService:
     ) -> Task:
         """Create a new task."""
         if iteration_id is not None:
-            await lock_iterations(self.db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None)
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: data.expected_revision} if data.expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         await self.require_iteration_exists(iteration_id)
         if iteration_id is None and data.project_id is not None:
             from app.commands import lock_backlog_project
@@ -1086,7 +1088,7 @@ class TaskService:
     ) -> bool:
         """Delete a task and its subtasks."""
         iteration_id = await self.db.scalar(select(Task.iteration_id).where(Task.id == task_id))
-        await self._lock_task_scope(task_id, expected_revisions={iteration_id: expected_revision} if expected_revision is not None else None)
+        await self._lock_task_scope(task_id, expected_revisions={iteration_id: expected_revision} if expected_revision is not None else None, require_revisions=True, revision_field="expected_revision")
         task = await self.get_by_id(task_id)
         if not task:
             return False
@@ -1148,11 +1150,14 @@ class TaskService:
         depends_on_id: int,
         actor_type: str = "user",
         actor_id: Optional[int] = None,
+        *, expected_version: Optional[int] = None,
     ) -> bool:
         """Add a dependency to a task."""
         task = await self._lock_dependency_task(task_id)
         if not task:
             return False
+        require_project(self.db, task.project_id, "edit")
+        self.ensure_expected_version(task, expected_version)
 
         # Prevent self-dependency
         if task_id == depends_on_id:
@@ -1199,11 +1204,14 @@ class TaskService:
         depends_on_id: int,
         actor_type: str = "user",
         actor_id: Optional[int] = None,
+        *, expected_version: Optional[int] = None,
     ) -> bool:
         """Remove a dependency from a task."""
         task = await self._lock_dependency_task(task_id)
         if not task:
             return False
+        require_project(self.db, task.project_id, "edit")
+        self.ensure_expected_version(task, expected_version)
 
         result = await self.db.execute(
             select(TaskDependency).where(
@@ -1242,7 +1250,7 @@ class TaskService:
     ) -> bool:
         """Update sort_order for tasks within one declared sibling scope."""
         if iteration_id is not None:
-            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         from sqlalchemy import update
 
         if not task_ids:
@@ -1315,7 +1323,7 @@ class TaskService:
         - Parent derives the lowest numeric priority from child tasks
         """
         if iteration_id is not None:
-            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
+            await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         import json
 
         # Validate minimum task count
@@ -1420,7 +1428,7 @@ class TaskService:
     @atomic_command
     async def unmerge_task(self, parent_task_id: int, delete_parent: bool = True, *, expected_revisions=None) -> list[Task]:
         """Promote children into the parent's sibling scope without losing referenced work."""
-        await self._lock_task_scope(parent_task_id, expected_revisions=expected_revisions)
+        await self._lock_task_scope(parent_task_id, expected_revisions=expected_revisions, require_revisions=True)
         parent = await self.get_by_id(parent_task_id)
         if parent is None or not parent.children:
             return []
@@ -1455,7 +1463,7 @@ class TaskService:
             await self.status_service.reconcile_parent_chain(old_parent_id, commit=False)
         return [await self.get_by_id(child.id) for child in children]
 
-    async def _lock_task_scope(self, task_id, *, target_iteration_id=None, target_project_id=None, expected_revisions=None):
+    async def _lock_task_scope(self, task_id, *, target_iteration_id=None, target_project_id=None, expected_revisions=None, require_revisions=False, revision_field="expected_revisions"):
         await lock_planning(self.db)
         hint = (await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first()
         if hint is None:
@@ -1478,7 +1486,7 @@ class TaskService:
             for scope in sorted(projects):
                 await BacklogSnapshotService(self.db).capture(scope, "before_task_change")
         ids = ([iteration_id] if iteration_id is not None else []) + ([target_iteration_id] if target_iteration_id is not None else [])
-        await lock_iterations(self.db, ids, expected=expected_revisions)
+        await lock_iterations(self.db, ids, expected=expected_revisions, require_expected=require_revisions, revision_field=revision_field)
 
     async def _require_unclaimed_structure(self, task_ids):
         from app.models.agent import AgentTaskAssignment
@@ -1555,7 +1563,7 @@ class TaskService:
         expected_revisions: dict[int, int] | None = None,
     ) -> Optional[Task]:
         """Move a task subtree to an iteration, applying scoped project inheritance."""
-        await self._lock_task_scope(task_id, target_iteration_id=target_iteration_id, expected_revisions=expected_revisions)
+        await self._lock_task_scope(task_id, target_iteration_id=target_iteration_id, expected_revisions=expected_revisions, require_revisions=True)
         task = await self.get_by_id(task_id)
         if not task:
             return None
@@ -1881,26 +1889,34 @@ class TaskService:
             self._import_service = TaskImportService(self.db, self)
         return self._import_service
 
+    @atomic_command
     async def import_tasks(
         self,
         iteration_id: int,
         text: str,
         destination: TaskImportDestination = "tasks",
+        *, expected_revision: int | None = None,
     ) -> tuple[list[Task], list[TriageItem]]:
         """Delegate task and triage text imports to TaskImportService."""
+        require_project(self.db, await self._iteration_project_id(iteration_id), "edit")
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         return await self.import_service.import_tasks(iteration_id, text, destination)
 
     async def get_tasks_as_text(self, iteration_id: int) -> str:
         """Delegate editable task text serialization to TaskImportService."""
         return await self.import_service.get_tasks_as_text(iteration_id)
 
+    @atomic_command
     async def bulk_update_tasks_from_text(
         self,
         iteration_id: int,
         text: str,
         destination: TaskImportDestination = "tasks",
+        *, expected_revision: int | None = None,
     ) -> tuple[list[Task], list[TriageItem]]:
         """Delegate bulk text edits to TaskImportService."""
+        require_project(self.db, await self._iteration_project_id(iteration_id), "edit")
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         return await self.import_service.bulk_update_tasks_from_text(
             iteration_id,
             text,

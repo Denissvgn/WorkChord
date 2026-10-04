@@ -702,7 +702,8 @@ class TeamService:
     async def import_members(
         self,
         iteration_id: int,
-        text: str
+        text: str,
+        *, expected_revisions: dict[int, int] | None = None,
     ) -> list[TeamMember]:
         """
         Import multiple team members from text format.

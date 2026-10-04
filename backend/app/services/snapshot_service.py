@@ -249,7 +249,7 @@ class SnapshotService:
         from app.routers.snapshots import _validate_snapshot_task_payloads
         from datetime import date
 
-        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         payload = await self.get_snapshot(iteration_id, filename)
         if payload is None:
             raise LookupError("Snapshot not found or inaccessible")

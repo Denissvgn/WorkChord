@@ -102,6 +102,7 @@ class TaskUpdate(BaseModel):
 class TaskDependencyCreate(BaseModel):
     """Schema for creating a task dependency."""
     depends_on_id: int
+    expected_version: Optional[int] = Field(default=None, ge=1)
 
 
 class TaskReorder(BaseModel):
@@ -327,6 +328,7 @@ TaskImportDestination = Literal["tasks", "triage", "auto"]
 
 class TasksImportRequest(BaseModel):
     """Request for importing tasks from text."""
+    expected_revision: Optional[int] = Field(default=None, ge=1)
     text: str = Field(
         ...,
         min_length=1,
@@ -337,6 +339,13 @@ class TasksImportRequest(BaseModel):
         "tasks",
         description="Where parsed rows should be created: tasks, triage, or auto split.",
     )
+
+
+class TaskTextContext(BaseModel):
+    """One text editing base and its observed iteration revision."""
+    text: str
+    iteration_id: int
+    iteration_revision: int = Field(ge=1)
 
 
 class TaskImportTriageItemResponse(BaseModel):

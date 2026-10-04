@@ -6,6 +6,7 @@ from sqlalchemy import or_, select
 
 from app.authority import AuthorityError, internal_authority, require_project
 from app.commands import atomic_command, lock_iterations
+from app.config import get_settings
 from app.models.agent import AgentActor, AgentRun, AgentTaskAssignment
 from app.models.iteration import Iteration
 from app.models.task import Task
@@ -57,7 +58,10 @@ async def domain_capabilities(db):
     ready = pending is None
     return {"schema_version": 1, "ready": ready, "reason": None if ready else "domain_backfill_pending",
         "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1"] if ready else [],
-        "legacy_iteration_routes": True, "legacy_task_versions_required": False,
+        "legacy_iteration_routes": True, "legacy_task_versions_required": get_settings().strict_mutation_versions,
+        "aggregate_revisions_required": get_settings().strict_mutation_versions,
+        "aggregate_revision_header": "X-Expected-Revisions",
+        "missing_revision_code": "mutation_revision_required",
         "current_review_projection": ready}
 
 
@@ -225,7 +229,8 @@ class TaskDomainService:
 
     @atomic_command
     async def command(self, task_id: int, data: TaskActionRequest):
-        await self.tasks._lock_task_scope(task_id, target_iteration_id=data.iteration_id, expected_revisions=data.expected_revisions)
+        await self.tasks._lock_task_scope(task_id, target_iteration_id=data.iteration_id, expected_revisions=data.expected_revisions,
+            require_revisions=data.action in {"commit", "uncommit"})
         task = await self.tasks.get_by_id(task_id)
         if task is None:
             raise ValueError("Task not found or inaccessible")

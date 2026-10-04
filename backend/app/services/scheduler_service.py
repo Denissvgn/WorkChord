@@ -305,7 +305,7 @@ class SchedulerService:
 
         planning_revision = await lock_planning(self.db, expected=expected_planning_revision)
         iteration_service = IterationService(self.db)
-        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None)
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None, require_expected=True, revision_field="expected_revision")
         iteration = await iteration_service.get_by_id(iteration_id)
 
         if not iteration:

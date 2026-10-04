@@ -1,7 +1,8 @@
 """Task text import, export, and triage intake workflows."""
 
 from app.services.task_domain_service import nominal_day_hours
-from app.commands import commit_or_flush
+from app.commands import atomic_command, commit_or_flush, lock_iterations
+from app.authority import require_project
 
 import json
 from typing import Optional, TYPE_CHECKING
@@ -159,14 +160,20 @@ class TaskImportService:
                 },
             )
 
+    @atomic_command
     async def import_tasks(
         self,
         iteration_id: int,
         text: str,
         destination: TaskImportDestination = "tasks",
+        *, expected_revision: int | None = None,
     ) -> tuple[list[Task], list[TriageItem]]:
         """Import task text into executable tasks, triage items, or both by policy."""
         from app.utils.import_parser import parse_tasks_text
+
+        require_project(self.db, await self.task_service._iteration_project_id(iteration_id), "edit")
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None,
+            require_expected=True, revision_field="expected_revision")
 
         iteration_project_id = await self.task_service._iteration_project_id(
             iteration_id
@@ -236,14 +243,20 @@ class TaskImportService:
         tasks = await self.task_service.get_all_tasks(iteration_id)
         return serialize_tasks_to_text(list(tasks))
 
+    @atomic_command
     async def bulk_update_tasks_from_text(
         self,
         iteration_id: int,
         text: str,
         destination: TaskImportDestination = "tasks",
+        *, expected_revision: int | None = None,
     ) -> tuple[list[Task], list[TriageItem]]:
         """Update ID-tagged tasks and create new tasks or triage items from text."""
         from app.utils.import_parser import parse_tasks_text
+
+        require_project(self.db, await self.task_service._iteration_project_id(iteration_id), "edit")
+        await lock_iterations(self.db, [iteration_id], expected={iteration_id: expected_revision} if expected_revision is not None else None,
+            require_expected=True, revision_field="expected_revision")
 
         iteration_project_id = await self.task_service._iteration_project_id(
             iteration_id

@@ -527,6 +527,10 @@ export const englishResources = {
                 reorderTask: 'Reorder task',
             },
             taskImport: {
+                reloadContext: 'Reload planning context and keep input',
+                readingFile: 'Reading file…',
+                fileError: 'The file could not be read. Choose it again or paste its text.',
+                versionUnsupported: 'This server does not provide planning revisions. Upgrade the server before importing.',
                 title: 'Import tasks',
                 importError: 'Import failed',
                 emptyError: 'Enter text or upload a file',
@@ -546,6 +550,10 @@ export const englishResources = {
                 importTriage: 'Import to Triage',
             },
             taskTextEditor: {
+                changed: 'The plan changed. Your input is preserved. Compare the current text before applying it.',
+                compare: 'Compare current text',
+                currentText: 'Current server text',
+                confirmComparison: 'I compared the changes; keep my input',
                 title: 'Task text editor',
                 subtitle: 'Editing in [ID] - ... format',
                 saveError: 'Save failed',
