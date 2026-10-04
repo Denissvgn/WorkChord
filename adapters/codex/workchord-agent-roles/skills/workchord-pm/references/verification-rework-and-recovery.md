@@ -26,6 +26,14 @@ Use this reference to evaluate resolved work independently, close accepted tasks
 
 Do not accept a succeeded run, green local check, commit link, or worker summary as sufficient by itself. Verify the task's stated outcome.
 
+When `task.brief` exists, review its ordered canonical criteria by stable `id`
+and `revision`, their verification instructions, and the current
+`brief_revision`/`artifact_revision`. The legacy Markdown `task_brief` is not
+authoritative. Require current criterion-level progress and independently
+check each artifact. Evidence from an older brief or artifact revision cannot
+support acceptance. Read the task again before sending the versioned verdict;
+on conflict, re-evaluate the changed packet instead of retrying blindly.
+
 Create a verification-purpose assignment only after the task is `resolved`, its
 execution run is terminal, and its claim is released. Under
 `model-aware-routing-v1`, request a fresh verification-purpose routing preview

@@ -1,5 +1,13 @@
 # Identity And My Work
 
+Runtime onboarding acknowledgement proves that a runtime declared the exact
+handoff revisions, package, features, and assignment modes. It does not prove
+provider availability or independent model attestation. A stale
+`acknowledgement_state` requires the current handoff and an explicit refresh
+using `expected_previous_acknowledgement_digest`; retain the prior digest and
+never overwrite acknowledgement blindly. `availability_unknown` is not a
+provider health check.
+
 Use this reference to establish authority, choose autonomous v1 or supervised
 v0, and interpret the server-owned work decision.
 

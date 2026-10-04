@@ -10,15 +10,41 @@ from pydantic import ValidationError
 from app.models.agent import AgentRun, AgentTaskAssignment
 from app.models.task import Task
 from app.schemas.agent import (
+    AgentTaskContextResponse,
     ModelAwareAgentTaskAssignmentCreate,
     ModelAwareAgentWorkBegin,
 )
+from app.schemas.task import TaskResponse
+from app.schemas.task_brief import BriefCriterion, TaskBrief
 from app.services.agent_routing_policy import canonical_routing_json_bytes
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
 )
 from app.services.agent_work_service import AgentWorkService
+
+
+@pytest.mark.contract
+@pytest.mark.parametrize("canonical", [True, False])
+def test_worker_context_identifies_authoritative_brief(canonical: bool) -> None:
+    task = TaskResponse(
+        id=7, iteration_id=None, parent_id=None, title="Deliver result",
+        description="## Goal\nObsolete goal", priority=1, effort_days=1,
+        effort_hours=8, status="planned", start_date=None, end_date=None,
+        brief=TaskBrief(goal="Current goal", acceptance_criteria=[
+            BriefCriterion(id="result", revision=3, text="Observable result",
+                           verification="Inspect artifact")
+        ]) if canonical else None,
+        brief_revision=4 if canonical else 0,
+    )
+    context = AgentTaskContextResponse(task=task, task_brief={"goal": "Obsolete goal"})
+    packet = context.model_dump(mode="json")
+    assert packet["brief_source"] == ("canonical" if canonical else "legacy_markdown")
+    assert packet["task_brief"] == {"goal": "Obsolete goal"}
+    if canonical:
+        assert packet["task"]["brief"]["goal"] == "Current goal"
+        assert packet["task"]["brief"]["acceptance_criteria"][0]["revision"] == 3
+        assert packet["task"]["brief_revision"] == 4
 
 
 def _assignment(

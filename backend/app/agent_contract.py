@@ -19,6 +19,7 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     "snapshot-pagination-v1",
     "work-etag-v1",
     "complete-task-context",
+    "canonical-task-brief-v1",
     "atomic-begin-submit",
     "atomic-renew-v1",
     "fenced-claims",
