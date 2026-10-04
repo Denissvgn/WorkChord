@@ -127,3 +127,66 @@ async def test_ledger_is_immutable_and_restoration_does_not_create_capture_histo
         await db.commit()
         kinds = (await db.scalars(select(DeliveryObservation.kind).where(DeliveryObservation.original_task_id == 10000))).all()
         assert kinds == ["restored"]
+
+
+async def test_window_report_ignores_large_completed_history_and_seeds_episodes(delivery_store, monkeypatch):
+    from app.services import delivery_metrics_service
+    factory, scenario, _ = delivery_store
+    end = datetime(2026, 1, 20, tzinfo=UTC)
+    start = end - timedelta(days=3)
+    events = []
+    def observe(identity, kinds):
+        for version, (kind, day) in enumerate(kinds, 1):
+            events.append(DeliveryObservation(original_task_id=identity, task_version=version,
+                project_id=scenario.projects[0], iteration_id=None, kind=kind, source="recorded_workflow",
+                observed_at=end + timedelta(days=day)))
+    for identity in range(10000, 20001):
+        observe(identity, [("captured", -100), ("accepted", -90)])
+    observe(scenario.tasks["closed_urgent"], [("captured", -100), ("accepted", -90)])
+    # Earlier episodes must not inflate current cycle/review measurements.
+    observe(30000, [("captured", -80), ("started", -79), ("resolved", -78), ("accepted", -77),
+                    ("reopened", -6), ("resolved", -5), ("accepted", -1)])
+    # Unfinished work remains censored even without an event inside the window.
+    observe(30001, [("captured", -70), ("started", -60), ("resolved", -50)])
+    # Restoration clears old execution instants, without inventing new capture time.
+    observe(30002, [("captured", -40), ("started", -39), ("resolved", -38),
+                    ("restored", -4), ("accepted", -1)])
+    # Equal timestamps are ordered by observation identity; planned reopen clears starts.
+    observe(30003, [("captured", -30), ("started", -10), ("resolved", -10),
+                    ("reopened_planned", -10), ("accepted", -1)])
+    async with factory() as db:
+        db.add_all(events)
+        await db.commit()
+        baseline = summarize_observations(events, start, end)
+        report = await DeliveryMetricsService(db).report(project_id=scenario.projects[0], lookback_days=3, now=end)
+        for key in ("accepted_leaf_tasks", "acceptance_events", "rejection_events", "reopened_events",
+                    "canceled_leaf_tasks", "lead_time", "cycle_time", "review_delay"):
+            assert getattr(report, key) == baseline[key], key
+        assert report.coverage["current_leaves_without_capture"] == report.coverage["current_leaf_tasks"] - 1
+        assert report.coverage["window_observation_count"] == 3
+        assert report.coverage["observation_count"] < 20
+        monkeypatch.setattr(delivery_metrics_service, "MAX_OBSERVATIONS", 2)
+        from app.query_limits import CollectionLimitExceededError
+        with pytest.raises(CollectionLimitExceededError):
+            await DeliveryMetricsService(db).report(project_id=scenario.projects[0], lookback_days=3, now=end)
+
+
+async def test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories(delivery_store):
+    factory, scenario, _ = delivery_store
+    end = datetime(2026, 1, 20, tzinfo=UTC)
+    async with factory() as db:
+        identity = 40000
+        db.add_all([
+            DeliveryObservation(original_task_id=identity, task_version=1, project_id=scenario.projects[1],
+                kind="captured", source="recorded_workflow", observed_at=end-timedelta(days=10)),
+            DeliveryObservation(original_task_id=identity, task_version=2, project_id=scenario.projects[1],
+                kind="started", source="recorded_workflow", observed_at=end-timedelta(days=9)),
+            DeliveryObservation(original_task_id=identity, task_version=3, project_id=scenario.projects[0],
+                kind="accepted", source="recorded_workflow", observed_at=end-timedelta(days=1)),
+        ])
+        await db.commit()
+        report = await DeliveryMetricsService(db).report(project_id=scenario.projects[0], lookback_days=3, now=end)
+        assert report.accepted_leaf_tasks == 1
+        assert report.lead_time.unknown_count == report.cycle_time.unknown_count == report.review_delay.unknown_count == 1
+        assert report.lead_time.sample_count == report.cycle_time.sample_count == 0
+        assert report.coverage["pre_window_seed_count"] == 0

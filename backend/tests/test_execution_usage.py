@@ -174,3 +174,35 @@ async def test_concurrent_usage_corrections_reserve_one_head(delivery_store):
     assert sum(isinstance(result, AgentConflictError) for result in results) == 1
     async with factory() as db:
         assert await db.scalar(select(func.count()).select_from(ExecutionUsageRecord)) == 2
+
+
+@pytest.mark.parametrize("effort", [None, Decimal("0"), Decimal("12.5")])
+@pytest.mark.parametrize("coverage", ["complete", "partial", "unavailable"])
+def test_human_effort_is_a_measurement_for_coverage(effort, coverage):
+    now = utc_now()
+    payload = dict(report_id="human-only", source="manual-work-log", provenance="manual_reported",
+        reporting_mode="attempt_total", interval_start=now, interval_end=now,
+        coverage=coverage, reported_human_effort_minutes=effort)
+    if coverage == "complete" and effort is None:
+        with pytest.raises(ValueError, match="Complete coverage requires"):
+            ExecutionUsageWrite(**payload)
+    elif coverage == "unavailable" and effort is not None:
+        with pytest.raises(ValueError, match="must not contain measured values"):
+            ExecutionUsageWrite(**payload)
+    else:
+        assert ExecutionUsageWrite(**payload).reported_human_effort_minutes == effort
+
+
+async def test_human_only_usage_summary_preserves_zero_and_unknown(delivery_store):
+    factory, scenario, _ = delivery_store
+    run_id, now = await seed_run(factory, scenario)
+    async with factory() as db:
+        actor = await db.get(AgentActor, scenario.actors[0])
+        report = ExecutionUsageWrite(report_id="human-only", source="manual-work-log", provenance="manual_reported",
+            reporting_mode="attempt_total", interval_start=now, interval_end=now,
+            coverage="complete", reported_human_effort_minutes=Decimal("0"))
+        await ExecutionUsageService(db).write(actor, run_id, report)
+        summary = await ExecutionUsageService(db).summary(project_id=scenario.projects[0])
+        assert summary.reported_human_effort_minutes == 0 and summary.human_effort_reports == 1
+        assert summary.unavailable_reports == 0 and summary.measured_report_count == 1
+        assert summary.provider_reported_cost == {} and summary.unknown_cost_reports == 1

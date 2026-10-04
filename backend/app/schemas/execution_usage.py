@@ -45,9 +45,11 @@ class ExecutionUsageWrite(BaseModel):
             raise ValueError("Usage unit names must be bounded ASCII identifiers")
         if self.reported_cost is not None and self.currency is None:
             raise ValueError("A reported cost requires its currency")
-        if self.coverage == "complete" and self.reported_cost is None and not any(value is not None for value in self.quantities.values()):
-            raise ValueError("Complete coverage requires an explicitly reported quantity or cost")
-        if self.coverage == "unavailable" and (self.reported_cost is not None or any(value is not None for value in self.quantities.values())):
+        measured = (self.reported_cost is not None or self.reported_human_effort_minutes is not None
+                    or any(value is not None for value in self.quantities.values()))
+        if self.coverage == "complete" and not measured:
+            raise ValueError("Complete coverage requires an explicitly reported quantity, cost or human effort")
+        if self.coverage == "unavailable" and measured:
             raise ValueError("Unavailable usage must not contain measured values")
         if self.pricing_basis is not None and self.pricing_basis.unit not in self.quantities:
             raise ValueError("Pricing basis must name a reported unit")

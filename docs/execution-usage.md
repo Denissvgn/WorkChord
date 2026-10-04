@@ -7,8 +7,8 @@ Read the current report with the corresponding GET or
 
 Declare `reporting_mode: attempt_total`, a deterministic `report_id`, source,
 provenance, UTC interval and coverage. Named quantities retain observed zero
-and explicit unknown values. Complete coverage requires a reported quantity
-or cost; unavailable coverage contains no measured values. Delta reports are
+and explicit unknown values. Complete coverage requires a reported quantity,
+cost or explicit human effort; unavailable coverage contains no measured values. Delta reports are
 not accepted by this interface.
 
 Identical report content replays its receipt. Reusing an ID for different

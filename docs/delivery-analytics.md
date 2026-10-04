@@ -3,7 +3,11 @@
 Analytics uses recorded workflow instants and authorized project or iteration
 scope. The window includes acceptance, rejection, cancellation and reopen
 events within its UTC bounds. Earlier observations may supply the beginning of
-an accepted delivery's duration.
+an accepted delivery's duration. Reports load window observations plus bounded
+prior episode state for relevant and unfinished tasks, rather than all lifetime
+events. Coverage identifies those pre-window seeds separately. Older captures
+still establish coverage for current tasks even when their completed episodes
+fall outside the window.
 
 | Measure | Definition |
 | --- | --- |

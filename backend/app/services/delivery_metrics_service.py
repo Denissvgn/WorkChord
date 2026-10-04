@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import timedelta
 from statistics import mean, median
 
-from sqlalchemy import select
+from sqlalchemy import and_, case, func, or_, select
 
 from app.authority import internal_authority, require_project
 from app.models.agent import AgentRun
@@ -101,6 +101,43 @@ class DeliveryMetricsService:
     def __init__(self, db):
         self.db = db
 
+    async def _window_observations(self, observed, start):
+        """Read the window and at most four prior state facts per relevant identity."""
+        row = DeliveryObservation
+        episodes = {"started", "rework_started", "reopened", "reopened_planned", "restored"}
+        pending = episodes | {"captured", "resolved"}
+        states = pending | {"removed", "structural", "canceled", "accepted"}
+
+        def rank(kinds, *, earliest=False):
+            order = (row.observed_at.asc(), row.id.asc()) if earliest else (row.observed_at.desc(), row.id.desc())
+            return func.row_number().over(partition_by=row.original_task_id,
+                order_by=(case((row.kind.in_(kinds), 0), else_=1), *order))
+
+        prior = observed.where(row.observed_at < start).with_only_columns(
+            row.id, row.original_task_id, row.kind,
+            rank({"captured"}, earliest=True).label("capture_rank"),
+            rank(episodes).label("episode_rank"),
+            rank({"resolved"}).label("resolved_rank"),
+            rank(states).label("state_rank"),
+        ).cte("prior_delivery_state")
+        window = observed.where(row.observed_at >= start)
+        relevant = window.with_only_columns(row.original_task_id).union(
+            select(prior.c.original_task_id).where(prior.c.state_rank == 1, prior.c.kind.in_(pending))
+        ).cte("relevant_delivery_identities")
+        seeds = select(prior.c.id).where(
+            prior.c.original_task_id.in_(select(relevant.c.original_task_id)),
+            or_(and_(prior.c.kind == "captured", prior.c.capture_rank == 1),
+                and_(prior.c.kind.in_(episodes), prior.c.episode_rank == 1),
+                and_(prior.c.kind == "resolved", prior.c.resolved_rank == 1),
+                and_(prior.c.kind.in_(states), prior.c.state_rank == 1)),
+        )
+        ids = window.with_only_columns(row.id).union(seeds)
+        rows = list((await self.db.scalars(observed.where(row.id.in_(ids))
+            .order_by(row.id).limit(MAX_OBSERVATIONS + 1))).all())
+        if len(rows) > MAX_OBSERVATIONS:
+            raise CollectionLimitExceededError("delivery observations", MAX_OBSERVATIONS)
+        return rows
+
     async def report(self, *, project_id=None, iteration_id=None, lookback_days=30, now=None):
         if project_id is None and iteration_id is None:
             raise ValueError("Select a project or an iteration")
@@ -122,18 +159,19 @@ class DeliveryMetricsService:
         if iteration_id is not None:
             observed = observed.where(DeliveryObservation.iteration_id == iteration_id)
             live = live.where(Task.iteration_id == iteration_id)
-        rows = list((await self.db.scalars(observed.order_by(DeliveryObservation.id).limit(MAX_OBSERVATIONS + 1))).all())
-        if len(rows) > MAX_OBSERVATIONS:
-            raise CollectionLimitExceededError("delivery observations", MAX_OBSERVATIONS)
+        rows = await self._window_observations(observed, start)
         tasks = list((await self.db.scalars(live.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all())
         if len(tasks) > MAX_PROJECT_TREE_TASKS:
             raise CollectionLimitExceededError("delivery queue context", MAX_PROJECT_TREE_TASKS)
         result = summarize_observations(rows, start, end)
-        recorded = {row.original_task_id for row in rows if row.kind == "captured"}
         with internal_authority(self.db):
             parent_ids = set((await self.db.scalars(select(Task.parent_id).where(Task.parent_id.in_([task.id for task in tasks])).distinct())).all())
         leaves = [task for task in tasks if not task.is_summary and task.id not in parent_ids]
-        result["coverage"].update(current_leaf_tasks=len(leaves), current_leaves_without_capture=sum(task.id not in recorded for task in leaves),
+        recorded = set((await self.db.scalars(observed.with_only_columns(DeliveryObservation.original_task_id)
+            .where(DeliveryObservation.kind == "captured", DeliveryObservation.original_task_id.in_([task.id for task in leaves]))
+            .distinct())).all())
+        result["coverage"].update(history_selection="window_with_episode_seeds",
+            pre_window_seed_count=sum(as_utc(row.observed_at) < start for row in rows), current_leaf_tasks=len(leaves), current_leaves_without_capture=sum(task.id not in recorded for task in leaves),
             legacy_closed_acceptance_unknown=sum(task.status == "closed" and task.accepted_version is None for task in leaves))
         review = [DeliveryQueueItem(task_id=task.id, title=task.title, reason="awaiting_review",
             age_seconds=max(0, (end - as_utc(task.resolved_at)).total_seconds()) if task.resolved_at else None)
