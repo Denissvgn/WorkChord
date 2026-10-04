@@ -73,7 +73,7 @@ sequenceDiagram
     p19-->>p22: str (backend/app/routers/task_domain.py:domain_result)
 ```
 
-> Call sequence diagram shows 30 of 37 interactions; 7 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 39 interactions; 9 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

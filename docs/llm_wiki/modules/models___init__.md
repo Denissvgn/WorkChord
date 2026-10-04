@@ -20,6 +20,7 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.delivery_observation` | `DeliveryObservation` |
 | `app.models.discussion` | `TaskComment`, `TaskCommentRevision`, `TaskSubscription`, `InboxNotification` |
+| `app.models.execution_usage` | `ExecutionUsageRecord` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType`, `ExternalLinkProvider` |
 | `app.models.github` | `GitHubStatusAutomationRule` |
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
@@ -61,6 +62,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
-| Outbound | `backend` (29) |
+| Outbound | `backend` (30) |
 
-> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

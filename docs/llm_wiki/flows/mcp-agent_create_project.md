@@ -143,7 +143,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_create_project | _tool_call | 1190 | `_tool_call('planning:write', ...)` |
+| agent_create_project | _tool_call | 1210 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 480 | `Settings(data not statically known)` |

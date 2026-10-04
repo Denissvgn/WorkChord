@@ -24,6 +24,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: TaskBriefService(…).review
     p0->>p6: TaskBriefService
     p0-->>p7: TaskService(…).task_to_response
@@ -42,24 +44,25 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. TaskBriefService(…).review"]
-    s9["9. TaskBriefService"]
-    s10["10. TaskService(…).task_to_response"]
-    s11["11. TaskService"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. TaskBriefService(…).review"]
+    s11["11. TaskBriefService"]
+    s12["12. TaskService(…).task_to_response"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "TaskBriefService(…).review(task_id, data)" .-> s8
-    s1 -->|"TaskBriefService(db)"| s9
-    s1 -. "TaskService(…).task_to_response(task)" .-> s10
-    s1 -->|"TaskService(db)"| s11
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "TaskBriefService(…).review(task_id, data)" .-> s10
+    s1 -->|"TaskBriefService(db)"| s11
+    s1 -. "TaskService(…).task_to_response(task)" .-> s12
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/task_brief_service.md"
-    click s11 "../modules/task_service.md"
+    click s11 "../modules/task_brief_service.md"
 ```
 
 ### Step data
@@ -73,25 +76,27 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `TaskBriefService(…).review` | - | - | - | - |
 | `TaskBriefService` | - | - | - | - |
 | `TaskService(…).task_to_response` | - | - | - | - |
-| `TaskService` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| review_task | domain_result | 170 | `domain_result(...)` |
+| review_task | domain_result | 184 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| review_task | TaskBriefService(…).review | 170 | `TaskBriefService(db).review(task_id, data)` |
-| review_task | TaskBriefService | 170 | `TaskBriefService(db)` |
-| review_task | TaskService(…).task_to_response | 171 | `TaskService(db).task_to_response(task)` |
-| review_task | TaskService | 171 | `TaskService(db)` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| review_task | TaskBriefService(…).review | 184 | `TaskBriefService(db).review(task_id, data)` |
+| review_task | TaskBriefService | 184 | `TaskBriefService(db)` |
+| review_task | TaskService(…).task_to_response | 185 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
@@ -105,8 +110,10 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `review_task` | `TaskBriefService(db).review` | 170 |
-| unresolved_call | `review_task` | `TaskService(db).task_to_response` | 171 |
+| external_call | `domain_result` | `HTTPException` | 35 |
+| unresolved_call | `review_task` | `TaskBriefService(db).review` | 184 |
+| unresolved_call | `review_task` | `TaskService(db).task_to_response` | 185 |
+| step_limit | `review_task` | `first 12 steps` | 0 |
 
 ## Behavior
 

@@ -143,7 +143,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_create_vacation | _tool_call | 1430 | `_tool_call('team:write', ...)` |
+| agent_create_vacation | _tool_call | 1450 | `_tool_call('team:write', ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 480 | `Settings(data not statically known)` |

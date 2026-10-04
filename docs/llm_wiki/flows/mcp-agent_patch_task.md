@@ -143,7 +143,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_patch_task | _tool_call | 1077 | `_tool_call((...), ...)` |
+| agent_patch_task | _tool_call | 1097 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 480 | `Settings(data not statically known)` |

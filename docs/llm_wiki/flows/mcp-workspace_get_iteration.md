@@ -142,7 +142,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration | _tool_call | 1520 | `_tool_call('tasks:read', ...)` |
+| workspace_get_iteration | _tool_call | 1540 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 480 | `Settings(data not statically known)` |

@@ -37,16 +37,19 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["backend/app/services/delivery_metrics_service.py"]
-    n4["backend/tests/test_delivery_metrics.py"]
+    n4["backend/app/services/execution_usage_service.py"]
+    n5["backend/tests/test_delivery_metrics.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/delivery_observation.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/delivery_metrics_service.md"
-    click n4 "../modules/test_delivery_metrics.md"
+    click n4 "../modules/execution_usage_service.md"
+    click n5 "../modules/test_delivery_metrics.md"
 ```
 
 ### Summary
@@ -67,4 +70,5 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
+| `execution_usage_service` | import | [execution_usage_service](../modules/execution_usage_service.md) | — |
 | `test_delivery_metrics` | import | [test_delivery_metrics](../modules/test_delivery_metrics.md) | — |

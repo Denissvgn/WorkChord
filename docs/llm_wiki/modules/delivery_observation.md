@@ -38,8 +38,9 @@ flowchart LR
     n5["backend/app/models/task.py"]
     n6["backend/app/models/task_brief.py"]
     n7["backend/app/services/delivery_metrics_service.py"]
-    n8["backend/app/utils/time.py"]
-    n9["backend/tests/test_delivery_metrics.py"]
+    n8["backend/app/services/execution_usage_service.py"]
+    n9["backend/app/utils/time.py"]
+    n10["backend/tests/test_delivery_metrics.py"]
     n1 --> n2
     n1 --> n3
     n1 --> n4
@@ -47,29 +48,34 @@ flowchart LR
     n1 --> n6
     n2 --> n0
     n2 --> n5
-    n2 --> n8
+    n2 --> n9
     n3 --> n0
     n3 --> n2
     n3 --> n4
     n3 --> n5
     n3 --> n6
-    n3 --> n8
+    n3 --> n9
     n4 --> n0
     n4 --> n5
-    n4 --> n8
+    n4 --> n9
     n5 --> n0
     n5 --> n2
-    n5 --> n8
+    n5 --> n9
     n6 --> n0
-    n6 --> n8
+    n6 --> n9
     n7 --> n2
     n7 --> n3
     n7 --> n5
-    n7 --> n8
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n7
+    n7 --> n9
+    n8 --> n2
+    n8 --> n3
+    n8 --> n5
+    n8 --> n7
+    n8 --> n9
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n7
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_agent.md"
@@ -78,8 +84,9 @@ flowchart LR
     click n5 "../modules/models_task.md"
     click n6 "../modules/models_task_brief.md"
     click n7 "../modules/delivery_metrics_service.md"
-    click n8 "../modules/time.md"
-    click n9 "../modules/test_delivery_metrics.md"
+    click n8 "../modules/execution_usage_service.md"
+    click n9 "../modules/time.md"
+    click n10 "../modules/test_delivery_metrics.md"
 ```
 
 ### Internal neighbors
@@ -88,6 +95,7 @@ flowchart LR
 |---|---|
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [delivery_metrics_service](../modules/delivery_metrics_service.md) |
+| Inbound | [execution_usage_service](../modules/execution_usage_service.md) |
 | Inbound | [test_delivery_metrics](../modules/test_delivery_metrics.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |

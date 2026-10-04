@@ -29,6 +29,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: TaskDetailService(…).detail
     p0->>p6: TaskDetailService
     p0-->>p7: list
@@ -52,25 +54,25 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. TaskDetailService(…).detail"]
-    s9["9. TaskDetailService"]
-    s10["10. list"]
-    s11["11. (…).all"]
-    s12["12. db.scalars"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. TaskDetailService(…).detail"]
+    s11["11. TaskDetailService"]
+    s12["12. list"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "TaskDetailService(…).detail(task_id, limit=1)" .-> s8
-    s1 -->|"TaskDetailService(db)"| s9
-    s1 -. "list(...)" .-> s10
-    s1 -. "(…).all(data not statically known)" .-> s11
-    s1 -. "db.scalars(...)" .-> s12
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "TaskDetailService(…).detail(task_id, limit=1)" .-> s10
+    s1 -->|"TaskDetailService(db)"| s11
+    s1 -. "list(...)" .-> s12
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/task_detail_service.md"
+    click s11 "../modules/task_detail_service.md"
 ```
 
 ### Step data
@@ -84,27 +86,27 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `TaskDetailService(…).detail` | - | - | - | - |
 | `TaskDetailService` | - | - | - | - |
 | `list` | - | - | - | - |
-| `(…).all` | - | - | - | - |
-| `db.scalars` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_reviews | domain_result | 176 | `domain_result(...)` |
+| task_reviews | domain_result | 190 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_reviews | TaskDetailService(…).detail | 176 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| task_reviews | TaskDetailService | 176 | `TaskDetailService(db)` |
-| task_reviews | list | 177 | `list(...)` |
-| task_reviews | (…).all | 177 | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all(data not statically known)` |
-| task_reviews | db.scalars | 177 | `db.scalars(...)` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_reviews | TaskDetailService(…).detail | 190 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| task_reviews | TaskDetailService | 190 | `TaskDetailService(db)` |
+| task_reviews | list | 191 | `list(...)` |
 
 ### Boundary effects
 
@@ -118,9 +120,8 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
-| unresolved_call | `task_reviews` | `TaskDetailService(db).detail` | 176 |
-| unresolved_call | `task_reviews` | `(await db.scalars(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id, TaskReviewRecord.id > after_id).order_by(TaskReviewRecord.id).limit(limit))).all` | 177 |
-| unresolved_call | `task_reviews` | `db.scalars` | 177 |
+| external_call | `domain_result` | `HTTPException` | 35 |
+| unresolved_call | `task_reviews` | `TaskDetailService(db).detail` | 190 |
 | step_limit | `task_reviews` | `first 12 steps` | 0 |
 
 ## Behavior

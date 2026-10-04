@@ -157,15 +157,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 2405 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
-| main | parser.add_argument | 2406 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
-| main | parser.parse_args | 2412 | `parser.parse_args(argv)` |
-| main | os.getenv | 2414 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| main | print | 2415 | `print(..., file=sys.stderr)` |
-| main | SystemExit | 2416 | `SystemExit(2)` |
-| main | redirect_stdout | 2420 | `redirect_stdout(sys.stderr)` |
-| main | asyncio.run | 2421 | `asyncio.run(init_db(...))` |
-| main | init_db | 2421 | `init_db(data not statically known)` |
+| main | argparse.ArgumentParser | 2425 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
+| main | parser.add_argument | 2426 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
+| main | parser.parse_args | 2432 | `parser.parse_args(argv)` |
+| main | os.getenv | 2434 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| main | print | 2435 | `print(..., file=sys.stderr)` |
+| main | SystemExit | 2436 | `SystemExit(2)` |
+| main | redirect_stdout | 2440 | `redirect_stdout(sys.stderr)` |
+| main | asyncio.run | 2441 | `asyncio.run(init_db(...))` |
+| main | init_db | 2441 | `init_db(data not statically known)` |
 | init_db | assert_database_current | 71 | `assert_database_current(data not statically known)` |
 | assert_database_current | inspect_database | 377 | `inspect_database(data not statically known)` |
 
@@ -173,19 +173,19 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `main` | 2414 |
-| output | `print` | `main` | 2415 |
+| environment_read | `os.getenv` | `main` | 2434 |
+| output | `print` | `main` | 2435 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 2405 |
-| unresolved_call | `main` | `parser.add_argument` | 2406 |
-| unresolved_call | `main` | `parser.parse_args` | 2412 |
-| external_call | `main` | `SystemExit` | 2416 |
-| external_call | `main` | `redirect_stdout` | 2420 |
-| external_call | `main` | `asyncio.run` | 2421 |
+| external_call | `main` | `argparse.ArgumentParser` | 2425 |
+| unresolved_call | `main` | `parser.add_argument` | 2426 |
+| unresolved_call | `main` | `parser.parse_args` | 2432 |
+| external_call | `main` | `SystemExit` | 2436 |
+| external_call | `main` | `redirect_stdout` | 2440 |
+| external_call | `main` | `asyncio.run` | 2441 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

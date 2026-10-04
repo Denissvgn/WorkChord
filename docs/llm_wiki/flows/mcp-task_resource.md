@@ -142,7 +142,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_resource | _json_resource | 2102 | `_json_resource('tasks:read', ...)` |
+| task_resource | _json_resource | 2122 | `_json_resource('tasks:read', ...)` |
 | _json_resource | _tool_call | 332 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

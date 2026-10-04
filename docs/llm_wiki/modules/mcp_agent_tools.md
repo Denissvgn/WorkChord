@@ -23,6 +23,7 @@ the same audited command and read-model paths.
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentScheduleCommand` |
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogUpdate`, `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse`, `SkillBundleManifestResponse` |
+| `app.schemas.execution_usage` | `ExecutionUsageWrite` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationSummary`, `IterationUpdate` |
 | `app.schemas.label` | `LabelGroupResponse`, `LabelResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate`, `ProjectUpdateEntryResponse` |
@@ -41,11 +42,12 @@ the same audited command and read-model paths.
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `actor_has_scope`, `AgentPermissionError` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError`, `SkillBundleNotFoundError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
+| `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
@@ -63,6 +65,7 @@ the same audited command and read-model paths.
 | `app.services.template_service` | `TemplateService` |
 | `app.services.triage_service` | `TriageConflictError`, `TriageService` |
 | `asyncio` | `asyncio` |
+| `decimal` | `Decimal` |
 | `hashlib` | `hashlib` |
 | `importlib.metadata` | `PackageNotFoundError`, `version` |
 | `json` | `json` |
@@ -94,8 +97,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
-| Outbound | `backend` (49) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (51) |
 
 ### External packages
 
@@ -103,7 +106,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 59 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 62 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -200,6 +203,9 @@ flowchart LR
 | `list_agent_recovery_tasks` | *(async)* `(db: AsyncSession, actor: AgentActor, *, limit: int = 50, cursor: Optional[str] = None) -> dict[str, Any]` | — | MCP handler: list active tasks with no valid live execution owner. |
 | `requeue_agent_recovery` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: reconcile stale ownership and dispatch recovery work. |
 | `get_agent_pipeline` | *(async)* `(db: AsyncSession, actor: AgentActor) -> dict[str, list[dict[str, Any]]]` | — | MCP handler: return the full PM supervision pipeline. |
+| `get_execution_usage` | *(async)* `(db: AsyncSession, actor: AgentActor, run_id: int)` | — | — |
+| `record_execution_usage` | *(async)* `(db: AsyncSession, actor: AgentActor, run_id: int, payload: dict[str, Any])` | — | — |
+| `get_execution_usage_summary` | *(async)* `(db: AsyncSession, actor: AgentActor, *, project_id = None, iteration_id = None, lookback_days = 30, budget_amount = None, budget_currency = None)` | — | — |
 | `get_agent_run_detail` | *(async)* `(db: AsyncSession, actor: AgentActor, run_id: int) -> dict[str, Any] \| None` | — | MCP handler: return one run and its chronological events. |
 | `get_task_timeline` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> list[dict[str, Any]] \| None` | — | MCP handler: return only the merged task timeline. |
 | `list_ready_tasks` | *(async)* `(db: AsyncSession, actor: AgentActor, **filters: Any) -> list[dict[str, Any]]` | — | MCP handler: list ready tasks. |

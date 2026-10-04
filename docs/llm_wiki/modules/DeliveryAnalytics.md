@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.tsx`._
 | `../../services/projectService` | `projectService` |
 | `../../types/deliveryMetrics` | `DeliveryQueueItem` |
 | `../feedback/QueryState` | `QueryErrorState` |
+| `./ExecutionUsagePanel` | `ExecutionUsagePanel` |
 | `@tanstack/react-query` | `useQuery` |
 | `react` | `useState` |
 | `react-i18next` | `useTranslation` |
@@ -34,27 +35,31 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.tsx`._
 flowchart LR
     n0["frontend/src/components/analytics/DeliveryAnalytics.test.tsx"]
     n1["frontend/src/components/analytics/DeliveryAnalytics.tsx"]
-    n2["frontend/src/components/feedback/QueryState.tsx"]
-    n3["frontend/src/pages/AnalyticsPage.tsx"]
-    n4["frontend/src/services/deliveryMetricsService.ts"]
-    n5["frontend/src/services/projectService.ts"]
-    n6["frontend/src/types/deliveryMetrics.ts"]
+    n2["frontend/src/components/analytics/ExecutionUsagePanel.tsx"]
+    n3["frontend/src/components/feedback/QueryState.tsx"]
+    n4["frontend/src/pages/AnalyticsPage.tsx"]
+    n5["frontend/src/services/deliveryMetricsService.ts"]
+    n6["frontend/src/services/projectService.ts"]
+    n7["frontend/src/types/deliveryMetrics.ts"]
     n0 --> n1
-    n0 --> n6
+    n0 --> n7
     n1 --> n2
-    n1 --> n4
+    n1 --> n3
     n1 --> n5
     n1 --> n6
-    n3 --> n1
-    n3 --> n2
-    n4 --> n6
+    n1 --> n7
+    n2 --> n3
+    n4 --> n1
+    n4 --> n3
+    n5 --> n7
     click n0 "../modules/DeliveryAnalytics.test.md"
     click n1 "../modules/DeliveryAnalytics.md"
-    click n2 "../modules/QueryState.md"
-    click n3 "../modules/AnalyticsPage.md"
-    click n4 "../modules/deliveryMetricsService.md"
-    click n5 "../modules/projectService.md"
-    click n6 "../modules/deliveryMetrics.md"
+    click n2 "../modules/ExecutionUsagePanel.md"
+    click n3 "../modules/QueryState.md"
+    click n4 "../modules/AnalyticsPage.md"
+    click n5 "../modules/deliveryMetricsService.md"
+    click n6 "../modules/projectService.md"
+    click n7 "../modules/deliveryMetrics.md"
 ```
 
 ### Internal neighbors
@@ -63,6 +68,7 @@ flowchart LR
 |---|---|
 | Inbound | [DeliveryAnalytics.test](../modules/DeliveryAnalytics.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
+| Outbound | [ExecutionUsagePanel](../modules/ExecutionUsagePanel.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [deliveryMetricsService](../modules/deliveryMetricsService.md) |
 | Outbound | [projectService](../modules/projectService.md) |

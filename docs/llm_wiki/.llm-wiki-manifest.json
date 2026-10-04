@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:2124bb8a7eb8e2a007417779d4b83f411c38ce89b8ea6e16d3f91d4d2edb8254",
-    "knowledge_index_hash": "sha256:2291eec1da7e0df73fd3cb94c6cbe70d71ab2f79f1367cb9b20c7d47fde21f9b",
-    "surface_index_hash": "sha256:15c729c207d2df622e37953ee26aeabf4241fbe131f376dab7e4f00a7f612455"
+    "evaluated_envelope_hash": "sha256:ee0b8247218b7ec323cbe8225e0f699c6d4b21e0201f84c3d8b659a37280bc9a",
+    "knowledge_index_hash": "sha256:f85201b347a5c0e40354252173070d48ce0fe2819f08b75804b194c2657de5cd",
+    "surface_index_hash": "sha256:d864c5592fb44b9c46eaca5bf684c3ea5686cae247350a129e8e6f6a867a3999"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1670,7 +1670,7 @@
         "concept_observation_hash": "sha256:61948607010d3e328f2d57890f6e9214da401b34af3c2063add1d406606066d2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:16f043d508f7bfa208133f1d29494ef3ca3948a9a6c0fdb64d7d616d67422095",
+        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -1680,7 +1680,7 @@
         "concept_observation_hash": "sha256:91b03f6eaa81c667413fa6978bf5b7432db9b0e731cd2ed5369cb89d70fc8021",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:16f043d508f7bfa208133f1d29494ef3ca3948a9a6c0fdb64d7d616d67422095",
+        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -2590,7 +2590,7 @@
         "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
+        "source_content_hash": "sha256:25d3ed74aa5291f39aa5aa700487dd430132b88f0eef1557ae8d92d9c4d86147",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -3232,6 +3232,46 @@
         "scope": "entity",
         "source_content_hash": "sha256:4cca2ae7a0fa9f1b61ff092534f221461570a3fe2aa87086e043dffffd314c8a",
         "source_path": "backend/app/autonomy/contracts/charter.py"
+      },
+      "state": "known"
+    },
+    "entities/ExecutionUsageRecord.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:e163934661fa962753759fabd83cf73393aa4ac57017ec2d73671cfe9bfdb774",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:359ea5e6d6bbab3fd295700d90a1f3fe54f5fd8a2bd137e7c6cb22fc72c2d083",
+        "source_path": "backend/app/models/execution_usage.py"
+      },
+      "state": "known"
+    },
+    "entities/ExecutionUsageResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:15163d8efed820fd0b4973e63b413b239ec9f5c671c039867e63f73dcdac1926",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
+      },
+      "state": "known"
+    },
+    "entities/ExecutionUsageService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:af8107fccd2ea2880cf0958dfdd505e1d272168c44dc05684b78b1fdbfe0ac45",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:239a2b536eea171963fdc5c6170177a9a22957bed58c62ee9add2c4c8e73a9f3",
+        "source_path": "backend/app/services/execution_usage_service.py"
+      },
+      "state": "known"
+    },
+    "entities/ExecutionUsageWrite.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:80a15c83a704b817529cbed0a86dd182ad1d668c055e5143078fb50dcaee90f0",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
       },
       "state": "known"
     },
@@ -4470,7 +4510,7 @@
         "concept_observation_hash": "sha256:031a7961fbce67b95b002f4018f385499a97b55816361620209fb2509d4bfd68",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -4480,7 +4520,7 @@
         "concept_observation_hash": "sha256:2d396b55b7460bdf4c316c4cf84ae8099b99e7c6f3317dab182e18d9a9536ea3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -4490,7 +4530,7 @@
         "concept_observation_hash": "sha256:5567406021d579490161dcdc908bd45d67b18d09937c379b5a5142e395cdd48c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -4500,7 +4540,7 @@
         "concept_observation_hash": "sha256:c22c68461a929d5d21ec264445ec701353e125f2847c42b5ebb9fa4ee25efbdb",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -4832,6 +4872,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:3ed17fda91f0c93354bff5db7b83f929be8e1bfaf1b42be1c66f19c30304118d",
         "source_path": "frontend/src/types/agent.ts"
+      },
+      "state": "known"
+    },
+    "entities/Money.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:cd941682dfd5e783a333918ae9f065921e70d914204cafdb81a42052e190aa40",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
       },
       "state": "known"
     },
@@ -5962,6 +6012,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:f65ecfa235aa21e8203e5c53ba53e2457390d75c97bd5068f88a2bfd51fcf701",
         "source_path": "scripts/load/common.py"
+      },
+      "state": "known"
+    },
+    "entities/Quantity.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:dd43cc5185e96622d8d81d646300b37e38ba5d26a5f9a4478b1cc595f82b7655",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
       },
       "state": "known"
     },
@@ -7110,7 +7170,7 @@
         "concept_observation_hash": "sha256:76027964c67dc81a3cef320a010d711875f90569ae863cb24d392f0ca3f0d8d8",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -7590,7 +7650,7 @@
         "concept_observation_hash": "sha256:373e70ecc45dbd476967b7f46abbb3602fb20f0db2bbc489686078a58e13f711",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:11763282b139198354a2e54d0ee2316a23946de71272336cd6ec8ec9a98569e8",
+        "source_content_hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
         "source_path": "scripts/build_agent_skills.py"
       },
       "state": "known"
@@ -9335,6 +9395,16 @@
       },
       "state": "known"
     },
+    "entities/UsagePricingBasis.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:3e92f306ee5fc5d9dfcf0c6288e7bd9474ca0c9defb743155fb7e41a2830d45d",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
+      },
+      "state": "known"
+    },
     "entities/VacationImportRequest.md": {
       "basis": {
         "concept_observation_hash": "sha256:cde5eeb8e7433bbc4c3c06683f448dad721b12e9fa6d8f366709ce67ad6d9669",
@@ -10222,6 +10292,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:200d17467abc7ccb8cb520386e69bd000d9fc9e8b5c4b0ca97f420b98e554251",
         "source_path": "backend/app/services/email_settings_service.py"
+      },
+      "state": "known"
+    },
+    "entities/executionUsage_ExecutionUsageSummary.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:93492ba1001bb0e3c98f191d0c4cb84acfbac922d94a3f27a2db705447462976",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:a0afbe677f83364aa7384262e064816e6468a178101e851571b62c1685256316",
+        "source_path": "frontend/src/types/executionUsage.ts"
       },
       "state": "known"
     },
@@ -11192,6 +11272,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:c07dd0b8fa05af90d73d2d56481a3dca7db4222f0e3ebe20d7e41a6295acb34d",
         "source_path": "backend/app/schemas/email_settings.py"
+      },
+      "state": "known"
+    },
+    "entities/schemas_execution_usage_ExecutionUsageSummary.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:6f16286588ca815552c2e11bdca26886a234cb5be5a71b019d78a0d22161933b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
       },
       "state": "known"
     },
@@ -14745,6 +14835,16 @@
       },
       "state": "known"
     },
+    "modules/20261004_0007_execution_usage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a8a669d4c75031d07ee1eead6822cf4180a7d48f6250ab654c64de5eb95a09b9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:3240552a8f0c58a1ee6f4f33bfd16e41b7cc8e9ce812f10ef8248d9b2b2a26d2",
+        "source_path": "backend/app/migrations/versions/20261004_0007_execution_usage.py"
+      },
+      "state": "known"
+    },
     "modules/AdminAccessGate.md": {
       "basis": {
         "concept_observation_hash": "sha256:bd5ccd73cc449656091115c1d25baa577fff497da78b84a1c282cf7dff1d4abf",
@@ -15077,20 +15177,20 @@
     },
     "modules/DeliveryAnalytics.md": {
       "basis": {
-        "concept_observation_hash": "sha256:ddac084a1819eead4c3ee7ebeab023b4556a0daa7ef202e858cd9ad550f7b621",
+        "concept_observation_hash": "sha256:aa4ee71efe09c185c5a9a81959c08d3c715f671b6e30665236c1e3239f866a38",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:da9ea51d96dd50172556ca428eac751470318d70e2b3e7a83407718012fcd2ef",
+        "source_content_hash": "sha256:d0235ef3035cb7ce4084e55abc3f7cde63f4571bf95e467f5f1d1b27134dc475",
         "source_path": "frontend/src/components/analytics/DeliveryAnalytics.tsx"
       },
       "state": "known"
     },
     "modules/DeliveryAnalytics.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:52280f874552be6ebe48abcb639e4006c692f9b74582669eaaaa09d04e84a52f",
+        "concept_observation_hash": "sha256:5f988a37e1d1a07ee1e28b1ac38d5bc0c5f6c48f0ec629e699735c7e959bc51c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:923a379484d851778d585a38cd49c47fb71c7c387a5c1fbcea5d030982b3770b",
+        "source_content_hash": "sha256:a7ccda1b97e00697d72707ca79ba5a08b3399282cfab7366c45d2e6d645394de",
         "source_path": "frontend/src/components/analytics/DeliveryAnalytics.test.tsx"
       },
       "state": "known"
@@ -15162,6 +15262,26 @@
         "scope": "module",
         "source_content_hash": "sha256:202d1a4d846cb18986bb61745fce5465799d19c0a77c7320381386f74d22af52",
         "source_path": "frontend/src/components/settings/EmailSettingsPanel.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/ExecutionUsagePanel.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:e1299f308b6afddd442c3060ef0188505c3d939b5b070b6629d0536c18cde455",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:c86b31f48e5f43e06a1182dc9c774f720477e9f1eb9d188be043075e8dd99334",
+        "source_path": "frontend/src/components/analytics/ExecutionUsagePanel.tsx"
+      },
+      "state": "known"
+    },
+    "modules/ExecutionUsagePanel.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:eae70e2cff7ba9cec6de23b937921f30c9a521c0f41b60b2b5b2bfbf8c6fc318",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:ddc893a0c41aa5db694cc29281f720c045466f21c0aa372ebea26805f5b8924a",
+        "source_path": "frontend/src/components/analytics/ExecutionUsagePanel.test.tsx"
       },
       "state": "known"
     },
@@ -16680,7 +16800,7 @@
         "concept_observation_hash": "sha256:3f08cf378e0b7490fa3a655a7b61e062ec7c87ede84164b29254a80ec373bf69",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:cb5131c376b7cdd752979f51463cbf0b50947b13507db4d4cbf41fdcc610d47a",
+        "source_content_hash": "sha256:77a7db2602ea722a98bbdf993f0a16f25891d9d5bc3d579a7cbad1fc6039a0f1",
         "source_path": "backend/app/agent_contract.py"
       },
       "state": "known"
@@ -16930,7 +17050,7 @@
         "concept_observation_hash": "sha256:468c9e319b639f28990e5e9702f14d09601ef73148d684c90e4c5cd82d6ac4a5",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:16f043d508f7bfa208133f1d29494ef3ca3948a9a6c0fdb64d7d616d67422095",
+        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -16990,7 +17110,7 @@
         "concept_observation_hash": "sha256:5a523724b0aba478c7dae71b590166ac35febd8d87208312529953b869ebe0c9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:11763282b139198354a2e54d0ee2316a23946de71272336cd6ec8ec9a98569e8",
+        "source_content_hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
         "source_path": "scripts/build_agent_skills.py"
       },
       "state": "known"
@@ -17485,6 +17605,26 @@
       },
       "state": "known"
     },
+    "modules/executionUsage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:92ce0bd8ec635f1bc88e1c44bf4dfc4981a66a503956702ba77a01e2b01492dc",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:a0afbe677f83364aa7384262e064816e6468a178101e851571b62c1685256316",
+        "source_path": "frontend/src/types/executionUsage.ts"
+      },
+      "state": "known"
+    },
+    "modules/executionUsageService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7c09b4efe9baa93168f2241381a150e6160419867b5712030e323d7f017b4d22",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:cecd45c0cdd5ab98cac77ccda761458dd8612b3b22ad33d6061c346ba2a82ee6",
+        "source_path": "frontend/src/services/executionUsageService.ts"
+      },
+      "state": "known"
+    },
     "modules/execution_mode.md": {
       "basis": {
         "concept_observation_hash": "sha256:43a9f8110a779408f7f569c5596b35f7d3305dc22851be5bb931e75fdc15e5e0",
@@ -17492,6 +17632,16 @@
         "scope": "module",
         "source_content_hash": "sha256:58521bdc0f2bf5ccabb780e90f4d52b18b9f34d57d5130e5636aa74a9446937f",
         "source_path": "backend/app/autonomy/execution_mode.py"
+      },
+      "state": "known"
+    },
+    "modules/execution_usage_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d060f14ab9ea0913dab8804886c56f5be9f14f403c9afcf818598b89c99f6004",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:239a2b536eea171963fdc5c6170177a9a22957bed58c62ee9add2c4c8e73a9f3",
+        "source_path": "backend/app/services/execution_usage_service.py"
       },
       "state": "known"
     },
@@ -17947,10 +18097,10 @@
     },
     "modules/mcp_agent_tools.md": {
       "basis": {
-        "concept_observation_hash": "sha256:1246f055a74b2eb0e75fead44e22dcdfe5c87fe395e97c564ae4c4d007adb66b",
+        "concept_observation_hash": "sha256:4c1360cfe1ecd1e159662c16dd86079bc0551226b6fcd241add18472776eea65",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:6781bb98bb5f0e26501d6b687945eb17cc244589bec2bdb7a0eb9ebecf6825e0",
+        "source_content_hash": "sha256:8d50749f78324f42fee91b7feaf0a6bb727299da5b60fad97222388b00a0ed81",
         "source_path": "backend/app/mcp_agent_tools.py"
       },
       "state": "known"
@@ -17960,7 +18110,7 @@
         "concept_observation_hash": "sha256:754fc3ca32e5f2cd149c4359c33a3745adbc24652ac9ef8cdf4b68bc29f3ee75",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+        "source_content_hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
         "source_path": "backend/app/mcp_server.py"
       },
       "state": "known"
@@ -18007,10 +18157,10 @@
     },
     "modules/models___init__.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4babbd0e0d27ed944ff4d017ab6f7d211dc45c3d2012cebe8ec1daf6099b6394",
+        "concept_observation_hash": "sha256:aed3d40f6a577a4c895be32b76ecffad4d9fff7e989921d24e512274f6c82f20",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a9cd36d06f344617a72cd1ca1271b3af35d9609db4f6960191128b26c2432b6f",
+        "source_content_hash": "sha256:e2cd0748111718fbd846e226728ab4ebbcdfed41497863a375939b097bf33a19",
         "source_path": "backend/app/models/__init__.py"
       },
       "state": "known"
@@ -18072,6 +18222,16 @@
         "scope": "module",
         "source_content_hash": "sha256:29d8847729ded11c14b024bffb148dd84bfa9dc885b9ab2f6f3b8fcb16621057",
         "source_path": "backend/app/models/discussion.py"
+      },
+      "state": "known"
+    },
+    "modules/models_execution_usage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:97a298e188ac4b502e7deaa10ffdc7bb5abcdabf35007cfd78f505d4ba6d24b1",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:359ea5e6d6bbab3fd295700d90a1f3fe54f5fd8a2bd137e7c6cb22fc72c2d083",
+        "source_path": "backend/app/models/execution_usage.py"
       },
       "state": "known"
     },
@@ -18710,7 +18870,7 @@
         "concept_observation_hash": "sha256:afade8d832a51a02d6d2591f03d13dca01e938ff5a9c696aec5aa74e2e1d7be6",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:48a2e8b2c8c68ea251255d794b4dc0b06b58d47dd713d9194c787958538b2b4d",
+        "source_content_hash": "sha256:c380a3848668d27c215e8ff9bd83074a67abd965043bc27c26b9c684439a5788",
         "source_path": "frontend/src/i18n/resources.en.ts"
       },
       "state": "known"
@@ -18720,7 +18880,7 @@
         "concept_observation_hash": "sha256:be455eed22d5cf2726226c607497b2556dff99452815197e81ef46d1440bd2aa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:6d4a8c41a8b0d7a610a3357581f4c4ed57ebac6a02b02d862d9ea948660a20ab",
+        "source_content_hash": "sha256:584573f4021cb991f5ea07e0270a147a35cdc094dccd13af07850f5a77cc1f6b",
         "source_path": "frontend/src/i18n/resources.ru.ts"
       },
       "state": "known"
@@ -18757,10 +18917,10 @@
     },
     "modules/routers_agent.md": {
       "basis": {
-        "concept_observation_hash": "sha256:48f171608e0187fa21e7ebf2c2b4e0b1e61162b173a2241a98adfc8a45a88290",
+        "concept_observation_hash": "sha256:46f3e8377e3ffa677ec83ad773ee95d4c2894a66525a8e16a5589cb70e99de86",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:9d72ab072480bee0906bcd045476779b48006fd98f67eacc958764f2549bc32f",
+        "source_content_hash": "sha256:84775f407021143f6c0064613e44d227f78b7d7cc8334f0206755e687e5bb0fb",
         "source_path": "backend/app/routers/agent.py"
       },
       "state": "known"
@@ -18887,10 +19047,10 @@
     },
     "modules/routers_task_domain.md": {
       "basis": {
-        "concept_observation_hash": "sha256:1715bfea853f80ea7d5a567b0ac9d7cb9e44763c3192da6e5563e8505dd419ca",
+        "concept_observation_hash": "sha256:cc174ee3590357b74b2c1251a73808cbaf1fa792a4aa5843ff0c99a95bcfbb32",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
+        "source_content_hash": "sha256:25d3ed74aa5291f39aa5aa700487dd430132b88f0eef1557ae8d92d9c4d86147",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -19162,6 +19322,16 @@
         "scope": "module",
         "source_content_hash": "sha256:c07dd0b8fa05af90d73d2d56481a3dca7db4222f0e3ebe20d7e41a6295acb34d",
         "source_path": "backend/app/schemas/email_settings.py"
+      },
+      "state": "known"
+    },
+    "modules/schemas_execution_usage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ba5a2a0e246c75b569a226c764e9b7e9950294469e657e62286a686844a7bdf6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+        "source_path": "backend/app/schemas/execution_usage.py"
       },
       "state": "known"
     },
@@ -20030,7 +20200,7 @@
         "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:408457c1453ecba75839a6c43f442085ebdd44f34f1b3159297c191637d0657d",
+        "source_content_hash": "sha256:1a2e9868e119c7f4115ab4bbcbe54a1279c62d5d901018c42ea8fc07804dee43",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -20107,10 +20277,10 @@
     },
     "modules/test_agent_skill_routing_guidance.md": {
       "basis": {
-        "concept_observation_hash": "sha256:237a2c58520b537bbf0cc74a3726a644d7b15c8d9f3f19df1a52a7b17481e130",
+        "concept_observation_hash": "sha256:a0e76ddd33cbbaf7dc6dcf350d4e94bb285f23eada8973667475fb7733f22f2e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:94e3f1492ea1da65b6e5bfd7e3e0c5c29c0af3237c3ec92d7117f421adb7f68f",
+        "source_content_hash": "sha256:51f30f5a57cd1bad579f2605e432d46f9a19ede00559589f0ca87d3a882fd7f5",
         "source_path": "backend/tests/test_agent_skill_routing_guidance.py"
       },
       "state": "known"
@@ -20180,7 +20350,7 @@
         "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8145380c94c5896cd44f9ba0581437b5c6e69a27cae98c890f3b6debfb3129ee",
+        "source_content_hash": "sha256:03dbb3f29d4b86e8a99287285dabdbadf83fbc3287d3494c78644b9ed8f8fc65",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -20240,7 +20410,7 @@
         "concept_observation_hash": "sha256:bff9798a1901e3f1b6953659a4bd5e2c766fe8fa64bfd067e60ff2b971f6113e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:fa71590f27f27890112630b42a23cf6a1b52ac18f442e7845849d2fbe110a82a",
+        "source_content_hash": "sha256:2ab57ca79a1ce2c5f631bc025512fee0e468e7d741c8d48e88992d6b71124caf",
         "source_path": "backend/tests/test_database_harness.py"
       },
       "state": "known"
@@ -20292,6 +20462,16 @@
         "scope": "module",
         "source_content_hash": "sha256:11ed6d50c67a8a799022aa20254bd0dff2a2a400b305516acdeb49cd801729a6",
         "source_path": "backend/tests/database_migration/test_documentation_boundary.py"
+      },
+      "state": "known"
+    },
+    "modules/test_execution_usage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:047bb2a2ae73a4777376f8ff68d2cfbc11761c36bde3258e9c5f54534a8d9c5b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:1d468fd46ea28707e066f3a955a567c6ab073570c387c2b5a99f18f8565fbe04",
+        "source_path": "backend/tests/test_execution_usage.py"
       },
       "state": "known"
     },
@@ -20580,7 +20760,7 @@
         "concept_observation_hash": "sha256:b9fce811ee473a186ac3b66fee3bc1ee7fe5621f3f511f1437a50757424bb552",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:ceb27d873d11c5efd6d61a485299d94870e0a6fb85c4dbdedc4522da81b21bcb",
+        "source_content_hash": "sha256:da5f2e81a43b3fe8c786bfcc9cbb4ba2af8e181ab4efdabf243c404470af312f",
         "source_path": "backend/tests/database_migration/test_source_preflight.py"
       },
       "state": "known"
@@ -20590,7 +20770,7 @@
         "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a5b0ce0baab8cb7d7c95d938cb6446f6e97381b82d19a641c70fc0412870d19d",
+        "source_content_hash": "sha256:f5ca8c311a4c9a8d438a72513c4472809662bfe152c6beb83aeed49c9f0c1ce0",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -21360,13 +21540,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:4ad5e51fcf12a9c812e5e52a0011a24c776e7b6684691a2f2d44b12cdb52bb00",
-      "lifecycle_hash": "sha256:8c16d6e2dd1182888d675bbfc8d85bc3234e4709256d9a671ec550dc74e39bc8",
-      "markdown_snapshot_hash": "sha256:5cdf0596aad1d2e2eee588ed11b1df2f67e7501ab2e605c250447b61b8367cd7",
-      "observation_inputs_hash": "sha256:0d2d5fc58e848a74b0a57258b687832ba216d810afb51a7469d89d517103940e",
+      "inventory_hash": "sha256:2ea8cbb988f7d61a021747506a5c8b8670a667fd17af08f98ecd0e7195e7293a",
+      "lifecycle_hash": "sha256:c4d1f1506f8e2767c043f7b1ce92040aa1af0258938baee3342d83d5693f2f7d",
+      "markdown_snapshot_hash": "sha256:60ab31914a54333087e703c966ca5c1951f16e45125697c032adf91b10dea4af",
+      "observation_inputs_hash": "sha256:313c6ea64171ef899719b58695640889c6556538db2d5776fe99dcd60fa30795",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:16a01158f144d3d62d88a32bec8beb7d33cb6b32aaad2d0a59590c9a9c874611"
+      "source_snapshot_hash": "sha256:f7d978be62f6c3a1e1d3b611d588fc9892bec60f90bee556b64b05e21f164ed5"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -23313,6 +23493,30 @@
       "scope": "entity",
       "source_path": "backend/app/autonomy/contracts/charter.py"
     },
+    "entities/ExecutionUsageRecord.md": {
+      "entity_name": "ExecutionUsageRecord",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/execution_usage.py"
+    },
+    "entities/ExecutionUsageResponse.md": {
+      "entity_name": "ExecutionUsageResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
+    },
+    "entities/ExecutionUsageService.md": {
+      "entity_name": "ExecutionUsageService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/execution_usage_service.py"
+    },
+    "entities/ExecutionUsageWrite.md": {
+      "entity_name": "ExecutionUsageWrite",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
+    },
     "entities/ExecutionWindow.md": {
       "entity_name": "ExecutionWindow",
       "occurrence": 1,
@@ -24273,6 +24477,12 @@
       "scope": "entity",
       "source_path": "frontend/src/types/agent.ts"
     },
+    "entities/Money.md": {
+      "entity_name": "Money",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
+    },
     "entities/MutationResult.md": {
       "entity_name": "_MutationResult",
       "occurrence": 1,
@@ -24950,6 +25160,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "scripts/load/common.py"
+    },
+    "entities/Quantity.md": {
+      "entity_name": "Quantity",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
     },
     "entities/QueryEmptyStateProps.md": {
       "entity_name": "QueryEmptyStateProps",
@@ -26973,6 +27189,12 @@
       "scope": "entity",
       "source_path": "backend/app/services/upgrade_service.py"
     },
+    "entities/UsagePricingBasis.md": {
+      "entity_name": "UsagePricingBasis",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
+    },
     "entities/VacationImportRequest.md": {
       "entity_name": "VacationImportRequest",
       "occurrence": 1,
@@ -27506,6 +27728,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/services/email_settings_service.py"
+    },
+    "entities/executionUsage_ExecutionUsageSummary.md": {
+      "entity_name": "ExecutionUsageSummary",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/types/executionUsage.ts"
     },
     "entities/language_service_AILanguageMode.md": {
       "entity_name": "AILanguageMode",
@@ -28088,6 +28316,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/schemas/email_settings.py"
+    },
+    "entities/schemas_execution_usage_ExecutionUsageSummary.md": {
+      "entity_name": "ExecutionUsageSummary",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/execution_usage.py"
     },
     "entities/schemas_external_link_ExternalLinkCreate.md": {
       "entity_name": "ExternalLinkCreate",
@@ -30205,6 +30439,10 @@
       "scope": "module",
       "source_path": "backend/app/migrations/versions/20261004_0006_delivery_observations.py"
     },
+    "modules/20261004_0007_execution_usage.md": {
+      "scope": "module",
+      "source_path": "backend/app/migrations/versions/20261004_0007_execution_usage.py"
+    },
     "modules/AdminAccessGate.md": {
       "scope": "module",
       "source_path": "frontend/src/components/settings/AdminAccessGate.tsx"
@@ -30372,6 +30610,14 @@
     "modules/EmailSettingsPanel.test.md": {
       "scope": "module",
       "source_path": "frontend/src/components/settings/EmailSettingsPanel.test.tsx"
+    },
+    "modules/ExecutionUsagePanel.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/analytics/ExecutionUsagePanel.tsx"
+    },
+    "modules/ExecutionUsagePanel.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/analytics/ExecutionUsagePanel.test.tsx"
     },
     "modules/FullscreenWorkspace.md": {
       "scope": "module",
@@ -31301,9 +31547,21 @@
       "scope": "module",
       "source_path": "backend/app/utils/exceptions.py"
     },
+    "modules/executionUsage.md": {
+      "scope": "module",
+      "source_path": "frontend/src/types/executionUsage.ts"
+    },
+    "modules/executionUsageService.md": {
+      "scope": "module",
+      "source_path": "frontend/src/services/executionUsageService.ts"
+    },
     "modules/execution_mode.md": {
       "scope": "module",
       "source_path": "backend/app/autonomy/execution_mode.py"
+    },
+    "modules/execution_usage_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/execution_usage_service.py"
     },
     "modules/export.md": {
       "scope": "module",
@@ -31536,6 +31794,10 @@
     "modules/models_discussion.md": {
       "scope": "module",
       "source_path": "backend/app/models/discussion.py"
+    },
+    "modules/models_execution_usage.md": {
+      "scope": "module",
+      "source_path": "backend/app/models/execution_usage.py"
     },
     "modules/models_external_link.md": {
       "scope": "module",
@@ -31972,6 +32234,10 @@
     "modules/schemas_email_settings.md": {
       "scope": "module",
       "source_path": "backend/app/schemas/email_settings.py"
+    },
+    "modules/schemas_execution_usage.md": {
+      "scope": "module",
+      "source_path": "backend/app/schemas/execution_usage.py"
     },
     "modules/schemas_external_link.md": {
       "scope": "module",
@@ -32425,6 +32691,10 @@
       "scope": "module",
       "source_path": "backend/tests/database_migration/test_documentation_boundary.py"
     },
+    "modules/test_execution_usage.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_execution_usage.py"
+    },
     "modules/test_human_work_queries.md": {
       "scope": "module",
       "source_path": "backend/tests/test_human_work_queries.py"
@@ -32781,7 +33051,7 @@
           }
         }
       },
-      "hash": "sha256:cb5131c376b7cdd752979f51463cbf0b50947b13507db4d4cbf41fdcc610d47a",
+      "hash": "sha256:77a7db2602ea722a98bbdf993f0a16f25891d9d5bc3d579a7cbad1fc6039a0f1",
       "language": "python",
       "module_page": "agent_contract",
       "semantic_hash": "sha256:df89eef739f3dac4f2512ebb72eb3df3a265b5f855a000cd598b161c5309e351"
@@ -32860,10 +33130,10 @@
           }
         }
       },
-      "hash": "sha256:16f043d508f7bfa208133f1d29494ef3ca3948a9a6c0fdb64d7d616d67422095",
+      "hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
       "language": "python",
       "module_page": "authority",
-      "semantic_hash": "sha256:f2132aa4b0ea1474ffd4424d7eed842295dfad80c0c29fa89787db6296851dd4"
+      "semantic_hash": "sha256:10e90637ec09cb71cc10f835912985a9784d4de25611118859c300cd6db77952"
     },
     "backend/app/autonomy/__init__.py": {
       "entities": [],
@@ -37030,6 +37300,8 @@
             "get_agent_skill_reference": "Return one direct Markdown reference from a validated role archive.",
             "get_agent_team_setup_status": "MCP handler: return the caller's backend-derived topology status.",
             "get_complete_task_context": "MCP handler: return assignment-bound brief, dependencies, and timeline.",
+            "get_execution_usage": "—",
+            "get_execution_usage_summary": "—",
             "get_iteration": "MCP handler: get one iteration.",
             "get_iteration_gantt": "MCP handler: return the existing read-only Gantt projection.",
             "get_iteration_summary": "MCP handler: return the vacation-aware iteration summary.",
@@ -37081,6 +37353,7 @@
             "preview_task_routing": "MCP handler: preview exact eligible actor/model-binding candidates.",
             "recommend_assignees_for_task": "MCP handler: recommend assignees for a task.",
             "recommend_assignees_for_triage": "MCP handler: recommend assignees for triage intake.",
+            "record_execution_usage": "—",
             "release_task": "MCP handler: release a task.",
             "renew_my_work": "MCP handler: renew the current assignment fence and run heartbeat.",
             "renew_task": "MCP handler: renew a task claim.",
@@ -37109,10 +37382,10 @@
           }
         }
       },
-      "hash": "sha256:6781bb98bb5f0e26501d6b687945eb17cc244589bec2bdb7a0eb9ebecf6825e0",
+      "hash": "sha256:8d50749f78324f42fee91b7feaf0a6bb727299da5b60fad97222388b00a0ed81",
       "language": "python",
       "module_page": "mcp_agent_tools",
-      "semantic_hash": "sha256:e62171911c3fd6b0b4c98f8fe11a4163597d2736594a5e39ccfc072dab8386e0"
+      "semantic_hash": "sha256:0b8ed0a7bc8347d615f6783dfce9ecc9d8d6b9b643206b812d6aa679dae3451b"
     },
     "backend/app/mcp_server.py": {
       "entities": [
@@ -37226,10 +37499,10 @@
           }
         }
       },
-      "hash": "sha256:1d8d72c6c0ca1c9adb6ec4f1d922b44b8b0403559ffddc5028ab3aea45abd0d5",
+      "hash": "sha256:d41a85288a1871fa39d3b8fbd2c89df62681312ecc958d1c96eb2aae3c28e692",
       "language": "python",
       "module_page": "mcp_server",
-      "semantic_hash": "sha256:e503d960b8bc24da18f8909826f5bf5fbab2bf9b17c35e67920be462f7b4f151"
+      "semantic_hash": "sha256:c389108606daf6f4eec524b88dd23fd281f274b44f3a2f5cb0a8659623edd908"
     },
     "backend/app/migrations/env.py": {
       "entities": [],
@@ -37371,6 +37644,26 @@
       "module_page": "20261004_0006_delivery_observations",
       "semantic_hash": "sha256:a4b296f7928f00559944358f6368df4362366515324f6d3f5f7731ed3a55d9f1"
     },
+    "backend/app/migrations/versions/20261004_0007_execution_usage.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Retain execution usage revisions and immutable pricing snapshots.",
+          "functions": {
+            "downgrade": "—",
+            "upgrade": "—"
+          }
+        }
+      },
+      "hash": "sha256:3240552a8f0c58a1ee6f4f33bfd16e41b7cc8e9ce812f10ef8248d9b2b2a26d2",
+      "language": "python",
+      "module_page": "20261004_0007_execution_usage",
+      "semantic_hash": "sha256:c45aee3bbbd643a014fe0f61fb3fe215429d64547b828f2aca703ee28350da98"
+    },
     "backend/app/models/__init__.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -37383,10 +37676,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:a9cd36d06f344617a72cd1ca1271b3af35d9609db4f6960191128b26c2432b6f",
+      "hash": "sha256:e2cd0748111718fbd846e226728ab4ebbcdfed41497863a375939b097bf33a19",
       "language": "python",
       "module_page": "models___init__",
-      "semantic_hash": "sha256:04563572dfca5edb60516c908c01f7f78da46b582c006bb27e9bbb139822ef00"
+      "semantic_hash": "sha256:9857a3a79febefc1d516db51c06bd87ca6b860ac0522ac22fc43bb9ecac5bba1"
     },
     "backend/app/models/agent.py": {
       "entities": [
@@ -38489,6 +38782,60 @@
       "language": "python",
       "module_page": "models_discussion",
       "semantic_hash": "sha256:737a3f4de53b9fd3bed31d71f49888ae7d5e4e8392eba110eeaf546e05cc50a2"
+    },
+    "backend/app/models/execution_usage.py": {
+      "entities": [
+        "ExecutionUsageRecord"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "ExecutionUsageRecord",
+          "occurrence": 1,
+          "page": "ExecutionUsageRecord"
+        }
+      ],
+      "entity_pages": {
+        "ExecutionUsageRecord": "ExecutionUsageRecord"
+      },
+      "generated_semantics": {
+        "entities": {
+          "ExecutionUsageRecord": {
+            "attributes": {
+              "digest": "—",
+              "id": "—",
+              "iteration_id": "—",
+              "original_iteration_id": "—",
+              "original_project_id": "—",
+              "original_run_id": "—",
+              "original_task_id": "—",
+              "payload": "—",
+              "previous_digest": "—",
+              "project_id": "—",
+              "report_id": "—",
+              "reported_at": "—",
+              "reporter_actor_id": "—",
+              "run_id": "—",
+              "run_identity": "—",
+              "sequence": "—"
+            },
+            "description": "_Auto-generated from `ExecutionUsageRecord` in `backend/app/models/execution_usage.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "ExecutionUsageRecord": "—"
+          },
+          "description": "Append-only per-attempt usage report revisions and pricing evidence.",
+          "functions": {
+            "immutable_usage": "—"
+          }
+        }
+      },
+      "hash": "sha256:359ea5e6d6bbab3fd295700d90a1f3fe54f5fd8a2bd137e7c6cb22fc72c2d083",
+      "language": "python",
+      "module_page": "models_execution_usage",
+      "semantic_hash": "sha256:9d0a2e38c510ef12b4bc015939c9cdd5af1f43145e3a98bcdb27ed29f1ef0fb7"
     },
     "backend/app/models/external_link.py": {
       "entities": [
@@ -40599,6 +40946,7 @@
             "get_agent_team_setup_service": "Dependency for manifest-driven agent-team setup operations.",
             "get_agent_team_setup_status": "Return backend-derived desired, configured, and runtime readiness.",
             "get_agent_work_service": "Dependency for durable assignment and worker lifecycle operations.",
+            "get_execution_usage": "—",
             "get_my_agent_reviews": "Return verification-purpose assignments for the authenticated actor.",
             "get_my_agent_work": "Return the server-authoritative resume, begin, wait, or recovery decision.",
             "list_agent_actors": "Return the secret-free actor roster for scoped PM planning.",
@@ -40610,6 +40958,7 @@
             "patch_agent_task": "Patch a task with optimistic concurrency.",
             "plan_agent_team_reconciliation": "Return the stable, digest-bound action set for one desired master.",
             "preview_task_routing": "Preview candidates without mutating task or assignment state.",
+            "record_execution_usage": "—",
             "release_task_claim": "Release a task lease.",
             "renew_my_agent_work": "Renew the current assignment fence and run heartbeat atomically.",
             "renew_task_claim": "Renew a task lease.",
@@ -40625,10 +40974,10 @@
           }
         }
       },
-      "hash": "sha256:9d72ab072480bee0906bcd045476779b48006fd98f67eacc958764f2549bc32f",
+      "hash": "sha256:84775f407021143f6c0064613e44d227f78b7d7cc8334f0206755e687e5bb0fb",
       "language": "python",
       "module_page": "routers_agent",
-      "semantic_hash": "sha256:c46c4efd7e667a035f7c2f64c465dd471380a7313854ee4cbbb670b7c1e50e37"
+      "semantic_hash": "sha256:21143ea60cee106bf219eac28a1455970b73213e3a1b8ec410d5a5f729f83db6"
     },
     "backend/app/routers/agent_catalog.py": {
       "entities": [],
@@ -41809,6 +42158,7 @@
             "current_task_review": "—",
             "delivery_metrics": "—",
             "domain_result": "—",
+            "execution_usage_summary": "—",
             "human_my_work": "—",
             "lookup_tasks": "—",
             "record_task_progress": "—",
@@ -41828,10 +42178,10 @@
           }
         }
       },
-      "hash": "sha256:4fc8f66617e26f51d47e14d5ab3c048a21ff5884245a6fd1436ed58632cbba88",
+      "hash": "sha256:25d3ed74aa5291f39aa5aa700487dd430132b88f0eef1557ae8d92d9c4d86147",
       "language": "python",
       "module_page": "routers_task_domain",
-      "semantic_hash": "sha256:6b9a0c0da71955d5902651ca0ff67b25404da34dffeb548bf9608a12187ff079"
+      "semantic_hash": "sha256:909a1e89c2d283da558165c4a1e57cbcccb021f6db6f4fcb07b0dffe2b48d8ac"
     },
     "backend/app/routers/tasks.py": {
       "entities": [],
@@ -46045,6 +46395,169 @@
       "language": "python",
       "module_page": "schemas_email_settings",
       "semantic_hash": "sha256:104ae8ad9ea89cbe52525868fb22336bca5bb6ac3e71f8e20ef77a2b8f255794"
+    },
+    "backend/app/schemas/execution_usage.py": {
+      "entities": [
+        "Quantity",
+        "Money",
+        "UsagePricingBasis",
+        "ExecutionUsageWrite",
+        "ExecutionUsageResponse",
+        "ExecutionUsageSummary"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "Quantity",
+          "occurrence": 1,
+          "page": "Quantity"
+        },
+        {
+          "name": "Money",
+          "occurrence": 1,
+          "page": "Money"
+        },
+        {
+          "name": "UsagePricingBasis",
+          "occurrence": 1,
+          "page": "UsagePricingBasis"
+        },
+        {
+          "name": "ExecutionUsageWrite",
+          "occurrence": 1,
+          "page": "ExecutionUsageWrite"
+        },
+        {
+          "name": "ExecutionUsageResponse",
+          "occurrence": 1,
+          "page": "ExecutionUsageResponse"
+        },
+        {
+          "name": "ExecutionUsageSummary",
+          "occurrence": 1,
+          "page": "schemas_execution_usage_ExecutionUsageSummary"
+        }
+      ],
+      "entity_pages": {
+        "ExecutionUsageResponse": "ExecutionUsageResponse",
+        "ExecutionUsageSummary": "schemas_execution_usage_ExecutionUsageSummary",
+        "ExecutionUsageWrite": "ExecutionUsageWrite",
+        "Money": "Money",
+        "Quantity": "Quantity",
+        "UsagePricingBasis": "UsagePricingBasis"
+      },
+      "generated_semantics": {
+        "entities": {
+          "ExecutionUsageResponse": {
+            "attributes": {
+              "digest": "—",
+              "id": "—",
+              "independently_reconciled": "—",
+              "original_run_id": "—",
+              "original_task_id": "—",
+              "previous_digest": "—",
+              "report": "—",
+              "reported_at": "—",
+              "scope_basis": "—",
+              "sequence": "—"
+            },
+            "description": "_Auto-generated from `ExecutionUsageResponse` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {}
+          },
+          "ExecutionUsageSummary": {
+            "attributes": {
+              "accepted_task_identities": "—",
+              "advisory_budget": "—",
+              "estimated_cost": "—",
+              "expected_runs": "—",
+              "human_effort_reports": "—",
+              "independently_reconciled": "—",
+              "known_cost_reports": "—",
+              "linked_delivery": "—",
+              "measured_report_count": "—",
+              "partial_reports": "—",
+              "provider_reported_cost": "—",
+              "reported_human_effort_minutes": "—",
+              "reported_runs": "—",
+              "reported_units": "—",
+              "reports_linked_to_accepted_tasks": "—",
+              "scope_basis": "—",
+              "simulated_estimated_cost": "—",
+              "simulated_reported_cost": "—",
+              "simulated_reports": "—",
+              "simulated_units": "—",
+              "unavailable_reports": "—",
+              "unit_report_counts": "—",
+              "unknown_cost_reports": "—",
+              "unreported_runs": "—",
+              "window_basis": "—",
+              "window_end": "—",
+              "window_start": "—"
+            },
+            "description": "_Auto-generated from `ExecutionUsageSummary` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {}
+          },
+          "ExecutionUsageWrite": {
+            "attributes": {
+              "coverage": "—",
+              "currency": "—",
+              "expected_previous_digest": "—",
+              "interval_end": "—",
+              "interval_start": "—",
+              "pricing_basis": "—",
+              "provenance": "—",
+              "quantities": "—",
+              "report_id": "—",
+              "reported_cost": "—",
+              "reported_human_effort_minutes": "—",
+              "reporting_mode": "—",
+              "source": "—"
+            },
+            "description": "_Auto-generated from `ExecutionUsageWrite` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {
+              "validate_report": "—"
+            }
+          },
+          "Money": {
+            "attributes": {},
+            "description": "_Auto-generated from `Money` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {}
+          },
+          "Quantity": {
+            "attributes": {},
+            "description": "_Auto-generated from `Quantity` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {}
+          },
+          "UsagePricingBasis": {
+            "attributes": {
+              "currency": "—",
+              "price_amount": "—",
+              "price_quantity": "—",
+              "quoted_at": "—",
+              "source": "—",
+              "unit": "—",
+              "version": "—"
+            },
+            "description": "_Auto-generated from `UsagePricingBasis` in `backend/app/schemas/execution_usage.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "ExecutionUsageResponse": "—",
+            "ExecutionUsageSummary": "—",
+            "ExecutionUsageWrite": "—",
+            "Money": "—",
+            "Quantity": "—",
+            "UsagePricingBasis": "—"
+          },
+          "description": "Worker-reported usage, immutable pricing snapshots and explicit coverage.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:96d73817e5b341ceae0eab7cb4bd04734d3abcf6fb16d9946bcb70ada829d26f",
+      "language": "python",
+      "module_page": "schemas_execution_usage",
+      "semantic_hash": "sha256:e3d35f0a6fdd1520cd8a07449cc89d42b6a9cae8663a0c68c87c7897e3a289b0"
     },
     "backend/app/schemas/external_link.py": {
       "entities": [
@@ -53691,6 +54204,54 @@
       "module_page": "email_settings_service",
       "semantic_hash": "sha256:fd930efb1df8a11b8fbf6df5018119b4e12ba239fa84f6d7dc017bef18c8d353"
     },
+    "backend/app/services/execution_usage_service.py": {
+      "entities": [
+        "ExecutionUsageService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "ExecutionUsageService",
+          "occurrence": 1,
+          "page": "ExecutionUsageService"
+        }
+      ],
+      "entity_pages": {
+        "ExecutionUsageService": "ExecutionUsageService"
+      },
+      "generated_semantics": {
+        "entities": {
+          "ExecutionUsageService": {
+            "attributes": {},
+            "description": "_Auto-generated from `ExecutionUsageService` in `backend/app/services/execution_usage_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "_history": "—",
+              "_run": "—",
+              "_scope": "—",
+              "latest": "—",
+              "response": "—",
+              "summary": "—",
+              "write": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "ExecutionUsageService": "—"
+          },
+          "description": "Bounded usage corrections, immutable pricing and scoped advisory totals.",
+          "functions": {
+            "add_exact": "—",
+            "estimate_cost": "—",
+            "run_identity": "Distinguish attempts even if a legacy numeric run ID is reused."
+          }
+        }
+      },
+      "hash": "sha256:239a2b536eea171963fdc5c6170177a9a22957bed58c62ee9add2c4c8e73a9f3",
+      "language": "python",
+      "module_page": "execution_usage_service",
+      "semantic_hash": "sha256:3d848d4800ca1d9cf71394ef2bf1c91b516bb4108193ada98808de0fe7554b39"
+    },
     "backend/app/services/external_link_service.py": {
       "entities": [
         "ExternalLinkValidationError",
@@ -56991,7 +57552,7 @@
           }
         }
       },
-      "hash": "sha256:8145380c94c5896cd44f9ba0581437b5c6e69a27cae98c890f3b6debfb3129ee",
+      "hash": "sha256:03dbb3f29d4b86e8a99287285dabdbadf83fbc3287d3494c78644b9ed8f8fc65",
       "language": "python",
       "module_page": "test_autonomy_migrations",
       "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
@@ -57493,7 +58054,7 @@
           }
         }
       },
-      "hash": "sha256:ceb27d873d11c5efd6d61a485299d94870e0a6fb85c4dbdedc4522da81b21bcb",
+      "hash": "sha256:da5f2e81a43b3fe8c786bfcc9cbb4ba2af8e181ab4efdabf243c404470af312f",
       "language": "python",
       "module_page": "test_source_preflight",
       "semantic_hash": "sha256:86e4830f43eddcdcf277ede91513dddafabcf761d398f9648d4bd984cd69cd80"
@@ -57628,7 +58189,7 @@
           }
         }
       },
-      "hash": "sha256:a5b0ce0baab8cb7d7c95d938cb6446f6e97381b82d19a641c70fc0412870d19d",
+      "hash": "sha256:f5ca8c311a4c9a8d438a72513c4472809662bfe152c6beb83aeed49c9f0c1ce0",
       "language": "python",
       "module_page": "test_sqlite_migrations",
       "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
@@ -58229,7 +58790,7 @@
           }
         }
       },
-      "hash": "sha256:408457c1453ecba75839a6c43f442085ebdd44f34f1b3159297c191637d0657d",
+      "hash": "sha256:1a2e9868e119c7f4115ab4bbcbe54a1279c62d5d901018c42ea8fc07804dee43",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
       "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"
@@ -58515,6 +59076,7 @@
             "_read": "—",
             "_schema_refs": "—",
             "test_generated_submission_contract_includes_canonical_progress": "—",
+            "test_generated_usage_contract_matches_the_registered_schema": "—",
             "test_model_aware_operation_contract_is_feature_gated": "—",
             "test_model_aware_package_contract_matches_live_rest_and_mcp": "—",
             "test_pm_skill_covers_governed_difficulty_scenarios": "—",
@@ -58526,10 +59088,10 @@
           }
         }
       },
-      "hash": "sha256:94e3f1492ea1da65b6e5bfd7e3e0c5c29c0af3237c3ec92d7117f421adb7f68f",
+      "hash": "sha256:51f30f5a57cd1bad579f2605e432d46f9a19ede00559589f0ca87d3a882fd7f5",
       "language": "python",
       "module_page": "test_agent_skill_routing_guidance",
-      "semantic_hash": "sha256:dfb5fb4ba0bb0e61470fe519b77d94f344796d8ffeb6648deb3061e8ea52a94e"
+      "semantic_hash": "sha256:8a9da7b4ab9e1d7a0c2c7219a52d75ee863e203f5cece6feb346af5f7b35bc23"
     },
     "backend/tests/test_agent_team_setup.py": {
       "entities": [
@@ -58798,7 +59360,7 @@
           }
         }
       },
-      "hash": "sha256:fa71590f27f27890112630b42a23cf6a1b52ac18f442e7845849d2fbe110a82a",
+      "hash": "sha256:2ab57ca79a1ce2c5f631bc025512fee0e468e7d741c8d48e88992d6b71124caf",
       "language": "python",
       "module_page": "test_database_harness",
       "semantic_hash": "sha256:8aa2e3c36005907481aace31819f3a17775d38d5c81bdbdf8d871aa8b7b20084"
@@ -58896,6 +59458,33 @@
       "language": "python",
       "module_page": "test_delivery_scenarios",
       "semantic_hash": "sha256:404cf032ea12413108951ee6737432709dc0aa0e5d5b03b9c46c68106dffa795"
+    },
+    "backend/tests/test_execution_usage.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Usage provenance, corrections, immutable pricing and permission isolation.",
+          "functions": {
+            "seed_run": "—",
+            "test_concurrent_usage_corrections_reserve_one_head": "—",
+            "test_reported_zero_and_unknown_are_not_repriced_by_live_metadata": "—",
+            "test_usage_correction_is_versioned_and_atomic": "—",
+            "test_usage_replay_correction_and_currency_buckets": "—",
+            "test_usage_rest_mcp_parity_and_readonly_human_summary": "—",
+            "test_usage_unknown_without_reports_and_foreign_reporter_is_denied": "—",
+            "test_usage_zero_unknown_and_currency_validation": "—",
+            "usage": "—"
+          }
+        }
+      },
+      "hash": "sha256:1d468fd46ea28707e066f3a955a567c6ab073570c387c2b5a99f18f8565fbe04",
+      "language": "python",
+      "module_page": "test_execution_usage",
+      "semantic_hash": "sha256:1c20f2979eb753de139a31b187e11e604b28a4eccc01874f549081404f642fb5"
     },
     "backend/tests/test_human_work_queries.py": {
       "entities": [],
@@ -59667,10 +60256,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:923a379484d851778d585a38cd49c47fb71c7c387a5c1fbcea5d030982b3770b",
+      "hash": "sha256:a7ccda1b97e00697d72707ca79ba5a08b3399282cfab7366c45d2e6d645394de",
       "language": "typescript",
       "module_page": "DeliveryAnalytics.test",
-      "semantic_hash": "sha256:146f1af2b8759c5b2f5f3ade9e2e48663750bca9d4c712720aedc1a23ad73db3"
+      "semantic_hash": "sha256:aaffb1dab6a0b869bacb53e5e3e5fd9da3da6ad24f1193de18c2a2c322ae428d"
     },
     "frontend/src/components/analytics/DeliveryAnalytics.tsx": {
       "entities": [],
@@ -59686,10 +60275,46 @@
           }
         }
       },
-      "hash": "sha256:da9ea51d96dd50172556ca428eac751470318d70e2b3e7a83407718012fcd2ef",
+      "hash": "sha256:d0235ef3035cb7ce4084e55abc3f7cde63f4571bf95e467f5f1d1b27134dc475",
       "language": "typescript",
       "module_page": "DeliveryAnalytics",
-      "semantic_hash": "sha256:1b42e4bf5a8bc8d221ab8e74fd97c204e778eb7d3dae4ebdcb60eb53aa48a0be"
+      "semantic_hash": "sha256:bd6ffebfd1b682e4ab11f5b9a71522d1b7e0feb7299961dab80418c8213d67af"
+    },
+    "frontend/src/components/analytics/ExecutionUsagePanel.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:ddc893a0c41aa5db694cc29281f720c045466f21c0aa372ebea26805f5b8924a",
+      "language": "typescript",
+      "module_page": "ExecutionUsagePanel.test",
+      "semantic_hash": "sha256:44d331831ead328c3f26fdeaf1c18c947463191ea6829d078c00d2b0c6a1412b"
+    },
+    "frontend/src/components/analytics/ExecutionUsagePanel.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.tsx`._",
+          "functions": {
+            "ExecutionUsagePanel": "—"
+          }
+        }
+      },
+      "hash": "sha256:c86b31f48e5f43e06a1182dc9c774f720477e9f1eb9d188be043075e8dd99334",
+      "language": "typescript",
+      "module_page": "ExecutionUsagePanel",
+      "semantic_hash": "sha256:b2ad3bc09712f840e28407c3633d41ce2ca972a52a5b9b16cbc3952a4f8314b0"
     },
     "frontend/src/components/analytics/TaskStatusFlow.tsx": {
       "entities": [
@@ -66617,7 +67242,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:48a2e8b2c8c68ea251255d794b4dc0b06b58d47dd713d9194c787958538b2b4d",
+      "hash": "sha256:c380a3848668d27c215e8ff9bd83074a67abd965043bc27c26b9c684439a5788",
       "language": "typescript",
       "module_page": "resources.en",
       "semantic_hash": "sha256:71ca1ac0d43406f2dc0b15b120f647a14385465f44d5e9d662077680def4fd3d"
@@ -66634,7 +67259,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:6d4a8c41a8b0d7a610a3357581f4c4ed57ebac6a02b02d862d9ea948660a20ab",
+      "hash": "sha256:584573f4021cb991f5ea07e0270a147a35cdc094dccd13af07850f5a77cc1f6b",
       "language": "typescript",
       "module_page": "resources.ru",
       "semantic_hash": "sha256:ebdc0093465ad90e4020ed6dde008806ceeafe3df2ca8717c734f28b754886c4"
@@ -68830,6 +69455,23 @@
       "language": "typescript",
       "module_page": "emailSettingsService",
       "semantic_hash": "sha256:554725ac5e48c14405dd4cb077fd628ea11b348b4b028a8401b5ec9e7d9d899a"
+    },
+    "frontend/src/services/executionUsageService.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/services/executionUsageService.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:cecd45c0cdd5ab98cac77ccda761458dd8612b3b22ad33d6061c346ba2a82ee6",
+      "language": "typescript",
+      "module_page": "executionUsageService",
+      "semantic_hash": "sha256:fad3367f9aab59586f85ce109571201b87a98cdac20fffce033f705e7701f0b1"
     },
     "frontend/src/services/exportService.ts": {
       "entities": [],
@@ -71667,6 +72309,67 @@
       "language": "typescript",
       "module_page": "emailSettings",
       "semantic_hash": "sha256:c723c1b2df560326f7ab96dd98bb0a2decef22bb555672814d93f62849344ee6"
+    },
+    "frontend/src/types/executionUsage.ts": {
+      "entities": [
+        "ExecutionUsageSummary"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "ExecutionUsageSummary",
+          "occurrence": 1,
+          "page": "executionUsage_ExecutionUsageSummary"
+        }
+      ],
+      "entity_pages": {
+        "ExecutionUsageSummary": "executionUsage_ExecutionUsageSummary"
+      },
+      "generated_semantics": {
+        "entities": {
+          "ExecutionUsageSummary": {
+            "attributes": {
+              "accepted_task_identities": "—",
+              "advisory_budget": "—",
+              "estimated_cost": "—",
+              "expected_runs": "—",
+              "human_effort_reports": "—",
+              "independently_reconciled": "—",
+              "known_cost_reports": "—",
+              "measured_report_count": "—",
+              "partial_reports": "—",
+              "provider_reported_cost": "—",
+              "reported_human_effort_minutes": "—",
+              "reported_runs": "—",
+              "reported_units": "—",
+              "reports_linked_to_accepted_tasks": "—",
+              "simulated_estimated_cost": "—",
+              "simulated_reported_cost": "—",
+              "simulated_reports": "—",
+              "simulated_units": "—",
+              "unavailable_reports": "—",
+              "unit_report_counts": "—",
+              "unknown_cost_reports": "—",
+              "unreported_runs": "—",
+              "window_basis": "—",
+              "window_end": "—",
+              "window_start": "—"
+            },
+            "description": "_Auto-generated from `ExecutionUsageSummary` in `frontend/src/types/executionUsage.ts`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "ExecutionUsageSummary": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/types/executionUsage.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:a0afbe677f83364aa7384262e064816e6468a178101e851571b62c1685256316",
+      "language": "typescript",
+      "module_page": "executionUsage",
+      "semantic_hash": "sha256:93ff5b63a4417076034480641908a80f071b197318b6dac0a06fbb50cec0bcfc"
     },
     "frontend/src/types/gantt.ts": {
       "entities": [
@@ -76937,7 +77640,7 @@
           }
         }
       },
-      "hash": "sha256:11763282b139198354a2e54d0ee2316a23946de71272336cd6ec8ec9a98569e8",
+      "hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
       "language": "python",
       "module_page": "build_agent_skills",
       "semantic_hash": "sha256:ba27f167dd04899c5304f7238926de3276fc2278ca772a9534b74ca312da3587"

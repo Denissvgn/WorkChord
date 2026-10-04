@@ -37,13 +37,13 @@ flowchart LR
     n4["backend/app/models/database_migration.py"]
     n5["backend/app/models/delivery_observation.py"]
     n6["backend/app/models/discussion.py"]
-    n7["backend/app/models/external_link.py"]
-    n8["backend/app/models/github.py"]
-    n9["backend/app/models/identity.py"]
-    n10["backend/app/models/label.py"]
-    n11["backend/app/models/native_connection.py"]
-    n12["backend/app/models/outbound_webhook.py"]
-    n13["backend/app/models/plan_share.py"]
+    n7["backend/app/models/execution_usage.py"]
+    n8["backend/app/models/external_link.py"]
+    n9["backend/app/models/github.py"]
+    n10["backend/app/models/identity.py"]
+    n11["backend/app/models/label.py"]
+    n12["backend/app/models/native_connection.py"]
+    n13["backend/app/models/outbound_webhook.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,13 +63,13 @@ flowchart LR
     click n4 "../modules/models_database_migration.md"
     click n5 "../modules/delivery_observation.md"
     click n6 "../modules/models_discussion.md"
-    click n7 "../modules/models_external_link.md"
-    click n8 "../modules/models_github.md"
-    click n9 "../modules/models_identity.md"
-    click n10 "../modules/models_label.md"
-    click n11 "../modules/native_connection.md"
-    click n12 "../modules/models_outbound_webhook.md"
-    click n13 "../modules/models_plan_share.md"
+    click n7 "../modules/models_execution_usage.md"
+    click n8 "../modules/models_external_link.md"
+    click n9 "../modules/models_github.md"
+    click n10 "../modules/models_identity.md"
+    click n11 "../modules/models_label.md"
+    click n12 "../modules/native_connection.md"
+    click n13 "../modules/models_outbound_webhook.md"
 ```
 
 ### Summary
@@ -93,12 +93,12 @@ flowchart LR
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
+| `execution_usage` | import | [models_execution_usage](../modules/models_execution_usage.md) | — |
 | `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
 | `github` | import | [models_github](../modules/models_github.md) | — |
 | `identity` | import | [models_identity](../modules/models_identity.md) | — |
 | `label` | import | [models_label](../modules/models_label.md) | — |
 | `native_connection` | import | [native_connection](../modules/native_connection.md) | — |
 | `outbound_webhook` | import | [models_outbound_webhook](../modules/models_outbound_webhook.md) | — |
-| `plan_share` | import | [models_plan_share](../modules/models_plan_share.md) | — |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

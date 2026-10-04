@@ -35,10 +35,10 @@ flowchart LR
     n7["AgentService.get_pipeline (backend/app/services/agent_service.py)"]
     n8["AgentWorkService.list_actor_roster (backend/app/services/agent_work_service.py)"]
     n9["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
-    n10["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
-    n11["IterationService.get_all (backend/app/services/iteration_service.py)"]
-    n12["ProjectService.get_tasks (backend/app/services/project_service.py)"]
-    n13["ProjectService.list_initiatives (backend/app/services/project_service.py)"]
+    n10["ExecutionUsageService._history (backend/app/services/execution_usage_service.py)"]
+    n11["ExecutionUsageService.summary (backend/app/services/execution_usage_service.py)"]
+    n12["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n13["IterationService.get_all (backend/app/services/iteration_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,10 +61,10 @@ flowchart LR
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_work_service.md"
     click n9 "../modules/delivery_metrics_service.md"
-    click n10 "../modules/iteration_service.md"
-    click n11 "../modules/iteration_service.md"
-    click n12 "../modules/project_service.md"
-    click n13 "../modules/project_service.md"
+    click n10 "../modules/execution_usage_service.md"
+    click n11 "../modules/execution_usage_service.md"
+    click n12 "../modules/iteration_service.md"
+    click n13 "../modules/iteration_service.md"
 ```
 
 ### Summary
@@ -91,9 +91,9 @@ flowchart LR
 | `AgentService.get_pipeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService.list_actor_roster` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
+| `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
+| `ExecutionUsageService.summary` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `IterationService.get_all` | call | [iteration_service](../modules/iteration_service.md) | 1 |
-| `ProjectService.get_tasks` | call | [project_service](../modules/project_service.md) | 1 |
-| `ProjectService.list_initiatives` | call | [project_service](../modules/project_service.md) | 1 |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.

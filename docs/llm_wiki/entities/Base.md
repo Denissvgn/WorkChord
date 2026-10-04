@@ -47,7 +47,7 @@ flowchart LR
     n22["backend/app/models/delivery_dependency.py"]
     n23["backend/app/models/delivery_observation.py"]
     n24["backend/app/models/discussion.py"]
-    n25["backend/app/models/external_link.py"]
+    n25["backend/app/models/execution_usage.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -97,7 +97,7 @@ flowchart LR
     click n22 "../modules/delivery_dependency.md"
     click n23 "../modules/delivery_observation.md"
     click n24 "../modules/models_discussion.md"
-    click n25 "../modules/models_external_link.md"
+    click n25 "../modules/models_execution_usage.md"
 ```
 
 ### Summary
@@ -139,6 +139,6 @@ flowchart LR
 | `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
-| `external_link` | import | [models_external_link](../modules/models_external_link.md) | — |
+| `execution_usage` | import | [models_execution_usage](../modules/models_execution_usage.md) | — |
 
-> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.
+> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.

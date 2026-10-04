@@ -52,10 +52,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| human_my_work | TaskDetailService(…).my_work | 63 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
-| human_my_work | TaskDetailService | 63 | `TaskDetailService(db)` |
-| human_my_work | HTTPException | 66 | `HTTPException(422, detail=[...])` |
-| human_my_work | str | 66 | `str(exc)` |
+| human_my_work | TaskDetailService(…).my_work | 77 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
+| human_my_work | TaskDetailService | 77 | `TaskDetailService(db)` |
+| human_my_work | HTTPException | 80 | `HTTPException(422, detail=[...])` |
+| human_my_work | str | 80 | `str(exc)` |
 
 ### Boundary effects
 
@@ -65,8 +65,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `human_my_work` | `TaskDetailService(db).my_work` | 63 |
-| external_call | `human_my_work` | `HTTPException` | 66 |
+| unresolved_call | `human_my_work` | `TaskDetailService(db).my_work` | 77 |
+| external_call | `human_my_work` | `HTTPException` | 80 |
 
 ## Behavior
 

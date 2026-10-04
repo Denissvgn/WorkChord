@@ -42,8 +42,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| lookup_tasks | TaskDetailService(…).lookup | 50 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id)` |
-| lookup_tasks | TaskDetailService | 50 | `TaskDetailService(db)` |
+| lookup_tasks | TaskDetailService(…).lookup | 64 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id)` |
+| lookup_tasks | TaskDetailService | 64 | `TaskDetailService(db)` |
 
 ### Boundary effects
 
@@ -53,7 +53,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 50 |
+| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 64 |
 
 ## Behavior
 

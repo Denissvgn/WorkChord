@@ -60,7 +60,7 @@ flowchart LR
     n10["backend/app/routers/identity.py"]
     n11["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
     n12["backend/app/services/delivery_metrics_service.py"]
-    n13["IterationService._response_project (backend/app/services/iteration_service.py)"]
+    n13["backend/app/services/execution_usage_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -87,7 +87,7 @@ flowchart LR
     click n10 "../modules/routers_identity.md"
     click n11 "../modules/agent_work_service.md"
     click n12 "../modules/delivery_metrics_service.md"
-    click n13 "../modules/iteration_service.md"
+    click n13 "../modules/execution_usage_service.md"
 ```
 
 ### Summary
@@ -117,6 +117,6 @@ flowchart LR
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
-| `IterationService._response_project` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
+| `execution_usage_service` | import | [execution_usage_service](../modules/execution_usage_service.md) | — |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.

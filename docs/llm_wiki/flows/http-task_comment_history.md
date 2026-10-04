@@ -22,6 +22,8 @@ sequenceDiagram
     p1-->>p2: HTTPException
     p1-->>p4: str
     p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
     p0-->>p5: DiscussionService(…).history
     p0->>p6: DiscussionService
 ```
@@ -38,19 +40,23 @@ flowchart LR
     s5["5. HTTPException"]
     s6["6. str"]
     s7["7. HTTPException"]
-    s8["8. DiscussionService(…).history"]
-    s9["9. DiscussionService"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. DiscussionService(…).history"]
+    s11["11. DiscussionService"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
-    s2 -. "HTTPException(422, detail=[...])" .-> s5
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
     s2 -. "str(exc)" .-> s6
-    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s7
-    s1 -. "DiscussionService(…).history(task_id, comment_id, after_version=after_version, limit=limit)" .-> s8
-    s1 -->|"DiscussionService(db)"| s9
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "DiscussionService(…).history(task_id, comment_id, after_version=after_version, limit=limit)" .-> s10
+    s1 -->|"DiscussionService(db)"| s11
     click s1 "../modules/routers_discussion.md"
     click s2 "../modules/routers_task_domain.md"
-    click s9 "../modules/discussion_service.md"
+    click s11 "../modules/discussion_service.md"
 ```
 
 ### Step data
@@ -64,6 +70,8 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `DiscussionService(…).history` | - | - | - | - |
 | `DiscussionService` | - | - | - | - |
 
@@ -74,9 +82,11 @@ flowchart LR
 | task_comment_history | domain_result | 60 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_comment_history | DiscussionService(…).history | 60 | `DiscussionService(db).history(task_id, comment_id, after_version=after_version, limit=limit)` |
 | task_comment_history | DiscussionService | 60 | `DiscussionService(db)` |
 
@@ -92,6 +102,7 @@ flowchart LR
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
+| external_call | `domain_result` | `HTTPException` | 35 |
 | unresolved_call | `task_comment_history` | `DiscussionService(db).history` | 60 |
 
 ## Behavior

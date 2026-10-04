@@ -155,7 +155,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_worker_role | _skill_bundle_prompt | 2317 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
+| workchord_worker_role | _skill_bundle_prompt | 2337 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
 | _skill_bundle_prompt | _agent_context | 338 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 247 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 200 | `_http_agent_key.get(data not statically known)` |

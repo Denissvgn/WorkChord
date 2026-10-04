@@ -149,35 +149,35 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_capabilities | AgentRoutingRolloutService().status | 337 | `AgentRoutingRolloutService().status(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 337 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentTeamSetupService(…).routing_readiness | 339 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| get_agent_capabilities | AgentTeamSetupService | 339 | `AgentTeamSetupService(service.db)` |
-| get_agent_capabilities | (…).status | 342 | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 343 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 346 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
-| get_agent_capabilities | agent_contract_features | 350 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
-| agent_contract_features | ValueError | 42 | `ValueError('Unsupported model-aware routing mode')` |
-| agent_contract_features | features.insert | 50 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
-| agent_contract_features | features.index | 51 | `features.index('actor-roster-v1')` |
+| get_agent_capabilities | AgentRoutingRolloutService().status | 339 | `AgentRoutingRolloutService().status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 339 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentTeamSetupService(…).routing_readiness | 341 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
+| get_agent_capabilities | AgentTeamSetupService | 341 | `AgentTeamSetupService(service.db)` |
+| get_agent_capabilities | (…).status | 344 | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 345 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 348 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
+| get_agent_capabilities | agent_contract_features | 352 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
+| agent_contract_features | ValueError | 43 | `ValueError('Unsupported model-aware routing mode')` |
+| agent_contract_features | features.insert | 51 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
+| agent_contract_features | features.index | 52 | `features.index('actor-roster-v1')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `features.extend` | `get_agent_capabilities` | 355 |
-| mutation | `features.append` | `get_agent_capabilities` | 372 |
-| mutation | `features.insert` | `agent_contract_features` | 50 |
+| mutation | `features.extend` | `get_agent_capabilities` | 357 |
+| mutation | `features.append` | `get_agent_capabilities` | 374 |
+| mutation | `features.insert` | `agent_contract_features` | 51 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 337 |
-| unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 339 |
-| unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 342 |
-| external_call | `agent_contract_features` | `ValueError` | 42 |
-| unresolved_call | `agent_contract_features` | `features.index` | 51 |
+| unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 339 |
+| unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 341 |
+| unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 344 |
+| external_call | `agent_contract_features` | `ValueError` | 43 |
+| unresolved_call | `agent_contract_features` | `features.index` | 52 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 
 ## Behavior

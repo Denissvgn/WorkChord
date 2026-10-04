@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.test.t
 | Signal | Values |
 |--------|--------|
 | Constants | `metrics`, `projects`, `report` |
-| Module calls | `metrics = hoisted`, `projects = hoisted`, `mock`, `mock`, `describe` |
+| Module calls | `metrics = hoisted`, `projects = hoisted`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 
