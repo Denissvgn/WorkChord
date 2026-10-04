@@ -367,6 +367,7 @@ class SnapshotService:
         for row, parent_id in flat:
             task = await self.db.get(Task, row["id"])
             task.parent_id = parent_id
+            await service.record_task_event(task.id, "snapshot_task_restored", {"source_snapshot": filename, "version": task.version}, actor_type="admin")
             for dependency in row.get("dependencies", []):
                 self.db.add(TaskDependency(task_id=task.id, depends_on_id=dependency))
         await self.db.flush()

@@ -34,6 +34,16 @@ async def domain_result(awaitable):
     return result
 
 
+from app.schemas.delivery_metrics import DeliveryMetricsResponse
+from app.services.delivery_metrics_service import DeliveryMetricsService
+
+
+@router.get("/tasks/delivery-metrics", response_model=DeliveryMetricsResponse)
+async def delivery_metrics(db: DB, project_id: int | None = Query(default=None, ge=1),
+    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366)):
+    return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days))
+
+
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
 async def lookup_tasks(db: DB, project_id: int | None = None, iteration_id: int | None = None, q: str | None = Query(default=None, max_length=200), backlog_only: bool = False,
                        limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0)):

@@ -57,7 +57,7 @@ async def domain_capabilities(db):
         pending = await db.scalar(select(Task.id).where(Task.domain_backfill_version < 1).limit(1))
     ready = pending is None
     return {"schema_version": 1, "ready": ready, "reason": None if ready else "domain_backfill_pending",
-        "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1"] if ready else [],
+        "features": ["task-actions-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1", "delivery-metrics-v1"] if ready else [],
         "legacy_iteration_routes": True, "legacy_task_versions_required": get_settings().strict_mutation_versions,
         "aggregate_revisions_required": get_settings().strict_mutation_versions,
         "aggregate_revision_header": "X-Expected-Revisions",

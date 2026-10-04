@@ -6,6 +6,7 @@ import { iterationService } from '../services/iterationService';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { NotificationsPanel } from '../components/notifications/NotificationsPanel';
 import { TaskStatusFlow } from '../components/analytics/TaskStatusFlow';
+import { DeliveryAnalytics } from '../components/analytics/DeliveryAnalytics';
 import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashboardCards';
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState } from '../components/feedback/QueryState';
@@ -49,6 +50,7 @@ const AnalyticsPage = () => {
                     subtitle={t('analytics.selectIteration')}
                     actions={<button className="btn" onClick={() => navigate('/')}>{t('actions.backToTasks')}</button>}
                 />
+                <DeliveryAnalytics />
             </PageLayout>
         );
     }
@@ -62,6 +64,7 @@ const AnalyticsPage = () => {
             />
 
             {summaryQuery.isLoading && <p role="status">{t('common.loading')}</p>}
+            <DeliveryAnalytics iterationId={selectedIterationId} />
             {summaryQuery.isError && <QueryErrorState error={summaryQuery.error} onRetry={() => { void summaryQuery.refetch(); }} />}
             <WorkMetricsLine metrics={summaryQuery.data} />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
