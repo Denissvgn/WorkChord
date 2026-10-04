@@ -159,9 +159,9 @@ flowchart LR
 | get_agent_capabilities | AgentRoutingRolloutService | 343 | `AgentRoutingRolloutService(data not statically known)` |
 | get_agent_capabilities | AgentRoutingRolloutService | 346 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
 | get_agent_capabilities | agent_contract_features | 350 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
-| agent_contract_features | ValueError | 41 | `ValueError('Unsupported model-aware routing mode')` |
-| agent_contract_features | features.insert | 49 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
-| agent_contract_features | features.index | 50 | `features.index('actor-roster-v1')` |
+| agent_contract_features | ValueError | 42 | `ValueError('Unsupported model-aware routing mode')` |
+| agent_contract_features | features.insert | 50 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
+| agent_contract_features | features.index | 51 | `features.index('actor-roster-v1')` |
 
 ### Boundary effects
 
@@ -169,7 +169,7 @@ flowchart LR
 |---|---|---|---:|
 | mutation | `features.extend` | `get_agent_capabilities` | 355 |
 | mutation | `features.append` | `get_agent_capabilities` | 372 |
-| mutation | `features.insert` | `agent_contract_features` | 49 |
+| mutation | `features.insert` | `agent_contract_features` | 50 |
 
 ### Static analysis gaps
 
@@ -178,8 +178,8 @@ flowchart LR
 | unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 337 |
 | unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 339 |
 | unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 342 |
-| external_call | `agent_contract_features` | `ValueError` | 41 |
-| unresolved_call | `agent_contract_features` | `features.index` | 50 |
+| external_call | `agent_contract_features` | `ValueError` | 42 |
+| unresolved_call | `agent_contract_features` | `features.index` | 51 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 
 ## Behavior

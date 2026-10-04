@@ -831,3 +831,35 @@ Separated configuration, acknowledgement, task eligibility, connection observati
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a9b364c3504d66790424062190d84ea60b51fb158c4b067762342d8a674ede78`
+- Pages created: 0
+- Pages updated: 34
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2745
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-04
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:877bc05aade4c6e71878f325e13492f5d4610437a511d43cb8f4813bfd859065`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2773
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

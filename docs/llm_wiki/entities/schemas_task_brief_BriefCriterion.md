@@ -44,14 +44,15 @@ flowchart LR
     n0["BriefCriterion (backend/app/schemas/task_brief.py)"]
     n1["BaseModel"]
     n2["brief_from_draft (backend/app/services/task_brief_service.py)"]
-    n3["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n4["test_backlog_recovery_keeps_ids_and_append_only_brief_history (backend/tests/test_task_domain.py)"]
-    n5["test_criteria_keep_identity_and_explicit_revisions (backend/tests/test_task_domain.py)"]
-    n6["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
-    n7["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n8["test_triage_handoff_preserves_canonical_fields_and_criterion_ids (backend/tests/test_task_domain.py)"]
-    n9["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
-    n10["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
+    n3["test_worker_context_identifies_authoritative_brief (backend/tests/test_agent_work_routing_lineage.py)"]
+    n4["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n5["test_backlog_recovery_keeps_ids_and_append_only_brief_history (backend/tests/test_task_domain.py)"]
+    n6["test_criteria_keep_identity_and_explicit_revisions (backend/tests/test_task_domain.py)"]
+    n7["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n8["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n9["test_triage_handoff_preserves_canonical_fields_and_criterion_ids (backend/tests/test_task_domain.py)"]
+    n10["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n11["build_examples (scripts/generate_mobile_contract_fixtures.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -62,16 +63,18 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/task_brief_service.md"
-    click n3 "../modules/test_task_domain.md"
+    click n3 "../modules/test_agent_work_routing_lineage.md"
     click n4 "../modules/test_task_domain.md"
     click n5 "../modules/test_task_domain.md"
     click n6 "../modules/test_task_domain.md"
     click n7 "../modules/test_task_domain.md"
     click n8 "../modules/test_task_domain.md"
-    click n9 "../modules/test_task_domain_integrity.md"
-    click n10 "../modules/generate_mobile_contract_fixtures.md"
+    click n9 "../modules/test_task_domain.md"
+    click n10 "../modules/test_task_domain_integrity.md"
+    click n11 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Summary
@@ -91,6 +94,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `brief_from_draft` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
+| `test_worker_context_identifies_authoritative_brief` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_backlog_recovery_keeps_ids_and_append_only_brief_history` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_criteria_keep_identity_and_explicit_revisions` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

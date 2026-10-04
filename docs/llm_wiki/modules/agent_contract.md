@@ -4,6 +4,8 @@
 
 ## Description
 
+The shared capability handshake advertises `canonical-task-brief-v1` for typed worker context, criterion-bound submission and independent acceptance. The feature projection remains identical for REST and MCP.
+
 Shared capability handshake contract for REST and MCP projections.
 
 ## Imports

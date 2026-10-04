@@ -45,7 +45,7 @@ flowchart TD
 | [i18n](modules/i18n.md) | 33 | 1 |
 | [authority](modules/authority.md) | 30 | 5 |
 | [api](modules/api.md) | 30 | 2 |
-| [schemas_task](modules/schemas_task.md) | 28 | 5 |
+| [schemas_task](modules/schemas_task.md) | 29 | 5 |
 | [formatDate](modules/formatDate.md) | 28 | 1 |
 | [models_project](modules/models_project.md) | 27 | 9 |
 | [Input](modules/Input.md) | 27 | 0 |
@@ -81,10 +81,10 @@ flowchart TD
 | [Checkbox](modules/Checkbox.md) | 13 | 0 |
 | [iterationStore](modules/iterationStore.md) | 13 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
+| [schemas_task_brief](modules/schemas_task_brief.md) | 12 | 0 |
 | [identity_service](modules/identity_service.md) | 12 | 7 |
 | [iteration_service](modules/iteration_service.md) | 12 | 8 |
 | [schemas_iteration](modules/schemas_iteration.md) | 11 | 2 |
-| [schemas_task_brief](modules/schemas_task_brief.md) | 11 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
 | [agent_work_service](modules/agent_work_service.md) | 11 | 20 |
 | [useConfirmDialog](modules/useConfirmDialog.md) | 11 | 1 |
@@ -515,7 +515,7 @@ flowchart TD
 | [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) | 0 | 7 |
 | [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) | 0 | 0 |
 | [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) | 0 | 12 |
-| [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) | 0 | 6 |
+| [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) | 0 | 8 |
 | [test_capacity_contract](modules/test_capacity_contract.md) | 0 | 1 |
 | [test_client_contract](modules/test_client_contract.md) | 0 | 5 |
 | [test_database_harness](modules/test_database_harness.md) | 0 | 5 |

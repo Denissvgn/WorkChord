@@ -7345,7 +7345,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 49,
+              "line": 50,
               "step": "agent_contract_features",
               "step_index": 9,
               "target": "features.insert"
@@ -7372,13 +7372,13 @@
             },
             {
               "kind": "external_call",
-              "line": 41,
+              "line": 42,
               "step": "agent_contract_features",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 50,
+              "line": 51,
               "step": "agent_contract_features",
               "target": "features.index"
             },
@@ -33442,7 +33442,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3068,
+              "line": 3070,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33450,7 +33450,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3073,
+              "line": 3075,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33458,7 +33458,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3076,
+              "line": 3078,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33466,7 +33466,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3079,
+              "line": 3081,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33474,7 +33474,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3082,
+              "line": 3084,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33482,7 +33482,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3088,
+              "line": 3090,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33490,7 +33490,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3091,
+              "line": 3093,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33498,7 +33498,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3100,
+              "line": 3102,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -33507,61 +33507,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3059,
+              "line": 3061,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3000,
+              "line": 3002,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3001,
+              "line": 3003,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3007,
+              "line": 3009,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3008,
+              "line": 3010,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3012,
+              "line": 3014,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3016,
+              "line": 3018,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3017,
+              "line": 3019,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3021,
+              "line": 3023,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3022,
+              "line": 3024,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -41759,7 +41759,8 @@
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
         "modules/routers_agent.md",
-        "modules/schemas_agent.md"
+        "modules/schemas_agent.md",
+        "modules/test_agent_work_routing_lineage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -52711,6 +52712,7 @@
         "modules/generate_mobile_contract_fixtures.md",
         "modules/schemas_task_brief.md",
         "modules/task_brief_service.md",
+        "modules/test_agent_work_routing_lineage.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -52745,6 +52747,7 @@
         "modules/schemas_template.md",
         "modules/schemas_triage.md",
         "modules/task_brief_service.md",
+        "modules/test_agent_work_routing_lineage.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -67413,18 +67416,7 @@
         "entities/schemas_task_brief_TaskBrief.md",
         "entities/TaskReviewResponse.md",
         "entities/TaskReviewWrite.md",
-        "modules/generate_mobile_contract_fixtures.md",
-        "modules/mcp_agent_tools.md",
-        "modules/routers_task_domain.md",
-        "modules/schemas_agent.md",
-        "modules/schemas_llm.md",
-        "modules/schemas_task.md",
-        "modules/schemas_task_brief.md",
-        "modules/schemas_template.md",
-        "modules/schemas_triage.md",
-        "modules/task_brief_service.md",
-        "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/schemas_task_brief.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -69655,6 +69647,8 @@
         "modules/models_agent.md",
         "modules/models_task.md",
         "modules/schemas_agent.md",
+        "modules/schemas_task.md",
+        "modules/schemas_task_brief.md",
         "modules/test_agent_work_routing_lineage.md"
       ],
       "role": "semantic",
@@ -83924,5 +83918,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0aa8aec661c4c727ea36c5c37ba343ea32c98ae648870b2070fe5ec54b51e955"
+  "source_hash": "sha256:85982944df075972de3e6379aeab46c3d93c57316ee5a5de64fbffbd1115cc86"
 }
