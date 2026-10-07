@@ -64578,6 +64578,7 @@
         "modules/source.md",
         "modules/test_authority_migrations.md",
         "modules/test_postgresql_transfer.md",
+        "modules/test_source_preflight.md",
         "modules/test_transfer_catalog.md",
         "modules/transfer.md"
       ],
@@ -73769,6 +73770,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_source_preflight",
       "outgoing_internal_links": [
+        "modules/catalog.md",
         "modules/database_migration_manifest.md",
         "modules/source.md",
         "modules/test_source_preflight.md",
@@ -88311,5 +88313,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:dc0742f83281021570877093f349cd8d91bcb091bd1ccc9bf195c9b7e544f4a8"
+  "source_hash": "sha256:f46520dabb53fd3b3fab1515b980f8b81772d79e5398930c621355f228eaa9ca"
 }

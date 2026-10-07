@@ -129,6 +129,7 @@ flowchart TD
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
+| [catalog](modules/catalog.md) | 7 | 2 |
 | [mcp_server](modules/mcp_server.md) | 7 | 15 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
 | [models_task_brief](modules/models_task_brief.md) | 7 | 2 |
@@ -140,7 +141,6 @@ flowchart TD
 | [taskFilterDefaults](modules/taskFilterDefaults.md) | 7 | 1 |
 | [evidence](modules/evidence.md) | 6 | 2 |
 | [signing](modules/signing.md) | 6 | 1 |
-| [catalog](modules/catalog.md) | 6 | 2 |
 | [source](modules/source.md) | 6 | 4 |
 | [models_external_link](modules/models_external_link.md) | 6 | 2 |
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
@@ -530,7 +530,7 @@ flowchart TD
 | [test_documentation_boundary](modules/test_documentation_boundary.md) | 0 | 1 |
 | [test_postgresql_closeout](modules/test_postgresql_closeout.md) | 0 | 3 |
 | [test_postgresql_transfer](modules/test_postgresql_transfer.md) | 0 | 13 |
-| [test_source_preflight](modules/test_source_preflight.md) | 0 | 3 |
+| [test_source_preflight](modules/test_source_preflight.md) | 0 | 4 |
 | [test_transfer_catalog](modules/test_transfer_catalog.md) | 0 | 1 |
 | [postgresql_migrations_env](modules/postgresql_migrations_env.md) | 0 | 0 |
 | [0001_wave0_probe](modules/0001_wave0_probe.md) | 0 | 0 |

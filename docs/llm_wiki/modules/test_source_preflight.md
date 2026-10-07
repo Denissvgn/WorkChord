@@ -11,6 +11,7 @@ Read-only SQLite snapshot and manifest safety tests.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.database_migration.catalog` | `transfer_tables` |
 | `app.database_migration.manifest` | `verify_document`, `write_document` |
 | `app.database_migration.source` | `MigrationDataError`, `preflight_source` |
 | `app.services.upgrade_service` | `bootstrap_database_schema`, `head_revision` |
@@ -25,25 +26,30 @@ Read-only SQLite snapshot and manifest safety tests.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/database_migration/manifest.py"]
-    n1["backend/app/database_migration/source.py"]
-    n2["backend/app/services/upgrade_service.py"]
-    n3["backend/tests/database_migration/test_source_preflight.py"]
-    n1 --> n0
-    n1 --> n2
-    n3 --> n0
-    n3 --> n1
-    n3 --> n2
-    click n0 "../modules/database_migration_manifest.md"
-    click n1 "../modules/source.md"
-    click n2 "../modules/upgrade_service.md"
-    click n3 "../modules/test_source_preflight.md"
+    n0["backend/app/database_migration/catalog.py"]
+    n1["backend/app/database_migration/manifest.py"]
+    n2["backend/app/database_migration/source.py"]
+    n3["backend/app/services/upgrade_service.py"]
+    n4["backend/tests/database_migration/test_source_preflight.py"]
+    n2 --> n0
+    n2 --> n1
+    n2 --> n3
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    click n0 "../modules/catalog.md"
+    click n1 "../modules/database_migration_manifest.md"
+    click n2 "../modules/source.md"
+    click n3 "../modules/upgrade_service.md"
+    click n4 "../modules/test_source_preflight.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Outbound | [catalog](../modules/catalog.md) |
 | Outbound | [database_migration_manifest](../modules/database_migration_manifest.md) |
 | Outbound | [source](../modules/source.md) |
 | Outbound | [upgrade_service](../modules/upgrade_service.md) |

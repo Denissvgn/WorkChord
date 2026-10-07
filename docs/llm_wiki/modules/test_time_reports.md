@@ -22,7 +22,7 @@ Recorded coverage and manager totals preserve private entry boundaries.
 | `pytest` | `pytest` |
 | `sqlalchemy` | `insert` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
-| `tests.test_time_entries` | `prepare`, `entry_data` |
+| `tests.test_time_entries` | `prepare`, `entry_data`, `isolated_time_settings` |
 | `uuid` | `uuid4` |
 
 ## Local dependency map
