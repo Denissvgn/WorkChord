@@ -1,6 +1,23 @@
 # Recorded time
 
-Time entry is optional. Set `TIME_ENTRIES_ENABLED=true`, apply the database upgrade with `./scripts/upgrade_database.sh`, and restart the backend. Human sign-in is required; trusted-local guest identity and agent credentials cannot author personal work records. Disabling the setting hides the feature and blocks its API without deleting records. Re-enable it to access retained records.
+Time entry is optional and requires `TIME_ENTRIES_ENABLED=true` in the backend process. Human sign-in is required; trusted-local guest identity and agent credentials cannot author personal work records. Disabling the setting hides the feature and blocks its API without deleting records. Re-enable it to access retained records.
+
+For [native local setup](local-development.md), set the flag in `backend/.env`,
+initialize the database with `./scripts/upgrade_database.sh`, and restart the backend.
+
+For Compose, pass the flag into the backend service through an environment
+override; setting it only in the Compose `.env` file does not forward it:
+
+```yaml
+services:
+  backend:
+    environment:
+      TIME_ENTRIES_ENABLED: ${TIME_ENTRIES_ENABLED:-false}
+```
+
+Set the flag to `true` in your deployment's Compose environment file. Include
+the override alongside the same Compose files and environment file used for
+that deployment, then recreate the backend. Keep managed human sign-in configured.
 
 Record whole minutes, an explicit local work date, and an IANA timezone such as `Europe/Madrid` or `UTC`. Dates describe the author's selected work date; server creation and correction timestamps are UTC instants. A record contains 1–1,440 minutes, and an author's active records for one work date cannot exceed 1,440 minutes across projects.
 
