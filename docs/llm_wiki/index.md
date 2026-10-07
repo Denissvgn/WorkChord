@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1476 | [Open section](#entities) |
-| Modules | 656 | [Open section](#modules) |
+| Entities | 1482 | [Open section](#entities) |
+| Modules | 662 | [Open section](#modules) |
 | Workflows | 174 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 527 | [Open section](#entry-point-flows) |
+| Entry-point flows | 531 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -430,6 +430,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [IterationEditorState](entities/IterationEditorState.md)
 - [IterationFormProps](entities/IterationFormProps.md)
 - [IterationListProps](entities/IterationListProps.md)
+- [IterationPage](entities/IterationPage.md)
 - [IterationProject](entities/IterationProject.md)
 - [IterationProjectSummary](entities/IterationProjectSummary.md)
 - [IterationResponse](entities/IterationResponse.md)
@@ -600,6 +601,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectMilestoneUpdate](entities/ProjectMilestoneUpdate.md)
 - [ProjectMilestoneUpdateRequest](entities/ProjectMilestoneUpdateRequest.md)
 - [ProjectOwner](entities/ProjectOwner.md)
+- [ProjectPage](entities/ProjectPage.md)
+- [ProjectPortfolioPage](entities/ProjectPortfolioPage.md)
 - [ProjectProfileOwner](entities/ProjectProfileOwner.md)
 - [ProjectRecordStatus](entities/ProjectRecordStatus.md)
 - [ProjectResponse](entities/ProjectResponse.md)
@@ -899,7 +902,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskTextEditorBodyProps](entities/TaskTextEditorBodyProps.md)
 - [TaskTextEditorModalProps](entities/TaskTextEditorModalProps.md)
 - [TaskTimelineDates](entities/TaskTimelineDates.md)
+- [TaskTimelinePage](entities/TaskTimelinePage.md)
+- [TaskTimelinePageItem](entities/TaskTimelinePageItem.md)
 - [TaskTimelinePanelProps](entities/TaskTimelinePanelProps.md)
+- [TaskTimelineService](entities/TaskTimelineService.md)
 - [TaskTreeIntegrityError](entities/TaskTreeIntegrityError.md)
 - [TaskUnmerge](entities/TaskUnmerge.md)
 - [TaskVersionConflictDetail](entities/TaskVersionConflictDetail.md)
@@ -1595,6 +1601,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OverviewPage.test](modules/OverviewPage.test.md) - `frontend/src/pages/OverviewPage.test.tsx`
 - [OverviewTaskReturnBar](modules/OverviewTaskReturnBar.md) - `frontend/src/components/overview/OverviewTaskReturnBar.tsx`
 - [PageLayout](modules/PageLayout.md) - `frontend/src/components/ui/PageLayout.tsx`
+- [PagedTaskBrowser](modules/PagedTaskBrowser.md) - `frontend/src/components/tasks/PagedTaskBrowser.tsx`
+- [PagedTaskBrowser.test](modules/PagedTaskBrowser.test.md) - `frontend/src/components/tasks/PagedTaskBrowser.test.tsx`
 - [PersonCapacity](modules/PersonCapacity.md) - `frontend/src/components/tasks/PersonCapacity.tsx`
 - [Pill](modules/Pill.md) - `frontend/src/components/ui/Pill.tsx`
 - [PlanMasterPage](modules/PlanMasterPage.md) - `frontend/src/pages/PlanMasterPage.tsx`
@@ -1804,6 +1812,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [github_status_automation_service](modules/github_status_automation_service.md) - GitHub status automation rule service.
 - [github_status_service](modules/github_status_service.md) - GitHub pull request status refresh service.
 - [github_webhook_service](modules/github_webhook_service.md) - GitHub webhook intake service.
+- [graphLimitError](modules/graphLimitError.md) - `frontend/src/utils/graphLimitError.ts`
 - [handoff](modules/handoff.md) - Deterministic, unpublished manual-handoff and closeout decision tooling.
 - [healthService](modules/healthService.md) - `frontend/src/services/healthService.ts`
 - [helpContexts](modules/helpContexts.md) - `frontend/src/navigation/helpContexts.ts`
@@ -1871,6 +1880,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [outbound_webhook_service](modules/outbound_webhook_service.md) - Outbound webhook target management and delivery service.
 - [outbound_webhooks](modules/outbound_webhooks.md) - Outbound webhook target and delivery API router.
 - [overviewTaskThread](modules/overviewTaskThread.md) - `frontend/src/features/overview/overviewTaskThread.ts`
+- [pagination](modules/pagination.md) - `frontend/src/i18n/pagination.ts`
 - [planShareService](modules/planShareService.md) - `frontend/src/services/planShareService.ts`
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
 - [plan_shares](modules/plan_shares.md) - Read-only iteration plan sharing API.
@@ -2024,6 +2034,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [task_service](modules/task_service.md) - Task service with business logic.
 - [task_status_log](modules/task_status_log.md) - Task status log model for audit trail.
 - [task_status_service](modules/task_status_service.md) - Task status transitions, roll-up reconciliation, and status reporting.
+- [task_timeline_service](modules/task_timeline_service.md) - Bounded, permission-scoped keyset reads of the merged task timeline.
 - [tasks](modules/tasks.md) - Task API router.
 - [teamMemberLabels](modules/teamMemberLabels.md) - `frontend/src/utils/teamMemberLabels.ts`
 - [teamService](modules/teamService.md) - `frontend/src/services/teamService.ts`
@@ -2102,6 +2113,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_task_domain](modules/test_task_domain.md) - Domain commands preserve identity, evidence independence and bounded read contracts.
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
 - [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
+- [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
@@ -2243,7 +2255,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectService_create_initiative](workflows/ProjectService_create_initiative.md) - entry: `project_service.ProjectService.create_initiative`
 - [ProjectService_create_project_update](workflows/ProjectService_create_project_update.md) - entry: `project_service.ProjectService.create_project_update`
 - [ProjectService_delete](workflows/ProjectService_delete.md) - entry: `project_service.ProjectService.delete`
-- [ProjectService_list_portfolio_summaries](workflows/ProjectService_list_portfolio_summaries.md) - entry: `project_service.ProjectService.list_portfolio_summaries`
 - [ProjectService_update](workflows/ProjectService_update.md) - entry: `project_service.ProjectService.update`
 - [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
@@ -2299,6 +2310,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [get_agent_run_detail](workflows/get_agent_run_detail.md) - entry: `mcp_agent_tools.get_agent_run_detail`
 - [get_gantt_data](workflows/get_gantt_data.md) - entry: `gantt.get_gantt_data`
 - [get_or_create_session](workflows/get_or_create_session.md) - entry: `session_service.get_or_create_session`
+- [get_task_timeline_page](workflows/get_task_timeline_page.md) - entry: `tasks.get_task_timeline_page`
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
 - [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
 - [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
@@ -2467,6 +2479,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_gantt_data](flows/http-get_gantt_data.md) - entry: `get_gantt_data`
 - [http-get_initiative](flows/http-get_initiative.md) - entry: `get_initiative`
 - [http-get_iteration](flows/http-get_iteration.md) - entry: `get_iteration`
+- [http-get_iteration_page](flows/http-get_iteration_page.md) - entry: `get_iteration_page`
 - [http-get_iteration_planning_readiness](flows/http-get_iteration_planning_readiness.md) - entry: `get_iteration_planning_readiness`
 - [http-get_iteration_status_history](flows/http-get_iteration_status_history.md) - entry: `get_iteration_status_history`
 - [http-get_iteration_summary](flows/http-get_iteration_summary.md) - entry: `get_iteration_summary`
@@ -2477,9 +2490,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_my_agent_work](flows/http-get_my_agent_work.md) - entry: `get_my_agent_work`
 - [http-get_overdue_tasks](flows/http-get_overdue_tasks.md) - entry: `get_overdue_tasks`
 - [http-get_plan_share](flows/http-get_plan_share.md) - entry: `get_plan_share`
+- [http-get_portfolio_summary_page](flows/http-get_portfolio_summary_page.md) - entry: `get_portfolio_summary_page`
 - [http-get_profile_capacity](flows/http-get_profile_capacity.md) - entry: `get_profile_capacity`
 - [http-get_profile_skill_catalog](flows/http-get_profile_skill_catalog.md) - entry: `get_profile_skill_catalog`
 - [http-get_project](flows/http-get_project.md) - entry: `get_project`
+- [http-get_project_page](flows/http-get_project_page.md) - entry: `get_project_page`
 - [http-get_project_summary](flows/http-get_project_summary.md) - entry: `get_project_summary`
 - [http-get_project_tasks](flows/http-get_project_tasks.md) - entry: `get_project_tasks`
 - [http-get_release](flows/http-get_release.md) - entry: `get_release`
@@ -2493,6 +2508,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_task_status_history](flows/http-get_task_status_history.md) - entry: `get_task_status_history`
 - [http-get_task_subscription](flows/http-get_task_subscription.md) - entry: `get_task_subscription`
 - [http-get_task_timeline](flows/http-get_task_timeline.md) - entry: `get_task_timeline`
+- [http-get_task_timeline_page](flows/http-get_task_timeline_page.md) - entry: `get_task_timeline_page`
 - [http-get_tasks](flows/http-get_tasks.md) - entry: `get_tasks`
 - [http-get_tasks_text](flows/http-get_tasks_text.md) - entry: `get_tasks_text`
 - [http-get_tasks_text_context](flows/http-get_tasks_text_context.md) - entry: `get_tasks_text_context`

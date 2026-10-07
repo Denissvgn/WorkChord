@@ -1095,3 +1095,64 @@ Delivery reports select their observation window plus bounded prior episode stat
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:41cbd0b665a837c12fa8147206c772f772a4a67b0de33a80639da7b7c9e3b814`
+- Pages created: 15
+- Pages updated: 166
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2672
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Bounded workset and timeline navigation
+
+Task reference, relationship, scope and merged-history pages expose deterministic continuation and explicit live-read semantics. Complete planning/execution limits remain enforced; failed projection reads and guarded editor navigation preserve identity and draft boundaries. Selector upper bounds exclude later inserts without implying a database snapshot.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1fb2dd316c1d52607f84d60efea2687e497949011bc45721535df16bbe900b99`
+- Pages created: 2
+- Pages updated: 32
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2818
+- Pages deprecated: 1
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6b3df22b8da100025ef0abc9f2f1719f3eeb82aa72cf002f8dd4010cdb297d01`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2852
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

@@ -24,6 +24,7 @@ The drawer opens a fresh bounded task detail projection, displays context comple
 | `lucide-react` | `Loader2` |
 | `react` | `useMemo`, `ReactNode`, `RefObject` |
 | `react-i18next` | `useTranslation` |
+| `react-router-dom` | `useNavigate`, `useSearchParams` |
 
 ## Module Signals
 
@@ -108,13 +109,13 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 15 | — | — |
+| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 16 | — | — |
 
 ## Functions
 

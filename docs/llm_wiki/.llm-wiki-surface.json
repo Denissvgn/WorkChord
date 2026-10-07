@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1476,
-      "flows": 527,
+      "entities": 1482,
+      "flows": 531,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 656,
+      "modules": 662,
       "workflows": 174
     },
     "dependency_architecture": 2,
-    "total": 2848
+    "total": 2864
   },
   "dependency_pages": {
     "count": 2,
@@ -2022,7 +2022,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 173,
+              "line": 175,
               "step": "convert_task_brief",
               "target": "TaskBriefService(db).conversion"
             }
@@ -2760,7 +2760,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 149,
+              "line": 151,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -2796,7 +2796,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 150,
+              "line": 152,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
@@ -2920,13 +2920,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 134,
+              "line": 149,
               "step": "create_initiative",
               "target": "service.create_initiative"
             },
             {
               "kind": "external_call",
-              "line": 136,
+              "line": 151,
               "step": "create_initiative",
               "target": "HTTPException"
             },
@@ -3077,19 +3077,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 71,
+              "line": 80,
               "step": "create_iteration",
               "target": "service.create"
             },
             {
               "kind": "external_call",
-              "line": 73,
+              "line": 82,
               "step": "create_iteration",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 86,
               "step": "create_iteration",
               "target": "service.to_response"
             }
@@ -3124,19 +3124,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 91,
+              "line": 100,
               "step": "create_iteration_series",
               "target": "service.create_series"
             },
             {
               "kind": "external_call",
-              "line": 93,
+              "line": 102,
               "step": "create_iteration_series",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 98,
+              "line": 107,
               "step": "create_iteration_series",
               "target": "service.to_response"
             }
@@ -3710,13 +3710,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 203,
+              "line": 218,
               "step": "create_project",
               "target": "service.create"
             },
             {
               "kind": "external_call",
-              "line": 205,
+              "line": 220,
               "step": "create_project",
               "target": "HTTPException"
             },
@@ -3867,13 +3867,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 321,
+              "line": 336,
               "step": "create_project_milestone",
               "target": "service.create_milestone"
             },
             {
               "kind": "external_call",
-              "line": 323,
+              "line": 338,
               "step": "create_project_milestone",
               "target": "HTTPException"
             },
@@ -3935,13 +3935,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 424,
+              "line": 439,
               "step": "create_project_release",
               "target": "service.create_for_project"
             },
             {
               "kind": "external_call",
-              "line": 426,
+              "line": 441,
               "step": "create_project_release",
               "target": "HTTPException"
             },
@@ -4003,13 +4003,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 261,
+              "line": 276,
               "step": "create_project_update",
               "target": "service.create_project_update"
             },
             {
               "kind": "external_call",
-              "line": 267,
+              "line": 282,
               "step": "create_project_update",
               "target": "HTTPException"
             },
@@ -5144,13 +5144,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 196,
+              "line": 198,
               "step": "current_task_review",
               "target": "TaskDetailService(db).detail"
             },
             {
               "kind": "unresolved_call",
-              "line": 198,
+              "line": 200,
               "step": "current_task_review",
               "target": "db.scalar"
             },
@@ -5491,13 +5491,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 201,
               "step": "delete_initiative",
               "target": "service.delete_initiative"
             },
             {
               "kind": "external_call",
-              "line": 188,
+              "line": 203,
               "step": "delete_initiative",
               "target": "HTTPException"
             },
@@ -5560,13 +5560,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 154,
               "step": "delete_iteration",
               "target": "service.delete"
             },
             {
               "kind": "external_call",
-              "line": 147,
+              "line": 156,
               "step": "delete_iteration",
               "target": "HTTPException"
             }
@@ -5677,13 +5677,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 484,
+              "line": 499,
               "step": "delete_project",
               "target": "service.delete"
             },
             {
               "kind": "external_call",
-              "line": 486,
+              "line": 501,
               "step": "delete_project",
               "target": "HTTPException"
             },
@@ -5835,13 +5835,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 360,
+              "line": 375,
               "step": "delete_project_milestone",
               "target": "service.delete_milestone"
             },
             {
               "kind": "external_call",
-              "line": 362,
+              "line": 377,
               "step": "delete_project_milestone",
               "target": "HTTPException"
             },
@@ -8712,13 +8712,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 148,
+              "line": 163,
               "step": "get_initiative",
               "target": "service.get_initiative_by_id"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 165,
               "step": "get_initiative",
               "target": "HTTPException"
             },
@@ -8780,19 +8780,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 108,
+              "line": 117,
               "step": "get_iteration",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 110,
+              "line": 119,
               "step": "get_iteration",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 114,
+              "line": 123,
               "step": "get_iteration",
               "target": "service.to_response"
             }
@@ -8817,6 +8817,47 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "get_iteration_page",
+        "source_path": "backend/app/routers/iterations.py",
+        "symbol": "get_iteration_page"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 34,
+              "step": "get_iteration_page",
+              "target": "service.id_page"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 35,
+              "step": "get_iteration_page",
+              "target": "service.to_response"
+            }
+          ],
+          "generated": true,
+          "step_count": 3,
+          "transfer_count": 2,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/iterations.py"
+          ],
+          "step_count": 3,
+          "truncated": false
+        }
+      },
+      "id": "http-get_iteration_page",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "get_iteration_planning_readiness",
         "source_path": "backend/app/routers/iterations.py",
         "symbol": "get_iteration_planning_readiness"
@@ -8827,13 +8868,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 178,
+              "line": 187,
               "step": "get_iteration_planning_readiness",
               "target": "service.get_planning_readiness_summary"
             },
             {
               "kind": "external_call",
-              "line": 180,
+              "line": 189,
               "step": "get_iteration_planning_readiness",
               "target": "HTTPException"
             }
@@ -8868,25 +8909,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1031,
+              "line": 1041,
               "step": "get_iteration_status_history",
               "target": "iteration_service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 1033,
+              "line": 1043,
               "step": "get_iteration_status_history",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 1038,
+              "line": 1048,
               "step": "get_iteration_status_history",
               "target": "service.get_iteration_status_history"
             },
             {
               "kind": "external_call",
-              "line": 1050,
+              "line": 1060,
               "step": "get_iteration_status_history",
               "target": "json.loads"
             }
@@ -8923,13 +8964,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 160,
+              "line": 169,
               "step": "get_iteration_summary",
               "target": "service.get_summary"
             },
             {
               "kind": "external_call",
-              "line": 162,
+              "line": 171,
               "step": "get_iteration_summary",
               "target": "HTTPException"
             }
@@ -8964,31 +9005,31 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 44,
+              "line": 53,
               "step": "get_iterations",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 45,
+              "line": 54,
               "step": "get_iterations",
               "target": "service.get_all"
             },
             {
               "kind": "unresolved_call",
-              "line": 47,
+              "line": 56,
               "step": "get_iterations",
               "target": "service.get_page"
             },
             {
               "kind": "external_call",
-              "line": 53,
+              "line": 62,
               "step": "get_iterations",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 57,
+              "line": 66,
               "step": "get_iterations",
               "target": "service.to_response"
             }
@@ -9281,25 +9322,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1070,
+              "line": 1080,
               "step": "get_overdue_tasks",
               "target": "iteration_service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 1073,
+              "line": 1083,
               "step": "get_overdue_tasks",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 1078,
+              "line": 1088,
               "step": "get_overdue_tasks",
               "target": "service.get_overdue_tasks"
             },
             {
               "kind": "unresolved_call",
-              "line": 1079,
+              "line": 1089,
               "step": "get_overdue_tasks",
               "target": "service.task_to_response"
             }
@@ -9367,6 +9408,41 @@
         }
       },
       "id": "http-get_plan_share",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_portfolio_summary_page",
+        "source_path": "backend/app/routers/projects.py",
+        "symbol": "get_portfolio_summary_page"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 91,
+              "step": "get_portfolio_summary_page",
+              "target": "service.portfolio_page"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/projects.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "http-get_portfolio_summary_page",
       "language": "python"
     },
     {
@@ -9480,13 +9556,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 217,
+              "line": 232,
               "step": "get_project",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 219,
+              "line": 234,
               "step": "get_project",
               "target": "HTTPException"
             },
@@ -9538,6 +9614,41 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "get_project_page",
+        "source_path": "backend/app/routers/projects.py",
+        "symbol": "get_project_page"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 98,
+              "step": "get_project_page",
+              "target": "service.project_page"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/projects.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "http-get_project_page",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "get_project_summary",
         "source_path": "backend/app/routers/projects.py",
         "symbol": "get_project_summary"
@@ -9548,13 +9659,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 523,
+              "line": 538,
               "step": "get_project_summary",
               "target": "service.get_summary"
             },
             {
               "kind": "external_call",
-              "line": 525,
+              "line": 540,
               "step": "get_project_summary",
               "target": "HTTPException"
             },
@@ -9616,13 +9727,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 506,
+              "line": 521,
               "step": "get_project_tasks",
               "target": "service.get_tasks"
             },
             {
               "kind": "external_call",
-              "line": 508,
+              "line": 523,
               "step": "get_project_tasks",
               "target": "HTTPException"
             },
@@ -9685,13 +9796,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 445,
+              "line": 460,
               "step": "get_release",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 447,
+              "line": 462,
               "step": "get_release",
               "target": "HTTPException"
             },
@@ -10315,6 +10426,74 @@
         }
       },
       "id": "http-get_task_timeline",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_task_timeline_page",
+        "source_path": "backend/app/routers/tasks.py",
+        "symbol": "get_task_timeline_page"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 1026,
+              "step": "get_task_timeline_page",
+              "target": "TaskTimelineService(db).page"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/tasks.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/task_timeline_service.py",
+            "backend/app/schemas/agent.py"
+          ],
+          "step_count": 12,
+          "truncated": false
+        }
+      },
+      "id": "http-get_task_timeline_page",
       "language": "python"
     },
     {
@@ -11143,13 +11322,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 79,
               "step": "human_my_work",
               "target": "TaskDetailService(db).my_work"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 82,
               "step": "human_my_work",
               "target": "HTTPException"
             }
@@ -12478,7 +12657,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 124,
+              "line": 139,
               "step": "list_initiatives",
               "target": "service.list_initiatives"
             }
@@ -12918,13 +13097,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 383,
+              "line": 398,
               "step": "list_project_iterations",
               "target": "service.list_iterations"
             },
             {
               "kind": "external_call",
-              "line": 385,
+              "line": 400,
               "step": "list_project_iterations",
               "target": "HTTPException"
             },
@@ -12987,13 +13166,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 316,
               "step": "list_project_milestones",
               "target": "service.list_milestones"
             },
             {
               "kind": "external_call",
-              "line": 303,
+              "line": 318,
               "step": "list_project_milestones",
               "target": "HTTPException"
             },
@@ -13055,7 +13234,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 102,
+              "line": 117,
               "step": "list_project_portfolio_summaries",
               "target": "service.list_portfolio_summaries"
             }
@@ -13090,13 +13269,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 403,
+              "line": 418,
               "step": "list_project_releases",
               "target": "service.list_for_project"
             },
             {
               "kind": "external_call",
-              "line": 405,
+              "line": 420,
               "step": "list_project_releases",
               "target": "HTTPException"
             },
@@ -13158,13 +13337,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 283,
+              "line": 298,
               "step": "list_project_updates",
               "target": "service.list_project_updates"
             },
             {
               "kind": "external_call",
-              "line": 285,
+              "line": 300,
               "step": "list_project_updates",
               "target": "HTTPException"
             },
@@ -13226,7 +13405,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 91,
+              "line": 106,
               "step": "list_projects",
               "target": "service.list_projects"
             }
@@ -13391,7 +13570,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 127,
               "step": "list_roadmap_milestones",
               "target": "service.list_portfolio_milestones"
             }
@@ -14228,15 +14407,45 @@
           "boundary_effects": [],
           "gaps": [
             {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 65,
               "step": "lookup_tasks",
               "target": "TaskDetailService(db).lookup"
             }
           ],
           "generated": true,
-          "step_count": 3,
-          "transfer_count": 2,
+          "step_count": 11,
+          "transfer_count": 10,
           "truncated": false
         },
         "flow": {
@@ -14244,7 +14453,7 @@
             "backend/app/routers/task_domain.py",
             "backend/app/services/task_detail_service.py"
           ],
-          "step_count": 3,
+          "step_count": 11,
           "truncated": false
         }
       },
@@ -16094,13 +16303,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 178,
+              "line": 180,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
             {
               "kind": "unresolved_call",
-              "line": 179,
+              "line": 181,
               "step": "record_task_progress",
               "target": "TaskService(db).task_to_response"
             },
@@ -16989,7 +17198,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 233,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -17257,13 +17466,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 186,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
             {
               "kind": "unresolved_call",
-              "line": 185,
+              "line": 187,
               "step": "review_task",
               "target": "TaskService(db).task_to_response"
             },
@@ -18533,7 +18742,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 156,
+              "line": 158,
               "step": "task_actions",
               "target": "TaskDomainService(db).allowed_actions"
             }
@@ -18569,55 +18778,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 206,
+              "line": 208,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -18750,13 +18959,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 161,
+              "line": 163,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
             {
               "kind": "unresolved_call",
-              "line": 162,
+              "line": 164,
               "step": "task_command",
               "target": "TaskService(db).task_to_response"
             },
@@ -18896,7 +19105,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 143,
+              "line": 145,
               "step": "task_detail",
               "target": "TaskDetailService(db).detail"
             }
@@ -19005,43 +19214,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 106,
+              "line": 108,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -19095,25 +19304,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 90,
+              "line": 92,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 90,
+              "line": 92,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 90,
+              "line": 92,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 91,
+              "line": 93,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -19156,55 +19365,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 205,
+              "line": 207,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 206,
+              "line": 208,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 207,
+              "line": 209,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -19245,37 +19454,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 116,
+              "line": 118,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 118,
+              "line": 120,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 118,
+              "line": 120,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 118,
+              "line": 120,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 118,
+              "line": 120,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
               "kind": "external_call",
-              "line": 120,
+              "line": 122,
               "step": "task_review_queue",
               "target": "HTTPException"
             },
@@ -19355,7 +19564,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 192,
               "step": "task_reviews",
               "target": "TaskDetailService(db).detail"
             },
@@ -20415,13 +20624,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 165,
+              "line": 180,
               "step": "update_initiative",
               "target": "service.update_initiative"
             },
             {
               "kind": "external_call",
-              "line": 167,
+              "line": 182,
               "step": "update_initiative",
               "target": "HTTPException"
             },
@@ -20572,7 +20781,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 125,
+              "line": 134,
               "step": "update_iteration",
               "step_index": 1,
               "target": "service.update"
@@ -20581,19 +20790,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 127,
+              "line": 136,
               "step": "update_iteration",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 132,
+              "line": 141,
               "step": "update_iteration",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 136,
+              "line": 145,
               "step": "update_iteration",
               "target": "service.to_response"
             }
@@ -21118,7 +21327,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 234,
+              "line": 249,
               "step": "update_project",
               "step_index": 1,
               "target": "service.update"
@@ -21127,7 +21336,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 236,
+              "line": 251,
               "step": "update_project",
               "target": "HTTPException"
             },
@@ -21278,13 +21487,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 341,
+              "line": 356,
               "step": "update_project_milestone",
               "target": "service.update_milestone"
             },
             {
               "kind": "external_call",
-              "line": 343,
+              "line": 358,
               "step": "update_project_milestone",
               "target": "HTTPException"
             },
@@ -21346,7 +21555,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 462,
+              "line": 477,
               "step": "update_release",
               "step_index": 1,
               "target": "service.update"
@@ -21355,7 +21564,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 464,
+              "line": 479,
               "step": "update_release",
               "target": "HTTPException"
             },
@@ -22391,13 +22600,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 167,
+              "line": 169,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
             {
               "kind": "unresolved_call",
-              "line": 168,
+              "line": 170,
               "step": "write_task_brief",
               "target": "TaskService(db).task_to_response"
             },
@@ -38669,6 +38878,7 @@
         "entities/IterationEditorState.md",
         "entities/IterationFormProps.md",
         "entities/IterationListProps.md",
+        "entities/IterationPage.md",
         "entities/IterationProject.md",
         "entities/IterationProjectSummary.md",
         "entities/IterationResponse.md",
@@ -38894,6 +39104,8 @@
         "entities/ProjectMilestoneUpdate.md",
         "entities/ProjectMilestoneUpdateRequest.md",
         "entities/ProjectOwner.md",
+        "entities/ProjectPage.md",
+        "entities/ProjectPortfolioPage.md",
         "entities/ProjectProfileOwner.md",
         "entities/ProjectRecordStatus.md",
         "entities/ProjectResponse.md",
@@ -39390,7 +39602,10 @@
         "entities/TaskTextEditorBodyProps.md",
         "entities/TaskTextEditorModalProps.md",
         "entities/TaskTimelineDates.md",
+        "entities/TaskTimelinePage.md",
+        "entities/TaskTimelinePageItem.md",
         "entities/TaskTimelinePanelProps.md",
+        "entities/TaskTimelineService.md",
         "entities/TaskTreeIntegrityError.md",
         "entities/TaskUnmerge.md",
         "entities/TaskVersionConflictDetail.md",
@@ -39823,6 +40038,7 @@
         "flows/http-get_gantt_data.md",
         "flows/http-get_initiative.md",
         "flows/http-get_iteration.md",
+        "flows/http-get_iteration_page.md",
         "flows/http-get_iteration_planning_readiness.md",
         "flows/http-get_iteration_status_history.md",
         "flows/http-get_iteration_summary.md",
@@ -39833,9 +40049,11 @@
         "flows/http-get_my_agent_work.md",
         "flows/http-get_overdue_tasks.md",
         "flows/http-get_plan_share.md",
+        "flows/http-get_portfolio_summary_page.md",
         "flows/http-get_profile_capacity.md",
         "flows/http-get_profile_skill_catalog.md",
         "flows/http-get_project.md",
+        "flows/http-get_project_page.md",
         "flows/http-get_project_summary.md",
         "flows/http-get_project_tasks.md",
         "flows/http-get_release.md",
@@ -39849,6 +40067,7 @@
         "flows/http-get_task_status_history.md",
         "flows/http-get_task_subscription.md",
         "flows/http-get_task_timeline.md",
+        "flows/http-get_task_timeline_page.md",
         "flows/http-get_tasks.md",
         "flows/http-get_tasks_text.md",
         "flows/http-get_tasks_text_context.md",
@@ -40406,6 +40625,7 @@
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
+        "modules/graphLimitError.md",
         "modules/GuardedTaskModal.md",
         "modules/handoff.md",
         "modules/healthService.md",
@@ -40511,7 +40731,10 @@
         "modules/OverviewPage.test.md",
         "modules/OverviewTaskReturnBar.md",
         "modules/overviewTaskThread.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/PagedTaskBrowser.test.md",
         "modules/PageLayout.md",
+        "modules/pagination.md",
         "modules/PersonCapacity.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
@@ -40710,6 +40933,7 @@
         "modules/task_service.md",
         "modules/task_status_log.md",
         "modules/task_status_service.md",
+        "modules/task_timeline_service.md",
         "modules/TaskAgentReadinessBadge.md",
         "modules/TaskAgentReadinessBadge.test.md",
         "modules/TaskBriefEditor.md",
@@ -40831,6 +41055,7 @@
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
+        "modules/test_task_pagination.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -40967,6 +41192,7 @@
         "workflows/get_agent_run_detail.md",
         "workflows/get_gantt_data.md",
         "workflows/get_or_create_session.md",
+        "workflows/get_task_timeline_page.md",
         "workflows/GitHubStatusAutomationService_apply_rules.md",
         "workflows/GitHubStatusService___init__.md",
         "workflows/GitHubWebhookService___init__.md",
@@ -41004,7 +41230,6 @@
         "workflows/ProjectService_create_initiative.md",
         "workflows/ProjectService_create_project_update.md",
         "workflows/ProjectService_delete.md",
-        "workflows/ProjectService_list_portfolio_summaries.md",
         "workflows/ProjectService_update.md",
         "workflows/raw_table_results.md",
         "workflows/readiness_snapshot.md",
@@ -44640,7 +44865,6 @@
         "modules/app_main.md",
         "modules/delivery_metrics_service.md",
         "modules/execution_usage_service.md",
-        "modules/iteration_service.md",
         "modules/query_limits.md"
       ],
       "role": "semantic",
@@ -47243,6 +47467,19 @@
       "title": "IterationListProps"
     },
     {
+      "canonical_path": "entities/IterationPage.md",
+      "id": "IterationPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/IterationPage",
+      "outgoing_internal_links": [
+        "modules/iterations.md",
+        "modules/schemas_iteration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/iteration.py",
+      "title": "IterationPage"
+    },
+    {
       "canonical_path": "entities/IterationProject.md",
       "id": "IterationProject",
       "kind": "entities",
@@ -48343,7 +48580,9 @@
         "modules/agent_service.md",
         "modules/app_database.md",
         "modules/models___init__.md",
-        "modules/models_agent.md"
+        "modules/models_agent.md",
+        "modules/task_timeline_service.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
@@ -50390,6 +50629,32 @@
       "role": "semantic",
       "source_path": "frontend/src/types/project.ts",
       "title": "ProjectOwner"
+    },
+    {
+      "canonical_path": "entities/ProjectPage.md",
+      "id": "ProjectPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ProjectPage",
+      "outgoing_internal_links": [
+        "modules/projects.md",
+        "modules/schemas_project.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/project.py",
+      "title": "ProjectPage"
+    },
+    {
+      "canonical_path": "entities/ProjectPortfolioPage.md",
+      "id": "ProjectPortfolioPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ProjectPortfolioPage",
+      "outgoing_internal_links": [
+        "modules/projects.md",
+        "modules/schemas_project.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/project.py",
+      "title": "ProjectPortfolioPage"
     },
     {
       "canonical_path": "entities/ProjectProfileOwner.md",
@@ -56085,7 +56350,9 @@
         "modules/models_task.md",
         "modules/task_domain_service.md",
         "modules/task_status_log.md",
-        "modules/task_status_service.md"
+        "modules/task_status_service.md",
+        "modules/task_timeline_service.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_status_log.py",
@@ -57256,6 +57523,31 @@
       "title": "TaskTimelineDates"
     },
     {
+      "canonical_path": "entities/TaskTimelinePage.md",
+      "id": "TaskTimelinePage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskTimelinePage",
+      "outgoing_internal_links": [
+        "modules/schemas_agent.md",
+        "modules/tasks.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent.py",
+      "title": "TaskTimelinePage"
+    },
+    {
+      "canonical_path": "entities/TaskTimelinePageItem.md",
+      "id": "TaskTimelinePageItem",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskTimelinePageItem",
+      "outgoing_internal_links": [
+        "modules/schemas_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent.py",
+      "title": "TaskTimelinePageItem"
+    },
+    {
       "canonical_path": "entities/TaskTimelinePanelProps.md",
       "id": "TaskTimelinePanelProps",
       "kind": "entities",
@@ -57266,6 +57558,21 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskTimelinePanel.tsx",
       "title": "TaskTimelinePanelProps"
+    },
+    {
+      "canonical_path": "entities/TaskTimelineService.md",
+      "id": "TaskTimelineService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskTimelineService",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/task_timeline_service.md",
+        "modules/tasks.md",
+        "modules/test_task_pagination.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/task_timeline_service.py",
+      "title": "TaskTimelineService"
     },
     {
       "canonical_path": "entities/TaskTreeIntegrityError.md",
@@ -64461,6 +64768,20 @@
       "title": "GitHubSettingsPanel.test Module"
     },
     {
+      "canonical_path": "modules/graphLimitError.md",
+      "id": "graphLimitError",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/graphLimitError",
+      "outgoing_internal_links": [
+        "modules/graphLimitError.md",
+        "modules/KanbanBoard.md",
+        "modules/TaskList.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/graphLimitError.ts",
+      "title": "graphLimitError Module"
+    },
+    {
       "canonical_path": "modules/GuardedTaskModal.md",
       "id": "GuardedTaskModal",
       "kind": "modules",
@@ -66342,6 +66663,38 @@
       "title": "overviewTaskThread Module"
     },
     {
+      "canonical_path": "modules/PagedTaskBrowser.md",
+      "id": "PagedTaskBrowser",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/PagedTaskBrowser",
+      "outgoing_internal_links": [
+        "modules/Button.md",
+        "modules/KanbanBoard.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/PagedTaskBrowser.test.md",
+        "modules/QueryState.md",
+        "modules/TaskList.md",
+        "modules/taskService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/PagedTaskBrowser.tsx",
+      "title": "PagedTaskBrowser Module"
+    },
+    {
+      "canonical_path": "modules/PagedTaskBrowser.test.md",
+      "id": "PagedTaskBrowser.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/PagedTaskBrowser.test",
+      "outgoing_internal_links": [
+        "modules/PagedTaskBrowser.md",
+        "modules/PagedTaskBrowser.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/PagedTaskBrowser.test.tsx",
+      "title": "PagedTaskBrowser.test Module"
+    },
+    {
       "canonical_path": "modules/PageLayout.md",
       "id": "PageLayout",
       "kind": "modules",
@@ -66353,6 +66706,20 @@
       "role": "semantic",
       "source_path": "frontend/src/components/ui/PageLayout.tsx",
       "title": "PageLayout Module"
+    },
+    {
+      "canonical_path": "modules/pagination.md",
+      "id": "pagination",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/pagination",
+      "outgoing_internal_links": [
+        "modules/pagination.md",
+        "modules/resources.en.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/pagination.ts",
+      "title": "pagination Module"
     },
     {
       "canonical_path": "modules/PersonCapacity.md",
@@ -67388,6 +67755,7 @@
       "outgoing_internal_links": [
         "modules/i18n.md",
         "modules/i18n.test.md",
+        "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
         "modules/resources.en.md",
         "modules/teamwork.en.md"
@@ -67403,6 +67771,7 @@
       "mcp_uri": "llm-wiki://modules/resources.ru",
       "outgoing_internal_links": [
         "modules/i18n.test.md",
+        "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
         "modules/resources.ru.md",
         "modules/teamwork.ru.md"
@@ -68379,6 +68748,8 @@
         "entities/TaskClaimResponse.md",
         "entities/TaskEventCreate.md",
         "entities/TaskEventResponse.md",
+        "entities/TaskTimelinePage.md",
+        "entities/TaskTimelinePageItem.md",
         "modules/schemas_agent.md"
       ],
       "role": "semantic",
@@ -68613,6 +68984,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/schemas_iteration",
       "outgoing_internal_links": [
+        "entities/IterationPage.md",
         "entities/IterationProjectSummary.md",
         "entities/IterationResponse.md",
         "entities/schemas_iteration_IterationCreate.md",
@@ -68729,6 +69101,8 @@
         "entities/ProjectMilestoneCreate.md",
         "entities/ProjectMilestoneResponse.md",
         "entities/ProjectMilestoneUpdate.md",
+        "entities/ProjectPage.md",
+        "entities/ProjectPortfolioPage.md",
         "entities/ProjectResponse.md",
         "entities/ProjectUpdateEntryResponse.md",
         "entities/schemas_project_InitiativeCreate.md",
@@ -69908,7 +70282,8 @@
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/test_human_work_queries.md",
-        "modules/test_task_domain.md"
+        "modules/test_task_domain.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_detail_service.py",
@@ -69992,6 +70367,8 @@
         "modules/models_task.md",
         "modules/task_status_log.md",
         "modules/task_status_service.md",
+        "modules/task_timeline_service.md",
+        "modules/test_task_pagination.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -70020,6 +70397,25 @@
       "role": "semantic",
       "source_path": "backend/app/services/task_status_service.py",
       "title": "task_status_service Module"
+    },
+    {
+      "canonical_path": "modules/task_timeline_service.md",
+      "id": "task_timeline_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/task_timeline_service",
+      "outgoing_internal_links": [
+        "entities/TaskTimelineService.md",
+        "modules/models_agent.md",
+        "modules/models_task.md",
+        "modules/task_status_log.md",
+        "modules/task_timeline_service.md",
+        "modules/tasks.md",
+        "modules/test_task_pagination.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/task_timeline_service.py",
+      "title": "task_timeline_service Module"
     },
     {
       "canonical_path": "modules/TaskAgentReadinessBadge.md",
@@ -71971,6 +72367,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_task_domain_migrations.py",
       "title": "test_task_domain_migrations Module"
+    },
+    {
+      "canonical_path": "modules/test_task_pagination.md",
+      "id": "test_task_pagination",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_task_pagination",
+      "outgoing_internal_links": [
+        "modules/test_task_pagination.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_task_pagination.py",
+      "title": "test_task_pagination Module"
     },
     {
       "canonical_path": "modules/test_transfer_catalog.md",
@@ -74422,6 +74830,21 @@
       "title": "get_or_create_session"
     },
     {
+      "canonical_path": "workflows/get_task_timeline_page.md",
+      "id": "get_task_timeline_page",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/get_task_timeline_page",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_agent.md",
+        "modules/task_timeline_service.md",
+        "modules/tasks.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/tasks.py",
+      "title": "get_task_timeline_page"
+    },
+    {
       "canonical_path": "workflows/GitHubStatusAutomationService_apply_rules.md",
       "id": "GitHubStatusAutomationService_apply_rules",
       "kind": "workflows",
@@ -74996,21 +75419,6 @@
       "role": "mixed",
       "source_path": "backend/app/services/project_service.py",
       "title": "ProjectService_delete"
-    },
-    {
-      "canonical_path": "workflows/ProjectService_list_portfolio_summaries.md",
-      "id": "ProjectService_list_portfolio_summaries",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/ProjectService_list_portfolio_summaries",
-      "outgoing_internal_links": [
-        "modules/project_service.md",
-        "modules/query_limits.md",
-        "modules/schemas_project.md",
-        "modules/services_work_metrics.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/project_service.py",
-      "title": "ProjectService_list_portfolio_summaries"
     },
     {
       "canonical_path": "workflows/ProjectService_update.md",
@@ -77741,6 +78149,18 @@
       "title": "get_iteration"
     },
     {
+      "canonical_path": "flows/http-get_iteration_page.md",
+      "id": "http-get_iteration_page",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_iteration_page",
+      "outgoing_internal_links": [
+        "modules/iterations.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/iterations.py",
+      "title": "get_iteration_page"
+    },
+    {
       "canonical_path": "flows/http-get_iteration_planning_readiness.md",
       "id": "http-get_iteration_planning_readiness",
       "kind": "flows",
@@ -77866,6 +78286,18 @@
       "title": "get_plan_share"
     },
     {
+      "canonical_path": "flows/http-get_portfolio_summary_page.md",
+      "id": "http-get_portfolio_summary_page",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_portfolio_summary_page",
+      "outgoing_internal_links": [
+        "modules/projects.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/projects.py",
+      "title": "get_portfolio_summary_page"
+    },
+    {
       "canonical_path": "flows/http-get_profile_capacity.md",
       "id": "http-get_profile_capacity",
       "kind": "flows",
@@ -77906,6 +78338,18 @@
       "role": "mixed",
       "source_path": "backend/app/routers/projects.py",
       "title": "get_project"
+    },
+    {
+      "canonical_path": "flows/http-get_project_page.md",
+      "id": "http-get_project_page",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_project_page",
+      "outgoing_internal_links": [
+        "modules/projects.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/projects.py",
+      "title": "get_project_page"
     },
     {
       "canonical_path": "flows/http-get_project_summary.md",
@@ -78084,6 +78528,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/tasks.py",
       "title": "get_task_timeline"
+    },
+    {
+      "canonical_path": "flows/http-get_task_timeline_page.md",
+      "id": "http-get_task_timeline_page",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_task_timeline_page",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_agent.md",
+        "modules/task_timeline_service.md",
+        "modules/tasks.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/tasks.py",
+      "title": "get_task_timeline_page"
     },
     {
       "canonical_path": "flows/http-get_tasks.md",
@@ -84691,6 +85150,7 @@
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
+        "modules/graphLimitError.md",
         "modules/GuardedTaskModal.md",
         "modules/handoff.md",
         "modules/healthService.md",
@@ -84796,7 +85256,10 @@
         "modules/OverviewPage.test.md",
         "modules/OverviewTaskReturnBar.md",
         "modules/overviewTaskThread.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/PagedTaskBrowser.test.md",
         "modules/PageLayout.md",
+        "modules/pagination.md",
         "modules/PersonCapacity.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
@@ -84995,6 +85458,7 @@
         "modules/task_service.md",
         "modules/task_status_log.md",
         "modules/task_status_service.md",
+        "modules/task_timeline_service.md",
         "modules/TaskAgentReadinessBadge.md",
         "modules/TaskAgentReadinessBadge.test.md",
         "modules/TaskBriefEditor.md",
@@ -85116,6 +85580,7 @@
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
+        "modules/test_task_pagination.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -85358,6 +85823,7 @@
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
+        "modules/graphLimitError.md",
         "modules/GuardedTaskModal.md",
         "modules/handoff.md",
         "modules/healthService.md",
@@ -85463,7 +85929,10 @@
         "modules/OverviewPage.test.md",
         "modules/OverviewTaskReturnBar.md",
         "modules/overviewTaskThread.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/PagedTaskBrowser.test.md",
         "modules/PageLayout.md",
+        "modules/pagination.md",
         "modules/PersonCapacity.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
@@ -85662,6 +86131,7 @@
         "modules/task_service.md",
         "modules/task_status_log.md",
         "modules/task_status_service.md",
+        "modules/task_timeline_service.md",
         "modules/TaskAgentReadinessBadge.md",
         "modules/TaskAgentReadinessBadge.test.md",
         "modules/TaskBriefEditor.md",
@@ -85783,6 +86253,7 @@
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
+        "modules/test_task_pagination.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -85848,5 +86319,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:7bbf7d2884d1fdd9da0d9eb1619b994fa281eb9958bbeb2748663f4bcfea62df"
+  "source_hash": "sha256:7eedb9970c13d2e351f3b9ec9006c5e5789221d69a582e35ae5ca1d7b2a324da"
 }

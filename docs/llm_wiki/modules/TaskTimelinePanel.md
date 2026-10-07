@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 | `../../utils/safeUrl` | `safeExternalHref` |
 | `../feedback/QueryState` | `QueryErrorState` |
 | `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
 | `clsx` | `clsx` |
 | `lucide-react` | `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` |
 | `react` | `useState`, `KeyboardEvent` |

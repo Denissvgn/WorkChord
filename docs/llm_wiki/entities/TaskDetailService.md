@@ -20,7 +20,7 @@ _Auto-generated from `TaskDetailService` in `backend/app/services/task_detail_se
 | `__init__` | `(db)` | — | — |
 | `references` | `()` | `@staticmethod` | — |
 | `page` | *(async)* `(query, *, limit = 50, after_id = 0)` | — | — |
-| `lookup` | *(async)* `(*, project_id = None, iteration_id = None, query = None, backlog_only = False, limit = 50, after_id = 0)` | — | — |
+| `lookup` | *(async)* `(*, project_id = None, iteration_id = None, query = None, backlog_only = False, limit = 50, after_id = 0, status = None, parent_id = None, roots_only = False)` | — | — |
 | `my_work` | *(async)* `(*, limit = 50, after_id = 0, project_id = None, iteration_id = None, backlog_only = False)` | — | Bounded human ownership queues, independent of exact-agent assignment decisions. |
 | `detail` | *(async)* `(task_id, *, limit = 50, children_after_id = 0, dependencies_after_id = 0)` | — | — |
 
@@ -91,3 +91,5 @@ flowchart LR
 | `test_my_work_includes_nested_and_backlog_without_private_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_withdrawn_acceptance_stays_visible_in_owned_blocked_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_bounded_detail_does_not_populate_execution_children` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

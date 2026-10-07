@@ -129,10 +129,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_project | service.update | 234 | `service.update(project_id, data)` |
-| update_project | HTTPException | 236 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| update_project | _localized_detail | 238 | `_localized_detail(service, str(...))` |
-| _localized_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(service.db)` |
+| update_project | service.update | 249 | `service.update(project_id, data)` |
+| update_project | HTTPException | 251 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| update_project | _localized_detail | 253 | `_localized_detail(service, str(...))` |
+| _localized_detail | resolve_runtime_ui_language | 68 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,13 +145,13 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_project` | 234 |
+| mutation | `service.update` | `update_project` | 249 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `update_project` | `HTTPException` | 236 |
+| external_call | `update_project` | `HTTPException` | 251 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

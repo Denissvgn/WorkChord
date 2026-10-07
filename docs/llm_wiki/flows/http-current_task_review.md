@@ -94,7 +94,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| current_task_review | domain_result | 196 | `domain_result(...)` |
+| current_task_review | domain_result | 198 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -102,9 +102,9 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| current_task_review | TaskDetailService(…).detail | 196 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| current_task_review | TaskDetailService | 196 | `TaskDetailService(db)` |
-| current_task_review | db.scalar | 198 | `db.scalar(...)` |
+| current_task_review | TaskDetailService(…).detail | 198 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| current_task_review | TaskDetailService | 198 | `TaskDetailService(db)` |
+| current_task_review | db.scalar | 200 | `db.scalar(...)` |
 
 ### Boundary effects
 
@@ -119,8 +119,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `current_task_review` | `TaskDetailService(db).detail` | 196 |
-| unresolved_call | `current_task_review` | `db.scalar` | 198 |
+| unresolved_call | `current_task_review` | `TaskDetailService(db).detail` | 198 |
+| unresolved_call | `current_task_review` | `db.scalar` | 200 |
 | step_limit | `current_task_review` | `first 12 steps` | 0 |
 
 ## Behavior

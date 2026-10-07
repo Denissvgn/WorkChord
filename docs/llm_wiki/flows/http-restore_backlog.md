@@ -79,7 +79,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| restore_backlog | domain_result | 231 | `domain_result(...)` |
+| restore_backlog | domain_result | 233 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -87,8 +87,8 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| restore_backlog | BacklogSnapshotService(…).restore | 231 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
-| restore_backlog | BacklogSnapshotService | 231 | `BacklogSnapshotService(db)` |
+| restore_backlog | BacklogSnapshotService(…).restore | 233 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
+| restore_backlog | BacklogSnapshotService | 233 | `BacklogSnapshotService(db)` |
 
 ### Boundary effects
 
@@ -103,7 +103,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 231 |
+| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 233 |
 
 ## Behavior
 

@@ -4,6 +4,8 @@
 
 ## Description
 
+Project metadata pages have ascending IDs and a carried initial upper bound, so later inserts cannot prolong the selector walk. Each page remains permission-scoped. Portfolio/task metrics remain complete SQL aggregates rather than sums of visible rows.
+
 Project service with CRUD and summary logic.
 
 ## Imports
@@ -46,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
+| Inbound | `backend` (8) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -55,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

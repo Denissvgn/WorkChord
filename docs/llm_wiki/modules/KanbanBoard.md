@@ -14,12 +14,14 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 | `../../../services/taskService` | `taskService` |
 | `../../../services/teamService` | `teamService` |
 | `../../../types/task` | `Task`, `TaskStatus`, `TaskUpdate` |
+| `../../../utils/graphLimitError` | `isGraphLimitError` |
 | `../../../utils/visibleWork` | `selectVisibleWork` |
 | `../../common/Button` | `Button` |
 | `../../common/Modal` | `Modal` |
 | `../../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
 | `../../feedback/WorkFreshness` | `WorkFreshness` |
 | `../../ui/tone` | `STATUS_TONE` |
+| `../PagedTaskBrowser` | `PagedTaskBrowser` |
 | `../TaskEditorDrawer` | `TaskEditorDrawer` |
 | `../TaskFiltersBar` | `TaskFilters` |
 | `./KanbanCard` | `KanbanCard` |
@@ -58,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -66,16 +68,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Class | 33 | — | — |
-| [ColumnId](../entities/ColumnId.md) | Type alias | 38 | — | — |
-| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 55 | — | — |
-| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 59 | — | — |
+| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Class | 35 | — | — |
+| [ColumnId](../entities/ColumnId.md) | Type alias | 40 | — | — |
+| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 57 | — | — |
+| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 61 | — | — |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # TaskMode
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:47`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:49`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

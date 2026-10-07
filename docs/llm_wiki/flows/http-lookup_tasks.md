@@ -10,10 +10,22 @@
 ```mermaid
 sequenceDiagram
     participant p0 as lookup_tasks
-    participant p1 as TaskDetailService(…).lookup
-    participant p2 as TaskDetailService
-    p0-->>p1: TaskDetailService(…).lookup
-    p0->>p2: TaskDetailService
+    participant p1 as domain_result
+    participant p2 as HTTPException
+    participant p3 as exc.detail
+    participant p4 as str
+    participant p5 as TaskDetailService(…).lookup
+    participant p6 as TaskDetailService
+    p0->>p1: domain_result
+    p1-->>p2: HTTPException
+    p1-->>p3: exc.detail
+    p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
+    p1-->>p4: str
+    p1-->>p2: HTTPException
+    p0-->>p5: TaskDetailService(…).lookup
+    p0->>p6: TaskDetailService
 ```
 
 ## Data flow
@@ -22,19 +34,44 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     s1["1. lookup_tasks"]
-    s2["2. TaskDetailService(…).lookup"]
-    s3["3. TaskDetailService"]
-    s1 -. "TaskDetailService(…).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id)" .-> s2
-    s1 -->|"TaskDetailService(db)"| s3
+    s2["2. domain_result"]
+    s3["3. HTTPException"]
+    s4["4. exc.detail"]
+    s5["5. HTTPException"]
+    s6["6. str"]
+    s7["7. HTTPException"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. TaskDetailService(…).lookup"]
+    s11["11. TaskDetailService"]
+    s1 -->|"domain_result(...)"| s2
+    s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
+    s2 -. "exc.detail(data not statically known)" .-> s4
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
+    s2 -. "str(exc)" .-> s6
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "TaskDetailService(…).lookup(…)" .-> s10
+    s1 -->|"TaskDetailService(db)"| s11
     click s1 "../modules/routers_task_domain.md"
-    click s3 "../modules/task_detail_service.md"
+    click s2 "../modules/routers_task_domain.md"
+    click s11 "../modules/task_detail_service.md"
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `lookup_tasks` | `db: DB`, `project_id: int \| None`, `iteration_id: int \| None`, `q: str \| None`, `backlog_only: bool`, `limit: int`, `after_id: int` | - | - | `...` |
+| `lookup_tasks` | `db: DB`, `project_id: int \| None`, `iteration_id: int \| None`, `q: str \| None`, `backlog_only: bool`, `limit: int`, `after_id: int`, `task_status: str \| None` | - | - | `...` |
+| `domain_result` | `awaitable` | `TaskVersionConflictError` | - | `result` |
+| `HTTPException` | - | - | - | - |
+| `exc.detail` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
 | `TaskDetailService(…).lookup` | - | - | - | - |
 | `TaskDetailService` | - | - | - | - |
 
@@ -42,8 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| lookup_tasks | TaskDetailService(…).lookup | 64 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id)` |
-| lookup_tasks | TaskDetailService | 64 | `TaskDetailService(db)` |
+| lookup_tasks | domain_result | 65 | `domain_result(...)` |
+| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 31 | `str(exc)` |
+| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 33 | `str(exc)` |
+| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| lookup_tasks | TaskDetailService(…).lookup | 65 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id, status=task_status, parent_id=parent_id, roots_only=roots_only)` |
+| lookup_tasks | TaskDetailService | 65 | `TaskDetailService(db)` |
 
 ### Boundary effects
 
@@ -53,7 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 64 |
+| external_call | `domain_result` | `HTTPException` | 29 |
+| unresolved_call | `domain_result` | `exc.detail` | 29 |
+| external_call | `domain_result` | `HTTPException` | 31 |
+| external_call | `domain_result` | `HTTPException` | 33 |
+| external_call | `domain_result` | `HTTPException` | 35 |
+| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 65 |
 
 ## Behavior
 

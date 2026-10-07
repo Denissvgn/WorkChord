@@ -14,7 +14,8 @@ Task API router.
 | `app.database` | `get_db` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
-| `app.schemas.agent` | `TaskTimelineResponse`, `TaskTimelineItem` |
+| `app.routers.task_domain` | `domain_result` |
+| `app.schemas.agent` | `TaskTimelineResponse`, `TaskTimelineItem`, `TaskTimelinePage`, `TaskTimelinePage` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.external_link` | `ExternalLinkResponse`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `TaskExternalLinkCreate` |
 | `app.schemas.task` | `TaskTextContext`, `TaskCreate`, `TaskUpdate`, `TaskResponse`, `TaskDependencyCreate`, `TaskReorder`, `TaskMerge`, `TaskUnmerge`, `TaskImportTriageItemResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskStatusChange`, `TaskStatusChangeResponse`, `TaskStatusLogResponse`, `CascadeUpdateInfo`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskMoveRequest`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem` |
@@ -29,6 +30,7 @@ Task API router.
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_bulk_operation_service` | `TaskBulkOperationService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
+| `app.services.task_timeline_service` | `TaskTimelineService` |
 | `fastapi` | `APIRouter`, `Body`, `Depends`, `HTTPException`, `Query`, `Response`, `status` |
 | `json` | `json`, `json` |
 | `logging` | `logging` |
@@ -56,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (19) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -64,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -109,5 +111,6 @@ flowchart LR
 | `change_task_status` | *(async)* `(task_id: int, data: TaskStatusChange, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.put('/tasks/{task_id}/status', response_model=TaskStatusChangeResponse)` | Change task status with validation and side effects. |
 | `get_task_status_history` | *(async)* `(task_id: int, service: Annotated[TaskService, Depends(get_task_service)])` | `@router.get('/tasks/{task_id}/status-history', response_model=list[TaskStatusLogResponse])` | Get status change history for a task. |
 | `get_task_timeline` | *(async)* `(task_id: int, db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/tasks/{task_id}/timeline', response_model=TaskTimelineResponse)` | Get merged task timeline with events, status logs, and agent runs. |
+| `get_task_timeline_page` | *(async)* `(task_id: int, db: Annotated[AsyncSession, Depends(get_db, scope='function')], limit: int = Query(default=50, ge=1, le=100), cursor: str \| None = Query(default=None, max_length=512))` | `@router.get('/tasks/{task_id}/timeline/page', response_model=TaskTimelinePage)` | — |
 | `get_iteration_status_history` | *(async)* `(iteration_id: int, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/iterations/{iteration_id}/history', response_model=list[TaskStatusLogResponse])` | Get recent status history for all tasks in an iteration. |
 | `get_overdue_tasks` | *(async)* `(iteration_id: int, service: Annotated[TaskService, Depends(get_task_service)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/iterations/{iteration_id}/overdue', response_model=list[TaskResponse])` | Get all overdue tasks for an iteration. |

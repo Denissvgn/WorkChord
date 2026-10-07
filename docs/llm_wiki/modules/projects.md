@@ -15,7 +15,7 @@ Project API router.
 | `app.query_limits` | `MAX_BOUNDED_LIST_ITEMS` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.iteration` | `IterationResponse` |
-| `app.schemas.project` | `InitiativeCreate`, `InitiativeResponse`, `InitiativeUpdate`, `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneDeleteResponse`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectPortfolioSummary`, `ProjectResponse`, `ProjectSummary`, `ProjectUpdate`, `ProjectUpdateEntryCreate`, `ProjectUpdateEntryResponse`, `RoadmapMilestonePage` |
+| `app.schemas.project` | `InitiativeCreate`, `InitiativeResponse`, `InitiativeUpdate`, `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneDeleteResponse`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectPortfolioSummary`, `ProjectPortfolioPage`, `ProjectResponse`, `ProjectPage`, `ProjectSummary`, `ProjectUpdate`, `ProjectUpdateEntryCreate`, `ProjectUpdateEntryResponse`, `RoadmapMilestonePage` |
 | `app.schemas.release` | `ReleaseCreateRequest`, `ReleaseResponse`, `ReleaseUpdateRequest` |
 | `app.schemas.task` | `TaskResponse` |
 | `app.services` | `session_service` |
@@ -66,6 +66,8 @@ flowchart LR
 | `_localized_detail` | *(async)* `(service: Any, message: str) -> str` | — | — |
 | `_not_found_detail` | *(async)* `(service: Any, entity: str, entity_id: int) -> str` | — | — |
 | `_scoped_not_found_detail` | *(async)* `(service: Any, entity: str, entity_id: int, scope: str, scope_id: int) -> str` | — | — |
+| `get_portfolio_summary_page` | *(async)* `(service: Annotated[ProjectService, Depends(get_project_service)], limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0), upper_id: int \| None = Query(default=None, ge=0))` | `@router.get('/projects/portfolio-summaries/page', response_model=ProjectPortfolioPage)` | — |
+| `get_project_page` | *(async)* `(service: Annotated[ProjectService, Depends(get_project_service)], limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0), upper_id: int \| None = Query(default=None, ge=0))` | `@router.get('/projects/page', response_model=ProjectPage)` | — |
 | `list_projects` | *(async)* `(service: Annotated[ProjectService, Depends(get_project_service)])` | `@router.get('/projects', response_model=list[ProjectResponse])` | List all projects. |
 | `list_project_portfolio_summaries` | *(async)* `(service: Annotated[ProjectService, Depends(get_project_service)])` | `@router.get('/projects/portfolio-summaries', response_model=list[ProjectPortfolioSummary])` | List compact project signals without one request per portfolio row. |
 | `list_roadmap_milestones` | *(async)* `(service: Annotated[ProjectService, Depends(get_project_service)], after_id: Annotated[int \| None, Query(ge=0)] = None, limit: Annotated[int, Query(ge=1, le=MAX_BOUNDED_LIST_ITEMS)] = MAX_BOUNDED_LIST_ITEMS)` | `@router.get('/roadmap/milestones', response_model=RoadmapMilestonePage)` | List a bounded cursor page of portfolio milestone markers. |

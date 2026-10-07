@@ -4,6 +4,8 @@
 
 ## Description
 
+Iteration metadata has an additive bounded ID-page contract with an initial upper bound. Existing newest-first small lists and date/ID pages remain compatible. Clients may restore display ordering after a finite authorized selector read.
+
 Iteration service with business logic.
 
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
@@ -46,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
+| Inbound | `backend` (13) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -55,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

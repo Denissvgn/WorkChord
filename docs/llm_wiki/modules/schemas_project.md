@@ -128,3 +128,5 @@ flowchart LR
 | [ProjectResponse](../entities/ProjectResponse.md) | Pydantic model | 276 | `BaseModel` | Schema for project response. |
 | [ProjectPortfolioSummary](../entities/schemas_project_ProjectPortfolioSummary.md) | Pydantic model | 302 | `WorkMetricSummary` | Compact project signals for portfolio tables. |
 | [ProjectSummary](../entities/schemas_project_ProjectSummary.md) | Pydantic model | 314 | `WorkMetricSummary` | Summary statistics for a project. |
+| [ProjectPage](../entities/ProjectPage.md) | Pydantic model | 360 | `BaseModel` | — |
+| [ProjectPortfolioPage](../entities/ProjectPortfolioPage.md) | Pydantic model | 368 | `BaseModel` | — |

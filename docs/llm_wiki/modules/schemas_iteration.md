@@ -58,3 +58,4 @@ flowchart LR
 | [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 89 | `BaseModel` | Response returned after creating an iteration series. |
 | [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
 | [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 110 | `BaseModel` | Compact planning inputs used by persistent navigation. |
+| [IterationPage](../entities/IterationPage.md) | 123 | `BaseModel` | — |

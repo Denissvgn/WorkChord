@@ -61,12 +61,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iterations | ValueError | 44 | `ValueError('an iteration cursor requires an explicit limit')` |
-| get_iterations | service.get_all | 45 | `service.get_all(data not statically known)` |
-| get_iterations | service.get_page | 47 | `service.get_page(limit=limit, cursor_start_date=cursor_start_date, cursor_id=cursor_id)` |
-| get_iterations | HTTPException | 53 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| get_iterations | str | 55 | `str(exc)` |
-| get_iterations | service.to_response | 57 | `service.to_response(iteration)` |
+| get_iterations | ValueError | 53 | `ValueError('an iteration cursor requires an explicit limit')` |
+| get_iterations | service.get_all | 54 | `service.get_all(data not statically known)` |
+| get_iterations | service.get_page | 56 | `service.get_page(limit=limit, cursor_start_date=cursor_start_date, cursor_id=cursor_id)` |
+| get_iterations | HTTPException | 62 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| get_iterations | str | 64 | `str(exc)` |
+| get_iterations | service.to_response | 66 | `service.to_response(iteration)` |
 
 ### Boundary effects
 
@@ -76,11 +76,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `get_iterations` | `ValueError` | 44 |
-| unresolved_call | `get_iterations` | `service.get_all` | 45 |
-| unresolved_call | `get_iterations` | `service.get_page` | 47 |
-| external_call | `get_iterations` | `HTTPException` | 53 |
-| unresolved_call | `get_iterations` | `service.to_response` | 57 |
+| external_call | `get_iterations` | `ValueError` | 53 |
+| unresolved_call | `get_iterations` | `service.get_all` | 54 |
+| unresolved_call | `get_iterations` | `service.get_page` | 56 |
+| external_call | `get_iterations` | `HTTPException` | 62 |
+| unresolved_call | `get_iterations` | `service.to_response` | 66 |
 
 ## Behavior
 

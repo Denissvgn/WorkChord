@@ -13,7 +13,7 @@ Schema for creating an iteration.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
