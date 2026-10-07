@@ -1,6 +1,6 @@
 # AgentTeamSetupConflictError
 
-**Location:** `backend/app/services/agent_team_setup_service.py:100`
+**Location:** `backend/app/services/agent_team_setup_service.py:101`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)

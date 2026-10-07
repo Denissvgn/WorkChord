@@ -1156,3 +1156,71 @@ Task reference, relationship, scope and merged-history pages expose deterministi
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e622487f21f9ff51aeca7e56b4d9db3037e3872899660facb658de92a92d3948`
+- Pages created: 6
+- Pages updated: 45
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2809
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: `CredentialDeliveryError` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `AgentTeamCredentialSink` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `FilesystemAgentTeamCredentialSink` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `TaskTreeIntegrityError` (backend/app/services/task_service.py → backend/app/services/task_hierarchy_service.py), `AgentTeamStepScope` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/settings/AgentTeamStepList.tsx)
+
+### Explicit read and delivery collaborators
+
+Bounded graph hydration, one-way credential delivery and finite scope reads have dedicated ownership behind compatible service facades. Saved-view parsing and setup navigation are separated from route queries and commands; transaction, authorization and immutable-history rules remain with their established owners.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:dc6a20680d84caadcb160210e7f57d223a8057952895fc1e4260a254829dcdbc`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2857
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:020ef9ac1a65e9ac5b16ae988a1650e2bae690c2a9477ab046fae4b035a32b32`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2857
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7eb78d7017e5aa7342ff0fde1dfe84e43828a586ad1d841febfef03533dcf278`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 2854
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none

@@ -44,13 +44,15 @@ flowchart LR
     n1["frontend/src/components/layout/AppSidebar.test.tsx"]
     n2["frontend/src/components/layout/AppSidebar.tsx"]
     n3["SavedViewsControl (frontend/src/components/tasks/SavedViewsControl.tsx)"]
-    n4["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n5["frontend/src/pages/ProjectsPage.tsx"]
-    n6["frontend/src/pages/TasksPage.tsx"]
-    n7["frontend/src/pages/TriagePage.tsx"]
-    n8["frontend/src/services/savedViewService.ts"]
-    n9["frontend/src/utils/savedViewState.test.ts"]
-    n10["savedViewModified (frontend/src/utils/savedViewState.ts)"]
+    n4["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n5["sortKeyFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n6["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
+    n7["frontend/src/pages/ProjectsPage.tsx"]
+    n8["frontend/src/pages/TasksPage.tsx"]
+    n9["frontend/src/pages/TriagePage.tsx"]
+    n10["frontend/src/services/savedViewService.ts"]
+    n11["frontend/src/utils/savedViewState.test.ts"]
+    n12["savedViewModified (frontend/src/utils/savedViewState.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -61,17 +63,21 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/savedView.md"
     click n1 "../modules/AppSidebar.test.md"
     click n2 "../modules/AppSidebar.md"
     click n3 "../modules/SavedViewsControl.md"
-    click n4 "../modules/seedDisplay.md"
-    click n5 "../modules/ProjectsPage.md"
-    click n6 "../modules/TasksPage.md"
-    click n7 "../modules/TriagePage.md"
-    click n8 "../modules/savedViewService.md"
-    click n9 "../modules/savedViewState.test.md"
-    click n10 "../modules/savedViewState.md"
+    click n4 "../modules/taskViewState.md"
+    click n5 "../modules/taskViewState.md"
+    click n6 "../modules/seedDisplay.md"
+    click n7 "../modules/ProjectsPage.md"
+    click n8 "../modules/TasksPage.md"
+    click n9 "../modules/TriagePage.md"
+    click n10 "../modules/savedViewService.md"
+    click n11 "../modules/savedViewState.test.md"
+    click n12 "../modules/savedViewState.md"
 ```
 
 ### Summary
@@ -87,6 +93,8 @@ flowchart LR
 | `AppSidebar.test` | import | [AppSidebar.test](../modules/AppSidebar.test.md) | — |
 | `AppSidebar` | import | [AppSidebar](../modules/AppSidebar.md) | — |
 | `SavedViewsControl` | type_reference | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
+| `filtersFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
+| `sortKeyFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 | `savedViewDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
 | `ProjectsPage` | import | [ProjectsPage](../modules/ProjectsPage.md) | — |
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |

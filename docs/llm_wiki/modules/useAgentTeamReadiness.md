@@ -25,25 +25,31 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/useAgentTeamReadiness
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/agentTeamSetup/masters.ts"]
-    n1["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
-    n2["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n3["frontend/src/services/agentService.ts"]
-    n1 --> n0
-    n1 --> n3
-    n2 --> n0
+    n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
+    n1["frontend/src/features/agentTeamSetup/masters.ts"]
+    n2["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
+    n3["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n4["frontend/src/services/agentService.ts"]
+    n0 --> n1
+    n0 --> n2
     n2 --> n1
-    n2 --> n3
-    click n0 "../modules/agentTeamSetup_masters.md"
-    click n1 "../modules/useAgentTeamReadiness.md"
-    click n2 "../modules/AgentTeamSetupMasterPage.md"
-    click n3 "../modules/agentService.md"
+    n2 --> n4
+    n3 --> n0
+    n3 --> n1
+    n3 --> n2
+    n3 --> n4
+    click n0 "../modules/AgentTeamStepList.md"
+    click n1 "../modules/agentTeamSetup_masters.md"
+    click n2 "../modules/useAgentTeamReadiness.md"
+    click n3 "../modules/AgentTeamSetupMasterPage.md"
+    click n4 "../modules/agentService.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [AgentTeamStepList](../modules/AgentTeamStepList.md) |
 | Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
 | Outbound | [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md) |
 | Outbound | [agentService](../modules/agentService.md) |

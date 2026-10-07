@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1482,
+      "entities": 1483,
       "flows": 531,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 662,
+      "modules": 667,
       "workflows": 174
     },
     "dependency_architecture": 2,
-    "total": 2864
+    "total": 2870
   },
   "dependency_pages": {
     "count": 2,
@@ -39564,6 +39564,7 @@
         "entities/TaskFiltersBarProps.md",
         "entities/TaskFormalizeResponse.md",
         "entities/TaskFormProps.md",
+        "entities/TaskHierarchyService.md",
         "entities/TaskImportService.md",
         "entities/TaskImportTriageItemResponse.md",
         "entities/TaskImproveDescriptionResponse.md",
@@ -40482,6 +40483,7 @@
         "modules/agent_skill_bundle.md",
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/agent_work_service.md",
@@ -40499,6 +40501,7 @@
         "modules/agentTeamSetup_masters.test.md",
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
+        "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
         "modules/api.md",
         "modules/apiError.md",
@@ -40522,6 +40525,7 @@
         "modules/autonomy_work_package_service.md",
         "modules/backlog_snapshot_service.md",
         "modules/BacklogPanel.md",
+        "modules/bounded_scope_reads.md",
         "modules/Breadcrumbs.md",
         "modules/build_agent_skills.md",
         "modules/build_identity.md",
@@ -40928,6 +40932,7 @@
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/task_domain_service.md",
+        "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
         "modules/task_recovery_service.md",
         "modules/task_service.md",
@@ -40967,6 +40972,7 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
         "modules/TaskWorkPanel.test.md",
@@ -43042,10 +43048,11 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/AgentTeamCredentialSink",
       "outgoing_internal_links": [
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup_service.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/services/agent_team_setup_service.py",
+      "source_path": "backend/app/services/agent_team_credentials.py",
       "title": "AgentTeamCredentialSink"
     },
     {
@@ -43401,7 +43408,7 @@
       "mcp_uri": "llm-wiki://entities/AgentTeamStepId",
       "outgoing_internal_links": [
         "modules/agentTeamSetup_masters.md",
-        "modules/AgentTeamSetupMasterPage.md"
+        "modules/AgentTeamStepList.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/agentTeamSetup/masters.ts",
@@ -43413,10 +43420,10 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/AgentTeamStepScope",
       "outgoing_internal_links": [
-        "modules/AgentTeamSetupMasterPage.md"
+        "modules/AgentTeamStepList.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx",
+      "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx",
       "title": "AgentTeamStepScope"
     },
     {
@@ -45243,10 +45250,11 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/CredentialDeliveryError",
       "outgoing_internal_links": [
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup_service.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/services/agent_team_setup_service.py",
+      "source_path": "backend/app/services/agent_team_credentials.py",
       "title": "CredentialDeliveryError"
     },
     {
@@ -46562,10 +46570,11 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/FilesystemAgentTeamCredentialSink",
       "outgoing_internal_links": [
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup_service.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/services/agent_team_setup_service.py",
+      "source_path": "backend/app/services/agent_team_credentials.py",
       "title": "FilesystemAgentTeamCredentialSink"
     },
     {
@@ -49050,7 +49059,7 @@
         "modules/models_task.md",
         "modules/models_triage.md",
         "modules/request_source_service.md",
-        "modules/task_service.md"
+        "modules/task_hierarchy_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/request_source.py",
@@ -52204,6 +52213,7 @@
         "modules/savedViewState.test.md",
         "modules/seedDisplay.md",
         "modules/TasksPage.md",
+        "modules/taskViewState.md",
         "modules/TriagePage.md"
       ],
       "role": "semantic",
@@ -55824,7 +55834,8 @@
       "outgoing_internal_links": [
         "modules/SavedViewsControl.md",
         "modules/TaskList.md",
-        "modules/TasksPage.md"
+        "modules/TasksPage.md",
+        "modules/taskViewState.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskList.tsx",
@@ -56953,6 +56964,7 @@
         "modules/TaskFiltersBar.md",
         "modules/TaskList.md",
         "modules/TasksPage.md",
+        "modules/taskViewState.md",
         "modules/visibleWork.md"
       ],
       "role": "semantic",
@@ -56995,6 +57007,19 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskForm.tsx",
       "title": "TaskFormProps"
+    },
+    {
+      "canonical_path": "entities/TaskHierarchyService.md",
+      "id": "TaskHierarchyService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskHierarchyService",
+      "outgoing_internal_links": [
+        "modules/task_hierarchy_service.md",
+        "modules/task_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/task_hierarchy_service.py",
+      "title": "TaskHierarchyService"
     },
     {
       "canonical_path": "entities/TaskImportService.md",
@@ -57580,10 +57605,11 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskTreeIntegrityError",
       "outgoing_internal_links": [
+        "modules/task_hierarchy_service.md",
         "modules/task_service.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/services/task_service.py",
+      "source_path": "backend/app/services/task_hierarchy_service.py",
       "title": "TaskTreeIntegrityError"
     },
     {
@@ -62328,6 +62354,22 @@
       "title": "agent_skill_bundles Module"
     },
     {
+      "canonical_path": "modules/agent_team_credentials.md",
+      "id": "agent_team_credentials",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/agent_team_credentials",
+      "outgoing_internal_links": [
+        "entities/AgentTeamCredentialSink.md",
+        "entities/CredentialDeliveryError.md",
+        "entities/FilesystemAgentTeamCredentialSink.md",
+        "modules/agent_team_credentials.md",
+        "modules/agent_team_setup_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/agent_team_credentials.py",
+      "title": "agent_team_credentials Module"
+    },
+    {
       "canonical_path": "modules/agent_team_setup.md",
       "id": "agent_team_setup",
       "kind": "modules",
@@ -62382,12 +62424,9 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/agent_team_setup_service",
       "outgoing_internal_links": [
-        "entities/AgentTeamCredentialSink.md",
         "entities/AgentTeamMembershipBoundary.md",
         "entities/AgentTeamSetupConflictError.md",
         "entities/AgentTeamSetupService.md",
-        "entities/CredentialDeliveryError.md",
-        "entities/FilesystemAgentTeamCredentialSink.md",
         "modules/agent_team_setup_service.md"
       ],
       "role": "semantic",
@@ -62580,6 +62619,7 @@
         "modules/agentTeamSetup_masters.md",
         "modules/agentTeamSetup_masters.test.md",
         "modules/AgentTeamSetupMasterPage.md",
+        "modules/AgentTeamStepList.md",
         "modules/types_agent.md",
         "modules/useAgentTeamReadiness.md"
       ],
@@ -62609,7 +62649,6 @@
       "mcp_uri": "llm-wiki://modules/AgentTeamSetupMasterPage",
       "outgoing_internal_links": [
         "entities/AgentTeamActionReceiptStatus.md",
-        "entities/AgentTeamStepScope.md",
         "entities/StatusTone.md",
         "entities/WorkflowFocusIntent.md",
         "entities/WorkflowFocusTarget.md",
@@ -62635,6 +62674,22 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx",
       "title": "AgentTeamSetupMasterPage.test Module"
+    },
+    {
+      "canonical_path": "modules/AgentTeamStepList.md",
+      "id": "AgentTeamStepList",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/AgentTeamStepList",
+      "outgoing_internal_links": [
+        "entities/AgentTeamStepScope.md",
+        "modules/agentTeamSetup_masters.md",
+        "modules/AgentTeamSetupMasterPage.md",
+        "modules/AgentTeamStepList.md",
+        "modules/useAgentTeamReadiness.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx",
+      "title": "AgentTeamStepList Module"
     },
     {
       "canonical_path": "modules/AnalyticsPage.md",
@@ -63035,6 +63090,16 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/BacklogPanel.tsx",
       "title": "BacklogPanel Module"
+    },
+    {
+      "canonical_path": "modules/bounded_scope_reads.md",
+      "id": "bounded_scope_reads",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/bounded_scope_reads",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/services/bounded_scope_reads.py",
+      "title": "bounded_scope_reads Module"
     },
     {
       "canonical_path": "modules/Breadcrumbs.md",
@@ -66125,6 +66190,7 @@
         "modules/models_task.md",
         "modules/models_triage.md",
         "modules/request_source_service.md",
+        "modules/task_hierarchy_service.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -66970,6 +67036,7 @@
         "modules/taskFilters.md",
         "modules/TaskFiltersBar.md",
         "modules/TasksPage.md",
+        "modules/taskViewState.md",
         "modules/types_task.md",
         "modules/usePlanningReadiness.md"
       ],
@@ -68389,18 +68456,7 @@
         "entities/SavedViewDashboardCard.md",
         "entities/SavedViewDuplicate.md",
         "entities/SavedViewListParams.md",
-        "modules/AppSidebar.md",
-        "modules/AppSidebar.test.md",
-        "modules/ProjectsPage.md",
-        "modules/savedView.md",
-        "modules/SavedViewDashboardCards.md",
-        "modules/SavedViewsControl.md",
-        "modules/savedViewService.md",
-        "modules/savedViewState.md",
-        "modules/savedViewState.test.md",
-        "modules/seedDisplay.md",
-        "modules/TasksPage.md",
-        "modules/TriagePage.md"
+        "modules/savedView.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/types/savedView.ts",
@@ -70303,6 +70359,25 @@
       "title": "task_domain_service Module"
     },
     {
+      "canonical_path": "modules/task_hierarchy_service.md",
+      "id": "task_hierarchy_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/task_hierarchy_service",
+      "outgoing_internal_links": [
+        "entities/TaskHierarchyService.md",
+        "entities/TaskTreeIntegrityError.md",
+        "modules/models_request_source.md",
+        "modules/models_task.md",
+        "modules/query_limits.md",
+        "modules/task_hierarchy_service.md",
+        "modules/task_service.md",
+        "modules/team_member.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/task_hierarchy_service.py",
+      "title": "task_hierarchy_service Module"
+    },
+    {
       "canonical_path": "modules/task_import_service.md",
       "id": "task_import_service",
       "kind": "modules",
@@ -70347,7 +70422,6 @@
       "mcp_uri": "llm-wiki://modules/task_service",
       "outgoing_internal_links": [
         "entities/TaskService.md",
-        "entities/TaskTreeIntegrityError.md",
         "entities/TaskVersionConflictError.md",
         "modules/task_service.md"
       ],
@@ -70682,6 +70756,7 @@
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
         "modules/TasksPage.md",
+        "modules/taskViewState.md",
         "modules/visibleWork.test.md"
       ],
       "role": "semantic",
@@ -70989,6 +71064,24 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskTimelinePanel.test.tsx",
       "title": "TaskTimelinePanel.test Module"
+    },
+    {
+      "canonical_path": "modules/taskViewState.md",
+      "id": "taskViewState",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskViewState",
+      "outgoing_internal_links": [
+        "modules/planningTaskIssues.md",
+        "modules/savedView.md",
+        "modules/taskFilterDefaults.md",
+        "modules/TaskFiltersBar.md",
+        "modules/TaskList.md",
+        "modules/TasksPage.md",
+        "modules/taskViewState.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/savedViews/taskViewState.ts",
+      "title": "taskViewState Module"
     },
     {
       "canonical_path": "modules/TaskWorkflowGuide.md",
@@ -73175,6 +73268,7 @@
         "modules/agentService.md",
         "modules/agentTeamSetup_masters.md",
         "modules/AgentTeamSetupMasterPage.md",
+        "modules/AgentTeamStepList.md",
         "modules/useAgentTeamReadiness.md"
       ],
       "role": "semantic",
@@ -73830,6 +73924,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentTeamSetupService__apply_create_or_update",
       "outgoing_internal_links": [
         "modules/agent_service.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/commands.md",
@@ -73846,6 +73941,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentTeamSetupService__apply_identity_replacement",
       "outgoing_internal_links": [
         "modules/agent_service.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/commands.md",
@@ -73862,6 +73958,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentTeamSetupService__apply_replace_recovery",
       "outgoing_internal_links": [
         "modules/agent_service.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/commands.md"
@@ -85007,6 +85104,7 @@
         "modules/agent_skill_bundle.md",
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/agent_work_service.md",
@@ -85024,6 +85122,7 @@
         "modules/agentTeamSetup_masters.test.md",
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
+        "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
         "modules/api.md",
         "modules/apiError.md",
@@ -85047,6 +85146,7 @@
         "modules/autonomy_work_package_service.md",
         "modules/backlog_snapshot_service.md",
         "modules/BacklogPanel.md",
+        "modules/bounded_scope_reads.md",
         "modules/Breadcrumbs.md",
         "modules/build_agent_skills.md",
         "modules/build_identity.md",
@@ -85453,6 +85553,7 @@
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/task_domain_service.md",
+        "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
         "modules/task_recovery_service.md",
         "modules/task_service.md",
@@ -85492,6 +85593,7 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
         "modules/TaskWorkPanel.test.md",
@@ -85680,6 +85782,7 @@
         "modules/agent_skill_bundle.md",
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/agent_work_service.md",
@@ -85697,6 +85800,7 @@
         "modules/agentTeamSetup_masters.test.md",
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
+        "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
         "modules/api.md",
         "modules/apiError.md",
@@ -85720,6 +85824,7 @@
         "modules/autonomy_work_package_service.md",
         "modules/backlog_snapshot_service.md",
         "modules/BacklogPanel.md",
+        "modules/bounded_scope_reads.md",
         "modules/Breadcrumbs.md",
         "modules/build_agent_skills.md",
         "modules/build_identity.md",
@@ -86126,6 +86231,7 @@
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/task_domain_service.md",
+        "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
         "modules/task_recovery_service.md",
         "modules/task_service.md",
@@ -86165,6 +86271,7 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
         "modules/TaskWorkPanel.test.md",
@@ -86319,5 +86426,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:7eedb9970c13d2e351f3b9ec9006c5e5789221d69a582e35ae5ca1d7b2a324da"
+  "source_hash": "sha256:cc4c1411da1987c5cf7634f5d54f8a3c994ad9310f39e64445a93ec78ea5834d"
 }

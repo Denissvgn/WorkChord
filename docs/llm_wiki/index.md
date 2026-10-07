@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1482 | [Open section](#entities) |
-| Modules | 662 | [Open section](#modules) |
+| Entities | 1483 | [Open section](#entities) |
+| Modules | 667 | [Open section](#modules) |
 | Workflows | 174 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 531 | [Open section](#entry-point-flows) |
@@ -864,6 +864,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskFiltersBarProps](entities/TaskFiltersBarProps.md)
 - [TaskFormProps](entities/TaskFormProps.md)
 - [TaskFormalizeResponse](entities/TaskFormalizeResponse.md)
+- [TaskHierarchyService](entities/TaskHierarchyService.md)
 - [TaskImportService](entities/TaskImportService.md)
 - [TaskImportTriageItemResponse](entities/TaskImportTriageItemResponse.md)
 - [TaskImproveDescriptionResponse](entities/TaskImproveDescriptionResponse.md)
@@ -1522,6 +1523,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) - `frontend/src/pages/AgentPipelinePage.test.tsx`
 - [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) - `frontend/src/pages/AgentTeamSetupMasterPage.tsx`
 - [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) - `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`
+- [AgentTeamStepList](modules/AgentTeamStepList.md) - `frontend/src/components/settings/AgentTeamStepList.tsx`
 - [AnalyticsPage](modules/AnalyticsPage.md) - `frontend/src/pages/AnalyticsPage.tsx`
 - [App](modules/App.md) - `frontend/src/App.tsx`
 - [AppShell](modules/AppShell.md) - `frontend/src/components/layout/AppShell.tsx`
@@ -1723,6 +1725,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_skill_bundle](modules/agent_skill_bundle.md) - Schemas for immutable, distributable agent role-skill bundles.
 - [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) - Read-only delivery of deterministic agent role-skill build artifacts.
 - [agent_skill_bundles](modules/agent_skill_bundles.md) - Read-only HTTP delivery for immutable agent role-skill artifacts.
+- [agent_team_credentials](modules/agent_team_credentials.md) - One-way credential delivery, independent of setup planning and transactions.
 - [agent_team_setup](modules/agent_team_setup.md) - Portable agent-team setup, reconciliation, and readiness contracts.
 - [agent_team_setup_service](modules/agent_team_setup_service.md) - Operator-only agent-team validation, reconciliation, setup, and readiness.
 - [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
@@ -1739,6 +1742,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) - Container-backed acceptance for a self-hosted WorkChord server.
 - [autonomy_work_package_service](modules/autonomy_work_package_service.md) - Fenced, package-level autonomous verification lifecycle service.
 - [backlog_snapshot_service](modules/backlog_snapshot_service.md) - Project backlog recovery using the shared transactional snapshot store.
+- [bounded_scope_reads](modules/bounded_scope_reads.md) - Shared finite ID-window reads; the caller supplies its authorized projection.
 - [build_agent_skills](modules/build_agent_skills.md) - Validate and reproducibly package WorkChord role skills.
 - [build_identity](modules/build_identity.md) - Revision-bound identity baked into WorkChord container images.
 - [calendarService](modules/calendarService.md) - `frontend/src/services/calendarService.ts`
@@ -2023,12 +2027,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
 - [taskFilters.test](modules/taskFilters.test.md) - `frontend/src/utils/taskFilters.test.ts`
 - [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [taskViewState](modules/taskViewState.md) - `frontend/src/features/savedViews/taskViewState.ts`
 - [task_brief_service](modules/task_brief_service.md) - Canonical brief rendering, conservative legacy conversion and evidence commands.
 - [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.
 - [task_context_revision_service](modules/task_context_revision_service.md) - Atomic task-version fencing for relationship-backed execution context.
 - [task_detail](modules/task_detail.md) - Bounded UI projections with explicit completeness and deterministic cursors.
 - [task_detail_service](modules/task_detail_service.md) - Small UI reads, independent of the complete authoritative execution graph.
 - [task_domain_service](modules/task_domain_service.md) - Durable ownership, normalized effort and explicit task-domain commands.
+- [task_hierarchy_service](modules/task_hierarchy_service.md) - Read-only ownership of bounded task graph hydration and integrity checks.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_service](modules/task_service.md) - Task service with business logic.

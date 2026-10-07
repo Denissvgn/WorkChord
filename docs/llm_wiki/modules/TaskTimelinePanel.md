@@ -4,6 +4,8 @@
 
 ## Description
 
+Merged history uses explicit bounded continuation. External-link read failures hide cached private links and their controls while retaining error/retry feedback; prior successful data does not imply current access.
+
 _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 
 ## Imports

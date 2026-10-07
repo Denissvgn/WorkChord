@@ -17,74 +17,21 @@ _Auto-generated from `frontend/src/types/savedView.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
-    n1["frontend/src/components/layout/AppSidebar.test.tsx"]
-    n2["frontend/src/components/layout/AppSidebar.tsx"]
-    n3["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n4["frontend/src/i18n/seedDisplay.ts"]
-    n5["frontend/src/pages/ProjectsPage.tsx"]
-    n6["frontend/src/pages/TasksPage.tsx"]
-    n7["frontend/src/pages/TriagePage.tsx"]
-    n8["frontend/src/services/savedViewService.ts"]
-    n9["frontend/src/types/savedView.ts"]
-    n10["frontend/src/utils/savedViewState.test.ts"]
-    n11["frontend/src/utils/savedViewState.ts"]
-    n0 --> n4
-    n0 --> n8
-    n0 --> n9
-    n1 --> n2
-    n1 --> n9
-    n2 --> n4
-    n2 --> n8
-    n2 --> n9
-    n3 --> n4
-    n3 --> n8
-    n3 --> n9
-    n3 --> n11
-    n4 --> n9
-    n5 --> n8
-    n5 --> n9
-    n6 --> n3
-    n6 --> n4
-    n6 --> n8
-    n6 --> n9
-    n6 --> n11
-    n7 --> n4
-    n7 --> n8
-    n7 --> n9
-    n8 --> n9
-    n10 --> n9
-    n10 --> n11
-    n11 --> n9
-    click n0 "../modules/SavedViewDashboardCards.md"
-    click n1 "../modules/AppSidebar.test.md"
-    click n2 "../modules/AppSidebar.md"
-    click n3 "../modules/SavedViewsControl.md"
-    click n4 "../modules/seedDisplay.md"
-    click n5 "../modules/ProjectsPage.md"
-    click n6 "../modules/TasksPage.md"
-    click n7 "../modules/TriagePage.md"
-    click n8 "../modules/savedViewService.md"
-    click n9 "../modules/savedView.md"
-    click n10 "../modules/savedViewState.test.md"
-    click n11 "../modules/savedViewState.md"
+    n0["frontend"]
+    n1["frontend/src/types/savedView.ts"]
+    n0 --> n1
+    click n1 "../modules/savedView.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) |
-| Inbound | [AppSidebar.test](../modules/AppSidebar.test.md) |
-| Inbound | [AppSidebar](../modules/AppSidebar.md) |
-| Inbound | [SavedViewsControl](../modules/SavedViewsControl.md) |
-| Inbound | [seedDisplay](../modules/seedDisplay.md) |
-| Inbound | [ProjectsPage](../modules/ProjectsPage.md) |
-| Inbound | [TasksPage](../modules/TasksPage.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
-| Inbound | [savedViewService](../modules/savedViewService.md) |
-| Inbound | [savedViewState.test](../modules/savedViewState.test.md) |
-| Inbound | [savedViewState](../modules/savedViewState.md) |
+| Inbound | `frontend` (12) |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:8ce46140d55244d26754e97da45daa965587ab7f8399c07bbbcce580d15d9dcd",
-    "knowledge_index_hash": "sha256:9ebc1ae16cf6449e9445e2dc93858551ccf9c1ba1d8526aa0c1f666c910909ab",
-    "surface_index_hash": "sha256:f096b1ce9e92b9eb4adaa6db02442241acbccb0377a262564ff4f30817d6c782"
+    "evaluated_envelope_hash": "sha256:7c3e92552bce7625febe80cf7e2cb9a71e1ac8621a2112249d08e1a91f62e275",
+    "knowledge_index_hash": "sha256:2f8fa675fbbdab1722c75b493e834b27abb55d8c480fef68a4c59c9ebc85eef5",
+    "surface_index_hash": "sha256:448768c808f76fefc607940c4b6a31f80459f42bb4b2421cc47159b791d12a8e"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -880,7 +880,7 @@
         "concept_observation_hash": "sha256:d45c960be56ae76f82411d85e924979591cfa1fdccbcdbdadfa039abb0d2366a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+        "source_content_hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -920,8 +920,8 @@
         "concept_observation_hash": "sha256:c42d622f0ab433bdbe18be224830534e6caebe3e83b0670fe4baccf00f67a64e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
-        "source_path": "backend/app/services/agent_team_setup_service.py"
+        "source_content_hash": "sha256:2e86b5ccf49cb51e89619f20dd4327e55030de7bbc4eecb1020bfbffb1b81aee",
+        "source_path": "backend/app/services/agent_team_credentials.py"
       },
       "state": "known"
     },
@@ -1010,7 +1010,7 @@
         "concept_observation_hash": "sha256:10a8e3b83774b52a22bd882dfe83a68b8afc8e135f629ce48f1068afeeab377b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
+        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1080,7 +1080,7 @@
         "concept_observation_hash": "sha256:8856634c362b0a8a8546de2befceab142d4b6c2ef8e157763c179eaf0dce3495",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
+        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1130,7 +1130,7 @@
         "concept_observation_hash": "sha256:8da4a74642aa3935dff6d57bb0de5d825ec161c924f919f44668c84fa9aa2ec9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
+        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1190,8 +1190,8 @@
         "concept_observation_hash": "sha256:8283baaddea80e9b31c578495f724e77dcd81b1d8e9b1f4987c05e889d509e07",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
-        "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
+        "source_content_hash": "sha256:5e3918185877d82b2b236f51c12fa3a402a423eb1cdcd2cc9897b33e8fa39f39",
+        "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx"
       },
       "state": "known"
     },
@@ -2540,8 +2540,8 @@
         "concept_observation_hash": "sha256:03114d596de40c6db1f121539961635007ee2b1d7efea82c698a3cb065a48d03",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
-        "source_path": "backend/app/services/agent_team_setup_service.py"
+        "source_content_hash": "sha256:2e86b5ccf49cb51e89619f20dd4327e55030de7bbc4eecb1020bfbffb1b81aee",
+        "source_path": "backend/app/services/agent_team_credentials.py"
       },
       "state": "known"
     },
@@ -3430,8 +3430,8 @@
         "concept_observation_hash": "sha256:041ffb497da2e03fc2949671d8df5a138b76b55c33688844a2843d40ba5b8e2a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
-        "source_path": "backend/app/services/agent_team_setup_service.py"
+        "source_content_hash": "sha256:2e86b5ccf49cb51e89619f20dd4327e55030de7bbc4eecb1020bfbffb1b81aee",
+        "source_path": "backend/app/services/agent_team_credentials.py"
       },
       "state": "known"
     },
@@ -4180,7 +4180,7 @@
         "concept_observation_hash": "sha256:e6bbc8e22944ee82d8367827730656d9433907878893c1b93584f8977b760673",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:5fc06fac533accea98036abddd6c21331e9dc3b67fa3e6de64373eba387a52a3",
+        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
@@ -4190,7 +4190,7 @@
         "concept_observation_hash": "sha256:d470fc088ace2e0b4587e9f3066e3fdbfd0827c3d1f2a46abd41523afa133578",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:5fc06fac533accea98036abddd6c21331e9dc3b67fa3e6de64373eba387a52a3",
+        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
@@ -5890,7 +5890,7 @@
         "concept_observation_hash": "sha256:be21eef80d31f32c8c08012afa6c5e6020ff1bad9023f3cd95b23ced14c2977b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7f23334c0fb5092ee493f63626e3df1bef3ade4694ff44f433c7f51fc80f0698",
+        "source_content_hash": "sha256:07e1998f5a4c83fde9b9cc4008a01eda74e455519e9c07c97175e8970c5c7901",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -7840,7 +7840,7 @@
         "concept_observation_hash": "sha256:822d6ba74bdd1130dc83a4189e51ebf0f89bb874649590ef964042ed7425abce",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+        "source_content_hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -8465,6 +8465,16 @@
       },
       "state": "known"
     },
+    "entities/TaskHierarchyService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:fc239969c33dfa22de287d65e7916ea7efed1d7205830de0f84726f872ecc75b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:91064ae0d32c9d1d0ea5ad23d72931c8a42c7e4a8ee2d0d4ced2ce9f39c528d8",
+        "source_path": "backend/app/services/task_hierarchy_service.py"
+      },
+      "state": "known"
+    },
     "entities/TaskImportService.md": {
       "basis": {
         "concept_observation_hash": "sha256:712c0802d3ca4e0e5c3965f798fae3804bd67110219d25c2bca2b57cce1be5ff",
@@ -8737,10 +8747,10 @@
     },
     "entities/TaskService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:a0e49afacf5940a17828c43e96c1884fbad86fe86e67c4d4ff7316c9837190ee",
+        "concept_observation_hash": "sha256:d19a0d318ea045bb0338c0d0dab27f2fd386a9ed1b6274ce588953ec152a9676",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:3ade30571b5880331d98a96b6c8972d56a81d357965ca1bdab44e8324b2cf855",
+        "source_content_hash": "sha256:1f0cb61cc187a6e4d08dc4c89ed67bb0ce3ac6a12664ede38c9f18d03fa5f87e",
         "source_path": "backend/app/services/task_service.py"
       },
       "state": "known"
@@ -8870,7 +8880,7 @@
         "concept_observation_hash": "sha256:16512620ee67d2581670b93740622caf34e9ee6a8d55013a34591230507feaeb",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:d9eeee86b3bcf6081c3ee9136af388d3db7ba79493ee8abcd594144c8fed0111",
+        "source_content_hash": "sha256:dcc998115bacef7387a694577bd7eba676bfeddf1331b358ea9031fca166e24c",
         "source_path": "frontend/src/components/tasks/TaskTimelinePanel.tsx"
       },
       "state": "known"
@@ -8890,8 +8900,8 @@
         "concept_observation_hash": "sha256:cdabb89d007299bd0a668742ff6c9af39a09de6703c7d4ae8499de9f69b2c4d0",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:3ade30571b5880331d98a96b6c8972d56a81d357965ca1bdab44e8324b2cf855",
-        "source_path": "backend/app/services/task_service.py"
+        "source_content_hash": "sha256:91064ae0d32c9d1d0ea5ad23d72931c8a42c7e4a8ee2d0d4ced2ce9f39c528d8",
+        "source_path": "backend/app/services/task_hierarchy_service.py"
       },
       "state": "known"
     },
@@ -8920,7 +8930,7 @@
         "concept_observation_hash": "sha256:bed58015c7849626eac7560a2e8c22bbd368542846c41d2dda61da58ff04b448",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:3ade30571b5880331d98a96b6c8972d56a81d357965ca1bdab44e8324b2cf855",
+        "source_content_hash": "sha256:1f0cb61cc187a6e4d08dc4c89ed67bb0ce3ac6a12664ede38c9f18d03fa5f87e",
         "source_path": "backend/app/services/task_service.py"
       },
       "state": "known"
@@ -9650,7 +9660,7 @@
         "concept_observation_hash": "sha256:8caa38fcd925144c0e46667e7169257ad90aa299719b807f2efad14f6814eb17",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:482e293601e453b6886d6ea6b1657f709a78228400c6497e29eec13ed47e2307",
+        "source_content_hash": "sha256:ca05994343c92064c5f712989f09ae0c3a3a7bfef6fbf7ad26b9754adbab6ec0",
         "source_path": "frontend/src/pages/TasksPage.tsx"
       },
       "state": "known"
@@ -9860,7 +9870,7 @@
         "concept_observation_hash": "sha256:6282b218eecab1e3a545c1fe5254a583b06905895325bbbcaa2886d172e5ef8d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+        "source_content_hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -9870,7 +9880,7 @@
         "concept_observation_hash": "sha256:abd51c438acbb04dddb5a24dc5ecbbfe31ce5e022cc359d8406967ea2a1fbb8d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+        "source_content_hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -14997,10 +15007,10 @@
     },
     "modules/AgentTeamSetupMasterPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6e972196285bbb90ff48c1f6bb5005ccd040cb0b2389de5a2135b2b2bd278696",
+        "concept_observation_hash": "sha256:57b8dd54a8159e4e3006e4aedf95cb9c1229fd51c5ac97287abd9c73437bea15",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+        "source_content_hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
       },
       "state": "known"
@@ -15012,6 +15022,16 @@
         "scope": "module",
         "source_content_hash": "sha256:0e96dc040e83c7330117464408316778c30485045080b8e52ffa87b600f669b9",
         "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/AgentTeamStepList.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:e1f76e4775bb55d8bbd2032d96780943d3739cfcd110d3ff24190729151efb6d",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:5e3918185877d82b2b236f51c12fa3a402a423eb1cdcd2cc9897b33e8fa39f39",
+        "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx"
       },
       "state": "known"
     },
@@ -16560,17 +16580,17 @@
         "concept_observation_hash": "sha256:89d0dd00f0bb9d6ec0d8061481f9383fe06c9e55098e2135eaa14b16ed1e605f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d9eeee86b3bcf6081c3ee9136af388d3db7ba79493ee8abcd594144c8fed0111",
+        "source_content_hash": "sha256:dcc998115bacef7387a694577bd7eba676bfeddf1331b358ea9031fca166e24c",
         "source_path": "frontend/src/components/tasks/TaskTimelinePanel.tsx"
       },
       "state": "known"
     },
     "modules/TaskTimelinePanel.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:30a09fea5e6180bd0c86ef17e8fdfc25e143b45409809324888ede2a2e33dcbb",
+        "concept_observation_hash": "sha256:b98d853fcdc138dcb54895568be572086fa18511d74b45bee813f57a6f4d1f04",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:f6f58bcca0f3d9ba8358405874c254d00001479263d039cde36f19cea3428753",
+        "source_content_hash": "sha256:abb685032edfb187293260552536627ad47787b30ed7097ea502c6949f297448",
         "source_path": "frontend/src/components/tasks/TaskTimelinePanel.test.tsx"
       },
       "state": "known"
@@ -16607,10 +16627,10 @@
     },
     "modules/TasksPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:2be242f99cc3d13abbb5f722ff9e35775bc15f84f35e022358c043042e1f2064",
+        "concept_observation_hash": "sha256:ef8666786b565e23f646b33fa38a78ea997457fbd27606e05980b8c48690d454",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:482e293601e453b6886d6ea6b1657f709a78228400c6497e29eec13ed47e2307",
+        "source_content_hash": "sha256:ca05994343c92064c5f712989f09ae0c3a3a7bfef6fbf7ad26b9754adbab6ec0",
         "source_path": "frontend/src/pages/TasksPage.tsx"
       },
       "state": "known"
@@ -17025,6 +17045,16 @@
       },
       "state": "known"
     },
+    "modules/agent_team_credentials.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:9f1d7bf75696da72e87b24fc305de64b38c6086b56c8370504ece8d56482e33b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:2e86b5ccf49cb51e89619f20dd4327e55030de7bbc4eecb1020bfbffb1b81aee",
+        "source_path": "backend/app/services/agent_team_credentials.py"
+      },
+      "state": "known"
+    },
     "modules/agent_team_setup.md": {
       "basis": {
         "concept_observation_hash": "sha256:a4f43541c0d196e9bfb4937c08aa6bcb252e7f9225087e1f060563c9f21d7ceb",
@@ -17037,10 +17067,10 @@
     },
     "modules/agent_team_setup_service.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b2ace614cc17ad0d0c0b657aecce77d7863f4b2cf386f79dbe7e654465662648",
+        "concept_observation_hash": "sha256:2cbfbb2c8930cb4adc2579aa9a8aa89ba53a35336e44374c933bed6877e50ac7",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
+        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -17182,6 +17212,16 @@
         "scope": "module",
         "source_content_hash": "sha256:d3a7a26a11038d99e28e0bcb056997ef3c2218a57993504624126ab390704fcb",
         "source_path": "backend/app/services/backlog_snapshot_service.py"
+      },
+      "state": "known"
+    },
+    "modules/bounded_scope_reads.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:71e811a9fcdaf54426180a020c18f7471b5e9f6d2ec973bd9130b71ad75f9044",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:7c2163c77f43cf96d046bb97ae297af499dc5175b5f15b56289b1273704ba05b",
+        "source_path": "backend/app/services/bounded_scope_reads.py"
       },
       "state": "known"
     },
@@ -18080,7 +18120,7 @@
         "concept_observation_hash": "sha256:ed2ccc389cfa9abff03b6e620d5aa08f2b28176d4f1607e02d6d100007a267d6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5fc06fac533accea98036abddd6c21331e9dc3b67fa3e6de64373eba387a52a3",
+        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
@@ -18810,7 +18850,7 @@
         "concept_observation_hash": "sha256:ed01bcd6105d51974159dcb061e55ad05ff8e714aef897ea61cb6d59bb35e64d",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:7f23334c0fb5092ee493f63626e3df1bef3ade4694ff44f433c7f51fc80f0698",
+        "source_content_hash": "sha256:07e1998f5a4c83fde9b9cc4008a01eda74e455519e9c07c97175e8970c5c7901",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -20025,6 +20065,16 @@
       },
       "state": "known"
     },
+    "modules/taskViewState.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:22ae263df818394716e14f221c18ecf38c9900513d2074eb8439724a7aa0a12f",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:d5a6ffe11034a272fc96f25707f548f4bdff20bcdb31e0a98dcf8ed01afd8b4f",
+        "source_path": "frontend/src/features/savedViews/taskViewState.ts"
+      },
+      "state": "known"
+    },
     "modules/task_brief_service.md": {
       "basis": {
         "concept_observation_hash": "sha256:112f9ce48ab4d7c30065328e7333439dd7ffcc61b90c40ff2f5f8716f4c1d520",
@@ -20085,6 +20135,16 @@
       },
       "state": "known"
     },
+    "modules/task_hierarchy_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:9c95068dca495c925b81449a22c5c210e565cad9d1a6757e24f2555661e31415",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:91064ae0d32c9d1d0ea5ad23d72931c8a42c7e4a8ee2d0d4ced2ce9f39c528d8",
+        "source_path": "backend/app/services/task_hierarchy_service.py"
+      },
+      "state": "known"
+    },
     "modules/task_import_service.md": {
       "basis": {
         "concept_observation_hash": "sha256:79aa1ab93afc30f6d8b570125661b546651765901595a62dc2e4598f59f7bbf4",
@@ -20107,10 +20167,10 @@
     },
     "modules/task_service.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6b92d4f44519a9a66aa9f27730bf6ff79a885eb77b3101eda5819f7ccfa5b149",
+        "concept_observation_hash": "sha256:890e4acf6dc3fbd85c00b6ea3a398d268a6b319fa50991e1f9e7085a57e5f70f",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:3ade30571b5880331d98a96b6c8972d56a81d357965ca1bdab44e8324b2cf855",
+        "source_content_hash": "sha256:1f0cb61cc187a6e4d08dc4c89ed67bb0ce3ac6a12664ede38c9f18d03fa5f87e",
         "source_path": "backend/app/services/task_service.py"
       },
       "state": "known"
@@ -21660,13 +21720,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:f2f2af267850b5058d236af4340d049ca111de8e19a8a6f25d6809194aeec714",
-      "lifecycle_hash": "sha256:eab6b691a5c256e0db4c2e9dac9d3516ea1940cd4388914ca009a9c4993428d1",
-      "markdown_snapshot_hash": "sha256:7507eb50a62e967615296ee8265efbfa5f1772b2f54adfc467a42bb99f3796e9",
-      "observation_inputs_hash": "sha256:972928025871a42a87c0cb8e1daef59886a07d46da2fc3171eb790f14c27d99b",
+      "inventory_hash": "sha256:00dbd577a3f9b7a4afab3293549b002b0e423b716972adc90776ff9537b914d4",
+      "lifecycle_hash": "sha256:f8e27c4591f22afafc8b31a079785dae6e196fb68d48b137c4e70eefe5305a18",
+      "markdown_snapshot_hash": "sha256:e52c8c0a28d93103575373abfde7c8580c5368fc437495d47f4d8adef8fb92f2",
+      "observation_inputs_hash": "sha256:ff9cd08eb541788b533213b4a8a3030ae5ec160b43fbb11e8c9dc435cd8bd5d1",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:6b3df22b8da100025ef0abc9f2f1719f3eeb82aa72cf002f8dd4010cdb297d01"
+      "source_snapshot_hash": "sha256:7eb78d7017e5aa7342ff0fde1dfe84e43828a586ad1d841febfef03533dcf278"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -22225,7 +22285,7 @@
       "entity_name": "AgentTeamCredentialSink",
       "occurrence": 1,
       "scope": "entity",
-      "source_path": "backend/app/services/agent_team_setup_service.py"
+      "source_path": "backend/app/services/agent_team_credentials.py"
     },
     "entities/AgentTeamCurrentMember.md": {
       "entity_name": "AgentTeamCurrentMember",
@@ -22387,7 +22447,7 @@
       "entity_name": "AgentTeamStepScope",
       "occurrence": 1,
       "scope": "entity",
-      "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.tsx"
+      "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx"
     },
     "entities/AgentTeamStepState.md": {
       "entity_name": "AgentTeamStepState",
@@ -23197,7 +23257,7 @@
       "entity_name": "CredentialDeliveryError",
       "occurrence": 1,
       "scope": "entity",
-      "source_path": "backend/app/services/agent_team_setup_service.py"
+      "source_path": "backend/app/services/agent_team_credentials.py"
     },
     "entities/CurrentTaskReviewResponse.md": {
       "entity_name": "CurrentTaskReviewResponse",
@@ -23731,7 +23791,7 @@
       "entity_name": "FilesystemAgentTeamCredentialSink",
       "occurrence": 1,
       "scope": "entity",
-      "source_path": "backend/app/services/agent_team_setup_service.py"
+      "source_path": "backend/app/services/agent_team_credentials.py"
     },
     "entities/FilterConfig.md": {
       "entity_name": "FilterConfig",
@@ -26751,6 +26811,12 @@
       "scope": "entity",
       "source_path": "frontend/src/types/task.ts"
     },
+    "entities/TaskHierarchyService.md": {
+      "entity_name": "TaskHierarchyService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/task_hierarchy_service.py"
+    },
     "entities/TaskImportService.md": {
       "entity_name": "TaskImportService",
       "occurrence": 1,
@@ -27007,7 +27073,7 @@
       "entity_name": "TaskTreeIntegrityError",
       "occurrence": 1,
       "scope": "entity",
-      "source_path": "backend/app/services/task_service.py"
+      "source_path": "backend/app/services/task_hierarchy_service.py"
     },
     "entities/TaskUnmerge.md": {
       "entity_name": "TaskUnmerge",
@@ -30643,6 +30709,10 @@
       "scope": "module",
       "source_path": "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
     },
+    "modules/AgentTeamStepList.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/settings/AgentTeamStepList.tsx"
+    },
     "modules/AnalyticsPage.md": {
       "scope": "module",
       "source_path": "frontend/src/pages/AnalyticsPage.tsx"
@@ -31447,6 +31517,10 @@
       "scope": "module",
       "source_path": "backend/app/routers/agent_skill_bundles.py"
     },
+    "modules/agent_team_credentials.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/agent_team_credentials.py"
+    },
     "modules/agent_team_setup.md": {
       "scope": "module",
       "source_path": "backend/app/schemas/agent_team_setup.py"
@@ -31510,6 +31584,10 @@
     "modules/backlog_snapshot_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/backlog_snapshot_service.py"
+    },
+    "modules/bounded_scope_reads.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/bounded_scope_reads.py"
     },
     "modules/build_agent_skills.md": {
       "scope": "module",
@@ -32647,6 +32725,10 @@
       "scope": "module",
       "source_path": "frontend/src/services/taskService.ts"
     },
+    "modules/taskViewState.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/savedViews/taskViewState.ts"
+    },
     "modules/task_brief_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/task_brief_service.py"
@@ -32670,6 +32752,10 @@
     "modules/task_domain_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/task_domain_service.py"
+    },
+    "modules/task_hierarchy_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/task_hierarchy_service.py"
     },
     "modules/task_import_service.md": {
       "scope": "module",
@@ -53708,21 +53794,13 @@
       "module_page": "agent_skill_bundle_service",
       "semantic_hash": "sha256:b6149101ef74260d3a60932809f50906acf84a90c5e92160a5ab0099b0173be3"
     },
-    "backend/app/services/agent_team_setup_service.py": {
+    "backend/app/services/agent_team_credentials.py": {
       "entities": [
-        "AgentTeamSetupConflictError",
         "CredentialDeliveryError",
         "AgentTeamCredentialSink",
-        "FilesystemAgentTeamCredentialSink",
-        "AgentTeamMembershipBoundary",
-        "AgentTeamSetupService"
+        "FilesystemAgentTeamCredentialSink"
       ],
       "entity_page_occurrences": [
-        {
-          "name": "AgentTeamSetupConflictError",
-          "occurrence": 1,
-          "page": "AgentTeamSetupConflictError"
-        },
         {
           "name": "CredentialDeliveryError",
           "occurrence": 1,
@@ -53737,23 +53815,10 @@
           "name": "FilesystemAgentTeamCredentialSink",
           "occurrence": 1,
           "page": "FilesystemAgentTeamCredentialSink"
-        },
-        {
-          "name": "AgentTeamMembershipBoundary",
-          "occurrence": 1,
-          "page": "AgentTeamMembershipBoundary"
-        },
-        {
-          "name": "AgentTeamSetupService",
-          "occurrence": 1,
-          "page": "AgentTeamSetupService"
         }
       ],
       "entity_pages": {
         "AgentTeamCredentialSink": "AgentTeamCredentialSink",
-        "AgentTeamMembershipBoundary": "AgentTeamMembershipBoundary",
-        "AgentTeamSetupConflictError": "AgentTeamSetupConflictError",
-        "AgentTeamSetupService": "AgentTeamSetupService",
         "CredentialDeliveryError": "CredentialDeliveryError",
         "FilesystemAgentTeamCredentialSink": "FilesystemAgentTeamCredentialSink"
       },
@@ -53769,6 +53834,66 @@
               "deliver": "Deliver once and return a non-secret receipt digest."
             }
           },
+          "CredentialDeliveryError": {
+            "attributes": {},
+            "description": "Raised when a one-time actor key did not reach the approved sink.",
+            "methods": {}
+          },
+          "FilesystemAgentTeamCredentialSink": {
+            "attributes": {},
+            "description": "Write one-time credentials to an operator-owned mode-0700 directory.",
+            "methods": {
+              "__init__": "—",
+              "available": "—",
+              "deliver": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "AgentTeamCredentialSink": "One-way sink boundary; implementations never return credential material.",
+            "CredentialDeliveryError": "Raised when a one-time actor key did not reach the approved sink.",
+            "FilesystemAgentTeamCredentialSink": "Write one-time credentials to an operator-owned mode-0700 directory."
+          },
+          "description": "One-way credential delivery, independent of setup planning and transactions.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:2e86b5ccf49cb51e89619f20dd4327e55030de7bbc4eecb1020bfbffb1b81aee",
+      "language": "python",
+      "module_page": "agent_team_credentials",
+      "semantic_hash": "sha256:a193e025c9170a6077736ab0e5c18d1a4f15e56fa7c89a99cadbad10f1646a94"
+    },
+    "backend/app/services/agent_team_setup_service.py": {
+      "entities": [
+        "AgentTeamSetupConflictError",
+        "AgentTeamMembershipBoundary",
+        "AgentTeamSetupService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "AgentTeamSetupConflictError",
+          "occurrence": 1,
+          "page": "AgentTeamSetupConflictError"
+        },
+        {
+          "name": "AgentTeamMembershipBoundary",
+          "occurrence": 1,
+          "page": "AgentTeamMembershipBoundary"
+        },
+        {
+          "name": "AgentTeamSetupService",
+          "occurrence": 1,
+          "page": "AgentTeamSetupService"
+        }
+      ],
+      "entity_pages": {
+        "AgentTeamMembershipBoundary": "AgentTeamMembershipBoundary",
+        "AgentTeamSetupConflictError": "AgentTeamSetupConflictError",
+        "AgentTeamSetupService": "AgentTeamSetupService"
+      },
+      "generated_semantics": {
+        "entities": {
           "AgentTeamMembershipBoundary": {
             "attributes": {
               "member_actor_ids": "—",
@@ -53840,30 +53965,13 @@
               "status": "Return backend-derived secret-free setup and runtime readiness.",
               "validate": "Validate canonical bytes plus current server/package compatibility."
             }
-          },
-          "CredentialDeliveryError": {
-            "attributes": {},
-            "description": "Raised when a one-time actor key did not reach the approved sink.",
-            "methods": {}
-          },
-          "FilesystemAgentTeamCredentialSink": {
-            "attributes": {},
-            "description": "Write one-time credentials to an operator-owned mode-0700 directory.",
-            "methods": {
-              "__init__": "—",
-              "available": "—",
-              "deliver": "—"
-            }
           }
         },
         "module": {
           "classes": {
-            "AgentTeamCredentialSink": "One-way sink boundary; implementations never return credential material.",
             "AgentTeamMembershipBoundary": "Current topology/revision and active member set for exact-actor routing.",
             "AgentTeamSetupConflictError": "Stable conflict envelope shared by setup REST and MCP reads.",
-            "AgentTeamSetupService": "Reconcile one portable topology without making the UI a control plane.",
-            "CredentialDeliveryError": "Raised when a one-time actor key did not reach the approved sink.",
-            "FilesystemAgentTeamCredentialSink": "Write one-time credentials to an operator-owned mode-0700 directory."
+            "AgentTeamSetupService": "Reconcile one portable topology without making the UI a control plane."
           },
           "description": "Operator-only agent-team validation, reconciliation, setup, and readiness.",
           "functions": {
@@ -53873,10 +53981,10 @@
           }
         }
       },
-      "hash": "sha256:0a83473c61f95e3c513cb2103723e88451d6cd16427bd2ea25710474d8e6e53d",
+      "hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
       "language": "python",
       "module_page": "agent_team_setup_service",
-      "semantic_hash": "sha256:05b7d8545f3a055e182d1083ea2ee7b195ba8dee21f8c21d62e2c32615bdafb3"
+      "semantic_hash": "sha256:fd2dd887548527c8c867cd3e3e71b9d1dc75a0d832afa313e0fadc9c461177c3"
     },
     "backend/app/services/agent_work_service.py": {
       "entities": [
@@ -54170,6 +54278,25 @@
       "language": "python",
       "module_page": "backlog_snapshot_service",
       "semantic_hash": "sha256:eddca5362e616f1534fcb73e8d510566916e469d72ba8c3ee7544f15a293099f"
+    },
+    "backend/app/services/bounded_scope_reads.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Shared finite ID-window reads; the caller supplies its authorized projection.",
+          "functions": {
+            "scope_page": "—"
+          }
+        }
+      },
+      "hash": "sha256:7c2163c77f43cf96d046bb97ae297af499dc5175b5f15b56289b1273704ba05b",
+      "language": "python",
+      "module_page": "bounded_scope_reads",
+      "semantic_hash": "sha256:7d275e240c3e1bc960334ca18a810d6ba711d6e17f44c0aa01f9f3dde1cada98"
     },
     "backend/app/services/calendar_service.py": {
       "entities": [
@@ -55001,10 +55128,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:5fc06fac533accea98036abddd6c21331e9dc3b67fa3e6de64373eba387a52a3",
+      "hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
       "language": "python",
       "module_page": "iteration_service",
-      "semantic_hash": "sha256:3758efc2110b896b870c4497e62353552a4376e73630b1c866338dc59ceb1541"
+      "semantic_hash": "sha256:59337cae73857c5d982feb7c1483128e1965f5a73681cd497b13f08205477bc6"
     },
     "backend/app/services/label_service.py": {
       "entities": [
@@ -55594,10 +55721,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:7f23334c0fb5092ee493f63626e3df1bef3ade4694ff44f433c7f51fc80f0698",
+      "hash": "sha256:07e1998f5a4c83fde9b9cc4008a01eda74e455519e9c07c97175e8970c5c7901",
       "language": "python",
       "module_page": "project_service",
-      "semantic_hash": "sha256:77d089f3707d926c3ba6205ed2f6273a5a87d71acdf7e1d19e97cb8a4865a996"
+      "semantic_hash": "sha256:a48c2478948e47c77844e8d4fae5ba04f9f2cad3b56d5a528a5cd8150a75ff74"
     },
     "backend/app/services/release_service.py": {
       "entities": [
@@ -56656,6 +56783,58 @@
       "module_page": "task_domain_service",
       "semantic_hash": "sha256:64e802cee248391a3d3f1ab798c150d8165a5f4d26df8bf51bfe164fe1b8baf8"
     },
+    "backend/app/services/task_hierarchy_service.py": {
+      "entities": [
+        "TaskTreeIntegrityError",
+        "TaskHierarchyService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TaskTreeIntegrityError",
+          "occurrence": 1,
+          "page": "TaskTreeIntegrityError"
+        },
+        {
+          "name": "TaskHierarchyService",
+          "occurrence": 1,
+          "page": "TaskHierarchyService"
+        }
+      ],
+      "entity_pages": {
+        "TaskHierarchyService": "TaskHierarchyService",
+        "TaskTreeIntegrityError": "TaskTreeIntegrityError"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TaskHierarchyService": {
+            "attributes": {},
+            "description": "_Auto-generated from `TaskHierarchyService` in `backend/app/services/task_hierarchy_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "_load_iteration_tree": "Load and defensively assemble a contract-bounded iteration.",
+              "_task_graph_query": "Build the bounded relationship query used before in-memory tree assembly."
+            }
+          },
+          "TaskTreeIntegrityError": {
+            "attributes": {},
+            "description": "Raised when persisted task parent links cannot form a valid iteration tree.",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "TaskHierarchyService": "—",
+            "TaskTreeIntegrityError": "Raised when persisted task parent links cannot form a valid iteration tree."
+          },
+          "description": "Read-only ownership of bounded task graph hydration and integrity checks.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:91064ae0d32c9d1d0ea5ad23d72931c8a42c7e4a8ee2d0d4ced2ce9f39c528d8",
+      "language": "python",
+      "module_page": "task_hierarchy_service",
+      "semantic_hash": "sha256:3af42410594987ddde9418c2e3b291160881b69ef6661298113dcb2f0f97b1ed"
+    },
     "backend/app/services/task_import_service.py": {
       "entities": [
         "TaskImportService"
@@ -56724,16 +56903,10 @@
     },
     "backend/app/services/task_service.py": {
       "entities": [
-        "TaskTreeIntegrityError",
         "TaskVersionConflictError",
         "TaskService"
       ],
       "entity_page_occurrences": [
-        {
-          "name": "TaskTreeIntegrityError",
-          "occurrence": 1,
-          "page": "TaskTreeIntegrityError"
-        },
         {
           "name": "TaskVersionConflictError",
           "occurrence": 1,
@@ -56747,7 +56920,6 @@
       ],
       "entity_pages": {
         "TaskService": "TaskService",
-        "TaskTreeIntegrityError": "TaskTreeIntegrityError",
         "TaskVersionConflictError": "TaskVersionConflictError"
       },
       "generated_semantics": {
@@ -56764,7 +56936,7 @@
               "_get_next_root_sort_order": "Return the next root-level sort order for an iteration.",
               "_iteration_project_id": "Return an iteration's project scope, raising when the iteration is missing.",
               "_json_dumps": "Serialize event payloads consistently.",
-              "_load_iteration_tree": "Load and defensively assemble a contract-bounded iteration.",
+              "_load_iteration_tree": "—",
               "_lock_dependency_task": "Lock one dependency graph in Iteration -> Task order.",
               "_lock_task_scope": "—",
               "_metadata_from_task": "Return the client-safe current-task fields used by conflict responses.",
@@ -56780,7 +56952,7 @@
               "_reserve_structural_version": "Carry existing acceptance across a rearrangement that preserves leaf work meaning.",
               "_resolve_project_for_iteration_create": "Apply iteration project scope to a new executable task.",
               "_resolve_project_for_move": "Resolve the project assignment for a task subtree move.",
-              "_task_graph_query": "Build the bounded relationship query used before in-memory tree assembly.",
+              "_task_graph_query": "—",
               "_task_subtree_ids": "Return the IDs in a task subtree, including the root.",
               "_update_parent_status": "Compatibility seam for parent reconciliation.",
               "add_dependency": "Add a dependency to a task.",
@@ -56816,11 +56988,6 @@
               "update": "Update an existing task."
             }
           },
-          "TaskTreeIntegrityError": {
-            "attributes": {},
-            "description": "Raised when persisted task parent links cannot form a valid iteration tree.",
-            "methods": {}
-          },
           "TaskVersionConflictError": {
             "attributes": {},
             "description": "Raised when an optimistic task write no longer matches the stored version.",
@@ -56833,17 +57000,16 @@
         "module": {
           "classes": {
             "TaskService": "Service for task operations.",
-            "TaskTreeIntegrityError": "Raised when persisted task parent links cannot form a valid iteration tree.",
             "TaskVersionConflictError": "Raised when an optimistic task write no longer matches the stored version."
           },
           "description": "Task service with business logic.",
           "functions": {}
         }
       },
-      "hash": "sha256:3ade30571b5880331d98a96b6c8972d56a81d357965ca1bdab44e8324b2cf855",
+      "hash": "sha256:1f0cb61cc187a6e4d08dc4c89ed67bb0ce3ac6a12664ede38c9f18d03fa5f87e",
       "language": "python",
       "module_page": "task_service",
-      "semantic_hash": "sha256:78311c33db15c6fdb75d9feae20859e89c7e36220c7c698df863116acf9d1cba"
+      "semantic_hash": "sha256:b75425a7cd9de59577eca65722c2042f793efaf4b6bd472c7443d35e99eb1e3e"
     },
     "backend/app/services/task_status_service.py": {
       "entities": [
@@ -63264,6 +63430,43 @@
       "module_page": "AgentModelAdministration",
       "semantic_hash": "sha256:23b97d77cbfffedb638adc7802042d2b99304c36336099a893e586b720e86e3c"
     },
+    "frontend/src/components/settings/AgentTeamStepList.tsx": {
+      "entities": [
+        "AgentTeamStepScope"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "AgentTeamStepScope",
+          "occurrence": 1,
+          "page": "AgentTeamStepScope"
+        }
+      ],
+      "entity_pages": {
+        "AgentTeamStepScope": "AgentTeamStepScope"
+      },
+      "generated_semantics": {
+        "entities": {
+          "AgentTeamStepScope": {
+            "attributes": {},
+            "description": "_Auto-generated from `AgentTeamStepScope` in `frontend/src/components/settings/AgentTeamStepList.tsx`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "AgentTeamStepScope": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/components/settings/AgentTeamStepList.tsx`._",
+          "functions": {
+            "AgentTeamStepList": "—"
+          }
+        }
+      },
+      "hash": "sha256:5e3918185877d82b2b236f51c12fa3a402a423eb1cdcd2cc9897b33e8fa39f39",
+      "language": "typescript",
+      "module_page": "AgentTeamStepList",
+      "semantic_hash": "sha256:0a29640b756b7666c3b722b1302f36e7aa4fa21680c9b7047be809e907fa58b8"
+    },
     "frontend/src/components/settings/ConstraintsPanel.tsx": {
       "entities": [
         "Props"
@@ -65455,10 +65658,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:f6f58bcca0f3d9ba8358405874c254d00001479263d039cde36f19cea3428753",
+      "hash": "sha256:abb685032edfb187293260552536627ad47787b30ed7097ea502c6949f297448",
       "language": "typescript",
       "module_page": "TaskTimelinePanel.test",
-      "semantic_hash": "sha256:ac5b9bc215e67bf4604efb15dfee54687d60f9321516c0c7080616a879b48b0d"
+      "semantic_hash": "sha256:6348024d8b5f61ea40408780400461574c853f0a0a1a6741c7b2dd920d65991a"
     },
     "frontend/src/components/tasks/TaskTimelinePanel.tsx": {
       "entities": [
@@ -65494,10 +65697,10 @@
           }
         }
       },
-      "hash": "sha256:d9eeee86b3bcf6081c3ee9136af388d3db7ba79493ee8abcd594144c8fed0111",
+      "hash": "sha256:dcc998115bacef7387a694577bd7eba676bfeddf1331b358ea9031fca166e24c",
       "language": "typescript",
       "module_page": "TaskTimelinePanel",
-      "semantic_hash": "sha256:fffe2607c4cf658e6d953d7c41bdf48e85e55d617c176e829227218c42903156"
+      "semantic_hash": "sha256:720aa274195ad3edd5c6c8c74f2b0eaa16caab104bd01e35f5dc8e9dfe464bf6"
     },
     "frontend/src/components/tasks/TaskWorkPanel.test.tsx": {
       "entities": [],
@@ -67407,6 +67610,26 @@
       "module_page": "usePlanningReadiness",
       "semantic_hash": "sha256:b9eeb1ffe8f8acc01dc4c0e2b342f91fddba5a67a8ab6f32224346328e6a6522"
     },
+    "frontend/src/features/savedViews/taskViewState.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/savedViews/taskViewState.ts`._",
+          "functions": {
+            "filtersFromSavedView": "—",
+            "sortKeyFromSavedView": "—"
+          }
+        }
+      },
+      "hash": "sha256:d5a6ffe11034a272fc96f25707f548f4bdff20bcdb31e0a98dcf8ed01afd8b4f",
+      "language": "typescript",
+      "module_page": "taskViewState",
+      "semantic_hash": "sha256:b7f093d4b7115a80d4a34ed63fb0773f6fa7fb00e5dc5f7ad65a1020ee243e13"
+    },
     "frontend/src/features/workQueryFreshness.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -68037,7 +68260,6 @@
       "entities": [
         "WorkflowFocusIntent",
         "StatusTone",
-        "AgentTeamStepScope",
         "AgentTeamActionReceiptStatus",
         "WorkflowFocusTarget"
       ],
@@ -68053,11 +68275,6 @@
           "page": "StatusTone"
         },
         {
-          "name": "AgentTeamStepScope",
-          "occurrence": 1,
-          "page": "AgentTeamStepScope"
-        },
-        {
           "name": "AgentTeamActionReceiptStatus",
           "occurrence": 1,
           "page": "AgentTeamActionReceiptStatus"
@@ -68070,7 +68287,6 @@
       ],
       "entity_pages": {
         "AgentTeamActionReceiptStatus": "AgentTeamActionReceiptStatus",
-        "AgentTeamStepScope": "AgentTeamStepScope",
         "StatusTone": "StatusTone",
         "WorkflowFocusIntent": "WorkflowFocusIntent",
         "WorkflowFocusTarget": "WorkflowFocusTarget"
@@ -68080,11 +68296,6 @@
           "AgentTeamActionReceiptStatus": {
             "attributes": {},
             "description": "_Auto-generated from `AgentTeamActionReceiptStatus` in `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._",
-            "methods": {}
-          },
-          "AgentTeamStepScope": {
-            "attributes": {},
-            "description": "_Auto-generated from `AgentTeamStepScope` in `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._",
             "methods": {}
           },
           "StatusTone": {
@@ -68110,7 +68321,6 @@
         "module": {
           "classes": {
             "AgentTeamActionReceiptStatus": "—",
-            "AgentTeamStepScope": "—",
             "StatusTone": "—",
             "WorkflowFocusIntent": "—",
             "WorkflowFocusTarget": "—"
@@ -68119,10 +68329,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:2d2d5a3f4eb285b41695d63379118b3aa70913c9c1fc436548ecccdb96544907",
+      "hash": "sha256:28cf772e10bc6b9a1665fe3c570e0ff1a7fbb3e0e65a5c15fa2951b1cb7db8b3",
       "language": "typescript",
       "module_page": "AgentTeamSetupMasterPage",
-      "semantic_hash": "sha256:36a96a46e09b794474517faa6899dc3bc3606614fee987fa1bd9ad33c59225cc"
+      "semantic_hash": "sha256:f69674c8f2245c40c2359915cea1d467a70812b92e2b4a273df2aa32acb5df71"
     },
     "frontend/src/pages/AnalyticsPage.tsx": {
       "entities": [
@@ -69286,10 +69496,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:482e293601e453b6886d6ea6b1657f709a78228400c6497e29eec13ed47e2307",
+      "hash": "sha256:ca05994343c92064c5f712989f09ae0c3a3a7bfef6fbf7ad26b9754adbab6ec0",
       "language": "typescript",
       "module_page": "TasksPage",
-      "semantic_hash": "sha256:f0d8725e58979e4bdfad7735cc1e54f9cdbf91f3bd9509a81b1ce760c77804d7"
+      "semantic_hash": "sha256:88b888684669cea94e8ecbf0102f42a295442bd661b77951924aeff4db716c31"
     },
     "frontend/src/pages/TeamPage.tsx": {
       "entities": [

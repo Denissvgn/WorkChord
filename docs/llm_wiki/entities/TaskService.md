@@ -44,8 +44,8 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `reserve_task_version` | *(async)* `(task: Task, expected_version: int \| None) -> int` | — | Atomically reserve the next task version at the database write boundary. |
 | `get_by_iteration` | *(async)* `(iteration_id: int, include_children: bool = True, *, max_tasks: int = MAX_ITERATION_TREE_TASKS) -> Sequence[Task]` | — | Get one explicitly bounded iteration tree from a flat task query. |
 | `load_owner_names` | *(async)* `(tasks)` | — | Expose only the public owner name through already authorized task scope. |
-| `_task_graph_query` | `(iteration_id: int \| None, project_id: int \| None = None)` | — | Build the bounded relationship query used before in-memory tree assembly. |
-| `_load_iteration_tree` | *(async)* `(iteration_id: int, *, max_tasks: int = MAX_ITERATION_TREE_TASKS, project_id: int \| None = None) -> tuple[list[Task], dict[int, Task]]` | — | Load and defensively assemble a contract-bounded iteration. |
+| `_task_graph_query` | `(iteration_id: int \| None, project_id: int \| None = None)` | — | — |
+| `_load_iteration_tree` | *(async)* `(iteration_id: int, *, max_tasks: int = MAX_ITERATION_TREE_TASKS, project_id: int \| None = None)` | — | — |
 | `get_all_tasks` | *(async)* `(iteration_id: int) -> Sequence[Task]` | — | Get all tasks (flat list) for an iteration. |
 | `get_by_id` | *(async)* `(task_id: int) -> Optional[Task]` | — | Get one task with its complete iteration tree relationships assembled. |
 | `create` | *(async)* `(iteration_id: int, data: TaskCreate, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, create_snapshot: bool = True, commit: bool = True) -> Task` | `@atomic_command` | Create a new task. |

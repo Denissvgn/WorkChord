@@ -22,14 +22,14 @@ flowchart TD
 
 > These groups reach each other only from inside functions or under `TYPE_CHECKING`, so nothing is imported while they load and their order is well defined. They are listed because they are cyclic on paper, not because they need fixing.
 
-- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [delivery_dependency](modules/delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [upgrade_service](modules/upgrade_service.md)
+- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [delivery_dependency](modules/delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_hierarchy_service](modules/task_hierarchy_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [upgrade_service](modules/upgrade_service.md)
 
 ## Fan-in / Fan-out
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
 | [app_database](modules/app_database.md) | 84 | 5 |
-| [models_task](modules/models_task.md) | 78 | 9 |
+| [models_task](modules/models_task.md) | 79 | 9 |
 | [commands](modules/commands.md) | 72 | 12 |
 | [Button](modules/Button.md) | 71 | 0 |
 | [time](modules/time.md) | 69 | 0 |
@@ -38,10 +38,10 @@ flowchart TD
 | [config](modules/config.md) | 57 | 1 |
 | [renderWithProviders](modules/renderWithProviders.md) | 55 | 1 |
 | [models_agent](modules/models_agent.md) | 54 | 5 |
-| [task_service](modules/task_service.md) | 42 | 16 |
+| [task_service](modules/task_service.md) | 42 | 17 |
 | [apiError](modules/apiError.md) | 42 | 0 |
 | [models_iteration](modules/models_iteration.md) | 41 | 6 |
-| [team_member](modules/team_member.md) | 37 | 6 |
+| [team_member](modules/team_member.md) | 38 | 6 |
 | [authority](modules/authority.md) | 36 | 5 |
 | [i18n](modules/i18n.md) | 33 | 1 |
 | [api](modules/api.md) | 32 | 2 |
@@ -53,8 +53,8 @@ flowchart TD
 | [taskService](modules/taskService.md) | 26 | 3 |
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [index](modules/index.md) | 23 | 0 |
+| [query_limits](modules/query_limits.md) | 22 | 0 |
 | [models_identity](modules/models_identity.md) | 21 | 2 |
-| [query_limits](modules/query_limits.md) | 21 | 0 |
 | [upgrade_service](modules/upgrade_service.md) | 21 | 12 |
 | [models_calendar](modules/models_calendar.md) | 20 | 2 |
 | [schemas_agent](modules/schemas_agent.md) | 20 | 8 |
@@ -86,6 +86,7 @@ flowchart TD
 | [iterationStore](modules/iterationStore.md) | 13 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
 | [agent_work_service](modules/agent_work_service.md) | 12 | 20 |
+| [savedView](modules/savedView.md) | 12 | 0 |
 | [mcp_agent_tools](modules/mcp_agent_tools.md) | 11 | 51 |
 | [recovery](modules/recovery.md) | 11 | 3 |
 | [runtime_telemetry](modules/runtime_telemetry.md) | 11 | 0 |
@@ -93,7 +94,6 @@ flowchart TD
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
 | [useConfirmDialog](modules/useConfirmDialog.md) | 11 | 1 |
 | [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
-| [savedView](modules/savedView.md) | 11 | 0 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [security](modules/security.md) | 10 | 1 |
@@ -104,6 +104,7 @@ flowchart TD
 | [session_service](modules/session_service.md) | 9 | 9 |
 | [task_brief_service](modules/task_brief_service.md) | 9 | 5 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
+| [TaskFiltersBar](modules/TaskFiltersBar.md) | 9 | 9 |
 | [identityContext](modules/identityContext.md) | 9 | 1 |
 | [useAdminAccess](modules/useAdminAccess.md) | 9 | 2 |
 | [types_gantt](modules/types_gantt.md) | 9 | 2 |
@@ -121,27 +122,27 @@ flowchart TD
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [task_domain_service](modules/task_domain_service.md) | 8 | 12 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
-| [TaskFiltersBar](modules/TaskFiltersBar.md) | 8 | 9 |
 | [planningMasters_masters](modules/planningMasters_masters.md) | 8 | 2 |
+| [planningTaskIssues](modules/planningTaskIssues.md) | 8 | 2 |
 | [types_label](modules/types_label.md) | 8 | 0 |
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [mcp_server](modules/mcp_server.md) | 7 | 15 |
+| [models_request_source](modules/models_request_source.md) | 7 | 5 |
 | [models_task_brief](modules/models_task_brief.md) | 7 | 2 |
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
 | [sql_semantics](modules/sql_semantics.md) | 7 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 7 | 0 |
 | [taskEditorContract](modules/taskEditorContract.md) | 7 | 2 |
-| [planningTaskIssues](modules/planningTaskIssues.md) | 7 | 2 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
+| [taskFilterDefaults](modules/taskFilterDefaults.md) | 7 | 1 |
 | [evidence](modules/evidence.md) | 6 | 2 |
 | [signing](modules/signing.md) | 6 | 1 |
 | [catalog](modules/catalog.md) | 6 | 2 |
 | [source](modules/source.md) | 6 | 4 |
 | [models_external_link](modules/models_external_link.md) | 6 | 2 |
-| [models_request_source](modules/models_request_source.md) | 6 | 5 |
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 6 | 0 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
@@ -151,7 +152,6 @@ flowchart TD
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 12 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
-| [taskFilterDefaults](modules/taskFilterDefaults.md) | 6 | 1 |
 | [charter](modules/charter.md) | 5 | 2 |
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
 | [models_capacity](modules/models_capacity.md) | 5 | 1 |
@@ -165,7 +165,7 @@ flowchart TD
 | [schemas_work_metrics](modules/schemas_work_metrics.md) | 5 | 0 |
 | [agent_model_catalog_service](modules/agent_model_catalog_service.md) | 5 | 6 |
 | [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) | 5 | 3 |
-| [agent_team_setup_service](modules/agent_team_setup_service.md) | 5 | 12 |
+| [agent_team_setup_service](modules/agent_team_setup_service.md) | 5 | 13 |
 | [assignee_recommendation_service](modules/assignee_recommendation_service.md) | 5 | 5 |
 | [saved_view_service](modules/saved_view_service.md) | 5 | 4 |
 | [task_context_revision_service](modules/task_context_revision_service.md) | 5 | 5 |
@@ -214,8 +214,10 @@ flowchart TD
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
 | [TaskForm](modules/TaskForm.md) | 4 | 32 |
+| [TaskList](modules/TaskList.md) | 4 | 21 |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 1 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 4 | 0 |
+| [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
 | [planningReturn](modules/planningReturn.md) | 4 | 0 |
 | [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 4 | 4 |
 | [useAgentAccess](modules/useAgentAccess.md) | 4 | 1 |
@@ -263,9 +265,7 @@ flowchart TD
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 3 | 3 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 3 | 8 |
-| [TaskList](modules/TaskList.md) | 3 | 21 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
-| [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 3 | 1 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [resources.en](modules/resources.en.md) | 3 | 2 |
@@ -365,6 +365,7 @@ flowchart TD
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 7 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
 | [statusScopes](modules/statusScopes.md) | 2 | 1 |
+| [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) | 2 | 2 |
 | [identityService](modules/identityService.md) | 2 | 1 |
 | [attentionRanking](modules/attentionRanking.md) | 2 | 1 |
 | [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) | 2 | 1 |
@@ -405,10 +406,12 @@ flowchart TD
 | [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) | 1 | 0 |
 | [schemas_session](modules/schemas_session.md) | 1 | 0 |
 | [snapshot](modules/snapshot.md) | 1 | 0 |
+| [agent_team_credentials](modules/agent_team_credentials.md) | 1 | 0 |
 | [autonomy_work_package_service](modules/autonomy_work_package_service.md) | 1 | 7 |
 | [github_webhook_service](modules/github_webhook_service.md) | 1 | 14 |
 | [native_session_service](modules/native_session_service.md) | 1 | 8 |
 | [task_bulk_operation_service](modules/task_bulk_operation_service.md) | 1 | 8 |
+| [task_hierarchy_service](modules/task_hierarchy_service.md) | 1 | 4 |
 | [task_status_service](modules/task_status_service.md) | 1 | 9 |
 | [web_intake_service](modules/web_intake_service.md) | 1 | 4 |
 | [text_similarity](modules/text_similarity.md) | 1 | 0 |
@@ -431,6 +434,7 @@ flowchart TD
 | [InitiativeForm](modules/InitiativeForm.md) | 1 | 9 |
 | [ProjectIterationsSection](modules/ProjectIterationsSection.md) | 1 | 9 |
 | [ProjectTaskTree](modules/ProjectTaskTree.md) | 1 | 5 |
+| [AgentTeamStepList](modules/AgentTeamStepList.md) | 1 | 2 |
 | [ConstraintsPanel](modules/ConstraintsPanel.md) | 1 | 3 |
 | [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) | 1 | 7 |
 | [SchedulingPassCard](modules/SchedulingPassCard.md) | 1 | 4 |
@@ -449,13 +453,13 @@ flowchart TD
 | [TeamList](modules/TeamList.md) | 1 | 8 |
 | [VacationManager](modules/VacationManager.md) | 1 | 8 |
 | [OverflowMenu](modules/OverflowMenu.md) | 1 | 0 |
-| [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) | 1 | 2 |
+| [taskViewState](modules/taskViewState.md) | 1 | 5 |
 | [SystemLanguageProvider](modules/SystemLanguageProvider.md) | 1 | 4 |
 | [teamwork.en](modules/teamwork.en.md) | 1 | 0 |
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 13 |
-| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 11 |
+| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 12 |
 | [GanttPage](modules/GanttPage.md) | 1 | 21 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 17 |
@@ -465,7 +469,7 @@ flowchart TD
 | [ProjectsPage](modules/ProjectsPage.md) | 1 | 16 |
 | [RoadmapPage](modules/RoadmapPage.md) | 1 | 11 |
 | [SettingsPage](modules/SettingsPage.md) | 1 | 17 |
-| [TasksPage](modules/TasksPage.md) | 1 | 26 |
+| [TasksPage](modules/TasksPage.md) | 1 | 27 |
 | [deliveryMetricsService](modules/deliveryMetricsService.md) | 1 | 2 |
 | [emailSettingsService](modules/emailSettingsService.md) | 1 | 2 |
 | [executionUsageService](modules/executionUsageService.md) | 1 | 2 |
@@ -490,6 +494,7 @@ flowchart TD
 | [20261004_0007_execution_usage](modules/20261004_0007_execution_usage.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
+| [bounded_scope_reads](modules/bounded_scope_reads.md) | 0 | 0 |
 | [task_import_service](modules/task_import_service.md) | 0 | 8 |
 | [task_recovery_service](modules/task_recovery_service.md) | 0 | 5 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |

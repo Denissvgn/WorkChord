@@ -1,13 +1,13 @@
 # AgentTeamStepScope
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:62`
+**Location:** `frontend/src/components/settings/AgentTeamStepList.tsx:6`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
+**Module:** [AgentTeamStepList](../modules/AgentTeamStepList.md)
 
 ## Description
 
-_Auto-generated from `AgentTeamStepScope` in `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
+_Auto-generated from `AgentTeamStepScope` in `frontend/src/components/settings/AgentTeamStepList.tsx`._
 
 ## Attributes
 
@@ -26,4 +26,4 @@ _Auto-generated from `AgentTeamStepScope` in `frontend/src/pages/AgentTeamSetupM
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | 0 | — |
+| [AgentTeamStepList](../modules/AgentTeamStepList.md) | 0 | — |

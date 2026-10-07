@@ -1,24 +1,26 @@
 # AgentTeamSetupService__apply_create_or_update
 
 **Entry point:** `agent_team_setup_service.AgentTeamSetupService._apply_create_or_update`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_team_credentials](../modules/agent_team_credentials.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md)
 
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `models_agent.AgentActor`
-2. `agent_service.hash_api_key`
-3. `models_agent.AgentTeamTopologyMember`
-4. `commands.commit_or_flush`
+1. `agent_team_credentials.CredentialDeliveryError`
+2. `models_agent.AgentActor`
+3. `agent_service.hash_api_key`
+4. `models_agent.AgentTeamTopologyMember`
 5. `commands.commit_or_flush`
-6. `agent_team_setup.AgentTeamActionReceipt`
-7. `models_agent.AgentTeamTopologyMember`
-8. `commands.commit_or_flush`
-9. `agent_team_setup.AgentTeamActionReceipt`
+6. `commands.commit_or_flush`
+7. `agent_team_setup.AgentTeamActionReceipt`
+8. `models_agent.AgentTeamTopologyMember`
+9. `commands.commit_or_flush`
+10. `agent_team_setup.AgentTeamActionReceipt`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
+- [agent_team_credentials](../modules/agent_team_credentials.md)
 - [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [commands](../modules/commands.md)

@@ -1,7 +1,7 @@
 # AgentTeamSetupService__apply_replace_recovery
 
 **Entry point:** `agent_team_setup_service.AgentTeamSetupService._apply_replace_recovery`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [commands](../modules/commands.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_team_credentials](../modules/agent_team_credentials.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [commands](../modules/commands.md)
 
 ## Sequence
 
@@ -9,15 +9,18 @@
 1. `agent_team_setup.AgentTeamActionReceipt`
 2. `agent_team_setup.AgentTeamActionReceipt`
 3. `agent_team_setup.AgentTeamActionReceipt`
-4. `agent_service.hash_api_key`
-5. `commands.commit_or_flush`
+4. `agent_team_credentials.CredentialDeliveryError`
+5. `agent_service.hash_api_key`
 6. `commands.commit_or_flush`
 7. `commands.commit_or_flush`
-8. `agent_team_setup.AgentTeamActionReceipt`
+8. `agent_team_credentials.CredentialDeliveryError`
+9. `commands.commit_or_flush`
+10. `agent_team_setup.AgentTeamActionReceipt`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
+- [agent_team_credentials](../modules/agent_team_credentials.md)
 - [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [commands](../modules/commands.md)

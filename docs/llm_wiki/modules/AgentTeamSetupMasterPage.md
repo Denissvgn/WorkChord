@@ -14,9 +14,10 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 |--------|---------|
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` |
+| `../components/settings/AgentTeamStepList` | `AgentTeamStepList` |
 | `../components/ui/MasterProgress` | `MasterProgress` |
 | `../features/agentTeamSetup/manifest` | `parseAgentTeamMasterEditor` |
-| `../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone`, `AgentTeamStepId` |
+| `../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` |
 | `../features/agentTeamSetup/statusScopes` | `deriveAgentTeamStatusScopes`, `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState` |
 | `../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` |
 | `../services/agentService` | `agentService` |
@@ -25,7 +26,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 | `../utils/formatDate` | `formatDateTime` |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` |
 | `axios` | `axios` |
-| `lucide-react` | `Check`, `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` |
+| `lucide-react` | `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` |
 | `react` | `useEffect`, `useMemo`, `useRef`, `useState` |
 | `react-i18next` | `useTranslation` |
 
@@ -34,7 +35,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `topologyTone`, `authorityTone`, `runtimeTone`, `AGENT_TEAM_STEP_SCOPES`, `AGENT_TEAM_OPERATION_KEYS`, `AGENT_TEAM_RECONCILIATION_KEYS`, `AGENT_TEAM_APPLY_STATUS_KEYS`, `AGENT_TEAM_APPLY_STATUS_TONES`, `AGENT_TEAM_ACTION_STATUS_KEYS`, `AGENT_TEAM_ACTION_STATUS_TONES` |
+| Constants | `topologyTone`, `authorityTone`, `runtimeTone`, `AGENT_TEAM_OPERATION_KEYS`, `AGENT_TEAM_RECONCILIATION_KEYS`, `AGENT_TEAM_APPLY_STATUS_KEYS`, `AGENT_TEAM_APPLY_STATUS_TONES`, `AGENT_TEAM_ACTION_STATUS_KEYS`, `AGENT_TEAM_ACTION_STATUS_TONES` |
 
 ## Local dependency map
 
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -63,14 +64,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Class | 144 | — | — |
-| [StatusTone](../entities/StatusTone.md) | Type alias | 61 | — | — |
-| [AgentTeamStepScope](../entities/AgentTeamStepScope.md) | Type alias | 62 | — | — |
-| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 141 | — | — |
-| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 142 | — | — |
+| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Class | 130 | — | — |
+| [StatusTone](../entities/StatusTone.md) | Type alias | 60 | — | — |
+| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 127 | — | — |
+| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 128 | — | — |
