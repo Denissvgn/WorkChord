@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -100,6 +100,7 @@ const TaskEditorDrawerContent = ({
     const guard = useDraftDismissal(onClose);
     const navigate = useNavigate();
     const [params] = useSearchParams();
+    const openingId = useId();
     // The drawer renders a spinner, inline retry, and withholds the editor until a task exists.
     const {
         data: fullTask,
@@ -108,7 +109,8 @@ const TaskEditorDrawerContent = ({
         refetch,
         // feedback-policy: query loading,error,retry,empty
     } = useQuery({
-        queryKey: ['taskEditor', taskId],
+        // A reopened form must initialize from its own current read, even before old cache GC runs.
+        queryKey: ['taskEditor', taskId, openingId],
         gcTime: 0,
         staleTime: 0,
         queryFn: async () => {
