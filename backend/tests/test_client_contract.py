@@ -22,6 +22,8 @@ PAGED_ROUTES = [
     ("/api/iterations/page", "IterationPage", "next_after_id"),
     ("/api/projects/portfolio-summaries/page", "ProjectPortfolioPage", "next_after_id"),
     ("/api/tasks/{task_id}/timeline/page", "TaskTimelinePage", "next_cursor"),
+    ("/api/time-entries", "TimeEntryPage", "next_after_id"),
+    ("/api/time-entries/report", "TimeReportPage", "next_after_id"),
 ]
 
 

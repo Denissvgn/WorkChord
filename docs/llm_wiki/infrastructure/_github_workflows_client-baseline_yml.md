@@ -21,7 +21,7 @@
 - actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
 - actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 - uses `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405`
 - actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 - uses `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238`
-- Install backend and browser dependencies - runs `python -m venv "$RUNNER_TEMP/workchord-python" "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/build-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/test-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --no-build-isolation --no-deps -e ./backend npx --yes playwright@1.59.1 install-deps chromium`
+- Install backend and browser dependencies - runs `python -m venv "$RUNNER_TEMP/workchord-python" "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/build-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/test-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --no-build-isolation --no-deps -e ./backend sudo python3 scripts/ci/apt_runtime.py npx --yes playwright@1.59.1 install-deps chromium`
 - Run the pinned native runtimes - runs `"$RUNNER_TEMP/workchord-python/bin/python" scripts/ci/run_disposable_checks.py --browser-only --timeout-seconds 600 ${{ matrix.browser_args }} --output /tmp/workchord-client-results`
 - client-baseline-${{ matrix.access }}-${{ github.sha }} - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
 
@@ -39,3 +39,5 @@
 This reusable workflow is called from the main CI workflow and remains manually dispatchable. Its trusted-local and managed browser variants use isolated SQLite-backed API/frontend processes and Playwright; full backend/frontend workloads run in their dedicated jobs. Android retains the pinned native JDK, SDK, wrapper, both result variants and debug APK.
 
 Each job records its work deadline before setup and uses incremental receipts with bounded commands and cleanup. Artifact uploads run after success or failure. The matrix retains independent outcomes instead of cancelling the other browser variant after a failure. Automatic execution does not require a container registry.
+
+Before Playwright installs Chromium system dependencies, shared APT preparation replaces the direct Ubuntu Azure mirror or its hosted mirror-list reference and applies bounded download timeouts and retries while preserving signed repository checks. The native PostgreSQL action uses the same preparation. Setup failures remain failures of the required aggregate gate.

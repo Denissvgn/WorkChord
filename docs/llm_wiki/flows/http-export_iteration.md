@@ -45,7 +45,6 @@ sequenceDiagram
     participant p22 as task.c.project_id.in_
     participant p23 as task.c.project_id.is_
     participant p24 as select(…).where (backend/app/authority.py:_scope_conditions, 3)
-    participant p25 as false (backend/app/authority.py:_scope_conditions)
     p0->>p1: IterationService
     p0-->>p2: iteration_service.get_by_id
     p0-->>p3: HTTPException
@@ -75,10 +74,10 @@ sequenceDiagram
     p11-->>p23: task.c.project_id.is_
     p11-->>p24: select(…).where (backend/app/authority.py:_scope_conditions, 3)
     p11-->>p18: select (backend/app/authority.py:_scope_conditions)
-    p11-->>p25: false (backend/app/authority.py:_scope_conditions)
+    p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
 ```
 
-> Call sequence diagram shows 30 of 280 interactions; 250 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 283 interactions; 253 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

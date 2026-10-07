@@ -104,7 +104,7 @@ flowchart LR
 |---|---|---:|---|
 | discover_agent_skill_bundles | get_settings().api_prefix.rstrip | 117 | `get_settings().api_prefix.rstrip('/')` |
 | discover_agent_skill_bundles | get_settings | 117 | `get_settings(data not statically known)` |
-| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| get_settings | Settings | 481 | `Settings(data not statically known)` |
 | discover_agent_skill_bundles | _resolve_payload | 118 | `_resolve_payload(...)` |
 | _resolve_payload | action | 67 | `action(data not statically known)` |
 | _resolve_payload | HTTPException | 69 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Skill bundle resource not found.')` |

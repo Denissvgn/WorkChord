@@ -6,6 +6,7 @@ runs:
     - name: Install PostgreSQL from signed distribution packages
       shell: bash
       run: |
+        sudo python3 scripts/ci/apt_runtime.py
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends postgresql-common ca-certificates curl
         sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y

@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/i18n/resources.ru.ts`._
 |--------|---------|
 | `./pagination` | `paginationRU` |
 | `./teamwork.ru` | `teamworkRussian` |
+| `./timeEntries` | `timeEntriesRU` |
 
 ## Module Signals
 
@@ -29,16 +30,19 @@ flowchart LR
     n1["frontend/src/i18n/pagination.ts"]
     n2["frontend/src/i18n/resources.ru.ts"]
     n3["frontend/src/i18n/teamwork.ru.ts"]
-    n4["frontend/src/pages/PlanMasterPage.test.tsx"]
+    n4["frontend/src/i18n/timeEntries.ts"]
+    n5["frontend/src/pages/PlanMasterPage.test.tsx"]
     n0 --> n2
     n2 --> n1
     n2 --> n3
-    n4 --> n2
+    n2 --> n4
+    n5 --> n2
     click n0 "../modules/i18n.test.md"
     click n1 "../modules/pagination.md"
     click n2 "../modules/resources.ru.md"
     click n3 "../modules/teamwork.ru.md"
-    click n4 "../modules/PlanMasterPage.test.md"
+    click n4 "../modules/timeEntries.md"
+    click n5 "../modules/PlanMasterPage.test.md"
 ```
 
 ### Internal neighbors
@@ -49,3 +53,4 @@ flowchart LR
 | Inbound | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) |
 | Outbound | [pagination](../modules/pagination.md) |
 | Outbound | [teamwork.ru](../modules/teamwork.ru.md) |
+| Outbound | [timeEntries](../modules/timeEntries.md) |

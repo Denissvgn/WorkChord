@@ -40,6 +40,7 @@ Places title, durable owner, capacity assignment, estimates and commitment state
 | `./TaskDiscussion` | `TaskDiscussion` |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` |
 | `./TaskWorkPanel` | `TaskWorkPanel` |
+| `./TimeEntriesPanel` | `TimeEntriesPanel` |
 | `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft` |
 | `./taskEditorContract` | `emptyTaskBrief`, `newCriterion`, `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor`, `TaskConflictMetadata`, `TaskEditorValues` |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` |
@@ -72,7 +73,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (32) |
+| Outbound | `frontend` (33) |
 
 ### External packages
 
@@ -80,13 +81,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 52 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Class | 53 | — | — |
 
 ## Functions
 

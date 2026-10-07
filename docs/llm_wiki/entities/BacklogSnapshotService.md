@@ -41,6 +41,7 @@ flowchart LR
     n9["test_restore_rejects_missing_historical_deletion_fence (backend/tests/test_task_domain_integrity.py)"]
     n10["test_restore_removals_record_deletion_fences (backend/tests/test_task_domain_integrity.py)"]
     n11["test_subtree_deletion_fences_survive_rollback_and_repeated_restoration (backend/tests/test_task_domain_integrity.py)"]
+    n12["test_task_snapshot_restore_does_not_rewind_recorded_time (backend/tests/test_time_entries.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -52,6 +53,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/backlog_snapshot_service.md"
     click n1 "../modules/routers_task_domain.md"
     click n2 "../modules/routers_task_domain.md"
@@ -64,6 +66,7 @@ flowchart LR
     click n9 "../modules/test_task_domain_integrity.md"
     click n10 "../modules/test_task_domain_integrity.md"
     click n11 "../modules/test_task_domain_integrity.md"
+    click n12 "../modules/test_time_entries.md"
 ```
 
 ### Summary
@@ -87,3 +90,4 @@ flowchart LR
 | `test_restore_rejects_missing_historical_deletion_fence` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
 | `test_restore_removals_record_deletion_fences` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
 | `test_subtree_deletion_fences_survive_rollback_and_repeated_restoration` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+| `test_task_snapshot_restore_does_not_rewind_recorded_time` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |

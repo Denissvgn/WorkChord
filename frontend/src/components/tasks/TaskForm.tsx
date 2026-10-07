@@ -1,6 +1,7 @@
 import { DeliveryDependencies } from './DeliveryDependencies';
 import { PersonCapacity } from './PersonCapacity';
 import { TaskDiscussion } from './TaskDiscussion';
+import { TimeEntriesPanel } from './TimeEntriesPanel';
 import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Inbox, Save, Sparkles } from 'lucide-react';
@@ -102,6 +103,7 @@ export const TaskForm = ({
     const [statusPending, setStatusPending] = useState(false);
     const [workDirty, setWorkDirty] = useState(false);
     const [discussionDirty, setDiscussionDirty] = useState(false);
+    const [timeDirty, setTimeDirty] = useState(false);
     const [showAssistant, setShowAssistant] = useState(false);
     const [showDiscardWarning, setShowDiscardWarning] = useState(false);
     const canApplyTemplates = !currentTask && mode === 'direct';
@@ -128,8 +130,8 @@ export const TaskForm = ({
     }, [draftKey, formData, isDirty]);
 
     useEffect(() => {
-        onDirtyChange?.(isDirty || workDirty || discussionDirty);
-    }, [isDirty, workDirty, discussionDirty, onDirtyChange]);
+        onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty);
+    }, [isDirty, workDirty, discussionDirty, timeDirty, onDirtyChange]);
 
     // Fetch team for assignee dropdown
     const { data: teamMembers, error: teamError, refetch: refetchTeam } = useQuery({
@@ -383,7 +385,7 @@ export const TaskForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isSubmitting || workDirty || discussionDirty) return;
+        if (isSubmitting || workDirty || discussionDirty || timeDirty) return;
         setError(null);
         setConflict(null);
         const values = {
@@ -498,8 +500,8 @@ export const TaskForm = ({
                             <dd className="max-h-40 overflow-auto whitespace-pre-wrap break-words">{conflictTask.description || '—'}</dd>
                             <dt>{t('statusChange.currentStatus')}</dt><dd>{t(`statuses.${conflictTask.status}`)}</dd>
                         </dl></details>}
-                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
-                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty || discussionDirty}>
+                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}>
                         {t('taskEditor.reload')}
                     </Button>
                 </div>
@@ -546,7 +548,7 @@ export const TaskForm = ({
                 currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
             )}
 
-            <fieldset disabled={workDirty || discussionDirty || isSubmitting} className="contents">
+            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting} className="contents">
             {/* === ESSENTIAL SECTION (always visible) === */}
 
             {/* Title - required */}
@@ -680,7 +682,7 @@ export const TaskForm = ({
                 <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{currentTask.accepted_at ? new Date(currentTask.accepted_at).toLocaleString() : '—'}</dd></div>
             </dl></details>}
 
-            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty || discussionDirty}
+            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}
                 onChange={brief => setFormData(values => ({ ...values, brief }))} /> : <div className="space-y-3">
                 <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
                 <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
@@ -993,7 +995,7 @@ export const TaskForm = ({
             {currentTask && iterationId !== null && mode === 'direct' && (
                 <div className="border-t pt-4">
                     <label className="block text-sm font-medium text-content-primary mb-2">{t('surfaces.taskForm.statusManagement')}</label>
-                    {iterationId !== null && <fieldset disabled={isDirty || workDirty || discussionDirty || isSubmitting}><StatusChangeControl
+                    {iterationId !== null && <fieldset disabled={isDirty || workDirty || discussionDirty || timeDirty || isSubmitting}><StatusChangeControl
                         onPendingChange={handleStatusPending}
                         task={currentTask}
                         iterationId={iterationId}
@@ -1010,19 +1012,22 @@ export const TaskForm = ({
 
             </fieldset>
             {currentTask && mode === 'direct' && <TaskWorkPanel key={`${currentTask.id}:${currentTask.version}`} task={currentTask}
-                draftKey={draftKey} disabled={isDirty || discussionDirty || isSubmitting} onDirty={setWorkDirty} onPending={handleStatusPending}
+                draftKey={draftKey} disabled={isDirty || discussionDirty || timeDirty || isSubmitting} onDirty={setWorkDirty} onPending={handleStatusPending}
                 onReload={() => void reloadCurrentTask()}
                 onUpdated={latest => {
                     const values = buildTaskEditorDefaults({ task: latest });
                     setCurrentTask(latest); setFormData(values); setBaseline(values); setStatusPending(false);
                     invalidateTaskProjectQueries();
                 }} />}
-            {currentTask && mode === 'direct' && <DeliveryDependencies task={currentTask} disabled={isDirty || workDirty || discussionDirty || isSubmitting}
+            {currentTask && mode === 'direct' && <DeliveryDependencies task={currentTask} disabled={isDirty || workDirty || discussionDirty || timeDirty || isSubmitting}
                 onPending={handleStatusPending} onUpdated={latest => {
                     const values = buildTaskEditorDefaults({ task: latest }); setCurrentTask(latest); setFormData(values); setBaseline(values); invalidateTaskProjectQueries();
                 }} />}
-            {currentTask && mode === 'direct' && <TaskDiscussion taskId={currentTask.id} draftKey={draftKey} disabled={isSubmitting}
+            {currentTask && mode === 'direct' && <TaskDiscussion taskId={currentTask.id} draftKey={draftKey} disabled={isSubmitting || timeDirty}
                 onDirty={setDiscussionDirty} onPending={handleStatusPending} />}
+            {currentTask?.project_id && mode === 'direct' && <TimeEntriesPanel projectId={currentTask.project_id}
+                taskId={currentTask.id} draftKey={draftKey} disabled={isSubmitting || isDirty || workDirty || discussionDirty}
+                onDirty={setTimeDirty} onPending={handleStatusPending} />}
             {currentTask && mode === 'direct' && <CollapsibleSection title={t('taskTimeline.title', { defaultValue: t('domain.history') })}><TaskTimelinePanel task={currentTask} /></CollapsibleSection>}
 
             {/* === ACTION BUTTONS === */}
@@ -1034,7 +1039,7 @@ export const TaskForm = ({
                         className="w-full sm:w-auto"
                         onClick={handleSendToTriage}
                         isLoading={createTriageMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty}
                     >
                         <Inbox className="w-4 h-4 mr-2" />
                         {t('surfaces.taskForm.sendToTriage')}
@@ -1055,7 +1060,7 @@ export const TaskForm = ({
                         type="submit"
                         className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || sessionUnavailable || Boolean(conflict)}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(conflict)}
                     >
                         <Save className="w-4 h-4 mr-2" />
                         {mode === 'sandbox'

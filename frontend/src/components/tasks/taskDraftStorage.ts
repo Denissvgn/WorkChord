@@ -40,5 +40,7 @@ export const writeTaskDraft = (key: string | null, values: TaskEditorValues) => 
 
 export const removeTaskDraft = (key: string | null, includeProgress = false) => {
     if (!key) return;
-    try { sessionStorage.removeItem(key); if (includeProgress) { sessionStorage.removeItem(`${key}:progress`); sessionStorage.removeItem(`${key}:discussion`); } } catch { /* Storage may be disabled. */ }
+    try { sessionStorage.removeItem(key); if (includeProgress) { sessionStorage.removeItem(`${key}:progress`); sessionStorage.removeItem(`${key}:discussion`); sessionStorage.removeItem(`${key}:time`);
+        const timeKeys = Object.keys(sessionStorage).filter(storedKey => storedKey.startsWith(`${key}:time:`));
+        timeKeys.forEach(storedKey => sessionStorage.removeItem(storedKey)); } } catch { /* Storage may be disabled. */ }
 };

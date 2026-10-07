@@ -1344,3 +1344,200 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f4208640193d83cf2cac468fcbb23a9c0756945a9f37a6eb9a5ef2dc3d3ead70`
+- Pages created: 28
+- Pages updated: 207
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2659
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+- Flow pages initialized: 7 (http=7)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bf580bec48349e3af5b0828beb98f64ed7558a23d396e9d2a3fda98f8686c8ef`
+- Pages created: 1
+- Pages updated: 13
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2881
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:8417f874b6563735e3bb979e60ebc4128a43769ac36640726d3d4ee4a6b92895`
+- Pages created: 0
+- Pages updated: 12
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2883
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:8f05a68ad61acd67a40214aa0ddcc7004c4cb9546abedaa8af69e432e2ea90ae`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2895
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b80ba4e4c3b5673c726b1e56ccf7cfd8bc1dcf57eee2f09159ee207a7fcf1cdb`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2892
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:70fa627efc3c90eaf52f0ff6b249bda5f7576f437f6ea690037231874972bbaf`
+- Pages created: 24
+- Pages updated: 57
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2838
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 2 (http=2)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3e8115a640e02ba0e155e76dcdb96b96ee236b7edb173d63d7f46797c07bf5e0`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2914
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:55e84653597eaa37741bd29210911488ed331d0493b228ab763a96e1a7ac5662`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2919
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3650edc2bb882cb66abdd9923f4177f9da2e7acd219aa72a6177073701967239`
+- Pages created: 5
+- Pages updated: 24
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2896
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+- Protected time-entry response caching and partitioned private draft state by identity and recording scope; shared APT preparation keeps native PostgreSQL and browser dependency setup bounded without adding registry dependencies.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4663a04d525c60b897ed5f39f83acaad3a1f49dc0234ff8f95735df329884d65`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2922
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+- Direct Ubuntu archive selection also handles the hosted runner mirror-list transport, preventing a preferred Azure mirror from remaining active behind a file URI.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5bd40dfb4fee0e343911a00fb4ecde0f143444f34e7950389e28553d4c983940`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2921
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

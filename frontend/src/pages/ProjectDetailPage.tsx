@@ -1,4 +1,5 @@
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
+import { TimeEntriesReport } from '../components/projects/TimeEntriesReport';
 import i18n from '../i18n/i18n';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
@@ -1383,6 +1384,7 @@ const ProjectDetailPage = () => {
                         onMove={(milestoneId, direction) => reorderMilestoneMutation.mutate({ milestoneId, direction })}
                     />
 
+                    <TimeEntriesReport projectId={numericProjectId} />
                     {/* Project Requests */}
                     <RequestSourceLinksPanel
                         targetType="project"

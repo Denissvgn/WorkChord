@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1483 | [Open section](#entities) |
-| Modules | 671 | [Open section](#modules) |
-| Workflows | 176 | [Open section](#workflows) |
+| Entities | 1510 | [Open section](#entities) |
+| Modules | 691 | [Open section](#modules) |
+| Workflows | 177 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 533 | [Open section](#entry-point-flows) |
+| Entry-point flows | 543 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -167,6 +167,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AppRuntimeSettingsResponse](entities/AppRuntimeSettingsResponse.md)
 - [ApplicationAcceptance](entities/ApplicationAcceptance.md)
 - [ApplicationSnapshot](entities/ApplicationSnapshot.md)
+- [AptPreparation](entities/AptPreparation.md)
 - [AssessmentDraft](entities/AssessmentDraft.md)
 - [AssigneeRecommendation](entities/AssigneeRecommendation.md)
 - [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
@@ -268,6 +269,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ControlledFileReader](entities/ControlledFileReader.md)
 - [ConvertMutationInput](entities/ConvertMutationInput.md)
 - [ConvertTriageModalProps](entities/ConvertTriageModalProps.md)
+- [CorrectionReason](entities/CorrectionReason.md)
 - [CorrelatedProviderAction](entities/CorrelatedProviderAction.md)
 - [CostTier](entities/CostTier.md)
 - [CreateTriageModalProps](entities/CreateTriageModalProps.md)
@@ -276,7 +278,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [CurrentTopologyMember](entities/CurrentTopologyMember.md)
 - [CurrentTopologySnapshot](entities/CurrentTopologySnapshot.md)
 - [CutoverEvidenceError](entities/CutoverEvidenceError.md)
-- [DB](entities/DB.md)
 - [DagController](entities/DagController.md)
 - [DagJournalEntry](entities/DagJournalEntry.md)
 - [DagJournalSnapshot](entities/DagJournalSnapshot.md)
@@ -316,6 +317,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DiscussionService](entities/DiscussionService.md)
 - [DndContextMockProps](entities/DndContextMockProps.md)
 - [DocumentationContractError](entities/DocumentationContractError.md)
+- [Draft](entities/Draft.md)
 - [DraftGuard](entities/DraftGuard.md)
 - [DrawerCopy](entities/DrawerCopy.md)
 - [DuplicateActionDefaults](entities/DuplicateActionDefaults.md)
@@ -934,6 +936,25 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TemplateService](entities/TemplateService.md)
 - [Theme](entities/Theme.md)
 - [ThemeState](entities/ThemeState.md)
+- [TimeEntryCapabilities](entities/TimeEntryCapabilities.md)
+- [TimeEntryCorrection](entities/TimeEntryCorrection.md)
+- [TimeEntryCreate](entities/TimeEntryCreate.md)
+- [TimeEntryPage](entities/TimeEntryPage.md)
+- [TimeEntryResponse](entities/TimeEntryResponse.md)
+- [TimeEntryRevision](entities/TimeEntryRevision.md)
+- [TimeEntryService](entities/TimeEntryService.md)
+- [TimeEntryVersionConflict](entities/TimeEntryVersionConflict.md)
+- [TimeEntryVoid](entities/TimeEntryVoid.md)
+- [TimeFilters](entities/TimeFilters.md)
+- [TimePage](entities/TimePage.md)
+- [TimeReport](entities/TimeReport.md)
+- [TimeReportItem](entities/TimeReportItem.md)
+- [TimeReportPage](entities/TimeReportPage.md)
+- [TimeReportService](entities/TimeReportService.md)
+- [TimeReportTotals](entities/TimeReportTotals.md)
+- [TimeRevision](entities/TimeRevision.md)
+- [TimeRevisionPage](entities/TimeRevisionPage.md)
+- [TimeRevisionResponse](entities/TimeRevisionResponse.md)
 - [ToastApi](entities/ToastApi.md)
 - [ToastInput](entities/ToastInput.md)
 - [ToastRecord](entities/ToastRecord.md)
@@ -1099,6 +1120,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_task_TaskStatus](entities/models_task_TaskStatus.md)
 - [models_template_TemplateType](entities/models_template_TemplateType.md)
 - [models_template_WorkTemplate](entities/models_template_WorkTemplate.md)
+- [models_time_entry_TimeEntry](entities/models_time_entry_TimeEntry.md)
 - [models_triage_TriageClassificationSuggestion](entities/models_triage_TriageClassificationSuggestion.md)
 - [models_triage_TriageItem](entities/models_triage_TriageItem.md)
 - [models_triage_TriageItemStatus](entities/models_triage_TriageItemStatus.md)
@@ -1118,6 +1140,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [requestSource_RequestSourceType](entities/requestSource_RequestSourceType.md)
 - [routers_capacity_Database](entities/routers_capacity_Database.md)
 - [routers_identity_Database](entities/routers_identity_Database.md)
+- [routers_task_domain_DB](entities/routers_task_domain_DB.md)
 - [savedView_SavedView](entities/savedView_SavedView.md)
 - [savedView_SavedViewCreate](entities/savedView_SavedViewCreate.md)
 - [savedView_SavedViewScope](entities/savedView_SavedViewScope.md)
@@ -1279,6 +1302,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_template_TemplateType](entities/schemas_template_TemplateType.md)
 - [schemas_template_WorkTemplateCreate](entities/schemas_template_WorkTemplateCreate.md)
 - [schemas_template_WorkTemplateUpdate](entities/schemas_template_WorkTemplateUpdate.md)
+- [schemas_time_entry_TimeValues](entities/schemas_time_entry_TimeValues.md)
 - [schemas_triage_TriageActionRequest](entities/schemas_triage_TriageActionRequest.md)
 - [schemas_triage_TriageConvertToTaskRequest](entities/schemas_triage_TriageConvertToTaskRequest.md)
 - [schemas_triage_TriageConvertToTaskResponse](entities/schemas_triage_TriageConvertToTaskResponse.md)
@@ -1311,6 +1335,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [team_member_TeamMemberProfile](entities/team_member_TeamMemberProfile.md)
 - [team_member_TeamMemberProfileSkill](entities/team_member_TeamMemberProfileSkill.md)
 - [team_member_Vacation](entities/team_member_Vacation.md)
+- [timeEntryService_TimeEntry](entities/timeEntryService_TimeEntry.md)
+- [timeEntryService_TimeValues](entities/timeEntryService_TimeValues.md)
+- [time_entries_DB](entities/time_entries_DB.md)
 - [topology_AgentTeamReconciliationPlan](entities/topology_AgentTeamReconciliationPlan.md)
 - [types_agent_AgentActor](entities/types_agent_AgentActor.md)
 - [types_agent_AgentActorRosterItem](entities/types_agent_AgentActorRosterItem.md)
@@ -1512,6 +1539,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261003_0005_native_connections](modules/20261003_0005_native_connections.md) - Add short-lived browser-approved native connections.
 - [20261004_0006_delivery_observations](modules/20261004_0006_delivery_observations.md) - Retain event-time delivery observations without guessing older history.
 - [20261004_0007_execution_usage](modules/20261004_0007_execution_usage.md) - Retain execution usage revisions and immutable pricing snapshots.
+- [20261007_0008_time_entries](modules/20261007_0008_time_entries.md) - Retain private minute records and append-only correction history.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1694,6 +1722,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamProfileManager.test](modules/TeamProfileManager.test.md) - `frontend/src/components/team/TeamProfileManager.test.tsx`
 - [TemplateLabelSettings](modules/TemplateLabelSettings.md) - `frontend/src/components/settings/TemplateLabelSettings.tsx`
 - [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) - `frontend/src/components/settings/TemplateLabelSettings.test.tsx`
+- [TimeEntriesPanel](modules/TimeEntriesPanel.md) - `frontend/src/components/tasks/TimeEntriesPanel.tsx`
+- [TimeEntriesPanel.test](modules/TimeEntriesPanel.test.md) - `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`
+- [TimeEntriesReport](modules/TimeEntriesReport.md) - `frontend/src/components/projects/TimeEntriesReport.tsx`
+- [TimeEntriesReport.test](modules/TimeEntriesReport.test.md) - `frontend/src/components/projects/TimeEntriesReport.test.tsx`
 - [ToastProvider](modules/ToastProvider.md) - `frontend/src/components/feedback/ToastProvider.tsx`
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
@@ -1734,6 +1766,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
 - [app_database](modules/app_database.md) - `backend/app/database.py`
 - [app_main](modules/app_main.md) - `backend/app/main.py`
+- [apt_runtime](modules/apt_runtime.md) - Prepare job-local APT sources for bounded signed package installation.
 - [assignee_recommendation_service](modules/assignee_recommendation_service.md) - Explainable assignee recommendations from team capability profiles.
 - [attentionRanking](modules/attentionRanking.md) - `frontend/src/features/overview/attentionRanking.ts`
 - [attentionRanking.test](modules/attentionRanking.test.md) - `frontend/src/features/overview/attentionRanking.test.ts`
@@ -1874,6 +1907,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_task](modules/models_task.md) - Task model.
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
 - [models_template](modules/models_template.md) - Reusable work template model.
+- [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
 - [models_triage](modules/models_triage.md) - Triage item model.
 - [mutation_versions](modules/mutation_versions.md) - Server-controlled version rollout with explicit offline repair separation.
 - [native_connection](modules/native_connection.md) - Short-lived browser consent for a proof-bound native session.
@@ -1991,6 +2025,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_task_domain](modules/schemas_task_domain.md) - Explicit task commands and typed action availability.
 - [schemas_team](modules/schemas_team.md) - Team member schemas.
 - [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
+- [schemas_time_entry](modules/schemas_time_entry.md) - Bounded minute/date contracts with explicit correction versions.
 - [schemas_triage](modules/schemas_triage.md) - Triage item schemas.
 - [schemas_work_metrics](modules/schemas_work_metrics.md) - Shared additive delivery metrics; legacy completed fields mean implemented work.
 - [seal](modules/seal.md) - Seal a reviewed JSON evidence object with its canonical SHA-256.
@@ -2025,6 +2060,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
 - [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
 - [taskDraftStorage](modules/taskDraftStorage.md) - `frontend/src/components/tasks/taskDraftStorage.ts`
+- [taskDraftStorage.test](modules/taskDraftStorage.test.md) - `frontend/src/components/tasks/taskDraftStorage.test.ts`
 - [taskEditorContract](modules/taskEditorContract.md) - `frontend/src/components/tasks/taskEditorContract.ts`
 - [taskFilterDefaults](modules/taskFilterDefaults.md) - `frontend/src/utils/taskFilterDefaults.ts`
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
@@ -2073,6 +2109,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_apt_runtime](modules/test_apt_runtime.md) - Runner APT preparation preserves signed sources and bounds stalled downloads.
 - [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
 - [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
@@ -2124,12 +2161,21 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
 - [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
 - [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
+- [test_time_entries](modules/test_time_entries.md) - Private explicit minutes, retained corrections and independent recovery behavior.
+- [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
 - [text_similarity](modules/text_similarity.md) - Lightweight text similarity helpers for advisory search.
 - [themeStore](modules/themeStore.md) - `frontend/src/store/themeStore.ts`
 - [time](modules/time.md) - Timezone-safe UTC helpers and SQLAlchemy datetime normalization.
+- [timeEntries](modules/timeEntries.md) - `frontend/src/i18n/timeEntries.ts`
+- [timeEntryService](modules/timeEntryService.md) - `frontend/src/services/timeEntryService.ts`
+- [timeEntryService.test](modules/timeEntryService.test.md) - `frontend/src/services/timeEntryService.test.ts`
+- [time_entries](modules/time_entries.md) - Optional human-authored time records with private correction history.
+- [time_entry_service](modules/time_entry_service.md) - Attributable minute commands with private reads and independent version history.
+- [time_report](modules/time_report.md) - Scoped recorded coverage, distinct from current effort estimates.
+- [time_report_service](modules/time_report_service.md) - Authorized scalar totals and exports without exposing other authors' records.
 - [toast](modules/toast.md) - `frontend/src/components/feedback/toast.ts`
 - [tone](modules/tone.md) - `frontend/src/components/ui/tone.ts`
 - [tone.test](modules/tone.test.md) - `frontend/src/components/ui/tone.test.ts`
@@ -2164,6 +2210,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`
 - [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.ts`
 - [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx`
+- [useTimeEntries](modules/useTimeEntries.md) - `frontend/src/features/timeEntries/useTimeEntries.ts`
 - [user_session](modules/user_session.md) - `backend/app/models/user_session.py`
 - [visibleWork](modules/visibleWork.md) - `frontend/src/utils/visibleWork.ts`
 - [visibleWork.test](modules/visibleWork.test.md) - `frontend/src/utils/visibleWork.test.ts`
@@ -2298,6 +2345,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamService_delete_vacation](workflows/TeamService_delete_vacation.md) - entry: `team_service.TeamService.delete_vacation`
 - [TeamService_import_members](workflows/TeamService_import_members.md) - entry: `team_service.TeamService.import_members`
 - [TeamService_update_vacation](workflows/TeamService_update_vacation.md) - entry: `team_service.TeamService.update_vacation`
+- [TimeEntryService_create](workflows/TimeEntryService_create.md) - entry: `time_entry_service.TimeEntryService.create`
 - [TriageService_classify_item](workflows/TriageService_classify_item.md) - entry: `triage_service.TriageService.classify_item`
 - [TriageService_convert_to_task](workflows/TriageService_convert_to_task.md) - entry: `triage_service.TriageService.convert_to_task`
 - [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
@@ -2382,6 +2430,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-build_identity](flows/http-build_identity.md) - entry: `build_identity`
 - [http-bulk_update_tasks](flows/http-bulk_update_tasks.md) - entry: `bulk_update_tasks`
 - [http-callback](flows/http-callback.md) - entry: `callback`
+- [http-capabilities](flows/http-capabilities.md) - entry: `capabilities`
 - [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
 - [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
@@ -2392,6 +2441,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-convert_task_brief](flows/http-convert_task_brief.md) - entry: `convert_task_brief`
 - [http-convert_triage_item_to_backlog](flows/http-convert_triage_item_to_backlog.md) - entry: `convert_triage_item_to_backlog`
 - [http-convert_triage_item_to_task](flows/http-convert_triage_item_to_task.md) - entry: `convert_triage_item_to_task`
+- [http-correct_entry](flows/http-correct_entry.md) - entry: `correct_entry`
 - [http-create_absence](flows/http-create_absence.md) - entry: `create_absence`
 - [http-create_agent_actor](flows/http-create_agent_actor.md) - entry: `create_agent_actor`
 - [http-create_agent_assignment](flows/http-create_agent_assignment.md) - entry: `create_agent_assignment`
@@ -2401,6 +2451,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-create_agent_task](flows/http-create_agent_task.md) - entry: `create_agent_task`
 - [http-create_backlog_task](flows/http-create_backlog_task.md) - entry: `create_backlog_task`
 - [http-create_calendar](flows/http-create_calendar.md) - entry: `create_calendar`
+- [http-create_entry](flows/http-create_entry.md) - entry: `create_entry`
 - [http-create_github_status_automation_rule](flows/http-create_github_status_automation_rule.md) - entry: `create_github_status_automation_rule`
 - [http-create_initiative](flows/http-create_initiative.md) - entry: `create_initiative`
 - [http-create_iteration-agent_planning](flows/http-create_iteration-agent_planning.md) - entry: `create_iteration`
@@ -2466,6 +2517,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-execution_usage_summary](flows/http-execution_usage_summary.md) - entry: `execution_usage_summary`
 - [http-expire](flows/http-expire.md) - entry: `expire`
 - [http-explain_schedule](flows/http-explain_schedule.md) - entry: `explain_schedule`
+- [http-export](flows/http-export.md) - entry: `export`
 - [http-export_iteration](flows/http-export_iteration.md) - entry: `export_iteration`
 - [http-fail_my_agent_work](flows/http-fail_my_agent_work.md) - entry: `fail_my_agent_work`
 - [http-finish_agent_run](flows/http-finish_agent_run.md) - entry: `finish_agent_run`
@@ -2487,6 +2539,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_calendars](flows/http-get_calendars.md) - entry: `get_calendars`
 - [http-get_current_plan_share](flows/http-get_current_plan_share.md) - entry: `get_current_plan_share`
 - [http-get_email_settings](flows/http-get_email_settings.md) - entry: `get_email_settings`
+- [http-get_entry](flows/http-get_entry.md) - entry: `get_entry`
 - [http-get_execution_usage](flows/http-get_execution_usage.md) - entry: `get_execution_usage`
 - [http-get_gantt_data](flows/http-get_gantt_data.md) - entry: `get_gantt_data`
 - [http-get_initiative](flows/http-get_initiative.md) - entry: `get_initiative`
@@ -2535,6 +2588,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_vacations](flows/http-get_vacations.md) - entry: `get_vacations`
 - [http-get_working_days](flows/http-get_working_days.md) - entry: `get_working_days`
 - [http-health_check](flows/http-health_check.md) - entry: `health_check`
+- [http-history](flows/http-history.md) - entry: `history`
 - [http-human_my_work](flows/http-human_my_work.md) - entry: `human_my_work`
 - [http-import_calendar_holidays](flows/http-import_calendar_holidays.md) - entry: `import_calendar_holidays`
 - [http-import_iteration](flows/http-import_iteration.md) - entry: `import_iteration`
@@ -2555,6 +2609,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-list_agent_recovery_tasks](flows/http-list_agent_recovery_tasks.md) - entry: `list_agent_recovery_tasks`
 - [http-list_agent_skill_bundles](flows/http-list_agent_skill_bundles.md) - entry: `list_agent_skill_bundles`
 - [http-list_delivery_dependencies](flows/http-list_delivery_dependencies.md) - entry: `list_delivery_dependencies`
+- [http-list_entries](flows/http-list_entries.md) - entry: `list_entries`
 - [http-list_github_status_automation_rules](flows/http-list_github_status_automation_rules.md) - entry: `list_github_status_automation_rules`
 - [http-list_initiatives](flows/http-list_initiatives.md) - entry: `list_initiatives`
 - [http-list_label_groups](flows/http-list_label_groups.md) - entry: `list_label_groups`
@@ -2623,6 +2678,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-renew_task_claim](flows/http-renew_task_claim.md) - entry: `renew_task_claim`
 - [http-reorder_tasks](flows/http-reorder_tasks.md) - entry: `reorder_tasks`
 - [http-repair_hierarchy](flows/http-repair_hierarchy.md) - entry: `repair_hierarchy`
+- [http-report](flows/http-report.md) - entry: `report`
 - [http-report_agent_discovery](flows/http-report_agent_discovery.md) - entry: `report_agent_discovery`
 - [http-requeue_agent_recovery_task](flows/http-requeue_agent_recovery_task.md) - entry: `requeue_agent_recovery_task`
 - [http-reset_scheduling_rules](flows/http-reset_scheduling_rules.md) - entry: `reset_scheduling_rules`
@@ -2704,6 +2760,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-update_vacation](flows/http-update_vacation.md) - entry: `update_vacation`
 - [http-update_web_intake_settings](flows/http-update_web_intake_settings.md) - entry: `update_web_intake_settings`
 - [http-validate_agent_team_master](flows/http-validate_agent_team_master.md) - entry: `validate_agent_team_master`
+- [http-void_entry](flows/http-void_entry.md) - entry: `void_entry`
 - [http-whoami](flows/http-whoami.md) - entry: `whoami`
 - [http-workspace_member](flows/http-workspace_member.md) - entry: `workspace_member`
 - [http-write_task_brief](flows/http-write_task_brief.md) - entry: `write_task_brief`
@@ -2863,6 +2920,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 **process**
 
 - [process-agent_preflight](flows/process-agent_preflight.md) - entry: `main`
+- [process-apt_runtime](flows/process-apt_runtime.md) - entry: `main`
 - [process-build_agent_skills](flows/process-build_agent_skills.md) - entry: `main`
 - [process-build_identity](flows/process-build_identity.md) - entry: `main`
 - [process-check_model_aware_routing_closeout](flows/process-check_model_aware_routing_closeout.md) - entry: `main`

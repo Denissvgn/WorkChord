@@ -58,6 +58,7 @@ jobs:
           "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/requirements.lock
           "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/test-requirements.lock
           "$RUNNER_TEMP/workchord-python/bin/pip" install --no-build-isolation --no-deps -e ./backend
+          sudo python3 scripts/ci/apt_runtime.py
           npx --yes playwright@1.59.1 install-deps chromium
       - name: Run the pinned native runtimes
         run: '"$RUNNER_TEMP/workchord-python/bin/python" scripts/ci/run_disposable_checks.py --browser-only --timeout-seconds 600 ${{ matrix.browser_args }} --output /tmp/workchord-client-results'

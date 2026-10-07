@@ -29,25 +29,33 @@ flowchart LR
     n1["frontend/src/components/iteration/IterationForm.tsx"]
     n2["frontend/src/components/projects/InitiativeForm.tsx"]
     n3["frontend/src/components/projects/ProjectForm.tsx"]
-    n4["frontend/src/components/releases/ReleaseForm.tsx"]
-    n5["frontend/src/components/tasks/TaskForm.tsx"]
-    n6["frontend/src/components/team/TeamForm.tsx"]
-    n7["frontend/src/pages/TriagePage.tsx"]
+    n4["frontend/src/components/projects/TimeEntriesReport.tsx"]
+    n5["frontend/src/components/releases/ReleaseForm.tsx"]
+    n6["frontend/src/components/tasks/TaskForm.tsx"]
+    n7["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
+    n8["frontend/src/components/team/TeamForm.tsx"]
+    n9["frontend/src/pages/TriagePage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n4 --> n7
     n5 --> n0
     n6 --> n0
+    n6 --> n7
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/CollapsibleSection.md"
     click n1 "../modules/IterationForm.md"
     click n2 "../modules/InitiativeForm.md"
     click n3 "../modules/ProjectForm.md"
-    click n4 "../modules/ReleaseForm.md"
-    click n5 "../modules/TaskForm.md"
-    click n6 "../modules/TeamForm.md"
-    click n7 "../modules/TriagePage.md"
+    click n4 "../modules/TimeEntriesReport.md"
+    click n5 "../modules/ReleaseForm.md"
+    click n6 "../modules/TaskForm.md"
+    click n7 "../modules/TimeEntriesPanel.md"
+    click n8 "../modules/TeamForm.md"
+    click n9 "../modules/TriagePage.md"
 ```
 
 ### Internal neighbors
@@ -57,8 +65,10 @@ flowchart LR
 | Inbound | [IterationForm](../modules/IterationForm.md) |
 | Inbound | [InitiativeForm](../modules/InitiativeForm.md) |
 | Inbound | [ProjectForm](../modules/ProjectForm.md) |
+| Inbound | [TimeEntriesReport](../modules/TimeEntriesReport.md) |
 | Inbound | [ReleaseForm](../modules/ReleaseForm.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
 | Inbound | [TeamForm](../modules/TeamForm.md) |
 | Inbound | [TriagePage](../modules/TriagePage.md) |
 

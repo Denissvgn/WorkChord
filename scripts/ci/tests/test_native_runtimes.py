@@ -25,6 +25,15 @@ import run_disposable_checks as checks
 
 
 class WorkflowContracts(unittest.TestCase):
+    def test_package_installers_prepare_bounded_signed_apt_sources_first(self):
+        action = yaml.safe_load((REPO / '.github/actions/native-postgres/action.yml').read_text())
+        script = action['runs']['steps'][0]['run']
+        self.assertLess(script.index('sudo python3 scripts/ci/apt_runtime.py'), script.index('sudo apt-get update'))
+        client = yaml.safe_load((REPO / '.github/workflows/client-baseline.yml').read_text())
+        script = next(step['run'] for step in client['jobs']['delivery']['steps']
+                      if step.get('name') == 'Install backend and browser dependencies')
+        self.assertLess(script.index('sudo python3 scripts/ci/apt_runtime.py'), script.index('install-deps chromium'))
+
     def test_android_cleartext_is_restricted_to_debug_loopback_hosts(self):
         root = REPO / 'android-companion/app/src'
         main = ET.parse(root / 'main/res/xml/network_security_config.xml').getroot()

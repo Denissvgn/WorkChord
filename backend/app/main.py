@@ -19,7 +19,7 @@ from app.query_limits import CollectionLimitExceededError
 from app.commands import AggregateVersionConflict, HierarchyScopeError, PlanningConflict
 from app.authority import AuthorityError
 from app.http_authority import enforce_http_authority
-from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion
+from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion, time_entries
 from app.runtime_telemetry import metrics
 from app.mutation_versions import MissingMutationRevision
 from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
@@ -82,6 +82,7 @@ app.include_router(identity.router, prefix=settings.api_prefix, tags=["Identity"
 app.include_router(task_domain.router, prefix=settings.api_prefix, tags=["Task domain"])
 app.include_router(delivery_dependencies.router, prefix=settings.api_prefix, tags=["Delivery dependencies"])
 app.include_router(discussion.router, prefix=settings.api_prefix, tags=["Discussion"])
+app.include_router(time_entries.router, prefix=settings.api_prefix, tags=["Time entries"])
 
 
 @app.exception_handler(RequestValidationError)

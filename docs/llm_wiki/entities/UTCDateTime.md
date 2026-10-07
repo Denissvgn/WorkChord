@@ -101,4 +101,4 @@ flowchart LR
 | `native_connection` | import | [native_connection](../modules/native_connection.md) | — |
 | `outbound_webhook` | import | [models_outbound_webhook](../modules/models_outbound_webhook.md) | — |
 
-> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

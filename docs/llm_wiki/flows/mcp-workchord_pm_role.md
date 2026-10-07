@@ -79,7 +79,7 @@ sequenceDiagram
     p10-->>p27: db.commit
 ```
 
-> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 57 interactions; 27 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -119,6 +119,8 @@ flowchart LR
     s11 -. "mutation db.info.pop" .-> b2
     b3["mutation db.info.pop"]
     s11 -. "mutation db.info.pop" .-> b3
+    b4["mutation db.info.pop"]
+    s11 -. "mutation db.info.pop" .-> b4
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
     click s3 "../modules/mcp_server.md"
@@ -132,6 +134,7 @@ flowchart LR
     class b1 boundary
     class b2 boundary
     class b3 boundary
+    class b4 boundary
 ```
 
 ### Step data
@@ -174,7 +177,8 @@ flowchart LR
 | environment_read | `os.getenv` | `_current_agent_key` | 200 |
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 122 |
+| mutation | `db.info.pop` | `command_transaction` | 121 |
+| mutation | `db.info.pop` | `command_transaction` | 123 |
 
 ### Static analysis gaps
 

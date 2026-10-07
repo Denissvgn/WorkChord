@@ -23,7 +23,7 @@ _Auto-generated from `backend/app/main.py`._
 | `app.mutation_versions` | `MissingMutationRevision` |
 | `app.observability` | `collect_metrics`, `readiness_snapshot` |
 | `app.query_limits` | `CollectionLimitExceededError` |
-| `app.routers` | `identity`, `task_domain`, `capacity`, `delivery_dependencies`, `discussion`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
+| `app.routers` | `identity`, `task_domain`, `capacity`, `delivery_dependencies`, `discussion`, `time_entries`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
 | `app.runtime_telemetry` | `metrics` |
 | `contextlib` | `asynccontextmanager` |
 | `fastapi` | `FastAPI`, `Request`, `status`, `Depends` |
@@ -52,9 +52,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Inbound | `scripts` (4) |
-| Outbound | `backend` (45) |
+| Outbound | `backend` (46) |
 
 ### External packages
 
@@ -62,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 62 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 64 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

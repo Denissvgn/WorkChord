@@ -89,7 +89,7 @@ sequenceDiagram
     p19-->>p26: db.flush
 ```
 
-> Call sequence diagram shows 30 of 187 interactions; 157 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 188 interactions; 158 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -153,7 +153,7 @@ flowchart LR
 | workspace_get_iteration_gantt | _tool_call | 1553 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

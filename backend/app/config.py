@@ -117,6 +117,7 @@ class Settings(BaseSettings):
     mcp_unsafe_allow_public_binding: bool = False
     workchord_admin_api_key: str = ""
     workchord_auth_mode: Literal["managed", "trusted_local"] = "managed"
+    time_entries_enabled: bool = False
     oidc_issuer_url: str = ""
     oidc_client_id: str = ""
     oidc_client_secret: str = ""

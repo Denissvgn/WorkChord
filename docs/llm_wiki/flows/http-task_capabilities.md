@@ -93,7 +93,7 @@ flowchart LR
 | domain_capabilities | select(…).where | 57 | `select(Task.id).where(...)` |
 | domain_capabilities | select | 57 | `select(Task.id)` |
 | domain_capabilities | get_settings | 61 | `get_settings(data not statically known)` |
-| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| get_settings | Settings | 481 | `Settings(data not statically known)` |
 | domain_capabilities | get_settings | 62 | `get_settings(data not statically known)` |
 
 ### Boundary effects

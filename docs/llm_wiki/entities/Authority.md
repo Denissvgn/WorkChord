@@ -107,4 +107,4 @@ flowchart LR
 | `test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit` | call | [test_mutation_versions](../modules/test_mutation_versions.md) | 1 |
 | `test_absence_owner_permission_and_projection_redaction` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

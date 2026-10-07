@@ -44,7 +44,6 @@ sequenceDiagram
     participant p20 as db.rollback
     participant p21 as db.commit
     participant p22 as lock_iterations
-    participant p23 as lock_planning
     p0->>p1: IterationService
     p0-->>p2: iteration_service.get_by_id
     p0-->>p3: HTTPException (backend/app/routers/tasks.py:batch_update_tasks)
@@ -73,11 +72,11 @@ sequenceDiagram
     p4-->>p20: db.rollback
     p4-->>p16: db.info.pop
     p4-->>p16: db.info.pop
+    p4-->>p16: db.info.pop
     p0->>p22: lock_iterations
-    p22->>p23: lock_planning
 ```
 
-> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 130 interactions; 100 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -113,6 +112,8 @@ flowchart LR
     s5 -. "mutation db.info.pop" .-> b1
     b2["mutation db.info.pop"]
     s5 -. "mutation db.info.pop" .-> b2
+    b3["mutation db.info.pop"]
+    s5 -. "mutation db.info.pop" .-> b3
     click s1 "../modules/tasks.md"
     click s2 "../modules/iteration_service.md"
     click s5 "../modules/commands.md"
@@ -122,6 +123,7 @@ flowchart LR
     class b0 boundary
     class b1 boundary
     class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -163,7 +165,8 @@ flowchart LR
 |---|---|---|---:|
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 122 |
+| mutation | `db.info.pop` | `command_transaction` | 121 |
+| mutation | `db.info.pop` | `command_transaction` | 123 |
 
 ### Static analysis gaps
 

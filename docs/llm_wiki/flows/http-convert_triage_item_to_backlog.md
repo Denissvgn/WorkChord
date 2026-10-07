@@ -40,7 +40,6 @@ sequenceDiagram
     participant p19 as domain_result
     participant p20 as HTTPException (backend/app/routers/task_domain.py:domain_result)
     participant p21 as exc.detail
-    participant p22 as str (backend/app/routers/task_domain.py:domain_result)
     p0->>p1: command_transaction
     p1->>p2: current_command
     p2-->>p3: getattr
@@ -66,14 +65,14 @@ sequenceDiagram
     p1-->>p17: db.rollback
     p1-->>p13: db.info.pop
     p1-->>p13: db.info.pop
+    p1-->>p13: db.info.pop
     p0->>p19: domain_result
     p19-->>p20: HTTPException (backend/app/routers/task_domain.py:domain_result)
     p19-->>p21: exc.detail
     p19-->>p20: HTTPException (backend/app/routers/task_domain.py:domain_result)
-    p19-->>p22: str (backend/app/routers/task_domain.py:domain_result)
 ```
 
-> Call sequence diagram shows 30 of 39 interactions; 9 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 40 interactions; 10 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -109,6 +108,8 @@ flowchart LR
     s2 -. "mutation db.info.pop" .-> b1
     b2["mutation db.info.pop"]
     s2 -. "mutation db.info.pop" .-> b2
+    b3["mutation db.info.pop"]
+    s2 -. "mutation db.info.pop" .-> b3
     click s1 "../modules/routers_triage.md"
     click s2 "../modules/commands.md"
     click s3 "../modules/commands.md"
@@ -117,6 +118,7 @@ flowchart LR
     class b0 boundary
     class b1 boundary
     class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -158,7 +160,8 @@ flowchart LR
 |---|---|---|---:|
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 122 |
+| mutation | `db.info.pop` | `command_transaction` | 121 |
+| mutation | `db.info.pop` | `command_transaction` | 123 |
 
 ### Static analysis gaps
 

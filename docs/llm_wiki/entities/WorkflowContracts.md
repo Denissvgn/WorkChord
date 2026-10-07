@@ -17,6 +17,7 @@ _Auto-generated from `WorkflowContracts` in `scripts/ci/tests/test_native_runtim
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `test_package_installers_prepare_bounded_signed_apt_sources_first` | `()` | — | — |
 | `test_android_cleartext_is_restricted_to_debug_loopback_hosts` | `()` | — | — |
 | `test_automatic_workflows_do_not_pull_or_build_images` | `()` | — | — |
 | `test_deployment_acceptance_remains_explicit_and_checks_twice` | `()` | — | — |
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_native_runtimes](../modules/test_native_runtimes.md) | 6 | — |
+| [test_native_runtimes](../modules/test_native_runtimes.md) | 7 | — |
 
 ### Structure
 
