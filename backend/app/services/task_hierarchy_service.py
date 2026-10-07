@@ -43,6 +43,10 @@ class TaskHierarchyService:
         project_id: int | None = None,
     ) -> tuple[list[Task], dict[int, Task]]:
         """Load and defensively assemble a contract-bounded iteration."""
+        identities = select(Task.id).where(Task.iteration_id == iteration_id,
+            *([Task.project_id == project_id] if iteration_id is None else [])).limit(max_tasks + 1)
+        if len((await self.db.scalars(identities)).all()) > max_tasks:
+            raise CollectionLimitExceededError("iteration task tree", max_tasks)
         result = await self.db.execute(
             self._task_graph_query(iteration_id, project_id).limit(max_tasks + 1)
         )

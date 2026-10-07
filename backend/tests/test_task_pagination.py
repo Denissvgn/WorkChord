@@ -135,3 +135,18 @@ async def test_mixed_timeline_sources_have_stable_ties_and_actor_provenance(deli
         assert [item["item_type"] for item in tied] == ["agent_run_event", "agent_run", "status_log", "task_event"]
         assert tied[0]["actor_id"] == tied[1]["actor_id"] == scenario.actors[0]
         assert len({item["event_key"] for item in items}) == len(items)
+
+
+async def test_oversized_reads_reject_before_relationship_or_history_hydration(delivery_store, monkeypatch):
+    from app.services.task_hierarchy_service import TaskHierarchyService
+    from app.services.task_service import TaskService
+    from app.services.delivery_metrics_service import DeliveryMetricsService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        db.add_all([Task(title="Oversized read", project_id=scenario.projects[0], iteration_id=scenario.iterations[0]) for _ in range(2501)])
+        await db.commit()
+        def forbidden(*_args, **_kwargs):raise AssertionError("Hydration preceded the bound check")
+        monkeypatch.setattr(TaskHierarchyService, "_task_graph_query", forbidden)
+        with pytest.raises(CollectionLimitExceededError):await TaskService(db).get_by_iteration(scenario.iterations[0])
+        monkeypatch.setattr(DeliveryMetricsService, "_window_observations", forbidden)
+        with pytest.raises(CollectionLimitExceededError):await DeliveryMetricsService(db).report(project_id=scenario.projects[0])
