@@ -117,12 +117,13 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
     });
     const linksQuery = useQuery({
         queryKey: ['task-external-links', task.id],
+        staleTime: 0,
         queryFn: () => taskService.getExternalLinks(task.id),
         initialData: task.external_links,
     });
     const timelineData = timelineQuery.data ? { items: timelineQuery.data.pages.flatMap(page => page.items) } : undefined;
     const isLoading = timelineQuery.isLoading;
-    const externalLinks = linksQuery.data ?? task.external_links;
+    const externalLinks = linksQuery.isError ? [] : linksQuery.data ?? task.external_links;
     const linksAreFetching = linksQuery.isFetching;
 
     const createGitHubLinkMutation = useMutation({

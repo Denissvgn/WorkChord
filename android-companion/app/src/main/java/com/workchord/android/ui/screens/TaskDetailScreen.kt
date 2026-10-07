@@ -76,7 +76,7 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                     }
                 }
                 state.detail?.dependencies?.items.orEmpty().forEach { dependency -> item(key = "dependency-${dependency.id}") {
-                    TextButton(onClick = { onNavigateTask(dependency.id) }) { Text("#${dependency.id} · ${dependency.title}") }
+                    TextButton(onClick = { leave { onNavigateTask(dependency.id) } }) { Text("#${dependency.id} · ${dependency.title}") }
                 } }
                 if (state.detail?.dependencies?.hasMore == true) item {
                     OutlinedButton(onClick = { viewModel.loadMoreRelations(false) }, enabled = !state.isLoadingRelations && state.authoritative) {

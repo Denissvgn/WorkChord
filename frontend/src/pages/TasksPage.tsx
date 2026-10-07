@@ -1,3 +1,4 @@
+import { filtersFromSavedView, sortKeyFromSavedView } from '../features/savedViews/taskViewState';
 import { savedViewModified } from '../utils/savedViewState';
 import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { TaskSearch } from '../components/tasks/TaskSearch';
@@ -63,7 +64,6 @@ import type {
 } from '../features/planningMasters/planningTaskIssues';
 
 type ViewMode = 'list' | 'board';
-const SORT_KEYS: SortKey[] = ['priority', 'sort_order', 'status', 'title'];
 const PLANNING_ISSUE_COPY_KEYS: Record<
     PlanningTaskIssue,
     { title: string; body: string }
@@ -80,55 +80,6 @@ const PLANNING_ISSUE_COPY_KEYS: Record<
         title: 'tasks.planningIssueAnyTitle',
         body: 'tasks.planningIssueAnyBody',
     },
-};
-
-const stringListFromValue = (value: unknown) => (
-    Array.isArray(value) && value.every(item => typeof item === 'string') ? value : []
-);
-
-const nullableNumberFromValue = (value: unknown) => (
-    typeof value === 'number' || value === null ? value : null
-);
-
-const nullableBooleanFromValue = (value: unknown) => (
-    typeof value === 'boolean' || value === null ? value : null
-);
-
-const stringFromValue = (value: unknown) => (
-    typeof value === 'string' ? value : ''
-);
-
-const nullableStringFromValue = (value: unknown) => (
-    typeof value === 'string' || value === null ? value : null
-);
-
-const filtersFromSavedView = (view: SavedView): TaskFilters => {
-    const raw = view.filters_json;
-    return {
-        ...defaultFilters,
-        planningIssue: parsePlanningTaskIssue(raw.planningIssue),
-        assigneeId: nullableNumberFromValue(raw.assigneeId),
-        projectId: nullableNumberFromValue(raw.projectId),
-        priority: nullableNumberFromValue(raw.priority),
-        status: nullableStringFromValue(raw.status),
-        hasDependency: nullableBooleanFromValue(raw.hasDependency),
-        isOverdue: nullableBooleanFromValue(raw.isOverdue),
-        isIterationOverflow: nullableBooleanFromValue(raw.isIterationOverflow),
-        agentReady: nullableBooleanFromValue(raw.agentReady),
-        startDateFrom: stringFromValue(raw.startDateFrom),
-        startDateTo: stringFromValue(raw.startDateTo),
-        endDateFrom: stringFromValue(raw.endDateFrom),
-        endDateTo: stringFromValue(raw.endDateTo),
-        labelSlugs: stringListFromValue(raw.labelSlugs),
-        labelGroupKeys: stringListFromValue(raw.labelGroupKeys),
-    };
-};
-
-const sortKeyFromSavedView = (view: SavedView): SortKey | null => {
-    const sortKey = view.sort_json.sortKey;
-    return typeof sortKey === 'string' && SORT_KEYS.includes(sortKey as SortKey)
-        ? sortKey as SortKey
-        : null;
 };
 
 const TasksPage = () => {

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import type { FormEvent } from 'react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import type { Task } from '../../types/task';
@@ -60,6 +60,19 @@ describe('TaskTimelinePanel', () => {
         taskServiceMock.createGitHubExternalLink.mockResolvedValue({});
         taskServiceMock.deleteExternalLink.mockReset();
         taskServiceMock.refreshGitHubExternalLink.mockReset();
+    });
+
+    it('hides cached private links when a later read fails', async () => {
+        taskServiceMock.getExternalLinks.mockResolvedValue([{ id: 1, entity_type: 'task', entity_id: 42,
+            provider: 'github', url: 'https://github.com/example/private/pull/1', title: 'Private source link',
+            metadata_json: {}, is_legacy: false }]);
+        const { queryClient } = renderWithProviders(<TaskTimelinePanel task={task} />);
+        await screen.findByText('Private source link');
+        taskServiceMock.getExternalLinks.mockRejectedValue(new Error('Permission revoked'));
+        await act(async () => { await queryClient.invalidateQueries({ queryKey: ['task-external-links', 42] }); });
+        await waitFor(() => expect(screen.queryByText('Private source link')).toBeNull());
+        expect(screen.getByRole('alert')).toBeVisible();
+        expect(screen.queryByRole('button', { name: /Delete.*Private source link/ })).toBeNull();
     });
 
     it('links GitHub work by keyboard without nesting or submitting the task form', async () => {
