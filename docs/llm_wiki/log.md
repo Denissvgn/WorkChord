@@ -1480,3 +1480,46 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3650edc2bb882cb66abdd9923f4177f9da2e7acd219aa72a6177073701967239`
+- Pages created: 5
+- Pages updated: 24
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2896
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+- Protected time-entry response caching and partitioned private draft state by identity and recording scope; shared APT preparation keeps native PostgreSQL and browser dependency setup bounded without adding registry dependencies.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4663a04d525c60b897ed5f39f83acaad3a1f49dc0234ff8f95735df329884d65`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2922
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

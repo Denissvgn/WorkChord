@@ -79,7 +79,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| report | domain_result | 48 | `domain_result(...)` |
+| report | domain_result | 52 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -87,8 +87,8 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| report | TimeReportService(…).page | 48 | `TimeReportService(db).page(project_id, start, end, scope=scope, after_id=after_id, upper_id=upper_id, limit=limit)` |
-| report | TimeReportService | 48 | `TimeReportService(db)` |
+| report | TimeReportService(…).page | 52 | `TimeReportService(db).page(project_id, start, end, scope=scope, after_id=after_id, upper_id=upper_id, limit=limit)` |
+| report | TimeReportService | 52 | `TimeReportService(db)` |
 
 ### Boundary effects
 
@@ -103,7 +103,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `report` | `TimeReportService(db).page` | 48 |
+| unresolved_call | `report` | `TimeReportService(db).page` | 52 |
 
 ## Behavior
 

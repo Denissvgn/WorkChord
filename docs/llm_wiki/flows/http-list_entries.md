@@ -79,7 +79,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_entries | domain_result | 35 | `domain_result(...)` |
+| list_entries | domain_result | 39 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -87,8 +87,8 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| list_entries | TimeEntryService(…).list | 35 | `TimeEntryService(db).list(project_id=project_id, task_id=task_id, start=start, end=end, after_id=after_id, upper_id=upper_id, limit=limit, include_voided=include_voided)` |
-| list_entries | TimeEntryService | 35 | `TimeEntryService(db)` |
+| list_entries | TimeEntryService(…).list | 39 | `TimeEntryService(db).list(project_id=project_id, task_id=task_id, start=start, end=end, after_id=after_id, upper_id=upper_id, limit=limit, include_voided=include_voided)` |
+| list_entries | TimeEntryService | 39 | `TimeEntryService(db)` |
 
 ### Boundary effects
 

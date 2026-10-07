@@ -367,6 +367,7 @@ flowchart TD
 | [TaskTextEditorModal](modules/TaskTextEditorModal.md) | 2 | 5 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 2 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 2 | 7 |
+| [taskDraftStorage](modules/taskDraftStorage.md) | 2 | 1 |
 | [AssigneeRecommendationsPanel](modules/AssigneeRecommendationsPanel.md) | 2 | 4 |
 | [ImportTeamModal](modules/ImportTeamModal.md) | 2 | 4 |
 | [TeamForm](modules/TeamForm.md) | 2 | 7 |
@@ -461,7 +462,6 @@ flowchart TD
 | [TaskContextSummary](modules/TaskContextSummary.md) | 1 | 4 |
 | [TaskSearch](modules/TaskSearch.md) | 1 | 3 |
 | [TaskWorkflowGuide](modules/TaskWorkflowGuide.md) | 1 | 2 |
-| [taskDraftStorage](modules/taskDraftStorage.md) | 1 | 1 |
 | [TeamList](modules/TeamList.md) | 1 | 8 |
 | [VacationManager](modules/VacationManager.md) | 1 | 8 |
 | [OverflowMenu](modules/OverflowMenu.md) | 1 | 0 |
@@ -628,6 +628,7 @@ flowchart TD
 | [TaskTimelinePanel.test](modules/TaskTimelinePanel.test.md) | 0 | 3 |
 | [TaskWorkPanel.test](modules/TaskWorkPanel.test.md) | 0 | 4 |
 | [TimeEntriesPanel.test](modules/TimeEntriesPanel.test.md) | 0 | 3 |
+| [taskDraftStorage.test](modules/taskDraftStorage.test.md) | 0 | 1 |
 | [useDraftDismissal.test](modules/useDraftDismissal.test.md) | 0 | 1 |
 | [ImportTeamModal.test](modules/ImportTeamModal.test.md) | 0 | 3 |
 | [TeamForm.test](modules/TeamForm.test.md) | 0 | 3 |
@@ -693,6 +694,7 @@ flowchart TD
 | [generate_workchord_keys](modules/generate_workchord_keys.md) | 0 | 0 |
 | [setup_agent_team](modules/setup_agent_team.md) | 0 | 0 |
 | [build_agent_skills](modules/build_agent_skills.md) | 0 | 0 |
+| [apt_runtime](modules/apt_runtime.md) | 0 | 0 |
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
 | [ci_runtime](modules/ci_runtime.md) | 0 | 0 |
@@ -702,6 +704,7 @@ flowchart TD
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
 | [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 7 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
+| [test_apt_runtime](modules/test_apt_runtime.md) | 0 | 0 |
 | [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |
 | [test_native_runtimes](modules/test_native_runtimes.md) | 0 | 0 |
 | [generate_agent_team_contract](modules/generate_agent_team_contract.md) | 0 | 1 |
@@ -721,8 +724,8 @@ flowchart TD
 
 ### python
 
-- **Used:** `aiosmtplib`, `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
-- ⚠️ **Undeclared:** `alembic`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- **Used:** `aiosmtplib`, `alembic`, `apt-runtime`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
+- ⚠️ **Undeclared:** `alembic`, `apt-runtime`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `workchord-backend`
 - **Unused (declared, not imported):** `aiosqlite`, `email-validator`, `psycopg`, `python-dotenv`, `python-multipart`, `uvicorn`
 
 ### typescript

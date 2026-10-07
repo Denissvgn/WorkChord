@@ -6,7 +6,7 @@
 
 _Auto-generated from `frontend/src/components/tasks/TimeEntriesPanel.tsx`._
 
-The optional task/project disclosure retains scoped personal drafts and creation UUIDs across failures. Entry corrections require an explicit current-version choice after conflicts. A separate HTML form owns the auxiliary controls, so native time requirements never block the parent task form. Parent or standalone draft guards protect navigation, pending commands and sign-out; private rows/history are hidden on authority failures. Capability-disabled controls disappear, and bounded cursor metadata is validated before continuation.
+The optional task/project disclosure retains scoped personal drafts and creation UUIDs across failures. Both embedded and disclosure forms remount when principal, project, task or caller draft key changes. The same scope partitions session storage even when a caller reuses its key; date-range changes retain the current form and retry identity. Standalone keys retain the principal prefix consumed by account-switch cleanup. Unscoped legacy time drafts are not adopted because their authorship and recording scope cannot be established. Entry corrections require an explicit current-version choice after conflicts. A separate HTML form owns the auxiliary controls, so native time requirements never block the parent task form. Parent or standalone draft guards protect navigation, pending commands and sign-out; private rows/history are hidden on authority failures. Capability-disabled controls disappear, and bounded cursor metadata is validated before continuation.
 
 ## Imports
 

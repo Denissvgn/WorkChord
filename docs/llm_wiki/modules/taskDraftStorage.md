@@ -6,6 +6,8 @@
 
 _Auto-generated from `frontend/src/components/tasks/taskDraftStorage.ts`._
 
+Parent discard removes the task draft and, when auxiliary cleanup is requested, progress, discussion, legacy time and all scoped time drafts under that parent key. Unrelated parent keys remain intact.
+
 ## Imports
 
 | Source | Symbols |
@@ -23,21 +25,25 @@ _Auto-generated from `frontend/src/components/tasks/taskDraftStorage.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/taskDraftStorage.ts"]
-    n1["frontend/src/components/tasks/taskEditorContract.ts"]
-    n2["frontend/src/components/tasks/TaskForm.tsx"]
+    n0["frontend/src/components/tasks/taskDraftStorage.test.ts"]
+    n1["frontend/src/components/tasks/taskDraftStorage.ts"]
+    n2["frontend/src/components/tasks/taskEditorContract.ts"]
+    n3["frontend/src/components/tasks/TaskForm.tsx"]
     n0 --> n1
-    n2 --> n0
-    n2 --> n1
-    click n0 "../modules/taskDraftStorage.md"
-    click n1 "../modules/taskEditorContract.md"
-    click n2 "../modules/TaskForm.md"
+    n1 --> n2
+    n3 --> n1
+    n3 --> n2
+    click n0 "../modules/taskDraftStorage.test.md"
+    click n1 "../modules/taskDraftStorage.md"
+    click n2 "../modules/taskEditorContract.md"
+    click n3 "../modules/TaskForm.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [taskDraftStorage.test](../modules/taskDraftStorage.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |
 

@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:3e17220cda778b88274a4b6fceab519ea29ca9f88b6bade9c99c7001d83b5620",
-    "knowledge_index_hash": "sha256:d6d16eb486225e71e7883522c2c89091544f0f41cb5af584d8e6c7ef2e943ff1",
-    "surface_index_hash": "sha256:3bcb01460b265e0dc71b169c04ee012d9708de3568b99a837bf4490789116733"
+    "evaluated_envelope_hash": "sha256:2e60c452afbb7555e2cb3476202be0f3d754b2a3dc78205c0370b27cb6d900b0",
+    "knowledge_index_hash": "sha256:d9af40d905c21cf1e1dbb176c6b587ebccf105da92a883651eae8d4de6a7fda3",
+    "surface_index_hash": "sha256:d0b7348e77bcd3d6d0d83bb32c65c6e2dc94ab31087c9080711388bbad72cd9c"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1410,7 +1410,7 @@
         "concept_observation_hash": "sha256:c5eef96b4b86c320873cbbe5f99bfc37258b154f3718c5053f123ca10930c5a9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -1492,6 +1492,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:185dfd50db8551e2fc417158dc9b59d55706c053e32e6fe7406006840d2dba63",
         "source_path": "backend/app/models/recovery.py"
+      },
+      "state": "known"
+    },
+    "entities/AptPreparation.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0055f95a28b7be4b87314f3cf9ceee9501a8a330efe26734708b2df395a13572",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+        "source_path": "scripts/ci/tests/test_apt_runtime.py"
       },
       "state": "known"
     },
@@ -2990,7 +3000,7 @@
         "concept_observation_hash": "sha256:69a6848199b15c4136b6688cd68fed74ef3919b1c0f5898a75f65234d2e26222",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+        "source_content_hash": "sha256:b243a2d131a6b0b291af543cee16a10f68448a5bd8739519270ca9dc34e296cb",
         "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
       },
       "state": "known"
@@ -4930,7 +4940,7 @@
         "concept_observation_hash": "sha256:83b5d86e4e3a42c0b67306534b5d1e9936d6f0e003259be500be1beb4e0ebbdd",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -5650,7 +5660,7 @@
         "concept_observation_hash": "sha256:0cd0984005dc19ba135eb12f89c6edc9448622b5acf0335beebc8562017f8e60",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -10057,10 +10067,10 @@
     },
     "entities/WorkflowContracts.md": {
       "basis": {
-        "concept_observation_hash": "sha256:70654b9eca0d81b179c2825f101fb9c48a247f9711ea3d3a59dec28c201002c9",
+        "concept_observation_hash": "sha256:94dab6d02f78599d6afd89167da80dc8f1a2a875b6b9fdd64caeff760667f0de",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -13190,7 +13200,7 @@
         "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
+        "source_content_hash": "sha256:6b0dba2e41be25774d1bd8c8a83d447659cd4ffae62d2cbc745395d0e5da6643",
         "source_path": "backend/app/routers/time_entries.py"
       },
       "state": "known"
@@ -17010,17 +17020,17 @@
         "concept_observation_hash": "sha256:3bdff855372e3fd00568d997fe0ef25370e41318fa9b70c7e6b761c0de0ab536",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+        "source_content_hash": "sha256:b243a2d131a6b0b291af543cee16a10f68448a5bd8739519270ca9dc34e296cb",
         "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
       },
       "state": "known"
     },
     "modules/TimeEntriesPanel.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:93fb1f9e9ef7e49f9dc89d0220a7cd359e505c2c56a57aff7b9a432c3bc0d43c",
+        "concept_observation_hash": "sha256:e124c14683b5097d16b50a66af83df9556daeb87fce48ca33fc5e41f398cdb89",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:2ba66a7d0d2981393780aa8a16f170dfaf83b92cab2e7741e3097b758be1e435",
+        "source_content_hash": "sha256:8ce460911f0b4e036c1b6dcff0e64059289680751c753dcc600ded97460e0862",
         "source_path": "frontend/src/components/tasks/TimeEntriesPanel.test.tsx"
       },
       "state": "known"
@@ -17442,6 +17452,16 @@
         "scope": "module",
         "source_content_hash": "sha256:023ce2e349cc633f8de7ae7fc505602d8699652e4720185a21f27e5d65e58940",
         "source_path": "backend/app/main.py"
+      },
+      "state": "known"
+    },
+    "modules/apt_runtime.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:55becd03364934bc6de8c8900d6030fe9572f7c5f328f27bb31bd4834e57f551",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:9d64a29b46586661eaedd193baece3b2a0c1e3ffccfebdefdf0f43c71947aaaf",
+        "source_path": "scripts/ci/apt_runtime.py"
       },
       "state": "known"
     },
@@ -20370,8 +20390,18 @@
         "concept_observation_hash": "sha256:7ac662b441c366e0ee1382dcc7afcf13d266c906bf3568765df72b97ad347a93",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:fa034d748f1dbb62199fccf8e002c32ef9e451776c7d4e848b03453516cc835e",
+        "source_content_hash": "sha256:99938a972a365a5375243f3ca451d0080aa2d14c939cdf58cfead3b8d8d4030f",
         "source_path": "frontend/src/components/tasks/taskDraftStorage.ts"
+      },
+      "state": "known"
+    },
+    "modules/taskDraftStorage.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a3b80babcabff887e7abf9ecb55d1ca3fd0eb427038a299cbcd1731e2a619837",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:0886bd00420e096046143e8777b28683ac17dec7907f13e13f87af5a2dfea1bb",
+        "source_path": "frontend/src/components/tasks/taskDraftStorage.test.ts"
       },
       "state": "known"
     },
@@ -20855,6 +20885,16 @@
       },
       "state": "known"
     },
+    "modules/test_apt_runtime.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:6115ecbdb474c78a5af94caf8c8eb72513d1408e8abaf577e4f8b55ee6c44b0c",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+        "source_path": "scripts/ci/tests/test_apt_runtime.py"
+      },
+      "state": "known"
+    },
     "modules/test_authority_migrations.md": {
       "basis": {
         "concept_observation_hash": "sha256:c2d6ff92becf482346b851169d6884fee4d4bbb4e6ade596b2bc0e89e5d300cf",
@@ -21110,7 +21150,7 @@
         "concept_observation_hash": "sha256:2b3f4e44b0763f4e7a5fe4b4c8eb4e8ee032b6b1c4f03458d6c39da30728debc",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -21370,7 +21410,7 @@
         "concept_observation_hash": "sha256:08704f0b7179a39303c88e6859573f38beb7024aa0405d6038a48feb07fcf3e2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:4a9d394cf8cd69ceac1afdd3114595193575502339f63970d62251bf8a4dec6c",
+        "source_content_hash": "sha256:8ebcf4e2705604486b0a7d625033e85d877f318c7c49a7903df4fa9d970ac34d",
         "source_path": "backend/tests/test_time_entries.py"
       },
       "state": "known"
@@ -21477,10 +21517,10 @@
     },
     "modules/time_entries.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d7d62b41e2c54b00e018cab9be5063148207c1796e81fbd5d936cfd4cfdd00ef",
+        "concept_observation_hash": "sha256:467ca706c09c3831c97993bf49ce96b66e8a3c70fb7f9cf97b9a457bb9c19116",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
+        "source_content_hash": "sha256:6b0dba2e41be25774d1bd8c8a83d447659cd4ffae62d2cbc745395d0e5da6643",
         "source_path": "backend/app/routers/time_entries.py"
       },
       "state": "known"
@@ -21996,7 +22036,7 @@
           {
             "path": ".github/actions/native-postgres/action.yml",
             "reason": "unrecognized-yaml",
-            "source_content_hash": "sha256:59005e443de85ba10c68798762eca34fbce305d8b7d5f441ddb36d18e2e8d3be"
+            "source_content_hash": "sha256:84348e39a370da2c186453e0cf8fe1fc6de79c013faf4257b060c2e1a8ef50e9"
           },
           {
             "path": "adapters/codex/workchord-agent-roles/skills/workchord-pm/agents/openai.yaml",
@@ -22047,12 +22087,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:a91994d148da2a0f9b208c1558611303f2732dce72b82906ad96cb2e5cd39518",
-            "source_content_hash": "sha256:76c18c5b3e57f288c213449541129aa059f497f04124384bf1ee0bec7c426864"
+            "observation_hash": "sha256:ad6e87168d8cf19c2344891b96aff5b27a985c3f8f9b5d35be60f459e0a17d3f",
+            "source_content_hash": "sha256:81139c12b7c926067031a69a42f658ad6a4b8ae22000fcafe74e4b899737ed68"
           },
-          "observation_hash": "sha256:a91994d148da2a0f9b208c1558611303f2732dce72b82906ad96cb2e5cd39518",
+          "observation_hash": "sha256:ad6e87168d8cf19c2344891b96aff5b27a985c3f8f9b5d35be60f459e0a17d3f",
           "page_path": "infrastructure/_github_workflows_client-baseline_yml.md",
-          "source_content_hash": "sha256:76c18c5b3e57f288c213449541129aa059f497f04124384bf1ee0bec7c426864",
+          "source_content_hash": "sha256:81139c12b7c926067031a69a42f658ad6a4b8ae22000fcafe74e4b899737ed68",
           "source_path": ".github/workflows/client-baseline.yml",
           "state": "current"
         },
@@ -22190,13 +22230,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:4db16ef51f2bfed515b77bda2726e949467c6f77ddb85765c89a1143045ef66d",
-      "lifecycle_hash": "sha256:e15b022e4e18496ac07348623b88a87217c560c073ee6bce58e0546c64600d6f",
-      "markdown_snapshot_hash": "sha256:34edd1b0e2bc2dec25098392ca7a60dc02aee08c125534ee2403b2dd47128ad5",
-      "observation_inputs_hash": "sha256:234ec98188e1671eedb5127c09bfa9ed9537b78e7ea92252c4fc868ea36fd5ff",
+      "inventory_hash": "sha256:cc5c64f32be019b33a8ca1dbc57f9e1d8be7a42a42f33e3b6c1d8cbe0f12882d",
+      "lifecycle_hash": "sha256:e93d2183863035f01c2c2616082f190cda5ed4b966ac53d011705fd71fb83656",
+      "markdown_snapshot_hash": "sha256:c6aa23410b22eafd5318c93714f0801f44185515d8ceaa22794a4f376ec5a62a",
+      "observation_inputs_hash": "sha256:8860a06272e4f635d47ba437e44a3a6d929aab28ab700d14b92a2537c3b9e24b",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:55e84653597eaa37741bd29210911488ed331d0493b228ab763a96e1a7ac5662"
+      "source_snapshot_hash": "sha256:4663a04d525c60b897ed5f39f83acaad3a1f49dc0234ff8f95735df329884d65"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -23098,6 +23138,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/models/recovery.py"
+    },
+    "entities/AptPreparation.md": {
+      "entity_name": "AptPreparation",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_apt_runtime.py"
     },
     "entities/AssessmentDraft.md": {
       "entity_name": "AssessmentDraft",
@@ -32199,6 +32245,10 @@
       "scope": "module",
       "source_path": "backend/app/main.py"
     },
+    "modules/apt_runtime.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/apt_runtime.py"
+    },
     "modules/assignee_recommendation_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/assignee_recommendation_service.py"
@@ -33371,6 +33421,10 @@
       "scope": "module",
       "source_path": "frontend/src/components/tasks/taskDraftStorage.ts"
     },
+    "modules/taskDraftStorage.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/tasks/taskDraftStorage.test.ts"
+    },
     "modules/taskEditorContract.md": {
       "scope": "module",
       "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
@@ -33562,6 +33616,10 @@
     "modules/test_agent_work_routing_lineage.md": {
       "scope": "module",
       "source_path": "backend/tests/test_agent_work_routing_lineage.py"
+    },
+    "modules/test_apt_runtime.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/tests/test_apt_runtime.py"
     },
     "modules/test_authority_migrations.md": {
       "scope": "module",
@@ -43422,15 +43480,16 @@
             "get_entry": "—",
             "history": "—",
             "list_entries": "—",
+            "prevent_private_caching": "—",
             "report": "—",
             "void_entry": "—"
           }
         }
       },
-      "hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
+      "hash": "sha256:6b0dba2e41be25774d1bd8c8a83d447659cd4ffae62d2cbc745395d0e5da6643",
       "language": "python",
       "module_page": "time_entries",
-      "semantic_hash": "sha256:5587f0b6c9b80d7df450dcede8ebe96c8821a86a672b29ea30a1caff6b53c989"
+      "semantic_hash": "sha256:8170f4350f18a4a8527be9c57d8cd09a27b917b10e0677c50c09bf5069724bd5"
     },
     "backend/app/routers/triage.py": {
       "entities": [],
@@ -61804,10 +61863,10 @@
           }
         }
       },
-      "hash": "sha256:4a9d394cf8cd69ceac1afdd3114595193575502339f63970d62251bf8a4dec6c",
+      "hash": "sha256:8ebcf4e2705604486b0a7d625033e85d877f318c7c49a7903df4fa9d970ac34d",
       "language": "python",
       "module_page": "test_time_entries",
-      "semantic_hash": "sha256:bbe26ec906fafc11e3dc5f81d2f06945b865bb96ea4ea041c3d69b9427275475"
+      "semantic_hash": "sha256:762a47c2b7764fd6918f711f08c1204680ea2dee607778f51be393cad74e2445"
     },
     "backend/tests/test_time_reports.py": {
       "entities": [],
@@ -67163,10 +67222,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:2ba66a7d0d2981393780aa8a16f170dfaf83b92cab2e7741e3097b758be1e435",
+      "hash": "sha256:8ce460911f0b4e036c1b6dcff0e64059289680751c753dcc600ded97460e0862",
       "language": "typescript",
       "module_page": "TimeEntriesPanel.test",
-      "semantic_hash": "sha256:185dabca894650f30fd241170eae2975d6e1a43a85a3c561df1d47ee6b771af1"
+      "semantic_hash": "sha256:84c6893342fd65597e65f1a83beecbaa13d3e1c405caf90512dc69f1b167a1bc"
     },
     "frontend/src/components/tasks/TimeEntriesPanel.tsx": {
       "entities": [
@@ -67200,10 +67259,10 @@
           }
         }
       },
-      "hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+      "hash": "sha256:b243a2d131a6b0b291af543cee16a10f68448a5bd8739519270ca9dc34e296cb",
       "language": "typescript",
       "module_page": "TimeEntriesPanel",
-      "semantic_hash": "sha256:aa30e9255d1c6060d195682a566aadf4f8934910eae7c42de1ece1d85ad0e61d"
+      "semantic_hash": "sha256:9aedd61582cbb34a85677de0ef0a131f5c36ce6eaaf28b163aa55d3286073046"
     },
     "frontend/src/components/tasks/WorkMetricsLine.tsx": {
       "entities": [],
@@ -67224,6 +67283,23 @@
       "module_page": "WorkMetricsLine",
       "semantic_hash": "sha256:11a8c16f4d24d31844d74bc4f2b11a26330aa9e24b16c15831c461c82e9731cc"
     },
+    "frontend/src/components/tasks/taskDraftStorage.test.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/tasks/taskDraftStorage.test.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:0886bd00420e096046143e8777b28683ac17dec7907f13e13f87af5a2dfea1bb",
+      "language": "typescript",
+      "module_page": "taskDraftStorage.test",
+      "semantic_hash": "sha256:168092b5ae3308945c1f4f11612a79199a9556947e00befa1e7894dbafe14563"
+    },
     "frontend/src/components/tasks/taskDraftStorage.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -67240,10 +67316,10 @@
           }
         }
       },
-      "hash": "sha256:fa034d748f1dbb62199fccf8e002c32ef9e451776c7d4e848b03453516cc835e",
+      "hash": "sha256:99938a972a365a5375243f3ca451d0080aa2d14c939cdf58cfead3b8d8d4030f",
       "language": "typescript",
       "module_page": "taskDraftStorage",
-      "semantic_hash": "sha256:db8e06d83427b355a78b294a2061b83f4a4a487b794864794e68c7ac7946fb34"
+      "semantic_hash": "sha256:cd2893cbb2d1c3015ad10c495204fec322d5ceb0baf99a9d51e8ef04830fa151"
     },
     "frontend/src/components/tasks/taskEditorContract.ts": {
       "entities": [
@@ -79920,6 +79996,26 @@
       "module_page": "build_agent_skills",
       "semantic_hash": "sha256:ba27f167dd04899c5304f7238926de3276fc2278ca772a9534b74ca312da3587"
     },
+    "scripts/ci/apt_runtime.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Prepare job-local APT sources for bounded signed package installation.",
+          "functions": {
+            "main": "—",
+            "prepare": "Replace only the hosted Ubuntu Azure mirror; retain suites and signing."
+          }
+        }
+      },
+      "hash": "sha256:9d64a29b46586661eaedd193baece3b2a0c1e3ffccfebdefdf0f43c71947aaaf",
+      "language": "python",
+      "module_page": "apt_runtime",
+      "semantic_hash": "sha256:3dd8c802cf6a126c088904f680936d15d0fa318be7b125cceb70278a99e1558b"
+    },
     "scripts/ci/check_model_aware_routing_closeout.py": {
       "entities": [
         "CloseoutContractError"
@@ -80224,6 +80320,45 @@
       "module_page": "serve_disposable_oidc",
       "semantic_hash": "sha256:e7267c78bc7c01bcfbec27f8333a0a80db00be399abd9b15ca9c0d5be67602b5"
     },
+    "scripts/ci/tests/test_apt_runtime.py": {
+      "entities": [
+        "AptPreparation"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "AptPreparation",
+          "occurrence": 1,
+          "page": "AptPreparation"
+        }
+      ],
+      "entity_pages": {
+        "AptPreparation": "AptPreparation"
+      },
+      "generated_semantics": {
+        "entities": {
+          "AptPreparation": {
+            "attributes": {},
+            "description": "_Auto-generated from `AptPreparation` in `scripts/ci/tests/test_apt_runtime.py`._",
+            "methods": {
+              "test_arm_sources_use_ports_and_only_exact_azure_host_is_replaced": "—",
+              "test_legacy_and_deb822_sources_keep_signing_and_unrelated_repositories": "—",
+              "test_unsupported_architecture_does_not_mutate_configuration": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "AptPreparation": "—"
+          },
+          "description": "Runner APT preparation preserves signed sources and bounds stalled downloads.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+      "language": "python",
+      "module_page": "test_apt_runtime",
+      "semantic_hash": "sha256:6982da3db8f85b189f4af4645bf22d4fa67aeadfe9aa4446fc82dd52878714cd"
+    },
     "scripts/ci/tests/test_ci_runtime.py": {
       "entities": [
         "CommandLifecycle"
@@ -80349,6 +80484,7 @@
               "test_android_cleartext_is_restricted_to_debug_loopback_hosts": "—",
               "test_automatic_workflows_do_not_pull_or_build_images": "—",
               "test_deployment_acceptance_remains_explicit_and_checks_twice": "—",
+              "test_package_installers_prepare_bounded_signed_apt_sources_first": "—",
               "test_runners_reserve_time_before_toolchain_setup": "—",
               "test_workflow_split_and_required_gate_cover_every_job": "—"
             }
@@ -80365,10 +80501,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d9f5b88676fc7fb8b60a14e971f220db36f43eefb2c302e965ab8dbcf71e6be3",
+      "hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
       "language": "python",
       "module_page": "test_native_runtimes",
-      "semantic_hash": "sha256:cab803675666e8c0258e9675993ed667740b60a8c8fc6211e4ba60426db85375"
+      "semantic_hash": "sha256:3764cddf9f120f9390c99ddf311b4fc24f1332edc49b4a9dcc7970d603066f6f"
     },
     "scripts/generate_agent_team_contract.py": {
       "entities": [],

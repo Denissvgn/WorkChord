@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1509 | [Open section](#entities) |
-| Modules | 688 | [Open section](#modules) |
+| Entities | 1510 | [Open section](#entities) |
+| Modules | 691 | [Open section](#modules) |
 | Workflows | 177 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 542 | [Open section](#entry-point-flows) |
+| Entry-point flows | 543 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -167,6 +167,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AppRuntimeSettingsResponse](entities/AppRuntimeSettingsResponse.md)
 - [ApplicationAcceptance](entities/ApplicationAcceptance.md)
 - [ApplicationSnapshot](entities/ApplicationSnapshot.md)
+- [AptPreparation](entities/AptPreparation.md)
 - [AssessmentDraft](entities/AssessmentDraft.md)
 - [AssigneeRecommendation](entities/AssigneeRecommendation.md)
 - [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
@@ -1765,6 +1766,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
 - [app_database](modules/app_database.md) - `backend/app/database.py`
 - [app_main](modules/app_main.md) - `backend/app/main.py`
+- [apt_runtime](modules/apt_runtime.md) - Prepare job-local APT sources for bounded signed package installation.
 - [assignee_recommendation_service](modules/assignee_recommendation_service.md) - Explainable assignee recommendations from team capability profiles.
 - [attentionRanking](modules/attentionRanking.md) - `frontend/src/features/overview/attentionRanking.ts`
 - [attentionRanking.test](modules/attentionRanking.test.md) - `frontend/src/features/overview/attentionRanking.test.ts`
@@ -2058,6 +2060,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
 - [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
 - [taskDraftStorage](modules/taskDraftStorage.md) - `frontend/src/components/tasks/taskDraftStorage.ts`
+- [taskDraftStorage.test](modules/taskDraftStorage.test.md) - `frontend/src/components/tasks/taskDraftStorage.test.ts`
 - [taskEditorContract](modules/taskEditorContract.md) - `frontend/src/components/tasks/taskEditorContract.ts`
 - [taskFilterDefaults](modules/taskFilterDefaults.md) - `frontend/src/utils/taskFilterDefaults.ts`
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
@@ -2106,6 +2109,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_apt_runtime](modules/test_apt_runtime.md) - Runner APT preparation preserves signed sources and bounds stalled downloads.
 - [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
 - [test_autonomy_migrations](modules/test_autonomy_migrations.md) - Dual-dialect migration coverage for the autonomous control-plane mirror.
@@ -2916,6 +2920,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 **process**
 
 - [process-agent_preflight](flows/process-agent_preflight.md) - entry: `main`
+- [process-apt_runtime](flows/process-apt_runtime.md) - entry: `main`
 - [process-build_agent_skills](flows/process-build_agent_skills.md) - entry: `main`
 - [process-build_identity](flows/process-build_identity.md) - entry: `main`
 - [process-check_model_aware_routing_closeout](flows/process-check_model_aware_routing_closeout.md) - entry: `main`

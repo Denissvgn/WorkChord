@@ -53,9 +53,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| capabilities | db.info.get | 25 | `db.info.get('authority')` |
-| capabilities | bool | 26 | `bool(...)` |
-| capabilities | get_settings | 27 | `get_settings(data not statically known)` |
+| capabilities | db.info.get | 29 | `db.info.get('authority')` |
+| capabilities | bool | 30 | `bool(...)` |
+| capabilities | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 
 ### Boundary effects
@@ -66,7 +66,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `capabilities` | `db.info.get` | 25 |
+| unresolved_call | `capabilities` | `db.info.get` | 29 |
 
 ## Behavior
 

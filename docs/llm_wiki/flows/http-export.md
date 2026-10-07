@@ -84,7 +84,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| export | domain_result | 56 | `domain_result(...)` |
+| export | domain_result | 60 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -92,9 +92,9 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| export | TimeReportService(…).export | 56 | `TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind)` |
-| export | TimeReportService | 56 | `TimeReportService(db)` |
-| export | Response | 57 | `Response(content=content, media_type='text/csv', headers={...})` |
+| export | TimeReportService(…).export | 60 | `TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind)` |
+| export | TimeReportService | 60 | `TimeReportService(db)` |
+| export | Response | 61 | `Response(content=content, media_type='text/csv', headers={...})` |
 
 ### Boundary effects
 
@@ -109,8 +109,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `export` | `TimeReportService(db).export` | 56 |
-| external_call | `export` | `Response` | 57 |
+| unresolved_call | `export` | `TimeReportService(db).export` | 60 |
+| external_call | `export` | `Response` | 61 |
 
 ## Behavior
 

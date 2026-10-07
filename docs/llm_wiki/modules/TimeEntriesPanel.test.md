@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `service` |
-| Module calls | `service = hoisted`, `mock`, `beforeEach`, `it`, `it`, `it`, `it`, `it` |
+| Module calls | `service = hoisted`, `mock`, `beforeEach`, `it`, `it`, `it`, `it`, `it`, `it.each([true, false])`, `it` |
 
 ## Local dependency map
 

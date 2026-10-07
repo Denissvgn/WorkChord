@@ -1,6 +1,6 @@
 # DB
 
-**Location:** `backend/app/routers/time_entries.py:20`
+**Location:** `backend/app/routers/time_entries.py:24`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [time_entries](../modules/time_entries.md)

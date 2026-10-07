@@ -44,6 +44,6 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [WorkflowContracts](../entities/WorkflowContracts.md) | 27 | `unittest.TestCase` | — |
-| [NativeChecks](../entities/NativeChecks.md) | 113 | `unittest.TestCase` | — |
-| [PostgresOwnership](../entities/PostgresOwnership.md) | 275 | `unittest.TestCase` | — |
-| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 305 | `unittest.TestCase` | — |
+| [NativeChecks](../entities/NativeChecks.md) | 122 | `unittest.TestCase` | — |
+| [PostgresOwnership](../entities/PostgresOwnership.md) | 284 | `unittest.TestCase` | — |
+| [AndroidArtifacts](../entities/AndroidArtifacts.md) | 314 | `unittest.TestCase` | — |

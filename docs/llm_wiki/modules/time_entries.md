@@ -4,7 +4,7 @@
 
 ## Description
 
-Optional human-authored time records with private correction history.
+Optional human-authored time records with private correction history. A router dependency marks serialized responses `Cache-Control: private, no-store`; the explicit CSV response carries the same directive. Authentication and domain error handlers retain their existing no-store protection.
 
 ## Imports
 
@@ -87,12 +87,13 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/time_entries_DB.md) | Type alias | 20 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [DB](../entities/time_entries_DB.md) | Type alias | 24 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `prevent_private_caching` | `(response: Response)` | — | — |
 | `capabilities` | *(async)* `(db: DB)` | `@router.get('/capabilities', response_model=TimeEntryCapabilities)` | — |
 | `list_entries` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), task_id: int \| None = Query(default=None, ge=1), start: date \| None = None, end: date \| None = None, after_id: int = Query(default=0, ge=0), upper_id: int \| None = Query(default=None, ge=0), limit: int = Query(default=50, ge=1, le=100), include_voided: bool = False)` | `@router.get('', response_model=TimeEntryPage)` | — |
 | `create_entry` | *(async)* `(data: TimeEntryCreate, db: DB)` | `@router.post('', response_model=TimeEntryResponse, status_code=201)` | — |
