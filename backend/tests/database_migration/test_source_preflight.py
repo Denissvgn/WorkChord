@@ -10,6 +10,7 @@ import sqlite3
 import pytest
 
 from app.database_migration.manifest import verify_document, write_document
+from app.database_migration.catalog import transfer_tables
 from app.database_migration.source import MigrationDataError, preflight_source
 from app.services.upgrade_service import bootstrap_database_schema, head_revision
 
@@ -106,7 +107,8 @@ def test_preflight_creates_deterministic_secret_free_manifest(
     assert first == second
     assert first["source_revision"] == head_revision()
     assert first["snapshot"]["read_only_recheck"] is True
-    assert len(first["tables"]) == 78
+    assert set(first["tables"]) == set(transfer_tables())
+    assert {"time_entries", "time_entry_revisions"} <= first["tables"].keys()
     assert {"principals", "application_snapshots", "ownership_transfers", "task_deletion_fences"} <= first["tables"].keys()
     assert first["repair_policy"]["automatic_source_repairs"] == []
     assert {

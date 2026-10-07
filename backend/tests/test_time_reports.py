@@ -9,7 +9,7 @@ from app.services.task_service import TaskService
 from app.services.time_entry_service import TimeEntryService
 from app.services.time_report_service import TimeReportService
 from tests.test_delivery_scenarios import delivery_store
-from tests.test_time_entries import prepare, entry_data
+from tests.test_time_entries import prepare, entry_data, isolated_time_settings
 
 START, END = date(2026, 10, 1), date(2026, 10, 31)
 
