@@ -33,11 +33,11 @@ flowchart TD
 | [commands](modules/commands.md) | 72 | 12 |
 | [Button](modules/Button.md) | 71 | 0 |
 | [time](modules/time.md) | 69 | 0 |
+| [types_task](modules/types_task.md) | 61 | 2 |
 | [QueryState](modules/QueryState.md) | 60 | 2 |
-| [types_task](modules/types_task.md) | 60 | 2 |
 | [config](modules/config.md) | 57 | 1 |
+| [renderWithProviders](modules/renderWithProviders.md) | 56 | 1 |
 | [models_agent](modules/models_agent.md) | 55 | 5 |
-| [renderWithProviders](modules/renderWithProviders.md) | 55 | 1 |
 | [task_service](modules/task_service.md) | 44 | 17 |
 | [models_iteration](modules/models_iteration.md) | 42 | 6 |
 | [apiError](modules/apiError.md) | 42 | 0 |
@@ -214,6 +214,7 @@ flowchart TD
 | [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) | 4 | 2 |
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
+| [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 8 |
 | [TaskForm](modules/TaskForm.md) | 4 | 32 |
 | [TaskList](modules/TaskList.md) | 4 | 21 |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 1 |
@@ -266,7 +267,6 @@ flowchart TD
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 3 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 3 | 3 |
-| [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 3 | 8 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
@@ -606,6 +606,7 @@ flowchart TD
 | [TaskAgentReadinessBadge.test](modules/TaskAgentReadinessBadge.test.md) | 0 | 2 |
 | [TaskBriefEditor.test](modules/TaskBriefEditor.test.md) | 0 | 3 |
 | [TaskDiscussion.test](modules/TaskDiscussion.test.md) | 0 | 3 |
+| [TaskEditorDrawer.test](modules/TaskEditorDrawer.test.md) | 0 | 3 |
 | [TaskForm.test](modules/TaskForm.test.md) | 0 | 4 |
 | [TaskList.test](modules/TaskList.test.md) | 0 | 3 |
 | [TaskTextEditorModal.test](modules/TaskTextEditorModal.test.md) | 0 | 3 |

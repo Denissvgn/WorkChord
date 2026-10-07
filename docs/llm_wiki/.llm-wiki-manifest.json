@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:7f0b745b2d8f608652fdcb8aa58ffad50cff92b4312e952b1e377de7355cfeb0",
-    "knowledge_index_hash": "sha256:f3f122af49d47a13eaf47e6c781be08bb61b302358c2531d8a7fce7b996f0c1c",
-    "surface_index_hash": "sha256:172db30fa67085d2d8ca7a197e56f879680ef0d12626974206bd4e627d6e2d9f"
+    "evaluated_envelope_hash": "sha256:01a20317f938ea099a93a31863009b304b59c796d8e8f63af309300fdf259e12",
+    "knowledge_index_hash": "sha256:fae954667ef927a3dab3cfbff200fddacbd91e7cfdcc9de60cfd548cfc4cb8c8",
+    "surface_index_hash": "sha256:d2fa1ac13074786708625115a94279069a617bdf47e13c5183636627f3422022"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -3000,7 +3000,7 @@
         "concept_observation_hash": "sha256:32a9e50869616d52e2fd8a51c9f8af4602170cf7c8ee13882af06750f525b891",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:acf48f8ed470959ab13dd08e83d64bd2b7187f023fff509d8ac86298716660cd",
+        "source_content_hash": "sha256:6b587249834f4ea57d566f244388d0252dd2758559385b340444ad4a3c54c63f",
         "source_path": "frontend/src/components/tasks/TaskEditorDrawer.tsx"
       },
       "state": "known"
@@ -16457,11 +16457,21 @@
     },
     "modules/TaskEditorDrawer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:ed99eef98f5b61b5c4cd1ea7c44669fac6b80f66b23a42b32ede13fed4bff73e",
+        "concept_observation_hash": "sha256:4f762c8a1e914f79d85c4f8c3d77045cc8c46db18fe9840e38b24db0ec530933",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:acf48f8ed470959ab13dd08e83d64bd2b7187f023fff509d8ac86298716660cd",
+        "source_content_hash": "sha256:6b587249834f4ea57d566f244388d0252dd2758559385b340444ad4a3c54c63f",
         "source_path": "frontend/src/components/tasks/TaskEditorDrawer.tsx"
+      },
+      "state": "known"
+    },
+    "modules/TaskEditorDrawer.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:139a9eec353a46a97f7f948379871ab0ef44bfeb11bc5b4ce998ef4a50471a6c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:4a2718fb768b7685028cdba96e558b2f2ddf108b97f62997dd65fb4ae64c09a4",
+        "source_path": "frontend/src/components/tasks/TaskEditorDrawer.test.tsx"
       },
       "state": "known"
     },
@@ -21750,13 +21760,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:3dd86311e5707ab5c9ae0caddac8745d51d18cfffcb35458e8fa642d9639b752",
-      "lifecycle_hash": "sha256:103809b65fecd59ca00eb488db2a78dca13b07e0585aa8e432fcc4318072b722",
-      "markdown_snapshot_hash": "sha256:d11d644966923ea07585a044433bc55d1d45ef5dc8a9665e85455d4c91b6adbd",
-      "observation_inputs_hash": "sha256:93f0b6a433f9c44ca84f865e98c3e2c4029e29acfffdfca1e929b0734118a2bb",
+      "inventory_hash": "sha256:1cd9652d65d98e5927633a6b544136ddcc2d0ce83acd6eadbd2869f1d3f4dc2d",
+      "lifecycle_hash": "sha256:97c47b6a06bbe8328b0de94986c994df457562572f118a89b1f50bf27cd99ff2",
+      "markdown_snapshot_hash": "sha256:7c86cb5607c98ca700624ab6203fca83e7fe0d75691238732e2704e4012ce096",
+      "observation_inputs_hash": "sha256:98a1b60ccd622c2bb6b4d8830263c57d49f6c63570b3fbe817656c048f730686",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:b25884192ef8427fca85b298f01cf135ac7ecd2eab594bd2afc86a082f56e3fd"
+      "source_snapshot_hash": "sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -31314,6 +31324,10 @@
     "modules/TaskEditorDrawer.md": {
       "scope": "module",
       "source_path": "frontend/src/components/tasks/TaskEditorDrawer.tsx"
+    },
+    "modules/TaskEditorDrawer.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/tasks/TaskEditorDrawer.test.tsx"
     },
     "modules/TaskFiltersBar.md": {
       "scope": "module",
@@ -65276,6 +65290,23 @@
       "module_page": "TaskDiscussion",
       "semantic_hash": "sha256:b71efb73e9a5a732fef41f3ee668fca01936e13c33007d0db2da60dd9572feeb"
     },
+    "frontend/src/components/tasks/TaskEditorDrawer.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:4a2718fb768b7685028cdba96e558b2f2ddf108b97f62997dd65fb4ae64c09a4",
+      "language": "typescript",
+      "module_page": "TaskEditorDrawer.test",
+      "semantic_hash": "sha256:cce011c7e5be31e7bf643ed24c7799b6d7ebc9bc8d4e2a28aaea90eb8a9d8a8d"
+    },
     "frontend/src/components/tasks/TaskEditorDrawer.tsx": {
       "entities": [
         "DrawerCopy"
@@ -65308,10 +65339,10 @@
           }
         }
       },
-      "hash": "sha256:acf48f8ed470959ab13dd08e83d64bd2b7187f023fff509d8ac86298716660cd",
+      "hash": "sha256:6b587249834f4ea57d566f244388d0252dd2758559385b340444ad4a3c54c63f",
       "language": "typescript",
       "module_page": "TaskEditorDrawer",
-      "semantic_hash": "sha256:28e091213a81ad7627f0c2611568f848f3661cb1136ace3ebb40119bc34c094c"
+      "semantic_hash": "sha256:58de8d59aa7cabd2c116200c63e5b79c77d55477b0ca4af406f8b39d0dd97b26"
     },
     "frontend/src/components/tasks/TaskFiltersBar.tsx": {
       "entities": [

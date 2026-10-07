@@ -1264,3 +1264,67 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 1
+- Pages updated: 7
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2858
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2865
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2866
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2866
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

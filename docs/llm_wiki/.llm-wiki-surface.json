@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 670,
+      "modules": 671,
       "workflows": 176
     },
     "dependency_architecture": 2,
-    "total": 2877
+    "total": 2878
   },
   "dependency_pages": {
     "count": 2,
@@ -41211,6 +41211,7 @@
         "modules/TaskEditModal.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TaskEditorDrawer.test.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -56950,6 +56951,7 @@
       "mcp_uri": "llm-wiki://entities/TaskDetail",
       "outgoing_internal_links": [
         "modules/TaskContextSummary.md",
+        "modules/TaskEditorDrawer.test.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -71019,22 +71021,26 @@
       "mcp_uri": "llm-wiki://modules/TaskEditorDrawer",
       "outgoing_internal_links": [
         "entities/DrawerCopy.md",
-        "modules/Button.md",
-        "modules/DraftDismissalDialog.md",
-        "modules/KanbanBoard.md",
-        "modules/ProjectTaskTree.md",
-        "modules/SlideOverDrawer.md",
-        "modules/TaskContextSummary.md",
-        "modules/TaskEditorDrawer.md",
-        "modules/TaskForm.md",
-        "modules/taskService.md",
-        "modules/TasksPage.md",
-        "modules/types_task.md",
-        "modules/useDraftDismissal.md"
+        "modules/TaskEditorDrawer.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskEditorDrawer.tsx",
       "title": "TaskEditorDrawer Module"
+    },
+    {
+      "canonical_path": "modules/TaskEditorDrawer.test.md",
+      "id": "TaskEditorDrawer.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskEditorDrawer.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/TaskEditorDrawer.md",
+        "modules/TaskEditorDrawer.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskEditorDrawer.test.tsx",
+      "title": "TaskEditorDrawer.test Module"
     },
     {
       "canonical_path": "modules/taskFilterDefaults.md",
@@ -85959,6 +85965,7 @@
         "modules/TaskEditModal.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TaskEditorDrawer.test.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -86640,6 +86647,7 @@
         "modules/TaskEditModal.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TaskEditorDrawer.test.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -86816,5 +86824,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:fac0720312ac9e6c97b23ab740eae06a138772b6aafc7fb9eb226b40fc67f986"
+  "source_hash": "sha256:5649adea140da3aa26868e23b3a84f9b491d4ed2ffe975603eb99472e714beb3"
 }

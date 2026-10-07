@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1483 | [Open section](#entities) |
-| Modules | 670 | [Open section](#modules) |
+| Modules | 671 | [Open section](#modules) |
 | Workflows | 176 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 533 | [Open section](#entry-point-flows) |
@@ -1667,6 +1667,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskDiscussion.test](modules/TaskDiscussion.test.md) - `frontend/src/components/tasks/TaskDiscussion.test.tsx`
 - [TaskEditModal](modules/TaskEditModal.md) - `frontend/src/components/gantt/TaskEditModal.tsx`
 - [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
+- [TaskEditorDrawer.test](modules/TaskEditorDrawer.test.md) - `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`
 - [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
 - [TaskForm](modules/TaskForm.md) - `frontend/src/components/tasks/TaskForm.tsx`
 - [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
