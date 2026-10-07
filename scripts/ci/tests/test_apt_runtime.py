@@ -41,6 +41,22 @@ class AptPreparation(unittest.TestCase):
             self.assertEqual(source.read_text(), 'deb https://ports.ubuntu.com/ubuntu-ports noble main\n'
                              'deb http://azure.archive.ubuntu.com.example/ubuntu noble main\n')
 
+    def test_hosted_runner_mirror_indirection_cannot_keep_selecting_azure(self):
+        for architecture, archive in [('amd64', 'https://archive.ubuntu.com/ubuntu'),
+                                      ('arm64', 'https://ports.ubuntu.com/ubuntu-ports')]:
+            for suffix in ('list', 'sources'):
+                with self.subTest(architecture=architecture, suffix=suffix), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    (root / 'sources.list.d').mkdir()
+                    source = root / 'sources.list.d' / f'ubuntu.{suffix}'
+                    original = ('URIs: mirror+file:/etc/apt/apt-mirrors.txt\n'
+                                'Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n'
+                                'deb mirror+file:/etc/apt/apt-mirrors.txt noble-security main\n'
+                                'URIs: mirror+file:/etc/apt/unrelated-mirrors.txt\n')
+                    source.write_text(original)
+                    apt_runtime.prepare(root, architecture)
+                    self.assertEqual(source.read_text(), original.replace('mirror+file:/etc/apt/apt-mirrors.txt', archive))
+
     def test_unsupported_architecture_does_not_mutate_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaises(ValueError):

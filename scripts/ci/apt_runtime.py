@@ -14,7 +14,7 @@ APT::Update::Error-Mode "any";
 
 
 def prepare(root: Path, architecture: str) -> None:
-    """Replace only the hosted Ubuntu Azure mirror; retain suites and signing."""
+    """Replace the direct or mirror-list Ubuntu source; retain suites and signing."""
     if architecture not in ('amd64', 'arm64'):
         raise ValueError(f'Unsupported runner architecture: {architecture}')
     archive = ('https://archive.ubuntu.com/ubuntu' if architecture == 'amd64'
@@ -27,6 +27,7 @@ def prepare(root: Path, architecture: str) -> None:
             continue
         original = path.read_text()
         updated = re.sub(r'https?://azure\.archive\.ubuntu\.com/ubuntu(?=/|\s|$)', archive, original)
+        updated = re.sub(r'mirror\+file:/etc/apt/apt-mirrors\.txt(?=\s|$)', archive, updated)
         if updated != original:
             path.write_text(updated)
             print(f'Prepared Ubuntu mirror in {path}')
