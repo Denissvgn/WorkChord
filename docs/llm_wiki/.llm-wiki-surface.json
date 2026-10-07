@@ -19,17 +19,17 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1483,
-      "flows": 531,
+      "flows": 533,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 667,
-      "workflows": 174
+      "modules": 670,
+      "workflows": 176
     },
     "dependency_architecture": 2,
-    "total": 2870
+    "total": 2877
   },
   "dependency_pages": {
     "count": 2,
@@ -36468,6 +36468,135 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "local_baseline",
+        "source_path": "scripts/load/local_baseline.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 129,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.declaration.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 131,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.observations.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 143,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 116,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 117,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 118,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 119,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 120,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 121,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 122,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 123,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 124,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 125,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 126,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/load/local_baseline.py",
+            "scripts/load/common.py",
+            "scripts/load/run.py",
+            "scripts/load/result.py"
+          ],
+          "step_count": 171,
+          "truncated": false
+        }
+      },
+      "id": "process-local_baseline",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "mcp_server",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "main"
@@ -37952,6 +38081,132 @@
         }
       },
       "id": "process-server_acceptance",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "service_worksets",
+        "source_path": "scripts/load/service_worksets.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 78,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.declaration.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 79,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 32,
+              "step": "run",
+              "step_index": 10,
+              "target": "db.add"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 36,
+              "step": "run",
+              "step_index": 10,
+              "target": "db.add"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 32,
+              "step": "_deployment_environment",
+              "step_index": 12,
+              "target": "os.environ.get"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 74,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 75,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 76,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 76,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 77,
+              "step": "main",
+              "target": "args.output.exists"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 77,
+              "step": "main",
+              "target": "parser.error"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/load/service_worksets.py",
+            "backend/tests/support/database.py",
+            "backend/tests/support/delivery.py",
+            "backend/app/models/calendar.py",
+            "backend/app/models/project.py",
+            "backend/app/models/iteration.py",
+            "backend/app/models/team_member.py",
+            "backend/app/models/agent.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/models/user_session.py",
+            "backend/app/models/task.py",
+            "scripts/load/local_baseline.py",
+            "scripts/load/common.py",
+            "scripts/load/run.py",
+            "scripts/load/result.py"
+          ],
+          "step_count": 202,
+          "truncated": false
+        }
+      },
+      "id": "process-service_worksets",
       "language": "python"
     },
     {
@@ -40422,6 +40677,7 @@
         "flows/process-generate_mobile_contract_fixtures.md",
         "flows/process-generate_workchord_keys.md",
         "flows/process-installed_wheel_postgresql_qualification.md",
+        "flows/process-local_baseline.md",
         "flows/process-mcp_server.md",
         "flows/process-postgres_runtime.md",
         "flows/process-qualify.md",
@@ -40435,6 +40691,7 @@
         "flows/process-serve_disposable_api.md",
         "flows/process-serve_disposable_oidc.md",
         "flows/process-server_acceptance.md",
+        "flows/process-service_worksets.md",
         "flows/process-setup_agent_team.md",
         "flows/process-test_ci_runtime.md",
         "flows/process-test_native_runtimes.md",
@@ -40678,6 +40935,7 @@
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
+        "modules/local_baseline.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -40891,6 +41149,7 @@
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
+        "modules/service_worksets.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -41032,6 +41291,7 @@
         "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
+        "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -41257,10 +41517,12 @@
         "workflows/run_server_acceptance.md",
         "workflows/SchedulerService___init__.md",
         "workflows/SchedulerService_schedule_iteration.md",
+        "workflows/service_worksets_flow.md",
         "workflows/SnapshotService_build_snapshot_data.md",
         "workflows/SnapshotService_create_snapshot.md",
         "workflows/SnapshotService_restore.md",
         "workflows/source_phase.md",
+        "workflows/summarize.md",
         "workflows/TaskBriefService_require_review.md",
         "workflows/TaskBulkOperationService_run.md",
         "workflows/TaskDetailService_detail.md",
@@ -43966,6 +44228,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/Attempt",
       "outgoing_internal_links": [
+        "modules/local_baseline.md",
         "modules/run.md"
       ],
       "role": "semantic",
@@ -45720,7 +45983,9 @@
         "modules/delivery_metrics_service.md",
         "modules/execution_usage_service.md",
         "modules/routers_task_domain.md",
-        "modules/test_delivery_metrics.md"
+        "modules/service_worksets.md",
+        "modules/test_delivery_metrics.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/delivery_metrics_service.py",
@@ -51107,6 +51372,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/Recorder",
       "outgoing_internal_links": [
+        "modules/local_baseline.md",
         "modules/run.md"
       ],
       "role": "semantic",
@@ -57015,7 +57281,8 @@
       "mcp_uri": "llm-wiki://entities/TaskHierarchyService",
       "outgoing_internal_links": [
         "modules/task_hierarchy_service.md",
-        "modules/task_service.md"
+        "modules/task_service.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_hierarchy_service.py",
@@ -63253,6 +63520,7 @@
         "modules/models_capacity.md",
         "modules/models_iteration.md",
         "modules/routers_capacity.md",
+        "modules/service_worksets.md",
         "modules/team_member.md",
         "modules/test_profile_capacity.md"
       ],
@@ -63861,6 +64129,7 @@
         "modules/models_project.md",
         "modules/models_task.md",
         "modules/serve_disposable_api.md",
+        "modules/service_worksets.md",
         "modules/team_member.md",
         "modules/test_delivery_scenarios.md",
         "modules/user_session.md"
@@ -65642,17 +65911,7 @@
       "mcp_uri": "llm-wiki://modules/load_common",
       "outgoing_internal_links": [
         "entities/QualificationInputError.md",
-        "modules/collect.md",
-        "modules/compare.md",
-        "modules/finalize.md",
-        "modules/load_common.md",
-        "modules/postgresql___init__.md",
-        "modules/qualify.md",
-        "modules/resilience.md",
-        "modules/result.md",
-        "modules/run.md",
-        "modules/seal.md",
-        "modules/seed.md"
+        "modules/load_common.md"
       ],
       "role": "semantic",
       "source_path": "scripts/load/common.py",
@@ -65680,6 +65939,22 @@
       "role": "semantic",
       "source_path": "backend/app/autonomy/contracts/postgresql/loader.py",
       "title": "loader Module"
+    },
+    {
+      "canonical_path": "modules/local_baseline.md",
+      "id": "local_baseline",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/local_baseline",
+      "outgoing_internal_links": [
+        "modules/load_common.md",
+        "modules/local_baseline.md",
+        "modules/result.md",
+        "modules/run.md",
+        "modules/service_worksets.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/load/local_baseline.py",
+      "title": "local_baseline Module"
     },
     {
       "canonical_path": "modules/maintenance.md",
@@ -67856,6 +68131,7 @@
         "modules/compare.md",
         "modules/finalize.md",
         "modules/load_common.md",
+        "modules/local_baseline.md",
         "modules/qualify.md",
         "modules/resilience.md",
         "modules/result.md",
@@ -68280,6 +68556,7 @@
         "entities/Recorder.md",
         "entities/VirtualClient.md",
         "modules/load_common.md",
+        "modules/local_baseline.md",
         "modules/result.md",
         "modules/run.md"
       ],
@@ -69659,6 +69936,18 @@
       "title": "serve_disposable_oidc Module"
     },
     {
+      "canonical_path": "modules/service_worksets.md",
+      "id": "service_worksets",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/service_worksets",
+      "outgoing_internal_links": [
+        "modules/service_worksets.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/load/service_worksets.py",
+      "title": "service_worksets Module"
+    },
+    {
       "canonical_path": "modules/services_work_metrics.md",
       "id": "services_work_metrics",
       "kind": "modules",
@@ -70125,6 +70414,7 @@
         "entities/UnsafeDatabaseTarget.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
+        "modules/service_worksets.md",
         "modules/support___init__.md",
         "modules/support_database.md",
         "modules/test_database_harness.md"
@@ -70335,6 +70625,7 @@
         "modules/models_task.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
+        "modules/service_worksets.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/test_human_work_queries.md",
@@ -70371,7 +70662,8 @@
         "modules/query_limits.md",
         "modules/task_hierarchy_service.md",
         "modules/task_service.md",
-        "modules/team_member.md"
+        "modules/team_member.md",
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_hierarchy_service.py",
@@ -72034,6 +72326,16 @@
       "role": "semantic",
       "source_path": "backend/tests/qualification/test_load_tooling.py",
       "title": "test_load_tooling Module"
+    },
+    {
+      "canonical_path": "modules/test_local_baseline.md",
+      "id": "test_local_baseline",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_local_baseline",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/tests/qualification/test_local_baseline.py",
+      "title": "test_local_baseline Module"
     },
     {
       "canonical_path": "modules/test_managed_authority.md",
@@ -75855,6 +76157,24 @@
       "title": "SchedulerService_schedule_iteration"
     },
     {
+      "canonical_path": "workflows/service_worksets_flow.md",
+      "id": "service_worksets_flow",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/service_worksets_flow",
+      "outgoing_internal_links": [
+        "modules/delivery.md",
+        "modules/local_baseline.md",
+        "modules/models_agent.md",
+        "modules/models_iteration.md",
+        "modules/models_task.md",
+        "modules/service_worksets.md",
+        "modules/support_database.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/load/service_worksets.py",
+      "title": "service_worksets_flow"
+    },
+    {
       "canonical_path": "workflows/SnapshotService_build_snapshot_data.md",
       "id": "SnapshotService_build_snapshot_data",
       "kind": "workflows",
@@ -75931,6 +76251,21 @@
       "role": "mixed",
       "source_path": "scripts/ci/installed_wheel_postgresql_qualification.py",
       "title": "source_phase"
+    },
+    {
+      "canonical_path": "workflows/summarize.md",
+      "id": "summarize",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/summarize",
+      "outgoing_internal_links": [
+        "modules/load_common.md",
+        "modules/local_baseline.md",
+        "modules/result.md",
+        "modules/run.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/load/local_baseline.py",
+      "title": "summarize"
     },
     {
       "canonical_path": "workflows/TaskBriefService_require_review.md",
@@ -84660,6 +84995,21 @@
       "title": "installed_wheel_postgresql_qualification"
     },
     {
+      "canonical_path": "flows/process-local_baseline.md",
+      "id": "process-local_baseline",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-local_baseline",
+      "outgoing_internal_links": [
+        "modules/load_common.md",
+        "modules/local_baseline.md",
+        "modules/result.md",
+        "modules/run.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/load/local_baseline.py",
+      "title": "local_baseline"
+    },
+    {
       "canonical_path": "flows/process-mcp_server.md",
       "id": "process-mcp_server",
       "kind": "flows",
@@ -84876,6 +85226,40 @@
       "role": "mixed",
       "source_path": "backend/app/cli/server_acceptance.py",
       "title": "server_acceptance"
+    },
+    {
+      "canonical_path": "flows/process-service_worksets.md",
+      "id": "process-service_worksets",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-service_worksets",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_database.md",
+        "modules/authority.md",
+        "modules/capacity_service.md",
+        "modules/delivery.md",
+        "modules/delivery_metrics_service.md",
+        "modules/load_common.md",
+        "modules/local_baseline.md",
+        "modules/models_agent.md",
+        "modules/models_calendar.md",
+        "modules/models_iteration.md",
+        "modules/models_project.md",
+        "modules/models_task.md",
+        "modules/project_service.md",
+        "modules/query_limits.md",
+        "modules/result.md",
+        "modules/run.md",
+        "modules/service_worksets.md",
+        "modules/support_database.md",
+        "modules/task_detail_service.md",
+        "modules/task_service.md",
+        "modules/team_member.md",
+        "modules/user_session.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/load/service_worksets.py",
+      "title": "service_worksets"
     },
     {
       "canonical_path": "flows/process-setup_agent_team.md",
@@ -85299,6 +85683,7 @@
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
+        "modules/local_baseline.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -85512,6 +85897,7 @@
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
+        "modules/service_worksets.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -85653,6 +86039,7 @@
         "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
+        "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -85977,6 +86364,7 @@
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
+        "modules/local_baseline.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -86190,6 +86578,7 @@
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
+        "modules/service_worksets.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -86331,6 +86720,7 @@
         "modules/test_initial_schema.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
+        "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -86426,5 +86816,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:cc4c1411da1987c5cf7634f5d54f8a3c994ad9310f39e64445a93ec78ea5834d"
+  "source_hash": "sha256:fac0720312ac9e6c97b23ab740eae06a138772b6aafc7fb9eb226b40fc67f986"
 }

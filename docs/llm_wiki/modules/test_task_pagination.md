@@ -17,9 +17,12 @@ Keyset coverage, mutation semantics and permission-bounded history reads.
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.query_limits` | `CollectionLimitExceededError` |
 | `app.services.agent_service` | `AgentService` |
+| `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
+| `app.services.task_hierarchy_service` | `TaskHierarchyService` |
+| `app.services.task_service` | `TaskService` |
 | `app.services.task_timeline_service` | `TaskTimelineService` |
 | `datetime` | `UTC`, `datetime`, `timedelta` |
 | `pytest` | `pytest` |
@@ -43,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (12) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -51,7 +54,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -62,3 +65,4 @@ flowchart LR
 | `test_history_pages_ties_and_legacy_bound` | *(async)* `(delivery_store)` | — | — |
 | `test_scope_pages_hold_an_insert_boundary_and_summary_counts_are_complete` | *(async)* `(delivery_store)` | — | — |
 | `test_mixed_timeline_sources_have_stable_ties_and_actor_provenance` | *(async)* `(delivery_store)` | — | — |
+| `test_oversized_reads_reject_before_relationship_or_history_hydration` | *(async)* `(delivery_store, monkeypatch)` | — | — |

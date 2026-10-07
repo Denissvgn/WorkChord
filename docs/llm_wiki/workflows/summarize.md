@@ -1,0 +1,28 @@
+# summarize
+
+**Entry point:** `local_baseline.summarize`
+**Modules involved:** [load_common](../modules/load_common.md), [local_baseline](../modules/local_baseline.md), [result](../modules/result.md), [run](../modules/run.md)
+
+## Sequence
+
+<!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
+1. `load_common.QualificationInputError`
+2. `load_common.QualificationInputError`
+3. `run.Recorder`
+4. `load_common.QualificationInputError`
+5. `load_common.QualificationInputError`
+6. `run.Attempt`
+7. `load_common.QualificationInputError`
+8. `result.latency_summary`
+9. `load_common.utc_now_text`
+
+## Touches
+
+- [load_common](../modules/load_common.md)
+- [local_baseline](../modules/local_baseline.md)
+- [result](../modules/result.md)
+- [run](../modules/run.md)
+
+## Behavior
+
+This workflow starts at `local_baseline.summarize`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.

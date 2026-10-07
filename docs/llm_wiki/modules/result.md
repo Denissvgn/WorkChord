@@ -26,28 +26,33 @@ flowchart LR
     n0["scripts/load/common.py"]
     n1["scripts/load/compare.py"]
     n2["scripts/load/finalize.py"]
-    n3["scripts/load/qualify.py"]
-    n4["scripts/load/resilience.py"]
-    n5["scripts/load/result.py"]
-    n6["scripts/load/run.py"]
+    n3["scripts/load/local_baseline.py"]
+    n4["scripts/load/qualify.py"]
+    n5["scripts/load/resilience.py"]
+    n6["scripts/load/result.py"]
+    n7["scripts/load/run.py"]
     n1 --> n0
-    n1 --> n5
+    n1 --> n6
     n2 --> n0
-    n2 --> n5
+    n2 --> n6
     n3 --> n0
-    n3 --> n5
+    n3 --> n6
+    n3 --> n7
     n4 --> n0
-    n4 --> n5
+    n4 --> n6
     n5 --> n0
+    n5 --> n6
     n6 --> n0
-    n6 --> n5
+    n7 --> n0
+    n7 --> n6
     click n0 "../modules/load_common.md"
     click n1 "../modules/compare.md"
     click n2 "../modules/finalize.md"
-    click n3 "../modules/qualify.md"
-    click n4 "../modules/resilience.md"
-    click n5 "../modules/result.md"
-    click n6 "../modules/run.md"
+    click n3 "../modules/local_baseline.md"
+    click n4 "../modules/qualify.md"
+    click n5 "../modules/resilience.md"
+    click n6 "../modules/result.md"
+    click n7 "../modules/run.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +61,7 @@ flowchart LR
 |---|---|
 | Inbound | [compare](../modules/compare.md) |
 | Inbound | [finalize](../modules/finalize.md) |
+| Inbound | [local_baseline](../modules/local_baseline.md) |
 | Inbound | [qualify](../modules/qualify.md) |
 | Inbound | [resilience](../modules/resilience.md) |
 | Inbound | [run](../modules/run.md) |

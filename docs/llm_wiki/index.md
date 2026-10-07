@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1483 | [Open section](#entities) |
-| Modules | 667 | [Open section](#modules) |
-| Workflows | 174 | [Open section](#workflows) |
+| Modules | 670 | [Open section](#modules) |
+| Workflows | 176 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 531 | [Open section](#entry-point-flows) |
+| Entry-point flows | 533 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1842,6 +1842,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [llm_service](modules/llm_service.md) - LLM service for task formalization and schedule explanation.
 - [load_common](modules/load_common.md) - Shared, fail-closed contracts for the WorkChord load and qualification tools.
 - [loader](modules/loader.md) - Installed-resource loader for the PostgreSQL machine contract bundle.
+- [local_baseline](modules/local_baseline.md) - Summarize declared local observations without issuing capacity certification.
 - [maintenance](modules/maintenance.md) - Fail-closed maintenance/validation authority shared by REST, MCP, and workers.
 - [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
 - [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
@@ -1998,6 +1999,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [selectWorkNowTasks](modules/selectWorkNowTasks.md) - `frontend/src/utils/selectWorkNowTasks.ts`
 - [serve_disposable_api](modules/serve_disposable_api.md) - Start the real HTTP application only against a safety-fenced temporary database.
 - [serve_disposable_oidc](modules/serve_disposable_oidc.md) - Synthetic OIDC issuer confined to the disposable browser network and database.
+- [service_worksets](modules/service_worksets.md) - Owned cross-dialect service measurements, separate from HTTP and certification.
 - [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
 - [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
@@ -2090,6 +2092,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
+- [test_local_baseline](modules/test_local_baseline.md) - Local measurements retain limits and cannot become formal certification.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
 - [test_mutation_versions](modules/test_mutation_versions.md) - Version rollout rejects missing inputs without weakening identity or rollback.
@@ -2343,7 +2346,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
+- [service_worksets_flow](workflows/service_worksets_flow.md) - entry: `service_worksets.run`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
+- [summarize](workflows/summarize.md) - entry: `local_baseline.summarize`
 - [update_task](workflows/update_task.md) - entry: `mcp_agent_tools.update_task`
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
@@ -2874,6 +2879,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-generate_mobile_contract_fixtures](flows/process-generate_mobile_contract_fixtures.md) - entry: `main`
 - [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
 - [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
+- [process-local_baseline](flows/process-local_baseline.md) - entry: `main`
 - [process-mcp_server](flows/process-mcp_server.md) - entry: `main`
 - [process-postgres_runtime](flows/process-postgres_runtime.md) - entry: `main`
 - [process-qualify](flows/process-qualify.md) - entry: `main`
@@ -2887,6 +2893,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-serve_disposable_api](flows/process-serve_disposable_api.md) - entry: `main`
 - [process-serve_disposable_oidc](flows/process-serve_disposable_oidc.md) - entry: `__main__`
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
+- [process-service_worksets](flows/process-service_worksets.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
 - [process-test_ci_runtime](flows/process-test_ci_runtime.md) - entry: `__main__`
 - [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`

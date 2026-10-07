@@ -92,8 +92,8 @@ flowchart LR
 | `AgentService.get_task_timeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService.list_actor_roster` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `DeliveryMetricsService._window_observations` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 1 |
-| `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 2 |
+| `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
 | `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `ExecutionUsageService.summary` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 
-> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

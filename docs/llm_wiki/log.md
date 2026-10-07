@@ -1224,3 +1224,43 @@ Bounded graph hydration, one-way credential delivery and finite scope reads have
 - Pages deprecated: 0
 - Semantic fields preserved: 4
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f58dfd69b5b26e95289d9b797df701d825d231c6a3f0b5d250222ebd13176987`
+- Pages created: 7
+- Pages updated: 37
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2821
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 2 (process=2)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Local observation and early scope bounds
+
+Authorized ID-only preflight keeps oversized read rejection independent of relationship hydration. Local workload tooling records finite declared observations, identity/transport boundaries and actual recovery or rollback, while retaining formal qualification authority and explicit budget limitations.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b25884192ef8427fca85b298f01cf135ac7ecd2eab594bd2afc86a082f56e3fd`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2860
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

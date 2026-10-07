@@ -4,7 +4,7 @@
 
 ## Description
 
-Permission-scoped reports load window observations and at most four pre-window state facts per relevant or unfinished identity. SQL ranking retains first capture, latest execution reset, resolution and pending-state boundaries with timestamp/ID ordering; the row cap applies to this selected context rather than lifetime history. Current-leaf capture coverage is queried separately so completed old histories do not appear uncovered. Accepted delivery counts use distinct task identities, with acceptance/rejection/reopen events reported separately. Each duration has its own sample, missing-start and incomplete-episode counts; missing history is never reconstructed from status dates. Bounded current review/recovery queues recheck task visibility and expose unknown ages explicitly.
+Permission-scoped reports load window observations and at most four pre-window state facts per relevant or unfinished identity. Authorized live-scope IDs are checked before costly history/context hydration; the same explicit queue-context bound is retained. SQL ranking retains first capture, latest execution reset, resolution and pending-state boundaries with timestamp/ID ordering; the row cap applies to this selected context rather than lifetime history. Current-leaf capture coverage is queried separately so completed old histories do not appear uncovered. Accepted delivery counts use distinct task identities, with acceptance/rejection/reopen events reported separately. Each duration has its own sample, missing-start and incomplete-episode counts; missing history is never reconstructed from status dates. Bounded current review/recovery queues recheck task visibility and expose unknown ages explicitly.
 
 Event-based scoped delivery metrics; status dates never supply missing instants.
 
@@ -33,8 +33,10 @@ Event-based scoped delivery metrics; status dates never supply missing instants.
 flowchart LR
     n0["backend"]
     n1["backend/app/services/delivery_metrics_service.py"]
+    n2["scripts"]
     n0 --> n1
     n1 --> n0
+    n2 --> n1
     click n1 "../modules/delivery_metrics_service.md"
 ```
 
@@ -44,7 +46,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (3) |
+| Inbound | `backend` (4) |
+| Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
 ### External packages
@@ -53,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

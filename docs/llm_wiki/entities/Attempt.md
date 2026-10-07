@@ -37,13 +37,16 @@ _Auto-generated from `Attempt` in `scripts/load/run.py`._
 ```mermaid
 flowchart LR
     n0["Attempt (scripts/load/run.py)"]
-    n1["_perform_attempt (scripts/load/run.py)"]
-    n2["Recorder.finish (scripts/load/run.py)"]
+    n1["summarize (scripts/load/local_baseline.py)"]
+    n2["_perform_attempt (scripts/load/run.py)"]
+    n3["Recorder.finish (scripts/load/run.py)"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/run.md"
-    click n1 "../modules/run.md"
+    click n1 "../modules/local_baseline.md"
     click n2 "../modules/run.md"
+    click n3 "../modules/run.md"
 ```
 
 ### Summary
@@ -56,5 +59,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `summarize` | call | [local_baseline](../modules/local_baseline.md) | 1 |
 | `_perform_attempt` | call | [run](../modules/run.md) | 3 |
 | `Recorder.finish` | type_reference | [run](../modules/run.md) | — |

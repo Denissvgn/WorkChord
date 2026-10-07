@@ -34,6 +34,7 @@ flowchart LR
     n7["backend/tests/test_human_work_queries.py"]
     n8["backend/tests/test_task_domain.py"]
     n9["backend/tests/test_task_pagination.py"]
+    n10["scripts/load/service_worksets.py"]
     n0 --> n2
     n1 --> n4
     n1 --> n6
@@ -60,6 +61,9 @@ flowchart LR
     n9 --> n0
     n9 --> n2
     n9 --> n6
+    n10 --> n0
+    n10 --> n2
+    n10 --> n6
     click n0 "../modules/authority.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/models_task.md"
@@ -70,6 +74,7 @@ flowchart LR
     click n7 "../modules/test_human_work_queries.md"
     click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_pagination.md"
+    click n10 "../modules/service_worksets.md"
 ```
 
 ### Internal neighbors
@@ -81,6 +86,7 @@ flowchart LR
 | Inbound | [test_human_work_queries](../modules/test_human_work_queries.md) |
 | Inbound | [test_task_domain](../modules/test_task_domain.md) |
 | Inbound | [test_task_pagination](../modules/test_task_pagination.md) |
+| Inbound | [service_worksets](../modules/service_worksets.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |

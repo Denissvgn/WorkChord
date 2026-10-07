@@ -37,8 +37,10 @@ Project service with CRUD and summary logic.
 flowchart LR
     n0["backend"]
     n1["backend/app/services/project_service.py"]
+    n2["scripts"]
     n0 --> n1
     n1 --> n0
+    n2 --> n1
     click n1 "../modules/project_service.md"
 ```
 
@@ -49,6 +51,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (8) |
+| Inbound | `scripts` (1) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -57,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

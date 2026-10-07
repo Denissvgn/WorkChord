@@ -92,4 +92,4 @@ flowchart LR
 | `test_withdrawn_acceptance_stays_visible_in_owned_blocked_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_bounded_detail_does_not_populate_execution_children` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

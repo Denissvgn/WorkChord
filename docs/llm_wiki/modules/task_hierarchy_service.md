@@ -4,7 +4,7 @@
 
 ## Description
 
-The read-only collaborator owns bounded graph queries, dependency hydration, parent/cycle checks and deterministic tree assembly. Its caller supplies owner-name hydration and retains transaction, authorization and mutation ownership. TaskService preserves its facade and the legacy integrity-error import.
+The read-only collaborator owns bounded graph queries, dependency hydration, parent/cycle checks and deterministic tree assembly. An authorized ID-only preflight rejects oversized graphs before relationship hydration while preserving the same bounds and conflict policy. Its caller supplies owner-name hydration and retains transaction, authorization and mutation ownership. TaskService preserves its facade and the legacy integrity-error import.
 
 Read-only ownership of bounded task graph hydration and integrity checks.
 
@@ -30,6 +30,7 @@ flowchart LR
     n3["backend/app/query_limits.py"]
     n4["backend/app/services/task_hierarchy_service.py"]
     n5["backend/app/services/task_service.py"]
+    n6["backend/tests/test_task_pagination.py"]
     n0 --> n1
     n1 --> n0
     n1 --> n2
@@ -43,12 +44,17 @@ flowchart LR
     n5 --> n2
     n5 --> n3
     n5 --> n4
+    n6 --> n1
+    n6 --> n3
+    n6 --> n4
+    n6 --> n5
     click n0 "../modules/models_request_source.md"
     click n1 "../modules/models_task.md"
     click n2 "../modules/team_member.md"
     click n3 "../modules/query_limits.md"
     click n4 "../modules/task_hierarchy_service.md"
     click n5 "../modules/task_service.md"
+    click n6 "../modules/test_task_pagination.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [task_service](../modules/task_service.md) |
+| Inbound | [test_task_pagination](../modules/test_task_pagination.md) |
 | Outbound | [models_request_source](../modules/models_request_source.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [team_member](../modules/team_member.md) |
