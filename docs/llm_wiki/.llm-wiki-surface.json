@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1483,
-      "flows": 533,
+      "entities": 1498,
+      "flows": 540,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 671,
-      "workflows": 176
+      "modules": 677,
+      "workflows": 177
     },
     "dependency_architecture": 2,
-    "total": 2878
+    "total": 2907
   },
   "dependency_pages": {
     "count": 2,
@@ -1066,7 +1066,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 5,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 5,
               "target": "db.info.pop"
@@ -1139,7 +1147,7 @@
             "backend/app/config.py",
             "backend/app/schemas/task.py"
           ],
-          "step_count": 130,
+          "step_count": 131,
           "truncated": false
         }
       },
@@ -1335,7 +1343,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 267,
+              "line": 268,
               "step": "build_identity",
               "target": "load_backend_build_identity().model_dump"
             },
@@ -1544,6 +1552,42 @@
         }
       },
       "id": "http-callback",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "capabilities",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "capabilities"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 21,
+              "step": "capabilities",
+              "target": "db.info.get"
+            }
+          ],
+          "generated": true,
+          "step_count": 5,
+          "transfer_count": 4,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/config.py"
+          ],
+          "step_count": 5,
+          "truncated": false
+        }
+      },
+      "id": "http-capabilities",
       "language": "python"
     },
     {
@@ -2074,7 +2118,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 2,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -2144,7 +2196,7 @@
             "backend/app/routers/task_domain.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 40,
+          "step_count": 41,
           "truncated": false
         }
       },
@@ -2224,6 +2276,73 @@
         }
       },
       "id": "http-convert_triage_item_to_task",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "correct_entry",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "correct_entry"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 48,
+              "step": "correct_entry",
+              "target": "TimeEntryService(db).correct"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_entry_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-correct_entry",
       "language": "python"
     },
     {
@@ -2857,6 +2976,73 @@
         }
       },
       "id": "http-create_calendar",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "create_entry",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "create_entry"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 37,
+              "step": "create_entry",
+              "target": "TimeEntryService(db).create"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_entry_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-create_entry",
       "language": "python"
     },
     {
@@ -7192,7 +7378,7 @@
             "backend/app/utils/time.py",
             "backend/app/commands.py"
           ],
-          "step_count": 281,
+          "step_count": 284,
           "truncated": false
         }
       },
@@ -8490,6 +8676,79 @@
         }
       },
       "id": "http-get_email_settings",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_entry",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "get_entry"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 43,
+              "step": "get_entry",
+              "target": "service.serialize"
+            },
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 43,
+              "step": "get_entry",
+              "target": "service.get"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/services/time_entry_service.py",
+            "backend/app/routers/task_domain.py"
+          ],
+          "step_count": 12,
+          "truncated": false
+        }
+      },
+      "id": "http-get_entry",
       "language": "python"
     },
     {
@@ -11312,6 +11571,73 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "history",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "history"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 58,
+              "step": "history",
+              "target": "TimeEntryService(db).history"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_entry_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-history",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "human_my_work",
         "source_path": "backend/app/routers/task_domain.py",
         "symbol": "human_my_work"
@@ -12606,6 +12932,67 @@
         }
       },
       "id": "http-list_delivery_dependencies",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "list_entries",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "list_entries"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_entry_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-list_entries",
       "language": "python"
     },
     {
@@ -15538,7 +15925,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 6,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 6,
               "target": "db.info.pop"
@@ -15610,7 +16005,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/gantt.py"
           ],
-          "step_count": 184,
+          "step_count": 185,
           "truncated": false
         }
       },
@@ -22469,6 +22864,73 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "void_entry",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "void_entry"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 53,
+              "step": "void_entry",
+              "target": "TimeEntryService(db).correct"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_entry_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-void_entry",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "whoami",
         "source_path": "backend/app/routers/session.py",
         "symbol": "whoami"
@@ -22702,7 +23164,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 114,
+          "step_count": 115,
           "truncated": true
         }
       },
@@ -22782,7 +23244,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -22862,7 +23324,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -22943,7 +23405,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23024,7 +23486,7 @@
             "backend/app/services/task_domain_service.py",
             "backend/app/services/task_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23104,7 +23566,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -23185,7 +23647,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 157,
+          "step_count": 158,
           "truncated": true
         }
       },
@@ -23265,7 +23727,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -23346,7 +23808,7 @@
             "backend/app/services/triage_service.py",
             "backend/app/services/task_service.py"
           ],
-          "step_count": 109,
+          "step_count": 110,
           "truncated": true
         }
       },
@@ -23426,7 +23888,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -23506,7 +23968,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/task_service.py"
           ],
-          "step_count": 109,
+          "step_count": 110,
           "truncated": true
         }
       },
@@ -23587,7 +24049,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23668,7 +24130,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23749,7 +24211,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23830,7 +24292,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23911,7 +24373,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -23992,7 +24454,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24073,7 +24535,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -24153,7 +24615,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -24234,7 +24696,7 @@
             "backend/app/services/agent_routing_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24315,7 +24777,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24396,7 +24858,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24477,7 +24939,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24558,7 +25020,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -24639,7 +25101,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24720,7 +25182,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -24801,7 +25263,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -24881,7 +25343,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -24968,7 +25430,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 154,
+          "step_count": 155,
           "truncated": true
         }
       },
@@ -25048,7 +25510,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -25128,7 +25590,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/execution_usage_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -25208,7 +25670,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/execution_usage_service.py"
           ],
-          "step_count": 109,
+          "step_count": 110,
           "truncated": true
         }
       },
@@ -25288,7 +25750,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -25368,7 +25830,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 115,
+          "step_count": 116,
           "truncated": true
         }
       },
@@ -25448,7 +25910,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -25528,7 +25990,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -25607,7 +26069,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -25688,7 +26150,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -25768,7 +26230,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/task_domain_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -25847,7 +26309,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -25927,7 +26389,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/task_detail_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26007,7 +26469,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_routing_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26087,7 +26549,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_team_setup_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26167,7 +26629,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -26247,7 +26709,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26327,7 +26789,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -26407,7 +26869,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -26487,7 +26949,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -26567,7 +27029,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -26646,7 +27108,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -26726,7 +27188,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26806,7 +27268,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_routing_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -26880,7 +27342,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 114,
+          "step_count": 115,
           "truncated": true
         }
       },
@@ -26961,7 +27423,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -27042,7 +27504,7 @@
             "backend/app/mutation_versions.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -27115,7 +27577,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -27196,7 +27658,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -27276,7 +27738,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_routing_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27350,7 +27812,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -27430,7 +27892,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/execution_usage_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27509,7 +27971,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27589,7 +28051,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -27670,7 +28132,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27751,7 +28213,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27832,7 +28294,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27906,7 +28368,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -27980,7 +28442,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -28054,7 +28516,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 117,
+          "step_count": 118,
           "truncated": true
         }
       },
@@ -28134,7 +28596,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 117,
+          "step_count": 118,
           "truncated": true
         }
       },
@@ -28208,7 +28670,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 117,
+          "step_count": 118,
           "truncated": true
         }
       },
@@ -28288,7 +28750,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 119,
+          "step_count": 120,
           "truncated": true
         }
       },
@@ -28368,7 +28830,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -28449,7 +28911,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -28530,7 +28992,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -28610,7 +29072,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -28691,7 +29153,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -28772,7 +29234,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -28853,7 +29315,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -28934,7 +29396,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29015,7 +29477,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29096,7 +29558,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29177,7 +29639,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29258,7 +29720,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29332,7 +29794,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -29413,7 +29875,7 @@
             "backend/app/services/task_brief_service.py",
             "backend/app/services/task_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -29515,7 +29977,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -29589,7 +30051,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -29663,7 +30125,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -29737,7 +30199,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -29817,7 +30279,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/assignee_recommendation_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -29897,7 +30359,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/assignee_recommendation_service.py"
           ],
-          "step_count": 113,
+          "step_count": 114,
           "truncated": true
         }
       },
@@ -29971,7 +30433,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -30079,7 +30541,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -30208,7 +30670,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -30282,7 +30744,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_routing_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -30355,7 +30817,7 @@
             "backend/app/services/identity_service.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 109,
+          "step_count": 110,
           "truncated": true
         }
       },
@@ -30429,7 +30891,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/triage_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -30502,7 +30964,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -30549,7 +31019,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/services/identity_service.py"
           ],
-          "step_count": 57,
+          "step_count": 58,
           "truncated": true
         }
       },
@@ -30594,7 +31064,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -30641,7 +31119,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/services/identity_service.py"
           ],
-          "step_count": 57,
+          "step_count": 58,
           "truncated": true
         }
       },
@@ -30725,7 +31203,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 158,
+          "step_count": 159,
           "truncated": true
         }
       },
@@ -30806,7 +31284,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/services/agent_planning_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -30889,7 +31367,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 150,
+          "step_count": 151,
           "truncated": true
         }
       },
@@ -30973,7 +31451,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 160,
+          "step_count": 161,
           "truncated": true
         }
       },
@@ -31057,7 +31535,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 170,
+          "step_count": 171,
           "truncated": true
         }
       },
@@ -31141,7 +31619,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 157,
+          "step_count": 158,
           "truncated": true
         }
       },
@@ -31225,7 +31703,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 151,
+          "step_count": 152,
           "truncated": true
         }
       },
@@ -31309,7 +31787,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 158,
+          "step_count": 159,
           "truncated": true
         }
       },
@@ -31392,7 +31870,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 147,
+          "step_count": 148,
           "truncated": true
         }
       },
@@ -31473,7 +31951,7 @@
             "backend/app/services/triage_service.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 105,
+          "step_count": 106,
           "truncated": true
         }
       },
@@ -31553,7 +32031,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 103,
+          "step_count": 104,
           "truncated": true
         }
       },
@@ -31633,7 +32111,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 103,
+          "step_count": 104,
           "truncated": true
         }
       },
@@ -31713,7 +32191,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -31801,7 +32279,7 @@
             "backend/app/schemas/gantt.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 188,
+          "step_count": 189,
           "truncated": true
         }
       },
@@ -31881,7 +32359,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -31961,7 +32439,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 103,
+          "step_count": 104,
           "truncated": true
         }
       },
@@ -32041,7 +32519,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32121,7 +32599,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32201,7 +32679,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 104,
+          "step_count": 105,
           "truncated": true
         }
       },
@@ -32281,7 +32759,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32361,7 +32839,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32441,7 +32919,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32521,7 +32999,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32601,7 +33079,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/triage_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32681,7 +33159,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/external_link_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32761,7 +33239,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -32841,7 +33319,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -32921,7 +33399,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/label_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33001,7 +33479,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/label_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -33081,7 +33559,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33162,7 +33640,7 @@
             "backend/app/services/project_service.py",
             "backend/app/services/task_service.py"
           ],
-          "step_count": 106,
+          "step_count": 107,
           "truncated": true
         }
       },
@@ -33242,7 +33720,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33322,7 +33800,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33402,7 +33880,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33482,7 +33960,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33563,7 +34041,7 @@
             "backend/app/services/saved_view_service.py",
             "backend/app/schemas/saved_view.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33643,7 +34121,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33723,7 +34201,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -33804,7 +34282,7 @@
             "backend/app/schemas/template.py",
             "backend/app/services/template_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -33885,7 +34363,7 @@
             "backend/app/schemas/triage.py",
             "backend/app/services/triage_service.py"
           ],
-          "step_count": 108,
+          "step_count": 109,
           "truncated": true
         }
       },
@@ -33969,7 +34447,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 158,
+          "step_count": 159,
           "truncated": true
         }
       },
@@ -34049,7 +34527,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": true
         }
       },
@@ -34133,7 +34611,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 158,
+          "step_count": 159,
           "truncated": true
         }
       },
@@ -34216,7 +34694,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 147,
+          "step_count": 148,
           "truncated": true
         }
       },
@@ -34300,7 +34778,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 158,
+          "step_count": 159,
           "truncated": true
         }
       },
@@ -36014,7 +36492,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 81,
+              "line": 83,
               "step": "main",
               "step_index": 1,
               "target": "args.output.read_text"
@@ -36022,7 +36500,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 85,
+              "line": 87,
               "step": "main",
               "step_index": 1,
               "target": "args.output.write_text"
@@ -36031,49 +36509,49 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 77,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 76,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 77,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 78,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 79,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 80,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 71,
+              "line": 73,
               "step": "serialized_contract",
               "target": "json.dumps"
             },
             {
               "kind": "unresolved_call",
-              "line": 30,
+              "line": 32,
               "step": "build_contract",
               "target": "app.openapi"
             },
             {
               "kind": "unresolved_call",
-              "line": 31,
+              "line": 33,
               "step": "build_contract",
               "target": "schema['paths'].keys"
             },
             {
               "kind": "external_call",
-              "line": 33,
+              "line": 35,
               "step": "build_contract",
               "target": "ValueError"
             },
@@ -37466,7 +37944,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 122,
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 8,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
               "step": "command_transaction",
               "step_index": 8,
               "target": "db.info.pop"
@@ -37542,7 +38028,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 57,
+          "step_count": 58,
           "truncated": false
         }
       },
@@ -38960,6 +39446,7 @@
         "entities/ControlledFileReader.md",
         "entities/ConvertMutationInput.md",
         "entities/ConvertTriageModalProps.md",
+        "entities/CorrectionReason.md",
         "entities/CorrelatedProviderAction.md",
         "entities/CostTier.md",
         "entities/CreateTriageModalProps.md",
@@ -38987,7 +39474,6 @@
         "entities/DateInput.md",
         "entities/DateListProps.md",
         "entities/DateRange.md",
-        "entities/DB.md",
         "entities/delivery_metrics_DeliveryQueueItem.md",
         "entities/delivery_metrics_DurationSamples.md",
         "entities/DeliveryDatabase.md",
@@ -39450,6 +39936,7 @@
         "entities/RouteModuleKey.md",
         "entities/routers_capacity_Database.md",
         "entities/routers_identity_Database.md",
+        "entities/routers_task_domain_DB.md",
         "entities/RoutingCandidateComparisonProps.md",
         "entities/RoutingCandidateSummary.md",
         "entities/RoutingContractModel.md",
@@ -39893,6 +40380,20 @@
         "entities/TemplateService.md",
         "entities/Theme.md",
         "entities/ThemeState.md",
+        "entities/time_entries_DB.md",
+        "entities/TimeEntry.md",
+        "entities/TimeEntryCapabilities.md",
+        "entities/TimeEntryCorrection.md",
+        "entities/TimeEntryCreate.md",
+        "entities/TimeEntryPage.md",
+        "entities/TimeEntryResponse.md",
+        "entities/TimeEntryRevision.md",
+        "entities/TimeEntryService.md",
+        "entities/TimeEntryVersionConflict.md",
+        "entities/TimeEntryVoid.md",
+        "entities/TimeRevisionPage.md",
+        "entities/TimeRevisionResponse.md",
+        "entities/TimeValues.md",
         "entities/ToastApi.md",
         "entities/ToastInput.md",
         "entities/ToastRecord.md",
@@ -40185,6 +40686,7 @@
         "flows/http-build_identity.md",
         "flows/http-bulk_update_tasks.md",
         "flows/http-callback.md",
+        "flows/http-capabilities.md",
         "flows/http-change_task_status.md",
         "flows/http-claim_task.md",
         "flows/http-classify_planning_triage_item.md",
@@ -40195,6 +40697,7 @@
         "flows/http-convert_task_brief.md",
         "flows/http-convert_triage_item_to_backlog.md",
         "flows/http-convert_triage_item_to_task.md",
+        "flows/http-correct_entry.md",
         "flows/http-create_absence.md",
         "flows/http-create_agent_actor.md",
         "flows/http-create_agent_assignment.md",
@@ -40204,6 +40707,7 @@
         "flows/http-create_agent_task.md",
         "flows/http-create_backlog_task.md",
         "flows/http-create_calendar.md",
+        "flows/http-create_entry.md",
         "flows/http-create_github_status_automation_rule.md",
         "flows/http-create_initiative.md",
         "flows/http-create_iteration-agent_planning.md",
@@ -40290,6 +40794,7 @@
         "flows/http-get_calendars.md",
         "flows/http-get_current_plan_share.md",
         "flows/http-get_email_settings.md",
+        "flows/http-get_entry.md",
         "flows/http-get_execution_usage.md",
         "flows/http-get_gantt_data.md",
         "flows/http-get_initiative.md",
@@ -40338,6 +40843,7 @@
         "flows/http-get_vacations.md",
         "flows/http-get_working_days.md",
         "flows/http-health_check.md",
+        "flows/http-history.md",
         "flows/http-human_my_work.md",
         "flows/http-import_calendar_holidays.md",
         "flows/http-import_iteration.md",
@@ -40358,6 +40864,7 @@
         "flows/http-list_agent_recovery_tasks.md",
         "flows/http-list_agent_skill_bundles.md",
         "flows/http-list_delivery_dependencies.md",
+        "flows/http-list_entries.md",
         "flows/http-list_github_status_automation_rules.md",
         "flows/http-list_initiatives.md",
         "flows/http-list_label_groups.md",
@@ -40507,6 +41014,7 @@
         "flows/http-update_vacation.md",
         "flows/http-update_web_intake_settings.md",
         "flows/http-validate_agent_team_master.md",
+        "flows/http-void_entry.md",
         "flows/http-whoami.md",
         "flows/http-workspace_member.md",
         "flows/http-write_task_brief.md",
@@ -40718,6 +41226,7 @@
         "modules/20261003_0005_native_connections.md",
         "modules/20261004_0006_delivery_observations.md",
         "modules/20261004_0007_execution_usage.md",
+        "modules/20261007_0008_time_entries.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -40969,6 +41478,7 @@
         "modules/models_task.md",
         "modules/models_task_brief.md",
         "modules/models_template.md",
+        "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
@@ -41139,6 +41649,7 @@
         "modules/schemas_task_domain.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
+        "modules/schemas_time_entry.md",
         "modules/schemas_triage.md",
         "modules/schemas_work_metrics.md",
         "modules/seal.md",
@@ -41323,12 +41834,15 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
+        "modules/test_time_entries.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -41548,6 +42062,7 @@
         "workflows/TeamService_delete_vacation.md",
         "workflows/TeamService_import_members.md",
         "workflows/TeamService_update_vacation.md",
+        "workflows/TimeEntryService_create.md",
         "workflows/TriageService_classify_item.md",
         "workflows/TriageService_convert_to_task.md",
         "workflows/TriageService_create.md",
@@ -44539,7 +45054,8 @@
         "modules/task_service.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/test_task_domain_integrity.md",
+        "modules/test_time_entries.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/backlog_snapshot_service.py",
@@ -45470,6 +45986,18 @@
       "title": "ConvertTriageModalProps"
     },
     {
+      "canonical_path": "entities/CorrectionReason.md",
+      "id": "CorrectionReason",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CorrectionReason",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "CorrectionReason"
+    },
+    {
       "canonical_path": "entities/CorrelatedProviderAction.md",
       "id": "CorrelatedProviderAction",
       "kind": "entities",
@@ -45821,18 +46349,6 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/RoadmapPage.tsx",
       "title": "DateRange"
-    },
-    {
-      "canonical_path": "entities/DB.md",
-      "id": "DB",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/DB",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/routers/task_domain.py",
-      "title": "DB"
     },
     {
       "canonical_path": "entities/delivery_metrics_DeliveryQueueItem.md",
@@ -50272,7 +50788,8 @@
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
-        "modules/delivery_dependency_service.md"
+        "modules/delivery_dependency_service.md",
+        "modules/time_entry_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/commands.py",
@@ -52089,6 +52606,18 @@
       "role": "semantic",
       "source_path": "backend/app/routers/identity.py",
       "title": "Database"
+    },
+    {
+      "canonical_path": "entities/routers_task_domain_DB.md",
+      "id": "routers_task_domain_DB",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/routers_task_domain_DB",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "DB"
     },
     {
       "canonical_path": "entities/RoutingCandidateComparisonProps.md",
@@ -58329,6 +58858,198 @@
       "title": "ThemeState"
     },
     {
+      "canonical_path": "entities/time_entries_DB.md",
+      "id": "time_entries_DB",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/time_entries_DB",
+      "outgoing_internal_links": [
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "DB"
+    },
+    {
+      "canonical_path": "entities/TimeEntry.md",
+      "id": "TimeEntry",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntry",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/time_entry.py",
+      "title": "TimeEntry"
+    },
+    {
+      "canonical_path": "entities/TimeEntryCapabilities.md",
+      "id": "TimeEntryCapabilities",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryCapabilities",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryCapabilities"
+    },
+    {
+      "canonical_path": "entities/TimeEntryCorrection.md",
+      "id": "TimeEntryCorrection",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryCorrection",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryCorrection"
+    },
+    {
+      "canonical_path": "entities/TimeEntryCreate.md",
+      "id": "TimeEntryCreate",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryCreate",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryCreate"
+    },
+    {
+      "canonical_path": "entities/TimeEntryPage.md",
+      "id": "TimeEntryPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryPage",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryPage"
+    },
+    {
+      "canonical_path": "entities/TimeEntryResponse.md",
+      "id": "TimeEntryResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryResponse",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryResponse"
+    },
+    {
+      "canonical_path": "entities/TimeEntryRevision.md",
+      "id": "TimeEntryRevision",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryRevision",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/time_entry.py",
+      "title": "TimeEntryRevision"
+    },
+    {
+      "canonical_path": "entities/TimeEntryService.md",
+      "id": "TimeEntryService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryService",
+      "outgoing_internal_links": [
+        "modules/test_time_entries.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/time_entry_service.py",
+      "title": "TimeEntryService"
+    },
+    {
+      "canonical_path": "entities/TimeEntryVersionConflict.md",
+      "id": "TimeEntryVersionConflict",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryVersionConflict",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/test_time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/time_entry_service.py",
+      "title": "TimeEntryVersionConflict"
+    },
+    {
+      "canonical_path": "entities/TimeEntryVoid.md",
+      "id": "TimeEntryVoid",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeEntryVoid",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeEntryVoid"
+    },
+    {
+      "canonical_path": "entities/TimeRevisionPage.md",
+      "id": "TimeRevisionPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeRevisionPage",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeRevisionPage"
+    },
+    {
+      "canonical_path": "entities/TimeRevisionResponse.md",
+      "id": "TimeRevisionResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeRevisionResponse",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeRevisionResponse"
+    },
+    {
+      "canonical_path": "entities/TimeValues.md",
+      "id": "TimeValues",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeValues",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeValues"
+    },
+    {
       "canonical_path": "entities/ToastApi.md",
       "id": "ToastApi",
       "kind": "entities",
@@ -62177,6 +62898,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261004_0007_execution_usage.py",
       "title": "20261004_0007_execution_usage Module"
+    },
+    {
+      "canonical_path": "modules/20261007_0008_time_entries.md",
+      "id": "20261007_0008_time_entries",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261007_0008_time_entries",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261007_0008_time_entries.py",
+      "title": "20261007_0008_time_entries Module"
     },
     {
       "canonical_path": "modules/accessibilityInvariants.md",
@@ -66576,6 +67307,25 @@
       "title": "template Module"
     },
     {
+      "canonical_path": "modules/models_time_entry.md",
+      "id": "models_time_entry",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/models_time_entry",
+      "outgoing_internal_links": [
+        "entities/TimeEntry.md",
+        "entities/TimeEntryRevision.md",
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/time_entry.py",
+      "title": "time_entry Module"
+    },
+    {
       "canonical_path": "modules/models_triage.md",
       "id": "models_triage",
       "kind": "modules",
@@ -68466,7 +69216,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/routers_task_domain",
       "outgoing_internal_links": [
-        "entities/DB.md",
+        "entities/routers_task_domain_DB.md",
         "modules/routers_task_domain.md"
       ],
       "role": "semantic",
@@ -69769,6 +70519,31 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/template.py",
       "title": "template Module"
+    },
+    {
+      "canonical_path": "modules/schemas_time_entry.md",
+      "id": "schemas_time_entry",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/schemas_time_entry",
+      "outgoing_internal_links": [
+        "entities/CorrectionReason.md",
+        "entities/TimeEntryCapabilities.md",
+        "entities/TimeEntryCorrection.md",
+        "entities/TimeEntryCreate.md",
+        "entities/TimeEntryPage.md",
+        "entities/TimeEntryResponse.md",
+        "entities/TimeEntryVoid.md",
+        "entities/TimeRevisionPage.md",
+        "entities/TimeRevisionResponse.md",
+        "entities/TimeValues.md",
+        "modules/schemas_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "time_entry Module"
     },
     {
       "canonical_path": "modules/schemas_triage.md",
@@ -72782,6 +73557,18 @@
       "title": "test_task_pagination Module"
     },
     {
+      "canonical_path": "modules/test_time_entries.md",
+      "id": "test_time_entries",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_time_entries",
+      "outgoing_internal_links": [
+        "modules/test_time_entries.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_time_entries.py",
+      "title": "test_time_entries Module"
+    },
+    {
       "canonical_path": "modules/test_transfer_catalog.md",
       "id": "test_transfer_catalog",
       "kind": "modules",
@@ -72869,6 +73656,50 @@
       "role": "semantic",
       "source_path": "backend/app/utils/time.py",
       "title": "time Module"
+    },
+    {
+      "canonical_path": "modules/time_entries.md",
+      "id": "time_entries",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/time_entries",
+      "outgoing_internal_links": [
+        "entities/time_entries_DB.md",
+        "modules/app_database.md",
+        "modules/app_main.md",
+        "modules/config.md",
+        "modules/routers_task_domain.md",
+        "modules/schemas_time_entry.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "time_entries Module"
+    },
+    {
+      "canonical_path": "modules/time_entry_service.md",
+      "id": "time_entry_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/time_entry_service",
+      "outgoing_internal_links": [
+        "entities/TimeEntryService.md",
+        "entities/TimeEntryVersionConflict.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/models_identity.md",
+        "modules/models_project.md",
+        "modules/models_task.md",
+        "modules/models_time_entry.md",
+        "modules/schemas_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/time.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/time_entry_service.py",
+      "title": "time_entry_service Module"
     },
     {
       "canonical_path": "modules/toast.md",
@@ -76667,6 +77498,22 @@
       "title": "TeamService_update_vacation"
     },
     {
+      "canonical_path": "workflows/TimeEntryService_create.md",
+      "id": "TimeEntryService_create",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TimeEntryService_create",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/models_time_entry.md",
+        "modules/time.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/time_entry_service.py",
+      "title": "TimeEntryService_create"
+    },
+    {
       "canonical_path": "workflows/TriageService_classify_item.md",
       "id": "TriageService_classify_item",
       "kind": "workflows",
@@ -77098,6 +77945,19 @@
       "title": "callback"
     },
     {
+      "canonical_path": "flows/http-capabilities.md",
+      "id": "http-capabilities",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-capabilities",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/time_entries.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "capabilities"
+    },
+    {
       "canonical_path": "flows/http-change_task_status.md",
       "id": "http-change_task_status",
       "kind": "flows",
@@ -77253,6 +78113,20 @@
       "title": "convert_triage_item_to_task"
     },
     {
+      "canonical_path": "flows/http-correct_entry.md",
+      "id": "http-correct_entry",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-correct_entry",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "correct_entry"
+    },
+    {
       "canonical_path": "flows/http-create_absence.md",
       "id": "http-create_absence",
       "kind": "flows",
@@ -77365,6 +78239,20 @@
       "role": "mixed",
       "source_path": "backend/app/routers/calendars.py",
       "title": "create_calendar"
+    },
+    {
+      "canonical_path": "flows/http-create_entry.md",
+      "id": "http-create_entry",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-create_entry",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "create_entry"
     },
     {
       "canonical_path": "flows/http-create_github_status_automation_rule.md",
@@ -78527,6 +79415,20 @@
       "title": "get_email_settings"
     },
     {
+      "canonical_path": "flows/http-get_entry.md",
+      "id": "http-get_entry",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_entry",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "get_entry"
+    },
+    {
       "canonical_path": "flows/http-get_execution_usage.md",
       "id": "http-get_execution_usage",
       "kind": "flows",
@@ -79175,6 +80077,20 @@
       "title": "health_check"
     },
     {
+      "canonical_path": "flows/http-history.md",
+      "id": "http-history",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-history",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "history"
+    },
+    {
       "canonical_path": "flows/http-human_my_work.md",
       "id": "http-human_my_work",
       "kind": "flows",
@@ -79447,6 +80363,20 @@
       "role": "mixed",
       "source_path": "backend/app/routers/delivery_dependencies.py",
       "title": "list_delivery_dependencies"
+    },
+    {
+      "canonical_path": "flows/http-list_entries.md",
+      "id": "http-list_entries",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-list_entries",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "list_entries"
     },
     {
       "canonical_path": "flows/http-list_github_status_automation_rules.md",
@@ -81476,6 +82406,20 @@
       "role": "mixed",
       "source_path": "backend/app/routers/agent.py",
       "title": "validate_agent_team_master"
+    },
+    {
+      "canonical_path": "flows/http-void_entry.md",
+      "id": "http-void_entry",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-void_entry",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "void_entry"
     },
     {
       "canonical_path": "flows/http-whoami.md",
@@ -85472,6 +86416,7 @@
         "modules/20261003_0005_native_connections.md",
         "modules/20261004_0006_delivery_observations.md",
         "modules/20261004_0007_execution_usage.md",
+        "modules/20261007_0008_time_entries.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -85723,6 +86668,7 @@
         "modules/models_task.md",
         "modules/models_task_brief.md",
         "modules/models_template.md",
+        "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
@@ -85893,6 +86839,7 @@
         "modules/schemas_task_domain.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
+        "modules/schemas_time_entry.md",
         "modules/schemas_triage.md",
         "modules/schemas_work_metrics.md",
         "modules/seal.md",
@@ -86077,12 +87024,15 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
+        "modules/test_time_entries.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -86154,6 +87104,7 @@
         "modules/20261003_0005_native_connections.md",
         "modules/20261004_0006_delivery_observations.md",
         "modules/20261004_0007_execution_usage.md",
+        "modules/20261007_0008_time_entries.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -86405,6 +87356,7 @@
         "modules/models_task.md",
         "modules/models_task_brief.md",
         "modules/models_template.md",
+        "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
@@ -86575,6 +87527,7 @@
         "modules/schemas_task_domain.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
+        "modules/schemas_time_entry.md",
         "modules/schemas_triage.md",
         "modules/schemas_work_metrics.md",
         "modules/seal.md",
@@ -86759,12 +87712,15 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
+        "modules/test_time_entries.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -86824,5 +87780,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:70aafa99128df7ac5bc497a70f0ca8411ef48192530d481e35e4f107d6c707aa"
+  "source_hash": "sha256:f926f6587ebf295e86c85b481b4597f63cd06a2beadc4fc165f0f9514defba3e"
 }

@@ -53,7 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
+| Inbound | `backend` (6) |
 | Outbound | `backend` (19) |
 
 ### External packages
@@ -62,13 +62,13 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/DB.md) | Type alias | 22 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 22 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
 
 ## Functions
 

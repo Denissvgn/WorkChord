@@ -49,7 +49,6 @@ sequenceDiagram
     participant p20 as DiscussionService
     participant p21 as db.rollback
     participant p22 as db.commit
-    participant p23 as lock_iterations
     p0->>p1: IterationService
     p0->>p2: TaskService
     p0-->>p3: iteration_service.get_by_id
@@ -79,10 +78,10 @@ sequenceDiagram
     p5-->>p21: db.rollback
     p5-->>p17: db.info.pop
     p5-->>p17: db.info.pop
-    p0->>p23: lock_iterations
+    p5-->>p17: db.info.pop
 ```
 
-> Call sequence diagram shows 30 of 183 interactions; 153 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 184 interactions; 154 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -120,6 +119,8 @@ flowchart LR
     s6 -. "mutation db.info.pop" .-> b2
     b3["mutation db.info.pop"]
     s6 -. "mutation db.info.pop" .-> b3
+    b4["mutation db.info.pop"]
+    s6 -. "mutation db.info.pop" .-> b4
     click s1 "../modules/routers_gantt.md"
     click s2 "../modules/iteration_service.md"
     click s3 "../modules/task_service.md"
@@ -131,6 +132,7 @@ flowchart LR
     class b1 boundary
     class b2 boundary
     class b3 boundary
+    class b4 boundary
 ```
 
 ### Step data
@@ -173,7 +175,8 @@ flowchart LR
 | mutation | `gantt_tasks.append` | `preview_iteration_schedule` | 100 |
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 122 |
+| mutation | `db.info.pop` | `command_transaction` | 121 |
+| mutation | `db.info.pop` | `command_transaction` | 123 |
 
 ### Static analysis gaps
 

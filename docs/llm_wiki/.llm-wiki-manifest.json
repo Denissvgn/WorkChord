@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:f727e29cbf20cb5b613b549cd76ef40ef4fba51c4fb3b40793f969d216ada02f",
-    "knowledge_index_hash": "sha256:49385346922d5217e1ca7bc76a2a1e417d5e7c77fdc3ab6291475cf89569ec82",
-    "surface_index_hash": "sha256:c8ba5aaf442703a5346fe6730264f0eadba8ddceb617106931a927ef92d92fea"
+    "evaluated_envelope_hash": "sha256:b58df954240d4f36a6d7ebe6d64cb4c2e7b166dec3acded798d19d948947a71b",
+    "knowledge_index_hash": "sha256:afdbd975ad09fc6181dca271ec9d11a1bc5620603ce4cda87d45ca34420231ce",
+    "surface_index_hash": "sha256:07d3439cbc94fbffcc55a1ed21b1d655a0b504a6aae9d43c2909f790276b983c"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1400,7 +1400,7 @@
         "concept_observation_hash": "sha256:13904326890f1e9801e180088d415fae17d3c7f69e0030d21b59bd0ee0d61053",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+        "source_content_hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -1670,7 +1670,7 @@
         "concept_observation_hash": "sha256:61948607010d3e328f2d57890f6e9214da401b34af3c2063add1d406606066d2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
+        "source_content_hash": "sha256:78876797b0356084dc94f49bbae3ab07103f2eba90dd5f77698fc3dce6f404e8",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -1680,7 +1680,7 @@
         "concept_observation_hash": "sha256:91b03f6eaa81c667413fa6978bf5b7432db9b0e731cd2ed5369cb89d70fc8021",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
+        "source_content_hash": "sha256:78876797b0356084dc94f49bbae3ab07103f2eba90dd5f77698fc3dce6f404e8",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -2310,7 +2310,7 @@
         "concept_observation_hash": "sha256:92e8541c9884c1fdbb170ff988040f038b28c629b3375dab1d200fa1cd50ad32",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+        "source_content_hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -2505,6 +2505,16 @@
       },
       "state": "known"
     },
+    "entities/CorrectionReason.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:fe1d0b3914e68d50cbf657f9ce3ae2a2f3078acb5cdb6279105a4b2c219056b7",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
     "entities/CorrelatedProviderAction.md": {
       "basis": {
         "concept_observation_hash": "sha256:891eeb70e6342ac27802072403187172b3228f1e0e81ad79f1c88d42737679ac",
@@ -2582,16 +2592,6 @@
         "scope": "entity",
         "source_content_hash": "sha256:4b6a6c110873e7db2036cf6d1878dfaccfda609eae670bb0d9f67474ed4444fd",
         "source_path": "backend/app/database_migration/cutover.py"
-      },
-      "state": "known"
-    },
-    "entities/DB.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "entity",
-        "source_content_hash": "sha256:a5cfe9eb28a626bcecf5a4475b176c9e0cfa4c88435c7ecea7682bc20b1aa37b",
-        "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
     },
@@ -3840,7 +3840,7 @@
         "concept_observation_hash": "sha256:0d83deb2beef958d3e4533e25da3fee280fe325c2976e017e83cc935d227d605",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+        "source_content_hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -5460,7 +5460,7 @@
         "concept_observation_hash": "sha256:c0b56ec6cee02887a249b0cf88fc6deb59cb472d6679031e7f090f89c8654e87",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+        "source_content_hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -7307,10 +7307,10 @@
     },
     "entities/Settings.md": {
       "basis": {
-        "concept_observation_hash": "sha256:bf959d89c3df4b881cc2a097ebc89e2db8bd79a28bbf6d13b92fd3e804f35e0a",
+        "concept_observation_hash": "sha256:e41069d95e96b7641945975220f8f1c98711eade0c088dbfaf514410d96f987a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:c4df9c80b9e3581f029764799ca07d7aba3af556c59d13beaf36bbcee1517503",
+        "source_content_hash": "sha256:05523ed9829996b32b78c9440a1c823e7339df9206908768ea1bab4ff7caa3aa",
         "source_path": "backend/app/config.py"
       },
       "state": "known"
@@ -9165,6 +9165,136 @@
       },
       "state": "known"
     },
+    "entities/TimeEntry.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b44007e565048a099a72fb3523cddf8008083fa482c3d929ccc87781ed51ee08",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
+        "source_path": "backend/app/models/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryCapabilities.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:5dea171725c7b0f6192bcdc37f16ad68eb39da5a8ea01e9764a4a4b1e7bc23b0",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryCorrection.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:476c417c77e0ec893fa018a6b188e2a21f13b310781a948e17b800bee99fe3b5",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryCreate.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ff5c9ad703c5e9b29aea1c7faa6015ac63615635d2a201b864ef716430be2ff6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryPage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f85cda186c0e7f1b42ddc2670ba2e2c276fe260498737763d0d54370fbbddd6a",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7efd8763e053479133fb9afe8ce0e9bc3a06caa1877a09644aa13627475d50c9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryRevision.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:82bbbda87a9f5183b9c6871abc970891e8023417a44e3d5bf18dd37fcc36f67a",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
+        "source_path": "backend/app/models/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d7d9d4358679500cdffc8b0a1e1b1381ad5a6e50f17e73dd743e43bb04c353c5",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6c9a33f8d3e25208ea9d3f5e01e466ba473f22944fcb7b824ebac6b2ceb856bc",
+        "source_path": "backend/app/services/time_entry_service.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryVersionConflict.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ec876e58b3e3f15c79f568ba8a65b6a1fd4687b5560210cd2141812ff24cb0ad",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6c9a33f8d3e25208ea9d3f5e01e466ba473f22944fcb7b824ebac6b2ceb856bc",
+        "source_path": "backend/app/services/time_entry_service.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeEntryVoid.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:4f06498d9c7b577d9a0978a63c1cf6d63ebae07d911173f1f6a5c46e92f869f5",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeRevisionPage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:3c539e48344b5b702274ce1f183e343a31b49bd017532ce69b823c6fc201326b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeRevisionResponse.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d7613f84c5bf7499a08d9e56c9cade90880a6b51f53ea3038626acdd08232788",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeValues.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:2a3abac0554c2297e54f67f6944f4cd171f9c4950760944b094de8031df78683",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
     "entities/ToastApi.md": {
       "basis": {
         "concept_observation_hash": "sha256:928418140e3331339e961f877357c7d097e4ad9955bfec83dc1084f26bc6408c",
@@ -11002,6 +11132,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:bd60482ff34304252ad40fa3816c258c018eaaeb4774480346d273d18feb6813",
         "source_path": "backend/app/routers/identity.py"
+      },
+      "state": "known"
+    },
+    "entities/routers_task_domain_DB.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:a5cfe9eb28a626bcecf5a4475b176c9e0cfa4c88435c7ecea7682bc20b1aa37b",
+        "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
     },
@@ -12932,6 +13072,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:b029187d3cded91d87812932b898287bd67a2f6bd643c3e69744d6cac144a474",
         "source_path": "backend/app/models/team_member.py"
+      },
+      "state": "known"
+    },
+    "entities/time_entries_DB.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+        "source_path": "backend/app/routers/time_entries.py"
       },
       "state": "known"
     },
@@ -14912,6 +15062,16 @@
         "scope": "module",
         "source_content_hash": "sha256:3240552a8f0c58a1ee6f4f33bfd16e41b7cc8e9ce812f10ef8248d9b2b2a26d2",
         "source_path": "backend/app/migrations/versions/20261004_0007_execution_usage.py"
+      },
+      "state": "known"
+    },
+    "modules/20261007_0008_time_entries.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:a8a669d4c75031d07ee1eead6822cf4180a7d48f6250ab654c64de5eb95a09b9",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:31463c896ef45161c1389a1210c1b52a3d4a61f4fd161cc1eb48fe0c698ef3aa",
+        "source_path": "backend/app/migrations/versions/20261007_0008_time_entries.py"
       },
       "state": "known"
     },
@@ -17127,10 +17287,10 @@
     },
     "modules/app_main.md": {
       "basis": {
-        "concept_observation_hash": "sha256:86fbd4fe8277efea3899ce064758c09157e76bc6921141ac245ee12108248b8e",
+        "concept_observation_hash": "sha256:489d0272aa1c4d80b897321e68b5a11a57af77b547b1abf67b19a582071c6e3a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:bdebf1cfbeea55943c20f324dabacd7b7e5b91e63df9b43d6ff7a9e551b345a0",
+        "source_content_hash": "sha256:023ce2e349cc633f8de7ae7fc505602d8699652e4720185a21f27e5d65e58940",
         "source_path": "backend/app/main.py"
       },
       "state": "known"
@@ -17170,7 +17330,7 @@
         "concept_observation_hash": "sha256:468c9e319b639f28990e5e9702f14d09601ef73148d684c90e4c5cd82d6ac4a5",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
+        "source_content_hash": "sha256:78876797b0356084dc94f49bbae3ab07103f2eba90dd5f77698fc3dce6f404e8",
         "source_path": "backend/app/authority.py"
       },
       "state": "known"
@@ -17410,7 +17570,7 @@
         "concept_observation_hash": "sha256:5d7881574b6cab602e45ff44cf8724594fa3bfaabd7ccf1792d1ec6ea7fdb404",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+        "source_content_hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -17430,7 +17590,7 @@
         "concept_observation_hash": "sha256:bad336a27fa889046fd338c9e4ffa8625058a8176c21bd8ebbcf535d625894a3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:c4df9c80b9e3581f029764799ca07d7aba3af556c59d13beaf36bbcee1517503",
+        "source_content_hash": "sha256:05523ed9829996b32b78c9440a1c823e7339df9206908768ea1bab4ff7caa3aa",
         "source_path": "backend/app/config.py"
       },
       "state": "known"
@@ -17900,7 +18060,7 @@
         "concept_observation_hash": "sha256:2fd803ef587af2f91da8fdba24e7b7275c89d4aae0bcfda0b7d092601bf78d6c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1193d39830ac35045f387bcdc22ae176d4b27005d8f9d9c783f035bae91792ac",
+        "source_content_hash": "sha256:dbcba6acc8e4dfbbce56cc581cd0eac95a502eb6c55f58d1ec0e3719c9867a76",
         "source_path": "scripts/generate_client_contract.py"
       },
       "state": "known"
@@ -18020,7 +18180,7 @@
         "concept_observation_hash": "sha256:b6fb46ca3005481840611a0230a74704d522c60c9117a54c3f89cf5c766ae9cb",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:bfc6f83e39fdb4155d7c552565c58e79e2d09d7a77dd53a170badbd593722090",
+        "source_content_hash": "sha256:b6df50bc27af9368e13332614081effe071e1c0a7ee376e2b2dc8a5dde9097cb",
         "source_path": "backend/app/http_authority.py"
       },
       "state": "known"
@@ -18307,10 +18467,10 @@
     },
     "modules/models___init__.md": {
       "basis": {
-        "concept_observation_hash": "sha256:aed3d40f6a577a4c895be32b76ecffad4d9fff7e989921d24e512274f6c82f20",
+        "concept_observation_hash": "sha256:86f9d95456a6df73077c01145adc2dd4c52ad55bfe269149b59cf36fa4100920",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:e2cd0748111718fbd846e226728ab4ebbcdfed41497863a375939b097bf33a19",
+        "source_content_hash": "sha256:3cfbb376a2bcc5228fbb25cd1162151f85861649c381cc1dff1a57fe59ae6569",
         "source_path": "backend/app/models/__init__.py"
       },
       "state": "known"
@@ -18532,6 +18692,16 @@
         "scope": "module",
         "source_content_hash": "sha256:79ad51e813a032a64ce629322b1c02496b8bf92cce6f0267ece949528c661f5b",
         "source_path": "backend/app/models/template.py"
+      },
+      "state": "known"
+    },
+    "modules/models_time_entry.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b6869b58b5622d5b2f9afef7b3a399e926f75d969457f69c9641d038b3df4be1",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
+        "source_path": "backend/app/models/time_entry.py"
       },
       "state": "known"
     },
@@ -19705,6 +19875,16 @@
       },
       "state": "known"
     },
+    "modules/schemas_time_entry.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:2ee4f3d4c5cdcf033a77dc6b8ca42d503c00e05bd0cdb6990a31026f42cb8e1f",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
     "modules/schemas_triage.md": {
       "basis": {
         "concept_observation_hash": "sha256:1b507b9992b26658faccb56c19ec60436df22f97e4a6e70169f6bdaaa00bbf17",
@@ -20400,7 +20580,7 @@
         "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1a2e9868e119c7f4115ab4bbcbe54a1279c62d5d901018c42ea8fc07804dee43",
+        "source_content_hash": "sha256:3866525f3679d7b4c3895c2b4c20625db075e2de276c1827790129e5973f517e",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -20550,7 +20730,7 @@
         "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:03dbb3f29d4b86e8a99287285dabdbadf83fbc3287d3494c78644b9ed8f8fc65",
+        "source_content_hash": "sha256:a5e291708fdc8286b4b79bcf590168c0ab9ced60047a0aa5f2ebb040a98a61de",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -20980,7 +21160,7 @@
         "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f5ca8c311a4c9a8d438a72513c4472809662bfe152c6beb83aeed49c9f0c1ce0",
+        "source_content_hash": "sha256:15070e28cc320c8731cc19b5d2f4fda69d616b5aa66ebbbdebd9057880fa8729",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -21032,6 +21212,16 @@
         "scope": "module",
         "source_content_hash": "sha256:77d7858a3244c99fa1afee484d3822e353454373a5a74ccc50cc1f2c2b8ac344",
         "source_path": "backend/tests/test_task_pagination.py"
+      },
+      "state": "known"
+    },
+    "modules/test_time_entries.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:08704f0b7179a39303c88e6859573f38beb7024aa0405d6038a48feb07fcf3e2",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:4a9d394cf8cd69ceac1afdd3114595193575502339f63970d62251bf8a4dec6c",
+        "source_path": "backend/tests/test_time_entries.py"
       },
       "state": "known"
     },
@@ -21092,6 +21282,26 @@
         "scope": "module",
         "source_content_hash": "sha256:032b23fbdbaf726bb6522bf59fb5a90a2f69bcc67de52566643274e26f131689",
         "source_path": "backend/app/utils/time.py"
+      },
+      "state": "known"
+    },
+    "modules/time_entries.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:26b7809bdfb1e9276ac3b14195f93ec26911f27a0e33dc672a3ca2946ac5f6aa",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+        "source_path": "backend/app/routers/time_entries.py"
+      },
+      "state": "known"
+    },
+    "modules/time_entry_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:1e1399e3db539af57768668e9e7cbb0af46d24a6b45941d7262127dd922866ee",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:6c9a33f8d3e25208ea9d3f5e01e466ba473f22944fcb7b824ebac6b2ceb856bc",
+        "source_path": "backend/app/services/time_entry_service.py"
       },
       "state": "known"
     },
@@ -21760,13 +21970,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:2dc54ad279bc7a93655f3d615f9edfa6d28bdb2b8fe5fd0a39734bb0d5c08e73",
-      "lifecycle_hash": "sha256:7f9382750025cd36137ca36489450bb27febbfee2ee29a834db6cedeb5acdc9e",
-      "markdown_snapshot_hash": "sha256:c140343ebdee33f49cbee7cd904c0469c31c09be731d5b6536cab575b59d9623",
-      "observation_inputs_hash": "sha256:13e88ac5bedf68782c9b969c521d8fa7bb66fccfe2888d2d2065843f20082a42",
+      "inventory_hash": "sha256:ff38b13d44a8e77c2e8dca60575470346f0a73f52b11b5bbde2dec95037555ba",
+      "lifecycle_hash": "sha256:8e1a5cedc8f36d37ac0d003a1627811e603445095c07c0f3249eb435efcc7ee9",
+      "markdown_snapshot_hash": "sha256:1f3214c753004ac010b310f3207dfcb566f2d418d77f4e4fd4084de0fc653b23",
+      "observation_inputs_hash": "sha256:b8bae52054b51fc06e81629c0f8cb2a438817fa3af44c44f3336957c646acd8a",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:0f1f2ccefe25e097b83b8d18aa2888adf0996231fbfe22c27aecafb245a46d2d"
+      "source_snapshot_hash": "sha256:b80ba4e4c3b5673c726b1e56ccf7cfd8bc1dcf57eee2f09159ee207a7fcf1cdb"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -23275,6 +23485,12 @@
       "scope": "entity",
       "source_path": "frontend/src/pages/TriagePage.tsx"
     },
+    "entities/CorrectionReason.md": {
+      "entity_name": "CorrectionReason",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
     "entities/CorrelatedProviderAction.md": {
       "entity_name": "CorrelatedProviderAction",
       "occurrence": 1,
@@ -23322,12 +23538,6 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/database_migration/cutover.py"
-    },
-    "entities/DB.md": {
-      "entity_name": "DB",
-      "occurrence": 1,
-      "scope": "entity",
-      "source_path": "backend/app/routers/task_domain.py"
     },
     "entities/DagController.md": {
       "entity_name": "DagController",
@@ -27271,6 +27481,84 @@
       "scope": "entity",
       "source_path": "frontend/src/store/themeStore.ts"
     },
+    "entities/TimeEntry.md": {
+      "entity_name": "TimeEntry",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/time_entry.py"
+    },
+    "entities/TimeEntryCapabilities.md": {
+      "entity_name": "TimeEntryCapabilities",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeEntryCorrection.md": {
+      "entity_name": "TimeEntryCorrection",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeEntryCreate.md": {
+      "entity_name": "TimeEntryCreate",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeEntryPage.md": {
+      "entity_name": "TimeEntryPage",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeEntryResponse.md": {
+      "entity_name": "TimeEntryResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeEntryRevision.md": {
+      "entity_name": "TimeEntryRevision",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/time_entry.py"
+    },
+    "entities/TimeEntryService.md": {
+      "entity_name": "TimeEntryService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/time_entry_service.py"
+    },
+    "entities/TimeEntryVersionConflict.md": {
+      "entity_name": "TimeEntryVersionConflict",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/time_entry_service.py"
+    },
+    "entities/TimeEntryVoid.md": {
+      "entity_name": "TimeEntryVoid",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeRevisionPage.md": {
+      "entity_name": "TimeRevisionPage",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeRevisionResponse.md": {
+      "entity_name": "TimeRevisionResponse",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
+    "entities/TimeValues.md": {
+      "entity_name": "TimeValues",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
     "entities/ToastApi.md": {
       "entity_name": "ToastApi",
       "occurrence": 1,
@@ -28374,6 +28662,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/routers/identity.py"
+    },
+    "entities/routers_task_domain_DB.md": {
+      "entity_name": "DB",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/task_domain.py"
     },
     "entities/savedView_SavedView.md": {
       "entity_name": "SavedView",
@@ -29532,6 +29826,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/models/team_member.py"
+    },
+    "entities/time_entries_DB.md": {
+      "entity_name": "DB",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/routers/time_entries.py"
     },
     "entities/topology_AgentTeamReconciliationPlan.md": {
       "entity_name": "AgentTeamReconciliationPlan",
@@ -30704,6 +31004,10 @@
     "modules/20261004_0007_execution_usage.md": {
       "scope": "module",
       "source_path": "backend/app/migrations/versions/20261004_0007_execution_usage.py"
+    },
+    "modules/20261007_0008_time_entries.md": {
+      "scope": "module",
+      "source_path": "backend/app/migrations/versions/20261007_0008_time_entries.py"
     },
     "modules/AdminAccessGate.md": {
       "scope": "module",
@@ -32153,6 +32457,10 @@
       "scope": "module",
       "source_path": "backend/app/models/template.py"
     },
+    "modules/models_time_entry.md": {
+      "scope": "module",
+      "source_path": "backend/app/models/time_entry.py"
+    },
     "modules/models_triage.md": {
       "scope": "module",
       "source_path": "backend/app/models/triage.py"
@@ -32620,6 +32928,10 @@
     "modules/schemas_template.md": {
       "scope": "module",
       "source_path": "backend/app/schemas/template.py"
+    },
+    "modules/schemas_time_entry.md": {
+      "scope": "module",
+      "source_path": "backend/app/schemas/time_entry.py"
     },
     "modules/schemas_triage.md": {
       "scope": "module",
@@ -33153,6 +33465,10 @@
       "scope": "module",
       "source_path": "backend/tests/test_task_pagination.py"
     },
+    "modules/test_time_entries.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_time_entries.py"
+    },
     "modules/test_transfer_catalog.md": {
       "scope": "module",
       "source_path": "backend/tests/database_migration/test_transfer_catalog.py"
@@ -33176,6 +33492,14 @@
     "modules/time.md": {
       "scope": "module",
       "source_path": "backend/app/utils/time.py"
+    },
+    "modules/time_entries.md": {
+      "scope": "module",
+      "source_path": "backend/app/routers/time_entries.py"
+    },
+    "modules/time_entry_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/time_entry_service.py"
     },
     "modules/toast.md": {
       "scope": "module",
@@ -33452,10 +33776,10 @@
           }
         }
       },
-      "hash": "sha256:0a6e7b552e84cb7808e6a9f5cec6fe07b1339e094d0672be6b7de39e92b12c9b",
+      "hash": "sha256:78876797b0356084dc94f49bbae3ab07103f2eba90dd5f77698fc3dce6f404e8",
       "language": "python",
       "module_page": "authority",
-      "semantic_hash": "sha256:10e90637ec09cb71cc10f835912985a9784d4de25611118859c300cd6db77952"
+      "semantic_hash": "sha256:6a67b2fada95f746ab470de73c22257ce6823f2b63734a2be4e01bad453aec96"
     },
     "backend/app/autonomy/__init__.py": {
       "entities": [],
@@ -36683,10 +37007,10 @@
           }
         }
       },
-      "hash": "sha256:914dfc22aaed76cd2985477e735a37a04aae18f66365db00ba6004a15eeac9a6",
+      "hash": "sha256:418f6bc4ea899299a30fd0aeec97466cbf7f1bb858af6b771cfa7277007ea9f9",
       "language": "python",
       "module_page": "commands",
-      "semantic_hash": "sha256:0a5e734a5e894e3fbb341e64ac007796c258efe740ac329a940f83d11b8f18ad"
+      "semantic_hash": "sha256:b7d65da279c60368f4fc567ebce0bb2203711faa1a60482eb01403b00bb1410f"
     },
     "backend/app/config.py": {
       "entities": [
@@ -36790,6 +37114,7 @@
               "snapshot_max_bytes": "—",
               "snapshot_retention_count": "—",
               "strict_mutation_versions": "—",
+              "time_entries_enabled": "—",
               "trusted_proxy_ips": "—",
               "web_intake_rate_limit_per_minute": "—",
               "web_intake_token": "—",
@@ -36839,10 +37164,10 @@
           }
         }
       },
-      "hash": "sha256:c4df9c80b9e3581f029764799ca07d7aba3af556c59d13beaf36bbcee1517503",
+      "hash": "sha256:05523ed9829996b32b78c9440a1c823e7339df9206908768ea1bab4ff7caa3aa",
       "language": "python",
       "module_page": "config",
-      "semantic_hash": "sha256:8f6865a5635fbb03491a40d53a612debce1d3ec7f786473add696a617b67ea63"
+      "semantic_hash": "sha256:d47f812edc7a429eda95822a33edf9212633b7567465604434bbdf31e2d2e123"
     },
     "backend/app/database.py": {
       "entities": [
@@ -37441,7 +37766,7 @@
           }
         }
       },
-      "hash": "sha256:bfc6f83e39fdb4155d7c552565c58e79e2d09d7a77dd53a170badbd593722090",
+      "hash": "sha256:b6df50bc27af9368e13332614081effe071e1c0a7ee376e2b2dc8a5dde9097cb",
       "language": "python",
       "module_page": "http_authority",
       "semantic_hash": "sha256:15dbe07ecb82861a412658776854b56f11e2dd4473e71f3f279589d3587f6ca4"
@@ -37476,10 +37801,10 @@
           }
         }
       },
-      "hash": "sha256:bdebf1cfbeea55943c20f324dabacd7b7e5b91e63df9b43d6ff7a9e551b345a0",
+      "hash": "sha256:023ce2e349cc633f8de7ae7fc505602d8699652e4720185a21f27e5d65e58940",
       "language": "python",
       "module_page": "app_main",
-      "semantic_hash": "sha256:0985353253955a97f1af6967ac3863b0c7472d05774eaccc51993ff0b9b08edb"
+      "semantic_hash": "sha256:5aafecd0be72922c7c4037fc263ca57912de24fed554bc773f29bec441348294"
     },
     "backend/app/maintenance.py": {
       "entities": [
@@ -37986,6 +38311,26 @@
       "module_page": "20261004_0007_execution_usage",
       "semantic_hash": "sha256:c45aee3bbbd643a014fe0f61fb3fe215429d64547b828f2aca703ee28350da98"
     },
+    "backend/app/migrations/versions/20261007_0008_time_entries.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Retain private minute records and append-only correction history.",
+          "functions": {
+            "downgrade": "—",
+            "upgrade": "—"
+          }
+        }
+      },
+      "hash": "sha256:31463c896ef45161c1389a1210c1b52a3d4a61f4fd161cc1eb48fe0c698ef3aa",
+      "language": "python",
+      "module_page": "20261007_0008_time_entries",
+      "semantic_hash": "sha256:59a72fd566169c82fee7901e9a4277d546299cdbb755e6d77a63d44615945986"
+    },
     "backend/app/models/__init__.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -37998,10 +38343,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:e2cd0748111718fbd846e226728ab4ebbcdfed41497863a375939b097bf33a19",
+      "hash": "sha256:3cfbb376a2bcc5228fbb25cd1162151f85861649c381cc1dff1a57fe59ae6569",
       "language": "python",
       "module_page": "models___init__",
-      "semantic_hash": "sha256:9857a3a79febefc1d516db51c06bd87ca6b860ac0522ac22fc43bb9ecac5bba1"
+      "semantic_hash": "sha256:2f9e44455771ac40bba4760897b19ebf1f94557cf432ad44bee8ea4a9b3b5939"
     },
     "backend/app/models/agent.py": {
       "entities": [
@@ -40929,6 +41274,86 @@
       "module_page": "models_template",
       "semantic_hash": "sha256:ec3f124851a324a012ea6dc94ae6c36e1c71e9e16862ada825ca5fdbf535b5c1"
     },
+    "backend/app/models/time_entry.py": {
+      "entities": [
+        "TimeEntry",
+        "TimeEntryRevision"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeEntry",
+          "occurrence": 1,
+          "page": "TimeEntry"
+        },
+        {
+          "name": "TimeEntryRevision",
+          "occurrence": 1,
+          "page": "TimeEntryRevision"
+        }
+      ],
+      "entity_pages": {
+        "TimeEntry": "TimeEntry",
+        "TimeEntryRevision": "TimeEntryRevision"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TimeEntry": {
+            "attributes": {
+              "created_at": "—",
+              "creation_digest": "—",
+              "id": "—",
+              "minutes": "—",
+              "note": "—",
+              "principal_id": "—",
+              "project_id": "—",
+              "request_id": "—",
+              "task_id": "—",
+              "task_title": "—",
+              "timezone": "—",
+              "updated_at": "—",
+              "version": "—",
+              "voided": "—",
+              "work_date": "—"
+            },
+            "description": "_Auto-generated from `TimeEntry` in `backend/app/models/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryRevision": {
+            "attributes": {
+              "created_at": "—",
+              "entry_id": "—",
+              "id": "—",
+              "minutes": "—",
+              "note": "—",
+              "principal_id": "—",
+              "project_id": "—",
+              "reason": "—",
+              "timezone": "—",
+              "version": "—",
+              "voided": "—",
+              "work_date": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryRevision` in `backend/app/models/time_entry.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "TimeEntry": "—",
+            "TimeEntryRevision": "—"
+          },
+          "description": "Private explicit work records and retained corrections, independent of task state.",
+          "functions": {
+            "reject_time_history_rewrites": "—",
+            "retain_time_entry_history": "—"
+          }
+        }
+      },
+      "hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
+      "language": "python",
+      "module_page": "models_time_entry",
+      "semantic_hash": "sha256:95aeec39e480ec7d48bd66f1e198bcdf1383a73180c2ae0a718b39bcfcdfc615"
+    },
     "backend/app/models/triage.py": {
       "entities": [
         "TriageItemStatus",
@@ -42456,11 +42881,11 @@
         {
           "name": "DB",
           "occurrence": 1,
-          "page": "DB"
+          "page": "routers_task_domain_DB"
         }
       ],
       "entity_pages": {
-        "DB": "DB"
+        "DB": "routers_task_domain_DB"
       },
       "generated_semantics": {
         "entities": {
@@ -42631,6 +43056,49 @@
       "language": "python",
       "module_page": "templates",
       "semantic_hash": "sha256:1e43524f9bdc745118d86002d46c2fdb7f910afa6ac346fd757744031c5a3fae"
+    },
+    "backend/app/routers/time_entries.py": {
+      "entities": [
+        "DB"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "DB",
+          "occurrence": 1,
+          "page": "time_entries_DB"
+        }
+      ],
+      "entity_pages": {
+        "DB": "time_entries_DB"
+      },
+      "generated_semantics": {
+        "entities": {
+          "DB": {
+            "attributes": {},
+            "description": "_Auto-generated from `DB` in `backend/app/routers/time_entries.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "DB": "—"
+          },
+          "description": "Optional human-authored time records with private correction history.",
+          "functions": {
+            "capabilities": "—",
+            "correct_entry": "—",
+            "create_entry": "—",
+            "get_entry": "—",
+            "history": "—",
+            "list_entries": "—",
+            "void_entry": "—"
+          }
+        }
+      },
+      "hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+      "language": "python",
+      "module_page": "time_entries",
+      "semantic_hash": "sha256:2730a13e7a5afc198d249b9ca081d485cec3d50e01c686b958763c86377f6aa4"
     },
     "backend/app/routers/triage.py": {
       "entities": [],
@@ -52127,6 +52595,210 @@
       "module_page": "schemas_template",
       "semantic_hash": "sha256:a7bd4229cf8c5b18a5b0ef2996c1d98595fe58c3d950e929b4faaadf89298b12"
     },
+    "backend/app/schemas/time_entry.py": {
+      "entities": [
+        "TimeValues",
+        "TimeEntryCreate",
+        "CorrectionReason",
+        "TimeEntryCorrection",
+        "TimeEntryVoid",
+        "TimeEntryResponse",
+        "TimeEntryPage",
+        "TimeRevisionResponse",
+        "TimeRevisionPage",
+        "TimeEntryCapabilities"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeValues",
+          "occurrence": 1,
+          "page": "TimeValues"
+        },
+        {
+          "name": "TimeEntryCreate",
+          "occurrence": 1,
+          "page": "TimeEntryCreate"
+        },
+        {
+          "name": "CorrectionReason",
+          "occurrence": 1,
+          "page": "CorrectionReason"
+        },
+        {
+          "name": "TimeEntryCorrection",
+          "occurrence": 1,
+          "page": "TimeEntryCorrection"
+        },
+        {
+          "name": "TimeEntryVoid",
+          "occurrence": 1,
+          "page": "TimeEntryVoid"
+        },
+        {
+          "name": "TimeEntryResponse",
+          "occurrence": 1,
+          "page": "TimeEntryResponse"
+        },
+        {
+          "name": "TimeEntryPage",
+          "occurrence": 1,
+          "page": "TimeEntryPage"
+        },
+        {
+          "name": "TimeRevisionResponse",
+          "occurrence": 1,
+          "page": "TimeRevisionResponse"
+        },
+        {
+          "name": "TimeRevisionPage",
+          "occurrence": 1,
+          "page": "TimeRevisionPage"
+        },
+        {
+          "name": "TimeEntryCapabilities",
+          "occurrence": 1,
+          "page": "TimeEntryCapabilities"
+        }
+      ],
+      "entity_pages": {
+        "CorrectionReason": "CorrectionReason",
+        "TimeEntryCapabilities": "TimeEntryCapabilities",
+        "TimeEntryCorrection": "TimeEntryCorrection",
+        "TimeEntryCreate": "TimeEntryCreate",
+        "TimeEntryPage": "TimeEntryPage",
+        "TimeEntryResponse": "TimeEntryResponse",
+        "TimeEntryVoid": "TimeEntryVoid",
+        "TimeRevisionPage": "TimeRevisionPage",
+        "TimeRevisionResponse": "TimeRevisionResponse",
+        "TimeValues": "TimeValues"
+      },
+      "generated_semantics": {
+        "entities": {
+          "CorrectionReason": {
+            "attributes": {
+              "reason": "—"
+            },
+            "description": "_Auto-generated from `CorrectionReason` in `backend/app/schemas/time_entry.py`._",
+            "methods": {
+              "nonempty_reason": "—"
+            }
+          },
+          "TimeEntryCapabilities": {
+            "attributes": {
+              "enabled": "—",
+              "human_identity_required": "—",
+              "privacy": "—",
+              "schema_version": "—",
+              "units": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryCapabilities` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryCorrection": {
+            "attributes": {
+              "expected_version": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryCorrection` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryCreate": {
+            "attributes": {
+              "project_id": "—",
+              "request_id": "—",
+              "task_id": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryCreate` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryPage": {
+            "attributes": {
+              "consistency": "—",
+              "has_more": "—",
+              "items": "—",
+              "next_after_id": "—",
+              "upper_id": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryPage` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryResponse": {
+            "attributes": {
+              "created_at": "—",
+              "id": "—",
+              "principal_id": "—",
+              "project_id": "—",
+              "task_id": "—",
+              "task_title": "—",
+              "updated_at": "—",
+              "version": "—",
+              "voided": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryResponse` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeEntryVoid": {
+            "attributes": {
+              "expected_version": "—"
+            },
+            "description": "_Auto-generated from `TimeEntryVoid` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeRevisionPage": {
+            "attributes": {
+              "has_more": "—",
+              "items": "—",
+              "next_after_version": "—"
+            },
+            "description": "_Auto-generated from `TimeRevisionPage` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeRevisionResponse": {
+            "attributes": {
+              "created_at": "—",
+              "principal_id": "—",
+              "reason": "—",
+              "version": "—",
+              "voided": "—"
+            },
+            "description": "_Auto-generated from `TimeRevisionResponse` in `backend/app/schemas/time_entry.py`._",
+            "methods": {}
+          },
+          "TimeValues": {
+            "attributes": {
+              "minutes": "—",
+              "note": "—",
+              "timezone": "—",
+              "work_date": "—"
+            },
+            "description": "_Auto-generated from `TimeValues` in `backend/app/schemas/time_entry.py`._",
+            "methods": {
+              "local_date_only": "—",
+              "valid_timezone": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "CorrectionReason": "—",
+            "TimeEntryCapabilities": "—",
+            "TimeEntryCorrection": "—",
+            "TimeEntryCreate": "—",
+            "TimeEntryPage": "—",
+            "TimeEntryResponse": "—",
+            "TimeEntryVoid": "—",
+            "TimeRevisionPage": "—",
+            "TimeRevisionResponse": "—",
+            "TimeValues": "—"
+          },
+          "description": "Bounded minute/date contracts with explicit correction versions.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+      "language": "python",
+      "module_page": "schemas_time_entry",
+      "semantic_hash": "sha256:1fe1823e3407a077a540eaa64c1ac477a718a6068c6c91e88876e2c7901260b3"
+    },
     "backend/app/schemas/triage.py": {
       "entities": [
         "TriageItemStatus",
@@ -57263,6 +57935,72 @@
       "module_page": "template_service",
       "semantic_hash": "sha256:279afe0a46f66709308190fe45bd54af923b2bbdedf1a2385d1d0a0206528d97"
     },
+    "backend/app/services/time_entry_service.py": {
+      "entities": [
+        "TimeEntryVersionConflict",
+        "TimeEntryService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeEntryVersionConflict",
+          "occurrence": 1,
+          "page": "TimeEntryVersionConflict"
+        },
+        {
+          "name": "TimeEntryService",
+          "occurrence": 1,
+          "page": "TimeEntryService"
+        }
+      ],
+      "entity_pages": {
+        "TimeEntryService": "TimeEntryService",
+        "TimeEntryVersionConflict": "TimeEntryVersionConflict"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TimeEntryService": {
+            "attributes": {},
+            "description": "_Auto-generated from `TimeEntryService` in `backend/app/services/time_entry_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "append_revision": "—",
+              "authorize_object": "—",
+              "check_day_total": "—",
+              "check_window": "—",
+              "correct": "—",
+              "create": "—",
+              "get": "—",
+              "history": "—",
+              "list": "—",
+              "lock_author": "—",
+              "principal_id": "—",
+              "project": "—",
+              "serialize": "—"
+            }
+          },
+          "TimeEntryVersionConflict": {
+            "attributes": {},
+            "description": "_Auto-generated from `TimeEntryVersionConflict` in `backend/app/services/time_entry_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "detail": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "TimeEntryService": "—",
+            "TimeEntryVersionConflict": "—"
+          },
+          "description": "Attributable minute commands with private reads and independent version history.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:6c9a33f8d3e25208ea9d3f5e01e466ba473f22944fcb7b824ebac6b2ceb856bc",
+      "language": "python",
+      "module_page": "time_entry_service",
+      "semantic_hash": "sha256:6ff0f3a8a1e144d9e10a079185622a8c07cf0a89f29ff5b31c864bb04448e2b0"
+    },
     "backend/app/services/triage_service.py": {
       "entities": [
         "TriageConflictError",
@@ -58095,7 +58833,7 @@
           }
         }
       },
-      "hash": "sha256:03dbb3f29d4b86e8a99287285dabdbadf83fbc3287d3494c78644b9ed8f8fc65",
+      "hash": "sha256:a5e291708fdc8286b4b79bcf590168c0ab9ced60047a0aa5f2ebb040a98a61de",
       "language": "python",
       "module_page": "test_autonomy_migrations",
       "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
@@ -58732,7 +59470,7 @@
           }
         }
       },
-      "hash": "sha256:f5ca8c311a4c9a8d438a72513c4472809662bfe152c6beb83aeed49c9f0c1ce0",
+      "hash": "sha256:15070e28cc320c8731cc19b5d2f4fda69d616b5aa66ebbbdebd9057880fa8729",
       "language": "python",
       "module_page": "test_sqlite_migrations",
       "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
@@ -59361,7 +60099,7 @@
           }
         }
       },
-      "hash": "sha256:1a2e9868e119c7f4115ab4bbcbe54a1279c62d5d901018c42ea8fc07804dee43",
+      "hash": "sha256:3866525f3679d7b4c3895c2b4c20625db075e2de276c1827790129e5973f517e",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
       "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"
@@ -60578,6 +61316,37 @@
       "language": "python",
       "module_page": "test_task_pagination",
       "semantic_hash": "sha256:51f62516bd9afe0900218d017a0db93125298cfb47dcd90ed457d4644458528a"
+    },
+    "backend/tests/test_time_entries.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Private explicit minutes, retained corrections and independent recovery behavior.",
+          "functions": {
+            "entry_data": "—",
+            "isolated_time_settings": "—",
+            "prepare": "—",
+            "test_history_failure_rolls_back_record_and_retry": "—",
+            "test_history_survives_task_removal_and_remains_append_only": "—",
+            "test_http_privacy_conflict_and_feature_disabled": "—",
+            "test_independent_clients_serialize_the_daily_recorded_total": "—",
+            "test_invalid_recorded_values_are_rejected": "—",
+            "test_other_people_projects_agents_and_disabled_feature_are_protected": "—",
+            "test_project_work_finite_paging_and_scope_validation": "—",
+            "test_record_correct_void_retains_private_history_and_task_state": "—",
+            "test_retry_identity_and_payload_conflict": "—",
+            "test_task_snapshot_restore_does_not_rewind_recorded_time": "—"
+          }
+        }
+      },
+      "hash": "sha256:4a9d394cf8cd69ceac1afdd3114595193575502339f63970d62251bf8a4dec6c",
+      "language": "python",
+      "module_page": "test_time_entries",
+      "semantic_hash": "sha256:bbe26ec906fafc11e3dc5f81d2f06945b865bb96ea4ea041c3d69b9427275475"
     },
     "backend/tests/test_work_correctness.py": {
       "entities": [],
@@ -78887,7 +79656,7 @@
           }
         }
       },
-      "hash": "sha256:1193d39830ac35045f387bcdc22ae176d4b27005d8f9d9c783f035bae91792ac",
+      "hash": "sha256:dbcba6acc8e4dfbbce56cc581cd0eac95a502eb6c55f58d1ec0e3719c9867a76",
       "language": "python",
       "module_page": "generate_client_contract",
       "semantic_hash": "sha256:367155ffebfc2bcf5710139f37f8843bc2653dd26db57c7f24da2aab80865ac7"

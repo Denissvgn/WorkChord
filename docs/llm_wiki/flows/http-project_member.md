@@ -126,7 +126,7 @@ flowchart LR
 | project_member | AuthorityError | 236 | `AuthorityError(data not statically known)` |
 | project_member | require_identity_writes | 237 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 480 | `Settings(data not statically known)` |
+| get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | project_member | AuthorityError | 239 | `AuthorityError('invalid_project_role', 'Choose a project role.', 422)` |

@@ -77,7 +77,7 @@ sequenceDiagram
     p7-->>p19: db.info.pop
 ```
 
-> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 57 interactions; 27 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -113,6 +113,8 @@ flowchart LR
     s8 -. "mutation db.info.pop" .-> b1
     b2["mutation db.info.pop"]
     s8 -. "mutation db.info.pop" .-> b2
+    b3["mutation db.info.pop"]
+    s8 -. "mutation db.info.pop" .-> b3
     click s1 "../modules/runtime_peer.md"
     click s5 "../modules/runtime_peer.md"
     click s8 "../modules/commands.md"
@@ -121,6 +123,7 @@ flowchart LR
     class b0 boundary
     class b1 boundary
     class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -162,7 +165,8 @@ flowchart LR
 |---|---|---|---:|
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 122 |
+| mutation | `db.info.pop` | `command_transaction` | 121 |
+| mutation | `db.info.pop` | `command_transaction` | 123 |
 
 ### Static analysis gaps
 

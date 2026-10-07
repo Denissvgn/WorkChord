@@ -114,6 +114,7 @@ Application settings.
 | `mcp_unsafe_allow_public_binding` | `bool` | `mcp_unsafe_allow_public_binding` | No | No | `False` | — | — | — |
 | `workchord_admin_api_key` | `str` | `workchord_admin_api_key` | No | No | `''` | — | — | — |
 | `workchord_auth_mode` | `Literal['managed', 'trusted_local']` | `workchord_auth_mode` | No | No | `'managed'` | — | — | — |
+| `time_entries_enabled` | `bool` | `time_entries_enabled` | No | No | `False` | — | — | — |
 | `oidc_issuer_url` | `str` | `oidc_issuer_url` | No | No | `''` | — | — | — |
 | `oidc_client_id` | `str` | `oidc_client_id` | No | No | `''` | — | — | — |
 | `oidc_client_secret` | `str` | `oidc_client_secret` | No | No | `''` | — | — | — |
