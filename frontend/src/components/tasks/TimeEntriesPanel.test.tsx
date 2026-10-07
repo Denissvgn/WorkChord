@@ -8,10 +8,10 @@ const service = vi.hoisted(() => ({ capabilities: vi.fn(), list: vi.fn(), create
 vi.mock('../../services/timeEntryService', async importOriginal => ({ ...await importOriginal<typeof import('../../services/timeEntryService')>(), timeEntryService: service }));
 const row = (version = 1) => ({ id: 7, project_id: 2, task_id: 42, task_title: 'Work', principal_id: 1,
     version, work_date: '2026-10-07', timezone: 'Europe/Madrid', minutes: 15, note: 'Private saved note', voided: false });
-const renderPanel = (parentSubmit?: () => void) => renderWithProviders(<IdentityContext.Provider value={{ identity: {
+const renderPanel = (parentSubmit?: () => void, draftKey: string | null = 'time-test') => renderWithProviders(<IdentityContext.Provider value={{ identity: {
     mode: 'managed', authenticated: true, configured: true, principal: { id: 1, kind: 'human', display_name: 'Sam' },
     profile: null, workspace_role: 'member', projects: { '2': 'manager' }, csrf_token: null,
-}, refresh: vi.fn(), signOut: async () => undefined }}><form onSubmit={event => { event.preventDefault(); parentSubmit?.(); }}><input aria-label="Parent title" required defaultValue="Work" /><TimeEntriesPanel projectId={2} taskId={42} draftKey="time-test" onDirty={vi.fn()} onPending={vi.fn()} /><button type="submit">Save parent task</button></form></IdentityContext.Provider>);
+}, refresh: vi.fn(), signOut: async () => undefined }}><form onSubmit={event => { event.preventDefault(); parentSubmit?.(); }}><input aria-label="Parent title" required defaultValue="Work" /><TimeEntriesPanel projectId={2} taskId={42} draftKey={draftKey} onDirty={vi.fn()} onPending={vi.fn()} /><button type="submit">Save parent task</button></form></IdentityContext.Provider>);
 beforeEach(() => {
     sessionStorage.clear(); vi.resetAllMocks();
     service.capabilities.mockResolvedValue({ schema_version: 1, enabled: true });
@@ -76,4 +76,52 @@ it('isolates required time controls from native validation of the parent task', 
     await user.click(screen.getByRole('button', { name: 'Save parent task' }));
     expect(submit).toHaveBeenCalledTimes(1);
     expect(service.create).not.toHaveBeenCalled();
+});
+
+it.each([true, false])('isolates private drafts across identity and scope changes (embedded=%s)', async embedded => {
+    service.create.mockRejectedValue(new Error('Keep the draft'));
+    const view = (principal = 1, projectId = 2, taskId = 42, draftKey = 'shared-key', start?: string) =>
+        <IdentityContext.Provider value={{ identity: {
+            mode: 'managed', authenticated: true, configured: true,
+            principal: { id: principal, kind: 'human', display_name: 'Sam' }, profile: null,
+            workspace_role: 'owner', projects: {}, csrf_token: null,
+        }, refresh: vi.fn(), signOut: async () => undefined }}>
+            <TimeEntriesPanel {...{projectId, taskId, draftKey, embedded, start}} onDirty={vi.fn()} />
+        </IdentityContext.Provider>;
+    const { user, rerender } = renderWithProviders(view());
+    if (!embedded) await user.click(await screen.findByRole('button', { name: 'Time entries' }));
+    await user.type(await screen.findByRole('spinbutton', { name: 'Minutes' }), '25');
+    await user.type(screen.getByRole('textbox', { name: 'Private note (optional)' }), 'Original private draft');
+    await user.click(screen.getByRole('button', { name: 'Record time' }));
+    await screen.findByRole('alert');
+    const originalRequest = service.create.mock.calls[0][2];
+    rerender(view(1, 2, 42, 'shared-key', '2026-10-01'));
+    expect(screen.getByRole('textbox', { name: 'Private note (optional)' })).toHaveValue('Original private draft');
+    for (const next of [view(1, 3), view(1, 2, 43), view(2), view(1, 2, 42, 'other-key')]) {
+        rerender(next);
+        if (!embedded) {
+            const toggle = await screen.findByRole('button', { name: 'Time entries' });
+            if (toggle.getAttribute('aria-expanded') === 'false') await user.click(toggle);
+        }
+        expect(await screen.findByRole('textbox', { name: 'Private note (optional)' })).toHaveValue('');
+        await user.type(screen.getByRole('spinbutton', { name: 'Minutes' }), '10');
+        await user.click(screen.getByRole('button', { name: 'Record time' }));
+        await screen.findByRole('alert');
+        expect(service.create.mock.lastCall?.[2]).not.toBe(originalRequest);
+        expect(service.create.mock.lastCall?.[3].note).toBe('');
+    }
+    rerender(view());
+    expect(await screen.findByRole('textbox', { name: 'Private note (optional)' })).toHaveValue('Original private draft');
+    await user.click(screen.getByRole('button', { name: 'Record time' }));
+    await screen.findByRole('alert');
+    expect(service.create.mock.lastCall?.[2]).toBe(originalRequest);
+});
+
+it('keeps standalone draft keys compatible with principal-scoped account cleanup', async () => {
+    const { user } = renderPanel(undefined, null);
+    await user.click(await screen.findByRole('button', { name: 'Time entries' }));
+    await user.type(await screen.findByRole('spinbutton', { name: 'Minutes' }), '25');
+    const keys = Object.keys(sessionStorage);
+    expect(keys).toHaveLength(1);
+    expect(keys[0].startsWith('workchord-draft:1:')).toBe(true);
 });

@@ -38,15 +38,17 @@ const readDraft = (key: string): Draft | null => {
 export const TimeEntriesPanel = (props: { projectId: number; taskId?: number; disabled?: boolean;
     start?: string; end?: string; embedded?: boolean; draftKey?: string | null; onDirty?: (dirty: boolean) => void; onPending?: (pending: boolean) => void }) => {
     const { t } = useTranslation();
-    const { enabled, capability } = useTimeEntries();
+    const { enabled, capability, identity } = useTimeEntries();
+    const scope = JSON.stringify([identity?.principal?.id, props.projectId, props.taskId ?? null, props.draftKey ?? null]);
+    const storageKey = props.draftKey ? `${props.draftKey}:time:${scope}` : `workchord-draft:${identity?.principal?.id}:time:${scope}`;
     if (capability.isError) return <QueryErrorState error={capability.error} fallback={t('timeEntries.loadFailed')} onRetry={() => void capability.refetch()} />;
     if (!enabled) return null;
-    if (props.embedded) return <div className="space-y-3 border-t border-border pt-4"><h3 className="font-medium">{t('timeEntries.title')}</h3><TimeEntriesContent {...props} /></div>;
-    return <CollapsibleSection title={t('timeEntries.title')}><TimeEntriesContent {...props} /></CollapsibleSection>;
+    if (props.embedded) return <div className="space-y-3 border-t border-border pt-4"><h3 className="font-medium">{t('timeEntries.title')}</h3><TimeEntriesContent key={scope} {...props} storageKey={storageKey} /></div>;
+    return <CollapsibleSection title={t('timeEntries.title')}><TimeEntriesContent key={scope} {...props} storageKey={storageKey} /></CollapsibleSection>;
 };
 
-const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, draftKey, onDirty, onPending }: {
-    projectId: number; taskId?: number; disabled?: boolean; draftKey?: string | null;
+const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, storageKey, onDirty, onPending }: {
+    projectId: number; taskId?: number; disabled?: boolean; storageKey: string;
     start?: string; end?: string;
     onDirty?: (dirty: boolean) => void; onPending?: (pending: boolean) => void;
 }) => {
@@ -55,7 +57,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, d
     const formId = `${id}-time-form`;
     const { identity } = useTimeEntries();
     const queryClient = useQueryClient();
-    const key = draftKey ? `${draftKey}:time` : `workchord-draft:${identity?.principal?.id}:time:${projectId}:${taskId ?? 'project'}`;
+    const key = storageKey;
     const [baseline, setBaseline] = useState(() => emptyDraft(taskId));
     const [draft, setDraft] = useState<Draft>(() => readDraft(key) ?? baseline);
     const [search, setSearch] = useState('');

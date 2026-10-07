@@ -214,6 +214,13 @@ async def test_http_privacy_conflict_and_feature_disabled(delivery_store, monkey
         recorded = await client.post("/api/time-entries", headers=headers, json=entry_data(scenario).model_dump(mode="json"))
         assert recorded.status_code == 201, recorded.text
         row = recorded.json()
+        assert recorded.headers.get("cache-control") == "private, no-store"
+        report_query = f'?project_id={scenario.projects[0]}&start=2026-10-01&end=2026-10-31'
+        for path in ["/capabilities", "", f'/{row["id"]}', f'/{row["id"]}/history',
+                     "/report" + report_query, "/export" + report_query]:
+            response = await client.get("/api/time-entries" + path, headers=headers)
+            assert response.status_code == 200, response.text
+            assert response.headers.get("cache-control") == "private, no-store", path
         void_data = {"expected_version": 9, "reason": "Stale deletion"}
         conflict = await client.post(f'/api/time-entries/{row["id"]}/void', headers=headers, json=void_data)
         assert conflict.status_code == 409 and conflict.json()["detail"]["current_entry"]["version"] == 1

@@ -16,7 +16,11 @@ from app.services.time_entry_service import TimeEntryService
 from app.services.time_report_service import TimeReportService
 from app.schemas.time_report import TimeReportPage
 
-router = APIRouter(prefix="/time-entries")
+def prevent_private_caching(response: Response):
+    response.headers["Cache-Control"] = "private, no-store"
+
+
+router = APIRouter(prefix="/time-entries", dependencies=[Depends(prevent_private_caching)])
 DB = Annotated[AsyncSession, Depends(get_db, scope="function")]
 
 
@@ -55,7 +59,7 @@ async def export(db: DB, project_id: int = Query(ge=1), start: date = Query(), e
     scope: Literal["mine", "project"] = "mine", kind: Literal["totals", "entries"] = "totals"):
     content = await domain_result(TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind))
     return Response(content=content, media_type="text/csv", headers={"Content-Disposition": 'attachment; filename="recorded-time.csv"',
-        "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+        "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @router.get("/{entry_id}", response_model=TimeEntryResponse)
