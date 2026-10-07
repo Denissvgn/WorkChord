@@ -14,4 +14,14 @@ Project, task and author associations are retained as recording-scope identities
 
 Recorded time is distinct from estimates, calendar capacity, provider usage and lead/cycle time. Missing records do not mean zero work, and task status changes do not manufacture historical hours. Recording time does not start, resolve or accept a task and does not change scheduling revisions. This capability does not provide billing or payroll.
 
+## Entry and reporting workflow
+
+Open **Time entries** in a task editor to record or correct your work. Project details also provide **Recorded time and estimates**, with date filters, your personal records and project work without a task. Corrections and voids require a reason. On a version conflict, reload the saved entry, compare it with your retained draft and explicitly adopt the current version before saving again.
+
+Reports default to **My recorded time**. Project managers can select **Project totals** for aggregated recorded minutes and coverage, without another author's individual records, notes or correction history. Coverage means that a task has some records in the selected period; it does not prove all its work was recorded. Current task estimates describe the full task and may differ from estimates at recording time. A moved or deleted task retains its original recording label and minutes in the original project, with its current estimate unavailable.
+
+`GET /api/time-entries/report` returns bounded task rows and independent whole-scope totals for an ordered work-date range of at most 366 days. Carry the page's `upper_id`; totals remain live and are not calculated from the displayed page. Project work without a task is shown separately. Unknown recorded time or estimates remain blank/unknown rather than zero.
+
+Use **Export my entries** for your personal records, including void markers and observed versions, or **Export totals** for the selected report scope. `GET /api/time-entries/export` provides CSV with at most 5,000 rows; larger exports fail explicitly. CSV exports preserve minute units and empty unknown values, and neutralize spreadsheet-formula prefixes in text. Personal exports never include another author's records, even for a project manager. CSV exports are reconciliation views, not a substitute for a full database backup or complete correction history.
+
 See [identity and recovery](identity-and-recovery.md), [task semantics](task-domain.md), and [database backup and restore](runbooks/postgresql-backup-restore.md).

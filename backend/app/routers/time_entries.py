@@ -2,8 +2,10 @@
 
 from datetime import date
 from typing import Annotated
+from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -11,6 +13,8 @@ from app.database import get_db
 from app.routers.task_domain import domain_result
 from app.schemas.time_entry import TimeEntryCreate, TimeEntryCorrection, TimeEntryVoid, TimeEntryResponse, TimeEntryPage, TimeRevisionPage, TimeEntryCapabilities
 from app.services.time_entry_service import TimeEntryService
+from app.services.time_report_service import TimeReportService
+from app.schemas.time_report import TimeReportPage
 
 router = APIRouter(prefix="/time-entries")
 DB = Annotated[AsyncSession, Depends(get_db, scope="function")]
@@ -35,6 +39,23 @@ async def list_entries(db: DB, project_id: int | None = Query(default=None, ge=1
 @router.post("", response_model=TimeEntryResponse, status_code=201)
 async def create_entry(data: TimeEntryCreate, db: DB):
     return await domain_result(TimeEntryService(db).create(data))
+
+
+@router.get("/report", response_model=TimeReportPage)
+async def report(db: DB, project_id: int = Query(ge=1), start: date = Query(), end: date = Query(),
+    scope: Literal["mine", "project"] = "mine", after_id: int = Query(default=0, ge=0),
+    upper_id: int | None = Query(default=None, ge=0), limit: int = Query(default=50, ge=1, le=100)):
+    return await domain_result(TimeReportService(db).page(project_id, start, end, scope=scope,
+        after_id=after_id, upper_id=upper_id, limit=limit))
+
+
+@router.get("/export", response_class=Response, responses={200: {"description": "Scoped recorded time CSV",
+    "content": {"text/csv": {"schema": {"type": "string", "format": "binary"}}}}})
+async def export(db: DB, project_id: int = Query(ge=1), start: date = Query(), end: date = Query(),
+    scope: Literal["mine", "project"] = "mine", kind: Literal["totals", "entries"] = "totals"):
+    content = await domain_result(TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind))
+    return Response(content=content, media_type="text/csv", headers={"Content-Disposition": 'attachment; filename="recorded-time.csv"',
+        "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @router.get("/{entry_id}", response_model=TimeEntryResponse)

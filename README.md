@@ -68,7 +68,7 @@ workspace, that guide also describes the explicit trusted-local mode.
 
 ## Documentation
 
-- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md) · [delivery analytics](docs/delivery-analytics.md)
+- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md) · [delivery analytics](docs/delivery-analytics.md) · [optional time entry](docs/time-entries.md)
 - **Accounts and recovery:** [sign-in, permissions, sessions, and snapshots](docs/identity-and-recovery.md)
 - **Configuration:** [environment settings](.env.example)
 - **Self-hosting:** [server setup](docs/runbooks/self-hosted-server-acceptance.md) · [deployment topology](docs/runbooks/postgresql-deployment.md)

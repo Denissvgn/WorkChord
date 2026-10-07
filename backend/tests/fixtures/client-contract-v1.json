@@ -4152,6 +4152,207 @@
         "title": "TimeEntryVoid",
         "type": "object"
       },
+      "TimeReportItem": {
+        "properties": {
+          "entry_count": {
+            "title": "Entry Count",
+            "type": "integer"
+          },
+          "estimate_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimate Hours"
+          },
+          "estimate_state": {
+            "enum": [
+              "known",
+              "unknown",
+              "unavailable"
+            ],
+            "title": "Estimate State",
+            "type": "string"
+          },
+          "recorded_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded Minutes"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "integer"
+          },
+          "task_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Title"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_title",
+          "recorded_minutes",
+          "entry_count",
+          "estimate_hours",
+          "estimate_state"
+        ],
+        "title": "TimeReportItem",
+        "type": "object"
+      },
+      "TimeReportPage": {
+        "properties": {
+          "can_view_project_totals": {
+            "title": "Can View Project Totals",
+            "type": "boolean"
+          },
+          "consistency": {
+            "default": "live_scope_totals_bounded_id_pages",
+            "title": "Consistency",
+            "type": "string"
+          },
+          "end": {
+            "format": "date",
+            "title": "End",
+            "type": "string"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TimeReportItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_after_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next After Id"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "integer"
+          },
+          "scope": {
+            "enum": [
+              "mine",
+              "project"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "start": {
+            "format": "date",
+            "title": "Start",
+            "type": "string"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/TimeReportTotals"
+          },
+          "upper_id": {
+            "title": "Upper Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "project_id",
+          "scope",
+          "start",
+          "end",
+          "items",
+          "totals",
+          "has_more",
+          "next_after_id",
+          "upper_id",
+          "can_view_project_totals"
+        ],
+        "title": "TimeReportPage",
+        "type": "object"
+      },
+      "TimeReportTotals": {
+        "properties": {
+          "known_estimate_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Known Estimate Hours"
+          },
+          "project_work_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Work Minutes"
+          },
+          "recorded_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded Minutes"
+          },
+          "task_count": {
+            "title": "Task Count",
+            "type": "integer"
+          },
+          "tasks_with_estimates": {
+            "title": "Tasks With Estimates",
+            "type": "integer"
+          },
+          "tasks_with_records": {
+            "title": "Tasks With Records",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "task_count",
+          "tasks_with_records",
+          "recorded_minutes",
+          "project_work_minutes",
+          "known_estimate_hours",
+          "tasks_with_estimates"
+        ],
+        "title": "TimeReportTotals",
+        "type": "object"
+      },
       "TimeRevisionPage": {
         "properties": {
           "has_more": {
@@ -7205,6 +7406,215 @@
           }
         },
         "summary": "Capabilities",
+        "tags": [
+          "Time entries"
+        ]
+      }
+    },
+    "/api/time-entries/export": {
+      "get": {
+        "operationId": "export_api_time_entries_export_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "End",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "required": false,
+            "schema": {
+              "default": "mine",
+              "enum": [
+                "mine",
+                "project"
+              ],
+              "title": "Scope",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "default": "totals",
+              "enum": [
+                "totals",
+                "entries"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Scoped recorded time CSV"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export",
+        "tags": [
+          "Time entries"
+        ]
+      }
+    },
+    "/api/time-entries/report": {
+      "get": {
+        "operationId": "report_api_time_entries_report_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "End",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "required": false,
+            "schema": {
+              "default": "mine",
+              "enum": [
+                "mine",
+                "project"
+              ],
+              "title": "Scope",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "upper_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Upper Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeReportPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Report",
         "tags": [
           "Time entries"
         ]

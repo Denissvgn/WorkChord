@@ -7,6 +7,9 @@ import ts from 'typescript';
 // Reviewed FE-08 inventory. Any count change requires reviewing the file's
 // loading/error/retry/empty or pending/failure policy and updating this record.
 export const REVIEWED_HOOK_COUNTS = {
+    'src/features/timeEntries/useTimeEntries.ts': [1, 0],
+    'src/components/tasks/TimeEntriesPanel.tsx': [3, 2],
+    'src/components/projects/TimeEntriesReport.tsx': [1, 1],
     'src/components/tasks/PagedTaskBrowser.tsx': [1, 0],
     'src/pages/MyWorkPage.tsx': [5, 2],
     'src/components/tasks/TaskSearch.tsx': [1, 0],
@@ -85,6 +88,9 @@ const HOOK_KINDS = new Map([
 // prevents an unreviewed hook from replacing a reviewed hook in the same file
 // while leaving Q/M totals unchanged.
 export const REVIEWED_HOOK_FINGERPRINTS = {
+    'src/features/timeEntries/useTimeEntries.ts': 'b689ed77e0980dbd',
+    'src/components/tasks/TimeEntriesPanel.tsx': '77bc1deef2b898ed',
+    'src/components/projects/TimeEntriesReport.tsx': 'ec8a1aae42e5c20b',
     'src/components/tasks/PagedTaskBrowser.tsx': 'd1f37f9574a416f5',
     'src/pages/MyWorkPage.tsx': '8cb0024e22f7e3ca',
     'src/components/tasks/TaskSearch.tsx': '1c836716acf30699',
