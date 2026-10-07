@@ -1,6 +1,6 @@
 # AgentTeamActionReceiptStatus
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:141`
+**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:127`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)

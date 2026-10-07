@@ -1,6 +1,6 @@
 # AgentPipelineResponse
 
-**Location:** `backend/app/schemas/agent.py:462`
+**Location:** `backend/app/schemas/agent.py:475`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

@@ -79,7 +79,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 173 | `domain_result(...)` |
+| convert_task_brief | domain_result | 175 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -87,8 +87,8 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService(…).conversion | 173 | `TaskBriefService(db).conversion(task_id, data)` |
-| convert_task_brief | TaskBriefService | 173 | `TaskBriefService(db)` |
+| convert_task_brief | TaskBriefService(…).conversion | 175 | `TaskBriefService(db).conversion(task_id, data)` |
+| convert_task_brief | TaskBriefService | 175 | `TaskBriefService(db)` |
 
 ### Boundary effects
 
@@ -103,7 +103,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `convert_task_brief` | `TaskBriefService(db).conversion` | 173 |
+| unresolved_call | `convert_task_brief` | `TaskBriefService(db).conversion` | 175 |
 
 ## Behavior
 

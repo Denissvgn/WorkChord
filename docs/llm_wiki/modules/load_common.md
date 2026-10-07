@@ -26,65 +26,30 @@ Shared, fail-closed contracts for the WorkChord load and qualification tools.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/autonomy/contracts/postgresql/__init__.py"]
-    n1["scripts/load/collect.py"]
+    n0["backend"]
+    n1["scripts"]
     n2["scripts/load/common.py"]
-    n3["scripts/load/compare.py"]
-    n4["scripts/load/finalize.py"]
-    n5["scripts/load/qualify.py"]
-    n6["scripts/load/resilience.py"]
-    n7["scripts/load/result.py"]
-    n8["scripts/load/run.py"]
-    n9["scripts/load/seal.py"]
-    n10["scripts/load/seed.py"]
     n1 --> n2
     n2 --> n0
-    n3 --> n2
-    n3 --> n7
-    n4 --> n2
-    n4 --> n7
-    n5 --> n2
-    n5 --> n7
-    n6 --> n2
-    n6 --> n7
-    n7 --> n2
-    n8 --> n2
-    n8 --> n7
-    n9 --> n2
-    n10 --> n2
-    click n0 "../modules/postgresql___init__.md"
-    click n1 "../modules/collect.md"
     click n2 "../modules/load_common.md"
-    click n3 "../modules/compare.md"
-    click n4 "../modules/finalize.md"
-    click n5 "../modules/qualify.md"
-    click n6 "../modules/resilience.md"
-    click n7 "../modules/result.md"
-    click n8 "../modules/run.md"
-    click n9 "../modules/seal.md"
-    click n10 "../modules/seed.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [collect](../modules/collect.md) |
-| Inbound | [compare](../modules/compare.md) |
-| Inbound | [finalize](../modules/finalize.md) |
-| Inbound | [qualify](../modules/qualify.md) |
-| Inbound | [resilience](../modules/resilience.md) |
-| Inbound | [result](../modules/result.md) |
-| Inbound | [run](../modules/run.md) |
-| Inbound | [seal](../modules/seal.md) |
-| Inbound | [seed](../modules/seed.md) |
-| Outbound | [postgresql___init__](../modules/postgresql___init__.md) |
+| Inbound | `scripts` (11) |
+| Outbound | `backend` (1) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 1 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

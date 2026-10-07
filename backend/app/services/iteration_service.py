@@ -314,6 +314,10 @@ class IterationService:
         result = await self.db.execute(query)
         return result.scalars().all()
 
+    async def id_page(self, *, limit=100, after_id=0, upper_id=None):
+        from app.services.bounded_scope_reads import scope_page
+        return await scope_page(self.db, Iteration, select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)), limit=limit, after_id=after_id, upper_id=upper_id)
+
     async def get_by_id(self, iteration_id: int) -> Iteration | None:
         """Get iteration by ID with related data."""
         result = await self.db.execute(

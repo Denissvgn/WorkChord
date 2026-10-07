@@ -1,3 +1,5 @@
+import { isGraphLimitError } from '../../utils/graphLimitError';
+import { PagedTaskBrowser } from './PagedTaskBrowser';
 import { statusTextClassName } from '../ui/tone';
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -380,6 +382,7 @@ export const TaskList = ({
 
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
+    if (isGraphLimitError(tasksError)) return <PagedTaskBrowser key={iterationId} iterationId={iterationId} />;
     if (isLoading) return <QueryLoadingState message={t('taskList.loading')} />;
     if ((!tasks && tasksError) || labelsError || allLabelsError) return <QueryErrorState error={tasksError ?? labelsError ?? allLabelsError} onRetry={() => { void refetchTasks(); void refetchLabels(); void refetchAllLabels(); }} />;
 

@@ -125,10 +125,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_initiative | service.update_initiative | 165 | `service.update_initiative(initiative_id, data)` |
-| update_initiative | HTTPException | 167 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| update_initiative | _localized_detail | 169 | `_localized_detail(service, str(...))` |
-| _localized_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(service.db)` |
+| update_initiative | service.update_initiative | 180 | `service.update_initiative(initiative_id, data)` |
+| update_initiative | HTTPException | 182 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| update_initiative | _localized_detail | 184 | `_localized_detail(service, str(...))` |
+| _localized_detail | resolve_runtime_ui_language | 68 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -145,8 +145,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_initiative` | `service.update_initiative` | 165 |
-| external_call | `update_initiative` | `HTTPException` | 167 |
+| unresolved_call | `update_initiative` | `service.update_initiative` | 180 |
+| external_call | `update_initiative` | `HTTPException` | 182 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

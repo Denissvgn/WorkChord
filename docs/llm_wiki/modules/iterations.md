@@ -13,7 +13,7 @@ Iteration API router.
 | `app.database` | `get_db` |
 | `app.query_limits` | `MAX_ITERATION_LIST_ITEMS` |
 | `app.schemas.common` | `MessageResponse` |
-| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationUpdate`, `IterationResponse`, `IterationSummary` |
+| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationUpdate`, `IterationResponse`, `IterationSummary`, `IterationPage` |
 | `app.services.iteration_service` | `IterationService` |
 | `datetime` | `date` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query`, `status` |
@@ -77,6 +77,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `get_iteration_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> IterationService` | — | Dependency for iteration service. |
+| `get_iteration_page` | *(async)* `(service: Annotated[IterationService, Depends(get_iteration_service)], limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0), upper_id: int \| None = Query(default=None, ge=0))` | `@router.get('/iterations/page', response_model=IterationPage)` | — |
 | `get_iterations` | *(async)* `(service: Annotated[IterationService, Depends(get_iteration_service)], limit: Annotated[int \| None, Query(ge=1, le=MAX_ITERATION_LIST_ITEMS)] = None, cursor_start_date: date \| None = None, cursor_id: int \| None = None)` | `@router.get('/iterations', response_model=list[IterationResponse])` | Get the compatible small list or one explicit stable keyset page. |
 | `create_iteration` | *(async)* `(data: IterationCreate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.post('/iterations', response_model=IterationResponse, status_code=status.HTTP_201_CREATED)` | Create a new iteration. |
 | `create_iteration_series` | *(async)* `(data: IterationSeriesCreate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.post('/iterations/series', response_model=IterationSeriesResponse, status_code=status.HTTP_201_CREATED)` | Create a back-to-back series of iterations. |

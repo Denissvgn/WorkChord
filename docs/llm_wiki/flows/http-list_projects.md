@@ -36,7 +36,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_projects | service.list_projects | 91 | `service.list_projects(data not statically known)` |
+| list_projects | service.list_projects | 106 | `service.list_projects(data not statically known)` |
 
 ### Boundary effects
 
@@ -46,7 +46,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_projects` | `service.list_projects` | 91 |
+| unresolved_call | `list_projects` | `service.list_projects` | 106 |
 
 ## Behavior
 

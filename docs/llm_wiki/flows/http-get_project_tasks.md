@@ -120,10 +120,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_project_tasks | service.get_tasks | 506 | `service.get_tasks(project_id)` |
-| get_project_tasks | HTTPException | 508 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_project_tasks | _not_found_detail | 510 | `_not_found_detail(service, 'project', project_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 71 | `resolve_runtime_ui_language(service.db)` |
+| get_project_tasks | service.get_tasks | 521 | `service.get_tasks(project_id)` |
+| get_project_tasks | HTTPException | 523 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_project_tasks | _not_found_detail | 525 | `_not_found_detail(service, 'project', project_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -140,8 +140,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_project_tasks` | `service.get_tasks` | 506 |
-| external_call | `get_project_tasks` | `HTTPException` | 508 |
+| unresolved_call | `get_project_tasks` | `service.get_tasks` | 521 |
+| external_call | `get_project_tasks` | `HTTPException` | 523 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

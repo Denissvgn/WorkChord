@@ -1,6 +1,6 @@
 # WorkflowFocusTarget
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:142`
+**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:128`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)

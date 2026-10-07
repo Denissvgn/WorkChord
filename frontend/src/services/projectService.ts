@@ -45,9 +45,20 @@ export const projectService = {
         return response.data;
     },
 
-    getAll: async () => {
-        const response = await api.get<Project[]>('/projects');
-        return response.data;
+    getAll: async (context?: { signal?: AbortSignal }) => {
+        const items: Project[] = [];
+        let after_id = 0;
+        let upper_id: number | undefined;
+        while (true) {
+            const page = (await api.get<{ items: Project[]; has_more: boolean; next_after_id: number | null; upper_id: number }>('/projects/page', { params: { limit: 100, after_id, upper_id }, signal: context?.signal })).data;
+            items.push(...page.items);
+            if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean' || !Number.isSafeInteger(page.upper_id)) throw new Error('Incomplete project page');
+            upper_id ??= page.upper_id;
+            if (!page.has_more) break;
+            if (page.next_after_id === null || page.next_after_id <= after_id) throw new Error('Invalid project page cursor');
+            after_id = page.next_after_id;
+        }
+        return items.sort((a, b) => a.sort_order - b.sort_order || (a.target_date ?? '9999').localeCompare(b.target_date ?? '9999') || a.id - b.id);
     },
 
     getById: async (id: number) => {
@@ -84,8 +95,19 @@ export const projectService = {
     },
 
     getPortfolioSummaries: async () => {
-        const response = await api.get<ProjectPortfolioSummary[]>('/projects/portfolio-summaries');
-        return response.data;
+        const items: ProjectPortfolioSummary[] = [];
+        let after_id = 0;
+        let upper_id: number | undefined;
+        while (true) {
+            const page = (await api.get<{ items: ProjectPortfolioSummary[]; has_more: boolean; next_after_id: number | null; upper_id: number }>('/projects/portfolio-summaries/page', { params: { limit: 100, after_id, upper_id } })).data;
+            if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean' || !Number.isSafeInteger(page.upper_id)) throw new Error('Incomplete portfolio page');
+            items.push(...page.items);
+            upper_id ??= page.upper_id;
+            if (!page.has_more) break;
+            if (page.next_after_id === null || page.next_after_id <= after_id || page.next_after_id > upper_id) throw new Error('Invalid portfolio cursor');
+            after_id = page.next_after_id;
+        }
+        return items;
     },
 
     getMilestones: async (id: number) => {

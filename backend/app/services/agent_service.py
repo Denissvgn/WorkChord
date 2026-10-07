@@ -1420,77 +1420,14 @@ class AgentService:
 
     async def get_task_timeline(self, task_id: int) -> list[dict[str, Any]]:
         """Return merged task event, status log, run, and run-event timeline items."""
-        from app.models.task_status_log import TaskStatusLog
-
-        task_id_exists = await self.db.scalar(select(Task.id).where(Task.id == task_id))
-        if task_id_exists is None:
+        from app.services.task_timeline_service import TaskTimelineService
+        if await self.db.scalar(select(Task.id).where(Task.id == task_id)) is None:
             return []
-
-        items: list[dict[str, Any]] = []
-
-        events_result = await self.db.execute(
-            select(TaskEvent).where(TaskEvent.task_id == task_id)
-        )
-        for event in events_result.scalars().all():
-            items.append({
-                "item_type": "task_event",
-                "timestamp": event.created_at,
-                "title": event.event_type,
-                "payload": self.event_to_payload(event.payload),
-                "actor_type": event.actor_type,
-                "actor_id": event.actor_id,
-                "trace_id": event.trace_id,
-            })
-
-        logs_result = await self.db.execute(
-            select(TaskStatusLog).where(TaskStatusLog.task_id == task_id)
-        )
-        for log in logs_result.scalars().all():
-            items.append({
-                "item_type": "status_log",
-                "timestamp": log.changed_at,
-                "title": f"{log.from_status} -> {log.to_status}",
-                "payload": {
-                    "from_status": log.from_status,
-                    "to_status": log.to_status,
-                    "reason": log.reason,
-                    "affected_task_ids": self._loads(log.affected_task_ids, []),
-                },
-                "actor_type": log.triggered_by,
-                "actor_id": None,
-                "trace_id": None,
-            })
-
-        runs_result = await self.db.execute(
-            select(AgentRun).options(selectinload(AgentRun.events)).where(AgentRun.task_id == task_id)
-        )
-        for run in runs_result.scalars().all():
-            items.append({
-                "item_type": "agent_run",
-                "timestamp": run.started_at,
-                "title": f"agent_run_{run.status}",
-                "payload": self._run_payload(run),
-                "actor_type": "agent",
-                "actor_id": run.actor_id,
-                "trace_id": run.trace_id,
-            })
-            for event in run.events:
-                items.append({
-                    "item_type": "agent_run_event",
-                    "timestamp": event.created_at,
-                    "title": event.event_type,
-                    "payload": {
-                        "run_id": run.id,
-                        "message": event.message,
-                        **self.event_to_payload(event.payload),
-                    },
-                    "actor_type": "agent",
-                    "actor_id": run.actor_id,
-                    "trace_id": event.trace_id,
-                })
-
-        items.sort(key=lambda item: item["timestamp"])
-        return items
+        page = await TaskTimelineService(self.db, self).page(task_id, limit=MAX_BOUNDED_LIST_ITEMS)
+        if page["has_more"]:
+            raise CollectionLimitExceededError("task timeline", MAX_BOUNDED_LIST_ITEMS)
+        return [{key: value for key, value in item.items() if key != "event_key"}
+                for item in reversed(page["items"])]
 
     def _run_payload(self, run: AgentRun) -> dict[str, Any]:
         return {

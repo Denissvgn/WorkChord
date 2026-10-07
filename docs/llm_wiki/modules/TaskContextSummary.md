@@ -4,6 +4,8 @@
 
 ## Description
 
+Child and prerequisite pages are independent read projections, keyed by task identity and observed version. Version changes require reloading the owning editor. Failed reads hide cached relationships. Related-task navigation passes through the editor draft guard and uses the canonical task URL parameter. Bounded context never becomes authoritative execution context.
+
 _Auto-generated from `frontend/src/components/tasks/TaskContextSummary.tsx`._
 
 ## Imports
@@ -74,4 +76,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskContextSummary` | `({ detail }: { detail: TaskDetail })` | — | — |
+| `TaskContextSummary` | `({ detail, onNavigate, onReload }: { detail: TaskDetail; onNavigate?: (id: number) => void; onReload?: () => void })` | — | — |

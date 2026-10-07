@@ -10,15 +10,16 @@
 2. `time.as_utc`
 3. `time.utc_now`
 4. `query_limits.CollectionLimitExceededError`
-5. `authority.internal_authority`
-6. `time.as_utc`
-7. `delivery_metrics.DeliveryQueueItem`
-8. `time.as_utc`
-9. `query_limits.CollectionLimitExceededError`
-10. `time.as_utc`
-11. `delivery_metrics.DeliveryQueueItem`
-12. `time.as_utc`
-13. `delivery_metrics.DeliveryMetricsResponse`
+5. `query_limits.CollectionLimitExceededError`
+6. `authority.internal_authority`
+7. `time.as_utc`
+8. `delivery_metrics.DeliveryQueueItem`
+9. `time.as_utc`
+10. `query_limits.CollectionLimitExceededError`
+11. `time.as_utc`
+12. `delivery_metrics.DeliveryQueueItem`
+13. `time.as_utc`
+14. `delivery_metrics.DeliveryMetricsResponse`
 
 ## Touches
 

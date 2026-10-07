@@ -1,9 +1,9 @@
 # AgentTeamCredentialSink
 
-**Location:** `backend/app/services/agent_team_setup_service.py:117`
+**Location:** `backend/app/services/agent_team_credentials.py:13`
 **Kind:** Class
 **Bases:** `Protocol`
-**Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
+**Module:** [agent_team_credentials](../modules/agent_team_credentials.md)
 
 ## Description
 
@@ -27,12 +27,12 @@ One-way sink boundary; implementations never return credential material.
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["AgentTeamCredentialSink (backend/app/services/agent_team_setup_service.py)"]
+    n0["AgentTeamCredentialSink (backend/app/services/agent_team_credentials.py)"]
     n1["Protocol"]
     n2["AgentTeamSetupService.__init__ (backend/app/services/agent_team_setup_service.py)"]
     n0 --> n1
     n2 --> n0
-    click n0 "../modules/agent_team_setup_service.md"
+    click n0 "../modules/agent_team_credentials.md"
     click n2 "../modules/agent_team_setup_service.md"
 ```
 
@@ -40,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 | `reference` |
+| [agent_team_credentials](../modules/agent_team_credentials.md) | 2 | `reference` |
 
 ### Structure
 

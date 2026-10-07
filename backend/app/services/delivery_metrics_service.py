@@ -159,6 +159,8 @@ class DeliveryMetricsService:
         if iteration_id is not None:
             observed = observed.where(DeliveryObservation.iteration_id == iteration_id)
             live = live.where(Task.iteration_id == iteration_id)
+        if len((await self.db.scalars(live.with_only_columns(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all()) > MAX_PROJECT_TREE_TASKS:
+            raise CollectionLimitExceededError("delivery queue context", MAX_PROJECT_TREE_TASKS)
         rows = await self._window_observations(observed, start)
         tasks = list((await self.db.scalars(live.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all())
         if len(tasks) > MAX_PROJECT_TREE_TASKS:

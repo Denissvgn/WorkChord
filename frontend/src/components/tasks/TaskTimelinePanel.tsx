@@ -1,7 +1,7 @@
 import i18n from '../../i18n/i18n';
 import { useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bot, CircleDot, GitBranch, History, Link as LinkIcon, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import type { ExternalLink, Task } from '../../types/task';
@@ -108,18 +108,22 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
     const [refreshingLinkId, setRefreshingLinkId] = useState<number | null>(null);
     const queryClient = useQueryClient();
 
-    const timelineQuery = useQuery({
+    // feedback-policy: query loading,error,retry,empty - explicit history loading and retry.
+    const timelineQuery = useInfiniteQuery({
         queryKey: ['task-timeline', task.id],
-        queryFn: () => taskService.getTimeline(task.id),
+        initialPageParam: undefined as string | undefined,
+        queryFn: ({ pageParam }) => taskService.getTimelinePage(task.id, pageParam),
+        getNextPageParam: page => page.has_more ? page.next_cursor ?? undefined : undefined,
     });
     const linksQuery = useQuery({
         queryKey: ['task-external-links', task.id],
+        staleTime: 0,
         queryFn: () => taskService.getExternalLinks(task.id),
         initialData: task.external_links,
     });
-    const timelineData = timelineQuery.data;
+    const timelineData = timelineQuery.data ? { items: timelineQuery.data.pages.flatMap(page => page.items) } : undefined;
     const isLoading = timelineQuery.isLoading;
-    const externalLinks = linksQuery.data ?? task.external_links;
+    const externalLinks = linksQuery.isError ? [] : linksQuery.data ?? task.external_links;
     const linksAreFetching = linksQuery.isFetching;
 
     const createGitHubLinkMutation = useMutation({
@@ -450,6 +454,8 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
             ) : (
                 <div className="text-sm text-content-secondary">{t('surfaces.taskTimeline.noEventsYet')}</div>
             )}
+            {timelineQuery.hasNextPage && <button type="button" className="btn btn-secondary" disabled={timelineQuery.isFetchingNextPage}
+                onClick={() => void timelineQuery.fetchNextPage()}>{t('teamwork.loadMore')}</button>}
         </div>
     );
 };

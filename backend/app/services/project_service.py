@@ -391,6 +391,10 @@ class ProjectService:
             )
         return projects
 
+    async def project_page(self, *, limit=100, after_id=0, upper_id=None):
+        from app.services.bounded_scope_reads import scope_page
+        return await scope_page(self.db, Project, self._project_query(), limit=limit, after_id=after_id, upper_id=upper_id)
+
     async def list_portfolio_summaries(self) -> list[ProjectPortfolioSummary]:
         """Return compact project signals with one aggregate query for the portfolio."""
         projects = list(
@@ -414,6 +418,16 @@ class ProjectService:
         if not projects:
             return []
 
+        return await self._portfolio_summaries(projects)
+
+    async def portfolio_page(self, *, limit=100, after_id=0, upper_id=None):
+        page = await self.project_page(limit=limit, after_id=after_id, upper_id=upper_id)
+        page["items"] = await self._portfolio_summaries(page["items"])
+        return page
+
+    async def _portfolio_summaries(self, projects):
+        if not projects:
+            return []
         from app.services.work_metrics import aggregate_metrics
         rows = await aggregate_metrics(self.db, project_ids=[project.id for project in projects], group_by="project", zone_map={project.id: project.timezone for project in projects})
         aggregates = {row["group_id"]: row for row in rows}

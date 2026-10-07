@@ -108,10 +108,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_project_update | service.create_project_update | 261 | `service.create_project_update(project_id=project_id, data=data, created_by_session_id=current_session.id)` |
-| create_project_update | HTTPException | 267 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_project_update | _not_found_detail | 269 | `_not_found_detail(service, 'project', project_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 71 | `resolve_runtime_ui_language(service.db)` |
+| create_project_update | service.create_project_update | 276 | `service.create_project_update(project_id=project_id, data=data, created_by_session_id=current_session.id)` |
+| create_project_update | HTTPException | 282 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_project_update | _not_found_detail | 284 | `_not_found_detail(service, 'project', project_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -128,8 +128,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_project_update` | `service.create_project_update` | 261 |
-| external_call | `create_project_update` | `HTTPException` | 267 |
+| unresolved_call | `create_project_update` | `service.create_project_update` | 276 |
+| external_call | `create_project_update` | `HTTPException` | 282 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

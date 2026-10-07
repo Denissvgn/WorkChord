@@ -33,12 +33,12 @@ flowchart LR
     n5["AgentRoutingService._build_preview (backend/app/services/agent_routing_service.py)"]
     n6["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
     n7["AgentService.get_pipeline (backend/app/services/agent_service.py)"]
-    n8["AgentWorkService.list_actor_roster (backend/app/services/agent_work_service.py)"]
-    n9["DeliveryMetricsService._window_observations (backend/app/services/delivery_metrics_service.py)"]
-    n10["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
-    n11["ExecutionUsageService._history (backend/app/services/execution_usage_service.py)"]
-    n12["ExecutionUsageService.summary (backend/app/services/execution_usage_service.py)"]
-    n13["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n8["AgentService.get_task_timeline (backend/app/services/agent_service.py)"]
+    n9["AgentWorkService.list_actor_roster (backend/app/services/agent_work_service.py)"]
+    n10["DeliveryMetricsService._window_observations (backend/app/services/delivery_metrics_service.py)"]
+    n11["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
+    n12["ExecutionUsageService._history (backend/app/services/execution_usage_service.py)"]
+    n13["ExecutionUsageService.summary (backend/app/services/execution_usage_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -59,12 +59,12 @@ flowchart LR
     click n5 "../modules/agent_routing_service.md"
     click n6 "../modules/agent_routing_service.md"
     click n7 "../modules/agent_service.md"
-    click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/delivery_metrics_service.md"
+    click n8 "../modules/agent_service.md"
+    click n9 "../modules/agent_work_service.md"
     click n10 "../modules/delivery_metrics_service.md"
-    click n11 "../modules/execution_usage_service.md"
+    click n11 "../modules/delivery_metrics_service.md"
     click n12 "../modules/execution_usage_service.md"
-    click n13 "../modules/iteration_service.md"
+    click n13 "../modules/execution_usage_service.md"
 ```
 
 ### Summary
@@ -89,11 +89,11 @@ flowchart LR
 | `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 3 |
 | `AgentRoutingService._preview_context` | call | [agent_routing_service](../modules/agent_routing_service.md) | 4 |
 | `AgentService.get_pipeline` | call | [agent_service](../modules/agent_service.md) | 1 |
+| `AgentService.get_task_timeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService.list_actor_roster` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `DeliveryMetricsService._window_observations` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 1 |
-| `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 2 |
+| `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
 | `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `ExecutionUsageService.summary` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
-| `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

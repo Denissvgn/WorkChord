@@ -41,4 +41,7 @@
     <string name="priority_high">P%1$d Высокий</string>
     <string name="priority_medium">P%1$d Средний</string>
     <string name="priority_low">P%1$d Низкий</string>
+    <string name="more_children">Загрузить ещё дочерние задачи</string>
+    <string name="more_dependencies">Загрузить ещё зависимости</string>
+    <string name="bounded_relations">Это ограниченный просмотр связей, а не полный граф планирования.</string>
 </resources>

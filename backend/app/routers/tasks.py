@@ -28,7 +28,7 @@ from app.schemas.external_link import (
     GitHubExternalLinkCreate,
     TaskExternalLinkCreate,
 )
-from app.schemas.agent import TaskTimelineResponse, TaskTimelineItem
+from app.schemas.agent import TaskTimelineResponse, TaskTimelineItem, TaskTimelinePage
 from app.schemas.common import MessageResponse
 from app.schemas.team import AssigneeRecommendationResponse
 from app.services.agent_service import AgentService
@@ -1015,6 +1015,16 @@ async def get_task_timeline(
         task_id=task_id,
         items=[TaskTimelineItem(**item) for item in items]
     )
+
+
+@router.get("/tasks/{task_id}/timeline/page", response_model=TaskTimelinePage)
+async def get_task_timeline_page(task_id: int, db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    limit: int = Query(default=50, ge=1, le=100), cursor: str | None = Query(default=None, max_length=512)):
+    from app.schemas.agent import TaskTimelinePage
+    from app.services.task_timeline_service import TaskTimelineService
+    from app.routers.task_domain import domain_result
+    result = await domain_result(TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor))
+    return TaskTimelinePage(**result)
 
 
 @router.get("/iterations/{iteration_id}/history", response_model=list[TaskStatusLogResponse])

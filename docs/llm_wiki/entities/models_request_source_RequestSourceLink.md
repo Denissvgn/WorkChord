@@ -44,7 +44,7 @@ flowchart LR
     n8["RequestSourceService.get_link (backend/app/services/request_source_service.py)"]
     n9["RequestSourceService.link_triage_item_as_task_request (backend/app/services/request_source_service.py)"]
     n10["RequestSourceService.list_links_for_target (backend/app/services/request_source_service.py)"]
-    n11["backend/app/services/task_service.py"]
+    n11["backend/app/services/task_hierarchy_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -67,7 +67,7 @@ flowchart LR
     click n8 "../modules/request_source_service.md"
     click n9 "../modules/request_source_service.md"
     click n10 "../modules/request_source_service.md"
-    click n11 "../modules/task_service.md"
+    click n11 "../modules/task_hierarchy_service.md"
 ```
 
 ### Summary
@@ -97,4 +97,6 @@ flowchart LR
 | `RequestSourceService.link_triage_item_as_task_request` | call | [request_source_service](../modules/request_source_service.md) | 1 |
 | `RequestSourceService.link_triage_item_as_task_request` | type_reference | [request_source_service](../modules/request_source_service.md) | — |
 | `RequestSourceService.list_links_for_target` | type_reference | [request_source_service](../modules/request_source_service.md) | — |
-| `task_service` | import | [task_service](../modules/task_service.md) | — |
+| `task_hierarchy_service` | import | [task_hierarchy_service](../modules/task_hierarchy_service.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

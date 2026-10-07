@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.test.tsx`.
 | `../../test/renderWithProviders` | `renderWithProviders` |
 | `../../types/task` | `Task` |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` |
-| `@testing-library/react` | `screen`, `waitFor` |
+| `@testing-library/react` | `act`, `screen`, `waitFor` |
 | `react` | `FormEvent` |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
 

@@ -4,6 +4,8 @@
 
 ## Description
 
+Merged history uses explicit bounded continuation. External-link read failures hide cached private links and their controls while retaining error/retry feedback; prior successful data does not imply current access.
+
 _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 
 ## Imports
@@ -18,7 +20,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 | `../../utils/safeUrl` | `safeExternalHref` |
 | `../feedback/QueryState` | `QueryErrorState` |
 | `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
 | `clsx` | `clsx` |
 | `lucide-react` | `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` |
 | `react` | `useState`, `KeyboardEvent` |

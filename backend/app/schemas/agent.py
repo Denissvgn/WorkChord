@@ -459,6 +459,19 @@ class TaskTimelineResponse(BaseModel):
     items: list[TaskTimelineItem]
 
 
+class TaskTimelinePageItem(TaskTimelineItem):
+    event_key: str
+
+
+class TaskTimelinePage(BaseModel):
+    task_id: int
+    items: list[TaskTimelinePageItem]
+    has_more: bool
+    next_cursor: str | None
+    limit: int
+    consistency: str = "live_timestamp_id_desc"
+
+
 class AgentPipelineResponse(BaseModel):
     """Segmented task list representing the agent supervision pipeline board."""
     needs_definition: list[TaskResponse]

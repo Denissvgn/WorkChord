@@ -34,6 +34,8 @@ flowchart LR
     n5["test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories (backend/tests/test_delivery_metrics.py)"]
     n6["test_scope_at_event_and_permission_isolation_are_preserved (backend/tests/test_delivery_metrics.py)"]
     n7["test_window_report_ignores_large_completed_history_and_seeds_episodes (backend/tests/test_delivery_metrics.py)"]
+    n8["test_oversized_reads_reject_before_relationship_or_history_hydration (backend/tests/test_task_pagination.py)"]
+    n9["scripts/load/service_worksets.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -41,6 +43,8 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/delivery_metrics_service.md"
     click n1 "../modules/routers_task_domain.md"
     click n2 "../modules/execution_usage_service.md"
@@ -49,6 +53,8 @@ flowchart LR
     click n5 "../modules/test_delivery_metrics.md"
     click n6 "../modules/test_delivery_metrics.md"
     click n7 "../modules/test_delivery_metrics.md"
+    click n8 "../modules/test_task_pagination.md"
+    click n9 "../modules/service_worksets.md"
 ```
 
 ### Summary
@@ -68,3 +74,5 @@ flowchart LR
 | `test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_scope_at_event_and_permission_isolation_are_preserved` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 3 |
 | `test_window_report_ignores_large_completed_history_and_seeds_episodes` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
+| `test_oversized_reads_reject_before_relationship_or_history_hydration` | call | [test_task_pagination](../modules/test_task_pagination.md) | 1 |
+| `service_worksets` | import | [service_worksets](../modules/service_worksets.md) | — |

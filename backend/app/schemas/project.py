@@ -355,3 +355,19 @@ class ProjectSummary(WorkMetricSummary):
     update_freshness: ProjectUpdateFreshness = ProjectUpdateFreshness.MISSING
     is_update_stale: bool = True
     stale_update_threshold_days: int = STALE_PROJECT_UPDATE_DAYS
+
+
+class ProjectPage(BaseModel):
+    items: list[ProjectResponse]
+    has_more: bool
+    next_after_id: int | None
+    upper_id: int
+    consistency: str = "live_bounded_id_order"
+
+
+class ProjectPortfolioPage(BaseModel):
+    items: list[ProjectPortfolioSummary]
+    has_more: bool
+    next_after_id: int | None
+    upper_id: int
+    consistency: str = "live_bounded_id_order"

@@ -43,13 +43,14 @@ flowchart LR
     n2["frontend/src/components/tasks/SavedViewsControl.tsx"]
     n3["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
     n4["frontend/src/components/tasks/TaskList.tsx"]
-    n5["frontend/src/pages/TasksPage.tsx"]
-    n6["filterSignature (frontend/src/utils/savedViewState.ts)"]
-    n7["savedViewModified (frontend/src/utils/savedViewState.ts)"]
-    n8["frontend/src/utils/taskFilterDefaults.ts"]
-    n9["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
-    n10["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
-    n11["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
+    n5["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n6["frontend/src/pages/TasksPage.tsx"]
+    n7["filterSignature (frontend/src/utils/savedViewState.ts)"]
+    n8["savedViewModified (frontend/src/utils/savedViewState.ts)"]
+    n9["frontend/src/utils/taskFilterDefaults.ts"]
+    n10["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
+    n11["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
+    n12["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -61,18 +62,20 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/KanbanBoard.md"
     click n2 "../modules/SavedViewsControl.md"
     click n3 "../modules/TaskFiltersBar.md"
     click n4 "../modules/TaskList.md"
-    click n5 "../modules/TasksPage.md"
-    click n6 "../modules/savedViewState.md"
+    click n5 "../modules/taskViewState.md"
+    click n6 "../modules/TasksPage.md"
     click n7 "../modules/savedViewState.md"
-    click n8 "../modules/taskFilterDefaults.md"
-    click n9 "../modules/taskFilters.md"
+    click n8 "../modules/savedViewState.md"
+    click n9 "../modules/taskFilterDefaults.md"
     click n10 "../modules/taskFilters.md"
-    click n11 "../modules/visibleWork.md"
+    click n11 "../modules/taskFilters.md"
+    click n12 "../modules/visibleWork.md"
 ```
 
 ### Summary
@@ -89,6 +92,7 @@ flowchart LR
 | `SavedViewsControl` | import | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
 | `TaskFiltersBar` | type_reference | [TaskFiltersBar](../modules/TaskFiltersBar.md) | — |
 | `TaskList` | import | [TaskList](../modules/TaskList.md) | — |
+| `filtersFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |
 | `filterSignature` | type_reference | [savedViewState](../modules/savedViewState.md) | — |
 | `savedViewModified` | type_reference | [savedViewState](../modules/savedViewState.md) | — |

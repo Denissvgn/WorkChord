@@ -32,6 +32,7 @@ Calendar reassignment refreshes nominal workday and derived effort-day values un
 | `_reconcile_tasks_for_project_scope` | *(async)* `(iteration: Iteration, new_project_id: Optional[int]) -> None` | — | Apply or validate task project links when iteration scope changes. |
 | `get_all` | *(async)* `() -> Sequence[Iteration]` | — | Preserve the small-workspace list contract and refuse overflow. |
 | `get_page` | *(async)* `(*, limit: int, cursor_start_date: date \| None = None, cursor_id: int \| None = None) -> Sequence[Iteration]` | — | Return one stable keyset page in newest-first order. |
+| `id_page` | *(async)* `(*, limit = 100, after_id = 0, upper_id = None)` | — | — |
 | `get_by_id` | *(async)* `(iteration_id: int) -> Iteration \| None` | — | Get iteration by ID with related data. |
 | `create` | *(async)* `(data: IterationCreate, *, commit: bool = True) -> Iteration` | — | Create an iteration, optionally leaving commit ownership to the caller. |
 | `create_series` | *(async)* `(data: IterationSeriesCreate) -> list[Iteration]` | — | Create multiple back-to-back iterations as one operation. |
@@ -90,7 +91,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [iteration_service](../modules/iteration_service.md) | 21 | — |
+| [iteration_service](../modules/iteration_service.md) | 22 | — |
 
 ### References
 
@@ -109,4 +110,4 @@ flowchart LR
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `create_iteration_series` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

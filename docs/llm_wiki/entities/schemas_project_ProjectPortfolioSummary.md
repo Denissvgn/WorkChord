@@ -35,16 +35,19 @@ flowchart LR
     n1["WorkMetricSummary (backend/app/schemas/work_metrics.py)"]
     n2["list_project_portfolio_summaries (backend/app/routers/projects.py)"]
     n3["backend/app/schemas/__init__.py"]
-    n4["ProjectService.list_portfolio_summaries (backend/app/services/project_service.py)"]
+    n4["ProjectService._portfolio_summaries (backend/app/services/project_service.py)"]
+    n5["ProjectService.list_portfolio_summaries (backend/app/services/project_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_project.md"
     click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/projects.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/project_service.md"
+    click n5 "../modules/project_service.md"
 ```
 
 ### Summary
@@ -65,5 +68,5 @@ flowchart LR
 |---|---|---|---:|
 | `list_project_portfolio_summaries` | type_reference | [projects](../modules/projects.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
-| `ProjectService.list_portfolio_summaries` | call | [project_service](../modules/project_service.md) | 1 |
+| `ProjectService._portfolio_summaries` | call | [project_service](../modules/project_service.md) | 1 |
 | `ProjectService.list_portfolio_summaries` | type_reference | [project_service](../modules/project_service.md) | — |

@@ -32,6 +32,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_hierarchy_service` | `TaskHierarchyService`, `TaskTreeIntegrityError` |
 | `datetime` | `date` |
 | `json` | `json` |
 | `sqlalchemy` | `and_`, `or_`, `select`, `update` |
@@ -59,9 +60,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (41) |
-| Inbound | `scripts` (1) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (42) |
+| Inbound | `scripts` (2) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -69,12 +70,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 57 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 60 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskTreeIntegrityError](../entities/TaskTreeIntegrityError.md) | 46 | `ValueError` | Raised when persisted task parent links cannot form a valid iteration tree. |
 | [TaskVersionConflictError](../entities/TaskVersionConflictError.md) | 50 | `RuntimeError` | Raised when an optimistic task write no longer matches the stored version. |
 | [TaskService](../entities/TaskService.md) | 71 | — | Service for task operations. |

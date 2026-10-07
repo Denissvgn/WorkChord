@@ -108,10 +108,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_project_milestones | service.list_milestones | 301 | `service.list_milestones(project_id)` |
-| list_project_milestones | HTTPException | 303 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| list_project_milestones | _not_found_detail | 305 | `_not_found_detail(service, 'project', project_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 71 | `resolve_runtime_ui_language(service.db)` |
+| list_project_milestones | service.list_milestones | 316 | `service.list_milestones(project_id)` |
+| list_project_milestones | HTTPException | 318 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| list_project_milestones | _not_found_detail | 320 | `_not_found_detail(service, 'project', project_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -128,8 +128,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_project_milestones` | `service.list_milestones` | 301 |
-| external_call | `list_project_milestones` | `HTTPException` | 303 |
+| unresolved_call | `list_project_milestones` | `service.list_milestones` | 316 |
+| external_call | `list_project_milestones` | `HTTPException` | 318 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

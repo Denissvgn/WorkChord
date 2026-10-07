@@ -1,6 +1,7 @@
 """Schema-derived compatibility, legacy payloads, and additive client behavior."""
 
 import json
+from copy import deepcopy
 from pathlib import Path
 import runpy
 
@@ -16,12 +17,46 @@ from app.services.task_service import TaskVersionConflictError
 
 ROOT = Path(__file__).resolve().parents[2]
 
+PAGED_ROUTES = [
+    ("/api/projects/page", "ProjectPage", "next_after_id"),
+    ("/api/iterations/page", "IterationPage", "next_after_id"),
+    ("/api/projects/portfolio-summaries/page", "ProjectPortfolioPage", "next_after_id"),
+    ("/api/tasks/{task_id}/timeline/page", "TaskTimelinePage", "next_cursor"),
+]
+
 
 def test_client_contract_is_current_and_deterministic():
     exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
     first = exporter["serialized_contract"]()
     assert first == exporter["serialized_contract"]()
     assert first == (ROOT / "backend/tests/fixtures/client-contract-v1.json").read_text()
+
+
+@pytest.mark.parametrize("path,schema_name,cursor_field", PAGED_ROUTES)
+def test_paged_readers_export_cursor_and_response_contracts(path, schema_name, cursor_field):
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    contract = exporter["build_contract"]()
+    operation = contract["paths"][path]["get"]
+    parameters = {p["name"]: p["schema"] for p in operation["parameters"] if p["in"] == "query"}
+    expected = {"limit", "cursor"} if cursor_field == "next_cursor" else {"limit", "after_id", "upper_id"}
+    assert expected <= parameters.keys()
+    assert parameters["limit"]["minimum"] == 1 and parameters["limit"]["maximum"] == 100
+    response = operation["responses"]["200"]["content"]["application/json"]["schema"]
+    assert response["$ref"] == f"#/components/schemas/{schema_name}"
+    properties = contract["components"]["schemas"][schema_name]["properties"]
+    assert {"items", "has_more", cursor_field} <= properties.keys()
+    assert ("limit" if cursor_field == "next_cursor" else "upper_id") in properties
+
+
+@pytest.mark.parametrize("path,schema_name,cursor_field", PAGED_ROUTES)
+def test_missing_paged_reader_fails_contract_export(monkeypatch, path, schema_name, cursor_field):
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    app = exporter["app"]
+    schema = deepcopy(app.openapi())
+    del schema["paths"][path]
+    monkeypatch.setattr(app, "openapi", lambda: schema)
+    with pytest.raises(ValueError, match="Client routes no longer registered"):
+        exporter["build_contract"]()
 
 
 @pytest.mark.parametrize("payload", [

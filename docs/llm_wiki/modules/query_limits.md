@@ -19,7 +19,9 @@ Explicit response cardinality bounds for synchronous API surfaces.
 flowchart LR
     n0["backend"]
     n1["backend/app/query_limits.py"]
+    n2["scripts"]
     n0 --> n1
+    n2 --> n1
     click n1 "../modules/query_limits.md"
 ```
 
@@ -29,9 +31,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (22) |
+| Inbound | `scripts` (1) |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -42,6 +42,8 @@ interface TaskRepository {
     suspend fun getIterations(): Result<List<Iteration>>
     suspend fun getCapabilities(): Result<DomainCapabilities>
     suspend fun getTaskDetail(taskId: Int): Result<TaskDetail>
+    suspend fun getTaskDetailPage(taskId: Int, childrenAfterId: Int = 0, dependenciesAfterId: Int = 0): Result<TaskDetail> =
+        Result.failure(UnsupportedOperationException("Paged detail is unavailable"))
     suspend fun getTaskActions(taskId: Int): Result<TaskActions>
     suspend fun getReviews(taskId: Int): Result<List<TaskReview>>
     suspend fun getCurrentReview(taskId: Int): Result<CurrentTaskReview>
@@ -149,8 +151,54 @@ class TaskRepositoryImpl(private val api: WorkChordApi, private val tokenManager
         return result
     }
     override suspend fun getWhoAmI(): Result<Session> = request { api.getSessionWhoami() }
-    override suspend fun getProjects(): Result<List<Project>> = request { api.getProjects() }
-    override suspend fun getIterations(): Result<List<Iteration>> = request { api.getIterations() }
+    override suspend fun getProjects(): Result<List<Project>> {
+        val captured = guard()
+        try {
+            if (!getCapabilities().getOrThrow().supports("paged-worksets-v1")) return request { api.getProjects() }
+            val items = mutableListOf<Project>()
+            var after = 0
+            var upper: Int? = null
+            while (true) {
+                coroutineContext.ensureActive()
+                require(captured == guard()) { "Account changed while loading projects. Reload work." }
+                val page = request { api.getProjectPage(after, upper) }.getOrThrow()
+                require(captured == guard()) { "Account changed while loading projects. Reload work." }
+                require(page.items != null && page.hasMore != null && page.upperId != null) { "Incomplete project page. Reload work." }
+                upper = upper ?: page.upperId
+                items.addAll(page.items.orEmpty())
+                if (page.hasMore != true) break
+                val next = page.nextAfterId ?: error("Missing project cursor")
+                require(next > after && next <= requireNotNull(upper)) { "Invalid project cursor" }
+                after = next
+            }
+            return Result.success(items.distinctBy { it.id })
+        } catch (error: CancellationException) { throw error }
+        catch (error: Exception) { return Result.failure(error) }
+    }
+    override suspend fun getIterations(): Result<List<Iteration>> {
+        val captured = guard()
+        try {
+            if (!getCapabilities().getOrThrow().supports("paged-worksets-v1")) return request { api.getIterations() }
+            val items = mutableListOf<Iteration>()
+            var after = 0
+            var upper: Int? = null
+            while (true) {
+                coroutineContext.ensureActive()
+                require(captured == guard()) { "Account changed while loading iterations. Reload work." }
+                val page = request { api.getIterationPage(after, upper) }.getOrThrow()
+                require(captured == guard()) { "Account changed while loading iterations. Reload work." }
+                require(page.items != null && page.hasMore != null && page.upperId != null) { "Incomplete iteration page. Reload work." }
+                upper = upper ?: page.upperId
+                items.addAll(page.items.orEmpty())
+                if (page.hasMore != true) break
+                val next = page.nextAfterId ?: error("Missing iteration cursor")
+                require(next > after && next <= requireNotNull(upper)) { "Invalid iteration cursor" }
+                after = next
+            }
+            return Result.success(items.distinctBy { it.id }.sortedWith(compareByDescending<Iteration> { it.startDate }.thenByDescending { it.id }))
+        } catch (error: CancellationException) { throw error }
+        catch (error: Exception) { return Result.failure(error) }
+    }
     override suspend fun getCapabilities(): Result<DomainCapabilities> = request { api.getCapabilities() }
     override suspend fun fetchMyWork(selection: WorkSelection, afterId: Int): Result<HumanWork> = request {
         api.getMyWork(selection.projectId, selection.iterationId, selection.backlogOnly, afterId)
@@ -172,9 +220,10 @@ class TaskRepositoryImpl(private val api: WorkChordApi, private val tokenManager
         val result = request(taskId) { api.getTaskById(taskId) }
         return result.getOrNull()?.let { cache(it, captured) } ?: result
     }
-    override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> {
+    override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> = getTaskDetailPage(taskId)
+    override suspend fun getTaskDetailPage(taskId: Int, childrenAfterId: Int, dependenciesAfterId: Int): Result<TaskDetail> {
         val captured = guard()
-        val result = request(taskId) { api.getTaskDetail(taskId) }
+        val result = request(taskId) { api.getTaskDetail(taskId, childrenAfterId, dependenciesAfterId) }
         val detail = result.getOrNull()
         if (detail != null) {
             if (detail.task.id != taskId || detail.task.authoritativeVersion == null) return Result.failure(ApiProblem(502,
@@ -187,7 +236,7 @@ class TaskRepositoryImpl(private val api: WorkChordApi, private val tokenManager
                 if (tasks.value.firstOrNull { it.id == taskId }?.authoritativeVersion != detail.task.authoritativeVersion) {
                     return Result.failure(ApiProblem(409, ProblemDetail("stale_read", "A newer task response has already been received.")))
                 }
-                details[taskId] = TaskReadState(detail, System.currentTimeMillis())
+                if (childrenAfterId == 0 && dependenciesAfterId == 0) details[taskId] = TaskReadState(detail, System.currentTimeMillis())
             }
         } else if (result.exceptionOrNull() !is ApiProblem) synchronized(lock) {
             details[taskId]?.let { details[taskId] = it.copy(source = "cache", authoritative = false) }

@@ -98,4 +98,4 @@ flowchart LR
 | `TeamService.get_workload` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.update_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

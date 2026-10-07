@@ -39,15 +39,21 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["AgentService._run_event_matches (backend/app/services/agent_service.py)"]
     n4["AgentService.append_run_event (backend/app/services/agent_service.py)"]
+    n5["backend/app/services/task_timeline_service.py"]
+    n6["test_mixed_timeline_sources_have_stable_ties_and_actor_provenance (backend/tests/test_task_pagination.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/agent_service.md"
     click n4 "../modules/agent_service.md"
+    click n5 "../modules/task_timeline_service.md"
+    click n6 "../modules/test_task_pagination.md"
 ```
 
 ### Summary
@@ -70,3 +76,5 @@ flowchart LR
 | `AgentService._run_event_matches` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.append_run_event` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentService.append_run_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
+| `task_timeline_service` | import | [task_timeline_service](../modules/task_timeline_service.md) | — |
+| `test_mixed_timeline_sources_have_stable_ties_and_actor_provenance` | call | [test_task_pagination](../modules/test_task_pagination.md) | 1 |

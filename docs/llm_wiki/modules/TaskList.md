@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.tsx`._
 | `../../types/label` | `Label` |
 | `../../types/task` | `Task` |
 | `../../utils/apiError` | `getApiErrorMessage` |
+| `../../utils/graphLimitError` | `isGraphLimitError` |
 | `../../utils/taskFilters` | `filterTaskWithChildren` |
 | `../../utils/visibleWork` | `selectVisibleWork` |
 | `../common/Button` | `Button` |
@@ -26,6 +27,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.tsx`._
 | `../ui` | `OverflowMenu` |
 | `../ui/tone` | `statusTextClassName` |
 | `./GuardedTaskModal` | `GuardedTaskModal` |
+| `./PagedTaskBrowser` | `PagedTaskBrowser` |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
 | `./TaskBulkOperationsPanel` | `TaskBulkOperationsPanel` |
 | `./TaskFiltersBar` | `TaskFilters` |
@@ -62,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
-| Outbound | `frontend` (19) |
+| Inbound | `frontend` (4) |
+| Outbound | `frontend` (21) |
 
 ### External packages
 
@@ -71,19 +73,19 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Class | 68 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 731 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 783 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 46 | — | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 47 | — | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 48 | — | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 49 | — | — |
+| [TaskListProps](../entities/TaskListProps.md) | Class | 70 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Class | 734 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 786 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 48 | — | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 49 | — | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | — | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 51 | — | — |
 
 ## Functions
 

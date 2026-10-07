@@ -57,11 +57,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_iteration_series | service.create_series | 91 | `service.create_series(data)` |
-| create_iteration_series | HTTPException | 93 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_iteration_series | str | 95 | `str(e)` |
-| create_iteration_series | IterationSeriesResponse | 97 | `IterationSeriesResponse(iterations=...)` |
-| create_iteration_series | service.to_response | 98 | `service.to_response(iteration)` |
+| create_iteration_series | service.create_series | 100 | `service.create_series(data)` |
+| create_iteration_series | HTTPException | 102 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_iteration_series | str | 104 | `str(e)` |
+| create_iteration_series | IterationSeriesResponse | 106 | `IterationSeriesResponse(iterations=...)` |
+| create_iteration_series | service.to_response | 107 | `service.to_response(iteration)` |
 
 ### Boundary effects
 
@@ -71,9 +71,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_iteration_series` | `service.create_series` | 91 |
-| external_call | `create_iteration_series` | `HTTPException` | 93 |
-| unresolved_call | `create_iteration_series` | `service.to_response` | 98 |
+| unresolved_call | `create_iteration_series` | `service.create_series` | 100 |
+| external_call | `create_iteration_series` | `HTTPException` | 102 |
+| unresolved_call | `create_iteration_series` | `service.to_response` | 107 |
 
 ## Behavior
 

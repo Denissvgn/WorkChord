@@ -41,20 +41,26 @@ Run deterministic, production-shaped REST and MCP load through public APIs.
 ```mermaid
 flowchart LR
     n0["scripts/load/common.py"]
-    n1["scripts/load/result.py"]
-    n2["scripts/load/run.py"]
+    n1["scripts/load/local_baseline.py"]
+    n2["scripts/load/result.py"]
+    n3["scripts/load/run.py"]
     n1 --> n0
+    n1 --> n2
+    n1 --> n3
     n2 --> n0
-    n2 --> n1
+    n3 --> n0
+    n3 --> n2
     click n0 "../modules/load_common.md"
-    click n1 "../modules/result.md"
-    click n2 "../modules/run.md"
+    click n1 "../modules/local_baseline.md"
+    click n2 "../modules/result.md"
+    click n3 "../modules/run.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [local_baseline](../modules/local_baseline.md) |
 | Outbound | [load_common](../modules/load_common.md) |
 | Outbound | [result](../modules/result.md) |
 

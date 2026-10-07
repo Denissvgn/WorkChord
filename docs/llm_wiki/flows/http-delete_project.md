@@ -131,10 +131,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_project | service.delete | 484 | `service.delete(project_id, detach_tasks=detach_tasks)` |
-| delete_project | HTTPException | 486 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_project | _not_found_detail | 488 | `_not_found_detail(service, 'project', project_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 71 | `resolve_runtime_ui_language(service.db)` |
+| delete_project | service.delete | 499 | `service.delete(project_id, detach_tasks=detach_tasks)` |
+| delete_project | HTTPException | 501 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_project | _not_found_detail | 503 | `_not_found_detail(service, 'project', project_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
@@ -151,8 +151,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_project` | `service.delete` | 484 |
-| external_call | `delete_project` | `HTTPException` | 486 |
+| unresolved_call | `delete_project` | `service.delete` | 499 |
+| external_call | `delete_project` | `HTTPException` | 501 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |

@@ -18,7 +18,9 @@ from app.schemas.project import (
     ProjectMilestoneResponse,
     ProjectMilestoneUpdate,
     ProjectPortfolioSummary,
+    ProjectPortfolioPage,
     ProjectResponse,
+    ProjectPage,
     ProjectSummary,
     ProjectUpdate,
     ProjectUpdateEntryCreate,
@@ -81,6 +83,19 @@ async def _scoped_not_found_detail(
 ) -> str:
     ui_language = await resolve_runtime_ui_language(service.db)
     return scoped_entity_not_found_message(entity, entity_id, scope, scope_id, ui_language)
+
+
+@router.get("/projects/portfolio-summaries/page", response_model=ProjectPortfolioPage)
+async def get_portfolio_summary_page(service: Annotated[ProjectService, Depends(get_project_service)],
+    limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0), upper_id: int | None = Query(default=None, ge=0)):
+    return await service.portfolio_page(limit=limit, after_id=after_id, upper_id=upper_id)
+
+
+@router.get("/projects/page", response_model=ProjectPage)
+async def get_project_page(service: Annotated[ProjectService, Depends(get_project_service)],
+    limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0),
+    upper_id: int | None = Query(default=None, ge=0)):
+    return await service.project_page(limit=limit, after_id=after_id, upper_id=upper_id)
 
 
 @router.get("/projects", response_model=list[ProjectResponse])

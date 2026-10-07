@@ -46,9 +46,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration | service.get_by_id | 108 | `service.get_by_id(iteration_id)` |
-| get_iteration | HTTPException | 110 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_iteration | service.to_response | 114 | `service.to_response(iteration)` |
+| get_iteration | service.get_by_id | 117 | `service.get_by_id(iteration_id)` |
+| get_iteration | HTTPException | 119 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_iteration | service.to_response | 123 | `service.to_response(iteration)` |
 
 ### Boundary effects
 
@@ -58,9 +58,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_iteration` | `service.get_by_id` | 108 |
-| external_call | `get_iteration` | `HTTPException` | 110 |
-| unresolved_call | `get_iteration` | `service.to_response` | 114 |
+| unresolved_call | `get_iteration` | `service.get_by_id` | 117 |
+| external_call | `get_iteration` | `HTTPException` | 119 |
+| unresolved_call | `get_iteration` | `service.to_response` | 123 |
 
 ## Behavior
 

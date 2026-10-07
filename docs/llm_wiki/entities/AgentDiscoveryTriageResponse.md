@@ -1,6 +1,6 @@
 # AgentDiscoveryTriageResponse
 
-**Location:** `backend/app/schemas/agent.py:1125`
+**Location:** `backend/app/schemas/agent.py:1138`
 **Kind:** Pydantic model
 **Bases:** `TriageItemResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

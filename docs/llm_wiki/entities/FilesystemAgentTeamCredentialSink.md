@@ -1,9 +1,9 @@
 # FilesystemAgentTeamCredentialSink
 
-**Location:** `backend/app/services/agent_team_setup_service.py:137`
+**Location:** `backend/app/services/agent_team_credentials.py:33`
 **Kind:** Class
 **Bases:** —
-**Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
+**Module:** [agent_team_credentials](../modules/agent_team_credentials.md)
 
 ## Description
 
@@ -26,10 +26,10 @@ Write one-time credentials to an operator-owned mode-0700 directory.
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["FilesystemAgentTeamCredentialSink (backend/app/services/agent_team_setup_service.py)"]
+    n0["FilesystemAgentTeamCredentialSink (backend/app/services/agent_team_credentials.py)"]
     n1["AgentTeamSetupService.__init__ (backend/app/services/agent_team_setup_service.py)"]
     n1 --> n0
-    click n0 "../modules/agent_team_setup_service.md"
+    click n0 "../modules/agent_team_credentials.md"
     click n1 "../modules/agent_team_setup_service.md"
 ```
 
@@ -37,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 3 | — |
+| [agent_team_credentials](../modules/agent_team_credentials.md) | 3 | — |
 
 ### References
 

@@ -14,7 +14,7 @@ Schema for updating a project.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `Optional[ProjectStatus]` | `status` | No | Yes | `None` | — | — | — |
 | `health` | `Optional[ProjectHealth]` | `health` | No | Yes | `None` | — | — | — |

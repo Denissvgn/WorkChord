@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
 import type { Task, TaskUpdate } from '../../types/task';
@@ -97,6 +98,9 @@ const TaskEditorDrawerContent = ({
 }) => {
     const { t } = useTranslation();
     const guard = useDraftDismissal(onClose);
+    const navigate = useNavigate();
+    const [params] = useSearchParams();
+    const openingId = useId();
     // The drawer renders a spinner, inline retry, and withholds the editor until a task exists.
     const {
         data: fullTask,
@@ -105,7 +109,8 @@ const TaskEditorDrawerContent = ({
         refetch,
         // feedback-policy: query loading,error,retry,empty
     } = useQuery({
-        queryKey: ['taskEditor', taskId],
+        // A reopened form must initialize from its own current read, even before old cache GC runs.
+        queryKey: ['taskEditor', taskId, openingId],
         gcTime: 0,
         staleTime: 0,
         queryFn: async () => {
@@ -114,8 +119,8 @@ const TaskEditorDrawerContent = ({
         },
     });
     const editorTask = useMemo(
-        () => fullTask ? prepareTask?.(fullTask) ?? fullTask : null,
-        [fullTask, prepareTask],
+        () => fullTask && !isError ? prepareTask?.(fullTask) ?? fullTask : null,
+        [fullTask, prepareTask, isError],
     );
     const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? null;
 
@@ -156,7 +161,10 @@ const TaskEditorDrawerContent = ({
                     </div>
                 )}
                 {beforeForm}
-                {editorTask?.detail_context && <TaskContextSummary detail={editorTask.detail_context} />}
+                {editorTask?.detail_context && <TaskContextSummary key={`context:${editorTask.version}`} detail={editorTask.detail_context} onReload={() => void refetch()} onNavigate={id => guard.request(() => {
+                    const next = new URLSearchParams(params); next.set('task', String(id));
+                    onClose(); navigate(`/tasks?${next}`);
+                })} />}
                 {editorTask && (
                     <TaskForm
                         iterationId={resolvedIterationId}

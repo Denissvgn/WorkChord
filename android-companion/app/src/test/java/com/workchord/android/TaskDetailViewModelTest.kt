@@ -144,4 +144,24 @@ class TaskDetailViewModelTest {
         assertNull(viewModel.uiState.value.detail)
         assertFalse(viewModel.uiState.value.authoritative)
     }
+    @Test fun relationPagesAppendWithoutLosingDraftsAndRejectVersionChanges() = runTest {
+        val repo = repository()
+        val child = TaskReference(90, "Child", 1, "planned", 1, null, 72, 7)
+        val detail = TaskDetail(task, emptyList(), true, TaskReferencePage(listOf(child), true, 90), TaskReferencePage(emptyList(), false, null), false)
+        repo.detailResult = Result.success(detail)
+        repo.detailPageResult = Result.success(detail.copy(children = TaskReferencePage(listOf(child.copy(id = 91)), false, null)))
+        val model = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        model.setReason("Keep this draft")
+        model.loadMoreRelations(true)
+        assertEquals(listOf(90, 91), model.uiState.value.detail!!.children.items!!.map { it.id })
+        assertEquals("Keep this draft", model.uiState.value.reason)
+        assertEquals(90, repo.lastChildrenCursor)
+        repo.detailResult = Result.success(detail)
+        model.loadTask()
+        repo.detailPageResult = Result.success(detail.copy(task = task.copy(version = 4)))
+        model.loadMoreRelations(true)
+        assertFalse(model.uiState.value.authoritative)
+        assertEquals(listOf(90), model.uiState.value.detail!!.children.items!!.map { it.id })
+    }
+
 }

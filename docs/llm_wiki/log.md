@@ -1095,3 +1095,252 @@ Delivery reports select their observation window plus bounded prior episode stat
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:41cbd0b665a837c12fa8147206c772f772a4a67b0de33a80639da7b7c9e3b814`
+- Pages created: 15
+- Pages updated: 166
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2672
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Bounded workset and timeline navigation
+
+Task reference, relationship, scope and merged-history pages expose deterministic continuation and explicit live-read semantics. Complete planning/execution limits remain enforced; failed projection reads and guarded editor navigation preserve identity and draft boundaries. Selector upper bounds exclude later inserts without implying a database snapshot.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1fb2dd316c1d52607f84d60efea2687e497949011bc45721535df16bbe900b99`
+- Pages created: 2
+- Pages updated: 32
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2818
+- Pages deprecated: 1
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6b3df22b8da100025ef0abc9f2f1719f3eeb82aa72cf002f8dd4010cdb297d01`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2852
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e622487f21f9ff51aeca7e56b4d9db3037e3872899660facb658de92a92d3948`
+- Pages created: 6
+- Pages updated: 45
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2809
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: `CredentialDeliveryError` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `AgentTeamCredentialSink` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `FilesystemAgentTeamCredentialSink` (backend/app/services/agent_team_setup_service.py → backend/app/services/agent_team_credentials.py), `TaskTreeIntegrityError` (backend/app/services/task_service.py → backend/app/services/task_hierarchy_service.py), `AgentTeamStepScope` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/settings/AgentTeamStepList.tsx)
+
+### Explicit read and delivery collaborators
+
+Bounded graph hydration, one-way credential delivery and finite scope reads have dedicated ownership behind compatible service facades. Saved-view parsing and setup navigation are separated from route queries and commands; transaction, authorization and immutable-history rules remain with their established owners.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:dc6a20680d84caadcb160210e7f57d223a8057952895fc1e4260a254829dcdbc`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2857
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:020ef9ac1a65e9ac5b16ae988a1650e2bae690c2a9477ab046fae4b035a32b32`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2857
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7eb78d7017e5aa7342ff0fde1dfe84e43828a586ad1d841febfef03533dcf278`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 2854
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f58dfd69b5b26e95289d9b797df701d825d231c6a3f0b5d250222ebd13176987`
+- Pages created: 7
+- Pages updated: 37
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2821
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 2 (process=2)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Local observation and early scope bounds
+
+Authorized ID-only preflight keeps oversized read rejection independent of relationship hydration. Local workload tooling records finite declared observations, identity/transport boundaries and actual recovery or rollback, while retaining formal qualification authority and explicit budget limitations.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b25884192ef8427fca85b298f01cf135ac7ecd2eab594bd2afc86a082f56e3fd`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2860
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 1
+- Pages updated: 7
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2858
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2865
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2866
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2866
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:0f1f2ccefe25e097b83b8d18aa2888adf0996231fbfe22c27aecafb245a46d2d`
+- Pages created: 0
+- Pages updated: 6
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2860
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

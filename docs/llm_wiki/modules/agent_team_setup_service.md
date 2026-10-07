@@ -24,20 +24,19 @@ Runtime acknowledgement remains scoped to its exact issued handoff credential. R
 | `app.services.agent_profile_catalog_service` | `ALL_PROFILE_PRESETS`, `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingTopologyReadiness` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_scopes`, `hash_api_key`, `require_scope`, `validate_idempotency_key` |
+| `app.services.agent_team_credentials` | `CredentialDeliveryError`, `AgentTeamCredentialSink`, `FilesystemAgentTeamCredentialSink` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `timedelta` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
-| `os` | `os` |
 | `pathlib` | `Path` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `func`, `or_`, `select`, `text` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
-| `stat` | `stat` |
-| `typing` | `Any`, `Protocol` |
+| `typing` | `Any` |
 
 ## Local dependency map
 
@@ -58,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (5) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -66,18 +65,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 100 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [CredentialDeliveryError](../entities/CredentialDeliveryError.md) | 113 | `RuntimeError` | Raised when a one-time actor key did not reach the approved sink. |
-| [AgentTeamCredentialSink](../entities/AgentTeamCredentialSink.md) | 117 | `Protocol` | One-way sink boundary; implementations never return credential material. |
-| [FilesystemAgentTeamCredentialSink](../entities/FilesystemAgentTeamCredentialSink.md) | 137 | — | Write one-time credentials to an operator-owned mode-0700 directory. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 232 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 266 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 101 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 115 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 149 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

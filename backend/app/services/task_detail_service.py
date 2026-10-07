@@ -32,7 +32,7 @@ class TaskDetailService:
         items = [TaskReference.model_validate(row) for row in rows[:limit]]
         return TaskReferencePage(items=items, has_more=more, next_after_id=items[-1].id if more else None, limit=limit)
 
-    async def lookup(self, *, project_id=None, iteration_id=None, query=None, backlog_only=False, limit=50, after_id=0):
+    async def lookup(self, *, project_id=None, iteration_id=None, query=None, backlog_only=False, limit=50, after_id=0, status=None, parent_id=None, roots_only=False):
         statement = self.references()
         if project_id is not None:
             require_project(self.db, project_id)
@@ -41,6 +41,22 @@ class TaskDetailService:
             statement = statement.where(Task.iteration_id == iteration_id)
         if backlog_only:
             statement = statement.where(Task.iteration_id.is_(None))
+        if status is not None:
+            if status not in {"planned", "active", "resolved", "closed"}:
+                raise ValueError("Select a supported task status")
+            statement = statement.where(Task.status == status)
+        if roots_only and parent_id is not None:
+            raise ValueError("Select roots or a parent, not both")
+        if roots_only:
+            statement = statement.where(Task.parent_id.is_(None))
+        if parent_id is not None:
+            parent = await self.db.get(Task, parent_id)
+            if parent is None:
+                raise LookupError("Parent task not found or inaccessible")
+            require_project(self.db, parent.project_id)
+            if project_id is not None and parent.project_id != project_id or iteration_id is not None and parent.iteration_id != iteration_id:
+                raise ValueError("Parent must belong to the selected scope")
+            statement = statement.where(Task.parent_id == parent_id)
         if query:
             if len(query) > 200:
                 raise ValueError("Search text must contain at most 200 characters")

@@ -112,4 +112,4 @@ flowchart LR
 | `AgentPlanningService.update_team_member` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentRoutingService._capacity_inputs` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.
+> References: showing 12 of 59 logical references; 47 omitted by the 12-row generated summary limit.

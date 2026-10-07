@@ -38,6 +38,7 @@ flowchart LR
     n8["backend/tests/support/delivery.py"]
     n9["backend/tests/test_delivery_scenarios.py"]
     n10["scripts/ci/serve_disposable_api.py"]
+    n11["scripts/load/service_worksets.py"]
     n0 --> n3
     n0 --> n4
     n0 --> n5
@@ -77,6 +78,10 @@ flowchart LR
     n9 --> n8
     n10 --> n4
     n10 --> n8
+    n11 --> n0
+    n11 --> n2
+    n11 --> n4
+    n11 --> n8
     click n0 "../modules/models_agent.md"
     click n1 "../modules/models_calendar.md"
     click n2 "../modules/models_iteration.md"
@@ -88,6 +93,7 @@ flowchart LR
     click n8 "../modules/delivery.md"
     click n9 "../modules/test_delivery_scenarios.md"
     click n10 "../modules/serve_disposable_api.md"
+    click n11 "../modules/service_worksets.md"
 ```
 
 ### Internal neighbors
@@ -96,6 +102,7 @@ flowchart LR
 |---|---|
 | Inbound | [test_delivery_scenarios](../modules/test_delivery_scenarios.md) |
 | Inbound | [serve_disposable_api](../modules/serve_disposable_api.md) |
+| Inbound | [service_worksets](../modules/service_worksets.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |
 | Outbound | [models_calendar](../modules/models_calendar.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |

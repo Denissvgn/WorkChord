@@ -1,6 +1,6 @@
 # ColumnId
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:38`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:40`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)

@@ -47,19 +47,22 @@ _Auto-generated from `Recorder` in `scripts/load/run.py`._
 ```mermaid
 flowchart LR
     n0["Recorder (scripts/load/run.py)"]
-    n1["_perform_attempt (scripts/load/run.py)"]
-    n2["_result_payload (scripts/load/run.py)"]
-    n3["_run_live (scripts/load/run.py)"]
-    n4["main (scripts/load/run.py)"]
+    n1["summarize (scripts/load/local_baseline.py)"]
+    n2["_perform_attempt (scripts/load/run.py)"]
+    n3["_result_payload (scripts/load/run.py)"]
+    n4["_run_live (scripts/load/run.py)"]
+    n5["main (scripts/load/run.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/run.md"
-    click n1 "../modules/run.md"
+    click n1 "../modules/local_baseline.md"
     click n2 "../modules/run.md"
     click n3 "../modules/run.md"
     click n4 "../modules/run.md"
+    click n5 "../modules/run.md"
 ```
 
 ### Summary
@@ -72,6 +75,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `summarize` | call | [local_baseline](../modules/local_baseline.md) | 1 |
 | `_perform_attempt` | type_reference | [run](../modules/run.md) | — |
 | `_result_payload` | type_reference | [run](../modules/run.md) | — |
 | `_run_live` | call | [run](../modules/run.md) | 1 |

@@ -28,6 +28,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout`, `SlideOverDrawer` |
 | `../features/overview/overviewTaskThread` | `OVERVIEW_TASK_ORIGIN`, `OVERVIEW_TASK_ORIGIN_PARAM`, `OVERVIEW_TASK_PARAM`, `OVERVIEW_TASK_RETURN_PARAM`, `OVERVIEW_TASK_THREAD_PARAM`, `overviewTaskThreadSource`, `positiveTaskId` |
 | `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUE_PARAM`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `PlanningTaskIssue` |
+| `../features/savedViews/taskViewState` | `filtersFromSavedView`, `sortKeyFromSavedView` |
 | `../i18n/seedDisplay` | `savedViewDisplay` |
 | `../services/iterationService` | `iterationService` |
 | `../services/savedViewService` | `savedViewService` |
@@ -49,7 +50,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `SORT_KEYS`, `PLANNING_ISSUE_COPY_KEYS` |
+| Constants | `PLANNING_ISSUE_COPY_KEYS` |
 
 ## Local dependency map
 
@@ -70,7 +71,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (26) |
+| Outbound | `frontend` (27) |
 
 ### External packages
 
@@ -78,10 +79,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ViewMode](../entities/ViewMode.md) | Type alias | 65 | — | — |
+| [ViewMode](../entities/ViewMode.md) | Type alias | 66 | — | — |

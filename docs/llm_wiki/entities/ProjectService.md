@@ -38,7 +38,10 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `update_initiative` | *(async)* `(initiative_id: int, data: InitiativeUpdate) -> Optional[Initiative]` | — | Apply a partial initiative update. |
 | `delete_initiative` | *(async)* `(initiative_id: int) -> bool` | — | Delete an initiative, leaving assigned projects intact. |
 | `list_projects` | *(async)* `() -> Sequence[Project]` | — | List projects ordered for planning views. |
+| `project_page` | *(async)* `(*, limit = 100, after_id = 0, upper_id = None)` | — | — |
 | `list_portfolio_summaries` | *(async)* `() -> list[ProjectPortfolioSummary]` | — | Return compact project signals with one aggregate query for the portfolio. |
+| `portfolio_page` | *(async)* `(*, limit = 100, after_id = 0, upper_id = None)` | — | — |
+| `_portfolio_summaries` | *(async)* `(projects)` | — | — |
 | `get_by_id` | *(async)* `(project_id: int) -> Optional[Project]` | — | Get project by ID. |
 | `_project_exists` | *(async)* `(project_id: int) -> bool` | — | Return whether a project exists without loading relationships. |
 | `create` | *(async)* `(data: ProjectCreate, *, commit: bool = True) -> Project` | — | Create a project, optionally leaving commit ownership to the caller. |
@@ -119,7 +122,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [project_service](../modules/project_service.md) | 52 | — |
+| [project_service](../modules/project_service.md) | 55 | — |
 
 ### References
 
@@ -138,4 +141,4 @@ flowchart LR
 | `create_project_update` | type_reference | [projects](../modules/projects.md) | — |
 | `delete_initiative` | type_reference | [projects](../modules/projects.md) | — |
 
-> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.
+> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.

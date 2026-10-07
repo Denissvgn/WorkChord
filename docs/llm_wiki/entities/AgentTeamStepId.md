@@ -23,13 +23,13 @@ _Auto-generated from `AgentTeamStepId` in `frontend/src/features/agentTeamSetup/
 ```mermaid
 flowchart LR
     n0["AgentTeamStepId (frontend/src/features/agentTeamSetup/masters.ts)"]
-    n1["stepsById (frontend/src/features/agentTeamSetup/masters.ts)"]
-    n2["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["AgentTeamStepList (frontend/src/components/settings/AgentTeamStepList.tsx)"]
+    n2["stepsById (frontend/src/features/agentTeamSetup/masters.ts)"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/agentTeamSetup_masters.md"
-    click n1 "../modules/agentTeamSetup_masters.md"
-    click n2 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentTeamStepList.md"
+    click n2 "../modules/agentTeamSetup_masters.md"
 ```
 
 ### Summary
@@ -42,5 +42,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `AgentTeamStepList` | type_reference | [AgentTeamStepList](../modules/AgentTeamStepList.md) | — |
 | `stepsById` | type_reference | [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md) | — |
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
