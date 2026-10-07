@@ -40,4 +40,4 @@ This reusable workflow is called from the main CI workflow and remains manually 
 
 Each job records its work deadline before setup and uses incremental receipts with bounded commands and cleanup. Artifact uploads run after success or failure. The matrix retains independent outcomes instead of cancelling the other browser variant after a failure. Automatic execution does not require a container registry.
 
-Before Playwright installs Chromium system dependencies, shared APT preparation replaces the Ubuntu Azure mirror and applies bounded download timeouts and retries while preserving signed repository checks. The native PostgreSQL action uses the same preparation. Setup failures remain failures of the required aggregate gate.
+Before Playwright installs Chromium system dependencies, shared APT preparation replaces the direct Ubuntu Azure mirror or its hosted mirror-list reference and applies bounded download timeouts and retries while preserving signed repository checks. The native PostgreSQL action uses the same preparation. Setup failures remain failures of the required aggregate gate.

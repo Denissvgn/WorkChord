@@ -39,6 +39,7 @@ sequenceDiagram
     p5-->>p9: path.is_file
     p5-->>p10: path.read_text
     p5-->>p11: re.sub
+    p5-->>p11: re.sub
     p5-->>p12: path.write_text
     p5-->>p13: print
     p5-->>p14: config.parent.mkdir
@@ -112,11 +113,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 39 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.parse_args | 40 | `parser.parse_args(data not statically known)` |
-| main | subprocess.check_output(…).strip | 41 | `subprocess.check_output(['dpkg', '--print-architecture'], text=True).strip(data not statically known)` |
-| main | subprocess.check_output | 41 | `subprocess.check_output([...], text=True)` |
-| main | prepare | 42 | `prepare(Path(...), architecture)` |
+| main | argparse.ArgumentParser | 40 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.parse_args | 41 | `parser.parse_args(data not statically known)` |
+| main | subprocess.check_output(…).strip | 42 | `subprocess.check_output(['dpkg', '--print-architecture'], text=True).strip(data not statically known)` |
+| main | subprocess.check_output | 42 | `subprocess.check_output([...], text=True)` |
+| main | prepare | 43 | `prepare(Path(...), architecture)` |
 | prepare | ValueError | 19 | `ValueError(...)` |
 | prepare | sorted | 23 | `sorted(...)` |
 | prepare | (…).glob | 23 | `(root / 'sources.list.d').glob('*.list')` |
@@ -129,18 +130,18 @@ flowchart LR
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | filesystem_read | `path.read_text` | `prepare` | 28 |
-| filesystem_write | `path.write_text` | `prepare` | 31 |
-| output | `print` | `prepare` | 32 |
-| filesystem_write | `config.write_text` | `prepare` | 35 |
+| filesystem_write | `path.write_text` | `prepare` | 32 |
+| output | `print` | `prepare` | 33 |
+| filesystem_write | `config.write_text` | `prepare` | 36 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 39 |
-| unresolved_call | `main` | `parser.parse_args` | 40 |
-| unresolved_call | `main` | `subprocess.check_output(['dpkg', '--print-architecture'], text=True).strip` | 41 |
-| external_call | `main` | `subprocess.check_output` | 41 |
+| external_call | `main` | `argparse.ArgumentParser` | 40 |
+| unresolved_call | `main` | `parser.parse_args` | 41 |
+| unresolved_call | `main` | `subprocess.check_output(['dpkg', '--print-architecture'], text=True).strip` | 42 |
+| external_call | `main` | `subprocess.check_output` | 42 |
 | external_call | `prepare` | `ValueError` | 19 |
 | external_call | `prepare` | `sorted` | 23 |
 | unresolved_call | `prepare` | `(root / 'sources.list.d').glob` | 23 |

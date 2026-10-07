@@ -1523,3 +1523,21 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+- Direct Ubuntu archive selection also handles the hosted runner mirror-list transport, preventing a preferred Azure mirror from remaining active behind a file URI.
+
+## 2026-10-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5bd40dfb4fee0e343911a00fb4ecde0f143444f34e7950389e28553d4c983940`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2921
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

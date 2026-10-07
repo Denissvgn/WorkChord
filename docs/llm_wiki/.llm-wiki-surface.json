@@ -35052,7 +35052,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 31,
+              "line": 32,
               "step": "prepare",
               "step_index": 6,
               "target": "path.write_text"
@@ -35060,7 +35060,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 32,
+              "line": 33,
               "step": "prepare",
               "step_index": 6,
               "target": "print"
@@ -35068,7 +35068,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 35,
+              "line": 36,
               "step": "prepare",
               "step_index": 6,
               "target": "config.write_text"
@@ -35077,25 +35077,25 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 39,
+              "line": 40,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 40,
+              "line": 41,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 42,
               "step": "main",
               "target": "subprocess.check_output(['dpkg', '--print-architecture'], text=True).strip"
             },
             {
               "kind": "external_call",
-              "line": 41,
+              "line": 42,
               "step": "main",
               "target": "subprocess.check_output"
             },
@@ -35151,7 +35151,7 @@
           "modules_touched": [
             "scripts/ci/apt_runtime.py"
           ],
-          "step_count": 19,
+          "step_count": 20,
           "truncated": false
         }
       },
@@ -88512,5 +88512,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:884c794376c0fc5586ccfb0939883b89693d1918360b6a88c16cc66f60097711"
+  "source_hash": "sha256:c5d10bb6792d82c7b0181f400dbe0cf248c4c1ac53ccaae3dfa55b4c4b69ab37"
 }

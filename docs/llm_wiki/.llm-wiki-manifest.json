@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:2e60c452afbb7555e2cb3476202be0f3d754b2a3dc78205c0370b27cb6d900b0",
-    "knowledge_index_hash": "sha256:d9af40d905c21cf1e1dbb176c6b587ebccf105da92a883651eae8d4de6a7fda3",
-    "surface_index_hash": "sha256:d0b7348e77bcd3d6d0d83bb32c65c6e2dc94ab31087c9080711388bbad72cd9c"
+    "evaluated_envelope_hash": "sha256:46ecd5a95b8ee50c004ccb88832f1c3984cabeca24360277d225b314801f36ce",
+    "knowledge_index_hash": "sha256:f84577b02c98b09a576c97a67dddde4f8752ca27ae020cb9de9ee2f2a7452c61",
+    "surface_index_hash": "sha256:1e24953b77ea61c9a7d7dfb0c8ad314949185a992de8dddf143e9413b69efab1"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1497,10 +1497,10 @@
     },
     "entities/AptPreparation.md": {
       "basis": {
-        "concept_observation_hash": "sha256:0055f95a28b7be4b87314f3cf9ceee9501a8a330efe26734708b2df395a13572",
+        "concept_observation_hash": "sha256:b11af47fb6edded8c7c0f475423d2bb706cb3eb2576c8576d917227a7e820f16",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+        "source_content_hash": "sha256:586c52c8de2d8f11191e87a7987404ecc6a1c1e68b6116d0d744d542ff3e3d8c",
         "source_path": "scripts/ci/tests/test_apt_runtime.py"
       },
       "state": "known"
@@ -17460,7 +17460,7 @@
         "concept_observation_hash": "sha256:55becd03364934bc6de8c8900d6030fe9572f7c5f328f27bb31bd4834e57f551",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:9d64a29b46586661eaedd193baece3b2a0c1e3ffccfebdefdf0f43c71947aaaf",
+        "source_content_hash": "sha256:54c38a84576a9a585b8051b9cd87be8290784b0ba7bf493ee75a6d179815e2ad",
         "source_path": "scripts/ci/apt_runtime.py"
       },
       "state": "known"
@@ -20890,7 +20890,7 @@
         "concept_observation_hash": "sha256:6115ecbdb474c78a5af94caf8c8eb72513d1408e8abaf577e4f8b55ee6c44b0c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+        "source_content_hash": "sha256:586c52c8de2d8f11191e87a7987404ecc6a1c1e68b6116d0d744d542ff3e3d8c",
         "source_path": "scripts/ci/tests/test_apt_runtime.py"
       },
       "state": "known"
@@ -22230,13 +22230,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:cc5c64f32be019b33a8ca1dbc57f9e1d8be7a42a42f33e3b6c1d8cbe0f12882d",
-      "lifecycle_hash": "sha256:e93d2183863035f01c2c2616082f190cda5ed4b966ac53d011705fd71fb83656",
-      "markdown_snapshot_hash": "sha256:c6aa23410b22eafd5318c93714f0801f44185515d8ceaa22794a4f376ec5a62a",
-      "observation_inputs_hash": "sha256:8860a06272e4f635d47ba437e44a3a6d929aab28ab700d14b92a2537c3b9e24b",
+      "inventory_hash": "sha256:40dbc2f21d27f7af870c12453c93edb953b9f9a5acedfa86fa5f410af03c6135",
+      "lifecycle_hash": "sha256:898edc6025c8638924ab0cffb75ef6f25e5bc9da6fd5d7e978b92a27fda6fc95",
+      "markdown_snapshot_hash": "sha256:f336ddde5f4472eeba825d674f69302b0affc4c35fc01e1fcdcaef8dfb65aab7",
+      "observation_inputs_hash": "sha256:1a3313449e3a1da823e1ab11b6cd627fdca5cfb92b967db378e8e4525796bf5d",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:4663a04d525c60b897ed5f39f83acaad3a1f49dc0234ff8f95735df329884d65"
+      "source_snapshot_hash": "sha256:5bd40dfb4fee0e343911a00fb4ecde0f143444f34e7950389e28553d4c983940"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -80007,14 +80007,14 @@
           "description": "Prepare job-local APT sources for bounded signed package installation.",
           "functions": {
             "main": "—",
-            "prepare": "Replace only the hosted Ubuntu Azure mirror; retain suites and signing."
+            "prepare": "Replace the direct or mirror-list Ubuntu source; retain suites and signing."
           }
         }
       },
-      "hash": "sha256:9d64a29b46586661eaedd193baece3b2a0c1e3ffccfebdefdf0f43c71947aaaf",
+      "hash": "sha256:54c38a84576a9a585b8051b9cd87be8290784b0ba7bf493ee75a6d179815e2ad",
       "language": "python",
       "module_page": "apt_runtime",
-      "semantic_hash": "sha256:3dd8c802cf6a126c088904f680936d15d0fa318be7b125cceb70278a99e1558b"
+      "semantic_hash": "sha256:7522cc2221cbae74a7421e60e07b69084d5b300040c013db9c89057b0784c452"
     },
     "scripts/ci/check_model_aware_routing_closeout.py": {
       "entities": [
@@ -80341,6 +80341,7 @@
             "description": "_Auto-generated from `AptPreparation` in `scripts/ci/tests/test_apt_runtime.py`._",
             "methods": {
               "test_arm_sources_use_ports_and_only_exact_azure_host_is_replaced": "—",
+              "test_hosted_runner_mirror_indirection_cannot_keep_selecting_azure": "—",
               "test_legacy_and_deb822_sources_keep_signing_and_unrelated_repositories": "—",
               "test_unsupported_architecture_does_not_mutate_configuration": "—"
             }
@@ -80354,10 +80355,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d3ba4cc9923f1b14d210c154fa7c6dc82d6f6a3387612394bfa8daf7fea8e12c",
+      "hash": "sha256:586c52c8de2d8f11191e87a7987404ecc6a1c1e68b6116d0d744d542ff3e3d8c",
       "language": "python",
       "module_page": "test_apt_runtime",
-      "semantic_hash": "sha256:6982da3db8f85b189f4af4645bf22d4fa67aeadfe9aa4446fc82dd52878714cd"
+      "semantic_hash": "sha256:bdf2200784d6132775991cbf57fbb0d8acd8a0dc9cc69870c7fcbc5413060c39"
     },
     "scripts/ci/tests/test_ci_runtime.py": {
       "entities": [

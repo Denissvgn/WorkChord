@@ -19,6 +19,7 @@ _Auto-generated from `AptPreparation` in `scripts/ci/tests/test_apt_runtime.py`.
 |--------|-----------|------------|-------------|
 | `test_legacy_and_deb822_sources_keep_signing_and_unrelated_repositories` | `()` | — | — |
 | `test_arm_sources_use_ports_and_only_exact_azure_host_is_replaced` | `()` | — | — |
+| `test_hosted_runner_mirror_indirection_cannot_keep_selecting_azure` | `()` | — | — |
 | `test_unsupported_architecture_does_not_mutate_configuration` | `()` | — | — |
 
 ## Relationships
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_apt_runtime](../modules/test_apt_runtime.md) | 3 | — |
+| [test_apt_runtime](../modules/test_apt_runtime.md) | 4 | — |
 
 ### Structure
 
