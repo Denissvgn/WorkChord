@@ -112,7 +112,9 @@ def _scope_conditions(authority):
         c = table.c
         name = table.name
         condition = None
-        if name in {"task_deletion_fences", "planning_state"}:
+        if name in {"time_entries", "time_entry_revisions"}:
+            condition = and_(c.principal_id == authority.principal_id, c.project_id.in_(projects)) if authority.kind == "human" and authority.principal_id is not None else false()
+        elif name in {"task_deletion_fences", "planning_state"}:
             condition = false()
         elif name in {"task_subscriptions", "inbox_notifications"}:
             condition = and_(c.principal_id == authority.principal_id, c.task_id.in_(task_ids)) if authority.principal_id is not None else false()
@@ -323,6 +325,10 @@ def authorize_domain_writes(session, _flush_context, _instances):
                           or table == "saved_views" and obj.scope == "personal" and
                           (obj.owner_principal_id == authority.principal_id and authority.principal_id is not None or obj.created_by_session_id == authority.session_id and authority.session_id is not None))
         if table in {"task_subscriptions", "inbox_notifications"} and obj.principal_id == authority.principal_id:
+            owned_personal = True
+        if table in {"time_entries", "time_entry_revisions"}:
+            if authority.kind != "human" or obj.principal_id != authority.principal_id or not authority.allows(obj.project_id, "read"):
+                raise AuthorityError("time_entry_author_required", "Time records are private to their author.")
             owned_personal = True
         if table in {"task_comments", "task_comment_revisions"} and obj in session.new and obj.principal_id != authority.principal_id:
             raise AuthorityError("comment_authorship_required", "Discussion authorship must match the current account.")

@@ -118,6 +118,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         raise
     finally:
         db.info.pop("command", None)
+        db.info.pop("time_entry_commands", None)
         for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events"]:
             db.info.pop(key, None)
 
