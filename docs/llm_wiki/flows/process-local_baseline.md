@@ -60,7 +60,7 @@ sequenceDiagram
     p11->>p13: QualificationInputError
 ```
 
-> Call sequence diagram shows 30 of 170 interactions; 140 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 173 interactions; 143 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -124,41 +124,41 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 116 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 117 | `parser.add_argument('--observations', type=Path)` |
-| main | parser.add_argument | 118 | `parser.add_argument('--base-url')` |
-| main | parser.add_argument | 119 | `parser.add_argument('--nonce')` |
-| main | parser.add_argument | 120 | `parser.add_argument('--session-state', type=Path)` |
-| main | parser.add_argument | 121 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
-| main | parser.add_argument | 122 | `parser.add_argument('--declaration', type=Path, required=True)` |
-| main | parser.add_argument | 123 | `parser.add_argument('--source-revision')` |
-| main | parser.add_argument | 124 | `parser.add_argument('--source-sha256')` |
-| main | parser.add_argument | 125 | `parser.add_argument('--output', type=Path, required=True)` |
-| main | parser.parse_args | 126 | `parser.parse_args(data not statically known)` |
+| main | argparse.ArgumentParser | 121 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 122 | `parser.add_argument('--observations', type=Path)` |
+| main | parser.add_argument | 123 | `parser.add_argument('--base-url')` |
+| main | parser.add_argument | 124 | `parser.add_argument('--nonce')` |
+| main | parser.add_argument | 125 | `parser.add_argument('--session-state', type=Path)` |
+| main | parser.add_argument | 126 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
+| main | parser.add_argument | 127 | `parser.add_argument('--declaration', type=Path, required=True)` |
+| main | parser.add_argument | 128 | `parser.add_argument('--source-revision')` |
+| main | parser.add_argument | 129 | `parser.add_argument('--source-sha256')` |
+| main | parser.add_argument | 130 | `parser.add_argument('--output', type=Path, required=True)` |
+| main | parser.parse_args | 131 | `parser.parse_args(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.declaration.read_text` | `main` | 129 |
-| filesystem_read | `args.observations.read_text` | `main` | 131 |
-| output | `print` | `main` | 143 |
+| filesystem_read | `args.declaration.read_text` | `main` | 134 |
+| filesystem_read | `args.observations.read_text` | `main` | 136 |
+| output | `print` | `main` | 148 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 116 |
-| unresolved_call | `main` | `parser.add_argument` | 117 |
-| unresolved_call | `main` | `parser.add_argument` | 118 |
-| unresolved_call | `main` | `parser.add_argument` | 119 |
-| unresolved_call | `main` | `parser.add_argument` | 120 |
-| unresolved_call | `main` | `parser.add_argument` | 121 |
+| external_call | `main` | `argparse.ArgumentParser` | 121 |
 | unresolved_call | `main` | `parser.add_argument` | 122 |
 | unresolved_call | `main` | `parser.add_argument` | 123 |
 | unresolved_call | `main` | `parser.add_argument` | 124 |
 | unresolved_call | `main` | `parser.add_argument` | 125 |
-| unresolved_call | `main` | `parser.parse_args` | 126 |
+| unresolved_call | `main` | `parser.add_argument` | 126 |
+| unresolved_call | `main` | `parser.add_argument` | 127 |
+| unresolved_call | `main` | `parser.add_argument` | 128 |
+| unresolved_call | `main` | `parser.add_argument` | 129 |
+| unresolved_call | `main` | `parser.add_argument` | 130 |
+| unresolved_call | `main` | `parser.parse_args` | 131 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

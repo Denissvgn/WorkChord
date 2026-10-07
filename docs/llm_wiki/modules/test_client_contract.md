@@ -15,6 +15,7 @@ Schema-derived compatibility, legacy payloads, and additive client behavior.
 | `app.schemas.task` | `TaskStatusChange`, `TaskUpdate` |
 | `app.schemas.triage` | `TriageConvertToTaskRequest` |
 | `app.services.task_service` | `TaskVersionConflictError` |
+| `copy` | `deepcopy` |
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `pydantic` | `ValidationError` |
@@ -70,6 +71,8 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `test_client_contract_is_current_and_deterministic` | `()` | — | — |
+| `test_paged_readers_export_cursor_and_response_contracts` | `(path, schema_name, cursor_field)` | `@pytest.mark.parametrize('path,schema_name,cursor_field', PAGED_ROUTES)` | — |
+| `test_missing_paged_reader_fails_contract_export` | `(monkeypatch, path, schema_name, cursor_field)` | `@pytest.mark.parametrize('path,schema_name,cursor_field', PAGED_ROUTES)` | — |
 | `test_supported_task_update_payloads` | `(payload)` | `@pytest.mark.parametrize('payload', [{'title': 'Legacy edit'}, {'title': 'Versioned edit', 'expected_version': 2}])` | — |
 | `test_legacy_triage_target_and_additive_brief_input` | `()` | — | — |
 | `test_unknown_actions_and_invalid_versions_do_not_succeed` | `()` | — | — |

@@ -6,6 +6,8 @@
 
 Derives the shared task, session and triage wire contract from registered FastAPI operations and their transitive Pydantic schema references. Sorted serialization makes drift review deterministic. Schema capabilities describe present fields only; they do not enable runtime features or prove client adoption.
 
+The exported readers include project, iteration, portfolio-summary and task-timeline pages, with cursor parameters and their response schemas. Removing any listed route prevents export. The mobile snapshot embeds this same contract instead of maintaining a separate paging definition.
+
 ## Imports
 
 | Source | Symbols |

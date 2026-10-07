@@ -11,10 +11,11 @@
 3. `run.Recorder`
 4. `load_common.QualificationInputError`
 5. `load_common.QualificationInputError`
-6. `run.Attempt`
-7. `load_common.QualificationInputError`
-8. `result.latency_summary`
-9. `load_common.utc_now_text`
+6. `load_common.QualificationInputError`
+7. `run.Attempt`
+8. `load_common.QualificationInputError`
+9. `result.latency_summary`
+10. `load_common.utc_now_text`
 
 ## Touches
 

@@ -6,6 +6,8 @@
 
 Local synthetic observations reuse the qualification recorder and percentile utilities but never issue capacity certification. A matching predeclared workload, finite samples and explicit identity/transport scope are required. Loopback HTTP measurement verifies the owned nonce, separates human cookies from agent credentials, and records real interruption cleanup/recovery; limits and budget misses remain limitations.
 
+Expected collection-limit outcomes require both the declared `collection_limit_exceeded` code and HTTP 413. Success responses must carry no error code; other status/code combinations count as unexpected failures, and malformed HTTP statuses are rejected before recording.
+
 Summarize declared local observations without issuing capacity certification.
 
 ## Imports

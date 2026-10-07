@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:01a20317f938ea099a93a31863009b304b59c796d8e8f63af309300fdf259e12",
-    "knowledge_index_hash": "sha256:fae954667ef927a3dab3cfbff200fddacbd91e7cfdcc9de60cfd548cfc4cb8c8",
-    "surface_index_hash": "sha256:d2fa1ac13074786708625115a94279069a617bdf47e13c5183636627f3422022"
+    "evaluated_envelope_hash": "sha256:f727e29cbf20cb5b613b549cd76ef40ef4fba51c4fb3b40793f969d216ada02f",
+    "knowledge_index_hash": "sha256:49385346922d5217e1ca7bc76a2a1e417d5e7c77fdc3ab6291475cf89569ec82",
+    "surface_index_hash": "sha256:c8ba5aaf442703a5346fe6730264f0eadba8ddceb617106931a927ef92d92fea"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -17900,7 +17900,7 @@
         "concept_observation_hash": "sha256:2fd803ef587af2f91da8fdba24e7b7275c89d4aae0bcfda0b7d092601bf78d6c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d5d97d74718aa1ae04146dbb19bf1c0e0741fa4853b8a097f5c3ec04e786c5b5",
+        "source_content_hash": "sha256:1193d39830ac35045f387bcdc22ae176d4b27005d8f9d9c783f035bae91792ac",
         "source_path": "scripts/generate_client_contract.py"
       },
       "state": "known"
@@ -18230,7 +18230,7 @@
         "concept_observation_hash": "sha256:8df597c9a9005880ed2abd8660590b5cb8d57cecf24db6ac5e1e0b7e27c13eed",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:3d1560751ee2dc49a011aafdc1cbdf3ef56afaf529d9f19b6c7292031ec39f68",
+        "source_content_hash": "sha256:7374bc0809982d2fc451fbafbb9e585e97faab2db856f9e897d73bf3aa1e175f",
         "source_path": "scripts/load/local_baseline.py"
       },
       "state": "known"
@@ -20577,10 +20577,10 @@
     },
     "modules/test_client_contract.md": {
       "basis": {
-        "concept_observation_hash": "sha256:ec24d76d6f73713b97bc1642b24ccd532f6a0ba044b932de11a3580ec91ac9db",
+        "concept_observation_hash": "sha256:9f02844bdcf79c0c393ce165c0d0c0cda61f1d57bb26472222468dc03b9e07b3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:c1fe41813227eb1f627d87c31962e41d0a24f8921283df5e9fa789821967ac0b",
+        "source_content_hash": "sha256:5cd783401e9f7c86aba2c02639a1300a47cd7552f5c16f6ba8ef249ea952c410",
         "source_path": "backend/tests/test_client_contract.py"
       },
       "state": "known"
@@ -20727,10 +20727,10 @@
     },
     "modules/test_local_baseline.md": {
       "basis": {
-        "concept_observation_hash": "sha256:531ae8d7bbe12f7bb847caeb60d87f5d843507422c8a219ffabd36b2ad5a0517",
+        "concept_observation_hash": "sha256:f59c22fba254b5f0e67d35d8c487b011d96c0bd0179915abecbc3d6caa4cc2f7",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1637ba158cdf9f4e69c33d11de7f060c6301080ccd007bccb8129a1e6781e765",
+        "source_content_hash": "sha256:619be2d4c06b7f6ca09d4b546738ea4b2aced80a79119d5d3065bfe08e604acf",
         "source_path": "backend/tests/qualification/test_local_baseline.py"
       },
       "state": "known"
@@ -21760,13 +21760,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:1cd9652d65d98e5927633a6b544136ddcc2d0ce83acd6eadbd2869f1d3f4dc2d",
-      "lifecycle_hash": "sha256:97c47b6a06bbe8328b0de94986c994df457562572f118a89b1f50bf27cd99ff2",
-      "markdown_snapshot_hash": "sha256:7c86cb5607c98ca700624ab6203fca83e7fe0d75691238732e2704e4012ce096",
-      "observation_inputs_hash": "sha256:98a1b60ccd622c2bb6b4d8830263c57d49f6c63570b3fbe817656c048f730686",
+      "inventory_hash": "sha256:2dc54ad279bc7a93655f3d615f9edfa6d28bdb2b8fe5fd0a39734bb0d5c08e73",
+      "lifecycle_hash": "sha256:7f9382750025cd36137ca36489450bb27febbfee2ee29a834db6cedeb5acdc9e",
+      "markdown_snapshot_hash": "sha256:c140343ebdee33f49cbee7cd904c0469c31c09be731d5b6536cab575b59d9623",
+      "observation_inputs_hash": "sha256:13e88ac5bedf68782c9b969c521d8fa7bb66fccfe2888d2d2065843f20082a42",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:87c12e2f339990fa016ca8f6d6717613848ad6132d9639d441d945eaa0941d1d"
+      "source_snapshot_hash": "sha256:0f1f2ccefe25e097b83b8d18aa2888adf0996231fbfe22c27aecafb245a46d2d"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -58798,17 +58798,21 @@
           "functions": {
             "declaration": "—",
             "observation": "—",
+            "test_boundary_code_requires_its_contracted_status": "—",
             "test_limits_are_observed_without_certification": "—",
+            "test_malformed_http_status_is_rejected": "—",
             "test_missing_or_mismatched_evidence_is_rejected": "—",
             "test_nonfinite_observation_is_rejected": "—",
+            "test_ordinary_success_passes_and_undeclared_boundary_is_unexpected": "—",
+            "test_success_and_boundary_responses_require_consistent_codes": "—",
             "test_unexpected_failures_and_budget_misses_remain_limitations": "—"
           }
         }
       },
-      "hash": "sha256:1637ba158cdf9f4e69c33d11de7f060c6301080ccd007bccb8129a1e6781e765",
+      "hash": "sha256:619be2d4c06b7f6ca09d4b546738ea4b2aced80a79119d5d3065bfe08e604acf",
       "language": "python",
       "module_page": "test_local_baseline",
-      "semantic_hash": "sha256:851c63e09bde79e3952a684cab5ea29ec4aadad2eda814b3d36f1d08e86ab43f"
+      "semantic_hash": "sha256:137984837216a04cc6619dfd31abc4e3678d4c2948bc2978acdd57ffbf676ae8"
     },
     "backend/tests/qualification/test_routing_evidence.py": {
       "entities": [],
@@ -59895,16 +59899,18 @@
             "test_client_contract_is_current_and_deterministic": "—",
             "test_conflict_fixture_uses_the_server_machine_code": "—",
             "test_legacy_triage_target_and_additive_brief_input": "—",
+            "test_missing_paged_reader_fails_contract_export": "—",
+            "test_paged_readers_export_cursor_and_response_contracts": "—",
             "test_public_skill_bundles_require_the_trusted_checksum": "—",
             "test_supported_task_update_payloads": "—",
             "test_unknown_actions_and_invalid_versions_do_not_succeed": "—"
           }
         }
       },
-      "hash": "sha256:c1fe41813227eb1f627d87c31962e41d0a24f8921283df5e9fa789821967ac0b",
+      "hash": "sha256:5cd783401e9f7c86aba2c02639a1300a47cd7552f5c16f6ba8ef249ea952c410",
       "language": "python",
       "module_page": "test_client_contract",
-      "semantic_hash": "sha256:36963d928b85385b3caf8bc0f8c2ea72e876f3a1e25eb4f6572390d26d01bdbe"
+      "semantic_hash": "sha256:2b3372e4bce81da98c926780b4f5ea1874321e2ca9ad2a2377b049ae94cf2abf"
     },
     "backend/tests/test_database_harness.py": {
       "entities": [],
@@ -78881,7 +78887,7 @@
           }
         }
       },
-      "hash": "sha256:d5d97d74718aa1ae04146dbb19bf1c0e0741fa4853b8a097f5c3ec04e786c5b5",
+      "hash": "sha256:1193d39830ac35045f387bcdc22ae176d4b27005d8f9d9c783f035bae91792ac",
       "language": "python",
       "module_page": "generate_client_contract",
       "semantic_hash": "sha256:367155ffebfc2bcf5710139f37f8843bc2653dd26db57c7f24da2aab80865ac7"
@@ -79050,10 +79056,10 @@
           }
         }
       },
-      "hash": "sha256:3d1560751ee2dc49a011aafdc1cbdf3ef56afaf529d9f19b6c7292031ec39f68",
+      "hash": "sha256:7374bc0809982d2fc451fbafbb9e585e97faab2db856f9e897d73bf3aa1e175f",
       "language": "python",
       "module_page": "local_baseline",
-      "semantic_hash": "sha256:edb0993a65c2ddf878f3f3b5ed5b6372c7a38b3f42792ee753d99b0fc44739c2"
+      "semantic_hash": "sha256:ce693ae540dce6818dcc495520e2dccffdb3590b173d89efe27c1f0cec1f8744"
     },
     "scripts/load/qualify.py": {
       "entities": [],
