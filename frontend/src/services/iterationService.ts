@@ -10,29 +10,21 @@ import type {
 } from '../types/iteration';
 
 export const iterationService = {
-    getAll: async () => {
-        const pageSize = 500;
+    getAll: async (context?: { signal?: AbortSignal }) => {
         const iterations: Iteration[] = [];
-        let cursorStartDate: string | undefined;
-        let cursorId: number | undefined;
-
+        let after_id = 0;
+        let upper_id: number | undefined;
         while (true) {
-            const response = await api.get<Iteration[]>('/iterations', {
-                params: {
-                    limit: pageSize,
-                    cursor_start_date: cursorStartDate,
-                    cursor_id: cursorId,
-                },
-            });
-            const page = response.data;
-            iterations.push(...page);
-            if (page.length < pageSize) break;
-
-            const last = page[page.length - 1];
-            cursorStartDate = last.start_date;
-            cursorId = last.id;
+            const page = (await api.get<{ items: Iteration[]; has_more: boolean; next_after_id: number | null; upper_id: number }>('/iterations/page',
+                { params: { limit: 100, after_id, upper_id }, signal: context?.signal })).data;
+            iterations.push(...page.items);
+            if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean' || !Number.isSafeInteger(page.upper_id)) throw new Error('Incomplete iteration page');
+            upper_id ??= page.upper_id;
+            if (!page.has_more) break;
+            if (page.next_after_id === null || page.next_after_id <= after_id || page.next_after_id > upper_id) throw new Error('Invalid iteration page cursor');
+            after_id = page.next_after_id;
         }
-        return iterations;
+        return iterations.sort((a, b) => b.start_date.localeCompare(a.start_date) || b.id - a.id);
     },
 
     getById: async (id: number) => {

@@ -31,3 +31,9 @@ data class Iteration(
     @SerializedName("working_days")
     val workingDays: Int? = null
 )
+
+data class ProjectPage(val items: List<Project>?, @SerializedName("has_more") val hasMore: Boolean?,
+    @SerializedName("next_after_id") val nextAfterId: Int?, @SerializedName("upper_id") val upperId: Int?)
+
+data class IterationPage(val items: List<Iteration>?, @SerializedName("has_more") val hasMore: Boolean?,
+    @SerializedName("next_after_id") val nextAfterId: Int?, @SerializedName("upper_id") val upperId: Int?)

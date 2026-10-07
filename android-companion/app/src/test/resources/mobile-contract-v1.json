@@ -4895,6 +4895,49 @@
                 "title": "After Id",
                 "type": "integer"
               }
+            },
+            {
+              "in": "query",
+              "name": "task_status",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Task Status"
+              }
+            },
+            {
+              "in": "query",
+              "name": "parent_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Parent Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "roots_only",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Roots Only",
+                "type": "boolean"
+              }
             }
           ],
           "responses": {

@@ -416,6 +416,35 @@ class LiveCompanionTest {
     }
 
     @Test
+    fun pageLargeRelationshipsThroughTheOwnedServer() {
+        qualify()
+        if (tokens.baseUrl.trimEnd('/') != origin) {
+            app.onNodeWithText("Server address").performTextReplacement(origin)
+            click("Use this server")
+        }
+        signIn("Alice")
+        val arguments = InstrumentationRegistry.getArguments()
+        val parent = requireNotNull(arguments.getString("fixtureParentId")).toInt()
+        openTask(parent, "Large relationship parent")
+        scroll("Load more child work"); click("Load more child work")
+        app.waitUntil(15000) { app.onAllNodesWithText("Large child 050", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        app.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Large child 099", substring = true))
+        app.waitForIdle()
+        val output = File(context.getExternalFilesDir(null), "large-workset").apply { mkdirs() }
+        device.waitForIdle(2000)
+        device.takeScreenshot(File(output, "children-portrait.png"))
+        device.setOrientationLeft()
+        device.waitForIdle(2000)
+        device.takeScreenshot(File(output, "children-landscape.png"))
+        device.setOrientationNatural()
+        device.executeShellCommand("cmd uimode night yes")
+        device.waitForIdle(2000)
+        device.takeScreenshot(File(output, "children-dark.png"))
+        device.executeShellCommand("cmd uimode night no")
+        signOut("Alice")
+    }
+
+    @Test
     @androidx.test.filters.SdkSuppress(minSdkVersion = 33)
     fun captureCompanionPresentation() {
         assumeTrue("Presentation capture must be explicitly selected",

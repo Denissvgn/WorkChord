@@ -32,7 +32,15 @@ import type { AssigneeRecommendation } from '../types/team';
 export const taskService = {
     ownerOptions: async (projectId?: number) => (await api.get<{ items: { id: number; name: string }[]; has_more: boolean }>("/tasks/owner-options", { params: { project_id: projectId } })).data,
     getDetail: async (taskId: number, params: { limit?: number; children_after_id?: number; dependencies_after_id?: number } = {}) => (await api.get<TaskDetail>(`/tasks/${taskId}/detail`, { params })).data,
-    lookup: async (params: { project_id?: number; iteration_id?: number; q?: string; backlog_only?: boolean; after_id?: number; limit?: number }) => (await api.get<TaskReferencePage>('/tasks/lookup', { params })).data,
+    lookup: async (params: { project_id?: number; iteration_id?: number; q?: string; backlog_only?: boolean; after_id?: number; limit?: number; task_status?: string; parent_id?: number; roots_only?: boolean }, signal?: AbortSignal) => {
+        const page = (await api.get<TaskReferencePage>('/tasks/lookup', { params, signal })).data;
+        if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean'
+            || page.items.some(item => !Number.isSafeInteger(item.id) || item.id <= (params.after_id ?? 0))
+            || (page.has_more && (!Number.isSafeInteger(page.next_after_id) || (page.next_after_id ?? 0) <= (params.after_id ?? 0)))) {
+            throw new Error('Incomplete or invalid task page. Refresh the workset.');
+        }
+        return page;
+    },
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
     command: async (taskId: number, data: TaskCommand) => (await api.post<Task>(`/tasks/${taskId}/commands`, data)).data,
     convertBrief: async (taskId: number, expected_version: number, apply: boolean) => (await api.post<{ brief: TaskBrief; notes: string[]; already_converted: boolean }>(`/tasks/${taskId}/brief/convert`, { expected_version, apply })).data,
@@ -207,6 +215,8 @@ export const taskService = {
         const response = await api.get<Task[]>(`/iterations/${iterationId}/overdue`);
         return response.data;
     },
+
+    getTimelinePage: async (taskId: number, cursor?: string) => (await api.get<TaskTimelineResponse & { has_more: boolean; next_cursor: string | null; limit: number; consistency: string }>(`/tasks/${taskId}/timeline/page`, { params: { cursor, limit: 50 } })).data,
 
     getTimeline: async (taskId: number) => {
         const response = await api.get<TaskTimelineResponse>(`/tasks/${taskId}/timeline`);

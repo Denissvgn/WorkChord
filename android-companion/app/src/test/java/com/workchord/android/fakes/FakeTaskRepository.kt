@@ -109,7 +109,16 @@ class FakeTaskRepository(
     override suspend fun getProjects() = projectsResult
     override suspend fun getIterations() = iterationsResult
     override suspend fun getCapabilities() = capabilitiesResult
+    var detailResult: Result<TaskDetail>? = null
+    var detailPageResult: Result<TaskDetail>? = null
+    var lastChildrenCursor: Int? = null
+    var lastDependenciesCursor: Int? = null
+    override suspend fun getTaskDetailPage(taskId: Int, childrenAfterId: Int, dependenciesAfterId: Int): Result<TaskDetail> {
+        lastChildrenCursor = childrenAfterId; lastDependenciesCursor = dependenciesAfterId
+        return detailPageResult ?: getTaskDetail(taskId)
+    }
     override suspend fun getTaskDetail(taskId: Int): Result<TaskDetail> {
+        detailResult?.let { return it }
         return getTaskById(taskId).map { TaskDetail(it, emptyList(), true,
             TaskReferencePage(emptyList(), false, null), TaskReferencePage(emptyList(), false, null), false) }
     }

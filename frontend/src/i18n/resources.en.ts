@@ -1,7 +1,9 @@
+import { paginationEN } from './pagination';
 import { teamworkEnglish } from './teamwork.en';
 export const englishResources = {
         translation: {
             teamwork: teamworkEnglish,
+            pagination: paginationEN,
             domain: {
                 "history": "History and links",
                 "staleProgress": "This progress draft belongs to an older version. Compare it with the current criteria before reapplying. Changed criteria require fresh progress.",

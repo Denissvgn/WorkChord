@@ -14,6 +14,7 @@ from app.schemas.iteration import (
     IterationUpdate,
     IterationResponse,
     IterationSummary,
+    IterationPage,
 )
 from app.schemas.common import MessageResponse
 from app.query_limits import MAX_ITERATION_LIST_ITEMS
@@ -25,6 +26,14 @@ router = APIRouter()
 async def get_iteration_service(db: Annotated[AsyncSession, Depends(get_db, scope="function")]) -> IterationService:
     """Dependency for iteration service."""
     return IterationService(db)
+
+
+@router.get("/iterations/page", response_model=IterationPage)
+async def get_iteration_page(service: Annotated[IterationService, Depends(get_iteration_service)],
+    limit: int = Query(default=100, ge=1, le=100), after_id: int = Query(default=0, ge=0), upper_id: int | None = Query(default=None, ge=0)):
+    page = await service.id_page(limit=limit, after_id=after_id, upper_id=upper_id)
+    page["items"] = [service.to_response(item) for item in page["items"]]
+    return page
 
 
 @router.get("/iterations", response_model=list[IterationResponse])

@@ -1,7 +1,9 @@
+import { paginationRU } from './pagination';
 import { teamworkRussian } from './teamwork.ru';
 export const russianResources = {
         translation: {
             teamwork: teamworkRussian,
+            pagination: paginationRU,
             domain: {
                 "history": "История и ссылки",
                 "staleProgress": "Черновик выполнения относится к старой версии. Сравните его с текущими критериями перед повторным применением. Изменённые критерии требуют новых данных.",

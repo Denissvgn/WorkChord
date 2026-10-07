@@ -314,6 +314,16 @@ class IterationService:
         result = await self.db.execute(query)
         return result.scalars().all()
 
+    async def id_page(self, *, limit=100, after_id=0, upper_id=None):
+        if not 1 <= limit <= 100 or after_id < 0 or upper_id is not None and upper_id < 0:
+            raise ValueError("Use a bounded iteration page with nonnegative cursors")
+        if upper_id is None:
+            upper_id = await self.db.scalar(select(Iteration.id).order_by(Iteration.id.desc()).limit(1)) or 0
+        rows = list((await self.db.scalars(select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project))
+            .where(Iteration.id > after_id, Iteration.id <= upper_id).order_by(Iteration.id).limit(limit+1))).all())
+        more = len(rows) > limit
+        return dict(items=rows[:limit], has_more=more, next_after_id=rows[limit-1].id if more else None, upper_id=upper_id)
+
     async def get_by_id(self, iteration_id: int) -> Iteration | None:
         """Get iteration by ID with related data."""
         result = await self.db.execute(

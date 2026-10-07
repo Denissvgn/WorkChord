@@ -70,7 +70,23 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
                 state.detail?.children?.items.orEmpty().forEach { child -> item(key = "child-${child.id}") {
                     TextButton(onClick = { leave { onNavigateTask(child.id) } }) { Text("Child #${child.id} · ${child.title}") }
                 } }
-                if (state.detail?.children?.hasMore != false) item { Text("Additional child work may be available. This is a bounded page.") }
+                if (state.detail?.children?.hasMore == true) item {
+                    OutlinedButton(onClick = { viewModel.loadMoreRelations(true) }, enabled = !state.isLoadingRelations && state.authoritative) {
+                        Text(stringResource(R.string.more_children))
+                    }
+                }
+                state.detail?.dependencies?.items.orEmpty().forEach { dependency -> item(key = "dependency-${dependency.id}") {
+                    TextButton(onClick = { onNavigateTask(dependency.id) }) { Text("#${dependency.id} · ${dependency.title}") }
+                } }
+                if (state.detail?.dependencies?.hasMore == true) item {
+                    OutlinedButton(onClick = { viewModel.loadMoreRelations(false) }, enabled = !state.isLoadingRelations && state.authoritative) {
+                        Text(stringResource(R.string.more_dependencies))
+                    }
+                }
+                state.relationError?.let { message -> item { Text(message, color = MaterialTheme.colorScheme.error) } }
+                if (state.detail?.children?.hasMore != false || state.detail?.dependencies?.hasMore != false) item {
+                    Text(stringResource(R.string.bounded_relations))
+                }
                 item {
                     Text("Brief", style = MaterialTheme.typography.titleLarge)
                     Text(task.brief?.goal?.takeIf { it.isNotBlank() } ?: task.description?.takeIf { it.isNotBlank() } ?: stringResource(R.string.brief_missing))

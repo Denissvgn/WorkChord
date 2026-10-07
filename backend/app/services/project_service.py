@@ -391,6 +391,16 @@ class ProjectService:
             )
         return projects
 
+    async def project_page(self, *, limit=100, after_id=0, upper_id=None):
+        if not 1 <= limit <= 100 or after_id < 0 or upper_id is not None and upper_id < 0:
+            raise ValueError("Use a bounded project page with nonnegative cursors")
+        if upper_id is None:
+            upper_id = await self.db.scalar(select(Project.id).order_by(Project.id.desc()).limit(1)) or 0
+        items = list((await self.db.scalars(self._project_query().where(Project.id > after_id, Project.id <= upper_id)
+            .order_by(Project.id).limit(limit + 1))).all())
+        more = len(items) > limit
+        return dict(items=items[:limit], has_more=more, next_after_id=items[limit-1].id if more else None, upper_id=upper_id)
+
     async def list_portfolio_summaries(self) -> list[ProjectPortfolioSummary]:
         """Return compact project signals with one aggregate query for the portfolio."""
         projects = list(
@@ -414,6 +424,16 @@ class ProjectService:
         if not projects:
             return []
 
+        return await self._portfolio_summaries(projects)
+
+    async def portfolio_page(self, *, limit=100, after_id=0, upper_id=None):
+        page = await self.project_page(limit=limit, after_id=after_id, upper_id=upper_id)
+        page["items"] = await self._portfolio_summaries(page["items"])
+        return page
+
+    async def _portfolio_summaries(self, projects):
+        if not projects:
+            return []
         from app.services.work_metrics import aggregate_metrics
         rows = await aggregate_metrics(self.db, project_ids=[project.id for project in projects], group_by="project", zone_map={project.id: project.timezone for project in projects})
         aggregates = {row["group_id"]: row for row in rows}

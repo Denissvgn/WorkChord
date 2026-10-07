@@ -1,3 +1,5 @@
+import { isGraphLimitError } from '../../../utils/graphLimitError';
+import { PagedTaskBrowser } from '../PagedTaskBrowser';
 import { useState, useMemo, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -282,6 +284,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     }, [activeId, tasks]);
 
 
+    if (isGraphLimitError(tasksQuery.error)) return <PagedTaskBrowser key={iterationId} iterationId={iterationId} />;
     if (tasksQuery.isLoading || teamQuery.isLoading || labelsQuery.isLoading) return <QueryLoadingState />;
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;

@@ -6,7 +6,7 @@ import type { Task } from '../../types/task';
 import { TaskTimelinePanel } from './TaskTimelinePanel';
 
 const taskServiceMock = vi.hoisted(() => ({
-    getTimeline: vi.fn(),
+    getTimelinePage: vi.fn(),
     getExternalLinks: vi.fn(),
     createGitHubExternalLink: vi.fn(),
     deleteExternalLink: vi.fn(),
@@ -52,8 +52,8 @@ const task: Task = {
 
 describe('TaskTimelinePanel', () => {
     beforeEach(() => {
-        taskServiceMock.getTimeline.mockReset();
-        taskServiceMock.getTimeline.mockResolvedValue({ task_id: 42, items: [] });
+        taskServiceMock.getTimelinePage.mockReset();
+        taskServiceMock.getTimelinePage.mockResolvedValue({ task_id: 42, items: [], has_more: false, next_cursor: null });
         taskServiceMock.getExternalLinks.mockReset();
         taskServiceMock.getExternalLinks.mockResolvedValue([]);
         taskServiceMock.createGitHubExternalLink.mockReset();

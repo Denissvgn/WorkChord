@@ -1,0 +1,15 @@
+# Bounded worksets and history
+
+Task lookup, child and prerequisite views are bounded read projections. Follow `has_more` and `next_after_id` with the same scope, search and status filters; never treat a loaded page as a complete execution or planning graph. Reads use ascending immutable IDs. Deleted rows disappear; changes behind the cursor and newly matching older rows appear after refresh. Permission checks apply to every request. Changing filters starts at the first page.
+
+`GET /api/tasks/lookup` supports `project_id`, `iteration_id`, `backlog_only`, `q`, `task_status`, `roots_only` or `parent_id`, and a limit from 1 to 100. `GET /api/tasks/{id}/detail` pages children and prerequisites independently. Unknown completeness must remain unknown. Web large-workset browsing uses its own search/status controls; planning filters and bulk actions require the complete graph. Individual task details remain readable; owning recovery/snapshot boundaries can still reject mutations on an oversized graph.
+
+`GET /api/projects/page`, `GET /api/projects/portfolio-summaries/page` and `GET /api/iterations/page` use ID order with `has_more`, `next_after_id` and an initial `upper_id`. Carry that upper bound through the read to exclude later inserts and keep the selector walk finite. A refresh starts a new read. Display ordering can be restored after collecting these metadata pages. Permissions and existing records remain live; this is not a database snapshot.
+
+`GET /api/tasks/{id}/timeline/page` returns newest observations first, with deterministic timestamp/source/ID ties, stable `event_key`, and an opaque `next_cursor`. Carry the cursor for this task only. Newer inserted events are visible after refresh; older backdated inserts may appear on subsequent pages. Deleted history is not restored by paging. The compatible full timeline rejects more than 500 items rather than silently truncating.
+
+Complete synchronous iteration/project trees remain bounded at 2,500 tasks. Complete scheduling, Gantt, agent decisions and structural mutations must retain that authoritative context. The bounded export surface supports up to 5,000 tasks; export projections are not database backups and must retain identity, scope and observed revisions.
+
+For larger worksets, browse or export authorized pages, record their scope and versions, and split future work into independently scoped projects/iterations. Review all hierarchy and dependency edges first. Use ordinary versioned move commands for bounded independent components; they require scope permissions and reject stranded dependencies or live execution ownership. Closing or archiving work does not authorize deleting immutable history. If a component itself exceeds a supported synchronous bound, stop and use an explicitly authorized offline migration/repair procedure with a database backup and recovery plan. Do not force a partial graph through scheduling or a move.
+
+See [identity and recovery](identity-and-recovery.md), [delivery analytics](delivery-analytics.md) and [PostgreSQL operations](runbooks/postgresql-operations.md).

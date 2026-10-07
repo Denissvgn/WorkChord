@@ -41,4 +41,7 @@
     <string name="priority_high">P%1$d High</string>
     <string name="priority_medium">P%1$d Medium</string>
     <string name="priority_low">P%1$d Low</string>
+    <string name="more_children">Load more child work</string>
+    <string name="more_dependencies">Load more prerequisites</string>
+    <string name="bounded_relations">This is a bounded relationship view, not a complete planning graph.</string>
 </resources>

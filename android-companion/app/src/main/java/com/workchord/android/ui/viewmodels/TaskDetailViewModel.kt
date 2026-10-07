@@ -19,12 +19,13 @@ data class TaskDetailUiState(val isLoading: Boolean = true, val isUpdatingStatus
     val task: Task? = null, val detail: TaskDetail? = null, val actions: TaskActions? = null,
     val reviews: List<TaskReview> = emptyList(), val reviewSnapshot: CurrentTaskReview? = null, val draft: EvidenceDraft? = null,
     val reason: String = "", val reviewEvidence: String = "", val errorMessage: String? = null,
+    val isLoadingRelations: Boolean = false, val relationError: String? = null,
     val successMessage: String? = null, val conflict: Task? = null, val authoritative: Boolean = false) {
     val acceptanceCriteria get() = task?.extractAcceptanceCriteria().orEmpty()
     val hasUnsavedInputs get() = draft != null || reason.isNotBlank() || reviewEvidence.isNotBlank()
     val currentReview get() = reviewSnapshot?.review?.takeIf { reviewSnapshot?.taskVersion == task?.version &&
         it.taskVersion == task?.version && it.briefRevision == task?.briefRevision && it.artifactRevision == task?.artifactRevision }
-    fun allowed(action: String) = authoritative && !isLoading && !isUpdatingStatus && actions?.version == task?.version &&
+    fun allowed(action: String) = authoritative && !isLoading && !isUpdatingStatus && !isLoadingRelations && actions?.version == task?.version &&
         actions?.actions.orEmpty().any { it.action == action && it.allowed }
     fun blockers(action: String) = actions?.actions.orEmpty().firstOrNull { it.action == action }?.blockers.orEmpty()
 }
@@ -34,6 +35,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
     private val state = MutableStateFlow(TaskDetailUiState())
     val uiState = state.asStateFlow()
     private var load: Job? = null
+    private var relations: Job? = null
     private var generation = 0L
     private var restored = false
     private var scopeAtRead: String? = null
@@ -42,7 +44,8 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
     fun loadTask() {
         val current = ++generation
         load?.cancel()
-        state.value = state.value.copy(isLoading = true, authoritative = false, errorMessage = null)
+        relations?.cancel()
+        state.value = state.value.copy(isLoadingRelations = false, relationError = null, isLoading = true, authoritative = false, errorMessage = null)
         load = viewModelScope.launch {
             try {
                 val capabilities = repository.getCapabilities().getOrThrow()
@@ -86,6 +89,48 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
                         reviewEvidence = if (forbidden) "" else state.value.reviewEvidence,
                         errorMessage = if (cached != null) "Cached read-only data from ${java.time.Instant.ofEpochMilli(cached.fetchedAt)}. Access and acceptance are not verified until a successful refresh."
                             else error.localizedMessage ?: "Could not load current work.")
+                }
+            }
+        }
+    }
+
+    fun loadMoreRelations(children: Boolean) {
+        val detail = state.value.detail ?: return
+        val page = if (children) detail.children else detail.dependencies
+        val cursor = page.nextAfterId ?: return
+        if (page.hasMore != true || state.value.isLoadingRelations || !state.value.authoritative) return
+        if (cursor <= 0 || page.items.orEmpty().lastOrNull()?.id != cursor) {
+            state.value = state.value.copy(relationError = "Invalid relation cursor. Reload current work.")
+            return
+        }
+        val current = generation
+        val scope = repository.draftScope
+        state.value = state.value.copy(isLoadingRelations = true, relationError = null)
+        relations?.cancel()
+        relations = viewModelScope.launch {
+            try {
+                val next = repository.getTaskDetailPage(taskId, if (children) cursor else 0, if (children) 0 else cursor).getOrThrow()
+                coroutineContext.ensureActive()
+                if (current != generation) return@launch
+                if (scope != repository.draftScope) {
+                    state.value = TaskDetailUiState(isLoading = false, errorMessage = "Account changed. Reload current work.")
+                    return@launch
+                }
+                require(next.task.authoritativeVersion == detail.task.authoritativeVersion) { "Task changed while paging. Reload current work." }
+                val received = if (children) next.children else next.dependencies
+                require(received.items != null && received.items.orEmpty().all { it.id > cursor } && received.hasMore != null && (received.hasMore != true || (received.nextAfterId ?: 0) > cursor)) {
+                    "The relation page is incomplete. Reload current work."
+                }
+                val combined = received.copy(items = (page.items.orEmpty() + received.items.orEmpty()).distinctBy { it.id })
+                val updated = if (children) detail.copy(children = combined) else detail.copy(dependencies = combined)
+                state.value = state.value.copy(detail = updated, isLoadingRelations = false)
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) {
+                if (current == generation) {
+                    if (scope != repository.draftScope || (error is ApiProblem && error.statusCode in setOf(401, 403, 404))) {
+                        state.value = TaskDetailUiState(isLoading = false, errorMessage = error.message)
+                    } else state.value = state.value.copy(isLoadingRelations = false, relationError = error.message,
+                        authoritative = state.value.authoritative && error !is IllegalArgumentException)
                 }
             }
         }

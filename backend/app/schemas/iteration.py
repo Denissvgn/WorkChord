@@ -118,3 +118,11 @@ class IterationPlanningReadinessSummary(BaseModel):
     tasks_without_effort: int
     has_schedule: bool
     risk_count: int
+
+
+class IterationPage(BaseModel):
+    items: list[IterationResponse]
+    has_more: bool
+    next_after_id: int | None
+    upper_id: int
+    consistency: str = "live_bounded_id_order"

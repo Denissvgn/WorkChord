@@ -3,6 +3,8 @@ package com.workchord.android.data.api
 import com.workchord.android.data.models.Iteration
 import com.workchord.android.data.models.Identity
 import com.workchord.android.data.models.Project
+import com.workchord.android.data.models.ProjectPage
+import com.workchord.android.data.models.IterationPage
 import com.workchord.android.data.models.Session
 import com.workchord.android.data.models.Task
 import com.workchord.android.data.models.TaskStatusChangeRequest
@@ -51,7 +53,9 @@ interface WorkChordApi {
         @Query("limit") limit: Int = 50): Response<TaskReferencePage>
 
     @GET("api/tasks/{id}/detail")
-    suspend fun getTaskDetail(@Path("id") taskId: Int): Response<TaskDetail>
+    suspend fun getTaskDetail(@Path("id") taskId: Int,
+        @Query("children_after_id") childrenAfterId: Int = 0,
+        @Query("dependencies_after_id") dependenciesAfterId: Int = 0): Response<TaskDetail>
 
     @GET("api/tasks/{id}/actions")
     suspend fun getTaskActions(@Path("id") taskId: Int): Response<TaskActions>
@@ -99,8 +103,14 @@ interface WorkChordApi {
         @Body request: TaskStatusChangeRequest
     ): Response<TaskStatusChangeResponse>
 
+    @GET("api/iterations/page")
+    suspend fun getIterationPage(@Query("after_id") afterId: Int = 0, @Query("upper_id") upperId: Int? = null): Response<IterationPage>
+
     @GET("api/iterations")
     suspend fun getIterations(): Response<List<Iteration>>
+
+    @GET("api/projects/page")
+    suspend fun getProjectPage(@Query("after_id") afterId: Int = 0, @Query("upper_id") upperId: Int? = null): Response<ProjectPage>
 
     @GET("api/projects")
     suspend fun getProjects(): Response<List<Project>>

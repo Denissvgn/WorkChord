@@ -7,6 +7,7 @@ import ts from 'typescript';
 // Reviewed FE-08 inventory. Any count change requires reviewing the file's
 // loading/error/retry/empty or pending/failure policy and updating this record.
 export const REVIEWED_HOOK_COUNTS = {
+    'src/components/tasks/PagedTaskBrowser.tsx': [1, 0],
     'src/pages/MyWorkPage.tsx': [5, 2],
     'src/components/tasks/TaskSearch.tsx': [1, 0],
     'src/components/tasks/TaskDiscussion.tsx': [4, 2],
@@ -84,6 +85,7 @@ const HOOK_KINDS = new Map([
 // prevents an unreviewed hook from replacing a reviewed hook in the same file
 // while leaving Q/M totals unchanged.
 export const REVIEWED_HOOK_FINGERPRINTS = {
+    'src/components/tasks/PagedTaskBrowser.tsx': 'd1f37f9574a416f5',
     'src/pages/MyWorkPage.tsx': '8cb0024e22f7e3ca',
     'src/components/tasks/TaskSearch.tsx': '1c836716acf30699',
     'src/components/tasks/TaskDiscussion.tsx': '90fd117ca2c0dc6d',
@@ -122,7 +124,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/TaskForm.tsx': '683eda1f5d4ccbf0',
     'src/components/tasks/TaskList.tsx': '644c5a4adff141b7',
     'src/components/tasks/TaskTextEditorModal.tsx': '1a455f699d3e28df',
-    'src/components/tasks/TaskTimelinePanel.tsx': '6cc605ad58f63789',
+    'src/components/tasks/TaskTimelinePanel.tsx': '1cc3e2a063c62ca3',
     'src/components/team/AssigneeRecommendationsPanel.tsx': '8450676dbd07de86',
     'src/components/team/ImportTeamModal.tsx': '12bf6d2f5ae17a79',
     'src/components/team/TeamForm.tsx': '3b33d610019f1ad8',
