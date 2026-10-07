@@ -20,6 +20,8 @@ CLIENT_PATHS = (
     "/api/tasks/{task_id}/actions", "/api/tasks/{task_id}/commands", "/api/tasks/{task_id}/brief",
     "/api/tasks/{task_id}/brief/convert", "/api/tasks/{task_id}/progress", "/api/tasks/{task_id}/review",
     "/api/tasks/{task_id}/detail", "/api/tasks/lookup",
+    "/api/projects/page", "/api/iterations/page", "/api/projects/portfolio-summaries/page",
+    "/api/tasks/{task_id}/timeline/page",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 

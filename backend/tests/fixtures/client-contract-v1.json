@@ -572,6 +572,49 @@
         "title": "IterationCreate",
         "type": "object"
       },
+      "IterationPage": {
+        "properties": {
+          "consistency": {
+            "default": "live_bounded_id_order",
+            "title": "Consistency",
+            "type": "string"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/IterationResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_after_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next After Id"
+          },
+          "upper_id": {
+            "title": "Upper Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "has_more",
+          "next_after_id",
+          "upper_id"
+        ],
+        "title": "IterationPage",
+        "type": "object"
+      },
       "IterationProjectSummary": {
         "description": "Compact project identity embedded in iteration responses.",
         "properties": {
@@ -1082,6 +1125,215 @@
         "title": "ProjectInitiativeSummary",
         "type": "object"
       },
+      "ProjectPage": {
+        "properties": {
+          "consistency": {
+            "default": "live_bounded_id_order",
+            "title": "Consistency",
+            "type": "string"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProjectResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_after_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next After Id"
+          },
+          "upper_id": {
+            "title": "Upper Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "has_more",
+          "next_after_id",
+          "upper_id"
+        ],
+        "title": "ProjectPage",
+        "type": "object"
+      },
+      "ProjectPortfolioPage": {
+        "properties": {
+          "consistency": {
+            "default": "live_bounded_id_order",
+            "title": "Consistency",
+            "type": "string"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProjectPortfolioSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_after_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next After Id"
+          },
+          "upper_id": {
+            "title": "Upper Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "has_more",
+          "next_after_id",
+          "upper_id"
+        ],
+        "title": "ProjectPortfolioPage",
+        "type": "object"
+      },
+      "ProjectPortfolioSummary": {
+        "description": "Compact project signals for portfolio tables.",
+        "properties": {
+          "acceptance_unknown_tasks": {
+            "default": 0,
+            "title": "Acceptance Unknown Tasks",
+            "type": "integer"
+          },
+          "accepted_percent": {
+            "default": 0.0,
+            "title": "Accepted Percent",
+            "type": "number"
+          },
+          "accepted_tasks": {
+            "default": 0,
+            "title": "Accepted Tasks",
+            "type": "integer"
+          },
+          "blocked_tasks": {
+            "default": 0,
+            "title": "Blocked Tasks",
+            "type": "integer"
+          },
+          "completed_tasks": {
+            "default": 0,
+            "title": "Completed Tasks",
+            "type": "integer"
+          },
+          "deferred_tasks": {
+            "default": 0,
+            "title": "Deferred Tasks",
+            "type": "integer"
+          },
+          "implemented_tasks": {
+            "default": 0,
+            "title": "Implemented Tasks",
+            "type": "integer"
+          },
+          "iteration_overflow_tasks": {
+            "default": 0,
+            "title": "Iteration Overflow Tasks",
+            "type": "integer"
+          },
+          "late_start_tasks": {
+            "default": 0,
+            "title": "Late Start Tasks",
+            "type": "integer"
+          },
+          "metric_contract_version": {
+            "default": 2,
+            "title": "Metric Contract Version",
+            "type": "integer"
+          },
+          "optional_tasks": {
+            "default": 0,
+            "title": "Optional Tasks",
+            "type": "integer"
+          },
+          "overdue_tasks": {
+            "default": 0,
+            "title": "Overdue Tasks",
+            "type": "integer"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "integer"
+          },
+          "project_target_overflow_tasks": {
+            "default": 0,
+            "title": "Project Target Overflow Tasks",
+            "type": "integer"
+          },
+          "remaining_effort_days": {
+            "default": 0.0,
+            "title": "Remaining Effort Days",
+            "type": "number"
+          },
+          "required_accepted_tasks": {
+            "default": 0,
+            "title": "Required Accepted Tasks",
+            "type": "integer"
+          },
+          "required_implemented_tasks": {
+            "default": 0,
+            "title": "Required Implemented Tasks",
+            "type": "integer"
+          },
+          "required_tasks": {
+            "default": 0,
+            "title": "Required Tasks",
+            "type": "integer"
+          },
+          "structural_tasks": {
+            "default": 0,
+            "title": "Structural Tasks",
+            "type": "integer"
+          },
+          "target_date_risk": {
+            "$ref": "#/components/schemas/ProjectTargetDateRisk",
+            "default": "unknown"
+          },
+          "total_effort_days": {
+            "default": 0.0,
+            "title": "Total Effort Days",
+            "type": "number"
+          },
+          "total_tasks": {
+            "default": 0,
+            "title": "Total Tasks",
+            "type": "integer"
+          },
+          "unknown_estimate_tasks": {
+            "default": 0,
+            "title": "Unknown Estimate Tasks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "project_id"
+        ],
+        "title": "ProjectPortfolioSummary",
+        "type": "object"
+      },
       "ProjectResponse": {
         "description": "Schema for project response.",
         "properties": {
@@ -1254,6 +1506,17 @@
           "canceled"
         ],
         "title": "ProjectStatus",
+        "type": "string"
+      },
+      "ProjectTargetDateRisk": {
+        "description": "Target-date risk for project delivery.",
+        "enum": [
+          "unknown",
+          "on_track",
+          "at_risk",
+          "off_track"
+        ],
+        "title": "ProjectTargetDateRisk",
         "type": "string"
       },
       "TaskActionAvailability": {
@@ -2974,6 +3237,127 @@
         "title": "TaskStatusChangeResponse",
         "type": "object"
       },
+      "TaskTimelinePage": {
+        "properties": {
+          "consistency": {
+            "default": "live_timestamp_id_desc",
+            "title": "Consistency",
+            "type": "string"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TaskTimelinePageItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "task_id",
+          "items",
+          "has_more",
+          "next_cursor",
+          "limit"
+        ],
+        "title": "TaskTimelinePage",
+        "type": "object"
+      },
+      "TaskTimelinePageItem": {
+        "properties": {
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Type"
+          },
+          "event_key": {
+            "title": "Event Key",
+            "type": "string"
+          },
+          "item_type": {
+            "enum": [
+              "task_event",
+              "status_log",
+              "agent_run",
+              "agent_run_event"
+            ],
+            "title": "Item Type",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "trace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trace Id"
+          }
+        },
+        "required": [
+          "item_type",
+          "timestamp",
+          "title",
+          "event_key"
+        ],
+        "title": "TaskTimelinePageItem",
+        "type": "object"
+      },
       "TaskUpdate": {
         "description": "Schema for updating a task.",
         "properties": {
@@ -4552,6 +4936,79 @@
         ]
       }
     },
+    "/api/iterations/page": {
+      "get": {
+        "operationId": "get_iteration_page_api_iterations_page_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "upper_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Upper Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IterationPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Iteration Page",
+        "tags": [
+          "Iterations"
+        ]
+      }
+    },
     "/api/iterations/{iteration_id}/tasks": {
       "get": {
         "description": "Get all tasks for an iteration (tree structure).",
@@ -4711,6 +5168,152 @@
           }
         },
         "summary": "Create Project",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/api/projects/page": {
+      "get": {
+        "operationId": "get_project_page_api_projects_page_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "upper_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Upper Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Project Page",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/api/projects/portfolio-summaries/page": {
+      "get": {
+        "operationId": "get_portfolio_summary_page_api_projects_portfolio_summaries_page_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "After Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "upper_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Upper Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPortfolioPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Portfolio Summary Page",
         "tags": [
           "Projects"
         ]
@@ -5922,6 +6525,77 @@
           }
         },
         "summary": "Change Task Status",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/api/tasks/{task_id}/timeline/page": {
+      "get": {
+        "operationId": "get_task_timeline_page_api_tasks__task_id__timeline_page_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "title": "Task Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskTimelinePage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Task Timeline Page",
         "tags": [
           "Tasks"
         ]

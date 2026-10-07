@@ -32,8 +32,13 @@ def summarize(raw, declaration):
         values = [sample.get(k) for k in ("latency_ms", "response_bytes", "response_cardinality")]
         if any(not isinstance(v, (int, float)) or isinstance(v, bool) or not math.isfinite(v) or v < 0 for v in values):
             raise QualificationInputError("Malformed measurement")
-        boundary = sample.get("code") in declaration["expected_boundary_rejections"]
-        expected = 200 <= sample["status"] < 300 or boundary
+        status = sample.get("status")
+        if type(status) is not int or not 100 <= status <= 599:
+            raise QualificationInputError("Malformed HTTP status")
+        code = sample.get("code")
+        boundary = (status == 413 and code == "collection_limit_exceeded"
+            and code in declaration["expected_boundary_rejections"])
+        expected = boundary or (200 <= status < 300 and code is None)
         attempt = Attempt(sample["path"], "expected_boundary" if boundary else "read", sample["status"],
             sample["latency_ms"], 0, sample["response_bytes"], sample["response_cardinality"],
             "local_workset", sample["profile"], "bounded_projection", sample["client_kind"])

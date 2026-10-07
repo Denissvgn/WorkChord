@@ -104,6 +104,7 @@ class MobileContractTest {
     fun declaredDtoFieldsMatchBackendSchema() {
         val schemas = root.getAsJsonObject("contract").getAsJsonObject("components").getAsJsonObject("schemas")
         for ((type, schema) in listOf(Task::class.java to "TaskResponse", TaskBrief::class.java to "TaskBrief",
+            ProjectPage::class.java to "ProjectPage", IterationPage::class.java to "IterationPage",
             BriefCriterion::class.java to "BriefCriterion", TaskDetail::class.java to "TaskDetailResponse",
             TaskReference::class.java to "TaskReference", TaskReferencePage::class.java to "TaskReferencePage",
             TaskActions::class.java to "TaskActionsResponse", AllowedAction::class.java to "TaskActionAvailability",
