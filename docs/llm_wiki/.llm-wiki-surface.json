@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1498,
-      "flows": 540,
+      "entities": 1509,
+      "flows": 542,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 677,
+      "modules": 688,
       "workflows": 177
     },
     "dependency_architecture": 2,
-    "total": 2907
+    "total": 2931
   },
   "dependency_pages": {
     "count": 2,
@@ -1568,7 +1568,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 21,
+              "line": 25,
               "step": "capabilities",
               "target": "db.info.get"
             }
@@ -2322,7 +2322,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 48,
+              "line": 69,
               "step": "correct_entry",
               "target": "TimeEntryService(db).correct"
             }
@@ -3022,7 +3022,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 37,
+              "line": 41,
               "step": "create_entry",
               "target": "TimeEntryService(db).create"
             }
@@ -7270,6 +7270,79 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "export",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "export"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 56,
+              "step": "export",
+              "target": "TimeReportService(db).export"
+            },
+            {
+              "kind": "external_call",
+              "line": 57,
+              "step": "export",
+              "target": "Response"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_report_service.py"
+          ],
+          "step_count": 12,
+          "truncated": false
+        }
+      },
+      "id": "http-export",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "export_iteration",
         "source_path": "backend/app/routers/export.py",
         "symbol": "export_iteration"
@@ -8692,7 +8765,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 64,
               "step": "get_entry",
               "target": "service.serialize"
             },
@@ -8728,7 +8801,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 64,
               "step": "get_entry",
               "target": "service.get"
             }
@@ -11611,7 +11684,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 58,
+              "line": 79,
               "step": "history",
               "target": "TimeEntryService(db).history"
             }
@@ -17332,6 +17405,73 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "report",
+        "source_path": "backend/app/routers/time_entries.py",
+        "symbol": "report"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 31,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 33,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 35,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 48,
+              "step": "report",
+              "target": "TimeReportService(db).page"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/time_entries.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/time_report_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-report",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "report_agent_discovery",
         "source_path": "backend/app/routers/agent.py",
         "symbol": "report_agent_discovery"
@@ -22904,7 +23044,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 53,
+              "line": 74,
               "step": "void_entry",
               "target": "TimeEntryService(db).correct"
             }
@@ -36492,7 +36632,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 83,
+              "line": 84,
               "step": "main",
               "step_index": 1,
               "target": "args.output.read_text"
@@ -36500,7 +36640,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 87,
+              "line": 88,
               "step": "main",
               "step_index": 1,
               "target": "args.output.write_text"
@@ -36509,15 +36649,9 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 77,
-              "step": "main",
-              "target": "argparse.ArgumentParser"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 78,
               "step": "main",
-              "target": "parser.add_argument"
+              "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
@@ -36529,29 +36663,35 @@
               "kind": "unresolved_call",
               "line": 80,
               "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 81,
+              "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 73,
+              "line": 74,
               "step": "serialized_contract",
               "target": "json.dumps"
             },
             {
               "kind": "unresolved_call",
-              "line": 32,
+              "line": 33,
               "step": "build_contract",
               "target": "app.openapi"
             },
             {
               "kind": "unresolved_call",
-              "line": 33,
+              "line": 34,
               "step": "build_contract",
               "target": "schema['paths'].keys"
             },
             {
               "kind": "external_call",
-              "line": 35,
+              "line": 36,
               "step": "build_contract",
               "target": "ValueError"
             },
@@ -39499,6 +39639,7 @@
         "entities/discussionService_TaskComment.md",
         "entities/DndContextMockProps.md",
         "entities/DocumentationContractError.md",
+        "entities/Draft.md",
         "entities/DraftGuard.md",
         "entities/DrawerCopy.md",
         "entities/DuplicateActionDefaults.md",
@@ -39739,6 +39880,7 @@
         "entities/models_task_TaskStatus.md",
         "entities/models_template_TemplateType.md",
         "entities/models_template_WorkTemplate.md",
+        "entities/models_time_entry_TimeEntry.md",
         "entities/models_triage_TriageClassificationSuggestion.md",
         "entities/models_triage_TriageItem.md",
         "entities/models_triage_TriageItemStatus.md",
@@ -40151,6 +40293,7 @@
         "entities/schemas_template_TemplateType.md",
         "entities/schemas_template_WorkTemplateCreate.md",
         "entities/schemas_template_WorkTemplateUpdate.md",
+        "entities/schemas_time_entry_TimeValues.md",
         "entities/schemas_triage_TriageActionRequest.md",
         "entities/schemas_triage_TriageConvertToTaskRequest.md",
         "entities/schemas_triage_TriageConvertToTaskResponse.md",
@@ -40381,7 +40524,6 @@
         "entities/Theme.md",
         "entities/ThemeState.md",
         "entities/time_entries_DB.md",
-        "entities/TimeEntry.md",
         "entities/TimeEntryCapabilities.md",
         "entities/TimeEntryCorrection.md",
         "entities/TimeEntryCreate.md",
@@ -40389,11 +40531,20 @@
         "entities/TimeEntryResponse.md",
         "entities/TimeEntryRevision.md",
         "entities/TimeEntryService.md",
+        "entities/timeEntryService_TimeEntry.md",
+        "entities/timeEntryService_TimeValues.md",
         "entities/TimeEntryVersionConflict.md",
         "entities/TimeEntryVoid.md",
+        "entities/TimeFilters.md",
+        "entities/TimePage.md",
+        "entities/TimeReport.md",
+        "entities/TimeReportItem.md",
+        "entities/TimeReportPage.md",
+        "entities/TimeReportService.md",
+        "entities/TimeReportTotals.md",
+        "entities/TimeRevision.md",
         "entities/TimeRevisionPage.md",
         "entities/TimeRevisionResponse.md",
-        "entities/TimeValues.md",
         "entities/ToastApi.md",
         "entities/ToastInput.md",
         "entities/ToastRecord.md",
@@ -40773,6 +40924,7 @@
         "flows/http-execution_usage_summary.md",
         "flows/http-expire.md",
         "flows/http-explain_schedule.md",
+        "flows/http-export.md",
         "flows/http-export_iteration.md",
         "flows/http-fail_my_agent_work.md",
         "flows/http-finish_agent_run.md",
@@ -40933,6 +41085,7 @@
         "flows/http-renew_task_claim.md",
         "flows/http-reorder_tasks.md",
         "flows/http-repair_hierarchy.md",
+        "flows/http-report.md",
         "flows/http-report_agent_discovery.md",
         "flows/http-requeue_agent_recovery_task.md",
         "flows/http-reset_scheduling_rules.md",
@@ -41835,6 +41988,7 @@
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -41843,6 +41997,15 @@
         "modules/time.md",
         "modules/time_entries.md",
         "modules/time_entry_service.md",
+        "modules/time_report.md",
+        "modules/time_report_service.md",
+        "modules/timeEntries.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesPanel.test.md",
+        "modules/TimeEntriesReport.md",
+        "modules/TimeEntriesReport.test.md",
+        "modules/timeEntryService.md",
+        "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -41882,6 +42045,7 @@
         "modules/UserSessionBadge.test.md",
         "modules/useSingleKeyShortcutPreference.md",
         "modules/useSingleKeyShortcutPreference.test.md",
+        "modules/useTimeEntries.md",
         "modules/VacationManager.md",
         "modules/visibleWork.md",
         "modules/visibleWork.test.md",
@@ -46695,6 +46859,18 @@
       "title": "DocumentationContractError"
     },
     {
+      "canonical_path": "entities/Draft.md",
+      "id": "Draft",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Draft",
+      "outgoing_internal_links": [
+        "modules/TimeEntriesPanel.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx",
+      "title": "Draft"
+    },
+    {
       "canonical_path": "entities/DraftGuard.md",
       "id": "DraftGuard",
       "kind": "entities",
@@ -49981,6 +50157,24 @@
       "role": "semantic",
       "source_path": "backend/app/models/template.py",
       "title": "WorkTemplate"
+    },
+    {
+      "canonical_path": "entities/models_time_entry_TimeEntry.md",
+      "id": "models_time_entry_TimeEntry",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/models_time_entry_TimeEntry",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_time_entry.md",
+        "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
+        "modules/time_entry_service.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/time_entry.py",
+      "title": "TimeEntry"
     },
     {
       "canonical_path": "entities/models_triage_TriageClassificationSuggestion.md",
@@ -55662,6 +55856,18 @@
       "title": "WorkTemplateUpdate"
     },
     {
+      "canonical_path": "entities/schemas_time_entry_TimeValues.md",
+      "id": "schemas_time_entry_TimeValues",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_time_entry_TimeValues",
+      "outgoing_internal_links": [
+        "modules/schemas_time_entry.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_entry.py",
+      "title": "TimeValues"
+    },
+    {
       "canonical_path": "entities/schemas_triage_TriageActionRequest.md",
       "id": "schemas_triage_TriageActionRequest",
       "kind": "entities",
@@ -58870,22 +59076,6 @@
       "title": "DB"
     },
     {
-      "canonical_path": "entities/TimeEntry.md",
-      "id": "TimeEntry",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TimeEntry",
-      "outgoing_internal_links": [
-        "modules/app_database.md",
-        "modules/models___init__.md",
-        "modules/models_time_entry.md",
-        "modules/test_time_entries.md",
-        "modules/time_entry_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/time_entry.py",
-      "title": "TimeEntry"
-    },
-    {
       "canonical_path": "entities/TimeEntryCapabilities.md",
       "id": "TimeEntryCapabilities",
       "kind": "entities",
@@ -58977,11 +59167,37 @@
       "outgoing_internal_links": [
         "modules/test_time_entries.md",
         "modules/time_entries.md",
-        "modules/time_entry_service.md"
+        "modules/time_entry_service.md",
+        "modules/time_report_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/time_entry_service.py",
       "title": "TimeEntryService"
+    },
+    {
+      "canonical_path": "entities/timeEntryService_TimeEntry.md",
+      "id": "timeEntryService_TimeEntry",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/timeEntryService_TimeEntry",
+      "outgoing_internal_links": [
+        "modules/TimeEntriesPanel.md",
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimeEntry"
+    },
+    {
+      "canonical_path": "entities/timeEntryService_TimeValues.md",
+      "id": "timeEntryService_TimeValues",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/timeEntryService_TimeValues",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimeValues"
     },
     {
       "canonical_path": "entities/TimeEntryVersionConflict.md",
@@ -59012,6 +59228,105 @@
       "title": "TimeEntryVoid"
     },
     {
+      "canonical_path": "entities/TimeFilters.md",
+      "id": "TimeFilters",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeFilters",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimeFilters"
+    },
+    {
+      "canonical_path": "entities/TimePage.md",
+      "id": "TimePage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimePage",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimePage"
+    },
+    {
+      "canonical_path": "entities/TimeReport.md",
+      "id": "TimeReport",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeReport",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimeReport"
+    },
+    {
+      "canonical_path": "entities/TimeReportItem.md",
+      "id": "TimeReportItem",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeReportItem",
+      "outgoing_internal_links": [
+        "modules/time_report.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_report.py",
+      "title": "TimeReportItem"
+    },
+    {
+      "canonical_path": "entities/TimeReportPage.md",
+      "id": "TimeReportPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeReportPage",
+      "outgoing_internal_links": [
+        "modules/time_entries.md",
+        "modules/time_report.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_report.py",
+      "title": "TimeReportPage"
+    },
+    {
+      "canonical_path": "entities/TimeReportService.md",
+      "id": "TimeReportService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeReportService",
+      "outgoing_internal_links": [
+        "modules/test_time_reports.md",
+        "modules/time_entries.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/time_report_service.py",
+      "title": "TimeReportService"
+    },
+    {
+      "canonical_path": "entities/TimeReportTotals.md",
+      "id": "TimeReportTotals",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeReportTotals",
+      "outgoing_internal_links": [
+        "modules/time_report.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_report.py",
+      "title": "TimeReportTotals"
+    },
+    {
+      "canonical_path": "entities/TimeRevision.md",
+      "id": "TimeRevision",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TimeRevision",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "TimeRevision"
+    },
+    {
       "canonical_path": "entities/TimeRevisionPage.md",
       "id": "TimeRevisionPage",
       "kind": "entities",
@@ -59036,18 +59351,6 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/time_entry.py",
       "title": "TimeRevisionResponse"
-    },
-    {
-      "canonical_path": "entities/TimeValues.md",
-      "id": "TimeValues",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TimeValues",
-      "outgoing_internal_links": [
-        "modules/schemas_time_entry.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/time_entry.py",
-      "title": "TimeValues"
     },
     {
       "canonical_path": "entities/ToastApi.md",
@@ -64451,6 +64754,8 @@
         "modules/ReleaseForm.md",
         "modules/TaskForm.md",
         "modules/TeamForm.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md",
         "modules/TriagePage.md"
       ],
       "role": "semantic",
@@ -65156,6 +65461,7 @@
         "modules/DraftDismissalDialog.md",
         "modules/GuardedTaskModal.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TimeEntriesPanel.md",
         "modules/useDraftDismissal.md"
       ],
       "role": "semantic",
@@ -66011,17 +66317,7 @@
       "mcp_uri": "llm-wiki://modules/identityContext",
       "outgoing_internal_links": [
         "entities/IdentityContextValue.md",
-        "modules/identityContext.md",
-        "modules/IdentityProvider.md",
-        "modules/identityService.md",
-        "modules/MyWorkPage.md",
-        "modules/NativeConnectionPage.md",
-        "modules/NativeConnectionPage.test.md",
-        "modules/TaskDiscussion.md",
-        "modules/TaskDiscussion.test.md",
-        "modules/TaskForm.md",
-        "modules/useAdminAccess.md",
-        "modules/UserSessionBadge.md"
+        "modules/identityContext.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/identity/identityContext.ts",
@@ -67312,14 +67608,16 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/models_time_entry",
       "outgoing_internal_links": [
-        "entities/TimeEntry.md",
+        "entities/models_time_entry_TimeEntry.md",
         "entities/TimeEntryRevision.md",
         "modules/app_database.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/time.md",
-        "modules/time_entry_service.md"
+        "modules/time_entry_service.md",
+        "modules/time_report_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/time_entry.py",
@@ -68852,7 +69150,8 @@
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
         "modules/resources.en.md",
-        "modules/teamwork.en.md"
+        "modules/teamwork.en.md",
+        "modules/timeEntries.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/i18n/resources.en.ts",
@@ -68868,7 +69167,8 @@
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
         "modules/resources.ru.md",
-        "modules/teamwork.ru.md"
+        "modules/teamwork.ru.md",
+        "modules/timeEntries.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/i18n/resources.ru.ts",
@@ -70527,6 +70827,7 @@
       "mcp_uri": "llm-wiki://modules/schemas_time_entry",
       "outgoing_internal_links": [
         "entities/CorrectionReason.md",
+        "entities/schemas_time_entry_TimeValues.md",
         "entities/TimeEntryCapabilities.md",
         "entities/TimeEntryCorrection.md",
         "entities/TimeEntryCreate.md",
@@ -70535,7 +70836,6 @@
         "entities/TimeEntryVoid.md",
         "entities/TimeRevisionPage.md",
         "entities/TimeRevisionResponse.md",
-        "entities/TimeValues.md",
         "modules/schemas_time_entry.md",
         "modules/test_time_entries.md",
         "modules/time_entries.md",
@@ -73569,6 +73869,28 @@
       "title": "test_time_entries Module"
     },
     {
+      "canonical_path": "modules/test_time_reports.md",
+      "id": "test_time_reports",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_time_reports",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/models_time_entry.md",
+        "modules/query_limits.md",
+        "modules/schemas_task.md",
+        "modules/task_service.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
+        "modules/time.md",
+        "modules/time_entry_service.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_time_reports.py",
+      "title": "test_time_reports Module"
+    },
+    {
       "canonical_path": "modules/test_transfer_catalog.md",
       "id": "test_transfer_catalog",
       "kind": "modules",
@@ -73670,7 +73992,9 @@
         "modules/routers_task_domain.md",
         "modules/schemas_time_entry.md",
         "modules/time_entries.md",
-        "modules/time_entry_service.md"
+        "modules/time_entry_service.md",
+        "modules/time_report.md",
+        "modules/time_report_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/routers/time_entries.py",
@@ -73684,22 +74008,162 @@
       "outgoing_internal_links": [
         "entities/TimeEntryService.md",
         "entities/TimeEntryVersionConflict.md",
-        "modules/authority.md",
-        "modules/commands.md",
-        "modules/config.md",
-        "modules/models_identity.md",
-        "modules/models_project.md",
-        "modules/models_task.md",
-        "modules/models_time_entry.md",
-        "modules/schemas_time_entry.md",
-        "modules/test_time_entries.md",
-        "modules/time.md",
-        "modules/time_entries.md",
         "modules/time_entry_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/time_entry_service.py",
       "title": "time_entry_service Module"
+    },
+    {
+      "canonical_path": "modules/time_report.md",
+      "id": "time_report",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/time_report",
+      "outgoing_internal_links": [
+        "entities/TimeReportItem.md",
+        "entities/TimeReportPage.md",
+        "entities/TimeReportTotals.md",
+        "modules/time_entries.md",
+        "modules/time_report.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/time_report.py",
+      "title": "time_report Module"
+    },
+    {
+      "canonical_path": "modules/time_report_service.md",
+      "id": "time_report_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/time_report_service",
+      "outgoing_internal_links": [
+        "entities/TimeReportService.md",
+        "modules/authority.md",
+        "modules/models_task.md",
+        "modules/models_time_entry.md",
+        "modules/query_limits.md",
+        "modules/test_time_reports.md",
+        "modules/time_entries.md",
+        "modules/time_entry_service.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/time_report_service.py",
+      "title": "time_report_service Module"
+    },
+    {
+      "canonical_path": "modules/timeEntries.md",
+      "id": "timeEntries",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/timeEntries",
+      "outgoing_internal_links": [
+        "modules/resources.en.md",
+        "modules/resources.ru.md",
+        "modules/timeEntries.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/timeEntries.ts",
+      "title": "timeEntries Module"
+    },
+    {
+      "canonical_path": "modules/TimeEntriesPanel.md",
+      "id": "TimeEntriesPanel",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TimeEntriesPanel",
+      "outgoing_internal_links": [
+        "entities/Draft.md",
+        "modules/TimeEntriesPanel.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx",
+      "title": "TimeEntriesPanel Module"
+    },
+    {
+      "canonical_path": "modules/TimeEntriesPanel.test.md",
+      "id": "TimeEntriesPanel.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TimeEntriesPanel.test",
+      "outgoing_internal_links": [
+        "modules/identityContext.md",
+        "modules/renderWithProviders.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesPanel.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.test.tsx",
+      "title": "TimeEntriesPanel.test Module"
+    },
+    {
+      "canonical_path": "modules/TimeEntriesReport.md",
+      "id": "TimeEntriesReport",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TimeEntriesReport",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/CollapsibleSection.md",
+        "modules/Input.md",
+        "modules/ProjectDetailPage.md",
+        "modules/QueryState.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md",
+        "modules/TimeEntriesReport.test.md",
+        "modules/timeEntryService.md",
+        "modules/useTimeEntries.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/projects/TimeEntriesReport.tsx",
+      "title": "TimeEntriesReport Module"
+    },
+    {
+      "canonical_path": "modules/TimeEntriesReport.test.md",
+      "id": "TimeEntriesReport.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TimeEntriesReport.test",
+      "outgoing_internal_links": [
+        "modules/identityContext.md",
+        "modules/renderWithProviders.md",
+        "modules/TimeEntriesReport.md",
+        "modules/TimeEntriesReport.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/projects/TimeEntriesReport.test.tsx",
+      "title": "TimeEntriesReport.test Module"
+    },
+    {
+      "canonical_path": "modules/timeEntryService.md",
+      "id": "timeEntryService",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/timeEntryService",
+      "outgoing_internal_links": [
+        "entities/timeEntryService_TimeEntry.md",
+        "entities/timeEntryService_TimeValues.md",
+        "entities/TimeFilters.md",
+        "entities/TimePage.md",
+        "entities/TimeReport.md",
+        "entities/TimeRevision.md",
+        "modules/api.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md",
+        "modules/timeEntryService.md",
+        "modules/timeEntryService.test.md",
+        "modules/useTimeEntries.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.ts",
+      "title": "timeEntryService Module"
+    },
+    {
+      "canonical_path": "modules/timeEntryService.test.md",
+      "id": "timeEntryService.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/timeEntryService.test",
+      "outgoing_internal_links": [
+        "modules/timeEntryService.md",
+        "modules/timeEntryService.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/timeEntryService.test.ts",
+      "title": "timeEntryService.test Module"
     },
     {
       "canonical_path": "modules/toast.md",
@@ -74436,6 +74900,7 @@
         "modules/DraftDismissalDialog.md",
         "modules/GuardedTaskModal.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TimeEntriesPanel.md",
         "modules/useDraftDismissal.md",
         "modules/useDraftDismissal.test.md"
       ],
@@ -74585,6 +75050,22 @@
       "role": "semantic",
       "source_path": "frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx",
       "title": "useSingleKeyShortcutPreference.test Module"
+    },
+    {
+      "canonical_path": "modules/useTimeEntries.md",
+      "id": "useTimeEntries",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/useTimeEntries",
+      "outgoing_internal_links": [
+        "modules/identityContext.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md",
+        "modules/timeEntryService.md",
+        "modules/useTimeEntries.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/timeEntries/useTimeEntries.ts",
+      "title": "useTimeEntries Module"
     },
     {
       "canonical_path": "modules/VacationManager.md",
@@ -79134,6 +79615,20 @@
       "title": "explain_schedule"
     },
     {
+      "canonical_path": "flows/http-export.md",
+      "id": "http-export",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-export",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "export"
+    },
+    {
       "canonical_path": "flows/http-export_iteration.md",
       "id": "http-export_iteration",
       "kind": "flows",
@@ -81312,6 +81807,20 @@
       "role": "mixed",
       "source_path": "backend/app/routers/snapshots.py",
       "title": "repair_hierarchy"
+    },
+    {
+      "canonical_path": "flows/http-report.md",
+      "id": "http-report",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-report",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/time_entries.md",
+        "modules/time_report_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/time_entries.py",
+      "title": "report"
     },
     {
       "canonical_path": "flows/http-report_agent_discovery.md",
@@ -87025,6 +87534,7 @@
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -87033,6 +87543,15 @@
         "modules/time.md",
         "modules/time_entries.md",
         "modules/time_entry_service.md",
+        "modules/time_report.md",
+        "modules/time_report_service.md",
+        "modules/timeEntries.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesPanel.test.md",
+        "modules/TimeEntriesReport.md",
+        "modules/TimeEntriesReport.test.md",
+        "modules/timeEntryService.md",
+        "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -87072,6 +87591,7 @@
         "modules/UserSessionBadge.test.md",
         "modules/useSingleKeyShortcutPreference.md",
         "modules/useSingleKeyShortcutPreference.test.md",
+        "modules/useTimeEntries.md",
         "modules/VacationManager.md",
         "modules/visibleWork.md",
         "modules/visibleWork.test.md",
@@ -87713,6 +88233,7 @@
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
@@ -87721,6 +88242,15 @@
         "modules/time.md",
         "modules/time_entries.md",
         "modules/time_entry_service.md",
+        "modules/time_report.md",
+        "modules/time_report_service.md",
+        "modules/timeEntries.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesPanel.test.md",
+        "modules/TimeEntriesReport.md",
+        "modules/TimeEntriesReport.test.md",
+        "modules/timeEntryService.md",
+        "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
         "modules/tone.md",
@@ -87760,6 +88290,7 @@
         "modules/UserSessionBadge.test.md",
         "modules/useSingleKeyShortcutPreference.md",
         "modules/useSingleKeyShortcutPreference.test.md",
+        "modules/useTimeEntries.md",
         "modules/VacationManager.md",
         "modules/visibleWork.md",
         "modules/visibleWork.test.md",
@@ -87780,5 +88311,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f926f6587ebf295e86c85b481b4597f63cd06a2beadc4fc165f0f9514defba3e"
+  "source_hash": "sha256:dc0742f83281021570877093f349cd8d91bcb091bd1ccc9bf195c9b7e544f4a8"
 }

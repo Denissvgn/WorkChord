@@ -55,7 +55,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TimeValues](../entities/TimeValues.md) | 12 | `BaseModel` | — |
+| [TimeValues](../entities/schemas_time_entry_TimeValues.md) | 12 | `BaseModel` | — |
 | [TimeEntryCreate](../entities/TimeEntryCreate.md) | 38 | `TimeValues` | — |
 | [CorrectionReason](../entities/CorrectionReason.md) | 44 | `BaseModel` | — |
 | [TimeEntryCorrection](../entities/TimeEntryCorrection.md) | 56 | `TimeValues`, `CorrectionReason` | — |

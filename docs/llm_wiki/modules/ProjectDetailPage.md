@@ -19,6 +19,7 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 | `../components/projects/ProjectForm` | `ProjectForm` |
 | `../components/projects/ProjectIterationsSection` | `ProjectIterationsSection` |
 | `../components/projects/ProjectTaskTree` | `ProjectTaskTree` |
+| `../components/projects/TimeEntriesReport` | `TimeEntriesReport` |
 | `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName`, `projectStatusPillClassName` |
 | `../components/releases/ReleaseForm` | `ReleaseForm` |
 | `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
@@ -66,7 +67,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (24) |
+| Outbound | `frontend` (25) |
 
 ### External packages
 
@@ -74,14 +75,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 151 | — | — |
-| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 160 | — | — |
-| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 165 | — | — |
-| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 170 | — | — |
-| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 179 | — | — |
+| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 152 | — | — |
+| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 161 | — | — |
+| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 166 | — | — |
+| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 171 | — | — |
+| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 180 | — | — |

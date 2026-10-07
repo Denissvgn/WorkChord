@@ -1,6 +1,6 @@
 # MilestoneFormState
 
-**Location:** `frontend/src/pages/ProjectDetailPage.tsx:170`
+**Location:** `frontend/src/pages/ProjectDetailPage.tsx:171`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)

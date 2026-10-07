@@ -28,19 +28,23 @@ flowchart LR
     n0["frontend/src/components/tasks/DraftDismissalDialog.tsx"]
     n1["frontend/src/components/tasks/GuardedTaskModal.tsx"]
     n2["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
-    n3["frontend/src/components/tasks/useDraftDismissal.test.tsx"]
-    n4["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n0 --> n4
+    n3["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
+    n4["frontend/src/components/tasks/useDraftDismissal.test.tsx"]
+    n5["frontend/src/components/tasks/useDraftDismissal.ts"]
+    n0 --> n5
     n1 --> n0
-    n1 --> n4
+    n1 --> n5
     n2 --> n0
-    n2 --> n4
-    n3 --> n4
+    n2 --> n5
+    n3 --> n0
+    n3 --> n5
+    n4 --> n5
     click n0 "../modules/DraftDismissalDialog.md"
     click n1 "../modules/GuardedTaskModal.md"
     click n2 "../modules/TaskEditorDrawer.md"
-    click n3 "../modules/useDraftDismissal.test.md"
-    click n4 "../modules/useDraftDismissal.md"
+    click n3 "../modules/TimeEntriesPanel.md"
+    click n4 "../modules/useDraftDismissal.test.md"
+    click n5 "../modules/useDraftDismissal.md"
 ```
 
 ### Internal neighbors
@@ -50,6 +54,7 @@ flowchart LR
 | Inbound | [DraftDismissalDialog](../modules/DraftDismissalDialog.md) |
 | Inbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
 | Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
+| Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
 | Inbound | [useDraftDismissal.test](../modules/useDraftDismissal.test.md) |
 
 ### External packages

@@ -31,18 +31,22 @@ flowchart LR
     n1["frontend/src/components/tasks/DraftDismissalDialog.tsx"]
     n2["frontend/src/components/tasks/GuardedTaskModal.tsx"]
     n3["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
-    n4["frontend/src/components/tasks/useDraftDismissal.ts"]
+    n4["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
+    n5["frontend/src/components/tasks/useDraftDismissal.ts"]
     n1 --> n0
-    n1 --> n4
+    n1 --> n5
     n2 --> n1
-    n2 --> n4
+    n2 --> n5
     n3 --> n1
-    n3 --> n4
+    n3 --> n5
+    n4 --> n1
+    n4 --> n5
     click n0 "../modules/ConfirmDialog.md"
     click n1 "../modules/DraftDismissalDialog.md"
     click n2 "../modules/GuardedTaskModal.md"
     click n3 "../modules/TaskEditorDrawer.md"
-    click n4 "../modules/useDraftDismissal.md"
+    click n4 "../modules/TimeEntriesPanel.md"
+    click n5 "../modules/useDraftDismissal.md"
 ```
 
 ### Internal neighbors
@@ -51,6 +55,7 @@ flowchart LR
 |---|---|
 | Inbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
 | Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
+| Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
 | Outbound | [ConfirmDialog](../modules/ConfirmDialog.md) |
 | Outbound | [useDraftDismissal](../modules/useDraftDismissal.md) |
 

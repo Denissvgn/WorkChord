@@ -96,4 +96,4 @@ flowchart LR
 | `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `ExecutionUsageService.summary` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 
-> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.
+> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.

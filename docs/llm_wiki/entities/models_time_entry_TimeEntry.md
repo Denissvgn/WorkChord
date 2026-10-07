@@ -42,16 +42,22 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["TimeEntryService.create (backend/app/services/time_entry_service.py)"]
-    n4["backend/tests/test_time_entries.py"]
+    n4["backend/app/services/time_report_service.py"]
+    n5["backend/tests/test_time_entries.py"]
+    n6["backend/tests/test_time_reports.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/models_time_entry.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/time_entry_service.md"
-    click n4 "../modules/test_time_entries.md"
+    click n4 "../modules/time_report_service.md"
+    click n5 "../modules/test_time_entries.md"
+    click n6 "../modules/test_time_reports.md"
 ```
 
 ### Summary
@@ -72,4 +78,6 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `TimeEntryService.create` | call | [time_entry_service](../modules/time_entry_service.md) | 1 |
+| `time_report_service` | import | [time_report_service](../modules/time_report_service.md) | — |
 | `test_time_entries` | import | [test_time_entries](../modules/test_time_entries.md) | — |
+| `test_time_reports` | import | [test_time_reports](../modules/test_time_reports.md) | — |

@@ -39,6 +39,7 @@ Private explicit minutes, retained corrections and independent recovery behavior
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_time_entries.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_time_entries.md"
 ```
@@ -49,6 +50,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -57,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

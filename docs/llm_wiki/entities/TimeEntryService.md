@@ -44,12 +44,12 @@ flowchart LR
     n4["history (backend/app/routers/time_entries.py)"]
     n5["list_entries (backend/app/routers/time_entries.py)"]
     n6["void_entry (backend/app/routers/time_entries.py)"]
-    n7["test_history_failure_rolls_back_record_and_retry (backend/tests/test_time_entries.py)"]
-    n8["test_history_survives_task_removal_and_remains_append_only (backend/tests/test_time_entries.py)"]
-    n9["test_other_people_projects_agents_and_disabled_feature_are_protected (backend/tests/test_time_entries.py)"]
-    n10["test_project_work_finite_paging_and_scope_validation (backend/tests/test_time_entries.py)"]
-    n11["test_record_correct_void_retains_private_history_and_task_state (backend/tests/test_time_entries.py)"]
-    n12["test_retry_identity_and_payload_conflict (backend/tests/test_time_entries.py)"]
+    n7["TimeReportService.__init__ (backend/app/services/time_report_service.py)"]
+    n8["test_history_failure_rolls_back_record_and_retry (backend/tests/test_time_entries.py)"]
+    n9["test_history_survives_task_removal_and_remains_append_only (backend/tests/test_time_entries.py)"]
+    n10["test_other_people_projects_agents_and_disabled_feature_are_protected (backend/tests/test_time_entries.py)"]
+    n11["test_project_work_finite_paging_and_scope_validation (backend/tests/test_time_entries.py)"]
+    n12["test_record_correct_void_retains_private_history_and_task_state (backend/tests/test_time_entries.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -69,7 +69,7 @@ flowchart LR
     click n4 "../modules/time_entries.md"
     click n5 "../modules/time_entries.md"
     click n6 "../modules/time_entries.md"
-    click n7 "../modules/test_time_entries.md"
+    click n7 "../modules/time_report_service.md"
     click n8 "../modules/test_time_entries.md"
     click n9 "../modules/test_time_entries.md"
     click n10 "../modules/test_time_entries.md"
@@ -93,11 +93,11 @@ flowchart LR
 | `history` | call | [time_entries](../modules/time_entries.md) | 1 |
 | `list_entries` | call | [time_entries](../modules/time_entries.md) | 1 |
 | `void_entry` | call | [time_entries](../modules/time_entries.md) | 1 |
+| `TimeReportService.__init__` | call | [time_report_service](../modules/time_report_service.md) | 1 |
 | `test_history_failure_rolls_back_record_and_retry` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_history_survives_task_removal_and_remains_append_only` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_other_people_projects_agents_and_disabled_feature_are_protected` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_project_work_finite_paging_and_scope_validation` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_record_correct_void_retains_private_history_and_task_state` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
-| `test_retry_identity_and_payload_conflict` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

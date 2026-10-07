@@ -112,37 +112,37 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 77 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 78 | `parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT)` |
-| main | parser.add_argument | 79 | `parser.add_argument('--check', action='store_true')` |
-| main | parser.parse_args | 80 | `parser.parse_args(data not statically known)` |
-| main | serialized_contract | 81 | `serialized_contract(data not statically known)` |
-| serialized_contract | json.dumps | 73 | `json.dumps(build_contract(...), ensure_ascii=False, indent=2, sort_keys=True)` |
-| serialized_contract | build_contract | 73 | `build_contract(data not statically known)` |
-| build_contract | app.openapi | 32 | `app.openapi(data not statically known)` |
-| build_contract | set | 33 | `set(CLIENT_PATHS)` |
-| build_contract | schema[…].keys | 33 | `schema['paths'].keys(data not statically known)` |
-| build_contract | ValueError | 35 | `ValueError(...)` |
+| main | argparse.ArgumentParser | 78 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 79 | `parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT)` |
+| main | parser.add_argument | 80 | `parser.add_argument('--check', action='store_true')` |
+| main | parser.parse_args | 81 | `parser.parse_args(data not statically known)` |
+| main | serialized_contract | 82 | `serialized_contract(data not statically known)` |
+| serialized_contract | json.dumps | 74 | `json.dumps(build_contract(...), ensure_ascii=False, indent=2, sort_keys=True)` |
+| serialized_contract | build_contract | 74 | `build_contract(data not statically known)` |
+| build_contract | app.openapi | 33 | `app.openapi(data not statically known)` |
+| build_contract | set | 34 | `set(CLIENT_PATHS)` |
+| build_contract | schema[…].keys | 34 | `schema['paths'].keys(data not statically known)` |
+| build_contract | ValueError | 36 | `ValueError(...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.output.read_text` | `main` | 83 |
-| filesystem_write | `args.output.write_text` | `main` | 87 |
+| filesystem_read | `args.output.read_text` | `main` | 84 |
+| filesystem_write | `args.output.write_text` | `main` | 88 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 77 |
-| unresolved_call | `main` | `parser.add_argument` | 78 |
+| external_call | `main` | `argparse.ArgumentParser` | 78 |
 | unresolved_call | `main` | `parser.add_argument` | 79 |
-| unresolved_call | `main` | `parser.parse_args` | 80 |
-| external_call | `serialized_contract` | `json.dumps` | 73 |
-| unresolved_call | `build_contract` | `app.openapi` | 32 |
-| unresolved_call | `build_contract` | `schema['paths'].keys` | 33 |
-| external_call | `build_contract` | `ValueError` | 35 |
+| unresolved_call | `main` | `parser.add_argument` | 80 |
+| unresolved_call | `main` | `parser.parse_args` | 81 |
+| external_call | `serialized_contract` | `json.dumps` | 74 |
+| unresolved_call | `build_contract` | `app.openapi` | 33 |
+| unresolved_call | `build_contract` | `schema['paths'].keys` | 34 |
+| external_call | `build_contract` | `ValueError` | 36 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

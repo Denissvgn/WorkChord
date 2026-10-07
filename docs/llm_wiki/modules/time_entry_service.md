@@ -31,84 +31,29 @@ Human authors can read and correct only their own records with current access to
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/commands.py"]
-    n2["backend/app/config.py"]
-    n3["backend/app/models/identity.py"]
-    n4["backend/app/models/project.py"]
-    n5["backend/app/models/task.py"]
-    n6["backend/app/models/time_entry.py"]
-    n7["backend/app/routers/time_entries.py"]
-    n8["backend/app/schemas/time_entry.py"]
-    n9["backend/app/services/time_entry_service.py"]
-    n10["backend/app/utils/time.py"]
-    n11["backend/tests/test_time_entries.py"]
-    n0 --> n2
-    n0 --> n3
-    n0 --> n5
+    n0["backend"]
+    n1["backend/app/services/time_entry_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n4
-    n1 --> n5
-    n3 --> n10
-    n4 --> n5
-    n4 --> n10
-    n5 --> n4
-    n5 --> n10
-    n6 --> n10
-    n7 --> n2
-    n7 --> n8
-    n7 --> n9
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n8
-    n9 --> n10
-    n11 --> n0
-    n11 --> n1
-    n11 --> n2
-    n11 --> n5
-    n11 --> n6
-    n11 --> n8
-    n11 --> n9
-    click n0 "../modules/authority.md"
-    click n1 "../modules/commands.md"
-    click n2 "../modules/config.md"
-    click n3 "../modules/models_identity.md"
-    click n4 "../modules/models_project.md"
-    click n5 "../modules/models_task.md"
-    click n6 "../modules/models_time_entry.md"
-    click n7 "../modules/time_entries.md"
-    click n8 "../modules/schemas_time_entry.md"
-    click n9 "../modules/time_entry_service.md"
-    click n10 "../modules/time.md"
-    click n11 "../modules/test_time_entries.md"
+    click n1 "../modules/time_entry_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [time_entries](../modules/time_entries.md) |
-| Inbound | [test_time_entries](../modules/test_time_entries.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [config](../modules/config.md) |
-| Outbound | [models_identity](../modules/models_identity.md) |
-| Outbound | [models_project](../modules/models_project.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [models_time_entry](../modules/models_time_entry.md) |
-| Outbound | [schemas_time_entry](../modules/schemas_time_entry.md) |
-| Outbound | [time](../modules/time.md) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

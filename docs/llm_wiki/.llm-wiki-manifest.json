@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:b58df954240d4f36a6d7ebe6d64cb4c2e7b166dec3acded798d19d948947a71b",
-    "knowledge_index_hash": "sha256:afdbd975ad09fc6181dca271ec9d11a1bc5620603ce4cda87d45ca34420231ce",
-    "surface_index_hash": "sha256:07d3439cbc94fbffcc55a1ed21b1d655a0b504a6aae9d43c2909f790276b983c"
+    "evaluated_envelope_hash": "sha256:aa250b4af67edcdaafb90fbe30f468748a476846b3c900aa6534f863ff7453fb",
+    "knowledge_index_hash": "sha256:ec4bf3b6192a19628190346f6eb3e62b96e2dd8305e24092aa093090eeea2f2c",
+    "surface_index_hash": "sha256:0de2617e80e851fb185d775d577345372a1796ada773ef6df32f061861e91287"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -2985,6 +2985,16 @@
       },
       "state": "known"
     },
+    "entities/Draft.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:69a6848199b15c4136b6688cd68fed74ef3919b1c0f5898a75f65234d2e26222",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+        "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
+      },
+      "state": "known"
+    },
     "entities/DraftGuard.md": {
       "basis": {
         "concept_observation_hash": "sha256:45d9c668cbe3e3c494307f39c58c78fabc85b4291b3c2464805805f97680d0be",
@@ -4730,7 +4740,7 @@
         "concept_observation_hash": "sha256:e653bb11dc172218ab47c779ae72461e92c53abf50cf21f84f404abc4b666c70",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -4740,7 +4750,7 @@
         "concept_observation_hash": "sha256:b8e7d76f0e44315c7f7bf1dccff9202dc41eeae3c6ddd0473b924d9fa7c8833d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -5930,7 +5940,7 @@
         "concept_observation_hash": "sha256:b1d3bc87d071bb5f07b077035708e22770648612b5054ef0df74ec98f093a892",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -5940,7 +5950,7 @@
         "concept_observation_hash": "sha256:76ef5d4e36dacf0f0f45e9c0ee9fd72fa3fc30a978dbea933184a902e73b4a57",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -5950,7 +5960,7 @@
         "concept_observation_hash": "sha256:b79dc7fe92d68a416e98be6218ed270bcaaa2bef63c4e1bafbe1f0aa571e94cd",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -8450,7 +8460,7 @@
         "concept_observation_hash": "sha256:fe01f4c20423c7d2f51da73dd9bdabc1cc823cdecfeac75ff95ee4151d8dc494",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:5e6783566716ca8cc3bbfc368327b3f8db220ed0bc0be93cf934f10f454a3d51",
+        "source_content_hash": "sha256:d1b777d615554bf716dd4b6b14c1e2ae77e2a0d4ce6edd985fd30cda0bf0dd28",
         "source_path": "frontend/src/components/tasks/TaskForm.tsx"
       },
       "state": "known"
@@ -9165,16 +9175,6 @@
       },
       "state": "known"
     },
-    "entities/TimeEntry.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:b44007e565048a099a72fb3523cddf8008083fa482c3d929ccc87781ed51ee08",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "entity",
-        "source_content_hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
-        "source_path": "backend/app/models/time_entry.py"
-      },
-      "state": "known"
-    },
     "entities/TimeEntryCapabilities.md": {
       "basis": {
         "concept_observation_hash": "sha256:5dea171725c7b0f6192bcdc37f16ad68eb39da5a8ea01e9764a4a4b1e7bc23b0",
@@ -9265,6 +9265,86 @@
       },
       "state": "known"
     },
+    "entities/TimeFilters.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7295a575abb0b8510a65aed17cf963bb1115170b285f9f111a3665460839917c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
+    "entities/TimePage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:afdda1b4fbd89e7923508a2acc0cff6b75f106ef5dd2f23f8e18a1395571bb40",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
+    "entities/TimeReport.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b2d32ac68babd30a0b2886a530c95a8520afe9a76c84997cdbc385ac5f247b87",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
+    "entities/TimeReportItem.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f25d7acc0243675d7bc5d43d44a4706405bcfc58a4b3ba7dd8221d669a091117",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:7bafdcac6bf274777f43e4721319cf98509e412bc0f3adea42da6486fbee248b",
+        "source_path": "backend/app/schemas/time_report.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeReportPage.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:08456a3d8c55f5ca9f4d476b38f8d91156c9d2799da3338dbe0a630979eaf69f",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:7bafdcac6bf274777f43e4721319cf98509e412bc0f3adea42da6486fbee248b",
+        "source_path": "backend/app/schemas/time_report.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeReportService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:1d6e172974563d6851f8f87d7cad40c589c0e681bb8bdc566df6ab94ceb0ffb1",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:0412b06438388abb48e0b707be2a0acecf92deb934a17521ec89a58e18ed5934",
+        "source_path": "backend/app/services/time_report_service.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeReportTotals.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7c27f6ea997a25534ad88596dfcf3f15d1c266501681c191d733c5c623148e2a",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:7bafdcac6bf274777f43e4721319cf98509e412bc0f3adea42da6486fbee248b",
+        "source_path": "backend/app/schemas/time_report.py"
+      },
+      "state": "known"
+    },
+    "entities/TimeRevision.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:41e8e95f07747eb2500cc378e3170113a497e7caa54f44004964bf87f1887aae",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
     "entities/TimeRevisionPage.md": {
       "basis": {
         "concept_observation_hash": "sha256:3c539e48344b5b702274ce1f183e343a31b49bd017532ce69b823c6fc201326b",
@@ -9278,16 +9358,6 @@
     "entities/TimeRevisionResponse.md": {
       "basis": {
         "concept_observation_hash": "sha256:d7613f84c5bf7499a08d9e56c9cade90880a6b51f53ea3038626acdd08232788",
-        "extractor_ref": "llm-wiki/extractor/python",
-        "scope": "entity",
-        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
-        "source_path": "backend/app/schemas/time_entry.py"
-      },
-      "state": "known"
-    },
-    "entities/TimeValues.md": {
-      "basis": {
-        "concept_observation_hash": "sha256:2a3abac0554c2297e54f67f6944f4cd171f9c4950760944b094de8031df78683",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
         "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
@@ -10942,6 +11012,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:79ad51e813a032a64ce629322b1c02496b8bf92cce6f0267ece949528c661f5b",
         "source_path": "backend/app/models/template.py"
+      },
+      "state": "known"
+    },
+    "entities/models_time_entry_TimeEntry.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b44007e565048a099a72fb3523cddf8008083fa482c3d929ccc87781ed51ee08",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:0724f3e498287a332295c1db45562b8e3ed91559704b3a7d69a6cb0e653dd390",
+        "source_path": "backend/app/models/time_entry.py"
       },
       "state": "known"
     },
@@ -12755,6 +12835,16 @@
       },
       "state": "known"
     },
+    "entities/schemas_time_entry_TimeValues.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:2a3abac0554c2297e54f67f6944f4cd171f9c4950760944b094de8031df78683",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:6e8fd6de66b17518bc429ffc9d5cd1a2c8000668ca193edb48983439a5d6ff6a",
+        "source_path": "backend/app/schemas/time_entry.py"
+      },
+      "state": "known"
+    },
     "entities/schemas_triage_TriageActionRequest.md": {
       "basis": {
         "concept_observation_hash": "sha256:17a3a1363181ab6d533002ff7fec45cc0eeb9e92a0abf3178d9c618eb2015d3d",
@@ -13075,12 +13165,32 @@
       },
       "state": "known"
     },
+    "entities/timeEntryService_TimeEntry.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8edc0ad75389b05211a15cde91f0b9a8160f9954f1c22f032f7b2bd66e3fa47b",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
+    "entities/timeEntryService_TimeValues.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:38d8c087c3aa100495503efdefa33e74690d4c3fa528501c5c9f0fc3e49c2f63",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
     "entities/time_entries_DB.md": {
       "basis": {
         "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+        "source_content_hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
         "source_path": "backend/app/routers/time_entries.py"
       },
       "state": "known"
@@ -16147,10 +16257,10 @@
     },
     "modules/ProjectDetailPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4eb0bdf19514b5d029750145faefd9e5123230b3451d69f73660e485591f1156",
+        "concept_observation_hash": "sha256:d0ebb652c2cd0234e4cff6ef4364a0ba5dc451f1323fa64dc4e6b763db28657f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -16647,10 +16757,10 @@
     },
     "modules/TaskForm.md": {
       "basis": {
-        "concept_observation_hash": "sha256:5a8f1ff6ecb0c3b94395b79726138d3cbbc51a14227f16ad8cf06e8117eae605",
+        "concept_observation_hash": "sha256:5136d1feba2f439dafc2d638435661b61180f2350efd367dd8f74f28650f8b48",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:5e6783566716ca8cc3bbfc368327b3f8db220ed0bc0be93cf934f10f454a3d51",
+        "source_content_hash": "sha256:d1b777d615554bf716dd4b6b14c1e2ae77e2a0d4ce6edd985fd30cda0bf0dd28",
         "source_path": "frontend/src/components/tasks/TaskForm.tsx"
       },
       "state": "known"
@@ -16892,6 +17002,46 @@
         "scope": "module",
         "source_content_hash": "sha256:d087edead485855c81920b8a093c16cc861e62ff6df27a47c053d4b34f3277a1",
         "source_path": "frontend/src/components/settings/TemplateLabelSettings.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/TimeEntriesPanel.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:3bdff855372e3fd00568d997fe0ef25370e41318fa9b70c7e6b761c0de0ab536",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+        "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
+      },
+      "state": "known"
+    },
+    "modules/TimeEntriesPanel.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:93fb1f9e9ef7e49f9dc89d0220a7cd359e505c2c56a57aff7b9a432c3bc0d43c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:2ba66a7d0d2981393780aa8a16f170dfaf83b92cab2e7741e3097b758be1e435",
+        "source_path": "frontend/src/components/tasks/TimeEntriesPanel.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/TimeEntriesReport.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:be6d97d4578af0e86202b57ca2483e6adce08cde7359e34f759dcb994504145b",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:3ca76384b073f91840070ee5dadf4ae4538fc5c170df268724871bba94578fae",
+        "source_path": "frontend/src/components/projects/TimeEntriesReport.tsx"
+      },
+      "state": "known"
+    },
+    "modules/TimeEntriesReport.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c67ad830fab8a98dfd154674a34ffb26a6992f92c3b154598ba996f958a4efa9",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:efcfd09d0804861dfddf24fd5e0ee1900e3d408236ebe8f6d15221b92f46d8fb",
+        "source_path": "frontend/src/components/projects/TimeEntriesReport.test.tsx"
       },
       "state": "known"
     },
@@ -18060,7 +18210,7 @@
         "concept_observation_hash": "sha256:2fd803ef587af2f91da8fdba24e7b7275c89d4aae0bcfda0b7d092601bf78d6c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:dbcba6acc8e4dfbbce56cc581cd0eac95a502eb6c55f58d1ec0e3719c9867a76",
+        "source_content_hash": "sha256:ecf449358ca3bcde2cfb5bc2021659014ffd9d496606ad38bbefc7e06e5e51f9",
         "source_path": "scripts/generate_client_contract.py"
       },
       "state": "known"
@@ -19197,20 +19347,20 @@
     },
     "modules/resources.en.md": {
       "basis": {
-        "concept_observation_hash": "sha256:cfed9f96624e5a5f3c67602a2305b2a527d54ba78dc15271d2b0b1278ebec5fe",
+        "concept_observation_hash": "sha256:58d9b896f0be799048ed900c16182cbe4d80f84c9f6af079ae0ace1cca8bc725",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d03bc53d3e3f24d341c02048e1ad2a55cd094127b6e6e7caa891b555a9352253",
+        "source_content_hash": "sha256:0e336ebeaeb6415134c72843c8ada302d0bd1736e6b044939d3b89a34ccccdf0",
         "source_path": "frontend/src/i18n/resources.en.ts"
       },
       "state": "known"
     },
     "modules/resources.ru.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b0cb2e5304768aefe4557b5721999e6c5aca6c0a47e9ad0bd35c6f2854b59dec",
+        "concept_observation_hash": "sha256:12c3a2e23116f29ec178b21fb08fb1b46f0a0f2911645e528fb418e732944014",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:07263ea25fc65ee297f4bce2fd5eae3c7d5712984753ca0f6e06b7923b62a5a6",
+        "source_content_hash": "sha256:bafffc64ea40a5b68556c9db1f7e6ed66f51d7df2c1a76009f2873fd8792577a",
         "source_path": "frontend/src/i18n/resources.ru.ts"
       },
       "state": "known"
@@ -20220,7 +20370,7 @@
         "concept_observation_hash": "sha256:7ac662b441c366e0ee1382dcc7afcf13d266c906bf3568765df72b97ad347a93",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:7c63e53ec61287297f7cb8adcafa9c3afcf720291af70f5e8ab94a130e08ae1f",
+        "source_content_hash": "sha256:fa034d748f1dbb62199fccf8e002c32ef9e451776c7d4e848b03453516cc835e",
         "source_path": "frontend/src/components/tasks/taskDraftStorage.ts"
       },
       "state": "known"
@@ -20760,7 +20910,7 @@
         "concept_observation_hash": "sha256:9f02844bdcf79c0c393ce165c0d0c0cda61f1d57bb26472222468dc03b9e07b3",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5cd783401e9f7c86aba2c02639a1300a47cd7552f5c16f6ba8ef249ea952c410",
+        "source_content_hash": "sha256:3879db52d0ccf57d9e6f126728bf5509c9a0d55735f64395162eff3f59d1b38e",
         "source_path": "backend/tests/test_client_contract.py"
       },
       "state": "known"
@@ -21225,6 +21375,16 @@
       },
       "state": "known"
     },
+    "modules/test_time_reports.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d9d3cc1dbcd9919fa74c24eea942076540eeb26639ab5b59da87a441dae9aa6c",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:08dbb5ee0b26f5a0fcd841e879978fbf9f6ce3093203a724e4df5df29602b13a",
+        "source_path": "backend/tests/test_time_reports.py"
+      },
+      "state": "known"
+    },
     "modules/test_transfer_catalog.md": {
       "basis": {
         "concept_observation_hash": "sha256:260ef4ef5719b141a7a0fde20c85ce8c2dd270a11beead51fca65c0108eeb7b6",
@@ -21285,12 +21445,42 @@
       },
       "state": "known"
     },
+    "modules/timeEntries.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:20fa7ad2d6912cf1e36f0a59a7cd4a5b54b95536d5f22d9cee1c4ff74d7c0bbd",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:28731307ac47547a8b23f0dfaa55a50eaad106662fcf0ec7a625397c0dfc1038",
+        "source_path": "frontend/src/i18n/timeEntries.ts"
+      },
+      "state": "known"
+    },
+    "modules/timeEntryService.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c9fda181f0b683259b6b8b0bae2c190beb8f9a6ae1377cbd8383ed7be33c1e53",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+        "source_path": "frontend/src/services/timeEntryService.ts"
+      },
+      "state": "known"
+    },
+    "modules/timeEntryService.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:2c0da38578d3b7c1a30f2d48d66fa4d939f18eb47604e16fedbf5698561f3e14",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:cb0341d87b358d202029e49dd85e5faf99e7de42ebb24981d491c9bd0a106d81",
+        "source_path": "frontend/src/services/timeEntryService.test.ts"
+      },
+      "state": "known"
+    },
     "modules/time_entries.md": {
       "basis": {
-        "concept_observation_hash": "sha256:26b7809bdfb1e9276ac3b14195f93ec26911f27a0e33dc672a3ca2946ac5f6aa",
+        "concept_observation_hash": "sha256:d7d62b41e2c54b00e018cab9be5063148207c1796e81fbd5d936cfd4cfdd00ef",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+        "source_content_hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
         "source_path": "backend/app/routers/time_entries.py"
       },
       "state": "known"
@@ -21302,6 +21492,26 @@
         "scope": "module",
         "source_content_hash": "sha256:6c9a33f8d3e25208ea9d3f5e01e466ba473f22944fcb7b824ebac6b2ceb856bc",
         "source_path": "backend/app/services/time_entry_service.py"
+      },
+      "state": "known"
+    },
+    "modules/time_report.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:df2fdceb1342e082e38769228acad4b120bdd52a541ccb846c4ae2c38dfe9ee8",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:7bafdcac6bf274777f43e4721319cf98509e412bc0f3adea42da6486fbee248b",
+        "source_path": "backend/app/schemas/time_report.py"
+      },
+      "state": "known"
+    },
+    "modules/time_report_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:8b67b96858decc9c2c5a5c0995a6a4d4a3add742d4b99b2aa278ef9c05fab2ca",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:0412b06438388abb48e0b707be2a0acecf92deb934a17521ec89a58e18ed5934",
+        "source_path": "backend/app/services/time_report_service.py"
       },
       "state": "known"
     },
@@ -21645,6 +21855,16 @@
       },
       "state": "known"
     },
+    "modules/useTimeEntries.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0f24825eecc246d77d25ebe9137a9c12d545b15ff0fc319d685bbbd35e31b0cd",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:f6ae3e75f0cbe0107533aa2890a3b1b7c9aade776f0bc73e2b0c2c3a41935e29",
+        "source_path": "frontend/src/features/timeEntries/useTimeEntries.ts"
+      },
+      "state": "known"
+    },
     "modules/user_session.md": {
       "basis": {
         "concept_observation_hash": "sha256:f65c2feca0e874164285d4974f130514710a37bdb878bcbe075cf0ce8b9fd807",
@@ -21970,13 +22190,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:ff38b13d44a8e77c2e8dca60575470346f0a73f52b11b5bbde2dec95037555ba",
-      "lifecycle_hash": "sha256:8e1a5cedc8f36d37ac0d003a1627811e603445095c07c0f3249eb435efcc7ee9",
-      "markdown_snapshot_hash": "sha256:1f3214c753004ac010b310f3207dfcb566f2d418d77f4e4fd4084de0fc653b23",
-      "observation_inputs_hash": "sha256:b8bae52054b51fc06e81629c0f8cb2a438817fa3af44c44f3336957c646acd8a",
+      "inventory_hash": "sha256:1404afd1564674191e6573dba78aa6b647f534aa247cefbe6e78712dc0677ca3",
+      "lifecycle_hash": "sha256:9d7d20575edc9653212f3c260ae614fe78296cdbc567b7857aaa6c92ff60853f",
+      "markdown_snapshot_hash": "sha256:459963182d639f5202119a739bb732ccb0f224e682344d8cb65526b493b6126a",
+      "observation_inputs_hash": "sha256:756728be168f50131334d9c42d752163d4a787594421985f8884135891779f75",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:b80ba4e4c3b5673c726b1e56ccf7cfd8bc1dcf57eee2f09159ee207a7fcf1cdb"
+      "source_snapshot_hash": "sha256:70fa627efc3c90eaf52f0ff6b249bda5f7576f437f6ea690037231874972bbaf"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -23772,6 +23992,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "scripts/ci/check_postgresql_documentation.py"
+    },
+    "entities/Draft.md": {
+      "entity_name": "Draft",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
     },
     "entities/DraftGuard.md": {
       "entity_name": "DraftGuard",
@@ -27481,12 +27707,6 @@
       "scope": "entity",
       "source_path": "frontend/src/store/themeStore.ts"
     },
-    "entities/TimeEntry.md": {
-      "entity_name": "TimeEntry",
-      "occurrence": 1,
-      "scope": "entity",
-      "source_path": "backend/app/models/time_entry.py"
-    },
     "entities/TimeEntryCapabilities.md": {
       "entity_name": "TimeEntryCapabilities",
       "occurrence": 1,
@@ -27541,6 +27761,54 @@
       "scope": "entity",
       "source_path": "backend/app/schemas/time_entry.py"
     },
+    "entities/TimeFilters.md": {
+      "entity_name": "TimeFilters",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
+    "entities/TimePage.md": {
+      "entity_name": "TimePage",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
+    "entities/TimeReport.md": {
+      "entity_name": "TimeReport",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
+    "entities/TimeReportItem.md": {
+      "entity_name": "TimeReportItem",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_report.py"
+    },
+    "entities/TimeReportPage.md": {
+      "entity_name": "TimeReportPage",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_report.py"
+    },
+    "entities/TimeReportService.md": {
+      "entity_name": "TimeReportService",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/time_report_service.py"
+    },
+    "entities/TimeReportTotals.md": {
+      "entity_name": "TimeReportTotals",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_report.py"
+    },
+    "entities/TimeRevision.md": {
+      "entity_name": "TimeRevision",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
     "entities/TimeRevisionPage.md": {
       "entity_name": "TimeRevisionPage",
       "occurrence": 1,
@@ -27549,12 +27817,6 @@
     },
     "entities/TimeRevisionResponse.md": {
       "entity_name": "TimeRevisionResponse",
-      "occurrence": 1,
-      "scope": "entity",
-      "source_path": "backend/app/schemas/time_entry.py"
-    },
-    "entities/TimeValues.md": {
-      "entity_name": "TimeValues",
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/schemas/time_entry.py"
@@ -28548,6 +28810,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/models/template.py"
+    },
+    "entities/models_time_entry_TimeEntry.md": {
+      "entity_name": "TimeEntry",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/models/time_entry.py"
     },
     "entities/models_triage_TriageClassificationSuggestion.md": {
       "entity_name": "TriageClassificationSuggestion",
@@ -29635,6 +29903,12 @@
       "scope": "entity",
       "source_path": "backend/app/schemas/template.py"
     },
+    "entities/schemas_time_entry_TimeValues.md": {
+      "entity_name": "TimeValues",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/time_entry.py"
+    },
     "entities/schemas_triage_TriageActionRequest.md": {
       "entity_name": "TriageActionRequest",
       "occurrence": 1,
@@ -29826,6 +30100,18 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/models/team_member.py"
+    },
+    "entities/timeEntryService_TimeEntry.md": {
+      "entity_name": "TimeEntry",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
+    "entities/timeEntryService_TimeValues.md": {
+      "entity_name": "TimeValues",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/timeEntryService.ts"
     },
     "entities/time_entries_DB.md": {
       "entity_name": "DB",
@@ -31737,6 +32023,22 @@
       "scope": "module",
       "source_path": "frontend/src/components/settings/TemplateLabelSettings.test.tsx"
     },
+    "modules/TimeEntriesPanel.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
+    },
+    "modules/TimeEntriesPanel.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/tasks/TimeEntriesPanel.test.tsx"
+    },
+    "modules/TimeEntriesReport.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/projects/TimeEntriesReport.tsx"
+    },
+    "modules/TimeEntriesReport.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/projects/TimeEntriesReport.test.tsx"
+    },
     "modules/ToastProvider.md": {
       "scope": "module",
       "source_path": "frontend/src/components/feedback/ToastProvider.tsx"
@@ -33469,6 +33771,10 @@
       "scope": "module",
       "source_path": "backend/tests/test_time_entries.py"
     },
+    "modules/test_time_reports.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_time_reports.py"
+    },
     "modules/test_transfer_catalog.md": {
       "scope": "module",
       "source_path": "backend/tests/database_migration/test_transfer_catalog.py"
@@ -33493,6 +33799,18 @@
       "scope": "module",
       "source_path": "backend/app/utils/time.py"
     },
+    "modules/timeEntries.md": {
+      "scope": "module",
+      "source_path": "frontend/src/i18n/timeEntries.ts"
+    },
+    "modules/timeEntryService.md": {
+      "scope": "module",
+      "source_path": "frontend/src/services/timeEntryService.ts"
+    },
+    "modules/timeEntryService.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/services/timeEntryService.test.ts"
+    },
     "modules/time_entries.md": {
       "scope": "module",
       "source_path": "backend/app/routers/time_entries.py"
@@ -33500,6 +33818,14 @@
     "modules/time_entry_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/time_entry_service.py"
+    },
+    "modules/time_report.md": {
+      "scope": "module",
+      "source_path": "backend/app/schemas/time_report.py"
+    },
+    "modules/time_report_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/time_report_service.py"
     },
     "modules/toast.md": {
       "scope": "module",
@@ -33636,6 +33962,10 @@
     "modules/useSingleKeyShortcutPreference.test.md": {
       "scope": "module",
       "source_path": "frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx"
+    },
+    "modules/useTimeEntries.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/timeEntries/useTimeEntries.ts"
     },
     "modules/user_session.md": {
       "scope": "module",
@@ -41283,7 +41613,7 @@
         {
           "name": "TimeEntry",
           "occurrence": 1,
-          "page": "TimeEntry"
+          "page": "models_time_entry_TimeEntry"
         },
         {
           "name": "TimeEntryRevision",
@@ -41292,7 +41622,7 @@
         }
       ],
       "entity_pages": {
-        "TimeEntry": "TimeEntry",
+        "TimeEntry": "models_time_entry_TimeEntry",
         "TimeEntryRevision": "TimeEntryRevision"
       },
       "generated_semantics": {
@@ -43088,17 +43418,19 @@
             "capabilities": "—",
             "correct_entry": "—",
             "create_entry": "—",
+            "export": "—",
             "get_entry": "—",
             "history": "—",
             "list_entries": "—",
+            "report": "—",
             "void_entry": "—"
           }
         }
       },
-      "hash": "sha256:b5bcec346eda90b873d8777c8712313275e31ed1896fcb18de373ffa3657a75c",
+      "hash": "sha256:5a04b6cbb94c4fa406776ff4357bc4dd7f1f361b2519272c384002f16e70e014",
       "language": "python",
       "module_page": "time_entries",
-      "semantic_hash": "sha256:2730a13e7a5afc198d249b9ca081d485cec3d50e01c686b958763c86377f6aa4"
+      "semantic_hash": "sha256:5587f0b6c9b80d7df450dcede8ebe96c8821a86a672b29ea30a1caff6b53c989"
     },
     "backend/app/routers/triage.py": {
       "entities": [],
@@ -52612,7 +52944,7 @@
         {
           "name": "TimeValues",
           "occurrence": 1,
-          "page": "TimeValues"
+          "page": "schemas_time_entry_TimeValues"
         },
         {
           "name": "TimeEntryCreate",
@@ -52670,7 +53002,7 @@
         "TimeEntryVoid": "TimeEntryVoid",
         "TimeRevisionPage": "TimeRevisionPage",
         "TimeRevisionResponse": "TimeRevisionResponse",
-        "TimeValues": "TimeValues"
+        "TimeValues": "schemas_time_entry_TimeValues"
       },
       "generated_semantics": {
         "entities": {
@@ -52798,6 +53130,93 @@
       "language": "python",
       "module_page": "schemas_time_entry",
       "semantic_hash": "sha256:1fe1823e3407a077a540eaa64c1ac477a718a6068c6c91e88876e2c7901260b3"
+    },
+    "backend/app/schemas/time_report.py": {
+      "entities": [
+        "TimeReportItem",
+        "TimeReportTotals",
+        "TimeReportPage"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeReportItem",
+          "occurrence": 1,
+          "page": "TimeReportItem"
+        },
+        {
+          "name": "TimeReportTotals",
+          "occurrence": 1,
+          "page": "TimeReportTotals"
+        },
+        {
+          "name": "TimeReportPage",
+          "occurrence": 1,
+          "page": "TimeReportPage"
+        }
+      ],
+      "entity_pages": {
+        "TimeReportItem": "TimeReportItem",
+        "TimeReportPage": "TimeReportPage",
+        "TimeReportTotals": "TimeReportTotals"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TimeReportItem": {
+            "attributes": {
+              "entry_count": "—",
+              "estimate_hours": "—",
+              "estimate_state": "—",
+              "recorded_minutes": "—",
+              "task_id": "—",
+              "task_title": "—"
+            },
+            "description": "_Auto-generated from `TimeReportItem` in `backend/app/schemas/time_report.py`._",
+            "methods": {}
+          },
+          "TimeReportPage": {
+            "attributes": {
+              "can_view_project_totals": "—",
+              "consistency": "—",
+              "end": "—",
+              "has_more": "—",
+              "items": "—",
+              "next_after_id": "—",
+              "project_id": "—",
+              "scope": "—",
+              "start": "—",
+              "totals": "—",
+              "upper_id": "—"
+            },
+            "description": "_Auto-generated from `TimeReportPage` in `backend/app/schemas/time_report.py`._",
+            "methods": {}
+          },
+          "TimeReportTotals": {
+            "attributes": {
+              "known_estimate_hours": "—",
+              "project_work_minutes": "—",
+              "recorded_minutes": "—",
+              "task_count": "—",
+              "tasks_with_estimates": "—",
+              "tasks_with_records": "—"
+            },
+            "description": "_Auto-generated from `TimeReportTotals` in `backend/app/schemas/time_report.py`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "TimeReportItem": "—",
+            "TimeReportPage": "—",
+            "TimeReportTotals": "—"
+          },
+          "description": "Scoped recorded coverage, distinct from current effort estimates.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:7bafdcac6bf274777f43e4721319cf98509e412bc0f3adea42da6486fbee248b",
+      "language": "python",
+      "module_page": "time_report",
+      "semantic_hash": "sha256:0480d77de8a3aed2dd6c84bbdf1d4f2cd4841a791937e38e66eadfaf571f8c5d"
     },
     "backend/app/schemas/triage.py": {
       "entities": [
@@ -58001,6 +58420,48 @@
       "module_page": "time_entry_service",
       "semantic_hash": "sha256:6ff0f3a8a1e144d9e10a079185622a8c07cf0a89f29ff5b31c864bb04448e2b0"
     },
+    "backend/app/services/time_report_service.py": {
+      "entities": [
+        "TimeReportService"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeReportService",
+          "occurrence": 1,
+          "page": "TimeReportService"
+        }
+      ],
+      "entity_pages": {
+        "TimeReportService": "TimeReportService"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TimeReportService": {
+            "attributes": {},
+            "description": "_Auto-generated from `TimeReportService` in `backend/app/services/time_report_service.py`._",
+            "methods": {
+              "__init__": "—",
+              "csv": "—",
+              "export": "—",
+              "item": "—",
+              "page": "—",
+              "statement": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "TimeReportService": "—"
+          },
+          "description": "Authorized scalar totals and exports without exposing other authors' records.",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:0412b06438388abb48e0b707be2a0acecf92deb934a17521ec89a58e18ed5934",
+      "language": "python",
+      "module_page": "time_report_service",
+      "semantic_hash": "sha256:775b6090d12b70d361bca3987c36e6133aa25614753d7fa6cfdff156f1ba691d"
+    },
     "backend/app/services/triage_service.py": {
       "entities": [
         "TriageConflictError",
@@ -60645,7 +61106,7 @@
           }
         }
       },
-      "hash": "sha256:5cd783401e9f7c86aba2c02639a1300a47cd7552f5c16f6ba8ef249ea952c410",
+      "hash": "sha256:3879db52d0ccf57d9e6f126728bf5509c9a0d55735f64395162eff3f59d1b38e",
       "language": "python",
       "module_page": "test_client_contract",
       "semantic_hash": "sha256:2b3372e4bce81da98c926780b4f5ea1874321e2ca9ad2a2377b049ae94cf2abf"
@@ -61347,6 +61808,29 @@
       "language": "python",
       "module_page": "test_time_entries",
       "semantic_hash": "sha256:bbe26ec906fafc11e3dc5f81d2f06945b865bb96ea4ea041c3d69b9427275475"
+    },
+    "backend/tests/test_time_reports.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Recorded coverage and manager totals preserve private entry boundaries.",
+          "functions": {
+            "test_csv_rejects_spreadsheet_formula_interpretation_without_manufacturing_missing_values": "—",
+            "test_moved_task_keeps_original_scope_and_does_not_expose_new_title": "—",
+            "test_personal_and_manager_totals_do_not_expose_private_records": "—",
+            "test_personal_export_bound_is_explicit": "—",
+            "test_unknown_time_zero_estimates_project_work_and_finite_pages": "—"
+          }
+        }
+      },
+      "hash": "sha256:08dbb5ee0b26f5a0fcd841e879978fbf9f6ce3093203a724e4df5df29602b13a",
+      "language": "python",
+      "module_page": "test_time_reports",
+      "semantic_hash": "sha256:5af2f9f9ca78b8cf68951f5c311c058edd2d82ca1e07539494ec7cae82a1966f"
     },
     "backend/tests/test_work_correctness.py": {
       "entities": [],
@@ -63884,6 +64368,42 @@
       "module_page": "ProjectTaskTree",
       "semantic_hash": "sha256:4f0fe00eaf59976f25d48ee9d3de3018d0522e0371f9a059e0b21d4ce90844af"
     },
+    "frontend/src/components/projects/TimeEntriesReport.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/projects/TimeEntriesReport.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:efcfd09d0804861dfddf24fd5e0ee1900e3d408236ebe8f6d15221b92f46d8fb",
+      "language": "typescript",
+      "module_page": "TimeEntriesReport.test",
+      "semantic_hash": "sha256:058d60d588bfa97effbc1b4069a785ac62aa74ca50492bc10e64eadbf621e968"
+    },
+    "frontend/src/components/projects/TimeEntriesReport.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/projects/TimeEntriesReport.tsx`._",
+          "functions": {
+            "TimeEntriesReport": "—"
+          }
+        }
+      },
+      "hash": "sha256:3ca76384b073f91840070ee5dadf4ae4538fc5c170df268724871bba94578fae",
+      "language": "typescript",
+      "module_page": "TimeEntriesReport",
+      "semantic_hash": "sha256:82c3a3749f433ebf2044c16d1ae25100c0423906c7cfcd9f91d080c47bc72a59"
+    },
     "frontend/src/components/projects/projectStatusStyles.test.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -66253,10 +66773,10 @@
           }
         }
       },
-      "hash": "sha256:5e6783566716ca8cc3bbfc368327b3f8db220ed0bc0be93cf934f10f454a3d51",
+      "hash": "sha256:d1b777d615554bf716dd4b6b14c1e2ae77e2a0d4ce6edd985fd30cda0bf0dd28",
       "language": "typescript",
       "module_page": "TaskForm",
-      "semantic_hash": "sha256:3319f81daff4a29805815603e1e62c2aba01a38c352c68882b6e77fc8e230ea7"
+      "semantic_hash": "sha256:36bf2270d7af252f8419b636ab38161bd5a9d3391d2156c62e4e1dcd854884bf"
     },
     "frontend/src/components/tasks/TaskList.test.tsx": {
       "entities": [],
@@ -66631,6 +67151,60 @@
       "module_page": "TaskWorkflowGuide",
       "semantic_hash": "sha256:a44a7409d788852b8c10b6889f72ccc6677d80396aea88691fd16fd748db0125"
     },
+    "frontend/src/components/tasks/TimeEntriesPanel.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:2ba66a7d0d2981393780aa8a16f170dfaf83b92cab2e7741e3097b758be1e435",
+      "language": "typescript",
+      "module_page": "TimeEntriesPanel.test",
+      "semantic_hash": "sha256:185dabca894650f30fd241170eae2975d6e1a43a85a3c561df1d47ee6b771af1"
+    },
+    "frontend/src/components/tasks/TimeEntriesPanel.tsx": {
+      "entities": [
+        "Draft"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "Draft",
+          "occurrence": 1,
+          "page": "Draft"
+        }
+      ],
+      "entity_pages": {
+        "Draft": "Draft"
+      },
+      "generated_semantics": {
+        "entities": {
+          "Draft": {
+            "attributes": {},
+            "description": "_Auto-generated from `Draft` in `frontend/src/components/tasks/TimeEntriesPanel.tsx`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "Draft": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/components/tasks/TimeEntriesPanel.tsx`._",
+          "functions": {
+            "TimeEntriesPanel": "—"
+          }
+        }
+      },
+      "hash": "sha256:f1cc722af832fdc1c5b945df69fbe73adc715a12bf487e0f1f85b1c2cd9b7a5a",
+      "language": "typescript",
+      "module_page": "TimeEntriesPanel",
+      "semantic_hash": "sha256:aa30e9255d1c6060d195682a566aadf4f8934910eae7c42de1ece1d85ad0e61d"
+    },
     "frontend/src/components/tasks/WorkMetricsLine.tsx": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -66666,7 +67240,7 @@
           }
         }
       },
-      "hash": "sha256:7c63e53ec61287297f7cb8adcafa9c3afcf720291af70f5e8ab94a130e08ae1f",
+      "hash": "sha256:fa034d748f1dbb62199fccf8e002c32ef9e451776c7d4e848b03453516cc835e",
       "language": "typescript",
       "module_page": "taskDraftStorage",
       "semantic_hash": "sha256:db8e06d83427b355a78b294a2061b83f4a4a487b794864794e68c7ac7946fb34"
@@ -68503,6 +69077,25 @@
       "module_page": "taskViewState",
       "semantic_hash": "sha256:b7f093d4b7115a80d4a34ed63fb0773f6fa7fb00e5dc5f7ad65a1020ee243e13"
     },
+    "frontend/src/features/timeEntries/useTimeEntries.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/timeEntries/useTimeEntries.ts`._",
+          "functions": {
+            "useTimeEntries": "—"
+          }
+        }
+      },
+      "hash": "sha256:f6ae3e75f0cbe0107533aa2890a3b1b7c9aade776f0bc73e2b0c2c3a41935e29",
+      "language": "typescript",
+      "module_page": "useTimeEntries",
+      "semantic_hash": "sha256:42f1601a64677dff65fdbbe46f27aa09fccf9a67e629c3a8ae632f59b2c5eba5"
+    },
     "frontend/src/features/workQueryFreshness.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -68739,10 +69332,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d03bc53d3e3f24d341c02048e1ad2a55cd094127b6e6e7caa891b555a9352253",
+      "hash": "sha256:0e336ebeaeb6415134c72843c8ada302d0bd1736e6b044939d3b89a34ccccdf0",
       "language": "typescript",
       "module_page": "resources.en",
-      "semantic_hash": "sha256:742a5cc8d78baa06bfe9fdd4f8cdbfb65c253c321774ef755abdf2d2662af809"
+      "semantic_hash": "sha256:3d8440e9b9a57fc2560b8b12fe6abfd02b9c28cd45653efce5ff9405ae031548"
     },
     "frontend/src/i18n/resources.ru.ts": {
       "entities": [],
@@ -68756,10 +69349,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:07263ea25fc65ee297f4bce2fd5eae3c7d5712984753ca0f6e06b7923b62a5a6",
+      "hash": "sha256:bafffc64ea40a5b68556c9db1f7e6ed66f51d7df2c1a76009f2873fd8792577a",
       "language": "typescript",
       "module_page": "resources.ru",
-      "semantic_hash": "sha256:7bcd8d35dd017c07d5e209c19876a5f6b88ecfb8cd40bb8d1b71b829f3d71fd8"
+      "semantic_hash": "sha256:0d59e8c0ab884497f9d55cbb79bf85bcae7dece0829cd11b5654c0ee3d99bdf1"
     },
     "frontend/src/i18n/schedulingDisplay.ts": {
       "entities": [],
@@ -68861,6 +69454,23 @@
       "language": "typescript",
       "module_page": "teamwork.ru",
       "semantic_hash": "sha256:26f27806d6d52e9cf7b6c843c041c07cd55725685ba239e13e254acb679c1c17"
+    },
+    "frontend/src/i18n/timeEntries.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/i18n/timeEntries.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:28731307ac47547a8b23f0dfaa55a50eaad106662fcf0ec7a625397c0dfc1038",
+      "language": "typescript",
+      "module_page": "timeEntries",
+      "semantic_hash": "sha256:9965616c34dfe90a2e2aee36f9f92c46af89d6e8dfda23abdf1040526674d711"
     },
     "frontend/src/main.tsx": {
       "entities": [],
@@ -70023,10 +70633,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:6997b195ddf91aab14cf58319642030986bf859f43f6f2b440f4eca2e7a64a98",
+      "hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
       "language": "typescript",
       "module_page": "ProjectDetailPage",
-      "semantic_hash": "sha256:2b92a2754e0a80c3b4c99db8fbdd08976112de6d78fe0971d445a4e71863bf7f"
+      "semantic_hash": "sha256:3899d973526d2adcd3cf2469df73898b4ba6504098cb71da977b1e2641b81de4"
     },
     "frontend/src/pages/ProjectReleaseDetailPage.tsx": {
       "entities": [],
@@ -71533,6 +72143,168 @@
       "language": "typescript",
       "module_page": "templateService",
       "semantic_hash": "sha256:3510d39f5cfc185cd3e6d49ab83e1d97b5442beac0297f7f3ee49a4b43a408a6"
+    },
+    "frontend/src/services/timeEntryService.test.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/services/timeEntryService.test.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:cb0341d87b358d202029e49dd85e5faf99e7de42ebb24981d491c9bd0a106d81",
+      "language": "typescript",
+      "module_page": "timeEntryService.test",
+      "semantic_hash": "sha256:651bc64a2d0e07929cfaa9d28da7a1894c28a9a7c80a95e24546977116d59490"
+    },
+    "frontend/src/services/timeEntryService.ts": {
+      "entities": [
+        "TimeValues",
+        "TimeEntry",
+        "TimePage",
+        "TimeRevision",
+        "TimeReport",
+        "TimeFilters"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "TimeValues",
+          "occurrence": 1,
+          "page": "timeEntryService_TimeValues"
+        },
+        {
+          "name": "TimeEntry",
+          "occurrence": 1,
+          "page": "timeEntryService_TimeEntry"
+        },
+        {
+          "name": "TimePage",
+          "occurrence": 1,
+          "page": "TimePage"
+        },
+        {
+          "name": "TimeRevision",
+          "occurrence": 1,
+          "page": "TimeRevision"
+        },
+        {
+          "name": "TimeReport",
+          "occurrence": 1,
+          "page": "TimeReport"
+        },
+        {
+          "name": "TimeFilters",
+          "occurrence": 1,
+          "page": "TimeFilters"
+        }
+      ],
+      "entity_pages": {
+        "TimeEntry": "timeEntryService_TimeEntry",
+        "TimeFilters": "TimeFilters",
+        "TimePage": "TimePage",
+        "TimeReport": "TimeReport",
+        "TimeRevision": "TimeRevision",
+        "TimeValues": "timeEntryService_TimeValues"
+      },
+      "generated_semantics": {
+        "entities": {
+          "TimeEntry": {
+            "attributes": {
+              "created_at": "—",
+              "id": "—",
+              "principal_id": "—",
+              "project_id": "—",
+              "task_id": "—",
+              "task_title": "—",
+              "updated_at": "—",
+              "version": "—",
+              "voided": "—"
+            },
+            "description": "_Auto-generated from `TimeEntry` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          },
+          "TimeFilters": {
+            "attributes": {
+              "end": "—",
+              "project_id": "—",
+              "scope": "—",
+              "start": "—",
+              "task_id": "—"
+            },
+            "description": "_Auto-generated from `TimeFilters` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          },
+          "TimePage": {
+            "attributes": {
+              "has_more": "—",
+              "items": "—",
+              "next_after_id": "—",
+              "upper_id": "—"
+            },
+            "description": "_Auto-generated from `TimePage` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          },
+          "TimeReport": {
+            "attributes": {
+              "can_view_project_totals": "—",
+              "end": "—",
+              "has_more": "—",
+              "items": "—",
+              "next_after_id": "—",
+              "project_id": "—",
+              "scope": "—",
+              "start": "—",
+              "totals": "—",
+              "upper_id": "—"
+            },
+            "description": "_Auto-generated from `TimeReport` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          },
+          "TimeRevision": {
+            "attributes": {
+              "created_at": "—",
+              "principal_id": "—",
+              "reason": "—",
+              "version": "—",
+              "voided": "—"
+            },
+            "description": "_Auto-generated from `TimeRevision` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          },
+          "TimeValues": {
+            "attributes": {
+              "minutes": "—",
+              "note": "—",
+              "timezone": "—",
+              "work_date": "—"
+            },
+            "description": "_Auto-generated from `TimeValues` in `frontend/src/services/timeEntryService.ts`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "TimeEntry": "—",
+            "TimeFilters": "—",
+            "TimePage": "—",
+            "TimeReport": "—",
+            "TimeRevision": "—",
+            "TimeValues": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/services/timeEntryService.ts`._",
+          "functions": {
+            "timeAccessDenied": "—"
+          }
+        }
+      },
+      "hash": "sha256:e3959dd506d83da08e4e681353d6755edca273616341f0855ad2370a77d8e1b4",
+      "language": "typescript",
+      "module_page": "timeEntryService",
+      "semantic_hash": "sha256:a6d0d12a4f88427d81c766903f2a6c87d52c55fad006ee76db99f9938afa2908"
     },
     "frontend/src/services/triageService.ts": {
       "entities": [
@@ -79656,7 +80428,7 @@
           }
         }
       },
-      "hash": "sha256:dbcba6acc8e4dfbbce56cc581cd0eac95a502eb6c55f58d1ec0e3719c9867a76",
+      "hash": "sha256:ecf449358ca3bcde2cfb5bc2021659014ffd9d496606ad38bbefc7e06e5e51f9",
       "language": "python",
       "module_page": "generate_client_contract",
       "semantic_hash": "sha256:367155ffebfc2bcf5710139f37f8843bc2653dd26db57c7f24da2aab80865ac7"

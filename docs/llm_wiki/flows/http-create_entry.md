@@ -79,7 +79,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_entry | domain_result | 37 | `domain_result(...)` |
+| create_entry | domain_result | 41 | `domain_result(...)` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -87,8 +87,8 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_entry | TimeEntryService(…).create | 37 | `TimeEntryService(db).create(data)` |
-| create_entry | TimeEntryService | 37 | `TimeEntryService(db)` |
+| create_entry | TimeEntryService(…).create | 41 | `TimeEntryService(db).create(data)` |
+| create_entry | TimeEntryService | 41 | `TimeEntryService(db)` |
 
 ### Boundary effects
 
@@ -103,7 +103,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `create_entry` | `TimeEntryService(db).create` | 37 |
+| unresolved_call | `create_entry` | `TimeEntryService(db).create` | 41 |
 
 ## Behavior
 

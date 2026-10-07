@@ -84,9 +84,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_entry | TimeEntryService | 42 | `TimeEntryService(db)` |
-| get_entry | service.serialize | 43 | `service.serialize(...)` |
-| get_entry | domain_result | 43 | `domain_result(service.get(...))` |
+| get_entry | TimeEntryService | 63 | `TimeEntryService(db)` |
+| get_entry | service.serialize | 64 | `service.serialize(...)` |
+| get_entry | domain_result | 64 | `domain_result(service.get(...))` |
 | domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
@@ -94,7 +94,7 @@ flowchart LR
 | domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 33 | `str(exc)` |
 | domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| get_entry | service.get | 43 | `service.get(entry_id)` |
+| get_entry | service.get | 64 | `service.get(entry_id)` |
 
 ### Boundary effects
 
@@ -104,13 +104,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_entry` | `service.serialize` | 43 |
+| unresolved_call | `get_entry` | `service.serialize` | 64 |
 | external_call | `domain_result` | `HTTPException` | 29 |
 | unresolved_call | `domain_result` | `exc.detail` | 29 |
 | external_call | `domain_result` | `HTTPException` | 31 |
 | external_call | `domain_result` | `HTTPException` | 33 |
 | external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `get_entry` | `service.get` | 43 |
+| unresolved_call | `get_entry` | `service.get` | 64 |
 
 ## Behavior
 
