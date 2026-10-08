@@ -67,6 +67,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}
       DATABASE_POSTGRESQL_REQUIRED: "true"
+      STRICT_MUTATION_VERSIONS: ${STRICT_MUTATION_VERSIONS:-false}
       DATABASE_PROCESS_ROLE: web
       DATABASE_APPLICATION_NAME: workchord-web
       DATABASE_SESSION_ROLE: ""
@@ -158,6 +159,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_RUNTIME_URL:?Set the dedicated PostgreSQL runtime URL}
       DATABASE_POSTGRESQL_REQUIRED: "true"
+      STRICT_MUTATION_VERSIONS: ${STRICT_MUTATION_VERSIONS:-false}
       DATABASE_PROCESS_ROLE: delivery_worker
       DATABASE_APPLICATION_NAME: workchord-delivery-worker
       DATABASE_SESSION_ROLE: ""

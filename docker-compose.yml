@@ -108,6 +108,7 @@ services:
     environment:
       - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
       - DATABASE_POSTGRESQL_REQUIRED=true
+      - STRICT_MUTATION_VERSIONS=${STRICT_MUTATION_VERSIONS:-false}
       - DATABASE_PROCESS_ROLE=web
       - API_PREFIX=/api
       - DEPLOYMENT_ENVIRONMENT=development
@@ -173,6 +174,7 @@ services:
     environment:
       - DATABASE_URL=${POSTGRES_DATABASE_URL:-postgresql+psycopg://postgres:workchord-local-only@postgres:5432/workchord}
       - DATABASE_POSTGRESQL_REQUIRED=true
+      - STRICT_MUTATION_VERSIONS=${STRICT_MUTATION_VERSIONS:-false}
       - DATABASE_PROCESS_ROLE=delivery_worker
       - DATABASE_POOL_SIZE=8
       - DATABASE_MAX_OVERFLOW=2
