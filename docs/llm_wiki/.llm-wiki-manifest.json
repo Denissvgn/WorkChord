@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:25e4d245714e396795bd29467ac86443fedd66f3d036b11bc3430a701c10f5ce",
-    "knowledge_index_hash": "sha256:e3e8278685370ce74213666e2eb2bcb881c55658a6f01d0c6256969a8022b850",
-    "surface_index_hash": "sha256:4b6609484306eb95b712378ccb35a5c5d5dfac216b7166cd2fcd42eb4a468721"
+    "evaluated_envelope_hash": "sha256:10e1b5c51494bc8ea4672f3185c50c5ac65e478f624cba8f32edfde333b9d6c8",
+    "knowledge_index_hash": "sha256:9ec0d75c9c88030bc004919827ccbfa791848d6c76ad0935becd802c456715a0",
+    "surface_index_hash": "sha256:40f67b861f3781e75375a6e32ba91c7856b94916dd29a9678d16bd9054712fc5"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -18645,6 +18645,16 @@
       },
       "state": "known"
     },
+    "modules/isolated_rehearsal.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:56cf2977a3aa60fd5da9ded3bfd3219a5faad18fdff0727ad7950caeccc991fe",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:c86fe10e7b9d1f6137bc82664be843f3b2a15639f6923926459fe3fda0adac21",
+        "source_path": "scripts/server/isolated_rehearsal.py"
+      },
+      "state": "known"
+    },
     "modules/iterationService.md": {
       "basis": {
         "concept_observation_hash": "sha256:94c9cf545921fbaef608cb71d63bf7723105d9706529185263d9c29978dc7bf4",
@@ -21645,6 +21655,16 @@
       },
       "state": "known"
     },
+    "modules/test_rehearsal_ownership.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d91466774944a415e47499ef7441cf9cd98dd6da025068328fbcbd65c1bd47ef",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:ed06998a36ef5f4c20b3363920a30dd8ff76a6eb27c8545e0d45cf17e7c77ba1",
+        "source_path": "backend/tests/test_rehearsal_ownership.py"
+      },
+      "state": "known"
+    },
     "modules/test_routing_evidence.md": {
       "basis": {
         "concept_observation_hash": "sha256:fa32414021706b20d779c03174d7db35f7ebd1829aced05f6bb0491d555209cb",
@@ -22632,11 +22652,11 @@
             "adapter": "compose",
             "discovery_root": ".",
             "observation_hash": "sha256:3dc3cf67d034a749b2d84f5d139963861487550e170ecdc9b45112a36203c91d",
-            "source_content_hash": "sha256:45292912fc0374190efd836d50ecd59100c3f85fe7ac1044e9a289eba067f6f5"
+            "source_content_hash": "sha256:80a5bac45a874490f73af27fbf0ce4199f43c7f686b816ac1c88f8ed97d23189"
           },
           "observation_hash": "sha256:3dc3cf67d034a749b2d84f5d139963861487550e170ecdc9b45112a36203c91d",
           "page_path": "infrastructure/docker-compose_server_yml.md",
-          "source_content_hash": "sha256:45292912fc0374190efd836d50ecd59100c3f85fe7ac1044e9a289eba067f6f5",
+          "source_content_hash": "sha256:80a5bac45a874490f73af27fbf0ce4199f43c7f686b816ac1c88f8ed97d23189",
           "source_path": "docker-compose.server.yml",
           "state": "current"
         },
@@ -22690,13 +22710,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:0260f3bc1779bd22dc3ba2a8c4c8d1a49282d77cc4b44292cb9c9eb53a1e434c",
-      "lifecycle_hash": "sha256:2718fade0323551eb6511bb5bacf110ce2e081fb2898cf9d3f789571ae4aeb4d",
-      "markdown_snapshot_hash": "sha256:5b7fe9f7fa7edb4e21e3343292ab62bff8e86549063b1eaf566d5d44f64de1ca",
-      "observation_inputs_hash": "sha256:3006f457967ebf0ee1f11eb2fcabc780feea8e0ff6abd0355be306e3e373ee9f",
+      "inventory_hash": "sha256:04a251fc4c763afed279c3404930cc8f5bc23b3104db5361397ef93bccee9983",
+      "lifecycle_hash": "sha256:202263f6c55629e6eac73e9a867cf29e0c4a2b8be385fd47d4d7971ef439f5c5",
+      "markdown_snapshot_hash": "sha256:d972d86017e7bbea7ac5090018c74c4b53211abd14579d885ef9092e91f0db2f",
+      "observation_inputs_hash": "sha256:8cb6cf7713521ce4156aaa3c4bbea27c323063b1a588483809232de598cdacf6",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:8a24cd24347061e0515632372d45ad21bd991786220ef998fe4d56f64f27fe10"
+      "source_snapshot_hash": "sha256:06cfacb27e93faebbe51f4f253953e253f8277ccd42bd5fb0bfeb72c8c8184b8"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -33199,6 +33219,10 @@
       "scope": "module",
       "source_path": "scripts/ci/installed_wheel_postgresql_qualification.py"
     },
+    "modules/isolated_rehearsal.md": {
+      "scope": "module",
+      "source_path": "scripts/server/isolated_rehearsal.py"
+    },
     "modules/iterationService.md": {
       "scope": "module",
       "source_path": "frontend/src/services/iterationService.ts"
@@ -34398,6 +34422,10 @@
     "modules/test_query_boundaries.md": {
       "scope": "module",
       "source_path": "backend/tests/database/test_query_boundaries.py"
+    },
+    "modules/test_rehearsal_ownership.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_rehearsal_ownership.py"
     },
     "modules/test_routing_evidence.md": {
       "scope": "module",
@@ -62698,6 +62726,27 @@
       "module_page": "test_project_working_timezone",
       "semantic_hash": "sha256:2326c984b218d4e4258b9743e82b48eae802637719d1ce3d377dd464a41ac84f"
     },
+    "backend/tests/test_rehearsal_ownership.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Isolation cannot adopt operator paths, names, architectures or unrelated resources.",
+          "functions": {
+            "test_cleanup_removes_only_matching_identities_and_keeps_failure_evidence": "—",
+            "test_platform_and_fixed_external_names_fail_before_launch": "—",
+            "test_prepare_refuses_existing_and_operator_paths": "—"
+          }
+        }
+      },
+      "hash": "sha256:ed06998a36ef5f4c20b3363920a30dd8ff76a6eb27c8545e0d45cf17e7c77ba1",
+      "language": "python",
+      "module_page": "test_rehearsal_ownership",
+      "semantic_hash": "sha256:2a3a50bc893a1ce1ef487e85d0ddc1980752c4d4415d766fa050ba9ea46e5e3b"
+    },
     "backend/tests/test_runtime_boundaries.py": {
       "entities": [
         "ScalarResult",
@@ -82678,6 +82727,33 @@
       "language": "python",
       "module_page": "export_acceptance_artifacts",
       "semantic_hash": "sha256:aba5a7128afaef1dcc2a9f0c7bfa2e684330b8e75e30b0789295ae134a5c2f47"
+    },
+    "scripts/server/isolated_rehearsal.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Own isolated Compose resources without reusing operator credentials or data.",
+          "functions": {
+            "cleanup": "—",
+            "docker": "—",
+            "load_marker": "—",
+            "main": "—",
+            "ownership_override": "—",
+            "prepare": "—",
+            "resources": "—",
+            "verify": "—",
+            "verify_images": "—"
+          }
+        }
+      },
+      "hash": "sha256:c86fe10e7b9d1f6137bc82664be843f3b2a15639f6923926459fe3fda0adac21",
+      "language": "python",
+      "module_page": "isolated_rehearsal",
+      "semantic_hash": "sha256:ccf48e9adba26475d2cfc1b6d35148cca1b091510e19c88e143a087c4fce2302"
     }
   },
   "surfaces": {

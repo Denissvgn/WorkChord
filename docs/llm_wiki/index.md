@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1519 | [Open section](#entities) |
-| Modules | 728 | [Open section](#modules) |
+| Modules | 730 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 547 | [Open section](#entry-point-flows) |
+| Entry-point flows | 548 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1885,6 +1885,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [import_planning_service](modules/import_planning_service.md) - Coherent, read-only planning observations for bounded JSON imports.
 - [index](modules/index.md) - `frontend/src/components/ui/index.ts`
 - [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) - Qualify the installed backend wheel across the SQLite/PostgreSQL boundary.
+- [isolated_rehearsal](modules/isolated_rehearsal.md) - Own isolated Compose resources without reusing operator credentials or data.
 - [iterationService](modules/iterationService.md) - `frontend/src/services/iterationService.ts`
 - [iterationStore](modules/iterationStore.md) - `frontend/src/store/iterationStore.ts`
 - [iteration_service](modules/iteration_service.md) - Iteration service with business logic.
@@ -2185,6 +2186,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_project_identity_scope](modules/test_project_identity_scope.md) - Ambiguous legacy identities stop before writes and never expose private records.
 - [test_project_working_timezone](modules/test_project_working_timezone.md) - Declared project working zones survive transport and drive local work dates.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
+- [test_rehearsal_ownership](modules/test_rehearsal_ownership.md) - Isolation cannot adopt operator paths, names, architectures or unrelated resources.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
 - [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) - Runtime configuration preserves supplied conflicts in either rollout mode.
@@ -2995,6 +2997,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-generate_mobile_contract_fixtures](flows/process-generate_mobile_contract_fixtures.md) - entry: `main`
 - [process-generate_workchord_keys](flows/process-generate_workchord_keys.md) - entry: `main`
 - [process-installed_wheel_postgresql_qualification](flows/process-installed_wheel_postgresql_qualification.md) - entry: `main`
+- [process-isolated_rehearsal](flows/process-isolated_rehearsal.md) - entry: `main`
 - [process-local_baseline](flows/process-local_baseline.md) - entry: `main`
 - [process-mcp_server](flows/process-mcp_server.md) - entry: `main`
 - [process-postgres_runtime](flows/process-postgres_runtime.md) - entry: `main`

@@ -600,6 +600,7 @@ flowchart TD
 | [test_profile_capacity](modules/test_profile_capacity.md) | 0 | 17 |
 | [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) | 0 | 4 |
 | [test_project_working_timezone](modules/test_project_working_timezone.md) | 0 | 13 |
+| [test_rehearsal_ownership](modules/test_rehearsal_ownership.md) | 0 | 0 |
 | [test_runtime_boundaries](modules/test_runtime_boundaries.md) | 0 | 9 |
 | [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) | 0 | 3 |
 | [test_saved_view_service](modules/test_saved_view_service.md) | 0 | 3 |
@@ -756,6 +757,7 @@ flowchart TD
 | [seed](modules/seed.md) | 0 | 2 |
 | [service_worksets](modules/service_worksets.md) | 0 | 15 |
 | [export_acceptance_artifacts](modules/export_acceptance_artifacts.md) | 0 | 1 |
+| [isolated_rehearsal](modules/isolated_rehearsal.md) | 0 | 0 |
 
 ## External dependencies
 

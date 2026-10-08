@@ -1964,3 +1964,30 @@ Project, iteration, capacity, vacation and import workflows now retain complete 
 - Moved entities: none
 
 Task and protocol callers now preserve original task and aggregate observations; role guidance reflects explicit comparison and companion structural actions remain unavailable.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:06cfacb27e93faebbe51f4f253953e253f8277ccd42bd5fb0bfeb72c8c8184b8`
+- Pages created: 3
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2979
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Self-hosted acceptance now supports owned isolated namespaces and runtime paths with native image validation and bounded cleanup.
