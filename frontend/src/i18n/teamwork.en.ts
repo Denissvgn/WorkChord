@@ -1,4 +1,9 @@
 export const teamworkEnglish = {
+    "retainedWindow": "Showing a retained window. Current head discovery continues; work outside this window may have changed.",
+    "headRefreshFailed": "Head discovery failed. This retained window may be stale or incomplete.",
+    "latestWindow": "Show latest window",
+    "refreshAge": "Oldest active work view updated {{seconds}} seconds ago.",
+    "staleWork": "Some work views could not refresh. Displayed data may be stale.",
     "uncertainTask": "The previous write may have reached the server. Compare current work before deciding to submit again. No write is retried automatically.",
     "reloadCurrentWork": "Reload current server work",
     "comparedWork": "I compared current work; resume this draft",

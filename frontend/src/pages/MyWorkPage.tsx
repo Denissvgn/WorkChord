@@ -1,7 +1,9 @@
+import { useLiveWindow } from '../features/useLiveWindow';
+import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
 import { PageLayout, PageHeader } from '../components/ui';
 import { PersonCapacity } from '../components/tasks/PersonCapacity';
 import { useIdentity } from '../features/identity/identityContext';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../services/api';
@@ -23,18 +25,18 @@ const MyWorkPage = () => {
     const queue: Queue = QUEUES.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
     const selectedId = Number(params.get('task')) || null;
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const work = useInfiniteQuery({ queryKey: ['human-my-work'], initialPageParam: 0,
+    const work = useLiveWindow({ queryKey: ['human-my-work'], enabled: queue !== 'review' && queue !== 'inbox', initialPageParam: 0,
         queryFn: async ({ pageParam }) => (await api.get<WorkPage>('/tasks/my-work', { params: { after_id: pageParam } })).data,
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const reviews = useInfiniteQuery({ queryKey: ['human-review-queue'], enabled: queue === 'review', initialPageParam: 0,
+    const reviews = useLiveWindow({ queryKey: ['human-review-queue'], enabled: queue === 'review', initialPageParam: 0,
         queryFn: async ({ pageParam }) => (await api.get<TaskReferencePage>('/tasks/review-queue', { params: { after_id: pageParam } })).data,
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const inbox = useInfiniteQuery({ queryKey: ['personal-inbox'], enabled: queue === 'inbox', initialPageParam: 0,
+    const inbox = useLiveWindow({ queryKey: ['personal-inbox'], enabled: queue === 'inbox', initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.inbox(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const deliveries = useInfiniteQuery({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox', initialPageParam: 0,
+    const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox', initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.deliveries(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const read = useMutation({ mutationFn: ({ id, value }: { id: number; value: boolean }) => discussionService.read(id, value), onSuccess: () => inbox.refetch() });
@@ -48,6 +50,7 @@ const MyWorkPage = () => {
         {identity?.profile && <PersonCapacity key={identity.profile.id} profileId={identity.profile.id} manage />}
         <nav aria-label={t('teamwork.workQueues')} className="flex flex-wrap gap-2">{QUEUES.map(key => <Button key={key} variant={queue === key ? 'primary' : 'secondary'} size="sm" aria-pressed={queue === key}
             onClick={() => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }}>{t(`teamwork.queue_${key}`)}</Button>)}</nav>
+        <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}
         {selectedQuery.isError && <QueryErrorState error={selectedQuery.error} fallback={t('teamwork.loadFailed')} onRetry={() => void selectedQuery.refetch()} />}
         {queue !== 'review' && queue !== 'inbox' && work.data?.pages[0].state !== 'ready' && work.data && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${work.data.pages[0].state}`)}</p>}
@@ -75,7 +78,7 @@ const MyWorkPage = () => {
         </>}
         {selectedQuery.hasNextPage && <Button variant="secondary" disabled={selectedQuery.isFetchingNextPage} onClick={() => void selectedQuery.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
         {selectedId && <CurrentTaskModal key={selectedId} taskId={selectedId}
-            onClose={() => { selectTask(null); void work.refetch(); void reviews.refetch(); }} />}
+            onClose={() => { selectTask(null); if (queue === 'review') void reviews.refetch(); else if (queue === 'inbox') void inbox.refetch(); else void work.refetch(); }} />}
     </section></PageLayout>;
 };
 

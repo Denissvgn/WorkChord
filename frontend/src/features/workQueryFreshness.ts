@@ -10,7 +10,7 @@ const ROOTS_BY_POLICY: Record<QueryPolicy, readonly string[]> = {
         'profile-availability', 'delivery-dependencies', 'deliveryMetrics', 'discussion', 'executionUsage', 'initiatives',
         'iteration-overdue', 'projectIterations', 'projectReleases', 'projectUpdates', 'request-source-links',
         'request-sources', 'saved-view', 'snapshots', 'subscription', 'task-external-links', 'taskActions', 'taskBrowser',
-        'team', 'teamMemberProfiles', 'triage', 'planning-navigation-summary', 'project-summary'],
+        'team', 'teamMemberProfiles', 'triage', 'planning-navigation-summary', 'project-summary', 'live-window-head'],
     history: ['iteration-history', 'taskHistory', 'taskTimeline', 'task-timeline', 'comment-history', 'time-history'],
     editor: ['task', 'taskEditor', 'taskContext', 'routing-preview', 'gantt-schedule-preview', 'routing-assessment',
         'assigneeRecommendations'],
@@ -42,6 +42,10 @@ export const installWorkFreshness = (client: QueryClient) => {
     for (const [root, policy] of Object.entries(WORKSPACE_QUERY_POLICIES)) {
         if (policy === 'identity') continue;
         client.setQueryDefaults([root], {
+            retry: (count, error) => {
+                const status = (error as { response?: { status?: number } })?.response?.status;
+                return status !== 401 && status !== 403 && count < 1;
+            },
             staleTime: policy === 'editor' ? 0 : 15000,
             refetchOnWindowFocus: policy !== 'editor' && policy !== 'history',
             refetchIntervalInBackground: false,
@@ -54,22 +58,29 @@ export const installWorkFreshness = (client: QueryClient) => {
             } : false,
         });
     }
-    return client.getMutationCache().subscribe(event => {
+    const stopQueries = client.getQueryCache().subscribe(event => {
+        if (event.type !== 'updated' || event.action.type !== 'error') return;
+        const status = (event.query.state.error as { response?: { status?: number } } | null)?.response?.status;
+        if (status === 401 || status === 403) event.query.setState({ data: undefined, dataUpdatedAt: 0 });
+    });
+    const stopMutations = client.getMutationCache().subscribe(event => {
         if (event.type !== 'updated' || event.action.type !== 'success') return;
         const explicit = event.mutation.options.meta?.workQueryRoots;
         const mapped = MUTATION_ROOT_EFFECTS[String(event.mutation.options.mutationKey?.[0])];
         const effects = Array.isArray(explicit) ? explicit.filter((value): value is string => typeof value === 'string')
             : mapped ?? WORK_QUERY_KEYS;
         if (effects.length) {
-            void client.invalidateQueries({ predicate: query => effects.includes(String(query.queryKey[0])), refetchType: 'none' });
+            const affected = (key: readonly unknown[]) => effects.includes(String(key[0] === 'live-window-head' ? key[1] : key[0]));
+            void client.invalidateQueries({ predicate: query => affected(query.queryKey), refetchType: 'none' });
             void client.refetchQueries({ type: 'active', predicate: query => {
                 const root = String(query.queryKey[0]);
                 const pages = (query.state.data as { pages?: unknown[] } | undefined)?.pages;
                 const status = (query.state.error as { response?: { status?: number } } | null)?.response?.status;
-                return effects.includes(root) && WORKSPACE_QUERY_POLICIES[root] === 'live' && query.isActive()
+                return affected(query.queryKey) && WORKSPACE_QUERY_POLICIES[root] === 'live' && query.isActive()
                     && status !== 401 && status !== 403 && document.visibilityState !== 'hidden'
                     && !(pages && pages.length > 5);
             } });
         }
     });
+    return () => { stopQueries(); stopMutations(); };
 };

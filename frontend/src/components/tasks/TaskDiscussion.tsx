@@ -1,3 +1,5 @@
+import { useLiveWindow } from '../../features/useLiveWindow';
+import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useEffect, useId, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +49,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
         catch { /* The in-page draft remains available when storage is unavailable. */ }
     };
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const comments = useInfiniteQuery({ queryKey: ['discussion', taskId], enabled,
+    const comments = useLiveWindow({ queryKey: ['discussion', taskId], enabled,
         initialPageParam: 0, queryFn: ({ pageParam }) => discussionService.list(taskId, pageParam),
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
@@ -91,6 +93,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
         <h3 id={`${id}-title`} className="text-base font-semibold text-content-primary">{t('teamwork.discussion')}</h3>
         <p className="text-sm text-content-secondary">{t('teamwork.discussionHelp')}</p>
         {!enabled ? <p>{t('teamwork.signInDiscussion')}</p> : <>
+            <LiveWindowStatus window={comments} />
             {comments.isLoading && <p role="status">{t('common.loading')}</p>}
             {comments.isError && <QueryErrorState error={comments.error} fallback={t('teamwork.loadFailed')} onRetry={() => void comments.refetch()} />}
             {comments.data && comments.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.noComments')}</p>}

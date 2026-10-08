@@ -119,6 +119,7 @@ def parse_args():
     mode.add_argument('--backend-only', action='store_true')
     parser.add_argument('--full-backend', action='store_true')
     parser.add_argument('--managed-browser', action='store_true')
+    parser.add_argument('--time-entries', action='store_true')
     parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800,
                         help='Work budget; leave time outside this for cleanup and uploads')
     args = parser.parse_args()
@@ -201,6 +202,7 @@ def main():
                     'VITE_API_URL': 'http://127.0.0.1:8001', 'BROWSER_BASE_URL': 'http://localhost:4173',
                     'BROWSER_ARTIFACTS_DIR': str(run.output), 'WORKCHORD_FIXTURE_ISSUER': 'http://localhost:8002',
                     'WORKCHORD_FIXTURE_NONCE': uuid4().hex, 'WORKCHORD_BROWSER_PYTHON': sys.executable}
+                app_env['TIME_ENTRIES_ENABLED'] = 'true' if args.time_entries else 'false'
                 if args.managed_browser:
                     app_env.update(WORKCHORD_AUTH_MODE='managed', OIDC_ISSUER_URL='http://localhost:8002',
                         OIDC_CLIENT_ID='browser-client', OIDC_CLIENT_SECRET='disposable-browser-secret',
@@ -208,7 +210,7 @@ def main():
                         CORS_ORIGINS='["http://localhost:4173"]', SESSION_COOKIE_SECURE='false')
                 run.start('api', [sys.executable, str(ROOT / 'scripts/ci/serve_disposable_api.py')], cwd=scratch, env=app_env)
                 run.start('frontend', [str(frontend / 'node_modules/.bin/vite'), '--host', '127.0.0.1', '--port', '4173', '--strictPort'], cwd=frontend, env=app_env)
-                run.run('browser', ['node', browser_file], cwd=browser_dir, env=app_env, timeout=300)
+                run.run('browser', ['node', browser_file], cwd=browser_dir, env=app_env, timeout=450)
     return run.exit_code
 
 

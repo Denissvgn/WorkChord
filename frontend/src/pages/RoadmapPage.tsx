@@ -1,6 +1,8 @@
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useLiveWindow } from '../features/useLiveWindow';
+import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
+import { useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     addDays,
@@ -744,6 +746,13 @@ const RoadmapPage = () => {
         queryFn: projectService.getInitiatives,
     });
 
+    const milestoneWindow = useLiveWindow({
+        queryKey: ['projectMilestones', 'portfolio'],
+        queryFn: ({ pageParam }) => projectService.getRoadmapMilestones(pageParam),
+        initialPageParam: null as number | null,
+        getNextPageParam: lastPage => lastPage.next_cursor ?? undefined,
+        staleTime: 30000,
+    });
     const {
         data: milestonePages,
         error: milestonesError,
@@ -753,19 +762,7 @@ const RoadmapPage = () => {
         isFetchingNextPage,
         isLoading: isMilestonesLoading,
         refetch: refetchMilestones,
-    } = useInfiniteQuery({
-        queryKey: ['projectMilestones', 'portfolio'],
-        queryFn: ({ pageParam }) => projectService.getRoadmapMilestones(pageParam),
-        initialPageParam: null as number | null,
-        getNextPageParam: lastPage => lastPage.next_cursor ?? undefined,
-        staleTime: 30000,
-    });
-
-    useEffect(() => {
-        if (hasNextPage && !isFetchingNextPage && !isFetchNextPageError) {
-            void fetchNextPage();
-        }
-    }, [fetchNextPage, hasNextPage, isFetchNextPageError, isFetchingNextPage]);
+    } = milestoneWindow;
 
     const portfolioMilestones = useMemo(
         () => milestonePages?.pages.flatMap(page => page.items) ?? [],
@@ -912,6 +909,7 @@ const RoadmapPage = () => {
     const hasMilestoneDataError = Boolean(milestonesError || isFetchNextPageError);
     const milestoneDataComplete = Boolean(milestonePages)
         && !hasNextPage
+        && !milestoneWindow.outsideWindow
         && !isFetchingNextPage
         && !hasMilestoneDataError;
     const unscheduledRows = useMemo(
@@ -1037,6 +1035,8 @@ const RoadmapPage = () => {
             >
                 {!isLoading && !hasQueryError && (
                     <>
+                        <LiveWindowStatus window={milestoneWindow} />
+                        {hasNextPage && <Button type="button" variant="secondary" disabled={isFetchingNextPage} onClick={() => void fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
                         {(isMilestonesLoading || isFetchingNextPage) && projects.length > 0 && (
                             <div className="banner muted" role="status">
                                 {t('surfaces.roadmapPage.loadingMilestoneMarkers')}

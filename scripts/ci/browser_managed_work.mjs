@@ -265,6 +265,52 @@ try {
   await page.goto('/my-work?queue=queued');
   await page.getByRole('heading', { name: 'My Work', exact: true }).waitFor();
   await page.getByRole('button', { name: /Согласовать критерии/ }).waitFor();
+  const peerContext = await browser.newContext({ baseURL, locale: 'en-US' });
+  const peerPage = await peerContext.newPage();
+  peerPage.on('pageerror', error => errors.push(error.message));
+  await peerPage.goto('/my-work');
+  await peerPage.getByRole('link', { name: 'Sign in', exact: true }).click();
+  await peerPage.getByRole('link', { name: 'Continue as Alice' }).click();
+  await peerPage.getByText('Alice', { exact: true }).first().waitFor();
+  const peerIdentity = await (await peerContext.request.get('/api/auth/me')).json();
+  const peerHeaders = { 'X-CSRF-Token': peerIdentity.csrf_token, Origin: baseURL };
+  const unassigned = await peerContext.request.post(`/api/projects/${projects[0].id}/backlog`, { headers: peerHeaders,
+    data: { title: 'Externally assigned foreground work', project_id: projects[0].id, owner_profile_id: null } });
+  assert.equal(unassigned.status(), 201, await unassigned.text());
+  const observed = await unassigned.json();
+  const assigned = await peerContext.request.put(`/api/tasks/${observed.id}`, { headers: peerHeaders,
+    data: { owner_profile_id: me.profile.id, expected_version: observed.version } });
+  assert.equal(assigned.status(), 200, await assigned.text());
+  const assignedTask = await assigned.json();
+  await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ timeout: 45000 });
+  const started = await peerContext.request.post(`/api/tasks/${observed.id}/commands`, { headers: peerHeaders,
+    data: { action: 'start_manual', expected_version: assignedTask.version, reason: 'Synthetic peer start' } });
+  assert.equal(started.status(), 200, await started.text());
+  await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
+  await page.goto(`/my-work?queue=active&task=${observed.id}`);
+  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
+    headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
+  assert.equal(peerComment.status(), 201, await peerComment.text());
+  await page.getByText('Peer comment arrives in foreground', { exact: true }).waitFor({ timeout: 45000 });
+  if (process.env.TIME_ENTRIES_ENABLED === 'true') {
+    await page.getByRole('button', { name: 'Time entries', exact: true }).click();
+    const entry = await peerContext.request.post('/api/time-entries', { headers: peerHeaders,
+      data: { project_id: projects[0].id, task_id: observed.id, request_id: crypto.randomUUID(),
+        work_date: '2026-10-08', timezone: 'UTC', minutes: 15, note: 'Foreground recorded work' } });
+    assert.equal(entry.status(), 201, await entry.text());
+    const recorded = await entry.json();
+    await page.getByText('Foreground recorded work', { exact: true }).waitFor({ timeout: 45000 });
+    const correction = await peerContext.request.put(`/api/time-entries/${recorded.id}`, { headers: peerHeaders,
+      data: { expected_version: recorded.version, work_date: '2026-10-08', timezone: 'UTC', minutes: 20,
+        note: 'Foreground corrected work', reason: 'Synthetic peer correction' } });
+    assert.equal(correction.status(), 200, await correction.text());
+    await page.getByText('Foreground corrected work', { exact: true }).waitFor({ timeout: 45000 });
+    assert.equal(await page.getByText('Foreground recorded work', { exact: true }).count(), 0);
+  }
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await peerContext.close();
+  check('Two managed sessions discover assignment, queue movement, comments and optional time corrections without focus changes');
   const themeContrast = [];
   for (const theme of ['light', 'dark', 'blue', 'green']) {
     await page.evaluate(async chosen => { const module = await import('/src/store/themeStore.ts'); module.useThemeStore.getState().setTheme(chosen); }, theme);

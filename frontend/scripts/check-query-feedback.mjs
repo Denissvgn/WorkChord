@@ -81,6 +81,7 @@ const HOOK_KINDS = new Map([
     ['useQuery', 'query'],
     ['useQueries', 'query'],
     ['useInfiniteQuery', 'query'],
+    ['useLiveWindow', 'query'],
     ['useMutation', 'mutation'],
 ]);
 
@@ -89,15 +90,15 @@ const HOOK_KINDS = new Map([
 // while leaving Q/M totals unchanged.
 export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/features/timeEntries/useTimeEntries.ts': 'b689ed77e0980dbd',
-    'src/components/tasks/TimeEntriesPanel.tsx': 'e2f92f5e7db9c227',
-    'src/components/projects/TimeEntriesReport.tsx': 'ec8a1aae42e5c20b',
-    'src/components/tasks/PagedTaskBrowser.tsx': 'd1f37f9574a416f5',
-    'src/pages/MyWorkPage.tsx': '2140982df0dafc9f',
+    'src/components/tasks/TimeEntriesPanel.tsx': 'ec418c8617746822',
+    'src/components/projects/TimeEntriesReport.tsx': 'e713a6d28f0867fa',
+    'src/components/tasks/PagedTaskBrowser.tsx': '5e20eeaf74bec28f',
+    'src/pages/MyWorkPage.tsx': 'e4703dc32c60b546',
     'src/components/tasks/TaskSearch.tsx': '1c836716acf30699',
-    'src/components/tasks/TaskDiscussion.tsx': 'ab78919abd6af621',
+    'src/components/tasks/TaskDiscussion.tsx': 'e8fb35323106d619',
     'src/components/tasks/PersonCapacity.tsx': '9ed055ec8adb42aa',
     'src/components/tasks/DeliveryDependencies.tsx': '0606dde61002be81',
-    'src/components/tasks/BacklogPanel.tsx': 'bed57a32098e94a8',
+    'src/components/tasks/BacklogPanel.tsx': 'b9aed1daacb99f0a',
     'src/components/layout/CommandMenu.tsx': '000910e369219b88',
     'src/components/dashboard/SavedViewDashboardCards.tsx': 'a850ee02012738f3',
     'src/components/gantt/GanttChart.tsx': 'ba83b7289529c7f1',
@@ -152,7 +153,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/ProjectDetailPage.tsx': '9dab38fcac41fd04',
     'src/pages/ProjectReleaseDetailPage.tsx': '9145592c7cadb869',
     'src/pages/ProjectsPage.tsx': '4fd72b0f96d3e263',
-    'src/pages/RoadmapPage.tsx': '331ac878fdd72339',
+    'src/pages/RoadmapPage.tsx': '8cf2879f1873fa25',
     'src/pages/TasksPage.tsx': '13b6684eab5a4b87',
     'src/pages/TeamPage.tsx': '1b061fa3a8dd4c25',
     'src/pages/TriagePage.tsx': 'c0c3648f5ab135a5',

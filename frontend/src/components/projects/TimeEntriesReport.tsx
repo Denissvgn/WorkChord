@@ -1,5 +1,7 @@
+import { useLiveWindow } from '../../features/useLiveWindow';
+import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useState } from 'react';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { format, startOfMonth } from 'date-fns';
 import { useTimeEntries } from '../../features/timeEntries/useTimeEntries';
@@ -29,7 +31,7 @@ const ReportContent = ({ projectId }: { projectId: number }) => {
         || identity?.projects[String(projectId)] === 'manager';
     const filters = { project_id: projectId, start, end, scope };
     // feedback-policy: query loading,error,retry,empty - errors hide cached scope totals and rows.
-    const report = useInfiniteQuery({ queryKey: ['time-report', projectId, start, end, scope],
+    const report = useLiveWindow({ queryKey: ['time-report', projectId, start, end, scope],
         enabled: Boolean(start && end && end >= start), initialPageParam: { after: 0, upper: undefined as number | undefined },
         queryFn: ({ pageParam, signal }) => timeEntryService.report(filters, pageParam.after, pageParam.upper, signal),
         getNextPageParam: page => page.has_more ? { after: page.next_after_id!, upper: page.upper_id } : undefined });
@@ -53,6 +55,7 @@ const ReportContent = ({ projectId }: { projectId: number }) => {
                 </select></div>
         </div>
         {(!start || !end || end < start) && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('timeEntries.invalid')}</p>}
+        <LiveWindowStatus window={report} />
         {report.isLoading && <p role="status">{t('common.loading')}</p>}
         {report.isError && <QueryErrorState error={report.error} fallback={t('timeEntries.reportFailed')} onRetry={() => void report.refetch()} />}
         {!privateUnavailable && totals && <>
