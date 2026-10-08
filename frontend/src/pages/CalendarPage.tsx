@@ -1,3 +1,4 @@
+import { VacationCsvImport } from '../components/team/VacationCsvImport';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -96,6 +97,8 @@ const CalendarPage = () => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const calendarContext = usePlanningObservation<WorkCalendar>();
+    const vacationContext = usePlanningObservation<TeamMember>();
+    const [vacationImportBusy, setVacationImportBusy] = useState(false);
 
     const [draft, setDraft] = useState<CalendarDraft | null>(null);
     const [selectedCalendarId, setSelectedCalendarId] = useState<number | null>(null);
@@ -194,6 +197,12 @@ const CalendarPage = () => {
             };
         }
     }, [teamMembers, selectedMemberId]);
+
+    const vacationMemberId = selectedMemberId ? Number(selectedMemberId) : null;
+    const readVacationContext = vacationContext.read;
+    useEffect(() => {
+        if (vacationMemberId) void readVacationContext('member', vacationMemberId);
+    }, [vacationMemberId, readVacationContext]);
 
     // feedback-policy: mutation pending,inline
     const updateCalendarMutation = useMutation({
@@ -298,9 +307,10 @@ const CalendarPage = () => {
     // feedback-policy: mutation pending,inline
     const addVacationMutation = useMutation({
         mutationFn: ({ memberId, start_date, end_date }: { memberId: number; start_date: string; end_date: string }) =>
-            teamService.addVacation(memberId, { start_date, end_date }),
+            teamService.addVacation(memberId, { start_date, end_date }, vacationContext.observation!.expected_revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
+            if (vacationMemberId) void readVacationContext('member', vacationMemberId, true);
             setVacationStart('');
             setVacationEnd('');
             setVacationError('');
@@ -314,7 +324,7 @@ const CalendarPage = () => {
 
     // feedback-policy: mutation pending,inline
     const deleteVacationMutation = useMutation({
-        mutationFn: teamService.deleteVacation,
+        mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => teamService.deleteVacation(id, revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
             setVacationError('');
@@ -323,24 +333,6 @@ const CalendarPage = () => {
         onError: (error: unknown) => {
             setVacationSummary('');
             setVacationError(apiErrorMessage(error, t('calendar.vacationDeleteFailed')));
-        },
-    });
-
-    // feedback-policy: mutation pending,inline
-    const vacationCsvImportMutation = useMutation({
-        mutationFn: ({ iterationId, csvText }: { iterationId: number; csvText: string }) =>
-            teamService.importVacationsCsv(iterationId, csvText),
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
-            setVacationSummary(t('teamVacations.importSummary', {
-                imported: data.imported_count,
-                skipped: data.skipped_count,
-            }));
-            setVacationError(data.errors.length ? data.errors.map(err => `${err.row}: ${err.message}`).join('; ') : '');
-        },
-        onError: (error: unknown) => {
-            setVacationSummary('');
-            setVacationError(apiErrorMessage(error, t('teamVacations.importFailed')));
         },
     });
 
@@ -467,11 +459,6 @@ const CalendarPage = () => {
         holidayCsvImportMutation.mutate({ calendarId: calendar.id, csvText: await file.text() });
     };
 
-    const handleVacationCsvFile = async (file: File | null) => {
-        if (!file || !selectedIteration) return;
-        vacationCsvImportMutation.mutate({ iterationId: selectedIteration.id, csvText: await file.text() });
-    };
-
     const saveSettings = () => {
         if (!calendar || !draft || !calendarContext.observation || calendarContext.loading) return;
         updateCalendarMutation.mutate({
@@ -524,9 +511,18 @@ const CalendarPage = () => {
         });
     };
 
+    const confirmVacationDelete = async (vacation: Vacation) => {
+        try {
+            const observed = await planningInputService.readInitial<Vacation>('vacation', vacation.id);
+            requestConfirmation({ title: t('actions.delete'), description: t('teamVacations.deleteConfirm'),
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteVacationMutation.mutateAsync({ id: vacation.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { setVacationError(getApiErrorMessage(cause, t('calendar.vacationDeleteFailed'))); }
+    };
+
     const addVacation = () => {
         const memberId = Number(selectedMemberId);
-        if (!memberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) return;
+        if (!vacationContext.observation || vacationContext.loading || !memberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) return;
         addVacationMutation.mutate({
             memberId,
             start_date: vacationStart,
@@ -958,6 +954,7 @@ const CalendarPage = () => {
                     {iterations.length > 0 && (
                         <select
                             value={selectedIterationId}
+                            disabled={Boolean(vacationStart || vacationEnd) || vacationImportBusy || addVacationMutation.isPending}
                             onChange={event => setSelectedIterationId(Number.parseInt(event.target.value, 10))}
                             className="input"
                             style={{ width: 'auto' }}
@@ -993,10 +990,14 @@ const CalendarPage = () => {
                 ) : (
                     <div className="wc-content-rail">
                         <div>
-                            {(vacationSummary || vacationError) && (
+                            {(vacationSummary || vacationError || vacationContext.loading || Boolean(vacationContext.error)) && (
                                 <div className={`banner ${vacationError ? 'warn' : 'done'}`} style={{marginBottom:12}}>
                                     {vacationSummary}
-                                    {vacationError && <div>{vacationError}</div>}
+                                    {vacationContext.loading && <p role="status">{t('common.loading')}</p>}
+                                    {Boolean(vacationContext.error) && <p role="alert">{getApiErrorMessage(vacationContext.error, t('calendar.loadFailed'))}</p>}
+                                    {vacationError && <div role="alert">{vacationError}</div>}
+                                    {(vacationError || Boolean(vacationContext.error)) && <Button type="button" variant="secondary" disabled={addVacationMutation.isPending || vacationContext.loading}
+                                        onClick={() => { if (vacationMemberId) void readVacationContext('member', vacationMemberId, true); }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>}
                                 </div>
                             )}
                             <div className="wc-toolbar">
@@ -1004,6 +1005,7 @@ const CalendarPage = () => {
                                     <span className="field-lbl">{t('calendar.teamMember')}</span>
                                     <select
                                         value={selectedMemberId}
+                                        disabled={Boolean(vacationStart || vacationEnd) || addVacationMutation.isPending}
                                         onChange={event => setSelectedMemberId(event.target.value)}
                                         className="input"
                                     >
@@ -1030,25 +1032,14 @@ const CalendarPage = () => {
                                 <Button
                                     type="button"
                                     onClick={addVacation}
-                                    disabled={!selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd}
+                                    disabled={!vacationContext.observation || vacationContext.loading || !selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd}
                                     isLoading={addVacationMutation.isPending}
                                 >
                                     <Plus className="w-4 h-4" />
                                     {t('teamVacations.addVacation')}
                                 </Button>
-                                <label className="btn secondary cursor-pointer">
-                                    <Upload className="w-4 h-4" />
-                                    {t('calendar.importVacationCsv')}
-                                    <input
-                                        type="file"
-                                        accept=".csv,text/csv"
-                                        className="hidden"
-                                        onChange={event => {
-                                            handleVacationCsvFile(event.target.files?.[0] || null);
-                                            event.currentTarget.value = '';
-                                        }}
-                                    />
-                                </label>
+                                <VacationCsvImport key={selectedIterationId} iterationId={selectedIterationId} onBusyChange={setVacationImportBusy}
+                                    onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['team'] }); if (vacationMemberId) void readVacationContext('member', vacationMemberId, true); }} />
                             </div>
                         </div>
                         <div>
@@ -1070,15 +1061,7 @@ const CalendarPage = () => {
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => requestConfirmation({
-                                                title: t('actions.delete'),
-                                                description: t('teamVacations.deleteConfirm'),
-                                                confirmLabel: t('actions.delete'),
-                                                cancelLabel: t('actions.cancel'),
-                                                closeLabel: t('actions.close'),
-                                                onConfirm: () => deleteVacationMutation.mutateAsync(vacation.id),
-                                                tone: 'danger',
-                                            })}
+                                            onClick={() => void confirmVacationDelete(vacation)}
                                             aria-label={t('actions.delete')}
                                             isLoading={deleteVacationMutation.isPending}
                                             className="text-feedback-danger hover:text-feedback-danger-foreground"

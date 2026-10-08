@@ -4,6 +4,9 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import type { Iteration } from '../../types/iteration';
 import { IterationForm } from './IterationForm';
 
+const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
+vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
+
 const iterationServiceMock = vi.hoisted(() => ({
     create: vi.fn(),
     createSeries: vi.fn(),
@@ -53,6 +56,7 @@ const iterationFixture = (overrides: Partial<Iteration> = {}): Iteration => ({
 describe('IterationForm hardening', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture(), resource_id: 17, expected_revisions: { 17: 4 }, complete: true });
         projectServiceMock.getAll.mockResolvedValue([]);
         iterationServiceMock.create.mockResolvedValue(iterationFixture({ project_id: null }));
         iterationServiceMock.createSeries.mockResolvedValue({
@@ -74,7 +78,7 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        const nameInput = screen.getByLabelText('Iteration Name');
+        const nameInput = await screen.findByLabelText('Iteration Name');
         await user.clear(nameInput);
         await user.type(nameInput, 'August delivery plan');
         await user.click(screen.getByRole('button', { name: 'Update Iteration' }));
@@ -102,7 +106,7 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        await user.clear(screen.getByLabelText('Manager Email (for notifications)'));
+        await user.clear(await screen.findByLabelText('Manager Email (for notifications)'));
         await user.click(screen.getByRole('button', { name: 'Update Iteration' }));
 
         await waitFor(() => {
@@ -166,7 +170,7 @@ describe('IterationForm hardening', () => {
         );
         const latestState = () => onStateChange.mock.calls.at(-1)?.[0];
 
-        await user.type(screen.getByLabelText('Iteration Name'), 'September plan');
+        await user.type(await screen.findByLabelText('Iteration Name'), 'September plan');
         await user.type(screen.getByLabelText('Start Date'), '2026-09-01');
         await user.type(screen.getByLabelText('End Date'), '2026-09-14');
         await user.click(screen.getByRole('button', { name: 'Save Iteration' }));
@@ -176,7 +180,7 @@ describe('IterationForm hardening', () => {
             expect(latestState()).toEqual({ dirty: true, pending: true });
         });
 
-        const form = screen.getByLabelText('Iteration Name').closest('form');
+        const form = (await screen.findByLabelText('Iteration Name')).closest('form');
         expect(form).not.toBeNull();
         expect(form).toHaveAttribute('aria-busy', 'true');
         for (const control of within(form!).getAllByRole('button')) {
@@ -218,7 +222,7 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        const nameInput = screen.getByLabelText('Iteration Name');
+        const nameInput = await screen.findByLabelText('Iteration Name');
         await user.clear(nameInput);
         await user.type(nameInput, 'Still here after failure');
         await user.click(screen.getByRole('button', { name: 'Update Iteration' }));

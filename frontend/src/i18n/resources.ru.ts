@@ -3,6 +3,11 @@ import { timeEntriesRU } from './timeEntries';
 import { teamworkRussian } from './teamwork.ru';
 export const russianResources = {
         translation: {
+            planningInput: {
+                previewReady: 'Выбранный файл и затронутые данные планирования готовы к проверке. Импорт использует эту версию; при конфликте файл сохраняется.', preview: 'Проверить импорт', reviewAgain: 'Проверить текущие данные',
+                fields: { name: 'Название', display_name: 'Имя', position: 'Роль', start_date: 'Начало', end_date: 'Окончание', status: 'Статус', health: 'Состояние', availability_percent: 'Доступность', operational_utilization: 'Операционная нагрузка', professionalism_coefficient: 'Коэффициент профессионализма' },
+            },
+
             teamwork: teamworkRussian,
             pagination: paginationRU,
             timeEntries: timeEntriesRU,

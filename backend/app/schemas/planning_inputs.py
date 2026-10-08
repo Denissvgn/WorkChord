@@ -26,3 +26,11 @@ class PlanningInputContext(BaseModel):
     resource: dict[str, Any]
     expected_revisions: dict[PositiveInt, PositiveInt] = Field(max_length=500)
     complete: Literal[True] = True
+
+
+class MemberPlanningIntent(BaseModel):
+    profile_id: PositiveInt | None = None
+    name: str = Field(default='', max_length=255)
+    email: str | None = Field(default=None, max_length=255)
+    text: str | None = Field(default=None, max_length=2 * 1024 * 1024)
+    csv_text: str | None = Field(default=None, max_length=2 * 1024 * 1024)

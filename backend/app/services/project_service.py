@@ -881,7 +881,7 @@ class ProjectService:
         )
         return int(result.scalar_one())
 
-    @atomic_command
+    @schedule_input_command("project")
     async def delete(self, project_id: int, detach_tasks: bool = False) -> str:
         """Delete a project, optionally detaching linked tasks first."""
         from app.authority import require_project

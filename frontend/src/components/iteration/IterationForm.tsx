@@ -1,3 +1,7 @@
+import { useActiveMount } from '../tasks/useDraftDismissal';
+import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
+import type { ObservedRevisions } from '../../services/planningInputService';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -140,10 +144,11 @@ const IterationFormEditor = ({
     hideProjectScope = false,
     onSuccess,
     onCancel,
-    onStateChange,
-}: IterationFormProps) => {
+    onStateChange, revisions, contextControls,
+}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode }) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
+    const isActive = useActiveMount();
     const { setSelectedIterationId } = useIterationStore();
     const [baseline, setBaseline] = useState<EditorBaseline>(() => (
         {
@@ -200,7 +205,7 @@ const IterationFormEditor = ({
         upsertIterations(iterations);
         invalidateIterationQueries(iterations);
         setSelectedIterationId(iterations[0].id);
-        onSuccess(iterations[0], iterations);
+        if (isActive()) onSuccess(iterations[0], iterations);
     };
 
     const createMutation = useMutation({
@@ -209,7 +214,7 @@ const IterationFormEditor = ({
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data: IterationUpdate) => iterationService.update(initialData!.id, data),
+        mutationFn: (data: IterationUpdate) => iterationService.update(initialData!.id, data, revisions!),
         onSuccess: iteration => handleSuccessfulIterations([iteration]),
     });
 
@@ -364,6 +369,7 @@ const IterationFormEditor = ({
             className="iteration-period-editor"
             aria-busy={isSaving}
         >
+            {contextControls && <fieldset disabled={isSaving} className="m-0 min-w-0 border-0 p-0">{contextControls}</fieldset>}
             <fieldset
                 disabled={isSaving}
                 className="m-0 min-w-0 space-y-6 border-0 p-0"
@@ -583,5 +589,8 @@ export const IterationForm = (props: IterationFormProps) => {
         props.hideProjectScope ? 'hidden-scope' : 'visible-scope',
     ].join(':');
 
-    return <IterationFormEditor key={formKey} {...props} />;
+    if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
+    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id}>
+        {(observed, controls) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
+    </PlanningInputBoundary>;
 };

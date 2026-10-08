@@ -1,3 +1,6 @@
+import { normalizeApiError } from '../utils/apiError';
+import type { Project } from '../types/project';
+import { planningInputService, type ObservedPlanningInput } from '../services/planningInputService';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { TimeEntriesReport } from '../components/projects/TimeEntriesReport';
 import i18n from '../i18n/i18n';
@@ -853,6 +856,7 @@ const ProjectDetailPage = () => {
     const [showCreateRelease, setShowCreateRelease] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showDetachConfirm, setShowDetachConfirm] = useState(false);
+    const [deleteContext, setDeleteContext] = useState<ObservedPlanningInput<Project> | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const [milestoneEditor, setMilestoneEditor] = useState<MilestoneEditorState | null>(null);
     const [deleteMilestoneTarget, setDeleteMilestoneTarget] = useState<ProjectMilestone | null>(null);
@@ -947,14 +951,22 @@ const ProjectDetailPage = () => {
         queryClient.invalidateQueries({ queryKey: ['gantt'] });
     };
 
+    const observeDelete = async (open = true) => {
+        try {
+            const observed = await planningInputService.readInitial<Project>('project', numericProjectId);
+            setDeleteContext(observed); setDeleteError(null);
+            if (open) setShowDeleteConfirm(true);
+        } catch (cause) { setDeleteError(getApiErrorMessage(cause, t('surfaces.projectDetail.deleteProjectFailed'))); }
+    };
+
     const deleteMutation = useMutation({
-        mutationFn: (detachTasks: boolean) => projectService.delete(numericProjectId, detachTasks),
+        mutationFn: (detachTasks: boolean) => projectService.delete(numericProjectId, deleteContext!.expected_revisions, detachTasks),
         onSuccess: () => {
             invalidateAfterDelete();
             navigate('/projects');
         },
         onError: (err: unknown) => {
-            if (getApiErrorStatus(err) === 409) {
+            if (getApiErrorStatus(err) === 409 && normalizeApiError(err, '').code === 'project_has_tasks') {
                 setShowDeleteConfirm(false);
                 setShowDetachConfirm(true);
                 setDeleteError(null);
@@ -1279,7 +1291,7 @@ const ProjectDetailPage = () => {
                         label: t('surfaces.projectDetail.deleteProject'),
                         icon: <Trash2 className="h-3.5 w-3.5"/>,
                         tone: 'danger',
-                        onSelect: () => setShowDeleteConfirm(true),
+                        onSelect: () => void observeDelete(),
                     }]}/>
                     </>
                 )}
@@ -1625,27 +1637,27 @@ const ProjectDetailPage = () => {
             />
 
             <ConfirmDialog
-                open={showDeleteConfirm}
+                open={showDeleteConfirm && deleteContext?.resource_id === numericProjectId}
                 title={t('surfaces.projectDetail.deleteProjectText')}
-                description={<><strong>{project.name}</strong>{deleteError && <span role="alert" className="mt-2 block text-feedback-danger-foreground">{deleteError}</span>}</>}
+                description={<><strong>{project.name}</strong>{deleteError && <span role="alert" className="mt-2 block text-feedback-danger-foreground">{deleteError}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => void observeDelete(false)}>{t('planningInput.reviewAgain')}</Button></span>}</>}
                 confirmLabel={t('surfaces.projectDetail.delete')}
                 cancelLabel={t('surfaces.projectDetail.cancel')}
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
                 onCancel={() => setShowDeleteConfirm(false)}
-                onConfirm={() => deleteMutation.mutate(false)}
+                onConfirm={() => { if (deleteContext?.resource_id === numericProjectId) deleteMutation.mutate(false); }}
             />
 
             <ConfirmDialog
-                open={showDetachConfirm}
+                open={showDetachConfirm && deleteContext?.resource_id === numericProjectId}
                 title={t('surfaces.projectDetail.detachTasks')}
-                description={t('surfaces.projectDetail.detachDescription', { project: project.name })}
+                description={<>{t('surfaces.projectDetail.detachDescription', { project: deleteContext?.resource.name ?? project.name })}{deleteError && <span role="alert">{deleteError}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => void observeDelete(false)}>{t('planningInput.reviewAgain')}</Button></span>}</>}
                 confirmLabel={t('surfaces.projectDetail.detachAndDelete')}
                 cancelLabel={t('surfaces.projectDetail.cancel')}
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
                 onCancel={() => setShowDetachConfirm(false)}
-                onConfirm={() => deleteMutation.mutate(true)}
+                onConfirm={() => { if (deleteContext?.resource_id === numericProjectId) deleteMutation.mutate(true); }}
             />
         </PageLayout>
     );

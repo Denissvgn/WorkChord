@@ -436,6 +436,7 @@ class IterationService:
         await self.db.refresh(iteration)
         return await self.get_by_id(iteration_id)
 
+    @schedule_input_command("iteration")
     async def delete(self, iteration_id: int) -> bool:
         """Delete an iteration."""
         iteration = await self.get_by_id(iteration_id)

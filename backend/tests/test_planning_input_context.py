@@ -145,7 +145,8 @@ async def test_context_covers_each_shared_resource_and_new_member_target(deliver
                                  ('member', member.id), ('vacation', vacation.id)]:
             observed = await observe_planning_input(db, kind, identifier)
             assert observed['resource']['id'] == identifier
-            assert observed['expected_revisions'] == {scenario.iterations[0]: revision}
+            expected_ids = scenario.iterations if kind in {'member', 'vacation'} else [scenario.iterations[0]]
+            assert observed['expected_revisions'] == {identifier: (await db.get(Iteration, identifier)).revision for identifier in expected_ids}
         profile = await observe_planning_input(db, 'profile', scenario.profile)
         assert set(profile['expected_revisions']) == set(scenario.iterations)
         target = await observe_planning_input(db, 'member', scenario.iterations[0], creating_member=True)

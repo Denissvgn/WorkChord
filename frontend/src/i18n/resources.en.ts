@@ -3,6 +3,11 @@ import { timeEntriesEN } from './timeEntries';
 import { teamworkEnglish } from './teamwork.en';
 export const englishResources = {
         translation: {
+            planningInput: {
+                previewReady: 'The selected file and affected planning inputs are ready for review. Import uses this observation; conflicts retain the file.', preview: 'Review import', reviewAgain: 'Review current inputs',
+                fields: { name: 'Name', display_name: 'Display name', position: 'Role', start_date: 'Start', end_date: 'End', status: 'Status', health: 'Health', availability_percent: 'Availability', operational_utilization: 'Operational load', professionalism_coefficient: 'Proficiency' },
+            },
+
             teamwork: teamworkEnglish,
             pagination: paginationEN,
             timeEntries: timeEntriesEN,

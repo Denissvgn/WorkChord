@@ -1,7 +1,11 @@
+import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
+import { VacationCsvImport } from './VacationCsvImport';
+import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Plane, Trash2, Plus, Calendar, Upload } from 'lucide-react';
+import { Plane, Trash2, Plus, Calendar } from 'lucide-react';
 import { teamService } from '../../services/teamService';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -16,58 +20,34 @@ interface VacationManagerProps {
     onClose: () => void;
 }
 
-const apiErrorMessage = (error: unknown, fallback: string) => {
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-        const response = (error as { response?: { data?: { detail?: string } } }).response;
-        return response?.data?.detail || fallback;
-    }
-    return fallback;
-};
-
-export const VacationManager = ({ member, onClose }: VacationManagerProps) => {
+const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }: VacationManagerProps & { revisions: ObservedRevisions; controls: ReactNode; onSaved: () => void }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [importSummary, setImportSummary] = useState('');
     const [importError, setImportError] = useState('');
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
     const addMutation = useMutation({
         mutationFn: (data: { start_date: string; end_date: string }) =>
-            teamService.addVacation(member.id, data),
+            teamService.addVacation(member.id, data, revisions),
         onSuccess: () => {
             // Invalidate all team queries to refresh member data with new vacations
             queryClient.invalidateQueries({ queryKey: ['team'] });
             queryClient.invalidateQueries({ queryKey: ['workload', member.id] });
+            onSaved();
             setStartDate('');
             setEndDate('');
         },
     });
 
     const deleteMutation = useMutation({
-        mutationFn: teamService.deleteVacation,
+        mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => teamService.deleteVacation(id, revisions),
         onSuccess: () => {
+            onSaved();
             // Invalidate all team queries to refresh member data
             queryClient.invalidateQueries({ queryKey: ['team'] });
             queryClient.invalidateQueries({ queryKey: ['workload', member.id] });
-        },
-    });
-
-    const importMutation = useMutation({
-        mutationFn: (csvText: string) => teamService.importVacationsCsv(member.iteration_id, csvText),
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['team'] });
-            queryClient.invalidateQueries({ queryKey: ['workload', member.id] });
-            setImportSummary(t('teamVacations.importSummary', {
-                imported: data.imported_count,
-                skipped: data.skipped_count,
-            }));
-            setImportError(data.errors.length ? data.errors.map(err => `${err.row}: ${err.message}`).join('; ') : '');
-        },
-        onError: (error: unknown) => {
-            setImportSummary('');
-            setImportError(apiErrorMessage(error, t('teamVacations.importFailed')));
         },
     });
 
@@ -77,9 +57,13 @@ export const VacationManager = ({ member, onClose }: VacationManagerProps) => {
         }
     };
 
-    const handleCsvFile = async (file: File | null) => {
-        if (!file) return;
-        importMutation.mutate(await file.text());
+    const confirmVacationDelete = async (vacation: Vacation) => {
+        try {
+            const observed = await planningInputService.readInitial<Vacation>('vacation', vacation.id);
+            requestConfirmation({ title: t('actions.delete'), description: t('teamVacations.deleteConfirm'),
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteMutation.mutateAsync({ id: vacation.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { setImportError(getApiErrorMessage(cause, t('teamVacations.importFailed'))); }
     };
 
     return (
@@ -111,26 +95,10 @@ export const VacationManager = ({ member, onClose }: VacationManagerProps) => {
                 <div className="bg-surface-muted rounded-lg p-4 mb-4">
                     <div className="mb-3 flex items-center justify-between gap-3">
                         <h3 className="text-sm font-medium text-content-secondary">{t('teamVacations.addPeriod')}</h3>
-                        <label className="btn btn-secondary cursor-pointer px-2 py-1 text-sm">
-                            <Upload className="w-4 h-4 mr-2" />
-                            {t('teamVacations.importCsv')}
-                            <input
-                                type="file"
-                                accept=".csv,text/csv"
-                                className="hidden"
-                                onChange={(event) => {
-                                    handleCsvFile(event.target.files?.[0] || null);
-                                    event.currentTarget.value = '';
-                                }}
-                            />
-                        </label>
+                        <VacationCsvImport iterationId={member.iteration_id} onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['team'] }); onSaved(); }} />
                     </div>
-                    {(importSummary || importError) && (
-                        <div className={`mb-3 rounded-md border px-3 py-2 text-sm ${importError ? 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground' : 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'}`}>
-                            {importSummary}
-                            {importError && <div>{importError}</div>}
-                        </div>
-                    )}
+                    {importError && <p role="alert">{importError}</p>}
+                    <fieldset disabled={addMutation.isPending || deleteMutation.isPending} className="m-0 min-w-0 border-0 p-0">{controls}</fieldset>
                     <div className="grid grid-cols-2 gap-3">
                         <Input
                             type="date"
@@ -180,14 +148,7 @@ export const VacationManager = ({ member, onClose }: VacationManagerProps) => {
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => requestConfirmation({
-                                            title: t('actions.delete'),
-                                            description: t('teamVacations.deleteConfirm'),
-                                            confirmLabel: t('actions.delete'),
-                                            cancelLabel: t('actions.cancel'),
-                                            closeLabel: t('actions.close'),
-                                            onConfirm: () => deleteMutation.mutateAsync(vacation.id),
-                                        })}
+                                        onClick={() => void confirmVacationDelete(vacation)}
                                         aria-label={t('actions.delete')}
                                         className="text-feedback-danger hover:text-feedback-danger-foreground"
                                         isLoading={deleteMutation.isPending}
@@ -208,3 +169,7 @@ export const VacationManager = ({ member, onClose }: VacationManagerProps) => {
         </Modal>
     );
 };
+
+export const VacationManager = (props: VacationManagerProps) => <PlanningInputBoundary<TeamMember> kind="member" resourceId={props.member.id}>
+    {(observed, controls, onSaved) => <VacationManagerEditor {...props} member={observed.resource} revisions={observed.expected_revisions} controls={controls} onSaved={onSaved} />}
+</PlanningInputBoundary>;

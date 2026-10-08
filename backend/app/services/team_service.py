@@ -544,7 +544,7 @@ class TeamService:
         await commit_or_flush(self.db)
         return True
 
-    @atomic_command
+    @schedule_input_command("member")
     async def import_vacations(self, iteration_id: int, csv_text: str) -> VacationImportResponse:
         """Import vacation ranges for iteration team members from CSV text."""
         if not csv_text.strip():

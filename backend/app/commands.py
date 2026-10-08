@@ -219,6 +219,55 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None, req
     return dict(state.iterations)
 
 
+@asynccontextmanager
+async def planning_input_reservation(db, kind, values):
+    """Validate one complete outer observation and bound nested input writes to it."""
+    from app.services.planning_input_context import affected_iteration_ids
+    from app.services.snapshot_service import SnapshotService
+    from app.services.task_service import TaskService
+    from app.models.task import Task
+    from app.mutation_versions import require_mutation_revision
+
+    await lock_planning(db)
+    resolved_kind = 'vacation' if 'vacation_id' in values else kind
+    ids = await affected_iteration_ids(db, resolved_kind, values)
+    data = values.get('data')
+    body_expected = values.get('expected_revisions', getattr(data, 'expected_revisions', None))
+    explicit_body = ('expected_revisions' in values and values['expected_revisions'] is not None
+        or data is not None and 'expected_revisions' in getattr(data, 'model_fields_set', set()))
+    supplied = dict(body_expected or {})
+    header = db.info.get('request_expected_revisions')
+    if header is not None:
+        if any(key in supplied and supplied[key] != value for key, value in header.items()):
+            raise PlanningConflict('conflicting_revision_context', 'Body and header revisions disagree.')
+        supplied = {**header, **supplied}
+    parent = db.info.get('planning_input_scope')
+    if parent is not None:
+        if not set(ids).issubset(parent):
+            raise PlanningConflict('planning_scope_changed', 'A nested write exceeds the observed planning scope. Reload the import preview.')
+    else:
+        if (explicit_body or header is not None) and set(supplied) != set(ids):
+            raise PlanningConflict('planning_scope_changed', 'The affected planning scope changed or the observed context is incomplete. Reload the initial resource context.')
+        require_mutation_revision(db, supplied if explicit_body or header is not None else None,
+            field='expected_revisions', resource=resolved_kind, resource_id=next((values[key] for key in
+                ['iteration_id', 'member_id', 'vacation_id', 'calendar_id', 'profile_id', 'project_id'] if values.get(key) is not None), 0))
+    await lock_iterations(db, ids, expected=body_expected, require_expected=True)
+    for iteration_id in ids:
+        await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
+    tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+    service = TaskService(db)
+    for task in tasks:
+        await service.reserve_task_version(task, task.version)
+    db.info['planning_input_scope'] = parent if parent is not None else set(ids)
+    try:
+        yield db.info['planning_input_scope']
+    finally:
+        if parent is None:
+            db.info.pop('planning_input_scope', None)
+        else:
+            db.info['planning_input_scope'] = parent
+
+
 def schedule_input_command(kind):
     """Capture and revise every affected iteration before editing shared planning inputs."""
     import inspect as python_inspect
@@ -227,35 +276,9 @@ def schedule_input_command(kind):
         signature = python_inspect.signature(function)
         @wraps(function)
         async def wrapped(self, *args, **kwargs):
-            from app.models.task import Task
-            from app.services.snapshot_service import SnapshotService
-            from app.services.task_service import TaskService
-
             values = signature.bind(self, *args, **kwargs).arguments
-            async with command_transaction(self.db, commit=kwargs.get("commit", True)):
-                await lock_planning(self.db)
-                from app.services.planning_input_context import affected_iteration_ids
-                resolved_kind = "vacation" if "vacation_id" in values else kind
-                ids = await affected_iteration_ids(self.db, resolved_kind, values)
-                data = values.get("data")
-                body_expected = values.get("expected_revisions", getattr(data, "expected_revisions", None))
-                explicit_body = "expected_revisions" in values and values["expected_revisions"] is not None or data is not None and "expected_revisions" in getattr(data, "model_fields_set", set())
-                supplied = dict(body_expected or {})
-                header = self.db.info.get("request_expected_revisions")
-                if header is not None:
-                    if any(key in supplied and supplied[key] != value for key, value in header.items()):
-                        raise PlanningConflict("conflicting_revision_context", "Body and header revisions disagree.")
-                    supplied = {**header, **supplied}
-                if (explicit_body or header is not None) and set(supplied) != set(ids):
-                    raise PlanningConflict("planning_scope_changed", "The affected planning scope changed or the observed context is incomplete. Reload the initial resource context.")
-                if ids:
-                    await lock_iterations(self.db, ids, expected=body_expected, require_expected=True)
-                    for iteration_id in sorted(set(ids)):
-                        await SnapshotService(self.db).create_snapshot(iteration_id, "before_planning_input_change")
-                    tasks = list((await self.db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != "closed").order_by(Task.id))).all())
-                    service = TaskService(self.db)
-                    for task in tasks:
-                        await service.reserve_task_version(task, task.version)
-                return await function(self, *args, **kwargs)
+            async with command_transaction(self.db, commit=kwargs.get('commit', True)):
+                async with planning_input_reservation(self.db, kind, values):
+                    return await function(self, *args, **kwargs)
         return wrapped
     return decorate

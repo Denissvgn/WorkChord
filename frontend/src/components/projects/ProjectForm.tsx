@@ -1,3 +1,7 @@
+import { useActiveMount } from '../tasks/useDraftDismissal';
+import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
+import type { ObservedRevisions } from '../../services/planningInputService';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -52,9 +56,10 @@ const isProjectHealth = (value: unknown): value is ProjectHealth => (
     typeof value === 'string' && projectHealthValues.includes(value as ProjectHealth)
 );
 
-export const ProjectForm = ({ initialData, onSuccess, onCancel }: ProjectFormProps) => {
+const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contextControls }: ProjectFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
+    const isActive = useActiveMount();
     const [error, setError] = useState<string | null>(null);
     const [selectedTemplateId, setSelectedTemplateId] = useState('');
     const canApplyTemplates = !initialData;
@@ -115,7 +120,7 @@ export const ProjectForm = ({ initialData, onSuccess, onCancel }: ProjectFormPro
         mutationFn: (data: ProjectCreate) => projectService.create(data),
         onSuccess: (project) => {
             invalidateProjectQueries(project.id);
-            onSuccess(project);
+            if (isActive()) onSuccess(project);
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('surfaces.projectForm.createFailed')));
@@ -123,10 +128,10 @@ export const ProjectForm = ({ initialData, onSuccess, onCancel }: ProjectFormPro
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data: typeof formData) => projectService.update(initialData!.id, data),
+        mutationFn: (data: typeof formData) => projectService.update(initialData!.id, data, revisions!),
         onSuccess: (project) => {
             invalidateProjectQueries(project.id);
-            onSuccess(project);
+            if (isActive()) onSuccess(project);
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('surfaces.projectForm.updateFailed')));
@@ -196,7 +201,8 @@ export const ProjectForm = ({ initialData, onSuccess, onCancel }: ProjectFormPro
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6"><fieldset disabled={createMutation.isPending || updateMutation.isPending} className="m-0 min-w-0 space-y-6 border-0 p-0">
+            {contextControls && <fieldset disabled={createMutation.isPending || updateMutation.isPending} className="m-0 min-w-0 border-0 p-0">{contextControls}</fieldset>}
             {optionsLoading && <QueryLoadingState />}
             {optionError && (
                 <QueryErrorState
@@ -370,6 +376,12 @@ export const ProjectForm = ({ initialData, onSuccess, onCancel }: ProjectFormPro
                     {initialData ? t('surfaces.projectForm.updateProject') : t('surfaces.projectForm.createProject')}
                 </Button>
             </div>
-        </form>
+        </fieldset></form>
     );
 };
+
+export const ProjectForm = (props: ProjectFormProps) => props.initialData
+    ? <PlanningInputBoundary<Project> onCancel={props.onCancel} kind="project" resourceId={props.initialData.id}>{(observed, controls) =>
+        <ProjectFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
+      </PlanningInputBoundary>
+    : <ProjectFormEditor {...props} />;

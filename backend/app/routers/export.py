@@ -1,6 +1,6 @@
 """Export/Import API router."""
 
-from app.commands import commit_or_flush
+from app.commands import commit_or_flush, command_transaction, planning_input_reservation, lock_iterations
 import json
 from typing import Annotated, Any, Optional
 
@@ -238,6 +238,35 @@ def _task_to_export(task) -> dict:
         "children": [_task_to_export(c) for c in task.children],
     }
 
+def _validate_import_data(data):
+    """Validate the complete bounded tree before any imported row can persist."""
+    tasks = data.get('tasks', [])
+    if not isinstance(tasks, list):
+        raise HTTPException(422, detail='Tasks must be a list')
+    try:
+        counter = [0]
+        for task in tasks:
+            _validate_import_task_tree(task, depth=1, counter=counter)
+        members = data.get('team_members', [])
+        if not isinstance(members, list) or len(members) > 500 or any(not isinstance(row, dict) for row in members):
+            raise ValueError('Import at most 500 team member objects at a time')
+    except ValueError as cause:
+        raise HTTPException(422, detail=str(cause)) from cause
+
+
+@router.post('/iterations/import-context')
+@router.post('/iterations/{iteration_id}/import-context')
+async def preview_iteration_import(file: Annotated[UploadFile, File(...)],
+    db: Annotated[AsyncSession, Depends(get_db, scope='function')], iteration_id: int | None = None):
+    """Observe all existing scopes before opening a JSON import confirmation."""
+    from app.services.import_planning_service import observe_import_planning
+    data = await _read_json_upload(file)
+    _validate_import_data(data)
+    if iteration_id is not None and await IterationService(db).get_by_id(iteration_id) is None:
+        raise HTTPException(404, detail='Iteration not found or inaccessible')
+    return await observe_import_planning(db, iteration_id, data)
+
+
 @router.post("/iterations/import")
 async def import_new_iteration(
     file: Annotated[UploadFile, File(...)],
@@ -246,44 +275,49 @@ async def import_new_iteration(
     """Import a new iteration from JSON export file."""
     data = await _read_json_upload(file)
 
-    # Create iteration first
-    if "iteration" not in data:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing iteration data in export file"
-        )
+    _validate_import_data(data)
+    async with command_transaction(db):
+        async with planning_input_reservation(db, 'member', {'iteration_id': None, 'import_data': data}) as owned_scope:
+            # Create iteration first
+            if "iteration" not in data:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Missing iteration data in export file"
+                )
 
-    iter_data = data["iteration"]
-    from app.schemas.iteration import IterationCreate
-    from datetime import date
+            iter_data = data["iteration"]
+            from app.schemas.iteration import IterationCreate
+            from datetime import date
 
-    # Try to calculate work days if simple Create is used, but IterationCreate requires start/end
-    # Assuming the export format matches what IterationCreate expects (except dates as strings)
+            # Try to calculate work days if simple Create is used, but IterationCreate requires start/end
+            # Assuming the export format matches what IterationCreate expects (except dates as strings)
 
-    iter_create = IterationCreate(
-        name=f"Imported: {iter_data['name']}",
-        start_date=date.fromisoformat(iter_data["start_date"]),
-        end_date=date.fromisoformat(iter_data["end_date"]),
-        calendar_id=iter_data.get("calendar_id"),
-        project_id=_optional_int(iter_data.get("project_id"), "iteration.project_id"),
-    )
+            iter_create = IterationCreate(
+                name=f"Imported: {iter_data['name']}",
+                start_date=date.fromisoformat(iter_data["start_date"]),
+                end_date=date.fromisoformat(iter_data["end_date"]),
+                calendar_id=iter_data.get("calendar_id"),
+                project_id=_optional_int(iter_data.get("project_id"), "iteration.project_id"),
+            )
 
-    iteration_service = IterationService(db)
-    try:
-        new_iteration = await iteration_service.create(iter_create)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        )
+            iteration_service = IterationService(db)
+            try:
+                new_iteration = await iteration_service.create(iter_create)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=str(e),
+                )
 
-    try:
-        return await _process_import(new_iteration.id, data, db)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        )
+            try:
+                await lock_iterations(db, [new_iteration.id], expected={new_iteration.id: new_iteration.revision}, require_expected=True)
+                owned_scope.add(new_iteration.id)
+                return await _process_import(new_iteration.id, data, db)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=str(e),
+                )
 
 
 async def _process_import(
@@ -393,13 +427,16 @@ async def import_iteration(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
-    try:
-        return await _process_import(iteration_id, data, db)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        )
+    _validate_import_data(data)
+    async with command_transaction(db):
+        async with planning_input_reservation(db, 'member', {'iteration_id': iteration_id, 'import_data': data}):
+            try:
+                return await _process_import(iteration_id, data, db)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=str(e),
+                )
 
 
 async def _import_task_record(

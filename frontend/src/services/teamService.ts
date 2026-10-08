@@ -73,18 +73,18 @@ export const teamService = {
         return response.data;
     },
 
-    create: async (iterationId: number, data: TeamMemberCreate) => {
-        const response = await api.post<TeamMember>(`/iterations/${iterationId}/team`, data);
+    create: async (iterationId: number, data: TeamMemberCreate, revisions: ObservedRevisions) => {
+        const response = await api.post<TeamMember>(`/iterations/${iterationId}/team`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    update: async (memberId: number, data: Partial<TeamMemberCreate>) => {
-        const response = await api.put<TeamMember>(`/team-members/${memberId}`, data);
+    update: async (memberId: number, data: Partial<TeamMemberCreate>, revisions: ObservedRevisions) => {
+        const response = await api.put<TeamMember>(`/team-members/${memberId}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    delete: async (memberId: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/team-members/${memberId}`);
+    delete: async (memberId: number, revisions: ObservedRevisions) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/team-members/${memberId}`, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
@@ -98,25 +98,25 @@ export const teamService = {
         return response.data;
     },
 
-    addVacation: async (memberId: number, data: VacationCreate) => {
-        const response = await api.post<Vacation>(`/team-members/${memberId}/vacations`, data);
+    addVacation: async (memberId: number, data: VacationCreate, revisions: ObservedRevisions) => {
+        const response = await api.post<Vacation>(`/team-members/${memberId}/vacations`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    deleteVacation: async (vacationId: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/vacations/${vacationId}`);
+    deleteVacation: async (vacationId: number, revisions: ObservedRevisions) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/vacations/${vacationId}`, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    importVacationsCsv: async (iterationId: number, csvText: string) => {
+    importVacationsCsv: async (iterationId: number, csvText: string, revisions: ObservedRevisions) => {
         const response = await api.post<VacationImportResponse>(
             `/iterations/${iterationId}/team/vacations/import`,
-            { csv_text: csvText }
+            { csv_text: csvText }, { headers: revisionHeaders(revisions) }
         );
         return response.data;
     },
 
-    importFromText: async (iterationId: number, text: string, expectedRevisions?: Record<number, number>) => {
+    importFromText: async (iterationId: number, text: string, expectedRevisions: ObservedRevisions) => {
         const response = await api.post<{ imported_count: number; members: TeamMember[] }>(
             `/iterations/${iterationId}/team/import`,
             { text, expected_revisions: expectedRevisions }

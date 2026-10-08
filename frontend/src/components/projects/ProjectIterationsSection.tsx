@@ -1,3 +1,6 @@
+import { usePlanningObservation } from '../../features/usePlanningObservation';
+import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
+import { getApiErrorMessage } from '../../utils/apiError';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +35,8 @@ export const ProjectIterationsSection = ({
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [editor, setEditor] = useState<IterationEditorState | null>(null);
+    const attachContext = usePlanningObservation<Iteration>();
+    const [removeContext, setRemoveContext] = useState<ObservedRevisions | null>(null);
     const [attachOpen, setAttachOpen] = useState(false);
     const [attachIterationId, setAttachIterationId] = useState('');
     const [removeTarget, setRemoveTarget] = useState<Iteration | null>(null);
@@ -62,29 +67,36 @@ export const ProjectIterationsSection = ({
     };
 
     const attachMutation = useMutation({
-        mutationFn: (iterationId: number) => iterationService.update(iterationId, { project_id: projectId }),
+        mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => iterationService.update(id, { project_id: projectId }, revisions),
         onSuccess: iteration => {
             setAttachOpen(false);
             setAttachIterationId('');
             setActionError(null);
             invalidateProjectIterationScope(iteration.id);
         },
-        onError: () => {
-            setActionError(t('projectIterations.attachError'));
+        onError: cause => {
+            setActionError(getApiErrorMessage(cause, t('projectIterations.attachError')));
         },
     });
 
     const removeMutation = useMutation({
-        mutationFn: (iterationId: number) => iterationService.update(iterationId, { project_id: null }),
+        mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => iterationService.update(id, { project_id: null }, revisions),
         onSuccess: iteration => {
             setRemoveTarget(null);
             setActionError(null);
             invalidateProjectIterationScope(iteration.id);
         },
-        onError: () => {
-            setActionError(t('projectIterations.removeError'));
+        onError: cause => {
+            setActionError(getApiErrorMessage(cause, t('projectIterations.removeError')));
         },
     });
+
+    const openRemove = async (id: number) => {
+        try {
+            const observed = await planningInputService.readInitial<Iteration>('iteration', id);
+            setRemoveTarget(observed.resource); setRemoveContext(observed.expected_revisions);
+        } catch (cause) { setActionError(getApiErrorMessage(cause, t('projectIterations.removeError'))); }
+    };
 
     const handleFormSuccess = (iteration?: Iteration) => {
         setEditor(null);
@@ -161,7 +173,7 @@ export const ProjectIterationsSection = ({
                                     <Button
                                         size="sm"
                                         variant="ghost"
-                                        onClick={() => setRemoveTarget(iteration)}
+                                        onClick={() => void openRemove(iteration.id)}
                                         disabled={isMutating}
                                     >
                                         <Unlink className="mr-1.5 h-3.5 w-3.5" />
@@ -198,10 +210,13 @@ export const ProjectIterationsSection = ({
                             <label className="mb-1 block text-sm font-medium text-content-primary" htmlFor="attach-unscoped-iteration">
                                 {t('projectIterations.unscopedIteration')}
                             </label>
-                            <select
+                            {(Boolean(attachContext.error) || actionError) && <p role="alert">{getApiErrorMessage(attachContext.error, actionError ?? t('projectIterations.attachError'))}</p>}
+                    <Button type="button" variant="secondary" disabled={!selectedAttachId || isMutating || attachContext.loading}
+                        onClick={() => { if (selectedAttachId) void attachContext.read('iteration', selectedAttachId, true); }}>{t('planningInput.reviewAgain')}</Button>
+                    <select
                                 id="attach-unscoped-iteration"
                                 value={attachIterationId}
-                                onChange={event => setAttachIterationId(event.target.value)}
+                                onChange={event => { const value = event.target.value; setAttachIterationId(value); if (value) void attachContext.read('iteration', Number(value)); }}
                                 className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
                             >
                                 <option value="">{t('projectIterations.selectUnscoped')}</option>
@@ -222,8 +237,8 @@ export const ProjectIterationsSection = ({
                             <Button
                                 type="button"
                                 isLoading={attachMutation.isPending}
-                                disabled={!selectedAttachId}
-                                onClick={() => selectedAttachId && attachMutation.mutate(selectedAttachId)}
+                                disabled={!attachContext.observation || attachContext.loading || attachContext.observation.resource_id !== selectedAttachId || !selectedAttachId}
+                                onClick={() => selectedAttachId && attachMutation.mutate({ id: selectedAttachId, revisions: attachContext.observation!.expected_revisions })}
                             >
                                 {t('projectIterations.attachConfirm')}
                             </Button>
@@ -235,13 +250,13 @@ export const ProjectIterationsSection = ({
             <ConfirmDialog
                 open={removeTarget !== null}
                 title={t('projectIterations.removeTitle')}
-                description={<>{removeTarget && t('projectIterations.removeBody', { iteration: removeTarget.name, project: projectName })}<span className="mt-2 block">{t('projectIterations.taskLinksUnchanged')}</span></>}
+                description={<>{removeTarget && t('projectIterations.removeBody', { iteration: removeTarget.name, project: projectName })}<span className="mt-2 block">{t('projectIterations.taskLinksUnchanged')}</span>{actionError && <div role="alert">{actionError}<Button type="button" variant="secondary" disabled={isMutating} onClick={() => { if (removeTarget) void openRemove(removeTarget.id); }}>{t('planningInput.reviewAgain')}</Button></div>}</>}
                 confirmLabel={t('projectIterations.remove')}
                 cancelLabel={t('actions.cancel')}
                 closeLabel={t('actions.close')}
                 pending={removeMutation.isPending}
                 onCancel={() => setRemoveTarget(null)}
-                onConfirm={() => { if (removeTarget) removeMutation.mutate(removeTarget.id); }}
+                onConfirm={() => { if (removeTarget && removeContext) removeMutation.mutate({ id: removeTarget.id, revisions: removeContext }); }}
                 tone="warning"
             />
         </>

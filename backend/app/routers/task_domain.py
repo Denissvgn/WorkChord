@@ -23,7 +23,7 @@ router = APIRouter()
 DB = Annotated[AsyncSession, Depends(get_db, scope="function")]
 
 
-from app.schemas.planning_inputs import PlanningInputContext
+from app.schemas.planning_inputs import PlanningInputContext, MemberPlanningIntent
 
 
 @router.get("/tasks/planning-inputs/{kind}/{resource_id}/context", response_model=PlanningInputContext)
@@ -33,6 +33,15 @@ async def planning_input_context(kind: Literal["calendar", "project", "iteration
         raise HTTPException(422, detail="Use a positive planning resource identity and a supported member-create context.")
     from app.services.planning_input_context import observe_planning_input
     return await domain_result(observe_planning_input(db, kind, resource_id, creating_member=creating_member))
+
+
+@router.post('/tasks/planning-inputs/member/{resource_id}/context', response_model=PlanningInputContext)
+async def member_planning_context(resource_id: int, data: MemberPlanningIntent, db: DB, creating_member: bool = False):
+    if resource_id < 1:
+        raise HTTPException(422, detail='Use a positive planning resource identity.')
+    from app.services.planning_input_context import observe_planning_input
+    return await domain_result(observe_planning_input(db, 'member', resource_id, creating_member=creating_member,
+        intent=data.model_dump(exclude_unset=True)))
 
 
 async def domain_result(awaitable):
