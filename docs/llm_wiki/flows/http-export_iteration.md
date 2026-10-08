@@ -77,7 +77,7 @@ sequenceDiagram
     p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
 ```
 
-> Call sequence diagram shows 30 of 283 interactions; 253 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 286 interactions; 256 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

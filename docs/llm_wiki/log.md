@@ -2027,3 +2027,21 @@ Strict caller qualification now preserves merge and restore observations, suppor
 - Moved entities: none
 
 Local service measurements now retain raw SQL observations and independently bind executing source; empty-fixture and frozen sample coverage checks prevent incomplete runs from passing.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ce70c07c8b91b158d490db3ff7924b4ec01862b2a6561a86837d63e0a2ea41f1`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2986
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Canonical SQL metrics now join one grouped structural-parent relation, removing repeated child scans while retaining full hierarchy and authorization validation.

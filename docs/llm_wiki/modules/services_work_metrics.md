@@ -12,6 +12,8 @@ Python projections and the recursive SQL aggregate distinguish required/optional
 
 Nullable scheduling is compared safely when traversing backlog ancestry, retaining project boundaries and complete leaf accounting. Blocked counts include an explicit block or an unavailable prerequisite, including a canceled, missing or inaccessible target, while excluding ineligible leaves.
 
+SQL leaf aggregates use one distinct parent-ID relation for structural existence instead of per-row correlated child probes. Authorization, inherited scheduling flags, full-graph reachability validation, acceptance provenance and grouping predicates remain part of the live aggregate; no stale cache or graph truncation is introduced.
+
 ## Imports
 
 | Source | Symbols |

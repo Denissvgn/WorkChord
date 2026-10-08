@@ -7437,7 +7437,7 @@
             "backend/app/utils/time.py",
             "backend/app/commands.py"
           ],
-          "step_count": 284,
+          "step_count": 287,
           "truncated": false
         }
       },
@@ -90129,5 +90129,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0f57ce836f6f3911c451ae48e445db7f88eaeaaad3f42c485f2d87129a2ec069"
+  "source_hash": "sha256:69002382bcb59f7723c116df90da0cae2fb403d36bf0c93859e5a9a954f2f999"
 }
