@@ -46,6 +46,7 @@ flowchart LR
     n1 --> n6
     n2 --> n3
     n2 --> n5
+    n2 --> n6
     n5 --> n6
     click n0 "../modules/i18n.md"
     click n1 "../modules/GanttPage.test.md"

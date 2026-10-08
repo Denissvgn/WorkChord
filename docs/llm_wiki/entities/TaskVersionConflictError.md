@@ -96,4 +96,4 @@ flowchart LR
 | `AgentWorkService.create_assignment` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.renew_work` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

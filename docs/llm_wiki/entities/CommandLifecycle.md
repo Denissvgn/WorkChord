@@ -17,6 +17,7 @@ _Auto-generated from `CommandLifecycle` in `scripts/ci/tests/test_ci_runtime.py`
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `test_darwin_permission_probe_requires_confirmed_group_absence` | `()` | — | — |
 | `test_running_receipt_exists_before_command_and_success_is_finalized` | `()` | — | — |
 | `test_failure_cannot_be_hidden_by_continue_after_error` | `()` | — | — |
 | `test_timeout_kills_descendants_even_when_the_parent_exits_on_term` | `()` | — | — |
@@ -42,7 +43,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_ci_runtime](../modules/test_ci_runtime.md) | 9 | — |
+| [test_ci_runtime](../modules/test_ci_runtime.md) | 10 | — |
 
 ### Structure
 

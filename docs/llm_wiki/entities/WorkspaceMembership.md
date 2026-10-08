@@ -98,4 +98,4 @@ flowchart LR
 | `test_project_deletion_refuses_live_assignment_scope_without_partial_detach` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `test_workspace_owner_deletes_empty_project_with_retained_audit` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

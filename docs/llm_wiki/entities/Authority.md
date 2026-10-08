@@ -107,4 +107,4 @@ flowchart LR
 | `test_my_work_includes_nested_and_backlog_without_private_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_worker_bulk_sql_cannot_bypass_review_authority` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 
-> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

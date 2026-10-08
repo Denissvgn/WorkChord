@@ -105,4 +105,4 @@ flowchart LR
 | `test_verification_independence_requires_authoritative_profile_history` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `_seed_base` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

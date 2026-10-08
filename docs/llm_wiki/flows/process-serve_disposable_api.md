@@ -198,11 +198,11 @@ flowchart LR
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.environ[...]` | `main` | 14 |
-| environment_read | `os.environ.get` | `main` | 45 |
-| environment_read | `os.environ.get` | `main` | 79 |
-| process | `subprocess.Popen` | `main` | 83 |
+| environment_read | `os.environ.get` | `main` | 51 |
 | environment_read | `os.environ.get` | `main` | 85 |
-| environment_read | `os.environ.get` | `main` | 90 |
+| process | `subprocess.Popen` | `main` | 89 |
+| environment_read | `os.environ.get` | `main` | 91 |
+| environment_read | `os.environ.get` | `main` | 96 |
 | environment_read | `os.environ.get` | `_deployment_environment` | 32 |
 
 ### Static analysis gaps

@@ -53,7 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
+| Inbound | `backend` (22) |
 | Inbound | `scripts` (4) |
 | Outbound | `backend` (47) |
 
@@ -63,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 72 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 73 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

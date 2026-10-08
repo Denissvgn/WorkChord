@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.test.tsx`._
 | `../../test/renderWithProviders` | `renderWithProviders` |
 | `../../types/task` | `Task` |
 | `./TaskList` | `TaskList` |
-| `@testing-library/react` | `screen` |
+| `@testing-library/react` | `act`, `screen`, `waitFor` |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
 
 ## Module Signals
@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `taskServiceMock`, `labelServiceMock` |
-| Module calls | `taskServiceMock = hoisted`, `labelServiceMock = hoisted`, `mock`, `mock`, `mock`, `describe` |
+| Module calls | `taskServiceMock = hoisted`, `labelServiceMock = hoisted`, `mock`, `mock`, `mock`, `describe`, `it` |
 
 ## Local dependency map
 

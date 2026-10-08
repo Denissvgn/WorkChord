@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1519 | [Open section](#entities) |
-| Modules | 730 | [Open section](#modules) |
+| Modules | 733 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 548 | [Open section](#entry-point-flows) |
@@ -1947,6 +1947,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
 - [plan_shares](modules/plan_shares.md) - Read-only iteration plan sharing API.
 - [planning-masters.test](modules/planning-masters.test.md) - `frontend/src/styles/planning-masters.test.ts`
+- [planningInputMessages](modules/planningInputMessages.md) - `frontend/src/i18n/planningInputMessages.ts`
 - [planningInputService](modules/planningInputService.md) - `frontend/src/services/planningInputService.ts`
 - [planningInputService.test](modules/planningInputService.test.md) - `frontend/src/services/planningInputService.test.ts`
 - [planningMasters_masters](modules/planningMasters_masters.md) - `frontend/src/features/planningMasters/masters.ts`
@@ -2071,6 +2072,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) - `frontend/src/utils/singleKeyShortcutPreference.ts`
 - [snapshot](modules/snapshot.md) - Snapshot restore API schemas.
 - [snapshotService](modules/snapshotService.md) - `frontend/src/services/snapshotService.ts`
+- [snapshotVersions.test](modules/snapshotVersions.test.md) - `frontend/src/services/snapshotVersions.test.ts`
 - [snapshot_service](modules/snapshot_service.md) - Snapshot service for iteration state backups.
 - [snapshots](modules/snapshots.md) - Snapshots API router.
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
@@ -2198,6 +2200,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh schema and inspection migration matrix.
+- [test_strict_caller_matrix](modules/test_strict_caller_matrix.md) - Operator caller observations are enforced in both dialects and sampled explicitly.
 - [test_task_discussion](modules/test_task_discussion.md) - Discussion is attributable, versioned, private and independent from execution.
 - [test_task_domain](modules/test_task_domain.md) - Domain commands preserve identity, evidence independence and bounded read contracts.
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.

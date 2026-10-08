@@ -29,6 +29,7 @@ flowchart LR
     n6["backend/app/runtime_telemetry.py"]
     n7["backend/tests/test_mutation_versions.py"]
     n8["backend/tests/test_shared_member_revisions.py"]
+    n9["backend/tests/test_strict_caller_matrix.py"]
     n0 --> n5
     n0 --> n6
     n2 --> n0
@@ -54,6 +55,11 @@ flowchart LR
     n8 --> n1
     n8 --> n2
     n8 --> n5
+    n9 --> n1
+    n9 --> n2
+    n9 --> n3
+    n9 --> n5
+    n9 --> n6
     click n0 "../modules/commands.md"
     click n1 "../modules/config.md"
     click n2 "../modules/app_main.md"
@@ -63,6 +69,7 @@ flowchart LR
     click n6 "../modules/runtime_telemetry.md"
     click n7 "../modules/test_mutation_versions.md"
     click n8 "../modules/test_shared_member_revisions.md"
+    click n9 "../modules/test_strict_caller_matrix.md"
 ```
 
 ### Internal neighbors
@@ -75,6 +82,7 @@ flowchart LR
 | Inbound | [mcp_server](../modules/mcp_server.md) |
 | Inbound | [test_mutation_versions](../modules/test_mutation_versions.md) |
 | Inbound | [test_shared_member_revisions](../modules/test_shared_member_revisions.md) |
+| Inbound | [test_strict_caller_matrix](../modules/test_strict_caller_matrix.md) |
 | Outbound | [config](../modules/config.md) |
 | Outbound | [runtime_telemetry](../modules/runtime_telemetry.md) |
 

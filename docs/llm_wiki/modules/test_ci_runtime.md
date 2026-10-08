@@ -10,7 +10,7 @@ Exercise cancellation, deadlines and durable command results with real processes
 
 | Source | Symbols |
 |--------|---------|
-| `ci_runtime` | `RunReceipt` |
+| `ci_runtime` | `RunReceipt`, `stop_process_group` |
 | `json` | `json` |
 | `os` | `os` |
 | `pathlib` | `Path` |
@@ -20,7 +20,7 @@ Exercise cancellation, deadlines and durable command results with real processes
 | `tempfile` | `tempfile` |
 | `time` | `time` |
 | `unittest` | `unittest` |
-| `unittest.mock` | `patch` |
+| `unittest.mock` | `patch`, `Mock` |
 
 ## Local dependency map
 

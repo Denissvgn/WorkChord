@@ -1991,3 +1991,21 @@ Task and protocol callers now preserve original task and aggregate observations;
 - Unsupported infrastructure YAML: 6
 
 Self-hosted acceptance now supports owned isolated namespaces and runtime paths with native image validation and bounded cleanup.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:dc0adb039ede0f22ccbbfdac7e11f94467cd3dcdfb1baea852d13e0852bd309b`
+- Pages created: 3
+- Pages updated: 67
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2919
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: none
+
+Strict caller qualification now preserves merge and restore observations, supports managed operator confirmation, distinguishes omitted imports, and confirms native cleanup without weakening failures.

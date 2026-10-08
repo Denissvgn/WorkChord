@@ -46,7 +46,7 @@ flowchart LR
     n9["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
     n10["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
     n11["frontend/src/pages/GanttPage.test.tsx"]
-    n12["frontend/src/pages/IterationsPage.tsx"]
+    n12["frontend/src/pages/GanttPage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -71,7 +71,7 @@ flowchart LR
     click n9 "../modules/usePlanningReadiness.test.md"
     click n10 "../modules/usePlanningReadiness.md"
     click n11 "../modules/GanttPage.test.md"
-    click n12 "../modules/IterationsPage.md"
+    click n12 "../modules/GanttPage.md"
 ```
 
 ### Summary
@@ -95,6 +95,6 @@ flowchart LR
 | `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
 | `enrichPlanningTeamMembers` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
 | `GanttPage.test` | import | [GanttPage.test](../modules/GanttPage.test.md) | — |
-| `IterationsPage` | import | [IterationsPage](../modules/IterationsPage.md) | — |
+| `GanttPage` | import | [GanttPage](../modules/GanttPage.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

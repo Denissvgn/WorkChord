@@ -1,6 +1,6 @@
 # RunReceipt
 
-**Location:** `scripts/ci/ci_runtime.py:92`
+**Location:** `scripts/ci/ci_runtime.py:109`
 **Kind:** Class
 **Bases:** —
 **Module:** [ci_runtime](../modules/ci_runtime.md)
@@ -8,7 +8,6 @@
 ## Description
 
 Owns command and service lifetimes, streamed logs, monotonic timings, atomic progress checkpoints and registered finalization callbacks. Commands run in separate process groups with bounded deadlines. A failed command remains a failure even when its caller continues to gather other results. Terminal outcomes distinguish failed, timed_out and cancelled from passed. A hard-killed owner may leave running state, which does not establish completion.
-
 
 ## Attributes
 

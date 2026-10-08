@@ -36,7 +36,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| __main__ | unittest.main | 173 | `unittest.main(data not statically known)` |
+| __main__ | unittest.main | 182 | `unittest.main(data not statically known)` |
 
 ### Boundary effects
 
@@ -46,7 +46,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `__main__` | `unittest.main` | 173 |
+| external_call | `__main__` | `unittest.main` | 182 |
 
 ## Behavior
 

@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/i18n/resources.ru.ts`._
 | Source | Symbols |
 |--------|---------|
 | `./pagination` | `paginationRU` |
+| `./planningInputMessages` | `planningInputRussian` |
 | `./teamwork.ru` | `teamworkRussian` |
 | `./timeEntries` | `timeEntriesRU` |
 
@@ -28,21 +29,24 @@ _Auto-generated from `frontend/src/i18n/resources.ru.ts`._
 flowchart LR
     n0["frontend/src/i18n/i18n.test.ts"]
     n1["frontend/src/i18n/pagination.ts"]
-    n2["frontend/src/i18n/resources.ru.ts"]
-    n3["frontend/src/i18n/teamwork.ru.ts"]
-    n4["frontend/src/i18n/timeEntries.ts"]
-    n5["frontend/src/pages/PlanMasterPage.test.tsx"]
-    n0 --> n2
-    n2 --> n1
-    n2 --> n3
-    n2 --> n4
-    n5 --> n2
+    n2["frontend/src/i18n/planningInputMessages.ts"]
+    n3["frontend/src/i18n/resources.ru.ts"]
+    n4["frontend/src/i18n/teamwork.ru.ts"]
+    n5["frontend/src/i18n/timeEntries.ts"]
+    n6["frontend/src/pages/PlanMasterPage.test.tsx"]
+    n0 --> n3
+    n3 --> n1
+    n3 --> n2
+    n3 --> n4
+    n3 --> n5
+    n6 --> n3
     click n0 "../modules/i18n.test.md"
     click n1 "../modules/pagination.md"
-    click n2 "../modules/resources.ru.md"
-    click n3 "../modules/teamwork.ru.md"
-    click n4 "../modules/timeEntries.md"
-    click n5 "../modules/PlanMasterPage.test.md"
+    click n2 "../modules/planningInputMessages.md"
+    click n3 "../modules/resources.ru.md"
+    click n4 "../modules/teamwork.ru.md"
+    click n5 "../modules/timeEntries.md"
+    click n6 "../modules/PlanMasterPage.test.md"
 ```
 
 ### Internal neighbors
@@ -52,5 +56,6 @@ flowchart LR
 | Inbound | [i18n.test](../modules/i18n.test.md) |
 | Inbound | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) |
 | Outbound | [pagination](../modules/pagination.md) |
+| Outbound | [planningInputMessages](../modules/planningInputMessages.md) |
 | Outbound | [teamwork.ru](../modules/teamwork.ru.md) |
 | Outbound | [timeEntries](../modules/timeEntries.md) |

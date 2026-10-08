@@ -10,6 +10,8 @@ The shared runner checkpoints receipts, streams logs and enforces deadlines. Sel
 
 The managed browser receives the runner's exact Python executable through `WORKCHORD_BROWSER_PYTHON`. Its copied `browser_worker.mjs` helper dispatches inbox delivery with that absolute path, preserving virtual-environment identity independently of `PATH`. Missing or relative interpreter paths fail explicitly; the disposable database and invocation nonce remain required.
 
+An optional strict planning browser fixture uses a distinct synthetic workspace owner and enables strict mutation policy. Browser assertions, source bindings and owned-service cleanup must all complete; provider and installed-client acceptance remain separate.
+
 ## Imports
 
 | Source | Symbols |

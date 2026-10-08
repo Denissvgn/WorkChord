@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 730,
+      "modules": 733,
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 2996
+    "total": 2999
   },
   "dependency_pages": {
     "count": 2,
@@ -932,6 +932,22 @@
               "step": "authorize",
               "step_index": 1,
               "target": "params.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 53,
+              "step": "authorize",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 55,
+              "step": "authorize",
+              "step_index": 1,
+              "target": "os.environ.get"
             }
           ],
           "gaps": [
@@ -946,36 +962,6 @@
               "line": 50,
               "step": "authorize",
               "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 53,
-              "step": "authorize",
-              "target": "''.join"
-            },
-            {
-              "kind": "external_call",
-              "line": 53,
-              "step": "authorize",
-              "target": "html.escape"
-            },
-            {
-              "kind": "external_call",
-              "line": 53,
-              "step": "authorize",
-              "target": "urlencode"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 53,
-              "step": "authorize",
-              "target": "person.title"
-            },
-            {
-              "kind": "external_call",
-              "line": 54,
-              "step": "authorize",
-              "target": "HTMLResponse"
             },
             {
               "kind": "step_limit",
@@ -993,7 +979,7 @@
           "modules_touched": [
             "scripts/ci/serve_disposable_oidc.py"
           ],
-          "step_count": 17,
+          "step_count": 20,
           "truncated": false
         }
       },
@@ -7123,61 +7109,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 76,
+              "line": 77,
               "step": "expire",
               "target": "request.headers.get"
             },
             {
               "kind": "external_call",
-              "line": 77,
+              "line": 78,
               "step": "expire",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 78,
+              "line": 79,
               "step": "expire",
               "target": "request.json"
             },
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 80,
               "step": "expire",
               "target": "hashlib.sha256(body['token'].encode()).hexdigest"
             },
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 80,
               "step": "expire",
               "target": "hashlib.sha256"
             },
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 80,
               "step": "expire",
               "target": "body['token'].encode"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 81,
               "step": "expire",
               "target": "create_engine"
             },
             {
               "kind": "unresolved_call",
-              "line": 82,
+              "line": 83,
               "step": "expire",
               "target": "engine.begin"
             },
             {
               "kind": "unresolved_call",
-              "line": 83,
+              "line": 84,
               "step": "expire",
               "target": "connection.execute"
             },
             {
               "kind": "external_call",
-              "line": 83,
+              "line": 84,
               "step": "expire",
               "target": "text"
             },
@@ -16631,7 +16617,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 64,
+              "line": 70,
               "step": "read_fault",
               "step_index": 1,
               "target": "faults.clear"
@@ -16640,45 +16626,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 54,
-              "step": "read_fault",
-              "target": "request.headers.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 55,
-              "step": "read_fault",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 56,
-              "step": "read_fault",
-              "target": "request.json"
-            },
-            {
-              "kind": "external_call",
-              "line": 57,
-              "step": "read_fault",
-              "target": "isinstance"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 58,
-              "step": "read_fault",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 59,
-              "step": "read_fault",
-              "target": "body.get"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 60,
               "step": "read_fault",
-              "target": "body.get"
+              "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
@@ -16687,14 +16637,50 @@
               "target": "HTTPException"
             },
             {
-              "kind": "external_call",
+              "kind": "unresolved_call",
               "line": 62,
+              "step": "read_fault",
+              "target": "request.json"
+            },
+            {
+              "kind": "external_call",
+              "line": 63,
+              "step": "read_fault",
+              "target": "isinstance"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 64,
+              "step": "read_fault",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 65,
+              "step": "read_fault",
+              "target": "body.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 66,
+              "step": "read_fault",
+              "target": "body.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 67,
+              "step": "read_fault",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
               "step": "read_fault",
               "target": "type"
             },
             {
               "kind": "unresolved_call",
-              "line": 63,
+              "line": 69,
               "step": "read_fault",
               "target": "HTTPException"
             },
@@ -20508,7 +20494,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 65,
+              "line": 66,
               "step": "token",
               "step_index": 1,
               "target": "grants.pop"
@@ -20517,55 +20503,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 65,
               "step": "token",
               "target": "parse_qs((await request.body()).decode()).items"
             },
             {
               "kind": "external_call",
-              "line": 64,
+              "line": 65,
               "step": "token",
               "target": "parse_qs"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 65,
               "step": "token",
               "target": "(await request.body()).decode"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 65,
               "step": "token",
               "target": "request.body"
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 67,
               "step": "token",
               "target": "base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip(b'=').decode"
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 67,
               "step": "token",
               "target": "base64.urlsafe_b64encode(hashlib.sha256(params.get('code_verifier', '').encode()).digest()).rstrip"
             },
             {
               "kind": "external_call",
-              "line": 66,
+              "line": 67,
               "step": "token",
               "target": "base64.urlsafe_b64encode"
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 67,
               "step": "token",
               "target": "hashlib.sha256(params.get('code_verifier', '').encode()).digest"
             },
             {
               "kind": "external_call",
-              "line": 66,
+              "line": 67,
               "step": "token",
               "target": "hashlib.sha256"
             },
@@ -38555,7 +38541,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 151,
+              "line": 154,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -38563,7 +38549,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 152,
+              "line": 155,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38571,7 +38557,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 179,
+              "line": 182,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38579,7 +38565,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 182,
+              "line": 185,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
@@ -38587,7 +38573,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 198,
+              "line": 201,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38595,7 +38581,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 200,
+              "line": 203,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38603,7 +38589,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 207,
+              "line": 209,
+              "step": "main",
+              "step_index": 1,
+              "target": "app_env.update"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 212,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38686,7 +38680,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 96,
+          "step_count": 99,
           "truncated": false
         }
       },
@@ -39052,26 +39046,10 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 45,
+              "line": 51,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 79,
-              "step": "main",
-              "step_index": 1,
-              "target": "os.environ.get"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "process",
-              "line": 83,
-              "step": "main",
-              "step_index": 1,
-              "target": "subprocess.Popen"
             },
             {
               "confidence": "unknown",
@@ -39083,8 +39061,24 @@
             },
             {
               "confidence": "unknown",
+              "kind": "process",
+              "line": 89,
+              "step": "main",
+              "step_index": 1,
+              "target": "subprocess.Popen"
+            },
+            {
+              "confidence": "unknown",
               "kind": "environment_read",
-              "line": 90,
+              "line": 91,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 96,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39182,13 +39176,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 90,
+              "line": 91,
               "step": "__main__",
               "target": "uvicorn.run"
             },
             {
               "kind": "external_call",
-              "line": 90,
+              "line": 91,
               "step": "__main__",
               "target": "os.environ.get"
             }
@@ -39612,7 +39606,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 173,
+              "line": 182,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -42351,6 +42345,7 @@
         "modules/planning_inputs.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
+        "modules/planningInputMessages.md",
         "modules/planningInputService.md",
         "modules/planningInputService.test.md",
         "modules/planningMasters_masters.md",
@@ -42517,6 +42512,7 @@
         "modules/snapshot_service.md",
         "modules/snapshots.md",
         "modules/snapshotService.md",
+        "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/sql_semantics.md",
@@ -42686,6 +42682,7 @@
         "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
+        "modules/test_strict_caller_matrix.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
@@ -50026,7 +50023,8 @@
         "modules/mcp_server.md",
         "modules/mutation_versions.md",
         "modules/test_mutation_versions.md",
-        "modules/test_shared_member_revisions.md"
+        "modules/test_shared_member_revisions.md",
+        "modules/test_strict_caller_matrix.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/mutation_versions.py",
@@ -52254,6 +52252,7 @@
         "modules/routers_task_domain.md",
         "modules/serve_disposable_api.md",
         "modules/task_domain_service.md",
+        "modules/test_strict_caller_matrix.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -61518,12 +61517,12 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_iteration_Iteration",
       "outgoing_internal_links": [
+        "modules/GanttPage.md",
         "modules/GanttPage.test.md",
         "modules/IterationForm.md",
         "modules/IterationForm.test.md",
         "modules/IterationList.md",
         "modules/IterationSelector.md",
-        "modules/IterationsPage.md",
         "modules/ProjectIterationsSection.md",
         "modules/TaskForm.md",
         "modules/TaskWorkPanel.md",
@@ -68683,7 +68682,8 @@
         "modules/mutation_versions.md",
         "modules/runtime_telemetry.md",
         "modules/test_mutation_versions.md",
-        "modules/test_shared_member_revisions.md"
+        "modules/test_shared_member_revisions.md",
+        "modules/test_strict_caller_matrix.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/mutation_versions.py",
@@ -69349,6 +69349,20 @@
       "role": "semantic",
       "source_path": "frontend/src/components/planning/PlanningInputBoundary.test.tsx",
       "title": "PlanningInputBoundary.test Module"
+    },
+    {
+      "canonical_path": "modules/planningInputMessages.md",
+      "id": "planningInputMessages",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/planningInputMessages",
+      "outgoing_internal_links": [
+        "modules/planningInputMessages.md",
+        "modules/resources.en.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/planningInputMessages.ts",
+      "title": "planningInputMessages Module"
     },
     {
       "canonical_path": "modules/planningInputService.md",
@@ -70280,6 +70294,7 @@
         "modules/i18n.test.md",
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
+        "modules/planningInputMessages.md",
         "modules/resources.en.md",
         "modules/teamwork.en.md",
         "modules/timeEntries.md"
@@ -70297,6 +70312,7 @@
         "modules/i18n.test.md",
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
+        "modules/planningInputMessages.md",
         "modules/resources.ru.md",
         "modules/teamwork.ru.md",
         "modules/timeEntries.md"
@@ -70792,18 +70808,7 @@
         "entities/ActivitySnapshot.md",
         "entities/MetricRegistry.md",
         "entities/RuntimeActivity.md",
-        "modules/agent_routing_observability.md",
-        "modules/app_main.md",
-        "modules/commands.md",
-        "modules/database_runtime.md",
-        "modules/maintenance.md",
-        "modules/mutation_versions.md",
-        "modules/observability.md",
-        "modules/outbound_webhook_service.md",
-        "modules/runtime_telemetry.md",
-        "modules/session_service.md",
-        "modules/test_agent_routing_observability.md",
-        "modules/test_observability.md"
+        "modules/runtime_telemetry.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/runtime_telemetry.py",
@@ -72392,11 +72397,26 @@
         "entities/snapshotService_SnapshotRestoreResponse.md",
         "modules/api.md",
         "modules/GanttPage.md",
-        "modules/snapshotService.md"
+        "modules/snapshotService.md",
+        "modules/snapshotVersions.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/services/snapshotService.ts",
       "title": "snapshotService Module"
+    },
+    {
+      "canonical_path": "modules/snapshotVersions.test.md",
+      "id": "snapshotVersions.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/snapshotVersions.test",
+      "outgoing_internal_links": [
+        "modules/api.md",
+        "modules/snapshotService.md",
+        "modules/snapshotVersions.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/snapshotVersions.test.ts",
+      "title": "snapshotVersions.test Module"
     },
     {
       "canonical_path": "modules/SortableTaskItem.md",
@@ -75152,6 +75172,18 @@
       "title": "test_sqlite_migrations Module"
     },
     {
+      "canonical_path": "modules/test_strict_caller_matrix.md",
+      "id": "test_strict_caller_matrix",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_strict_caller_matrix",
+      "outgoing_internal_links": [
+        "modules/test_strict_caller_matrix.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_strict_caller_matrix.py",
+      "title": "test_strict_caller_matrix Module"
+    },
+    {
       "canonical_path": "modules/test_task_discussion.md",
       "id": "test_task_discussion",
       "kind": "modules",
@@ -76165,17 +76197,6 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/useAdminAccess",
       "outgoing_internal_links": [
-        "modules/adminAccess.md",
-        "modules/AdminAccessGate.md",
-        "modules/AdminAccessPanel.md",
-        "modules/AgentPipelinePage.md",
-        "modules/EmailSettingsPanel.md",
-        "modules/identityContext.md",
-        "modules/OutboundWebhooksPanel.md",
-        "modules/RuntimeConfigSettings.md",
-        "modules/SchedulingRulesSettings.md",
-        "modules/SettingsPage.md",
-        "modules/SystemLanguageProvider.md",
         "modules/useAdminAccess.md"
       ],
       "role": "semantic",
@@ -88905,6 +88926,7 @@
         "modules/planning_inputs.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
+        "modules/planningInputMessages.md",
         "modules/planningInputService.md",
         "modules/planningInputService.test.md",
         "modules/planningMasters_masters.md",
@@ -89071,6 +89093,7 @@
         "modules/snapshot_service.md",
         "modules/snapshots.md",
         "modules/snapshotService.md",
+        "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/sql_semantics.md",
@@ -89240,6 +89263,7 @@
         "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
+        "modules/test_strict_caller_matrix.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
@@ -89646,6 +89670,7 @@
         "modules/planning_inputs.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
+        "modules/planningInputMessages.md",
         "modules/planningInputService.md",
         "modules/planningInputService.test.md",
         "modules/planningMasters_masters.md",
@@ -89812,6 +89837,7 @@
         "modules/snapshot_service.md",
         "modules/snapshots.md",
         "modules/snapshotService.md",
+        "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/sql_semantics.md",
@@ -89981,6 +90007,7 @@
         "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
+        "modules/test_strict_caller_matrix.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
@@ -90073,5 +90100,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:436287d9a880e92aa1e5c4e5d8afdae6565bfa1b3cc4566ffab355c0138c1ce2"
+  "source_hash": "sha256:28d6324623913a9198911bfbf317f78b111db3bdafeda53623bbd2be772b9d8a"
 }

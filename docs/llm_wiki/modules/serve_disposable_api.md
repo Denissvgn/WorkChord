@@ -12,7 +12,7 @@ Starts the real HTTP application against an explicitly designated temporary SQLi
 |--------|---------|
 | `app.database` | `async_session_maker`, `close_database` |
 | `app.main` | `app` |
-| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `PrincipalProfileLink` |
+| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `PrincipalProfileLink`, `WorkspaceMembership` |
 | `app.models.task` | `Task` |
 | `app.services.upgrade_service` | `run_alembic_upgrade` |
 | `asyncio` | `asyncio` |
