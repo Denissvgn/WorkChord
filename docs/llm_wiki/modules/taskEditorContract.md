@@ -92,14 +92,14 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskEditorValues](../entities/TaskEditorValues.md) | Class | 10 | — | — |
-| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Class | 36 | — | — |
-| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Class | 44 | — | — |
-| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Class | 194 | — | — |
-| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Class | 263 | — | — |
+| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Class | 37 | — | — |
+| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Class | 45 | — | — |
+| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Class | 196 | — | — |
+| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Class | 265 | — | — |
 | [TaskEditorSection](../entities/TaskEditorSection.md) | Type alias | 4 | — | — |
 | [TaskEditorAvailability](../entities/TaskEditorAvailability.md) | Type alias | 5 | — | — |
-| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 187 | — | — |
-| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 271 | — | — |
+| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 189 | — | — |
+| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 273 | — | — |
 
 ## Functions
 

@@ -8,11 +8,14 @@ Places title, durable owner, capacity assignment, estimates and commitment state
 
 Task writes persist an uncertain-outcome checkpoint before the request. Restored or unverified outcomes require an authoritative current read and explicit comparison before submitting again; bounded missing matches do not prove failure. Inputs and original observations remain intact, and completion of a removed editor cannot clear or navigate its replacement.
 
+New scheduled task drafts capture one coherent initial iteration revision and persist it alongside user input. Live reference-query revisions never replace this base at save; recovered unversioned drafts require explicit comparison before adoption.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `../../features/identity/identityContext` | `useIdentity` |
+| `../../features/usePlanningObservation` | `usePlanningObservation` |
 | `../../i18n/seedDisplay` | `templateDisplay` |
 | `../../services/iterationService` | `iterationService` |
 | `../../services/projectService` | `projectService` |
@@ -20,6 +23,7 @@ Task writes persist an uncertain-outcome checkpoint before the request. Restored
 | `../../services/teamService` | `teamService` |
 | `../../services/templateService` | `templateService` |
 | `../../services/triageService` | `triageService` |
+| `../../types/iteration` | `Iteration` |
 | `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` |
 | `../../types/template` | `WorkTemplate` |
 | `../../types/triage` | `TriageItemCreate` |
@@ -76,7 +80,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (34) |
+| Outbound | `frontend` (36) |
 
 ### External packages
 
@@ -84,13 +88,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 54 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Class | 56 | — | — |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # TaskEditorServerError
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:271`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:273`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)

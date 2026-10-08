@@ -1946,3 +1946,21 @@ Compose web and worker services forward strict mutation policy with compatibilit
 - Generated surface pages retired: 1
 
 Project, iteration, capacity, vacation and import workflows now retain complete initial or preview observations with explicit conflict recovery and bounded nested writes.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:8a24cd24347061e0515632372d45ad21bd991786220ef998fe4d56f64f27fe10`
+- Pages created: 1
+- Pages updated: 21
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2956
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Task and protocol callers now preserve original task and aggregate observations; role guidance reflects explicit comparison and companion structural actions remain unavailable.

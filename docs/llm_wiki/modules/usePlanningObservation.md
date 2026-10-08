@@ -27,41 +27,51 @@ Editor observations are retained with drafts. Only explicit conflict reapply rea
 flowchart LR
     n0["frontend/src/components/planning/PlanningInputBoundary.tsx"]
     n1["frontend/src/components/projects/ProjectIterationsSection.tsx"]
-    n2["frontend/src/components/team/ImportTeamModal.tsx"]
-    n3["frontend/src/components/team/TeamProfileManager.tsx"]
-    n4["frontend/src/components/team/VacationCsvImport.tsx"]
-    n5["frontend/src/features/usePlanningObservation.ts"]
-    n6["frontend/src/pages/CalendarPage.tsx"]
-    n7["frontend/src/services/planningInputService.ts"]
-    n8["frontend/src/utils/apiError.ts"]
-    n0 --> n5
+    n2["frontend/src/components/tasks/TaskForm.tsx"]
+    n3["frontend/src/components/tasks/TaskWorkPanel.tsx"]
+    n4["frontend/src/components/team/ImportTeamModal.tsx"]
+    n5["frontend/src/components/team/TeamProfileManager.tsx"]
+    n6["frontend/src/components/team/VacationCsvImport.tsx"]
+    n7["frontend/src/features/usePlanningObservation.ts"]
+    n8["frontend/src/pages/CalendarPage.tsx"]
+    n9["frontend/src/services/planningInputService.ts"]
+    n10["frontend/src/utils/apiError.ts"]
     n0 --> n7
-    n1 --> n5
+    n0 --> n9
     n1 --> n7
-    n1 --> n8
-    n2 --> n5
-    n2 --> n8
-    n3 --> n5
+    n1 --> n9
+    n1 --> n10
+    n2 --> n3
+    n2 --> n7
+    n2 --> n10
     n3 --> n7
-    n3 --> n8
-    n4 --> n5
+    n3 --> n9
+    n3 --> n10
     n4 --> n7
-    n4 --> n8
+    n4 --> n10
     n5 --> n7
-    n5 --> n8
-    n6 --> n4
-    n6 --> n5
+    n5 --> n9
+    n5 --> n10
     n6 --> n7
-    n6 --> n8
+    n6 --> n9
+    n6 --> n10
+    n7 --> n9
+    n7 --> n10
+    n8 --> n6
+    n8 --> n7
+    n8 --> n9
+    n8 --> n10
     click n0 "../modules/PlanningInputBoundary.md"
     click n1 "../modules/ProjectIterationsSection.md"
-    click n2 "../modules/ImportTeamModal.md"
-    click n3 "../modules/TeamProfileManager.md"
-    click n4 "../modules/VacationCsvImport.md"
-    click n5 "../modules/usePlanningObservation.md"
-    click n6 "../modules/CalendarPage.md"
-    click n7 "../modules/planningInputService.md"
-    click n8 "../modules/apiError.md"
+    click n2 "../modules/TaskForm.md"
+    click n3 "../modules/TaskWorkPanel.md"
+    click n4 "../modules/ImportTeamModal.md"
+    click n5 "../modules/TeamProfileManager.md"
+    click n6 "../modules/VacationCsvImport.md"
+    click n7 "../modules/usePlanningObservation.md"
+    click n8 "../modules/CalendarPage.md"
+    click n9 "../modules/planningInputService.md"
+    click n10 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +80,8 @@ flowchart LR
 |---|---|
 | Inbound | [PlanningInputBoundary](../modules/PlanningInputBoundary.md) |
 | Inbound | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) |
+| Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TaskWorkPanel](../modules/TaskWorkPanel.md) |
 | Inbound | [ImportTeamModal](../modules/ImportTeamModal.md) |
 | Inbound | [TeamProfileManager](../modules/TeamProfileManager.md) |
 | Inbound | [VacationCsvImport](../modules/VacationCsvImport.md) |

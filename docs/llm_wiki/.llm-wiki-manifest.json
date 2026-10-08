@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:b652454547f16b553c14fd06cdd142e36e880cc5e720b6392f678340da9fbed5",
-    "knowledge_index_hash": "sha256:5de4d6d4c76ce7a703a2edccf85ca18400b3da9e2c24475d705ecf9482ec6fbb",
-    "surface_index_hash": "sha256:450a55e4667c3cdc6927ffee1c3ebf060cd49005471050cf429d1deff1e61859"
+    "evaluated_envelope_hash": "sha256:25e4d245714e396795bd29467ac86443fedd66f3d036b11bc3430a701c10f5ce",
+    "knowledge_index_hash": "sha256:e3e8278685370ce74213666e2eb2bcb881c55658a6f01d0c6256969a8022b850",
+    "surface_index_hash": "sha256:4b6609484306eb95b712378ccb35a5c5d5dfac216b7166cd2fcd42eb4a468721"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -5130,7 +5130,7 @@
         "concept_observation_hash": "sha256:43881e1272f610ca60a3a4ea53464397a11cdc1e14326aa04326b5e11fccf46f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_content_hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -5140,7 +5140,7 @@
         "concept_observation_hash": "sha256:3660bf13a0f105e6cee69c4bb06e3e16225cf55f98aecc3d9d6cd188157e9e20",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_content_hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -5520,7 +5520,7 @@
         "concept_observation_hash": "sha256:9f2f08500791d2e41fac967cfd59b949b5d17838de84995835b2007cfd29686e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_content_hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -7770,7 +7770,7 @@
         "concept_observation_hash": "sha256:373e70ecc45dbd476967b7f46abbb3602fb20f0db2bbc489686078a58e13f711",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
+        "source_content_hash": "sha256:0e5526afa6e5108b4123fe45c3de6c9ee6c72ea7214d8b45895eed25c83a053b",
         "source_path": "scripts/build_agent_skills.py"
       },
       "state": "known"
@@ -8140,7 +8140,7 @@
         "concept_observation_hash": "sha256:2ccbf159a49d01c57b56e140e0782e7889eb1933882d4478d88c54284db187af",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8237,10 +8237,10 @@
     },
     "entities/TaskCommand.md": {
       "basis": {
-        "concept_observation_hash": "sha256:889f0558c3f8fcfde8289cf359631f15dc455b418de986579f38630f1b07424b",
+        "concept_observation_hash": "sha256:b11d65e9cbc60b4071f86837a8a6d018dbbb3173b8f5664823937c1941820035",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8260,7 +8260,7 @@
         "concept_observation_hash": "sha256:ca092a03d30e4f8012d600501d66da944a8f6b2960676d8c31be7b6088a0976b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8320,7 +8320,7 @@
         "concept_observation_hash": "sha256:dda6cdd81d7928c929ce0d6649c971fb220294f88e6e06ace8f1849e2ba83f5b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8400,7 +8400,7 @@
         "concept_observation_hash": "sha256:8a774520eab1e5108cb815874af1b28d4f91713ada460cfb01dded8386dd64aa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8410,7 +8410,7 @@
         "concept_observation_hash": "sha256:0ea6d959df08c221ed127811ac417c30506f3ffd35333eb3c65579dab6bab52b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8420,7 +8420,7 @@
         "concept_observation_hash": "sha256:5f08814873e56a24efa6f79c1f9dab542dea3ef2c74307e8fd37d3eb82d34108",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8430,7 +8430,7 @@
         "concept_observation_hash": "sha256:fa484bf744a1e76610c50fc454c00b90b121c0cbc551d3b7c2f4fbf9af53dcad",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8440,7 +8440,7 @@
         "concept_observation_hash": "sha256:692bab297212e342e501fded301687adfe073068fef71314eae477783f5211a0",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8450,7 +8450,7 @@
         "concept_observation_hash": "sha256:d5abfe2eff6afde758f526aa0b118d89138a4c8231223ea8b7d19824f57281a7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8460,17 +8460,17 @@
         "concept_observation_hash": "sha256:41c6ce701e00ae54dfa2accf35eb9568edd290a4665f8cbd9cf16387e58a8d62",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
     },
     "entities/TaskEditorValues.md": {
       "basis": {
-        "concept_observation_hash": "sha256:276fa8dc8413ed0c97653d10507929a681382ce1a838dba4f3d8df7aa3997ef4",
+        "concept_observation_hash": "sha256:92f2d31ae0b1f5ed8d7742e7a685cd673524531cd37413711be93ed6a681a7d9",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -8540,7 +8540,7 @@
         "concept_observation_hash": "sha256:fe01f4c20423c7d2f51da73dd9bdabc1cc823cdecfeac75ff95ee4151d8dc494",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:33309fdac1d050a84ffa5fcda0da2d08a8fc02b1b6ae4cb2e7c74881cdd97268",
+        "source_content_hash": "sha256:9d7ee9957ab177dbd30e4523cfaff338ae199cafbf45a888ad156ea61167d255",
         "source_path": "frontend/src/components/tasks/TaskForm.tsx"
       },
       "state": "known"
@@ -8550,7 +8550,7 @@
         "concept_observation_hash": "sha256:002ac5bf07ce998b3ac433ff2975f115c0c9c32448089670f00949df2d251c74",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8590,7 +8590,7 @@
         "concept_observation_hash": "sha256:f395f234774c5d7a660163da0d93cd5df70f15b044c7560b3122903fbb87065f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8650,7 +8650,7 @@
         "concept_observation_hash": "sha256:d7780200479bbad9fed956f93c989f38a7580246323efeae56ac67804c41c15c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -8690,7 +8690,7 @@
         "concept_observation_hash": "sha256:161a164c1b204afaf8f9ee589730ab23b281a6d7e17bdabdc85df11c1127b2c1",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -9010,7 +9010,7 @@
         "concept_observation_hash": "sha256:39b48657c5bd1cce331f81fba60d624b5cefd0b56b67406646d102905de3b0f2",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -11220,7 +11220,7 @@
         "concept_observation_hash": "sha256:fafe3b17a48155b2314d50908fb3ba71e277e894622a2813526533b15c3ec823",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_content_hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -14410,7 +14410,7 @@
         "concept_observation_hash": "sha256:a7b62ca23f667b44a2f86e50fe7f33c5812def19f5dc61571eda971ea0242224",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14420,7 +14420,7 @@
         "concept_observation_hash": "sha256:d92f6aa2591d684ba8dc6c69b6bbdd17a7c83ddf9e66f053bea17d67a09c749d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14430,7 +14430,7 @@
         "concept_observation_hash": "sha256:50f52b694a13f216a09afd9c8f787635b0fbb1adb70c1cf16a8a483804027660",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14440,7 +14440,7 @@
         "concept_observation_hash": "sha256:ec756624052d94fb9975b64a60d717013a56122abdd2c517d01ea2ffc41c273b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14450,7 +14450,7 @@
         "concept_observation_hash": "sha256:34a3d34205f7b171684ae2fc22bc1fecf7208fe5246e8ada1729b215a008e0d7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14460,7 +14460,7 @@
         "concept_observation_hash": "sha256:64bc1f1a51425229e9dc9b01cfaf127b29e7c7ada543c7fc9574df01506d8a3c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14470,7 +14470,7 @@
         "concept_observation_hash": "sha256:bb40828f8ab45ebb6c20255ec810f73f7972b131a870d6cc9495342a2fa4b059",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14480,7 +14480,7 @@
         "concept_observation_hash": "sha256:711bfdaa183853766a025e1f7dd6ccdeb5d4fe0f6ec8a3cf70fdc42083fe7467",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14490,7 +14490,7 @@
         "concept_observation_hash": "sha256:c3081fe5672a233682575a1ab2268996f334c01aa677734d2fff35ebd566f1d1",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14500,7 +14500,7 @@
         "concept_observation_hash": "sha256:38207f0fdb709232784e6126cfd54239b1b1d701c9b3563f4fc5d5bbcecc8075",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14510,7 +14510,7 @@
         "concept_observation_hash": "sha256:c5771265f64d9adc89be58a05fd64e38c58d0cfa8cde0c3ac42d146520c3ecda",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14520,7 +14520,7 @@
         "concept_observation_hash": "sha256:f88abc10b8134a34f571b77e8f9eb80360678f5c4766d1d39d82fef10268f88b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14530,7 +14530,7 @@
         "concept_observation_hash": "sha256:0cec4aa2eb196687fc2832c9613e3e8a4e99b3ad543e4aac9ce2defd063c6c92",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14540,7 +14540,7 @@
         "concept_observation_hash": "sha256:d2dd2deb273108411db6b85245f3748232b6bb0631c7d0adf900c6adb3e8ed0d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14550,7 +14550,7 @@
         "concept_observation_hash": "sha256:cf40b1df0c44d2d791018bb34066a930edab3737354e8ef7122fac1cfc335f29",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14560,7 +14560,7 @@
         "concept_observation_hash": "sha256:11513ed40a851a6a2f67589897e5a3cd79278700836e40f2d7373afd04357471",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14570,7 +14570,7 @@
         "concept_observation_hash": "sha256:cc2448300fd32de6b94d80f3f11a9533b4bfa9b4620e88d4b997bbde73d56f25",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14580,7 +14580,7 @@
         "concept_observation_hash": "sha256:9c42dbd277d63f74a474394a3d9e6880405e0eed0f6a2554bf080de2fdf34e4f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14590,7 +14590,7 @@
         "concept_observation_hash": "sha256:30d54ba4c28a005f4d4a5b0a299eec2502911fbd0a6bc990aecd9f6cdc0326e3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14600,7 +14600,7 @@
         "concept_observation_hash": "sha256:301fa9c82e2908c4bce7b970e4de4f9adab0760fd664ead5a16bb428a022fc5f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14610,7 +14610,7 @@
         "concept_observation_hash": "sha256:1348a17df260d1a1367b8100895bd42970d7d614e7f23cf9813c1617f3ff70c9",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14620,7 +14620,7 @@
         "concept_observation_hash": "sha256:9ff4005a113ce1cfc9792e97bc41cf95ab0fee1d8f225a4de23882208edc5e8d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14630,7 +14630,7 @@
         "concept_observation_hash": "sha256:439718bfbbfb295f4c7542f14f42115413d9405c4bed423f44992b87c9b787cf",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14640,7 +14640,7 @@
         "concept_observation_hash": "sha256:57345fb98036885b7f17e2010debcea82121b82b755c66bd1997680e02eeddc5",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14650,7 +14650,7 @@
         "concept_observation_hash": "sha256:cd7749aad3c0b5b52d2ed2b4cdca0958d6a80da07eecf2dbf647e484a8ee9664",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14660,7 +14660,7 @@
         "concept_observation_hash": "sha256:2c54088ffb9ae2fbcb9830e84a5f16d542521a923c672b36dedcd3894b88bce5",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14670,7 +14670,7 @@
         "concept_observation_hash": "sha256:81052506a5f56d33ccc2d96429db6ca24808cc926cba773219f46e87b2b18587",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14680,7 +14680,7 @@
         "concept_observation_hash": "sha256:2cc466e026c289c3b4721a229729d7ef9beda011fd3d855c69002ea436c535cb",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14690,7 +14690,7 @@
         "concept_observation_hash": "sha256:8c5e4f943f6a79842c0b3f56c6ac09ffea1bc0b2e06ccbf9cac104f013f6f803",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14700,7 +14700,7 @@
         "concept_observation_hash": "sha256:6fd301591532820464d1ea54b7842746c8f4254be7e92d3701ecfd96c9fe02d9",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14710,7 +14710,7 @@
         "concept_observation_hash": "sha256:b4a27544fd0e4c4b479198da17118c0c3c7d0cfb6d0a16618b98e05a1ba00b22",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14720,7 +14720,7 @@
         "concept_observation_hash": "sha256:fc67a6aa96457d313a21500b031e41cf3ed1ed711f4a4372eb96dd839b863dfa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14730,7 +14730,7 @@
         "concept_observation_hash": "sha256:de7a829de048cfccae2430076288e43bb9487c2b645d7cb5b132c058ecb4a652",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14740,7 +14740,7 @@
         "concept_observation_hash": "sha256:79208b09c447f8d01ad2b83e90b4b99edd895f47b44d400af26733fc239f1cb3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14750,7 +14750,7 @@
         "concept_observation_hash": "sha256:da2f1b1ee1b8cda46b61ecf8e9758f204566fb7febd6b2654b173156efe0e0c4",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14760,7 +14760,7 @@
         "concept_observation_hash": "sha256:2a6cacbdb276bb7f7f5141f92f33f7772b373d4f5d12bb93e53bb39b20c26b64",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14770,7 +14770,7 @@
         "concept_observation_hash": "sha256:54cdeb186ec7d2af5572d8da1cfaf0b1628ad40ea4a952739438c07e8690f0d3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14780,7 +14780,7 @@
         "concept_observation_hash": "sha256:c77a6a88b87740bab9a5c61681ba26421865c263209c3bad72f6bf651d9d4f86",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14790,7 +14790,7 @@
         "concept_observation_hash": "sha256:23a43979dd1eeda97a263ffbbe8b073a4d2e0820c08316f72a6448b222feff22",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14800,7 +14800,7 @@
         "concept_observation_hash": "sha256:7bef96663d6f505d583f5390cc3a113c0915d2ed40088397abea853904e2c4bf",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14810,7 +14810,7 @@
         "concept_observation_hash": "sha256:2b6301f0facb04e0edd0d07dcca7fff739c3256c787aad7a1409753f6fe33c4a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14820,7 +14820,7 @@
         "concept_observation_hash": "sha256:842191e17ac1298e6e72a587a258aa2a1ba3d22f3974ace3782156bc256d2766",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14830,7 +14830,7 @@
         "concept_observation_hash": "sha256:22cc95fc834f359b9764810f8f8ed2bb9a30636fe5bb1024da0b9c9df92ba28a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14840,7 +14840,7 @@
         "concept_observation_hash": "sha256:c013a26c3a632f6561008be010f2f371044c18c9434e76ea568f607e521a2cb1",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -14850,7 +14850,7 @@
         "concept_observation_hash": "sha256:75252fcf94bc5a0128d36a66e329d37c137d5676c483daf05c6e7df1268b1dfc",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -16927,10 +16927,10 @@
     },
     "modules/TaskForm.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4ece89ab8516e98b133a594020ef611ceab90e9e2daa64e995247e1de1943a18",
+        "concept_observation_hash": "sha256:9cd07d20b5803371ce197b53b443cdace437e113e8ab8d8a80581603eb1a3f2e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:33309fdac1d050a84ffa5fcda0da2d08a8fc02b1b6ae4cb2e7c74881cdd97268",
+        "source_content_hash": "sha256:9d7ee9957ab177dbd30e4523cfaff338ae199cafbf45a888ad156ea61167d255",
         "source_path": "frontend/src/components/tasks/TaskForm.tsx"
       },
       "state": "known"
@@ -16940,7 +16940,7 @@
         "concept_observation_hash": "sha256:acce193129dae900448b951b7771d6d35750e2d9ead3b9c64832fb28eee2ebcf",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:4ec295eaf64df1eec9263475b67dd7007d32301620c96437d59aa5995ce4e5b8",
+        "source_content_hash": "sha256:e43f3d7635e2f769aff8fb6fb5640ad756a07fddb87d7e9683da71c946af4c71",
         "source_path": "frontend/src/components/tasks/TaskForm.test.tsx"
       },
       "state": "known"
@@ -17047,20 +17047,20 @@
     },
     "modules/TaskWorkPanel.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6b13e12e8cf9831ce184ce4a1f9fcd9d2211ecbd62a609778daabb67cff3fcf3",
+        "concept_observation_hash": "sha256:1ffe1c19f9bb4e941021e9e7278b10d28b4b8e61e55f0336983a19250f10a23c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:61223134de4fed96f8a7f3e3cf81dec749738603ba5f849b9203b5374684a9cd",
+        "source_content_hash": "sha256:49ea3492283e305f2985eb6f3cedc0108d59f4f8e64b8bba58bdec1e77714595",
         "source_path": "frontend/src/components/tasks/TaskWorkPanel.tsx"
       },
       "state": "known"
     },
     "modules/TaskWorkPanel.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:9df205d8f19a8af05815fdcf5fc998356df1d6d4e030eef56202e59bd0f8a22e",
+        "concept_observation_hash": "sha256:341f5f9f191d89d83678999c01b2eb6785d10155443470973495bec8bac48c2f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:46f476a3cf322aeacfc6e5aabbe6497315066c1067f713e09c0558a57e4a7a3e",
+        "source_content_hash": "sha256:08349b0561b5ce987b9f447d71e98821f713c0a96a3dfa0b1e31982c326e497c",
         "source_path": "frontend/src/components/tasks/TaskWorkPanel.test.tsx"
       },
       "state": "known"
@@ -17760,7 +17760,7 @@
         "concept_observation_hash": "sha256:5a523724b0aba478c7dae71b590166ac35febd8d87208312529953b869ebe0c9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
+        "source_content_hash": "sha256:0e5526afa6e5108b4123fe45c3de6c9ee6c72ea7214d8b45895eed25c83a053b",
         "source_path": "scripts/build_agent_skills.py"
       },
       "state": "known"
@@ -19260,7 +19260,7 @@
         "concept_observation_hash": "sha256:de227ae65142cd03712c742876b2d0195173c25bb6ae82bf1f94be08afc782a8",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_content_hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -20635,12 +20635,22 @@
       },
       "state": "known"
     },
+    "modules/taskDependencyVersions.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d726e8a08ce438aaad8360a4a13074fb445670d9c641c2e96614c58a3db4318e",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:f756ffac1659a887140c4cc9c514b302f1dff1c03f1fd6c4f819ac8b5eec319b",
+        "source_path": "frontend/src/services/taskDependencyVersions.test.ts"
+      },
+      "state": "known"
+    },
     "modules/taskDraftStorage.md": {
       "basis": {
         "concept_observation_hash": "sha256:876e7146c466aa52ec4567fc895f6b80db8326ce624e7440003627e83061d9d0",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:fe5c672b873f7cc275d5b6ae3eb4e01110cf236af16af3dd1c5066b1c3a73124",
+        "source_content_hash": "sha256:f463cc8670e97db4001e723781dd58418138b16ab5177983378f2435b590dbf9",
         "source_path": "frontend/src/components/tasks/taskDraftStorage.ts"
       },
       "state": "known"
@@ -20660,7 +20670,7 @@
         "concept_observation_hash": "sha256:3842a63c857f80532053d86341f63d4eaabe81bb0a574be9a7c5a6924248a06d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+        "source_content_hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
         "source_path": "frontend/src/components/tasks/taskEditorContract.ts"
       },
       "state": "known"
@@ -20710,7 +20720,7 @@
         "concept_observation_hash": "sha256:2d1300ab78892db9381143f06dfd08bc94626825eb9bdc886104f25749c99817",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:ba9a3bc07b812b9d167d4850349b232e1083b03a9a0a166eae4df34e2b59c7bf",
+        "source_content_hash": "sha256:37c1f534cf2f7056f8f61545d14b799c1355719a17c5158514d6c65288e778df",
         "source_path": "frontend/src/services/taskService.ts"
       },
       "state": "known"
@@ -21110,7 +21120,7 @@
         "concept_observation_hash": "sha256:a0e76ddd33cbbaf7dc6dcf350d4e94bb285f23eada8973667475fb7733f22f2e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:51f30f5a57cd1bad579f2605e432d46f9a19ede00559589f0ca87d3a882fd7f5",
+        "source_content_hash": "sha256:cb8f5dfbce9bf30ec3248d2a87cea37f214511e0750158465431ff4b8eed6134",
         "source_path": "backend/tests/test_agent_skill_routing_guidance.py"
       },
       "state": "known"
@@ -22110,7 +22120,7 @@
         "concept_observation_hash": "sha256:eee28c25f62b2bb35208d64d08aaab939dd201b68316b867f8c0527b297abcb2",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+        "source_content_hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
         "source_path": "frontend/src/types/task.ts"
       },
       "state": "known"
@@ -22270,7 +22280,7 @@
         "concept_observation_hash": "sha256:3b5ca17a402de54d906829ec07de055c9b2174750719ee09ee93c4013472ae9d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:9dc1edab8489fc167930a59a5e9cd8cfd100474c13f6b7b1f84c193e2e4a8f0b",
+        "source_content_hash": "sha256:224cac45deaa0425d5a0a562cb577fb01cf7d472f7dd46a916da6fc1f0999e7a",
         "source_path": "frontend/src/features/usePlanningObservation.ts"
       },
       "state": "known"
@@ -22680,13 +22690,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:7519f3515d3c174d6a447fa35fbc71ff4b43bb2a54ab3207326c7d96feb60d2b",
-      "lifecycle_hash": "sha256:11a76fe369f9d8296e038ff87710be6e7927573d728dc6f64a1607e85e41a157",
-      "markdown_snapshot_hash": "sha256:bb381f5a1dbb2c2b8adb522ab99a757123dbabf6088b32e48e3c6b977d0df7d6",
-      "observation_inputs_hash": "sha256:9a47f23ec9d55d9299ffb805536c5f84204a96376a346a202c25dc3ffdd18fd1",
+      "inventory_hash": "sha256:0260f3bc1779bd22dc3ba2a8c4c8d1a49282d77cc4b44292cb9c9eb53a1e434c",
+      "lifecycle_hash": "sha256:2718fade0323551eb6511bb5bacf110ce2e081fb2898cf9d3f789571ae4aeb4d",
+      "markdown_snapshot_hash": "sha256:5b7fe9f7fa7edb4e21e3343292ab62bff8e86549063b1eaf566d5d44f64de1ca",
+      "observation_inputs_hash": "sha256:3006f457967ebf0ee1f11eb2fcabc780feea8e0ff6abd0355be306e3e373ee9f",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:1ff36f7a2746b7aa435e664cbe061db918c4aa1e58058c8285b21d02305b5580"
+      "source_snapshot_hash": "sha256:8a24cd24347061e0515632372d45ad21bd991786220ef998fe4d56f64f27fe10"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -33984,6 +33994,10 @@
     "modules/tailwind.config.md": {
       "scope": "module",
       "source_path": "frontend/tailwind.config.js"
+    },
+    "modules/taskDependencyVersions.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/services/taskDependencyVersions.test.ts"
     },
     "modules/taskDraftStorage.md": {
       "scope": "module",
@@ -61847,7 +61861,7 @@
           }
         }
       },
-      "hash": "sha256:51f30f5a57cd1bad579f2605e432d46f9a19ede00559589f0ca87d3a882fd7f5",
+      "hash": "sha256:cb8f5dfbce9bf30ec3248d2a87cea37f214511e0750158465431ff4b8eed6134",
       "language": "python",
       "module_page": "test_agent_skill_routing_guidance",
       "semantic_hash": "sha256:8a9da7b4ab9e1d7a0c2c7219a52d75ee863e203f5cece6feb346af5f7b35bc23"
@@ -68054,7 +68068,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:4ec295eaf64df1eec9263475b67dd7007d32301620c96437d59aa5995ce4e5b8",
+      "hash": "sha256:e43f3d7635e2f769aff8fb6fb5640ad756a07fddb87d7e9683da71c946af4c71",
       "language": "typescript",
       "module_page": "TaskForm.test",
       "semantic_hash": "sha256:5f60877f3444ce7f36374b81ea7470b9f79dbc582da71220f517f9381de71210"
@@ -68106,10 +68120,10 @@
           }
         }
       },
-      "hash": "sha256:33309fdac1d050a84ffa5fcda0da2d08a8fc02b1b6ae4cb2e7c74881cdd97268",
+      "hash": "sha256:9d7ee9957ab177dbd30e4523cfaff338ae199cafbf45a888ad156ea61167d255",
       "language": "typescript",
       "module_page": "TaskForm",
-      "semantic_hash": "sha256:7dc78f5ee77bb65d4ca5dfce7227afe74465b79e9f17b19d232e6c6cc46fc06b"
+      "semantic_hash": "sha256:10d9656a37be5c82132d956df526430b27ae6827ca495dcd1fedffdc2cd7bb37"
     },
     "frontend/src/components/tasks/TaskList.test.tsx": {
       "entities": [],
@@ -68440,10 +68454,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:46f476a3cf322aeacfc6e5aabbe6497315066c1067f713e09c0558a57e4a7a3e",
+      "hash": "sha256:08349b0561b5ce987b9f447d71e98821f713c0a96a3dfa0b1e31982c326e497c",
       "language": "typescript",
       "module_page": "TaskWorkPanel.test",
-      "semantic_hash": "sha256:532c0e187699852b4ddff73449f4ce89f4aa6ce81f49165733ff37f56bf29150"
+      "semantic_hash": "sha256:ce5f7c83336c007c3b0958d216711f9230e04b813b34449cd9460c8030c708ac"
     },
     "frontend/src/components/tasks/TaskWorkPanel.tsx": {
       "entities": [],
@@ -68459,10 +68473,10 @@
           }
         }
       },
-      "hash": "sha256:61223134de4fed96f8a7f3e3cf81dec749738603ba5f849b9203b5374684a9cd",
+      "hash": "sha256:49ea3492283e305f2985eb6f3cedc0108d59f4f8e64b8bba58bdec1e77714595",
       "language": "typescript",
       "module_page": "TaskWorkPanel",
-      "semantic_hash": "sha256:6e8450e2e8daef1d4be8eec93aafd76b805bd0f2afa21558071289b34601053c"
+      "semantic_hash": "sha256:1e00110e4d66da54d1418fafdaeb37b2616fb4298e0ee1b6e088a9313ec7a6d2"
     },
     "frontend/src/components/tasks/TaskWorkflowGuide.tsx": {
       "entities": [],
@@ -68591,10 +68605,10 @@
           }
         }
       },
-      "hash": "sha256:fe5c672b873f7cc275d5b6ae3eb4e01110cf236af16af3dd1c5066b1c3a73124",
+      "hash": "sha256:f463cc8670e97db4001e723781dd58418138b16ab5177983378f2435b590dbf9",
       "language": "typescript",
       "module_page": "taskDraftStorage",
-      "semantic_hash": "sha256:f9a81b463d11886cf58d91615040a5d496e754edaf04cbd886a1492733c15219"
+      "semantic_hash": "sha256:6bb9a89fe13aa59c2ab768045772ff7c62668ecac74ee34ecf64cf34dfaec9a4"
     },
     "frontend/src/components/tasks/taskEditorContract.ts": {
       "entities": [
@@ -68736,6 +68750,7 @@
               "effort_days": "—",
               "effort_hours": "—",
               "estimate_provenance": "—",
+              "expected_revision": "—",
               "expected_version": "—",
               "external_key": "—",
               "is_deferred": "—",
@@ -68781,10 +68796,10 @@
           }
         }
       },
-      "hash": "sha256:875cacf459a5b98298d6fec0c5b498fd3c033ad87d6c581b37d59a05fc3388a9",
+      "hash": "sha256:d4eece9d4e20115f345e2dc252a25c7f7c27d26b18f3266a5816520211400b7f",
       "language": "typescript",
       "module_page": "taskEditorContract",
-      "semantic_hash": "sha256:05d3a273c0e2e25f9310e011b27551d9f71e166e066c8c59efdf0ae2d34bfb40"
+      "semantic_hash": "sha256:99660b2c384dd50618a309f8130d5641e9ab4966c28f4bfc4bed2e0b1d26f629"
     },
     "frontend/src/components/tasks/taskEditorSnapshot.ts": {
       "entities": [],
@@ -70538,10 +70553,10 @@
           }
         }
       },
-      "hash": "sha256:9dc1edab8489fc167930a59a5e9cd8cfd100474c13f6b7b1f84c193e2e4a8f0b",
+      "hash": "sha256:224cac45deaa0425d5a0a562cb577fb01cf7d472f7dd46a916da6fc1f0999e7a",
       "language": "typescript",
       "module_page": "usePlanningObservation",
-      "semantic_hash": "sha256:34c2daa7b2f5433632e08216ef9cd22d1f88ebe9d8191b599d7ded64eaa81bd2"
+      "semantic_hash": "sha256:92c2d3b4ce1a18cebb123c1912ff04061df86e6d5c340936d2c7bcba892be66e"
     },
     "frontend/src/features/workQueryFreshness.test.ts": {
       "entities": [],
@@ -73469,7 +73484,7 @@
           }
         }
       },
-      "hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+      "hash": "sha256:48c1f1d7054be8e186d12b4fc4beabd3c0d220ede3ce154f3f57f97b982e17c8",
       "language": "typescript",
       "module_page": "planningInputService",
       "semantic_hash": "sha256:721e57c075a28e4b9331aca50ba8976c7dec4c22b27293c0cc61bea46fcc231e"
@@ -73705,6 +73720,23 @@
       "module_page": "systemSettingsService",
       "semantic_hash": "sha256:f44d97691e171eef1916fc8de48534124ec138e685bc0c6033a4c4031796b65b"
     },
+    "frontend/src/services/taskDependencyVersions.test.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/services/taskDependencyVersions.test.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:f756ffac1659a887140c4cc9c514b302f1dff1c03f1fd6c4f819ac8b5eec319b",
+      "language": "typescript",
+      "module_page": "taskDependencyVersions.test",
+      "semantic_hash": "sha256:07e11ae6c5bc02d56d9cb26210e62478b3fb833a8bbd9d6beb0e5e895eb03576"
+    },
     "frontend/src/services/taskService.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -73717,7 +73749,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:ba9a3bc07b812b9d167d4850349b232e1083b03a9a0a166eae4df34e2b59c7bf",
+      "hash": "sha256:37c1f534cf2f7056f8f61545d14b799c1355719a17c5158514d6c65288e778df",
       "language": "typescript",
       "module_page": "taskService",
       "semantic_hash": "sha256:e58afdf40fa37dda4eb3fcecc5086c64702cc49816b433023d71214f466f71c7"
@@ -79413,6 +79445,7 @@
               "action": "—",
               "expected_claim_generation": "—",
               "expected_live_assignment_ids": "—",
+              "expected_revisions": "—",
               "expected_running_run_ids": "—",
               "expected_version": "—",
               "iteration_id": "—",
@@ -79734,10 +79767,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:833324ac936dcfc6458479e749615e92279812527873ac8c00570ecda29da73b",
+      "hash": "sha256:dced882f9ecfcf98da11185ad0c185fb293bd80d8cfc93852020349b166c3eb3",
       "language": "typescript",
       "module_page": "types_task",
-      "semantic_hash": "sha256:efaec67441de11bfa1d5dae90fc9b7567c499af78c6ec03574c2cbe47c4141c8"
+      "semantic_hash": "sha256:5821ef50e822082088636a1d46dda8b858b645bf563cc75c80237f56fd7b3700"
     },
     "frontend/src/types/team.ts": {
       "entities": [
@@ -81550,7 +81583,7 @@
           }
         }
       },
-      "hash": "sha256:bf06548a303699d693a6055a1eaf3988f098903892b3d41c87af0ee106ce578f",
+      "hash": "sha256:0e5526afa6e5108b4123fe45c3de6c9ee6c72ea7214d8b45895eed25c83a053b",
       "language": "python",
       "module_page": "build_agent_skills",
       "semantic_hash": "sha256:ba27f167dd04899c5304f7238926de3276fc2278ca772a9534b74ca312da3587"

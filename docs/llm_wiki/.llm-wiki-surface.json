@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 727,
+      "modules": 728,
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 2992
+    "total": 2993
   },
   "dependency_pages": {
     "count": 2,
@@ -42405,6 +42405,7 @@
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskContextSummary.md",
         "modules/TaskDependencySelector.md",
+        "modules/taskDependencyVersions.test.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/taskDraftStorage.md",
@@ -51109,10 +51110,10 @@
         "modules/IterationForm.md",
         "modules/IterationImportDialog.md",
         "modules/IterationList.md",
-        "modules/iterationService.md",
         "modules/planningInputService.md",
         "modules/ProjectForm.md",
         "modules/ProjectIterationsSection.md",
+        "modules/TaskWorkPanel.md",
         "modules/TeamForm.md",
         "modules/TeamList.md",
         "modules/VacationCsvImport.md",
@@ -61372,9 +61373,9 @@
         "modules/IterationList.md",
         "modules/IterationSelector.md",
         "modules/IterationsPage.md",
-        "modules/OverviewPage.md",
-        "modules/OverviewPage.test.md",
         "modules/ProjectIterationsSection.md",
+        "modules/TaskForm.md",
+        "modules/TaskWorkPanel.md",
         "modules/types_iteration.md",
         "modules/usePlanningNavigationSummary.md",
         "modules/usePlanningReadiness.md",
@@ -72929,6 +72930,20 @@
       "title": "TaskDependencySelector Module"
     },
     {
+      "canonical_path": "modules/taskDependencyVersions.test.md",
+      "id": "taskDependencyVersions.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskDependencyVersions.test",
+      "outgoing_internal_links": [
+        "modules/api.md",
+        "modules/taskDependencyVersions.test.md",
+        "modules/taskService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/taskDependencyVersions.test.ts",
+      "title": "taskDependencyVersions.test Module"
+    },
+    {
       "canonical_path": "modules/TaskDiscussion.md",
       "id": "TaskDiscussion",
       "kind": "modules",
@@ -73455,16 +73470,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/TaskWorkPanel",
       "outgoing_internal_links": [
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/Input.md",
-        "modules/iterationService.md",
-        "modules/QueryState.md",
-        "modules/TaskForm.md",
-        "modules/taskService.md",
-        "modules/TaskWorkPanel.md",
-        "modules/TaskWorkPanel.test.md",
-        "modules/types_task.md"
+        "modules/TaskWorkPanel.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskWorkPanel.tsx",
@@ -76143,6 +76149,8 @@
         "modules/PlanningInputBoundary.md",
         "modules/planningInputService.md",
         "modules/ProjectIterationsSection.md",
+        "modules/TaskForm.md",
+        "modules/TaskWorkPanel.md",
         "modules/TeamProfileManager.md",
         "modules/usePlanningObservation.md",
         "modules/VacationCsvImport.md"
@@ -88917,6 +88925,7 @@
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskContextSummary.md",
         "modules/TaskDependencySelector.md",
+        "modules/taskDependencyVersions.test.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/taskDraftStorage.md",
@@ -89655,6 +89664,7 @@
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskContextSummary.md",
         "modules/TaskDependencySelector.md",
+        "modules/taskDependencyVersions.test.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/taskDraftStorage.md",
@@ -89876,5 +89886,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:09d538b798d1adfbb1e761a9f3c7b50462f27d900e93e743c420006e98cbe936"
+  "source_hash": "sha256:f7b7264a9daadcb51600a544df99e541e8f2b9402a01d7312f6858d25108d651"
 }

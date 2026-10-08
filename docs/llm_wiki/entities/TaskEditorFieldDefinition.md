@@ -1,6 +1,6 @@
 # TaskEditorFieldDefinition
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:44`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:45`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)

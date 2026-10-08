@@ -17,6 +17,7 @@ _Auto-generated from `TaskCommand` in `frontend/src/types/task.ts`._
 | `expected_version` | `number` | Yes | — | — |
 | `reason` | `string` | Yes | — | — |
 | `iteration_id` | `number` | No | — | — |
+| `expected_revisions` | `Record<number, number>` | No | — | — |
 | `expected_claim_generation` | `number` | No | — | — |
 | `expected_running_run_ids` | `number[]` | No | — | — |
 | `expected_live_assignment_ids` | `number[]` | No | — | — |
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `action`, `expected_claim_generation`, `expected_live_assignment_ids`, `expected_running_run_ids`, `expected_version`, `iteration_id`, `reason` |
+| [types_task](../modules/types_task.md) | 0 | `action`, `expected_claim_generation`, `expected_live_assignment_ids`, `expected_revisions`, `expected_running_run_ids`, `expected_version`, `iteration_id`, `reason` |
 
 ### References
 

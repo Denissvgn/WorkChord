@@ -28,13 +28,13 @@ flowchart LR
     n3["frontend/src/components/iteration/IterationList.tsx"]
     n4["frontend/src/components/projects/ProjectForm.tsx"]
     n5["frontend/src/components/projects/ProjectIterationsSection.tsx"]
-    n6["frontend/src/components/team/TeamForm.tsx"]
-    n7["frontend/src/components/team/TeamList.tsx"]
-    n8["frontend/src/components/team/VacationCsvImport.tsx"]
-    n9["frontend/src/components/team/VacationManager.tsx"]
-    n10["frontend/src/services/calendarService.ts"]
-    n11["frontend/src/services/exportService.ts"]
-    n12["frontend/src/services/iterationService.ts"]
+    n6["frontend/src/components/tasks/TaskWorkPanel.tsx"]
+    n7["frontend/src/components/team/TeamForm.tsx"]
+    n8["frontend/src/components/team/TeamList.tsx"]
+    n9["frontend/src/components/team/VacationCsvImport.tsx"]
+    n10["frontend/src/components/team/VacationManager.tsx"]
+    n11["frontend/src/services/calendarService.ts"]
+    n12["frontend/src/services/exportService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -53,13 +53,13 @@ flowchart LR
     click n3 "../modules/IterationList.md"
     click n4 "../modules/ProjectForm.md"
     click n5 "../modules/ProjectIterationsSection.md"
-    click n6 "../modules/TeamForm.md"
-    click n7 "../modules/TeamList.md"
-    click n8 "../modules/VacationCsvImport.md"
-    click n9 "../modules/VacationManager.md"
-    click n10 "../modules/calendarService.md"
-    click n11 "../modules/exportService.md"
-    click n12 "../modules/iterationService.md"
+    click n6 "../modules/TaskWorkPanel.md"
+    click n7 "../modules/TeamForm.md"
+    click n8 "../modules/TeamList.md"
+    click n9 "../modules/VacationCsvImport.md"
+    click n10 "../modules/VacationManager.md"
+    click n11 "../modules/calendarService.md"
+    click n12 "../modules/exportService.md"
 ```
 
 ### Summary
@@ -77,12 +77,12 @@ flowchart LR
 | `IterationList` | import | [IterationList](../modules/IterationList.md) | — |
 | `ProjectForm` | import | [ProjectForm](../modules/ProjectForm.md) | — |
 | `ProjectIterationsSection` | import | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) | — |
+| `TaskWorkPanel` | import | [TaskWorkPanel](../modules/TaskWorkPanel.md) | — |
 | `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
 | `TeamList` | import | [TeamList](../modules/TeamList.md) | — |
 | `VacationCsvImport` | import | [VacationCsvImport](../modules/VacationCsvImport.md) | — |
 | `VacationManager` | import | [VacationManager](../modules/VacationManager.md) | — |
 | `calendarService` | import | [calendarService](../modules/calendarService.md) | — |
 | `exportService` | import | [exportService](../modules/exportService.md) | — |
-| `iterationService` | import | [iterationService](../modules/iterationService.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

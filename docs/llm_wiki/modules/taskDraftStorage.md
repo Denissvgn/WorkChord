@@ -6,6 +6,8 @@
 
 Private task draft records can retain a pending operation marker alongside the original editor values. Recovery does not silently advance expected task versions or retry writes.
 
+Private task draft values include the captured creation revision; malformed revisions are rejected on recovery. Pending-operation intent remains separately checkpointed.
+
 ## Imports
 
 | Source | Symbols |

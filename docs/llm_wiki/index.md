@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1519 | [Open section](#entities) |
-| Modules | 727 | [Open section](#modules) |
+| Modules | 728 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 547 | [Open section](#entry-point-flows) |
@@ -2084,6 +2084,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
 - [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
+- [taskDependencyVersions.test](modules/taskDependencyVersions.test.md) - `frontend/src/services/taskDependencyVersions.test.ts`
 - [taskDraftStorage](modules/taskDraftStorage.md) - `frontend/src/components/tasks/taskDraftStorage.ts`
 - [taskDraftStorage.test](modules/taskDraftStorage.test.md) - `frontend/src/components/tasks/taskDraftStorage.test.ts`
 - [taskEditorContract](modules/taskEditorContract.md) - `frontend/src/components/tasks/taskEditorContract.ts`

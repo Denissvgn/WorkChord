@@ -36,6 +36,7 @@ _Auto-generated from `TaskEditorValues` in `frontend/src/components/tasks/taskEd
 | `source_url` | `string \| null` | Yes | — | — |
 | `status` | `TaskStatus` | Yes | — | — |
 | `expected_version` | `number \| null` | Yes | — | — |
+| `expected_revision` | `number \| null` | Yes | — | — |
 
 ## Methods
 
@@ -75,7 +76,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [taskEditorContract](../modules/taskEditorContract.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `estimate_provenance`, `expected_version`, `external_key`, `is_deferred`, `is_optional`, `max_end_date` |
+| [taskEditorContract](../modules/taskEditorContract.md) | 0 | `assignee_id`, `brief`, `depends_on`, `description`, `effort_days`, `effort_hours`, `estimate_provenance`, `expected_revision`, `expected_version`, `external_key`, `is_deferred`, `is_optional` |
 
 ### References
 

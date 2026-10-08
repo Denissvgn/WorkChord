@@ -1,6 +1,6 @@
 # TaskEditorValidationIssue
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:194`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:196`
 **Kind:** Class
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
