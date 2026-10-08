@@ -113,6 +113,7 @@ class CalendarService:
             year=data.year,
             holidays=data.holidays,
             weekend_days=data.weekend_days,
+            short_days=data.short_days,
         )
         self.db.add(calendar)
         await commit_or_flush(self.db)

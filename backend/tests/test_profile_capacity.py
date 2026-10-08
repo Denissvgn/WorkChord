@@ -25,6 +25,35 @@ def test_partial_absence_update_cannot_clear_required_dates():
     assert VacationUpdate().model_dump(exclude_unset=True) == {}
 
 
+async def test_created_short_days_apply_once_to_fractional_shared_capacity(db_session):
+    from app.schemas.calendar import CalendarCreate
+    from app.services.calendar_service import CalendarService
+    from app.services.capacity_service import day_hours
+
+    friday, saturday, monday = date(2026, 10, 2), date(2026, 10, 3), date(2026, 10, 5)
+    calendar = await CalendarService(db_session).create(CalendarCreate(name="Declared reduced days", year=2026,
+        nominal_day_hours=8, holidays=[monday.isoformat()], short_days=[friday.isoformat(), saturday.isoformat(), monday.isoformat()]))
+    assert calendar.short_days == [friday.isoformat(), saturday.isoformat(), monday.isoformat()]
+    assert day_hours(calendar, friday) == 7
+    assert day_hours(calendar, saturday) == day_hours(calendar, monday) == 0
+    profile = TeamMemberProfile(display_name="Shared fractional owner")
+    first = TeamMember(name="First half", position="Engineer", profile=profile, availability_percent=50,
+        professionalism_coefficient=1.25, operational_utilization=20,
+        iteration=Iteration(name="First plan", start_date=friday, end_date=friday, calendar=calendar))
+    second = TeamMember(name="Second half", position="Engineer", profile=profile, availability_percent=50,
+        professionalism_coefficient=1.25, operational_utilization=20,
+        iteration=Iteration(name="Second plan", start_date=friday, end_date=friday, calendar=calendar))
+    db_session.add_all([first, second])
+    await db_session.commit()
+    assert (await TeamService(db_session).calculate_capacity(first.id)).hours == 3.5
+    assert (await TeamService(db_session).calculate_capacity(second.id)).hours == 3.5
+    projected = await CapacityService(db_session).projection(profile.id, friday, friday)
+    assert projected["days"][0]["allocated_hours"] == 7
+    await CapacityService(db_session).save_absence(profile.id, friday, friday)
+    assert (await TeamService(db_session).calculate_capacity(first.id)).hours == 0
+    assert (await TeamService(db_session).calculate_capacity(second.id)).hours == 0
+
+
 @pytest_asyncio.fixture(params=[pytest.param("sqlite", marks=pytest.mark.sqlite),
     pytest.param("postgresql", marks=[pytest.mark.postgresql, pytest.mark.allow_network])])
 async def db_session(request, sqlite_engine):
