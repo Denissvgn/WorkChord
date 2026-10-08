@@ -19,17 +19,17 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1515,
-      "flows": 544,
+      "flows": 545,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 707,
+      "modules": 710,
       "workflows": 182
     },
     "dependency_architecture": 2,
-    "total": 2963
+    "total": 2967
   },
   "dependency_pages": {
     "count": 2,
@@ -36508,6 +36508,110 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "export_acceptance_artifacts",
+        "source_path": "scripts/server/export_acceptance_artifacts.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 34,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 15,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 16,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 17,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 18,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 19,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 24,
+              "step": "main",
+              "target": "args.output.mkdir"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 25,
+              "step": "main",
+              "target": "(json.dumps({'schema_version': 1, 'run_outcome': 'failure', 'complete': False, 'status': 'export-validator-unavailable', 'accepted_as_production_evidence': False}, sort_keys=True, indent=2) + '\\n').encode"
+            },
+            {
+              "kind": "external_call",
+              "line": 25,
+              "step": "main",
+              "target": "json.dumps"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 28,
+              "step": "main",
+              "target": "(args.output / 'failure-summary.json').write_bytes"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 30,
+              "step": "main",
+              "target": "sha256(payload).hexdigest"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/server/export_acceptance_artifacts.py"
+          ],
+          "step_count": 18,
+          "truncated": false
+        }
+      },
+      "id": "process-export_acceptance_artifacts",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "finalize",
         "source_path": "scripts/load/finalize.py",
         "symbol": "main"
@@ -38792,24 +38896,8 @@
           "boundary_effects": [
             {
               "confidence": "unknown",
-              "kind": "filesystem_read",
-              "line": 174,
-              "step": "main",
-              "step_index": 1,
-              "target": "args.trusted_signer_public_key_file.read_text"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "filesystem_read",
-              "line": 177,
-              "step": "main",
-              "step_index": 1,
-              "target": "args.verify_receipt.read_text"
-            },
-            {
-              "confidence": "unknown",
               "kind": "output",
-              "line": 185,
+              "line": 180,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38817,7 +38905,39 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 196,
+              "line": 182,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 187,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.trusted_signer_public_key_file.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 190,
+              "step": "main",
+              "step_index": 1,
+              "target": "args.verify_receipt.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 198,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 209,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38834,22 +38954,6 @@
               "confidence": "unknown",
               "kind": "environment_read",
               "line": 37,
-              "step": "parse_args",
-              "step_index": 2,
-              "target": "os.getenv"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 41,
-              "step": "parse_args",
-              "step_index": 2,
-              "target": "os.getenv"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 45,
               "step": "parse_args",
               "step_index": 2,
               "target": "os.getenv"
@@ -38881,10 +38985,22 @@
               "target": "parser.add_argument"
             },
             {
+              "kind": "external_call",
+              "line": 41,
+              "step": "parse_args",
+              "target": "os.getenv"
+            },
+            {
               "kind": "unresolved_call",
               "line": 43,
               "step": "parse_args",
               "target": "parser.add_argument"
+            },
+            {
+              "kind": "external_call",
+              "line": 45,
+              "step": "parse_args",
+              "target": "os.getenv"
             },
             {
               "kind": "unresolved_call",
@@ -38907,12 +39023,13 @@
         "flow": {
           "modules_touched": [
             "backend/app/cli/server_acceptance.py",
+            "backend/app/autonomy/acceptance_artifacts.py",
             "backend/app/autonomy/server_acceptance.py",
             "backend/app/build_identity.py",
             "backend/app/autonomy/canonical.py",
             "backend/app/autonomy/contracts/postgresql/loader.py"
           ],
-          "step_count": 344,
+          "step_count": 440,
           "truncated": false
         }
       },
@@ -41550,6 +41667,7 @@
         "flows/process-create_agent_actor.md",
         "flows/process-cutover.md",
         "flows/process-database_migration.md",
+        "flows/process-export_acceptance_artifacts.md",
         "flows/process-finalize.md",
         "flows/process-generate_agent_team_contract.md",
         "flows/process-generate_agent_team_report_contract.md",
@@ -41600,6 +41718,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -41744,6 +41863,7 @@
         "modules/ExecutionUsagePanel.test.md",
         "modules/executionUsageService.md",
         "modules/export.md",
+        "modules/export_acceptance_artifacts.md",
         "modules/exportService.md",
         "modules/external_link_service.md",
         "modules/factories.md",
@@ -42145,6 +42265,7 @@
         "modules/TemplateLabelSettings.test.md",
         "modules/templates.md",
         "modules/templateService.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -45550,6 +45671,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/BlockedServerAcceptance",
       "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
         "modules/autonomy_canonical.md",
         "modules/autonomy_server_acceptance.md"
       ],
@@ -56503,6 +56625,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/ServerAcceptanceReceipt",
       "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
         "modules/autonomy_canonical.md",
         "modules/autonomy_server_acceptance.md",
         "modules/cli_server_acceptance.md",
@@ -63574,6 +63697,22 @@
       "title": "20261008_0009_project_identity Module"
     },
     {
+      "canonical_path": "modules/acceptance_artifacts.md",
+      "id": "acceptance_artifacts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/acceptance_artifacts",
+      "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
+        "modules/autonomy_server_acceptance.md",
+        "modules/cli_server_acceptance.md",
+        "modules/export_acceptance_artifacts.md",
+        "modules/test_acceptance_artifacts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/autonomy/acceptance_artifacts.py",
+      "title": "acceptance_artifacts Module"
+    },
+    {
       "canonical_path": "modules/accessibilityInvariants.md",
       "id": "accessibilityInvariants",
       "kind": "modules",
@@ -64703,11 +64842,13 @@
         "entities/ServerAcceptanceReceipt.md",
         "entities/TransitSignerAcceptance.md",
         "entities/ValkeyCasClient.md",
+        "modules/acceptance_artifacts.md",
         "modules/autonomy_canonical.md",
         "modules/autonomy_server_acceptance.md",
         "modules/build_identity.md",
         "modules/cli_server_acceptance.md",
         "modules/postgresql___init__.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_server_acceptance.md"
       ],
       "role": "semantic",
@@ -65106,9 +65247,11 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/cli_server_acceptance",
       "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
         "modules/autonomy_server_acceptance.md",
         "modules/build_identity.md",
         "modules/cli_server_acceptance.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_server_acceptance.md"
       ],
       "role": "semantic",
@@ -66121,6 +66264,19 @@
       "role": "semantic",
       "source_path": "backend/app/routers/export.py",
       "title": "export Module"
+    },
+    {
+      "canonical_path": "modules/export_acceptance_artifacts.md",
+      "id": "export_acceptance_artifacts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/export_acceptance_artifacts",
+      "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
+        "modules/export_acceptance_artifacts.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/server/export_acceptance_artifacts.py",
+      "title": "export_acceptance_artifacts Module"
     },
     {
       "canonical_path": "modules/exportService.md",
@@ -73268,6 +73424,22 @@
       "title": "templateService Module"
     },
     {
+      "canonical_path": "modules/test_acceptance_artifacts.md",
+      "id": "test_acceptance_artifacts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_acceptance_artifacts",
+      "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
+        "modules/autonomy_server_acceptance.md",
+        "modules/cli_server_acceptance.md",
+        "modules/test_acceptance_artifacts.md",
+        "modules/test_server_acceptance.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/autonomy/test_acceptance_artifacts.py",
+      "title": "test_acceptance_artifacts Module"
+    },
+    {
       "canonical_path": "modules/test_agent_model_catalog_api.md",
       "id": "test_agent_model_catalog_api",
       "kind": "modules",
@@ -74307,6 +74479,7 @@
         "modules/cli_server_acceptance.md",
         "modules/postgresql___init__.md",
         "modules/status.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_server_acceptance.md"
       ],
       "role": "semantic",
@@ -77487,13 +77660,13 @@
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/main",
       "outgoing_internal_links": [
-        "modules/cli_database_migration.md",
-        "modules/source.md",
-        "modules/transfer.md",
-        "modules/upgrade_service.md"
+        "modules/acceptance_artifacts.md",
+        "modules/autonomy_server_acceptance.md",
+        "modules/build_identity.md",
+        "modules/cli_server_acceptance.md"
       ],
       "role": "mixed",
-      "source_path": "backend/app/cli/database_migration.py",
+      "source_path": "backend/app/cli/server_acceptance.py",
       "title": "main"
     },
     {
@@ -87024,6 +87197,19 @@
       "title": "database_migration"
     },
     {
+      "canonical_path": "flows/process-export_acceptance_artifacts.md",
+      "id": "process-export_acceptance_artifacts",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-export_acceptance_artifacts",
+      "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
+        "modules/export_acceptance_artifacts.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/server/export_acceptance_artifacts.py",
+      "title": "export_acceptance_artifacts"
+    },
+    {
       "canonical_path": "flows/process-finalize.md",
       "id": "process-finalize",
       "kind": "flows",
@@ -87376,6 +87562,7 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/process-server_acceptance",
       "outgoing_internal_links": [
+        "modules/acceptance_artifacts.md",
         "modules/autonomy_canonical.md",
         "modules/autonomy_server_acceptance.md",
         "modules/build_identity.md",
@@ -87628,6 +87815,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -87772,6 +87960,7 @@
         "modules/ExecutionUsagePanel.test.md",
         "modules/executionUsageService.md",
         "modules/export.md",
+        "modules/export_acceptance_artifacts.md",
         "modules/exportService.md",
         "modules/external_link_service.md",
         "modules/factories.md",
@@ -88173,6 +88362,7 @@
         "modules/TemplateLabelSettings.test.md",
         "modules/templates.md",
         "modules/templateService.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -88346,6 +88536,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
         "modules/adminAccess.md",
@@ -88490,6 +88681,7 @@
         "modules/ExecutionUsagePanel.test.md",
         "modules/executionUsageService.md",
         "modules/export.md",
+        "modules/export_acceptance_artifacts.md",
         "modules/exportService.md",
         "modules/external_link_service.md",
         "modules/factories.md",
@@ -88891,6 +89083,7 @@
         "modules/TemplateLabelSettings.test.md",
         "modules/templates.md",
         "modules/templateService.md",
+        "modules/test_acceptance_artifacts.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -89050,5 +89243,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:b15f8734bf69e00d943d136d25700f722dbf57865ff30ee6f58af3f03fa2d193"
+  "source_hash": "sha256:f9a4dab95bcf526e044be93fcf98b8f04e428179d3dcfe921a63e65f7af69195"
 }

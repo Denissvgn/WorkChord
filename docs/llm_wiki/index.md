@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1515 | [Open section](#entities) |
-| Modules | 707 | [Open section](#modules) |
+| Modules | 710 | [Open section](#modules) |
 | Workflows | 182 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 544 | [Open section](#entry-point-flows) |
+| Entry-point flows | 545 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1740,6 +1740,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
+- [acceptance_artifacts](modules/acceptance_artifacts.md) - Bounded public receipt exports and independent offline archive verification.
 - [accessibilityInvariants](modules/accessibilityInvariants.md) - `frontend/src/test/accessibilityInvariants.ts`
 - [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) - `frontend/src/test/accessibilityInvariants.test.ts`
 - [adminAccess](modules/adminAccess.md) - `frontend/src/utils/adminAccess.ts`
@@ -1840,6 +1841,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [execution_usage_service](modules/execution_usage_service.md) - Bounded usage corrections, immutable pricing and scoped advisory totals.
 - [export](modules/export.md) - Export/Import API router.
 - [exportService](modules/exportService.md) - `frontend/src/services/exportService.ts`
+- [export_acceptance_artifacts](modules/export_acceptance_artifacts.md) - Export only bounded public acceptance evidence, including dependency failures.
 - [external_link_service](modules/external_link_service.md) - External link service.
 - [factories](modules/factories.md) - Deterministic mapped-model and representative legacy-database factories.
 - [faults](modules/faults.md) - Clock, concurrency, and deterministic fault-injection helpers.
@@ -2102,6 +2104,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [templateService](modules/templateService.md) - `frontend/src/services/templateService.ts`
 - [template_service](modules/template_service.md) - Service for reusable work templates and built-in defaults.
 - [templates](modules/templates.md) - Template API router.
+- [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) - Public exports retain exact signed bytes and reject secret or failed evidence.
 - [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.
 - [test_agent_routing_contract](modules/test_agent_routing_contract.md) - Focused contract tests for model-aware routing vocabulary and compatibility.
 - [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.
@@ -2397,7 +2400,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [load_source_manifest](workflows/load_source_manifest.md) - entry: `transfer._load_source_manifest`
 - [login](workflows/login.md) - entry: `identity.login`
 - [logout](workflows/logout.md) - entry: `identity.logout`
-- [main](workflows/main.md) - entry: `database_migration.main`
+- [main](workflows/main.md) - entry: `server_acceptance.main`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
 - [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
@@ -2958,6 +2961,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [process-create_agent_actor](flows/process-create_agent_actor.md) - entry: `main`
 - [process-cutover](flows/process-cutover.md) - entry: `main`
 - [process-database_migration](flows/process-database_migration.md) - entry: `main`
+- [process-export_acceptance_artifacts](flows/process-export_acceptance_artifacts.md) - entry: `main`
 - [process-finalize](flows/process-finalize.md) - entry: `main`
 - [process-generate_agent_team_contract](flows/process-generate_agent_team_contract.md) - entry: `main`
 - [process-generate_agent_team_report_contract](flows/process-generate_agent_team_report_contract.md) - entry: `main`

@@ -1763,3 +1763,30 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Surface policy updated: no
 
 Complete initial planning-input observations now share scope resolution and authorization with atomic writes, including explicit empty scopes and profile-local availability boundaries.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3411d65d368670a8fc1b4468c8a903459e9a0d7560402baf7d1f1ff46ad570a9`
+- Pages created: 4
+- Pages updated: 12
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2940
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Self-hosted acceptance now retains bounded public artifacts and supports independent offline archive verification, preserving exact signed identities and failure/non-production boundaries.

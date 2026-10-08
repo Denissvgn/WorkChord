@@ -193,6 +193,7 @@ flowchart TD
 | [triageService](modules/triageService.md) | 5 | 3 |
 | [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) | 5 | 0 |
 | [teamMemberLabels](modules/teamMemberLabels.md) | 5 | 2 |
+| [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) | 4 | 3 |
 | [build_identity](modules/build_identity.md) | 4 | 1 |
 | [transfer](modules/transfer.md) | 4 | 9 |
 | [database_runtime](modules/database_runtime.md) | 4 | 1 |
@@ -240,6 +241,7 @@ flowchart TD
 | [workMetrics](modules/workMetrics.md) | 4 | 0 |
 | [agentAccess](modules/agentAccess.md) | 4 | 0 |
 | [modelRouting](modules/modelRouting.md) | 4 | 1 |
+| [acceptance_artifacts](modules/acceptance_artifacts.md) | 3 | 1 |
 | [loader](modules/loader.md) | 3 | 1 |
 | [status](modules/status.md) | 3 | 3 |
 | [database_migration_closeout](modules/database_migration_closeout.md) | 3 | 2 |
@@ -297,7 +299,7 @@ flowchart TD
 | [visibleWork](modules/visibleWork.md) | 3 | 4 |
 | [leases](modules/leases.md) | 2 | 4 |
 | [preflight](modules/preflight.md) | 2 | 5 |
-| [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) | 2 | 3 |
+| [cli_server_acceptance](modules/cli_server_acceptance.md) | 2 | 3 |
 | [database_migration_canonical](modules/database_migration_canonical.md) | 2 | 2 |
 | [models_database_migration](modules/models_database_migration.md) | 2 | 2 |
 | [models_github](modules/models_github.md) | 2 | 2 |
@@ -408,7 +410,6 @@ flowchart TD
 | [providers](modules/providers.md) | 1 | 2 |
 | [cli_closeout](modules/cli_closeout.md) | 1 | 3 |
 | [cli_cutover](modules/cli_cutover.md) | 1 | 2 |
-| [cli_server_acceptance](modules/cli_server_acceptance.md) | 1 | 2 |
 | [upgrade](modules/upgrade.md) | 1 | 2 |
 | [worker](modules/worker.md) | 1 | 3 |
 | [agent_catalog](modules/agent_catalog.md) | 1 | 11 |
@@ -431,6 +432,7 @@ flowchart TD
 | [task_status_service](modules/task_status_service.md) | 1 | 9 |
 | [web_intake_service](modules/web_intake_service.md) | 1 | 4 |
 | [text_similarity](modules/text_similarity.md) | 1 | 0 |
+| [test_server_acceptance](modules/test_server_acceptance.md) | 1 | 6 |
 | [test_cutover_evidence](modules/test_cutover_evidence.md) | 1 | 2 |
 | [test_source_preflight](modules/test_source_preflight.md) | 1 | 4 |
 | [factories](modules/factories.md) | 1 | 0 |
@@ -522,9 +524,9 @@ flowchart TD
 | [task_recovery_service](modules/task_recovery_service.md) | 0 | 5 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |
 | [import_parser](modules/import_parser.md) | 0 | 1 |
+| [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) | 0 | 4 |
 | [test_autonomy_foundation](modules/test_autonomy_foundation.md) | 0 | 12 |
 | [test_autonomy_migrations](modules/test_autonomy_migrations.md) | 0 | 3 |
-| [test_server_acceptance](modules/test_server_acceptance.md) | 0 | 6 |
 | [test_work_package_service](modules/test_work_package_service.md) | 0 | 7 |
 | [conftest](modules/conftest.md) | 0 | 10 |
 | [test_database_configuration](modules/test_database_configuration.md) | 0 | 3 |
@@ -735,6 +737,7 @@ flowchart TD
 | [seal](modules/seal.md) | 0 | 1 |
 | [seed](modules/seed.md) | 0 | 2 |
 | [service_worksets](modules/service_worksets.md) | 0 | 15 |
+| [export_acceptance_artifacts](modules/export_acceptance_artifacts.md) | 0 | 1 |
 
 ## External dependencies
 

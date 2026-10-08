@@ -37,36 +37,48 @@ checkout ran with the bundled non-production service analogues.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/autonomy/canonical.py"]
-    n1["backend/app/autonomy/contracts/postgresql/__init__.py"]
-    n2["backend/app/autonomy/server_acceptance.py"]
-    n3["backend/app/build_identity.py"]
-    n4["backend/app/cli/server_acceptance.py"]
-    n5["backend/tests/autonomy/test_server_acceptance.py"]
-    n2 --> n0
-    n2 --> n1
-    n2 --> n3
-    n3 --> n0
-    n4 --> n2
-    n4 --> n3
+    n0["backend/app/autonomy/acceptance_artifacts.py"]
+    n1["backend/app/autonomy/canonical.py"]
+    n2["backend/app/autonomy/contracts/postgresql/__init__.py"]
+    n3["backend/app/autonomy/server_acceptance.py"]
+    n4["backend/app/build_identity.py"]
+    n5["backend/app/cli/server_acceptance.py"]
+    n6["backend/tests/autonomy/test_acceptance_artifacts.py"]
+    n7["backend/tests/autonomy/test_server_acceptance.py"]
+    n0 --> n3
+    n3 --> n1
+    n3 --> n2
+    n3 --> n4
+    n4 --> n1
     n5 --> n0
-    n5 --> n1
-    n5 --> n2
     n5 --> n3
     n5 --> n4
-    click n0 "../modules/autonomy_canonical.md"
-    click n1 "../modules/postgresql___init__.md"
-    click n2 "../modules/autonomy_server_acceptance.md"
-    click n3 "../modules/build_identity.md"
-    click n4 "../modules/cli_server_acceptance.md"
-    click n5 "../modules/test_server_acceptance.md"
+    n6 --> n0
+    n6 --> n3
+    n6 --> n5
+    n6 --> n7
+    n7 --> n1
+    n7 --> n2
+    n7 --> n3
+    n7 --> n4
+    n7 --> n5
+    click n0 "../modules/acceptance_artifacts.md"
+    click n1 "../modules/autonomy_canonical.md"
+    click n2 "../modules/postgresql___init__.md"
+    click n3 "../modules/autonomy_server_acceptance.md"
+    click n4 "../modules/build_identity.md"
+    click n5 "../modules/cli_server_acceptance.md"
+    click n6 "../modules/test_acceptance_artifacts.md"
+    click n7 "../modules/test_server_acceptance.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [acceptance_artifacts](../modules/acceptance_artifacts.md) |
 | Inbound | [cli_server_acceptance](../modules/cli_server_acceptance.md) |
+| Inbound | [test_acceptance_artifacts](../modules/test_acceptance_artifacts.md) |
 | Inbound | [test_server_acceptance](../modules/test_server_acceptance.md) |
 | Outbound | [autonomy_canonical](../modules/autonomy_canonical.md) |
 | Outbound | [postgresql___init__](../modules/postgresql___init__.md) |
