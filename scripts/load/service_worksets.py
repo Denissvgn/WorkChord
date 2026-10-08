@@ -1,8 +1,9 @@
 """Owned cross-dialect service measurements, separate from HTTP and certification."""
 import argparse, asyncio, json, os, time
+from contextvars import ContextVar
 from datetime import date
 from pathlib import Path
-from sqlalchemy import create_engine, text, select, func
+from sqlalchemy import event, inspect, text, select, func
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.database import Base
 from app.authority import Authority
@@ -19,13 +20,36 @@ from tests.support.delivery import seed_delivery_scenario
 from tests.support.database import assert_safe_test_database_url
 from scripts.load.local_baseline import summarize
 from scripts.load.common import atomic_write_json
+from scripts.load.source_binding import source_binding, verify_binding
+
+
+def validate_declaration(declaration):
+    if (declaration.get('concurrency') != [1, 5, 10]
+            or type(declaration.get('rounds')) is not int or declaration['rounds'] < 1
+            or declaration.get('datasets', {}).get('actual_task_count') != 3009):
+        raise ValueError('Declare 3009 service tasks, concurrency 1/5/10 and positive rounds')
 
 
 async def run(url, declaration):
+    validate_declaration(declaration)
+    binding = source_binding()
     assert_safe_test_database_url(url)
     engine=create_async_engine(url,pool_size=10,max_overflow=5) if url.startswith("postgresql") else create_async_engine(url)
+    queries = ContextVar('measurement_queries', default=None)
+    captured = []
+    @event.listens_for(engine.sync_engine, 'before_cursor_execute')
+    def before_query(conn, cursor, statement, parameters, context, executemany):
+        context.measurement_started = time.perf_counter()
+    @event.listens_for(engine.sync_engine, 'after_cursor_execute')
+    def after_query(conn, cursor, statement, parameters, context, executemany):
+        rows = queries.get()
+        if rows is not None:
+            rows.append((statement, parameters, (time.perf_counter() - context.measurement_started) * 1000))
     try:
-        async with engine.begin() as conn:await conn.run_sync(Base.metadata.create_all)
+        async with engine.begin() as conn:
+            if await conn.run_sync(lambda c: inspect(c).get_table_names()):
+                raise ValueError('Service measurement requires a fresh empty owned database')
+            await conn.run_sync(Base.metadata.create_all)
         factory=async_sessionmaker(engine,expire_on_commit=False)
         async with factory() as db:
             scenario=await seed_delivery_scenario(db)
@@ -48,14 +72,32 @@ async def run(url, declaration):
                             ("graph_bound",lambda:TaskService(db).get_by_iteration(1))]
                         for label,operation in operations:
                             before=time.perf_counter();status=200;code=None
+                            sql_rows = []; token = queries.set(sql_rows)
                             try:
                                 result=await operation()
                                 count=len(result.items) if hasattr(result,"items") and isinstance(result.items,list) else len(result) if isinstance(result,list) else 1
                             except CollectionLimitExceededError:
                                 status=413;code="collection_limit_exceeded";count=0
+                            finally:
+                                queries.reset(token)
+                            if label == 'scope_summary' and concurrency == 1 and not captured:
+                                captured.extend(sql_rows)
                             samples.append(dict(profile="service_reads_v1",client_kind="synthetic_service_authority",concurrency=concurrency,client=index,
-                                path=label,status=status,code=code,latency_ms=(time.perf_counter()-before)*1000,response_bytes=0,response_cardinality=count))
+                                path=label,status=status,code=code,latency_ms=(time.perf_counter()-before)*1000,response_bytes=0,response_cardinality=count,
+                                query_count=len(sql_rows), query_ms=sum(row[2] for row in sql_rows)))
             await asyncio.gather(*(client(i) for i in range(concurrency)))
+        plans = []
+        if engine.dialect.name == 'postgresql':
+            async with engine.connect() as conn:
+                for statement, parameters, elapsed in captured:
+                    if statement.lstrip().upper().startswith(('SELECT', 'WITH')):
+                        rows = await conn.exec_driver_sql('EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ' + statement, parameters)
+                        plans.append({'sql': statement, 'parameters': json.loads(json.dumps(parameters, default=str)), 'observed_query_ms': elapsed,
+                                      'plan': rows.scalar()})
+                configuration = dict((await conn.execute(text('SELECT name, setting FROM pg_settings WHERE name IN '
+                    "('server_version','shared_buffers','work_mem','max_connections','effective_cache_size')"))).all())
+        else:
+            configuration = {'dialect': engine.dialect.name}
         # Actual rollback followed by an independent session read.
         async with factory() as db:
             task=await db.get(Task,scenario.tasks["planned"]);title=task.title;task.title="Uncommitted contention probe";await db.flush();await db.rollback()
@@ -65,6 +107,12 @@ async def run(url, declaration):
             environment=dict(database_dialect=engine.dialect.name,identity_basis="synthetic_service_authority_not_HTTP_authentication",
                 resource_scope="owned disposable database",response_bytes_basis="not_measured_for_direct_service_calls",rollback_verified=rollback))
         result=summarize(raw,declaration)
+        if actual_tasks != 3009:
+            raise ValueError('Seeded task count differs from frozen workload')
+        result['raw_observations'] = raw
+        result['query_plans'] = plans
+        result['database_configuration'] = configuration
+        result['source_binding'] = {'before': binding, 'after': verify_binding(binding)}
         result["datasets"]={"actual_task_count":actual_tasks,"large_iteration_tasks":2501,"bounded_iteration_tasks":500,"initial_seed_tasks":8}
         return result
     finally:await engine.dispose()

@@ -62,3 +62,15 @@ def test_missing_or_mismatched_evidence_is_rejected():
 def test_nonfinite_observation_is_rejected():
     with pytest.raises(QualificationInputError):summarize(observation(latency=float("nan")),declaration())
     with pytest.raises(QualificationInputError):summarize(observation(latency=float("inf")),declaration())
+
+
+def test_frozen_operation_coverage_cannot_omit_slow_or_missing_reads():
+    spec = declaration() | {'operations': ['/bounded', '/summary'], 'rounds': 1}
+    with pytest.raises(QualificationInputError, match='sample counts'):
+        summarize(observation(), spec)
+    raw = observation()
+    raw['samples'].append(raw['samples'][0] | {'path': '/summary'})
+    assert summarize(raw, spec)['status'] == 'passed'
+    raw['samples'].append(raw['samples'][0])
+    with pytest.raises(QualificationInputError, match='sample counts'):
+        summarize(raw, spec)

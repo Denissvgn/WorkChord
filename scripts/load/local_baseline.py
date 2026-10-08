@@ -17,6 +17,7 @@ import subprocess
 from scripts.load.common import QualificationInputError, atomic_write_json, sha256_file, utc_now_text, authorized_base_url
 from scripts.load.result import latency_summary
 from scripts.load.run import Attempt, Recorder
+from scripts.load.source_binding import source_binding, verify_binding
 
 
 def summarize(raw, declaration):
@@ -46,6 +47,12 @@ def summarize(raw, declaration):
         groups[(sample["profile"], sample["concurrency"], sample["path"])].append((sample, expected))
     if not recorder.attempts:
         raise QualificationInputError("An empty run is not evidence")
+    required = declaration.get('operations')
+    if required is not None:
+        expected_counts = {(c, path): c * declaration['rounds'] for c in declaration['concurrency'] for path in required}
+        actual_counts = Counter((s['concurrency'], s['path']) for s in raw['samples'])
+        if actual_counts != expected_counts:
+            raise QualificationInputError('Observed operations/sample counts differ from frozen workload')
     distributions=[]
     failures=0
     for (profile, concurrency, path), rows in sorted(groups.items()):
@@ -131,6 +138,7 @@ def main():
     args=parser.parse_args()
     if args.output.exists():parser.error("Use a new output path; historical observations are immutable")
     try:
+        binding = source_binding()
         declaration=json.loads(args.declaration.read_text())
         if args.observations:
             raw=json.loads(args.observations.read_text())
@@ -138,6 +146,8 @@ def main():
             if not args.base_url or not args.nonce or not args.session_state:parser.error("Measurement requires base URL, nonce and private session state")
             raw=asyncio.run(measure(args,declaration))
         result=summarize(raw,declaration)
+        result['raw_observations'] = raw
+        result['source_binding'] = {'before': binding, 'after': verify_binding(binding)}
         result["source_revision"]=args.source_revision or subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
         result["source_sha256"]=args.source_sha256
         result["source_dirty_measurement_basis"]=bool(args.source_revision and args.source_sha256)
