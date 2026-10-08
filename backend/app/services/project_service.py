@@ -883,6 +883,8 @@ class ProjectService:
     @atomic_command
     async def delete(self, project_id: int, detach_tasks: bool = False) -> str:
         """Delete a project, optionally detaching linked tasks first."""
+        from app.authority import require_project
+        require_project(self.db, project_id, "manage")
         await lock_planning(self.db)
         project = await self.get_by_id(project_id)
         if not project:
@@ -900,6 +902,14 @@ class ProjectService:
         from app.commands import PlanningConflict
         from app.authority import internal_authority
         ids = list((await self.db.scalars(select(Task.id).where(Task.project_id == project_id))).all())
+        from app.models.agent import AgentRun, AgentTaskAssignment
+        with internal_authority(self.db):
+            assignment = await self.db.scalar(select(AgentTaskAssignment.id).where(
+                AgentTaskAssignment.task_id.in_(ids), AgentTaskAssignment.state.in_(["queued", "accepted"])).limit(1))
+            running = await self.db.scalar(select(AgentRun.id).where(AgentRun.task_id.in_(ids), AgentRun.status == "running").limit(1))
+            claimed = await self.db.scalar(select(Task.id).where(Task.id.in_(ids), Task.claimed_by.is_not(None)).limit(1))
+        if assignment is not None or running is not None or claimed is not None:
+            raise PlanningConflict("project_execution_in_use", "Recover queued or active execution before removing this project.")
         await DeliveryDependencyService(self.db).require_unreferenced(ids)
         with internal_authority(self.db):
             if await self.db.scalar(select(DeliveryDependency.id).where(DeliveryDependency.task_id.in_(ids)).limit(1)):
