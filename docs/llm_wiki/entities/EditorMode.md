@@ -1,6 +1,6 @@
 # EditorMode
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:32`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:36`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)

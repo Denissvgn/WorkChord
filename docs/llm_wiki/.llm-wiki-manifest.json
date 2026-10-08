@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:9ab67d54182f3530490c9dc92e886e2cfb1c62d9850a1787956c53a762413323",
-    "knowledge_index_hash": "sha256:8d5d3d840f61eee40607fd1e9b6c0cede7765042c8fac167e556a3ce9ac9f085",
-    "surface_index_hash": "sha256:0e1a70a48602815e591919c76a33a36a6baf62642e993f9e8e966e9f1ca9e595"
+    "evaluated_envelope_hash": "sha256:b652454547f16b553c14fd06cdd142e36e880cc5e720b6392f678340da9fbed5",
+    "knowledge_index_hash": "sha256:5de4d6d4c76ce7a703a2edccf85ca18400b3da9e2c24475d705ecf9482ec6fbb",
+    "surface_index_hash": "sha256:450a55e4667c3cdc6927ffee1c3ebf060cd49005471050cf429d1deff1e61859"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1400,7 +1400,7 @@
         "concept_observation_hash": "sha256:13904326890f1e9801e180088d415fae17d3c7f69e0030d21b59bd0ee0d61053",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+        "source_content_hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -1980,7 +1980,7 @@
         "concept_observation_hash": "sha256:6dd603267564578dca1899cfee2d971a2931237d71d426303076dc84c6f4d744",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+        "source_content_hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
         "source_path": "frontend/src/pages/CalendarPage.tsx"
       },
       "state": "known"
@@ -2320,7 +2320,7 @@
         "concept_observation_hash": "sha256:92e8541c9884c1fdbb170ff988040f038b28c629b3375dab1d200fa1cd50ad32",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+        "source_content_hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -2490,7 +2490,7 @@
         "concept_observation_hash": "sha256:fa308e2864806a82537664ad01282b07d4f46d6b81f019bb3e2dc0580715c93f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2dbb48e1082009a526da4ef62e77e68411408a56c2d7ac98b5d9e81989acb05a",
+        "source_content_hash": "sha256:7c5168bf317b53961f4ec429603c06aae466335afee932ec85e938b8e65114f1",
         "source_path": "frontend/src/components/team/ImportTeamModal.test.tsx"
       },
       "state": "known"
@@ -2760,7 +2760,7 @@
         "concept_observation_hash": "sha256:b43d9b81e0a3b955850cae44087cd8e4749b4b370b108e790e82ccd39262a5f3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+        "source_content_hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
         "source_path": "frontend/src/pages/CalendarPage.tsx"
       },
       "state": "known"
@@ -2780,7 +2780,7 @@
         "concept_observation_hash": "sha256:7b76f26164c89e80a395fae8dfcfaac23e94867137b1a0341a194b3497bb4e47",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+        "source_content_hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
         "source_path": "frontend/src/pages/CalendarPage.tsx"
       },
       "state": "known"
@@ -3110,7 +3110,7 @@
         "concept_observation_hash": "sha256:6206e2c0b6fc3dd1a7e283572ca788967077000483380f4aec554120420357f1",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -3120,7 +3120,7 @@
         "concept_observation_hash": "sha256:666c79e584cb362d68d37c30a14d2a3ef1fa6ab2e4aed8112ba3eaae37e6b70f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -3860,7 +3860,7 @@
         "concept_observation_hash": "sha256:0d83deb2beef958d3e4533e25da3fee280fe325c2976e017e83cc935d227d605",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+        "source_content_hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -3997,10 +3997,10 @@
     },
     "entities/ImportTeamModalProps.md": {
       "basis": {
-        "concept_observation_hash": "sha256:f845a3ebb833cfcf1809b2497a81834dcf2865a29793445651883eb8885bf442",
+        "concept_observation_hash": "sha256:46a853281bd67cf95c2fa15885cd41b638055e38ca11eac66fbcb8c6b12eb41e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:9ec52d6150bae3c8a0e10c1eeb0f2a902df59e1628f61bad3a26445a53776b8c",
+        "source_content_hash": "sha256:f92d0244091ba687b34e5ec00b2471f7c4cec7a3b05237ef0b4ab4f210085f1c",
         "source_path": "frontend/src/components/team/ImportTeamModal.tsx"
       },
       "state": "known"
@@ -4120,7 +4120,7 @@
         "concept_observation_hash": "sha256:55b6baea17c433616f344d0ac896c335363bc1f2e748cd25e45f255bb9df0c14",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:3aff14d270422c2cf08042348eb59ee24583f931be020eb015567768b030b874",
+        "source_content_hash": "sha256:7928959dad5c267ec0a9dc92210d9e5087a07bacf193f0f91d92f7873f6b7fdd",
         "source_path": "frontend/src/components/projects/ProjectIterationsSection.tsx"
       },
       "state": "known"
@@ -4130,7 +4130,7 @@
         "concept_observation_hash": "sha256:570295bf3f48439b58cea568441c153449f9794b367b67f8b927acc2d0b7923a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -4140,7 +4140,7 @@
         "concept_observation_hash": "sha256:08921cf72f08e7848f8c0f3fa9f182d0e7dc60e9848ba362a6bbc6329888216e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:eeb08185b9ed3c092eda6fa3d1f13e6749cb853d6a0428cc015726c3844be598",
+        "source_content_hash": "sha256:ecbe09d677fe479c0e47d89711e2bd37e8dda8c9f196cc35f56050b12c8d8b5a",
         "source_path": "frontend/src/components/iteration/IterationList.tsx"
       },
       "state": "known"
@@ -4200,17 +4200,17 @@
         "concept_observation_hash": "sha256:e6bbc8e22944ee82d8367827730656d9433907878893c1b93584f8977b760673",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
+        "source_content_hash": "sha256:e2ebfaa1cdc43d683751ba011d1f9c41f722d00db50e18c2d01226c31b074ee9",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
     },
     "entities/IterationService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d470fc088ace2e0b4587e9f3066e3fdbfd0827c3d1f2a46abd41523afa133578",
+        "concept_observation_hash": "sha256:e61454c634a5bdcc3bb8df6f1fe075f36c547d6adbebb8220ef5ad4d41fbc0d2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
+        "source_content_hash": "sha256:e2ebfaa1cdc43d683751ba011d1f9c41f722d00db50e18c2d01226c31b074ee9",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
@@ -4750,7 +4750,7 @@
         "concept_observation_hash": "sha256:e653bb11dc172218ab47c779ae72461e92c53abf50cf21f84f404abc4b666c70",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -4760,7 +4760,7 @@
         "concept_observation_hash": "sha256:b8e7d76f0e44315c7f7bf1dccff9202dc41eeae3c6ddd0473b924d9fa7c8833d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -5130,7 +5130,7 @@
         "concept_observation_hash": "sha256:43881e1272f610ca60a3a4ea53464397a11cdc1e14326aa04326b5e11fccf46f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:49ad9d8751f0fc4fa876a1c732ff81239173f8ee78e38cb12319d3d6748747b4",
+        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -5140,7 +5140,7 @@
         "concept_observation_hash": "sha256:3660bf13a0f105e6cee69c4bb06e3e16225cf55f98aecc3d9d6cd188157e9e20",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:49ad9d8751f0fc4fa876a1c732ff81239173f8ee78e38cb12319d3d6748747b4",
+        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -5500,7 +5500,7 @@
         "concept_observation_hash": "sha256:c0b56ec6cee02887a249b0cf88fc6deb59cb472d6679031e7f090f89c8654e87",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+        "source_content_hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -5510,7 +5510,7 @@
         "concept_observation_hash": "sha256:c65226f86e64a91c907afecd35f9ac7dd49bb9f4c3fa3343768c6e5f6a897a72",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7d198af53c60ad010911db779d0a0db1175df110c0ea5a8e0a4b25c1163af2b",
+        "source_content_hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
         "source_path": "backend/app/schemas/planning_inputs.py"
       },
       "state": "known"
@@ -5520,7 +5520,7 @@
         "concept_observation_hash": "sha256:9f2f08500791d2e41fac967cfd59b949b5d17838de84995835b2007cfd29686e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:49ad9d8751f0fc4fa876a1c732ff81239173f8ee78e38cb12319d3d6748747b4",
+        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
@@ -5530,8 +5530,18 @@
         "concept_observation_hash": "sha256:131dc232e5953f09d2a1a6ba34a6c170e11a076989b13dec72ac66efb501e5ca",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7d198af53c60ad010911db779d0a0db1175df110c0ea5a8e0a4b25c1163af2b",
+        "source_content_hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
         "source_path": "backend/app/schemas/planning_inputs.py"
+      },
+      "state": "known"
+    },
+    "entities/PlanningInputUnavailable.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0c5b01f4fe5a8a0ce48df8a1e93d252670439616bd9dfccde83b5d61f06ac247",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:ddcf5faa34a0c50e44ce4807d6462bcac10bbda454fcc2c49feb6ac35ce5aa96",
+        "source_path": "backend/app/services/planning_input_context.py"
       },
       "state": "known"
     },
@@ -5820,7 +5830,7 @@
         "concept_observation_hash": "sha256:0da8694b470a6dc08556c5ec10c5f7f154ff9a427d088c3b8ad5571636341608",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:1c533f851e182962f7af653a9cffc506b1d6276814046eb5df6a8b62e3bddc49",
+        "source_content_hash": "sha256:92536c5f4a09b854a16b7c7a484dc94be5012a23336499837e928244f655bd0d",
         "source_path": "frontend/src/components/projects/ProjectForm.tsx"
       },
       "state": "known"
@@ -5840,7 +5850,7 @@
         "concept_observation_hash": "sha256:bfc8b4121f01f47d9af25490d11309c56550698c21107013a5b2e60646335327",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:3aff14d270422c2cf08042348eb59ee24583f931be020eb015567768b030b874",
+        "source_content_hash": "sha256:7928959dad5c267ec0a9dc92210d9e5087a07bacf193f0f91d92f7873f6b7fdd",
         "source_path": "frontend/src/components/projects/ProjectIterationsSection.tsx"
       },
       "state": "known"
@@ -5957,10 +5967,10 @@
     },
     "entities/ProjectService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:be21eef80d31f32c8c08012afa6c5e6020ff1bad9023f3cd95b23ced14c2977b",
+        "concept_observation_hash": "sha256:b09a613b8ac8cacce1c3f3667dcb3b26c4921a9e401dfd1c43806b632feee95a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:dad0a624bd3687051bda20ed7880a3e3dac747197c719cd1da69f32c31c11972",
+        "source_content_hash": "sha256:96c35e0141085b65331b287ec855cee295cfe2062d7bd1bb45eefdb31d8250b5",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -6000,7 +6010,7 @@
         "concept_observation_hash": "sha256:b1d3bc87d071bb5f07b077035708e22770648612b5054ef0df74ec98f093a892",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -6010,7 +6020,7 @@
         "concept_observation_hash": "sha256:76ef5d4e36dacf0f0f45e9c0ee9fd72fa3fc30a978dbea933184a902e73b4a57",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -6020,7 +6030,7 @@
         "concept_observation_hash": "sha256:b79dc7fe92d68a416e98be6218ed270bcaaa2bef63c4e1bafbe1f0aa571e94cd",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
@@ -7310,7 +7320,7 @@
         "concept_observation_hash": "sha256:54a5cf63de7cfc879c18c8fb8c154d871da8baba24a3b3041ea86cd12c9b586f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -7630,7 +7640,7 @@
         "concept_observation_hash": "sha256:2245ce010477736a463ae531fcafa0d0fb352133c2974e8e2c7af3aa03e170f3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -7970,7 +7980,7 @@
         "concept_observation_hash": "sha256:b7ccfa7748f0baede94e74ab88e8ccb1b16de2dd459a2420c1cc1e6efc28ddfb",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
@@ -9020,7 +9030,7 @@
         "concept_observation_hash": "sha256:2f31f8cee25e034618ab1f951682eb851232161d42d7b9e54bde08db5e90e2e5",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:8b958450ac0ef00931904a6e1e123d868f6a6d503dd9136c4ba7d076505f383e",
+        "source_content_hash": "sha256:44ea68f7deffff2277f48a3cb86c3921c4810e2851d9a6b6ce03f336fabda76e",
         "source_path": "frontend/src/components/team/TeamForm.tsx"
       },
       "state": "known"
@@ -9050,7 +9060,7 @@
         "concept_observation_hash": "sha256:d860eaa748d5b88d7bbcd83f8eb0852b8188bb40f3121a55c3bf389673f183e3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:21320aa3350b92f89f3ba015a38601fdc7f19bdd439be6f7d26afe0da0e5e6a3",
+        "source_content_hash": "sha256:316c7ff2ec09e3e17212880a137920fe046c64d7d883da91463d236810ca58f7",
         "source_path": "frontend/src/components/team/TeamList.tsx"
       },
       "state": "known"
@@ -9160,7 +9170,7 @@
         "concept_observation_hash": "sha256:900ee0ee2b3b1f7a2b90e0bddd2b1186f4419c6694ee63b3cbf67f6cfa41902b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:bc6b6f961628d34e51f37496fb1501a59138f6cbebedcb4f0207734fa012168b",
+        "source_content_hash": "sha256:f25fbd87fb1b636f1d1a7ee44c925e858f4d6eb9e8d597cc173f836849756400",
         "source_path": "frontend/src/pages/TeamPage.tsx"
       },
       "state": "known"
@@ -9177,10 +9187,10 @@
     },
     "entities/TeamService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:8766675ff72a876ca0351e2b1149b4238538af1f412f61fff7fa116f2efe1674",
+        "concept_observation_hash": "sha256:26df4fbf51e1c95002a643991c92b88c2a4eb5076884ce6ef8c414571d18d900",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:9921c666e767ae354a06792af168cac00f33511e6dad1f22d33ba6f40e78ec37",
+        "source_content_hash": "sha256:92060f845ac08bb25eacc73492f37b83a3af3efd4aeb103c1cc81a4b15fea7e8",
         "source_path": "backend/app/services/team_service.py"
       },
       "state": "known"
@@ -9760,7 +9770,7 @@
         "concept_observation_hash": "sha256:6b946576425b4db5de3796ae99d93061e200538ee48981edc98a589d4288c5e9",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:04e8e476f1a7c511b42d21d656e8e49ab21e5ee86f680fad2a5a002b632fc436",
+        "source_content_hash": "sha256:a42b5296ba37f2e256b6590d2c47589f9ec7ad47390550a775937929c35fd54a",
         "source_path": "frontend/src/components/team/VacationManager.tsx"
       },
       "state": "known"
@@ -9780,7 +9790,7 @@
         "concept_observation_hash": "sha256:23c4bfb508e2a0a612ed1821e0931d98292747eee3868e2855fe75e5ae1877f4",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+        "source_content_hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
         "source_path": "frontend/src/pages/CalendarPage.tsx"
       },
       "state": "known"
@@ -10170,7 +10180,7 @@
         "concept_observation_hash": "sha256:b7b5b8c2b6160843297d491012b8668c309948cf7a22bc5f85fccd8b629d8b68",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f7d198af53c60ad010911db779d0a0db1175df110c0ea5a8e0a4b25c1163af2b",
+        "source_content_hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
         "source_path": "backend/app/schemas/planning_inputs.py"
       },
       "state": "known"
@@ -11205,6 +11215,26 @@
       },
       "state": "known"
     },
+    "entities/planningInputService_MemberPlanningIntent.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:fafe3b17a48155b2314d50908fb3ba71e277e894622a2813526533b15c3ec823",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
+        "source_path": "frontend/src/services/planningInputService.ts"
+      },
+      "state": "known"
+    },
+    "entities/planning_inputs_MemberPlanningIntent.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:bfd75dbdc45b3ecb0355a4aa2121dd920950a557aafa81b0bf9364bcd8a02ae5",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
+        "source_path": "backend/app/schemas/planning_inputs.py"
+      },
+      "state": "known"
+    },
     "entities/requestSource_RequestSource.md": {
       "basis": {
         "concept_observation_hash": "sha256:2f0f3f7690976da600eae45a8ea1409d4680d2b077d9735930829c8c462fc1a0",
@@ -11290,7 +11320,7 @@
         "concept_observation_hash": "sha256:01abae26fb8ec81f064379ebbb82813fd169d422ddfc7072d55424fbd112d7df",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:88691380f16c365c83f1fba88f3853b6b142466087aea4e69c9158bb2589274e",
+        "source_content_hash": "sha256:e03e52821f41f68aaa98e5d5278f3c872ffcc5e9d6c596587b99c2aa6154a2e5",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -15517,10 +15547,10 @@
     },
     "modules/CalendarPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d0c5737ab5134fdee966d9c78c9633aa3b5628d93048424bd934e60596caaf19",
+        "concept_observation_hash": "sha256:73a75cf409a3c2752139a5aeab35ae3c57d388c039cf5f0bc2d21038891d2118",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+        "source_content_hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
         "source_path": "frontend/src/pages/CalendarPage.tsx"
       },
       "state": "known"
@@ -15837,20 +15867,20 @@
     },
     "modules/ImportTeamModal.md": {
       "basis": {
-        "concept_observation_hash": "sha256:7b2d7348c580b0c10cf8ebc99a3c714711675c042236c8734d443b2349adccdd",
+        "concept_observation_hash": "sha256:456d319f4ca6e2773da408061ada3dcc3ff64258bdfe5a6548436dff3c6afc3c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:9ec52d6150bae3c8a0e10c1eeb0f2a902df59e1628f61bad3a26445a53776b8c",
+        "source_content_hash": "sha256:f92d0244091ba687b34e5ec00b2471f7c4cec7a3b05237ef0b4ab4f210085f1c",
         "source_path": "frontend/src/components/team/ImportTeamModal.tsx"
       },
       "state": "known"
     },
     "modules/ImportTeamModal.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:9703c7f65c15739396d44614fa7907848d1adffa58befa0983a776aae51b450b",
+        "concept_observation_hash": "sha256:310856ffbb2ae7d5c37a52666bdf2c3819c5f9d4f1e418d6d06c29b1f7b2a89e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:2dbb48e1082009a526da4ef62e77e68411408a56c2d7ac98b5d9e81989acb05a",
+        "source_content_hash": "sha256:7c5168bf317b53961f4ec429603c06aae466335afee932ec85e938b8e65114f1",
         "source_path": "frontend/src/components/team/ImportTeamModal.test.tsx"
       },
       "state": "known"
@@ -15917,30 +15947,40 @@
     },
     "modules/IterationForm.md": {
       "basis": {
-        "concept_observation_hash": "sha256:27666d26ef09660443c2362f299ab70190730fc7e2a9832251a754d025ecb276",
+        "concept_observation_hash": "sha256:18f728486a493b9ce4f4cce88a22d6e0227db28765a3c79b30b90957bf424a38",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+        "source_content_hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
         "source_path": "frontend/src/components/iteration/IterationForm.tsx"
       },
       "state": "known"
     },
     "modules/IterationForm.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:64ad5b7f33ffeb54e39a0a2a37aa1d89489fc23cb92a2f0e6a072c516a66a10d",
+        "concept_observation_hash": "sha256:305fc36663f30d0973223687fdaa1560fa3256ce7e4424c1b36e3da6d41d489f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:44fbd3f8c8536a49b4b33d2fb4cce0c4a1b6fdc525fa2dc7023b138244e0786a",
+        "source_content_hash": "sha256:170a0ef038191fedfd12cf31a6a24e359207c97667a205dac3fc3fdc2de298a8",
         "source_path": "frontend/src/components/iteration/IterationForm.test.tsx"
+      },
+      "state": "known"
+    },
+    "modules/IterationImportDialog.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f6b9c47b1ae686ce7fade1c844c639e637ea6f33adc596f9b43ec4d9f938c86c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:1b2e8c906c82ce21d28c91fced306b2d67a004684a3f5fab85556bce60d7c9dd",
+        "source_path": "frontend/src/components/iteration/IterationImportDialog.tsx"
       },
       "state": "known"
     },
     "modules/IterationList.md": {
       "basis": {
-        "concept_observation_hash": "sha256:809266ff1a3360281136d2206aa943ce04c5472ef67195a944e6d72e7b407c83",
+        "concept_observation_hash": "sha256:009266b01c4464ded02caeeed4e42ba142d993fa3eb6ea42f373db6a0f9f2113",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:eeb08185b9ed3c092eda6fa3d1f13e6749cb853d6a0428cc015726c3844be598",
+        "source_content_hash": "sha256:ecbe09d677fe479c0e47d89711e2bd37e8dda8c9f196cc35f56050b12c8d8b5a",
         "source_path": "frontend/src/components/iteration/IterationList.tsx"
       },
       "state": "known"
@@ -15957,10 +15997,10 @@
     },
     "modules/IterationsPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b5a28fbc7368f9afac787ac1c0ed2acdcbc65aa6fc72bb3bb84d0b00eb1c05f7",
+        "concept_observation_hash": "sha256:ce7214e99ee3280232966191bb8b833f409a3dc75bac0582c97d02d5e4744810",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d5f150950b5da094b2561f466655244faabdeff67b7ccb48292de517dde0ca02",
+        "source_content_hash": "sha256:a432019927a35196c828bf3ed0acda5bba5bf799e51e16c02c066e02df6a5c7c",
         "source_path": "frontend/src/pages/IterationsPage.tsx"
       },
       "state": "known"
@@ -16325,6 +16365,26 @@
       },
       "state": "known"
     },
+    "modules/PlanningInputBoundary.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:52dde10ae98b5251c53d7bbe7a4cc750e8a53d25710e3d8581eb32d278071836",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:91bf93e3479851ddb841a191a2904073893a2408d084ab592aa161649a0e8e33",
+        "source_path": "frontend/src/components/planning/PlanningInputBoundary.tsx"
+      },
+      "state": "known"
+    },
+    "modules/PlanningInputBoundary.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b670d7d5fed190807324f690b824dbd936dbb6791528db8018847b65642c9b03",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:d1fcdbf8096498cad1c15601bdd349086696034b6de8809cf9a784c211638bc3",
+        "source_path": "frontend/src/components/planning/PlanningInputBoundary.test.tsx"
+      },
+      "state": "known"
+    },
     "modules/PlanningWorkbenchFrame.md": {
       "basis": {
         "concept_observation_hash": "sha256:d4f2be7780e17a5b2b7f661a78951f321822901309059be150eee9888ab45d7a",
@@ -16367,30 +16427,30 @@
     },
     "modules/ProjectDetailPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d0ebb652c2cd0234e4cff6ef4364a0ba5dc451f1323fa64dc4e6b763db28657f",
+        "concept_observation_hash": "sha256:05c4d16dc0d0a53449b38f60cb2c2ec17bed6aa7972ac7a3f202983f6e591cbb",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+        "source_content_hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
         "source_path": "frontend/src/pages/ProjectDetailPage.tsx"
       },
       "state": "known"
     },
     "modules/ProjectForm.md": {
       "basis": {
-        "concept_observation_hash": "sha256:739d67419f0d820500398e52cb08f1c3c86e227e8ac4e36d6657145e18a26118",
+        "concept_observation_hash": "sha256:05b6b3495d56a44facf05554865a412b8b6b28c22a3b76a72d0c336e4a0a8c1c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:1c533f851e182962f7af653a9cffc506b1d6276814046eb5df6a8b62e3bddc49",
+        "source_content_hash": "sha256:92536c5f4a09b854a16b7c7a484dc94be5012a23336499837e928244f655bd0d",
         "source_path": "frontend/src/components/projects/ProjectForm.tsx"
       },
       "state": "known"
     },
     "modules/ProjectIterationsSection.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e71b3aa09b0fbef37951ea9e1357fc8c10e74230cf48a81c537f471ed8ed53b9",
+        "concept_observation_hash": "sha256:8964951ec9ac32c49eee758ceb3f9c551b78d19f4df91a9b395116cf4b3555e6",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:3aff14d270422c2cf08042348eb59ee24583f931be020eb015567768b030b874",
+        "source_content_hash": "sha256:7928959dad5c267ec0a9dc92210d9e5087a07bacf193f0f91d92f7873f6b7fdd",
         "source_path": "frontend/src/components/projects/ProjectIterationsSection.tsx"
       },
       "state": "known"
@@ -17037,30 +17097,30 @@
     },
     "modules/TeamForm.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b39828d7611106ebac362e924d530ed0d90ca2071d927d32f05b4590758fdfe4",
+        "concept_observation_hash": "sha256:6c5a9b6808d4c8032be194ed6699eb6931f74df94d39da792f45da281d7aa18c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:8b958450ac0ef00931904a6e1e123d868f6a6d503dd9136c4ba7d076505f383e",
+        "source_content_hash": "sha256:44ea68f7deffff2277f48a3cb86c3921c4810e2851d9a6b6ce03f336fabda76e",
         "source_path": "frontend/src/components/team/TeamForm.tsx"
       },
       "state": "known"
     },
     "modules/TeamForm.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:910ae5ba22bb4ffcc52c7624ae06197820112740c6e8038187b6464fa6660aee",
+        "concept_observation_hash": "sha256:dad0a92e32dbbcde53943a7ddfd0f48f369c49253c7fdd7ea85625ba55d62112",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:b48f708e27f02bbabfc027a23e4827a22d038b4bbfc07a30aaf2247610230ff5",
+        "source_content_hash": "sha256:881b18b07876788e79e84f5bc1c46e9b6caed80fab91d529996766ded71404cd",
         "source_path": "frontend/src/components/team/TeamForm.test.tsx"
       },
       "state": "known"
     },
     "modules/TeamList.md": {
       "basis": {
-        "concept_observation_hash": "sha256:a96f3c883c3cc8f18382e34c6f054409c536e5f5a054e5dedac71920ff8529c4",
+        "concept_observation_hash": "sha256:daa232e5e13d62c4bb61e5d41f7bcb6a38f915ad142bb8aae215c82f84216a7b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:21320aa3350b92f89f3ba015a38601fdc7f19bdd439be6f7d26afe0da0e5e6a3",
+        "source_content_hash": "sha256:316c7ff2ec09e3e17212880a137920fe046c64d7d883da91463d236810ca58f7",
         "source_path": "frontend/src/components/team/TeamList.tsx"
       },
       "state": "known"
@@ -17070,7 +17130,7 @@
         "concept_observation_hash": "sha256:c6170f8316fbc0676487a49e9c7b2a944dbf9df0178dc2ec7d19dc05b5b4477e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:bc6b6f961628d34e51f37496fb1501a59138f6cbebedcb4f0207734fa012168b",
+        "source_content_hash": "sha256:f25fbd87fb1b636f1d1a7ee44c925e858f4d6eb9e8d597cc173f836849756400",
         "source_path": "frontend/src/pages/TeamPage.tsx"
       },
       "state": "known"
@@ -17195,12 +17255,22 @@
       },
       "state": "known"
     },
-    "modules/VacationManager.md": {
+    "modules/VacationCsvImport.md": {
       "basis": {
-        "concept_observation_hash": "sha256:174c7032fcae497b9abdb94264d470d4c443a948b10928c8db4b9ad7b65e5fc9",
+        "concept_observation_hash": "sha256:da7a162f6dc4ea42873ab75a437b797f418468d1e15ead114c4d42d6fa3778dc",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:04e8e476f1a7c511b42d21d656e8e49ab21e5ee86f680fad2a5a002b632fc436",
+        "source_content_hash": "sha256:e858820686c1a9e715e0525a17d2205f465a8cdfff3262212b786d0317bfe341",
+        "source_path": "frontend/src/components/team/VacationCsvImport.tsx"
+      },
+      "state": "known"
+    },
+    "modules/VacationManager.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d5e14d2cdd435d6e594816349df9b430d4bb5855853bbe994911893a395a705e",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:a42b5296ba37f2e256b6590d2c47589f9ec7ad47390550a775937929c35fd54a",
         "source_path": "frontend/src/components/team/VacationManager.tsx"
       },
       "state": "known"
@@ -17567,10 +17637,10 @@
     },
     "modules/app_main.md": {
       "basis": {
-        "concept_observation_hash": "sha256:489d0272aa1c4d80b897321e68b5a11a57af77b547b1abf67b19a582071c6e3a",
+        "concept_observation_hash": "sha256:755e86afe1cb41deac328f623371a33cdd495567204fd211f87d38adedf10eaf",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:023ce2e349cc633f8de7ae7fc505602d8699652e4720185a21f27e5d65e58940",
+        "source_content_hash": "sha256:8c9aa55b7288db2458c106de44d5b0fa838560d6abcade97fbb1cf0585ca254c",
         "source_path": "backend/app/main.py"
       },
       "state": "known"
@@ -17857,10 +17927,10 @@
     },
     "modules/commands.md": {
       "basis": {
-        "concept_observation_hash": "sha256:bf8a5eecc711baa45eea4c5e822e540d72237925b680cdfd8cb79e8b9f92157b",
+        "concept_observation_hash": "sha256:685264a01103f65f353e08250728c0f6ea5f2b848d52e38580f0816f6476e881",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+        "source_content_hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
         "source_path": "backend/app/commands.py"
       },
       "state": "known"
@@ -18227,20 +18297,20 @@
     },
     "modules/export.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e707304ba19e8904b56154891e19e03a591ebf40f2078da6115226120e8ff6e0",
+        "concept_observation_hash": "sha256:7b5f2383d0bb9660933aaf095bad9fec1aa98f249e4a240e1b25b965063f34af",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5f068eb95c433d743101e2705f59997fa28f9f5355be1386129702956878d84a",
+        "source_content_hash": "sha256:6004b3aaaa7dfc633d6239216ed9801a5ed701e072c2dd73bdf349dcfb7c2a77",
         "source_path": "backend/app/routers/export.py"
       },
       "state": "known"
     },
     "modules/exportService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d70d276258f550033b0d287b9c1942526aca7f37416e403f9c0d1f65d4d06149",
+        "concept_observation_hash": "sha256:c3cc4140bdde8b74e07b6db748e570dda912d993dabba60891b6a64ebb3e289a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:b7140c9ff2b77f719ecfa24edd9cbcae7344dedc1d30ab6f9a40a87b7ce6fe81",
+        "source_content_hash": "sha256:c87354fc681dcf3302ac70774f8fa1485e47f14a601dc8ffeb9ca01ea29867e7",
         "source_path": "frontend/src/services/exportService.ts"
       },
       "state": "known"
@@ -18360,7 +18430,7 @@
         "concept_observation_hash": "sha256:2fd803ef587af2f91da8fdba24e7b7275c89d4aae0bcfda0b7d092601bf78d6c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1fb7524a232294ee7e91c88f0ecdbfdb7c4d7bea48c45384ffab18bf121e5085",
+        "source_content_hash": "sha256:8d173b3b4530c5ee0ca7d6637bdddc603292c30a96965077eb02d9792799fa6a",
         "source_path": "scripts/generate_client_contract.py"
       },
       "state": "known"
@@ -18545,6 +18615,16 @@
       },
       "state": "known"
     },
+    "modules/import_planning_service.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:f733b1cef914be78bad5fdc4ef2ae1051fb55f90b00bba8da83391fa1e8ef10d",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:bb70a1c83bf8ea142492ec92c1e30fb43c00783050c0813ad6521c3414c47151",
+        "source_path": "backend/app/services/import_planning_service.py"
+      },
+      "state": "known"
+    },
     "modules/index.md": {
       "basis": {
         "concept_observation_hash": "sha256:21097833c8791d6ee8316c1fff27d5b2cb74d90dde2ef07ba381e645ef67f87a",
@@ -18567,10 +18647,10 @@
     },
     "modules/iterationService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d0435cb04c9bc22855f968daee4b667507ac98c3427df4e69622e9abf182e9b4",
+        "concept_observation_hash": "sha256:94c9cf545921fbaef608cb71d63bf7723105d9706529185263d9c29978dc7bf4",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:83dea9f87b290b0f34eff950913e78b3ad448e30c00e0e6258665c3babe7cfe0",
+        "source_content_hash": "sha256:6244e2ab25c41d7d31303bf5b260af3cbcc7472d52dcafa27ac5d91a8de7597f",
         "source_path": "frontend/src/services/iterationService.ts"
       },
       "state": "known"
@@ -18590,7 +18670,7 @@
         "concept_observation_hash": "sha256:ed2ccc389cfa9abff03b6e620d5aa08f2b28176d4f1607e02d6d100007a267d6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
+        "source_content_hash": "sha256:e2ebfaa1cdc43d683751ba011d1f9c41f722d00db50e18c2d01226c31b074ee9",
         "source_path": "backend/app/services/iteration_service.py"
       },
       "state": "known"
@@ -19177,20 +19257,20 @@
     },
     "modules/planningInputService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:57dbdd44601ae0a736388f548e7357bd39f143dbff3fd2b762fa077d397a9dc6",
+        "concept_observation_hash": "sha256:de227ae65142cd03712c742876b2d0195173c25bb6ae82bf1f94be08afc782a8",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:49ad9d8751f0fc4fa876a1c732ff81239173f8ee78e38cb12319d3d6748747b4",
+        "source_content_hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
         "source_path": "frontend/src/services/planningInputService.ts"
       },
       "state": "known"
     },
     "modules/planningInputService.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:28f93e45e506d853a238b881ced22594bf1051399f4ba1c3c1dcadd6a6308823",
+        "concept_observation_hash": "sha256:03750d937aa38c162f4e7857c4fd5585afdb8490f31c088a5062e612ecc19aea",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:5a4296473a532d61a4c07169fd2d6040e6d75177d6cf15ccbfafc06e092d7fc0",
+        "source_content_hash": "sha256:80f5c56446848a4cf5c75312fff843c333a393916746bc62ffb4902464904d43",
         "source_path": "frontend/src/services/planningInputService.test.ts"
       },
       "state": "known"
@@ -19267,20 +19347,20 @@
     },
     "modules/planning_input_context.md": {
       "basis": {
-        "concept_observation_hash": "sha256:7da51b05a7e25da9f769ed33740ca8a68349dd181dfc08609017d47ec57e9bc4",
+        "concept_observation_hash": "sha256:79ddb2b4fa1223847877897d79ab8cd808c102cc1e3124e27898c7ff49aa1391",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:0d68f059dcf182ed735aca8e3a800907c2a1b1964248987fd8768d062790ff1a",
+        "source_content_hash": "sha256:ddcf5faa34a0c50e44ce4807d6462bcac10bbda454fcc2c49feb6ac35ce5aa96",
         "source_path": "backend/app/services/planning_input_context.py"
       },
       "state": "known"
     },
     "modules/planning_inputs.md": {
       "basis": {
-        "concept_observation_hash": "sha256:1500f484445780f301053fbc5134848baa6ec2022c090d106691d7629d2b1bca",
+        "concept_observation_hash": "sha256:683f12cfc02c87de9b63efabee28f5e3b871947f2b4c42936749846f0b187b26",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f7d198af53c60ad010911db779d0a0db1175df110c0ea5a8e0a4b25c1163af2b",
+        "source_content_hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
         "source_path": "backend/app/schemas/planning_inputs.py"
       },
       "state": "known"
@@ -19337,10 +19417,10 @@
     },
     "modules/projectService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:73ef212b4af779e75870d7e1ac89f2b128d7fccf7309829bb32246d292a86a51",
+        "concept_observation_hash": "sha256:c6aa6335cdabae3cb3da4211046768733f303bd08d0b89a40fb46a3b6c3f28e1",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:063da450ebb4299e61c3cf390853d449c56c296f5fb00c184edb9e00bab925c9",
+        "source_content_hash": "sha256:92e98401005c015877766961ab0a5d6ee634f7a0247cb5e41b6288764a4e48df",
         "source_path": "frontend/src/services/projectService.ts"
       },
       "state": "known"
@@ -19380,7 +19460,7 @@
         "concept_observation_hash": "sha256:ed01bcd6105d51974159dcb061e55ad05ff8e714aef897ea61cb6d59bb35e64d",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:dad0a624bd3687051bda20ed7880a3e3dac747197c719cd1da69f32c31c11972",
+        "source_content_hash": "sha256:96c35e0141085b65331b287ec855cee295cfe2062d7bd1bb45eefdb31d8250b5",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -19390,7 +19470,7 @@
         "concept_observation_hash": "sha256:32cd26ed3cd83a3de7abe711d5df2ec9c9295a3e35c924c9fdbf79b1f30f939e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:01e664e618534e7e6ccd143f15fb460d78fef3007e46fd1612def95b629fe80b",
+        "source_content_hash": "sha256:4fe7ac60ae09f352dcfff1d46b3c40f9e0a437a41bffdb441a0f31ff2f29e092",
         "source_path": "backend/app/routers/projects.py"
       },
       "state": "known"
@@ -19540,7 +19620,7 @@
         "concept_observation_hash": "sha256:58d9b896f0be799048ed900c16182cbe4d80f84c9f6af079ae0ace1cca8bc725",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:0e336ebeaeb6415134c72843c8ada302d0bd1736e6b044939d3b89a34ccccdf0",
+        "source_content_hash": "sha256:9815fdfc761657fd35a784a14ce73e109f0891311a3caf1695f5addd1235ffee",
         "source_path": "frontend/src/i18n/resources.en.ts"
       },
       "state": "known"
@@ -19550,7 +19630,7 @@
         "concept_observation_hash": "sha256:12c3a2e23116f29ec178b21fb08fb1b46f0a0f2911645e528fb418e732944014",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:bafffc64ea40a5b68556c9db1f7e6ed66f51d7df2c1a76009f2873fd8792577a",
+        "source_content_hash": "sha256:fc8007be8cf1f27b11778e1a7c2a5ce6ec2839f900b9e86579b41b21db1c11b0",
         "source_path": "frontend/src/i18n/resources.ru.ts"
       },
       "state": "known"
@@ -19717,10 +19797,10 @@
     },
     "modules/routers_task_domain.md": {
       "basis": {
-        "concept_observation_hash": "sha256:58e15701f2784dde94c740c55715812dd72f01dd782ca12e4871e62e8d4cb5ef",
+        "concept_observation_hash": "sha256:9ed27de3be68deb6d4c0df0c80a78852fef2762ce9840cb52621873a901bb6e2",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:88691380f16c365c83f1fba88f3853b6b142466087aea4e69c9158bb2589274e",
+        "source_content_hash": "sha256:e03e52821f41f68aaa98e5d5278f3c872ffcc5e9d6c596587b99c2aa6154a2e5",
         "source_path": "backend/app/routers/task_domain.py"
       },
       "state": "known"
@@ -20800,7 +20880,7 @@
         "concept_observation_hash": "sha256:90a19b89c4e8ffb4f4486dcb6bc13b5b5ceaac624b7ac572ccf4ab75c15a9f2c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:166ca4749a5017d6276312e6e7f9a86680c05518f6b7c2c1e5fe57418945ef0a",
+        "source_content_hash": "sha256:dba5f48aaa26212df15bd6aa45bc6ea102894240b834988b63d5f806e3b21bfd",
         "source_path": "frontend/src/services/teamService.ts"
       },
       "state": "known"
@@ -20820,7 +20900,7 @@
         "concept_observation_hash": "sha256:b6f0d54f5d6483a6ed59107162b8fdbd5da2d686241968a226e4be8927dc2316",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:9921c666e767ae354a06792af168cac00f33511e6dad1f22d33ba6f40e78ec37",
+        "source_content_hash": "sha256:92060f845ac08bb25eacc73492f37b83a3af3efd4aeb103c1cc81a4b15fea7e8",
         "source_path": "backend/app/services/team_service.py"
       },
       "state": "known"
@@ -21420,7 +21500,7 @@
         "concept_observation_hash": "sha256:5e1a2ec0e38d5e6ec2c080d2697c3d69e5affb1b929716554466eae1676e59e0",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:b486e715d9718d55b9abcc78624f6601e8328d751e9c869f761dee753f7c34a3",
+        "source_content_hash": "sha256:d9f7f95e0def835a7551c42f8f33eec9fb52dccf6e5acebd0f3b5384e243990b",
         "source_path": "backend/tests/test_planning_input_context.py"
       },
       "state": "known"
@@ -21622,6 +21702,16 @@
         "scope": "module",
         "source_content_hash": "sha256:cae9a4486468e238c5c8dc4ccd840cc75e11d5afb41bd7fe531bfb39320ad1b7",
         "source_path": "backend/tests/autonomy/test_server_acceptance.py"
+      },
+      "state": "known"
+    },
+    "modules/test_shared_member_revisions.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:124d0aa64b25d51562f4834502715a9ec2b1aceab90f1e110cdc974606807dc5",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:1ec79bb7127d45aa71c1e8b1d9acd53df9fdc5974684ba353a57675f063d1825",
+        "source_path": "backend/tests/test_shared_member_revisions.py"
       },
       "state": "known"
     },
@@ -22177,10 +22267,10 @@
     },
     "modules/usePlanningObservation.md": {
       "basis": {
-        "concept_observation_hash": "sha256:35d147b32c75fd7262c9d918960b3a20a60167c60a069e58adabe13742c7f3a1",
+        "concept_observation_hash": "sha256:3b5ca17a402de54d906829ec07de055c9b2174750719ee09ee93c4013472ae9d",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:3e6e236e288e57696ba3c8f5009755c284d33df49c0d4d9afd441eb7ead0d9b4",
+        "source_content_hash": "sha256:9dc1edab8489fc167930a59a5e9cd8cfd100474c13f6b7b1f84c193e2e4a8f0b",
         "source_path": "frontend/src/features/usePlanningObservation.ts"
       },
       "state": "known"
@@ -22590,13 +22680,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:fa13a2635d9e7a971a16420d9aaad5921d3f5ac8f92a7ffe5045da27b832aaa7",
-      "lifecycle_hash": "sha256:15125e6594f348260b989a2602d6030601762fafc6c5caab3cf935c4ddd13f9e",
-      "markdown_snapshot_hash": "sha256:246154da7dec30a67e11bb9121bdee007a2827c0788487544eae89abac15616b",
-      "observation_inputs_hash": "sha256:9e8a340b6bd36f9d5d9b13726c55565bb4ec2ac07ded6b530dbf142fa46ce35e",
+      "inventory_hash": "sha256:7519f3515d3c174d6a447fa35fbc71ff4b43bb2a54ab3207326c7d96feb60d2b",
+      "lifecycle_hash": "sha256:11a76fe369f9d8296e038ff87710be6e7927573d728dc6f64a1607e85e41a157",
+      "markdown_snapshot_hash": "sha256:bb381f5a1dbb2c2b8adb522ab99a757123dbabf6088b32e48e3c6b977d0df7d6",
+      "observation_inputs_hash": "sha256:9a47f23ec9d55d9299ffb805536c5f84204a96376a346a202c25dc3ffdd18fd1",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:87833a8dbd5be25088a772bdbb2d54f2e1a3818bfbc95a95bdff09de8ca96478"
+      "source_snapshot_hash": "sha256:1ff36f7a2746b7aa435e664cbe061db918c4aa1e58058c8285b21d02305b5580"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -25922,6 +26012,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/schemas/planning_inputs.py"
+    },
+    "entities/PlanningInputUnavailable.md": {
+      "entity_name": "PlanningInputUnavailable",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/services/planning_input_context.py"
     },
     "entities/PlanningJob.md": {
       "entity_name": "PlanningJob",
@@ -29325,6 +29421,18 @@
       "scope": "entity",
       "source_path": "frontend/src/services/planShareService.ts"
     },
+    "entities/planningInputService_MemberPlanningIntent.md": {
+      "entity_name": "MemberPlanningIntent",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/services/planningInputService.ts"
+    },
+    "entities/planning_inputs_MemberPlanningIntent.md": {
+      "entity_name": "MemberPlanningIntent",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/schemas/planning_inputs.py"
+    },
     "entities/requestSource_RequestSource.md": {
       "entity_name": "RequestSource",
       "occurrence": 1,
@@ -32009,6 +32117,10 @@
       "scope": "module",
       "source_path": "frontend/src/components/iteration/IterationForm.test.tsx"
     },
+    "modules/IterationImportDialog.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/iteration/IterationImportDialog.tsx"
+    },
     "modules/IterationList.md": {
       "scope": "module",
       "source_path": "frontend/src/components/iteration/IterationList.tsx"
@@ -32164,6 +32276,14 @@
     "modules/PlanSharePage.test.md": {
       "scope": "module",
       "source_path": "frontend/src/pages/PlanSharePage.test.tsx"
+    },
+    "modules/PlanningInputBoundary.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/planning/PlanningInputBoundary.tsx"
+    },
+    "modules/PlanningInputBoundary.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/planning/PlanningInputBoundary.test.tsx"
     },
     "modules/PlanningWorkbenchFrame.md": {
       "scope": "module",
@@ -32512,6 +32632,10 @@
     "modules/UserSessionBadge.test.md": {
       "scope": "module",
       "source_path": "frontend/src/components/UserSessionBadge.test.tsx"
+    },
+    "modules/VacationCsvImport.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/team/VacationCsvImport.tsx"
     },
     "modules/VacationManager.md": {
       "scope": "module",
@@ -33052,6 +33176,10 @@
     "modules/import_parser.md": {
       "scope": "module",
       "source_path": "backend/app/utils/import_parser.py"
+    },
+    "modules/import_planning_service.md": {
+      "scope": "module",
+      "source_path": "backend/app/services/import_planning_service.py"
     },
     "modules/index.md": {
       "scope": "module",
@@ -34284,6 +34412,10 @@
     "modules/test_server_acceptance.md": {
       "scope": "module",
       "source_path": "backend/tests/autonomy/test_server_acceptance.py"
+    },
+    "modules/test_shared_member_revisions.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_shared_member_revisions.py"
     },
     "modules/test_shared_profile_revisions.md": {
       "scope": "module",
@@ -37933,15 +38065,16 @@
             "lock_backlog_project": "Serialize unscheduled hierarchy writes without manufacturing an iteration.",
             "lock_iterations": "Acquire aggregate locks in ascending ID order, then task locks in ascending ID order.",
             "lock_planning": "Reserve shared planning before narrower locks, once per command including previews.",
+            "planning_input_reservation": "Validate one complete outer observation and bound nested input writes to it.",
             "preview_command": "Give a calculation a rollback boundary in every transport and direct invocation.",
             "schedule_input_command": "Capture and revise every affected iteration before editing shared planning inputs."
           }
         }
       },
-      "hash": "sha256:f7774c8883a7e0e41d42e923b4cecea8c1c0e79a813353317620eff16cc3f8db",
+      "hash": "sha256:04acf4b132899d751590023ea86f0e30ab6a4059e8707fcaf010a8c36e3a43cf",
       "language": "python",
       "module_page": "commands",
-      "semantic_hash": "sha256:1f22cde7d9675ac8beb57f9afaa24effd86dd668ec3a3afc6d2c2454731e8c6e"
+      "semantic_hash": "sha256:28d9e720b97325e29b40988eb432757bcbeda9789d98165c2134c4631b7d7cfc"
     },
     "backend/app/config.py": {
       "entities": [
@@ -38771,15 +38904,16 @@
             "metrics_endpoint": "Export process/database qualification inputs without SQL or secrets.",
             "missing_mutation_revision": "—",
             "planning_conflict": "—",
+            "planning_input_unavailable_handler": "—",
             "readiness_check": "Fail when the database is unavailable or not at packaged Alembic head.",
             "redact_request_validation_input": "Return useful validation locations without echoing credentials or fences."
           }
         }
       },
-      "hash": "sha256:023ce2e349cc633f8de7ae7fc505602d8699652e4720185a21f27e5d65e58940",
+      "hash": "sha256:8c9aa55b7288db2458c106de44d5b0fa838560d6abcade97fbb1cf0585ca254c",
       "language": "python",
       "module_page": "app_main",
-      "semantic_hash": "sha256:5aafecd0be72922c7c4037fc263ca57912de24fed554bc773f29bec441348294"
+      "semantic_hash": "sha256:86ac6e85c3860eb138d2879d55055a5cc42104620a3c13a61e1f04db3a7a2197"
     },
     "backend/app/maintenance.py": {
       "entities": [
@@ -43161,17 +43295,19 @@
             "_process_import": "Import team members and tasks while preserving task metadata and dependencies.",
             "_read_json_upload": "Read a bounded JSON upload into an object.",
             "_task_to_export": "Convert task to export format recursively with full Gantt data.",
+            "_validate_import_data": "Validate the complete bounded tree before any imported row can persist.",
             "_validate_import_task_tree": "Validate an arbitrarily deep task tree with bounded total cardinality.",
             "export_iteration": "Export iteration data as JSON.",
             "import_iteration": "Import tasks and team members into an iteration from JSON file.",
-            "import_new_iteration": "Import a new iteration from JSON export file."
+            "import_new_iteration": "Import a new iteration from JSON export file.",
+            "preview_iteration_import": "Observe all existing scopes before opening a JSON import confirmation."
           }
         }
       },
-      "hash": "sha256:5f068eb95c433d743101e2705f59997fa28f9f5355be1386129702956878d84a",
+      "hash": "sha256:6004b3aaaa7dfc633d6239216ed9801a5ed701e072c2dd73bdf349dcfb7c2a77",
       "language": "python",
       "module_page": "export",
-      "semantic_hash": "sha256:d29632717a09f18b6ebae179e423cf7ef3e61c42367ebb7d5b2c394a0609d613"
+      "semantic_hash": "sha256:20fdc82f63aff9a2b5176f1f91782147c391f134adef52424b0b5469d0dbe31f"
     },
     "backend/app/routers/gantt.py": {
       "entities": [],
@@ -43681,10 +43817,10 @@
           }
         }
       },
-      "hash": "sha256:01e664e618534e7e6ccd143f15fb460d78fef3007e46fd1612def95b629fe80b",
+      "hash": "sha256:4fe7ac60ae09f352dcfff1d46b3c40f9e0a437a41bffdb441a0f31ff2f29e092",
       "language": "python",
       "module_page": "projects",
-      "semantic_hash": "sha256:4546f1ac8cff07ca6fc84df92f270c4d6122b661990cd3b60690950a60204ea0"
+      "semantic_hash": "sha256:eaef62f85493cf732e2cdd82452516e17cc119ed5c8e6054b553ecdbe71d8dea"
     },
     "backend/app/routers/request_sources.py": {
       "entities": [],
@@ -43910,6 +44046,7 @@
             "execution_usage_summary": "—",
             "human_my_work": "—",
             "lookup_tasks": "—",
+            "member_planning_context": "—",
             "planning_input_context": "—",
             "record_task_progress": "—",
             "restore_backlog": "—",
@@ -43928,10 +44065,10 @@
           }
         }
       },
-      "hash": "sha256:88691380f16c365c83f1fba88f3853b6b142466087aea4e69c9158bb2589274e",
+      "hash": "sha256:e03e52821f41f68aaa98e5d5278f3c872ffcc5e9d6c596587b99c2aa6154a2e5",
       "language": "python",
       "module_page": "routers_task_domain",
-      "semantic_hash": "sha256:3fad5009edc0b26ad20ecff33ddbf699ce1f2caf39ad3a79502b568238c49e7d"
+      "semantic_hash": "sha256:053fce8af6debda5b7df18f185ba614d54b31d1eafbda6b12c19abd67c60c096"
     },
     "backend/app/routers/tasks.py": {
       "entities": [],
@@ -49990,7 +50127,8 @@
       "entities": [
         "WorkingZone",
         "PlanningInputRevisions",
-        "PlanningInputContext"
+        "PlanningInputContext",
+        "MemberPlanningIntent"
       ],
       "entity_page_occurrences": [
         {
@@ -50007,15 +50145,32 @@
           "name": "PlanningInputContext",
           "occurrence": 1,
           "page": "PlanningInputContext"
+        },
+        {
+          "name": "MemberPlanningIntent",
+          "occurrence": 1,
+          "page": "planning_inputs_MemberPlanningIntent"
         }
       ],
       "entity_pages": {
+        "MemberPlanningIntent": "planning_inputs_MemberPlanningIntent",
         "PlanningInputContext": "PlanningInputContext",
         "PlanningInputRevisions": "PlanningInputRevisions",
         "WorkingZone": "WorkingZone"
       },
       "generated_semantics": {
         "entities": {
+          "MemberPlanningIntent": {
+            "attributes": {
+              "csv_text": "—",
+              "email": "—",
+              "name": "—",
+              "profile_id": "—",
+              "text": "—"
+            },
+            "description": "_Auto-generated from `MemberPlanningIntent` in `backend/app/schemas/planning_inputs.py`._",
+            "methods": {}
+          },
           "PlanningInputContext": {
             "attributes": {
               "complete": "—",
@@ -50042,6 +50197,7 @@
         },
         "module": {
           "classes": {
+            "MemberPlanningIntent": "—",
             "PlanningInputContext": "—",
             "PlanningInputRevisions": "—",
             "WorkingZone": "—"
@@ -50052,10 +50208,10 @@
           }
         }
       },
-      "hash": "sha256:f7d198af53c60ad010911db779d0a0db1175df110c0ea5a8e0a4b25c1163af2b",
+      "hash": "sha256:797f511bc8ab8d77f523632bf408000b3a1329df29d047bce3f9019e65121af3",
       "language": "python",
       "module_page": "planning_inputs",
-      "semantic_hash": "sha256:8542bbb92320f1959a52a2ae5f0637824e3c1776b0cb1f269b872889a2fb1916"
+      "semantic_hash": "sha256:f727b98cceed8bc9cf86fb188b181d7320baa414d7021e8ce898c48f533a7b9f"
     },
     "backend/app/schemas/project.py": {
       "entities": [
@@ -56896,6 +57052,25 @@
       "module_page": "identity_service",
       "semantic_hash": "sha256:176523200b8873ddc7b7c737716839c6e269346885fb41b9cf6f311e4200373d"
     },
+    "backend/app/services/import_planning_service.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Coherent, read-only planning observations for bounded JSON imports.",
+          "functions": {
+            "observe_import_planning": "—"
+          }
+        }
+      },
+      "hash": "sha256:bb70a1c83bf8ea142492ec92c1e30fb43c00783050c0813ad6521c3414c47151",
+      "language": "python",
+      "module_page": "import_planning_service",
+      "semantic_hash": "sha256:9cf202241fac54ed4dad395f009c7fee6eddfcb8272e8152ab4c26e82b0a0223"
+    },
     "backend/app/services/iteration_service.py": {
       "entities": [
         "IterationSeriesItem",
@@ -56966,10 +57141,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:b5635adf9e423467b2d77d61ef396926243edad2a9cdacb97ad291ac1edbeb45",
+      "hash": "sha256:e2ebfaa1cdc43d683751ba011d1f9c41f722d00db50e18c2d01226c31b074ee9",
       "language": "python",
       "module_page": "iteration_service",
-      "semantic_hash": "sha256:59337cae73857c5d982feb7c1483128e1965f5a73681cd497b13f08205477bc6"
+      "semantic_hash": "sha256:6e02d3fcee7a0206f67df084664239edf527c244ab0b0904ae5ca04806d755fb"
     },
     "backend/app/services/label_service.py": {
       "entities": [
@@ -57474,24 +57649,43 @@
       "semantic_hash": "sha256:8164f9399e62a8631df4e9642a81749c3903fe14f659fe5ef15767ed2ccaee22"
     },
     "backend/app/services/planning_input_context.py": {
-      "entities": [],
-      "entity_page_occurrences": [],
-      "entity_pages": {},
+      "entities": [
+        "PlanningInputUnavailable"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "PlanningInputUnavailable",
+          "occurrence": 1,
+          "page": "PlanningInputUnavailable"
+        }
+      ],
+      "entity_pages": {
+        "PlanningInputUnavailable": "PlanningInputUnavailable"
+      },
       "generated_semantics": {
-        "entities": {},
+        "entities": {
+          "PlanningInputUnavailable": {
+            "attributes": {},
+            "description": "A shared planning input is absent or outside the authorized graph.",
+            "methods": {}
+          }
+        },
         "module": {
-          "classes": {},
+          "classes": {
+            "PlanningInputUnavailable": "A shared planning input is absent or outside the authorized graph."
+          },
           "description": "Complete permission-safe observations for shared planning input mutations.",
           "functions": {
             "affected_iteration_ids": "Resolve one complete scope for both read observations and atomic writes.",
-            "observe_planning_input": "Read data and revisions together; reject drift without advancing any state."
+            "observe_planning_input": "Read data and revisions together; reject drift without advancing any state.",
+            "prospective_member_profiles": "Resolve import and allocation intent without creating profiles or changing data."
           }
         }
       },
-      "hash": "sha256:0d68f059dcf182ed735aca8e3a800907c2a1b1964248987fd8768d062790ff1a",
+      "hash": "sha256:ddcf5faa34a0c50e44ce4807d6462bcac10bbda454fcc2c49feb6ac35ce5aa96",
       "language": "python",
       "module_page": "planning_input_context",
-      "semantic_hash": "sha256:3f45133dfcf55b565f8675df6fdf0d140a282eb655380d844f18e9c1e96dd41d"
+      "semantic_hash": "sha256:a6896812b2278fe548ca3a9fa97f70f46c4b6f09d23367374ca8ddaa07b7b1f6"
     },
     "backend/app/services/project_service.py": {
       "entities": [
@@ -57579,10 +57773,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:dad0a624bd3687051bda20ed7880a3e3dac747197c719cd1da69f32c31c11972",
+      "hash": "sha256:96c35e0141085b65331b287ec855cee295cfe2062d7bd1bb45eefdb31d8250b5",
       "language": "python",
       "module_page": "project_service",
-      "semantic_hash": "sha256:cd5b35738ca631c4afea5c9a95db088d6997107a1868e7001de157a8bbcf7be9"
+      "semantic_hash": "sha256:1b2c3c753c2694e97f12fc774a8984763020e453f2c2158fd51e4a1a2cdf4898"
     },
     "backend/app/services/release_service.py": {
       "entities": [
@@ -59019,10 +59213,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:9921c666e767ae354a06792af168cac00f33511e6dad1f22d33ba6f40e78ec37",
+      "hash": "sha256:92060f845ac08bb25eacc73492f37b83a3af3efd4aeb103c1cc81a4b15fea7e8",
       "language": "python",
       "module_page": "team_service",
-      "semantic_hash": "sha256:8fea8edc4f683dd1474275231424498927081e1bdf37f33d29ccc10524cc6a69"
+      "semantic_hash": "sha256:e550e9a0f89b3417d718b9f744a792bd3d08b93fa6d23be815b9f122137833db"
     },
     "backend/app/services/template_service.py": {
       "entities": [
@@ -62366,10 +62560,10 @@
           }
         }
       },
-      "hash": "sha256:b486e715d9718d55b9abcc78624f6601e8328d751e9c869f761dee753f7c34a3",
+      "hash": "sha256:d9f7f95e0def835a7551c42f8f33eec9fb52dccf6e5acebd0f3b5384e243990b",
       "language": "python",
       "module_page": "test_planning_input_context",
-      "semantic_hash": "sha256:63a4dfab692d34665ddf9d98413e798f8d78465a9f340ab83dc4d4fc0cf2b10a"
+      "semantic_hash": "sha256:6beddadd912d21be00c5d3b9b400a9cae1eb3ef190cce1781f8dacb82fdf9c3c"
     },
     "backend/tests/test_postgresql_lifecycle.py": {
       "entities": [],
@@ -62619,6 +62813,28 @@
       "language": "python",
       "module_page": "test_saved_view_service",
       "semantic_hash": "sha256:efe21e4276985f762b2f6e408afcb3b7fdf3e6c0047d6893242bb0912d982f69"
+    },
+    "backend/tests/test_shared_member_revisions.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Shared-input scopes and destructive writes retain initial aggregate guards.",
+          "functions": {
+            "test_iteration_delete_requires_observed_revision": "—",
+            "test_json_import_preview_is_strict_atomic_and_retains_stale_conflict": "—",
+            "test_shared_member_initial_map_covers_other_allocations": "—",
+            "test_vacation_preview_and_nested_import_retain_complete_shared_map": "—"
+          }
+        }
+      },
+      "hash": "sha256:1ec79bb7127d45aa71c1e8b1d9acd53df9fdc5974684ba353a57675f063d1825",
+      "language": "python",
+      "module_page": "test_shared_member_revisions",
+      "semantic_hash": "sha256:b85efcb2cddf7d1b388e7afe96b578468130eb0aff3603ad0cae41ca5c2ce579"
     },
     "backend/tests/test_shared_profile_revisions.py": {
       "entities": [],
@@ -64256,10 +64472,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:44fbd3f8c8536a49b4b33d2fb4cce0c4a1b6fdc525fa2dc7023b138244e0786a",
+      "hash": "sha256:170a0ef038191fedfd12cf31a6a24e359207c97667a205dac3fc3fdc2de298a8",
       "language": "typescript",
       "module_page": "IterationForm.test",
-      "semantic_hash": "sha256:1eaae92286e43e2cdf1e324d162826133c86dd8383268016b203c3ebd4f41c97"
+      "semantic_hash": "sha256:42c5be1f888a08b981f410e0d1908219c5f98ce20a9d8cdc9716f0874f02f109"
     },
     "frontend/src/components/iteration/IterationForm.tsx": {
       "entities": [
@@ -64365,10 +64581,29 @@
           }
         }
       },
-      "hash": "sha256:e3ed2c800a665ac352f0a9578a2a44517198772a8d520bcd9777d70c3937ee18",
+      "hash": "sha256:3cbe9f49c52388b6df4033db6f42565442b35805489b74cbe983ea23fbf55082",
       "language": "typescript",
       "module_page": "IterationForm",
-      "semantic_hash": "sha256:b9cb2121bf4108e9d5cce970269cc48ca51a9a70a149df6c6bf61e0701a3afe2"
+      "semantic_hash": "sha256:48d0b2daa240261a74ddbcd8980aaee3e9668c2ccbdfd6e1a082d21fee1785fd"
+    },
+    "frontend/src/components/iteration/IterationImportDialog.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/iteration/IterationImportDialog.tsx`._",
+          "functions": {
+            "IterationImportDialog": "—"
+          }
+        }
+      },
+      "hash": "sha256:1b2e8c906c82ce21d28c91fced306b2d67a004684a3f5fab85556bce60d7c9dd",
+      "language": "typescript",
+      "module_page": "IterationImportDialog",
+      "semantic_hash": "sha256:30b8a51d5e989c3be676ee798f84341fe497309eaf9d9c283a3241ce1c42f93d"
     },
     "frontend/src/components/iteration/IterationList.tsx": {
       "entities": [
@@ -64404,10 +64639,10 @@
           }
         }
       },
-      "hash": "sha256:eeb08185b9ed3c092eda6fa3d1f13e6749cb853d6a0428cc015726c3844be598",
+      "hash": "sha256:ecbe09d677fe479c0e47d89711e2bd37e8dda8c9f196cc35f56050b12c8d8b5a",
       "language": "typescript",
       "module_page": "IterationList",
-      "semantic_hash": "sha256:478887dc66e74258549490c928343b056746d69ef96323e9584e439771e7263b"
+      "semantic_hash": "sha256:e02277d0443df35e34d6a3e85404ef8487d0220a4eff66c34afbf15eba3e94fb"
     },
     "frontend/src/components/iteration/IterationSelector.tsx": {
       "entities": [
@@ -65088,6 +65323,42 @@
       "module_page": "PlanReturnBar",
       "semantic_hash": "sha256:4190e779bbfd407e1903fdc6cf4701d0b4ebf771266818453623ee922577522f"
     },
+    "frontend/src/components/planning/PlanningInputBoundary.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/planning/PlanningInputBoundary.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:d1fcdbf8096498cad1c15601bdd349086696034b6de8809cf9a784c211638bc3",
+      "language": "typescript",
+      "module_page": "PlanningInputBoundary.test",
+      "semantic_hash": "sha256:9aac0b30a24f4c5c4612bdfaacd8d90620cb1d6dd521e042725c9c32d08650a8"
+    },
+    "frontend/src/components/planning/PlanningInputBoundary.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/planning/PlanningInputBoundary.tsx`._",
+          "functions": {
+            "PlanningInputBoundary": "—"
+          }
+        }
+      },
+      "hash": "sha256:91bf93e3479851ddb841a191a2904073893a2408d084ab592aa161649a0e8e33",
+      "language": "typescript",
+      "module_page": "PlanningInputBoundary",
+      "semantic_hash": "sha256:edf2af75382dc578b20fd9f59d603d23eae54bed03705709352a66f7fec528c4"
+    },
     "frontend/src/components/planning/PlanningWorkbenchFrame.test.tsx": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -65313,10 +65584,10 @@
           }
         }
       },
-      "hash": "sha256:1c533f851e182962f7af653a9cffc506b1d6276814046eb5df6a8b62e3bddc49",
+      "hash": "sha256:92536c5f4a09b854a16b7c7a484dc94be5012a23336499837e928244f655bd0d",
       "language": "typescript",
       "module_page": "ProjectForm",
-      "semantic_hash": "sha256:5e5aacca3eba4f973181ede9e44cfe9c2517842dba5ae88afae9e7efcb99ef36"
+      "semantic_hash": "sha256:e8a482520873cbaa9226e3aafedc83f7bb4aa0687c830014ba87bdd0abab446a"
     },
     "frontend/src/components/projects/ProjectIterationsSection.tsx": {
       "entities": [
@@ -65368,10 +65639,10 @@
           }
         }
       },
-      "hash": "sha256:3aff14d270422c2cf08042348eb59ee24583f931be020eb015567768b030b874",
+      "hash": "sha256:7928959dad5c267ec0a9dc92210d9e5087a07bacf193f0f91d92f7873f6b7fdd",
       "language": "typescript",
       "module_page": "ProjectIterationsSection",
-      "semantic_hash": "sha256:5a0b7dbb5914f12afa081dbcb1e50c37245dc5c799a8de37d5b88238c5a5e74f"
+      "semantic_hash": "sha256:e771ffe058cf730c2359346a54a4c6e75b42398187751b46df74b319fdf15405"
     },
     "frontend/src/components/projects/ProjectTaskTree.tsx": {
       "entities": [
@@ -68659,10 +68930,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:2dbb48e1082009a526da4ef62e77e68411408a56c2d7ac98b5d9e81989acb05a",
+      "hash": "sha256:7c5168bf317b53961f4ec429603c06aae466335afee932ec85e938b8e65114f1",
       "language": "typescript",
       "module_page": "ImportTeamModal.test",
-      "semantic_hash": "sha256:31832056bc1a093a32bc7b92861d4406b99a7286f535b45248856e0089676d03"
+      "semantic_hash": "sha256:35967f3d026a7b6d369de15274988f3df48958f6edae0117c1962b82d0fd13cf"
     },
     "frontend/src/components/team/ImportTeamModal.tsx": {
       "entities": [
@@ -68682,7 +68953,6 @@
         "entities": {
           "ImportTeamModalProps": {
             "attributes": {
-              "expectedRevision": "—",
               "iterationId": "—",
               "onClose": "—",
               "onStateChange": "—",
@@ -68702,10 +68972,10 @@
           }
         }
       },
-      "hash": "sha256:9ec52d6150bae3c8a0e10c1eeb0f2a902df59e1628f61bad3a26445a53776b8c",
+      "hash": "sha256:f92d0244091ba687b34e5ec00b2471f7c4cec7a3b05237ef0b4ab4f210085f1c",
       "language": "typescript",
       "module_page": "ImportTeamModal",
-      "semantic_hash": "sha256:08710c5e4fb508821ba235596291a8fb35e89e2bdc3f803c7d55fb8767bcf260"
+      "semantic_hash": "sha256:47d6c80dadcd3281f22f9b13f7e73ad78bd706be51ac610b7e137c74f559234b"
     },
     "frontend/src/components/team/TeamForm.test.tsx": {
       "entities": [],
@@ -68719,10 +68989,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:b48f708e27f02bbabfc027a23e4827a22d038b4bbfc07a30aaf2247610230ff5",
+      "hash": "sha256:881b18b07876788e79e84f5bc1c46e9b6caed80fab91d529996766ded71404cd",
       "language": "typescript",
       "module_page": "TeamForm.test",
-      "semantic_hash": "sha256:cb974f4ccebde1992c932d14f40780554a5830483368f3643b4fb570b19df0ad"
+      "semantic_hash": "sha256:a87fb84e1f7854eaf518dc754f597c19674b6a22e3bfe5b938e4c000bd9f084a"
     },
     "frontend/src/components/team/TeamForm.tsx": {
       "entities": [
@@ -68763,10 +69033,10 @@
           }
         }
       },
-      "hash": "sha256:8b958450ac0ef00931904a6e1e123d868f6a6d503dd9136c4ba7d076505f383e",
+      "hash": "sha256:44ea68f7deffff2277f48a3cb86c3921c4810e2851d9a6b6ce03f336fabda76e",
       "language": "typescript",
       "module_page": "TeamForm",
-      "semantic_hash": "sha256:876a6b7161ce205ccd7b4f7fcecb7491d5e4789cf6a8592c81393d04ebe5d8d7"
+      "semantic_hash": "sha256:5ec0b3bbe87059fcc6ef6623504393385fbb75f030592ed3154f3bda6b3a5f91"
     },
     "frontend/src/components/team/TeamList.tsx": {
       "entities": [
@@ -68803,10 +69073,10 @@
           }
         }
       },
-      "hash": "sha256:21320aa3350b92f89f3ba015a38601fdc7f19bdd439be6f7d26afe0da0e5e6a3",
+      "hash": "sha256:316c7ff2ec09e3e17212880a137920fe046c64d7d883da91463d236810ca58f7",
       "language": "typescript",
       "module_page": "TeamList",
-      "semantic_hash": "sha256:1e61fbf923be13043f07812a6779fcdb5be8277b21dec1bf81c51410b88b4b33"
+      "semantic_hash": "sha256:214c988d21027eddc0b058390048f234d5afa74e490dd9436c9b81ca2fb4ce80"
     },
     "frontend/src/components/team/TeamProfileManager.test.tsx": {
       "entities": [],
@@ -68867,6 +69137,25 @@
       "module_page": "TeamProfileManager",
       "semantic_hash": "sha256:5884036d3d34cc986b9016d3596c77950d2e5f2e38075bf762b8a36a63d70380"
     },
+    "frontend/src/components/team/VacationCsvImport.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/team/VacationCsvImport.tsx`._",
+          "functions": {
+            "VacationCsvImport": "—"
+          }
+        }
+      },
+      "hash": "sha256:e858820686c1a9e715e0525a17d2205f465a8cdfff3262212b786d0317bfe341",
+      "language": "typescript",
+      "module_page": "VacationCsvImport",
+      "semantic_hash": "sha256:20f114ba8aefa971445a15681520b90f7df995a001dbd5556f59e94b27be5347"
+    },
     "frontend/src/components/team/VacationManager.tsx": {
       "entities": [
         "VacationManagerProps"
@@ -68902,10 +69191,10 @@
           }
         }
       },
-      "hash": "sha256:04e8e476f1a7c511b42d21d656e8e49ab21e5ee86f680fad2a5a002b632fc436",
+      "hash": "sha256:a42b5296ba37f2e256b6590d2c47589f9ec7ad47390550a775937929c35fd54a",
       "language": "typescript",
       "module_page": "VacationManager",
-      "semantic_hash": "sha256:cba386db84e5eb3f2166b27f1fd365cdfd46d37630640847c4b002e1ff8a9976"
+      "semantic_hash": "sha256:d46391c7d684dd7fe41f41b7eda413b8cd9d21ed542f0e10c2f6642a7b728ec5"
     },
     "frontend/src/components/ui/InlineEmptyState.tsx": {
       "entities": [],
@@ -70249,10 +70538,10 @@
           }
         }
       },
-      "hash": "sha256:3e6e236e288e57696ba3c8f5009755c284d33df49c0d4d9afd441eb7ead0d9b4",
+      "hash": "sha256:9dc1edab8489fc167930a59a5e9cd8cfd100474c13f6b7b1f84c193e2e4a8f0b",
       "language": "typescript",
       "module_page": "usePlanningObservation",
-      "semantic_hash": "sha256:78141dc264dcf81e27f6173b41a7aeaab49eb84ea4f3be4fad2df27fc34b336e"
+      "semantic_hash": "sha256:34c2daa7b2f5433632e08216ef9cd22d1f88ebe9d8191b599d7ded64eaa81bd2"
     },
     "frontend/src/features/workQueryFreshness.test.ts": {
       "entities": [],
@@ -70562,7 +70851,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:0e336ebeaeb6415134c72843c8ada302d0bd1736e6b044939d3b89a34ccccdf0",
+      "hash": "sha256:9815fdfc761657fd35a784a14ce73e109f0891311a3caf1695f5addd1235ffee",
       "language": "typescript",
       "module_page": "resources.en",
       "semantic_hash": "sha256:3d8440e9b9a57fc2560b8b12fe6abfd02b9c28cd45653efce5ff9405ae031548"
@@ -70579,7 +70868,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:bafffc64ea40a5b68556c9db1f7e6ed66f51d7df2c1a76009f2873fd8792577a",
+      "hash": "sha256:fc8007be8cf1f27b11778e1a7c2a5ce6ec2839f900b9e86579b41b21db1c11b0",
       "language": "typescript",
       "module_page": "resources.ru",
       "semantic_hash": "sha256:0d59e8c0ab884497f9d55cbb79bf85bcae7dece0829cd11b5654c0ee3d99bdf1"
@@ -71174,10 +71463,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:149ec853ee73c871fa5ebaaa61862bbb1ca11615a1ecb4e25455b3ceeda4110a",
+      "hash": "sha256:97a760c66cff8027cc7ebf6a8931bda625eb9f4094a42181172327b63ba87a14",
       "language": "typescript",
       "module_page": "CalendarPage",
-      "semantic_hash": "sha256:d5431fea3c8286472443a2143235802c09afc6ababdabfc011ba7f9bb6c3b559"
+      "semantic_hash": "sha256:b97a45e4a8d308c8a11a00cbda99e2a123eda4ea9f41bd2f22b754c7b9b41000"
     },
     "frontend/src/pages/GanttPage.test.tsx": {
       "entities": [],
@@ -71225,10 +71514,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d5f150950b5da094b2561f466655244faabdeff67b7ccb48292de517dde0ca02",
+      "hash": "sha256:a432019927a35196c828bf3ed0acda5bba5bf799e51e16c02c066e02df6a5c7c",
       "language": "typescript",
       "module_page": "IterationsPage",
-      "semantic_hash": "sha256:227f1ff3d9f13d0a701f85fd30612c429fdcb9a808aedc0a504c7c00cd4f61a7"
+      "semantic_hash": "sha256:f6bbdfc0a75705d8d49a97e3c2197ce8c30e76ba102db4fa67fb77f983789099"
     },
     "frontend/src/pages/LandingPage.tsx": {
       "entities": [],
@@ -71880,10 +72169,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:2c5954009331bf7081391a11cd8ca9f7f1c9e3aa1e39bfb62e68417cebc9ed5f",
+      "hash": "sha256:49772d4f26da1a312ded4db9cf5f9c7c565cd214597d1e31f372342e408e3a44",
       "language": "typescript",
       "module_page": "ProjectDetailPage",
-      "semantic_hash": "sha256:3899d973526d2adcd3cf2469df73898b4ba6504098cb71da977b1e2641b81de4"
+      "semantic_hash": "sha256:7e06f383f297554577d4e0b8044cbf93166c9413fd5c769c0c7c9835c3dd32e5"
     },
     "frontend/src/pages/ProjectReleaseDetailPage.tsx": {
       "entities": [],
@@ -72261,7 +72550,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:bc6b6f961628d34e51f37496fb1501a59138f6cbebedcb4f0207734fa012168b",
+      "hash": "sha256:f25fbd87fb1b636f1d1a7ee44c925e858f4d6eb9e8d597cc173f836849756400",
       "language": "typescript",
       "module_page": "TeamPage",
       "semantic_hash": "sha256:27c7f420572ccbe3dd67c871c38442a6b54b27ca95b8fae76ddc7072296ae65b"
@@ -72826,10 +73115,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:b7140c9ff2b77f719ecfa24edd9cbcae7344dedc1d30ab6f9a40a87b7ce6fe81",
+      "hash": "sha256:c87354fc681dcf3302ac70774f8fa1485e47f14a601dc8ffeb9ca01ea29867e7",
       "language": "typescript",
       "module_page": "exportService",
-      "semantic_hash": "sha256:eb8265cffc9e015dd460473dcdf275f2ac4b3ec8863d4f2bc95845bcf0f6850e"
+      "semantic_hash": "sha256:8a6d8d9bca676ad24bb903280e672e5b38f10ba4865776f9c109d91bba3752c1"
     },
     "frontend/src/services/ganttService.ts": {
       "entities": [],
@@ -72915,10 +73204,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:83dea9f87b290b0f34eff950913e78b3ad448e30c00e0e6258665c3babe7cfe0",
+      "hash": "sha256:6244e2ab25c41d7d31303bf5b260af3cbcc7472d52dcafa27ac5d91a8de7597f",
       "language": "typescript",
       "module_page": "iterationService",
-      "semantic_hash": "sha256:ace2a945300c7d4d048cb9c39e032a27fc01a556db419d3a189c056e249d0310"
+      "semantic_hash": "sha256:b735d6c59d3ffd2db124846ebbb968665a6643861d7c24772cb5d45ba40af12b"
     },
     "frontend/src/services/labelService.ts": {
       "entities": [
@@ -73098,15 +73387,16 @@
           "functions": {}
         }
       },
-      "hash": "sha256:5a4296473a532d61a4c07169fd2d6040e6d75177d6cf15ccbfafc06e092d7fc0",
+      "hash": "sha256:80f5c56446848a4cf5c75312fff843c333a393916746bc62ffb4902464904d43",
       "language": "typescript",
       "module_page": "planningInputService.test",
-      "semantic_hash": "sha256:7e0c194d3154cbbb588bcae7bbbe150e1429deb73eca0e7893b54c297a5f3d30"
+      "semantic_hash": "sha256:67fb71d414ed056c479c4d6265de83b99872a6bc57ceb6c1fc9d29c2245f8a5d"
     },
     "frontend/src/services/planningInputService.ts": {
       "entities": [
         "ObservedPlanningInput",
         "PlanningInputKind",
+        "MemberPlanningIntent",
         "ObservedRevisions"
       ],
       "entity_page_occurrences": [
@@ -73121,18 +73411,29 @@
           "page": "PlanningInputKind"
         },
         {
+          "name": "MemberPlanningIntent",
+          "occurrence": 1,
+          "page": "planningInputService_MemberPlanningIntent"
+        },
+        {
           "name": "ObservedRevisions",
           "occurrence": 1,
           "page": "ObservedRevisions"
         }
       ],
       "entity_pages": {
+        "MemberPlanningIntent": "planningInputService_MemberPlanningIntent",
         "ObservedPlanningInput": "ObservedPlanningInput",
         "ObservedRevisions": "ObservedRevisions",
         "PlanningInputKind": "PlanningInputKind"
       },
       "generated_semantics": {
         "entities": {
+          "MemberPlanningIntent": {
+            "attributes": {},
+            "description": "_Auto-generated from `MemberPlanningIntent` in `frontend/src/services/planningInputService.ts`._",
+            "methods": {}
+          },
           "ObservedPlanningInput": {
             "attributes": {
               "complete": "—",
@@ -73157,6 +73458,7 @@
         },
         "module": {
           "classes": {
+            "MemberPlanningIntent": "—",
             "ObservedPlanningInput": "—",
             "ObservedRevisions": "—",
             "PlanningInputKind": "—"
@@ -73167,10 +73469,10 @@
           }
         }
       },
-      "hash": "sha256:49ad9d8751f0fc4fa876a1c732ff81239173f8ee78e38cb12319d3d6748747b4",
+      "hash": "sha256:d682b0bb248af6a27b25ab2c1a5971deb01496ad721234942f89d20dc1570263",
       "language": "typescript",
       "module_page": "planningInputService",
-      "semantic_hash": "sha256:fb0f1884a149ea6c4bdcad4236cb99be458f4a102990299d5bac72ed11f73f58"
+      "semantic_hash": "sha256:721e57c075a28e4b9331aca50ba8976c7dec4c22b27293c0cc61bea46fcc231e"
     },
     "frontend/src/services/projectService.ts": {
       "entities": [],
@@ -73184,10 +73486,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:063da450ebb4299e61c3cf390853d449c56c296f5fb00c184edb9e00bab925c9",
+      "hash": "sha256:92e98401005c015877766961ab0a5d6ee634f7a0247cb5e41b6288764a4e48df",
       "language": "typescript",
       "module_page": "projectService",
-      "semantic_hash": "sha256:bb4ece47ff536b5ef61b657a42403aaf2db4eedbaabbf94ce83f39c19bb97522"
+      "semantic_hash": "sha256:9017fecd2a7f1f2f96b4431827e7b5b421aa5df70310e8fdaf59bb4cd6ee9c76"
     },
     "frontend/src/services/releaseService.ts": {
       "entities": [],
@@ -73432,7 +73734,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:166ca4749a5017d6276312e6e7f9a86680c05518f6b7c2c1e5fe57418945ef0a",
+      "hash": "sha256:dba5f48aaa26212df15bd6aa45bc6ea102894240b834988b63d5f806e3b21bfd",
       "language": "typescript",
       "module_page": "teamService",
       "semantic_hash": "sha256:b4dc8fd1316418a028be2d8f6f7ad81089ec287e1444d622801de9a6f5be1e38"
@@ -81822,7 +82124,7 @@
           }
         }
       },
-      "hash": "sha256:1fb7524a232294ee7e91c88f0ecdbfdb7c4d7bea48c45384ffab18bf121e5085",
+      "hash": "sha256:8d173b3b4530c5ee0ca7d6637bdddc603292c30a96965077eb02d9792799fa6a",
       "language": "python",
       "module_page": "generate_client_contract",
       "semantic_hash": "sha256:367155ffebfc2bcf5710139f37f8843bc2653dd26db57c7f24da2aab80865ac7"

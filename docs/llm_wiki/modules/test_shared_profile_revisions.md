@@ -37,6 +37,7 @@ flowchart LR
     n4 --> n0
     n4 --> n1
     n4 --> n2
+    n4 --> n5
     n5 --> n0
     n5 --> n2
     n5 --> n3

@@ -14,6 +14,7 @@ _Auto-generated from `frontend/src/services/projectService.ts`._
 | `../types/project` | `Initiative`, `InitiativeCreate`, `InitiativeUpdate`, `Project`, `ProjectCreate`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneDeleteResponse`, `ProjectMilestoneUpdateRequest`, `ProjectPortfolioSummary`, `ProjectSummary`, `ProjectUpdate`, `ProjectUpdateEntry`, `ProjectUpdateEntryCreate`, `RoadmapMilestonePage` |
 | `../types/task` | `Task` |
 | `./api` | `api` |
+| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
 
 ## Module Signals
 
@@ -41,6 +42,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (16) |
-| Outbound | `frontend` (4) |
+| Outbound | `frontend` (5) |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

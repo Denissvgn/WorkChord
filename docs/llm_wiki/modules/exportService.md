@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/services/exportService.ts`._
 | Source | Symbols |
 |--------|---------|
 | `./api` | `api` |
+| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
 
 ## Module Signals
 
@@ -24,24 +25,31 @@ _Auto-generated from `frontend/src/services/exportService.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/iteration/IterationList.tsx"]
-    n1["frontend/src/pages/IterationsPage.tsx"]
+    n0["frontend/src/components/iteration/IterationImportDialog.tsx"]
+    n1["frontend/src/components/iteration/IterationList.tsx"]
     n2["frontend/src/services/api.ts"]
     n3["frontend/src/services/exportService.ts"]
+    n4["frontend/src/services/planningInputService.ts"]
     n0 --> n3
+    n0 --> n4
     n1 --> n0
     n1 --> n3
+    n1 --> n4
     n3 --> n2
-    click n0 "../modules/IterationList.md"
-    click n1 "../modules/IterationsPage.md"
+    n3 --> n4
+    n4 --> n2
+    click n0 "../modules/IterationImportDialog.md"
+    click n1 "../modules/IterationList.md"
     click n2 "../modules/api.md"
     click n3 "../modules/exportService.md"
+    click n4 "../modules/planningInputService.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [IterationImportDialog](../modules/IterationImportDialog.md) |
 | Inbound | [IterationList](../modules/IterationList.md) |
-| Inbound | [IterationsPage](../modules/IterationsPage.md) |
 | Outbound | [api](../modules/api.md) |
+| Outbound | [planningInputService](../modules/planningInputService.md) |

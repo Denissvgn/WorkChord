@@ -1,6 +1,6 @@
 # VacationRow
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:45`
+**Location:** `frontend/src/pages/CalendarPage.tsx:46`
 **Kind:** Class
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)

@@ -1,6 +1,6 @@
 # IterationListProps
 
-**Location:** `frontend/src/components/iteration/IterationList.tsx:16`
+**Location:** `frontend/src/components/iteration/IterationList.tsx:18`
 **Kind:** Class
 **Bases:** —
 **Module:** [IterationList](../modules/IterationList.md)

@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 | Source | Symbols |
 |--------|---------|
 | `../../i18n/seedDisplay` | `templateDisplay` |
+| `../../services/planningInputService` | `ObservedRevisions` |
 | `../../services/projectService` | `projectService` |
 | `../../services/teamService` | `teamService` |
 | `../../services/templateService` | `templateService` |
@@ -23,9 +24,11 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 | `../common/CollapsibleSection` | `CollapsibleSection` |
 | `../common/Input` | `Input` |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
+| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` |
+| `../tasks/useDraftDismissal` | `useActiveMount` |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
 | `lucide-react` | `Save` |
-| `react` | `useState` |
+| `react` | `ReactNode`, `useState` |
 | `react-i18next` | `useTranslation` |
 
 ## Module Signals
@@ -55,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -63,16 +66,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectFormProps](../entities/ProjectFormProps.md) | Class | 22 | — | — |
+| [ProjectFormProps](../entities/ProjectFormProps.md) | Class | 26 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ProjectForm` | `({ initialData, onSuccess, onCancel }: ProjectFormProps)` | — | — |
+| `ProjectForm` | `(props: ProjectFormProps)` | — | — |

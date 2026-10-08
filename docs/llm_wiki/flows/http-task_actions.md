@@ -79,16 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_actions | domain_result | 171 | `domain_result(...)` |
-| domain_result | HTTPException | 42 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 44 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 44 | `str(exc)` |
-| domain_result | HTTPException | 46 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 46 | `str(exc)` |
-| domain_result | HTTPException | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_actions | TaskDomainService(…).allowed_actions | 171 | `TaskDomainService(db).allowed_actions(task_id)` |
-| task_actions | TaskDomainService | 171 | `TaskDomainService(db)` |
+| task_actions | domain_result | 180 | `domain_result(...)` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_actions | TaskDomainService(…).allowed_actions | 180 | `TaskDomainService(db).allowed_actions(task_id)` |
+| task_actions | TaskDomainService | 180 | `TaskDomainService(db)` |
 
 ### Boundary effects
 
@@ -98,12 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 42 |
-| unresolved_call | `domain_result` | `exc.detail` | 42 |
-| external_call | `domain_result` | `HTTPException` | 44 |
-| external_call | `domain_result` | `HTTPException` | 46 |
-| external_call | `domain_result` | `HTTPException` | 48 |
-| unresolved_call | `task_actions` | `TaskDomainService(db).allowed_actions` | 171 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| unresolved_call | `task_actions` | `TaskDomainService(db).allowed_actions` | 180 |
 
 ## Behavior
 

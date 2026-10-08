@@ -1,6 +1,6 @@
 # ProjectFormProps
 
-**Location:** `frontend/src/components/projects/ProjectForm.tsx:22`
+**Location:** `frontend/src/components/projects/ProjectForm.tsx:26`
 **Kind:** Class
 **Bases:** —
 **Module:** [ProjectForm](../modules/ProjectForm.md)

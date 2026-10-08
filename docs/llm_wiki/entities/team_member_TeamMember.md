@@ -112,4 +112,4 @@ flowchart LR
 | `AgentRoutingService._capacity_inputs` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService._member_for_candidate` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 63 logical references; 51 omitted by the 12-row generated summary limit.

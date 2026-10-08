@@ -67,6 +67,7 @@ flowchart LR
 | [WorkingZone](../entities/WorkingZone.md) | Type alias | 16 | `Annotated[str, AfterValidator(validate_working_zone)]` | — |
 | [PlanningInputRevisions](../entities/PlanningInputRevisions.md) | Pydantic model | 19 | `BaseModel` | — |
 | [PlanningInputContext](../entities/PlanningInputContext.md) | Pydantic model | 23 | `BaseModel` | — |
+| [MemberPlanningIntent](../entities/planning_inputs_MemberPlanningIntent.md) | Pydantic model | 31 | `BaseModel` | — |
 
 ## Functions
 

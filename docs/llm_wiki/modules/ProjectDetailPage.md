@@ -28,11 +28,12 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 | `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `MetricGrid`, `PageHeader`, `PageLayout`, `Pill`, `SectionCard`, `SlideOverDrawer`, `StatusSegmentStrip`, `StickyRail` |
 | `../components/ui/tone` | `STATUS_TONE` |
 | `../i18n/i18n` | `i18n` |
+| `../services/planningInputService` | `planningInputService`, `ObservedPlanningInput` |
 | `../services/projectService` | `projectService` |
 | `../services/releaseService` | `releaseService` |
-| `../types/project` | `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneStatus`, `ProjectMilestoneTaskGroup`, `ProjectMilestoneUpdateRequest`, `ProjectStatus`, `ProjectTargetDateRisk`, `ProjectUpdateEntry`, `ProjectUpdateFreshness` |
+| `../types/project` | `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneStatus`, `ProjectMilestoneTaskGroup`, `ProjectMilestoneUpdateRequest`, `ProjectStatus`, `ProjectTargetDateRisk`, `ProjectUpdateEntry`, `ProjectUpdateFreshness` |
 | `../types/release` | `Release`, `ReleaseStatus` |
-| `../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` |
+| `../utils/apiError` | `normalizeApiError`, `getApiErrorMessage`, `getApiErrorStatus` |
 | `../utils/formatDate` | `formatDate`, `formatDateTime` |
 | `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
@@ -67,7 +68,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (25) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
@@ -75,14 +76,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 152 | — | — |
-| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 161 | — | — |
-| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 166 | — | — |
-| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 171 | — | — |
-| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 180 | — | — |
+| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 155 | — | — |
+| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 164 | — | — |
+| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 169 | — | — |
+| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 174 | — | — |
+| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 183 | — | — |

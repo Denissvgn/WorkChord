@@ -23,55 +23,27 @@ Mounted-scope guards suppress obsolete close, discard and pending callbacks afte
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/DraftDismissalDialog.tsx"]
-    n1["frontend/src/components/tasks/GuardedTaskModal.tsx"]
-    n2["frontend/src/components/tasks/TaskDiscussion.tsx"]
-    n3["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
-    n4["frontend/src/components/tasks/TaskForm.tsx"]
-    n5["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
-    n6["frontend/src/components/tasks/useDraftDismissal.test.tsx"]
-    n7["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n0 --> n7
-    n1 --> n0
-    n1 --> n4
-    n1 --> n7
-    n2 --> n7
-    n3 --> n0
-    n3 --> n4
-    n3 --> n7
-    n4 --> n2
-    n4 --> n5
-    n4 --> n7
-    n5 --> n0
-    n5 --> n7
-    n6 --> n7
-    click n0 "../modules/DraftDismissalDialog.md"
-    click n1 "../modules/GuardedTaskModal.md"
-    click n2 "../modules/TaskDiscussion.md"
-    click n3 "../modules/TaskEditorDrawer.md"
-    click n4 "../modules/TaskForm.md"
-    click n5 "../modules/TimeEntriesPanel.md"
-    click n6 "../modules/useDraftDismissal.test.md"
-    click n7 "../modules/useDraftDismissal.md"
+    n0["frontend"]
+    n1["frontend/src/components/tasks/useDraftDismissal.ts"]
+    n0 --> n1
+    click n1 "../modules/useDraftDismissal.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [DraftDismissalDialog](../modules/DraftDismissalDialog.md) |
-| Inbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
-| Inbound | [TaskDiscussion](../modules/TaskDiscussion.md) |
-| Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
-| Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
-| Inbound | [useDraftDismissal.test](../modules/useDraftDismissal.test.md) |
+| Inbound | `frontend` (12) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | typescript | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

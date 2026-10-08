@@ -30,7 +30,7 @@ flowchart LR
     n2["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
     n3["lock_iterations (backend/app/commands.py)"]
     n4["lock_planning (backend/app/commands.py)"]
-    n5["wrapped (backend/app/commands.py)"]
+    n5["planning_input_reservation (backend/app/commands.py)"]
     n6["planning_conflict (backend/app/main.py)"]
     n7["CalendarService.delete (backend/app/services/calendar_service.py)"]
     n8["CapacityService.projection (backend/app/services/capacity_service.py)"]
@@ -89,7 +89,7 @@ flowchart LR
 |---|---|---|---:|
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
 | `lock_planning` | call | [commands](../modules/commands.md) | 1 |
-| `wrapped` | call | [commands](../modules/commands.md) | 2 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 3 |
 | `planning_conflict` | type_reference | [app_main](../modules/app_main.md) | — |
 | `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 1 |
 | `CapacityService.projection` | call | [capacity_service](../modules/capacity_service.md) | 1 |
@@ -100,4 +100,4 @@ flowchart LR
 | `DeliveryDependencyService.reconcile` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `DeliveryDependencyService.require_unreferenced` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 
-> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.
+> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.

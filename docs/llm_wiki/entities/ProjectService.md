@@ -58,7 +58,7 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `list_iterations` | *(async)* `(project_id: int) -> Optional[Sequence[Iteration]]` | — | List iterations scoped to a project in newest-first order. |
 | `get_latest_project_update` | *(async)* `(project_id: int) -> Optional[ProjectUpdateEntry]` | — | Get the newest project update for summary display. |
 | `count_linked_tasks` | *(async)* `(project_id: int) -> int` | — | Count all tasks linked to a project. |
-| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@atomic_command` | Delete a project, optionally detaching linked tasks first. |
+| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@schedule_input_command('project')` | Delete a project, optionally detaching linked tasks first. |
 | `get_tasks` | *(async)* `(project_id: int) -> Optional[Sequence[Task]]` | — | Get linked root tasks for a project with response relationships loaded. |
 | `_get_all_linked_tasks` | *(async)* `(project_id: int) -> Sequence[Task]` | — | Get every task linked to a project for aggregate calculations. |
 | `_calculate_task_date_range` | `(tasks: Sequence[Task]) -> tuple[Optional[date], Optional[date]]` | — | Calculate min scheduled start and max scheduled end date. |

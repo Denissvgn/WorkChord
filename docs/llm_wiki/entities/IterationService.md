@@ -37,7 +37,7 @@ Calendar reassignment refreshes nominal workday and derived effort-day values un
 | `create` | *(async)* `(data: IterationCreate, *, commit: bool = True) -> Iteration` | — | Create an iteration, optionally leaving commit ownership to the caller. |
 | `create_series` | *(async)* `(data: IterationSeriesCreate) -> list[Iteration]` | — | Create multiple back-to-back iterations as one operation. |
 | `update` | *(async)* `(iteration_id: int, data: IterationUpdate, *, commit: bool = True) -> Iteration \| None` | `@schedule_input_command('iteration')` | Update an iteration, optionally leaving commit ownership to the caller. |
-| `delete` | *(async)* `(iteration_id: int) -> bool` | — | Delete an iteration. |
+| `delete` | *(async)* `(iteration_id: int) -> bool` | `@schedule_input_command('iteration')` | Delete an iteration. |
 | `get_summary` | *(async)* `(iteration_id: int) -> IterationSummary \| None` | — | Get iteration summary with statistics. |
 | `get_planning_readiness_summary` | *(async)* `(iteration_id: int) -> IterationPlanningReadinessSummary \| None` | — | Return bounded aggregate planning inputs without loading task graphs. |
 | `_calculate_team_capacity` | *(async)* `(iteration: Iteration) -> float` | — | Calculate total team capacity for iteration. |
@@ -55,11 +55,11 @@ flowchart LR
     n5["export_iteration (backend/app/routers/export.py)"]
     n6["import_iteration (backend/app/routers/export.py)"]
     n7["import_new_iteration (backend/app/routers/export.py)"]
-    n8["get_gantt_data (backend/app/routers/gantt.py)"]
-    n9["preview_iteration_schedule (backend/app/routers/gantt.py)"]
-    n10["schedule_iteration (backend/app/routers/gantt.py)"]
-    n11["create_iteration (backend/app/routers/iterations.py)"]
-    n12["create_iteration_series (backend/app/routers/iterations.py)"]
+    n8["preview_iteration_import (backend/app/routers/export.py)"]
+    n9["get_gantt_data (backend/app/routers/gantt.py)"]
+    n10["preview_iteration_schedule (backend/app/routers/gantt.py)"]
+    n11["schedule_iteration (backend/app/routers/gantt.py)"]
+    n12["create_iteration (backend/app/routers/iterations.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -80,10 +80,10 @@ flowchart LR
     click n5 "../modules/export.md"
     click n6 "../modules/export.md"
     click n7 "../modules/export.md"
-    click n8 "../modules/routers_gantt.md"
+    click n8 "../modules/export.md"
     click n9 "../modules/routers_gantt.md"
     click n10 "../modules/routers_gantt.md"
-    click n11 "../modules/iterations.md"
+    click n11 "../modules/routers_gantt.md"
     click n12 "../modules/iterations.md"
 ```
 
@@ -104,10 +104,10 @@ flowchart LR
 | `export_iteration` | call | [export](../modules/export.md) | 1 |
 | `import_iteration` | call | [export](../modules/export.md) | 1 |
 | `import_new_iteration` | call | [export](../modules/export.md) | 1 |
+| `preview_iteration_import` | call | [export](../modules/export.md) | 1 |
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `schedule_iteration` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
-| `create_iteration_series` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

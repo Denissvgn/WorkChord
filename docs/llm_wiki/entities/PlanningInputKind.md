@@ -23,10 +23,13 @@ _Auto-generated from `PlanningInputKind` in `frontend/src/services/planningInput
 ```mermaid
 flowchart LR
     n0["PlanningInputKind (frontend/src/services/planningInputService.ts)"]
-    n1["frontend/src/features/usePlanningObservation.ts"]
+    n1["PlanningInputBoundary (frontend/src/components/planning/PlanningInputBoundary.tsx)"]
+    n2["frontend/src/features/usePlanningObservation.ts"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/planningInputService.md"
-    click n1 "../modules/usePlanningObservation.md"
+    click n1 "../modules/PlanningInputBoundary.md"
+    click n2 "../modules/usePlanningObservation.md"
 ```
 
 ### Summary
@@ -39,4 +42,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `PlanningInputBoundary` | type_reference | [PlanningInputBoundary](../modules/PlanningInputBoundary.md) | — |
 | `usePlanningObservation` | import | [usePlanningObservation](../modules/usePlanningObservation.md) | — |

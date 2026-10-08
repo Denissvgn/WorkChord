@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 | `../components/common/useConfirmDialog` | `useConfirmDialog` |
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
+| `../components/team/VacationCsvImport` | `VacationCsvImport` |
 | `../components/ui` | `OverflowMenu` |
 | `../features/usePlanningObservation` | `usePlanningObservation` |
 | `../i18n/dateLocale` | `dateFnsLocale` |
@@ -57,7 +58,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -65,13 +66,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Class | 38 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Class | 45 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Class | 1105 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Class | 1168 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Class | 39 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Class | 46 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Class | 1088 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Class | 1151 | — | — |

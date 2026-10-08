@@ -1,6 +1,6 @@
 # IterationFormProps
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:20`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:24`
 **Kind:** Class
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)

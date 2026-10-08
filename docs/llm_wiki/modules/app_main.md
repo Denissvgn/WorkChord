@@ -25,6 +25,7 @@ _Auto-generated from `backend/app/main.py`._
 | `app.query_limits` | `CollectionLimitExceededError` |
 | `app.routers` | `identity`, `task_domain`, `capacity`, `delivery_dependencies`, `discussion`, `time_entries`, `agent`, `agent_catalog`, `agent_planning`, `agent_skill_bundles`, `calendars`, `iterations`, `team`, `tasks`, `projects`, `gantt`, `github`, `intake`, `llm`, `export`, `snapshots`, `plan_shares`, `session`, `scheduling_rules`, `email_settings`, `triage`, `templates`, `labels`, `saved_views`, `request_sources`, `outbound_webhooks`, `system_settings` |
 | `app.runtime_telemetry` | `metrics` |
+| `app.services.planning_input_context` | `PlanningInputUnavailable` |
 | `contextlib` | `asynccontextmanager` |
 | `fastapi` | `FastAPI`, `Request`, `status`, `Depends` |
 | `fastapi.exceptions` | `RequestValidationError` |
@@ -52,9 +53,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (21) |
 | Inbound | `scripts` (4) |
-| Outbound | `backend` (46) |
+| Outbound | `backend` (47) |
 
 ### External packages
 
@@ -62,13 +63,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 70 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 72 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `lifespan` | *(async)* `(app: FastAPI)` | `@asynccontextmanager` | Application lifespan handler. |
+| `planning_input_unavailable_handler` | *(async)* `(request: Request, exc: PlanningInputUnavailable)` | `@app.exception_handler(PlanningInputUnavailable)` | — |
 | `planning_conflict` | *(async)* `(request: Request, exc: PlanningConflict)` | `@app.exception_handler(PlanningConflict)` | — |
 | `missing_mutation_revision` | *(async)* `(request: Request, exc: MissingMutationRevision)` | `@app.exception_handler(MissingMutationRevision)` | — |
 | `aggregate_version_conflict` | *(async)* `(request: Request, exc: AggregateVersionConflict)` | `@app.exception_handler(AggregateVersionConflict)` | — |

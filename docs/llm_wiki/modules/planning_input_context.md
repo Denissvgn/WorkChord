@@ -8,6 +8,8 @@ Resolves the same complete affected iteration set for initial resource observati
 
 Profile observations include a bounded current skill snapshot and all affected iteration revisions. Oversized scopes fail explicitly before returning a partial map.
 
+Member and legacy vacation observations include all allocations of each affected durable person. Allocation and import intent is resolved read-only before returning complete maps; CSV and member previews reject oversized input and scopes. Member observations include bounded vacation rows. Missing or inaccessible shared inputs use a dedicated not-found exception.
+
 ## Imports
 
 | Source | Symbols |
@@ -20,7 +22,12 @@ Profile observations include a bounded current skill snapshot and all affected i
 | `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project`, `Project` |
 | `app.models.task` | `Task` |
-| `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMemberProfileSkill` |
+| `app.models.team_member` | `TeamMember`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMemberProfileSkill` |
+| `app.services.team_service` | `TeamService` |
+| `app.utils.import_parser` | `parse_team_members_text` |
+| `csv` | `csv` |
+| `io` | `StringIO` |
+| `itertools` | `islice` |
 | `json` | `json` |
 | `sqlalchemy` | `select` |
 
@@ -42,8 +49,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
-| Outbound | `backend` (9) |
+| Inbound | `backend` (7) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -51,11 +58,18 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
+## Classes
+
+| Class | Line | Bases | Description |
+|-------|------|-------|-------------|
+| [PlanningInputUnavailable](../entities/PlanningInputUnavailable.md) | 10 | `LookupError` | A shared planning input is absent or outside the authorized graph. |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `prospective_member_profiles` | *(async)* `(db, values)` | — | Resolve import and allocation intent without creating profiles or changing data. |
 | `affected_iteration_ids` | *(async)* `(db, kind, values)` | — | Resolve one complete scope for both read observations and atomic writes. |
-| `observe_planning_input` | *(async)* `(db, kind, resource_id, *, creating_member = False)` | — | Read data and revisions together; reject drift without advancing any state. |
+| `observe_planning_input` | *(async)* `(db, kind, resource_id, *, creating_member = False, intent = None)` | — | Read data and revisions together; reject drift without advancing any state. |

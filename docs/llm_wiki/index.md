@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1516 | [Open section](#entities) |
-| Modules | 721 | [Open section](#modules) |
-| Workflows | 182 | [Open section](#workflows) |
+| Entities | 1519 | [Open section](#entities) |
+| Modules | 727 | [Open section](#modules) |
+| Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 545 | [Open section](#entry-point-flows) |
+| Entry-point flows | 547 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -571,6 +571,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanningInputContext](entities/PlanningInputContext.md)
 - [PlanningInputKind](entities/PlanningInputKind.md)
 - [PlanningInputRevisions](entities/PlanningInputRevisions.md)
+- [PlanningInputUnavailable](entities/PlanningInputUnavailable.md)
 - [PlanningJob](entities/PlanningJob.md)
 - [PlanningMember](entities/PlanningMember.md)
 - [PlanningQueryFeedback](entities/PlanningQueryFeedback.md)
@@ -1138,6 +1139,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [outboundWebhook_OutboundWebhookTargetCreate](entities/outboundWebhook_OutboundWebhookTargetCreate.md)
 - [outboundWebhook_OutboundWebhookTargetUpdate](entities/outboundWebhook_OutboundWebhookTargetUpdate.md)
 - [planShareService_PlanShare](entities/planShareService_PlanShare.md)
+- [planningInputService_MemberPlanningIntent](entities/planningInputService_MemberPlanningIntent.md)
+- [planning_inputs_MemberPlanningIntent](entities/planning_inputs_MemberPlanningIntent.md)
 - [requestSource_RequestSource](entities/requestSource_RequestSource.md)
 - [requestSource_RequestSourceCreate](entities/requestSource_RequestSourceCreate.md)
 - [requestSource_RequestSourceLink](entities/requestSource_RequestSourceLink.md)
@@ -1614,6 +1617,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) - `frontend/src/components/settings/InterfaceLanguageSettings.tsx`
 - [IterationForm](modules/IterationForm.md) - `frontend/src/components/iteration/IterationForm.tsx`
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
+- [IterationImportDialog](modules/IterationImportDialog.md) - `frontend/src/components/iteration/IterationImportDialog.tsx`
 - [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
 - [IterationSelector](modules/IterationSelector.md) - `frontend/src/components/iteration/IterationSelector.tsx`
 - [IterationsPage](modules/IterationsPage.md) - `frontend/src/pages/IterationsPage.tsx`
@@ -1653,6 +1657,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanReturnBar.test](modules/PlanReturnBar.test.md) - `frontend/src/components/planning/PlanReturnBar.test.tsx`
 - [PlanSharePage](modules/PlanSharePage.md) - `frontend/src/pages/PlanSharePage.tsx`
 - [PlanSharePage.test](modules/PlanSharePage.test.md) - `frontend/src/pages/PlanSharePage.test.tsx`
+- [PlanningInputBoundary](modules/PlanningInputBoundary.md) - `frontend/src/components/planning/PlanningInputBoundary.tsx`
+- [PlanningInputBoundary.test](modules/PlanningInputBoundary.test.md) - `frontend/src/components/planning/PlanningInputBoundary.test.tsx`
 - [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) - `frontend/src/components/planning/PlanningWorkbenchFrame.tsx`
 - [PlanningWorkbenchFrame.test](modules/PlanningWorkbenchFrame.test.md) - `frontend/src/components/planning/PlanningWorkbenchFrame.test.tsx`
 - [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) - `frontend/src/components/planning/PlanningWorkflowGuide.tsx`
@@ -1740,6 +1746,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
+- [VacationCsvImport](modules/VacationCsvImport.md) - `frontend/src/components/team/VacationCsvImport.tsx`
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
@@ -1875,6 +1882,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [identityService](modules/identityService.md) - `frontend/src/features/identity/identityService.ts`
 - [identity_service](modules/identity_service.md) - Trusted OIDC sign-in and durable principal/session lifecycle.
 - [import_parser](modules/import_parser.md) - Parser utilities for importing tasks and team members from text files.
+- [import_planning_service](modules/import_planning_service.md) - Coherent, read-only planning observations for bounded JSON imports.
 - [index](modules/index.md) - `frontend/src/components/ui/index.ts`
 - [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) - Qualify the installed backend wheel across the SQLite/PostgreSQL boundary.
 - [iterationService](modules/iterationService.md) - `frontend/src/services/iterationService.ts`
@@ -2183,6 +2191,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_shared_member_revisions](modules/test_shared_member_revisions.md) - Shared-input scopes and destructive writes retain initial aggregate guards.
 - [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh schema and inspection migration matrix.
@@ -2406,6 +2415,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [get_gantt_data](workflows/get_gantt_data.md) - entry: `gantt.get_gantt_data`
 - [get_or_create_session](workflows/get_or_create_session.md) - entry: `session_service.get_or_create_session`
 - [get_task_timeline_page](workflows/get_task_timeline_page.md) - entry: `tasks.get_task_timeline_page`
+- [import_new_iteration](workflows/import_new_iteration.md) - entry: `export.import_new_iteration`
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
 - [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
 - [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
@@ -2414,10 +2424,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `server_acceptance.main`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
+- [planning_input_reservation](workflows/planning_input_reservation.md) - entry: `commands.planning_input_reservation`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
 - [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
 - [process_import](workflows/process_import.md) - entry: `export._process_import`
 - [project_member](workflows/project_member.md) - entry: `identity.project_member`
+- [prospective_member_profiles](workflows/prospective_member_profiles.md) - entry: `planning_input_context.prospective_member_profiles`
 - [raw_table_results](workflows/raw_table_results.md) - entry: `transfer._raw_table_results`
 - [readiness_snapshot](workflows/readiness_snapshot.md) - entry: `observability.readiness_snapshot`
 - [reconcile_snapshot](workflows/reconcile_snapshot.md) - entry: `transfer.reconcile_snapshot`
@@ -2442,7 +2454,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
 - [workspace_member](workflows/workspace_member.md) - entry: `identity.workspace_member`
-- [wrapped](workflows/wrapped.md) - entry: `commands.wrapped`
 
 <a id="entry-point-flows"></a>
 <a id="user-flows"></a>
@@ -2689,6 +2700,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-mark_planning_triage_item_duplicate](flows/http-mark_planning_triage_item_duplicate.md) - entry: `mark_planning_triage_item_duplicate`
 - [http-mark_triage_item_duplicate](flows/http-mark_triage_item_duplicate.md) - entry: `mark_triage_item_duplicate`
 - [http-me](flows/http-me.md) - entry: `me`
+- [http-member_planning_context](flows/http-member_planning_context.md) - entry: `member_planning_context`
 - [http-merge_tasks](flows/http-merge_tasks.md) - entry: `merge_tasks`
 - [http-metrics_endpoint](flows/http-metrics_endpoint.md) - entry: `metrics_endpoint`
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
@@ -2700,6 +2712,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-personal_notification_deliveries](flows/http-personal_notification_deliveries.md) - entry: `personal_notification_deliveries`
 - [http-plan_agent_team_reconciliation](flows/http-plan_agent_team_reconciliation.md) - entry: `plan_agent_team_reconciliation`
 - [http-planning_input_context](flows/http-planning_input_context.md) - entry: `planning_input_context`
+- [http-preview_iteration_import](flows/http-preview_iteration_import.md) - entry: `preview_iteration_import`
 - [http-preview_iteration_schedule](flows/http-preview_iteration_schedule.md) - entry: `preview_iteration_schedule`
 - [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`

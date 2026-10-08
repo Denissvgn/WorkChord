@@ -20,8 +20,8 @@ _Auto-generated from `frontend/src/components/team/ImportTeamModal.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Constants | `teamServiceMock` |
-| Module calls | `teamServiceMock = hoisted`, `mock`, `describe` |
+| Constants | `planningMock`, `teamServiceMock` |
+| Module calls | `planningMock = hoisted`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe` |
 
 ## Local dependency map
 
@@ -59,4 +59,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ControlledFileReader](../entities/ControlledFileReader.md) | 23 | — | — |
+| [ControlledFileReader](../entities/ControlledFileReader.md) | 26 | — | — |

@@ -1,6 +1,6 @@
 # DateListProps
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:1105`
+**Location:** `frontend/src/pages/CalendarPage.tsx:1088`
 **Kind:** Class
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)

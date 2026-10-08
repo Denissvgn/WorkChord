@@ -45,7 +45,7 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 ```mermaid
 flowchart LR
     n0["SnapshotService (backend/app/services/snapshot_service.py)"]
-    n1["wrapped (backend/app/commands.py)"]
+    n1["planning_input_reservation (backend/app/commands.py)"]
     n2["import_legacy_snapshots (backend/app/routers/snapshots.py)"]
     n3["list_snapshots (backend/app/routers/snapshots.py)"]
     n4["read_snapshot (backend/app/routers/snapshots.py)"]
@@ -94,7 +94,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `wrapped` | call | [commands](../modules/commands.md) | 1 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 1 |
 | `import_legacy_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `list_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `read_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |

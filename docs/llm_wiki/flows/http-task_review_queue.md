@@ -120,14 +120,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_review_queue | db.info.get (backend/app/routers/task_domain.py:task_review_queue) | 131 | `db.info.get('authority')` |
-| task_review_queue | TaskDetailService | 132 | `TaskDetailService(db)` |
-| task_review_queue | service.references().where | 133 | `service.references().where(..., Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
-| task_review_queue | service.references | 133 | `service.references(data not statically known)` |
-| task_review_queue | Task.canceled_at.is_ | 133 | `Task.canceled_at.is_(None)` |
-| task_review_queue | Task.is_summary.is_ | 133 | `Task.is_summary.is_(False)` |
-| task_review_queue | HTTPException | 135 | `HTTPException(422, detail='Select backlog or an iteration, not both')` |
-| task_review_queue | require_project | 138 | `require_project(db, project_id)` |
+| task_review_queue | db.info.get (backend/app/routers/task_domain.py:task_review_queue) | 140 | `db.info.get('authority')` |
+| task_review_queue | TaskDetailService | 141 | `TaskDetailService(db)` |
+| task_review_queue | service.references().where | 142 | `service.references().where(..., Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
+| task_review_queue | service.references | 142 | `service.references(data not statically known)` |
+| task_review_queue | Task.canceled_at.is_ | 142 | `Task.canceled_at.is_(None)` |
+| task_review_queue | Task.is_summary.is_ | 142 | `Task.is_summary.is_(False)` |
+| task_review_queue | HTTPException | 144 | `HTTPException(422, detail='Select backlog or an iteration, not both')` |
+| task_review_queue | require_project | 147 | `require_project(db, project_id)` |
 | require_project | db.info.get (backend/app/authority.py:require_project) | 69 | `db.info.get('authority')` |
 | require_project | get_settings | 71 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
@@ -140,12 +140,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `task_review_queue` | `db.info.get` | 131 |
-| unresolved_call | `task_review_queue` | `service.references().where` | 133 |
-| unresolved_call | `task_review_queue` | `service.references` | 133 |
-| unresolved_call | `task_review_queue` | `Task.canceled_at.is_` | 133 |
-| unresolved_call | `task_review_queue` | `Task.is_summary.is_` | 133 |
-| external_call | `task_review_queue` | `HTTPException` | 135 |
+| unresolved_call | `task_review_queue` | `db.info.get` | 140 |
+| unresolved_call | `task_review_queue` | `service.references().where` | 142 |
+| unresolved_call | `task_review_queue` | `service.references` | 142 |
+| unresolved_call | `task_review_queue` | `Task.canceled_at.is_` | 142 |
+| unresolved_call | `task_review_queue` | `Task.is_summary.is_` | 142 |
+| external_call | `task_review_queue` | `HTTPException` | 144 |
 | unresolved_call | `require_project` | `db.info.get` | 69 |
 | step_limit | `task_review_queue` | `first 12 steps` | 0 |
 

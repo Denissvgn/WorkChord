@@ -86,7 +86,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 ```mermaid
 flowchart LR
     n0["TaskService (backend/app/services/task_service.py)"]
-    n1["wrapped (backend/app/commands.py)"]
+    n1["planning_input_reservation (backend/app/commands.py)"]
     n2["_stage_context_command_audit_event (backend/app/mcp_agent_tools.py)"]
     n3["_stage_triage_command_audit_event (backend/app/mcp_agent_tools.py)"]
     n4["apply_task_command (backend/app/mcp_agent_tools.py)"]
@@ -135,7 +135,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `wrapped` | call | [commands](../modules/commands.md) | 1 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 1 |
 | `_stage_context_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `_stage_triage_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `apply_task_command` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |

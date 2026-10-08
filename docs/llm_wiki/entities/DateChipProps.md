@@ -1,6 +1,6 @@
 # DateChipProps
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:1168`
+**Location:** `frontend/src/pages/CalendarPage.tsx:1151`
 **Kind:** Class
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)

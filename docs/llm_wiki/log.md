@@ -1923,3 +1923,26 @@ Calendar and profile editors retain complete initial shared-input observations w
 - Unsupported infrastructure YAML: 6
 
 Compose web and worker services forward strict mutation policy with compatibility defaults and explicit recreation for activation or rollback.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1ff36f7a2746b7aa435e664cbe061db918c4aa1e58058c8285b21d02305b5580`
+- Pages created: 14
+- Pages updated: 142
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2824
+- Pages deprecated: 1
+- Semantic fields preserved: 10
+- Moved entities: none
+- Flow pages initialized: 2 (http=2)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+Project, iteration, capacity, vacation and import workflows now retain complete initial or preview observations with explicit conflict recovery and bounded nested writes.

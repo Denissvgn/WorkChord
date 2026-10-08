@@ -21,16 +21,21 @@ Parser utilities for importing tasks and team members from text files.
 ```mermaid
 flowchart LR
     n0["backend/app/models/task.py"]
-    n1["backend/app/utils/import_parser.py"]
+    n1["backend/app/services/planning_input_context.py"]
+    n2["backend/app/utils/import_parser.py"]
     n1 --> n0
+    n1 --> n2
+    n2 --> n0
     click n0 "../modules/models_task.md"
-    click n1 "../modules/import_parser.md"
+    click n1 "../modules/planning_input_context.md"
+    click n2 "../modules/import_parser.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [planning_input_context](../modules/planning_input_context.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 
 ## Classes

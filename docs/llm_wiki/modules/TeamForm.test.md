@@ -20,8 +20,8 @@ _Auto-generated from `frontend/src/components/team/TeamForm.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Constants | `teamServiceMock` |
-| Module calls | `teamServiceMock = hoisted`, `mock`, `describe` |
+| Constants | `planningMock`, `teamServiceMock` |
+| Module calls | `planningMock = hoisted`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe` |
 
 ## Local dependency map
 

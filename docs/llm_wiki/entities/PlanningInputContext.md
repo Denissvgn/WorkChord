@@ -30,11 +30,14 @@ _Auto-generated from `PlanningInputContext` in `backend/app/schemas/planning_inp
 flowchart LR
     n0["PlanningInputContext (backend/app/schemas/planning_inputs.py)"]
     n1["BaseModel"]
-    n2["planning_input_context (backend/app/routers/task_domain.py)"]
+    n2["member_planning_context (backend/app/routers/task_domain.py)"]
+    n3["planning_input_context (backend/app/routers/task_domain.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/planning_inputs.md"
     click n2 "../modules/routers_task_domain.md"
+    click n3 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
@@ -53,4 +56,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `member_planning_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `planning_input_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |

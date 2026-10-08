@@ -19,19 +19,20 @@ sequenceDiagram
     participant p7 as revisions
     participant p8 as list
     participant p9 as (…).mappings().first
-    participant p10 as (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
+    participant p10 as (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
     participant p11 as db.execute
-    participant p12 as select(…).where (backend/app/services/plan…:observe_planning_input, 1)
+    participant p12 as select(…).where (backend/app/services/plan…:observe_planning_input, 2)
     participant p13 as select
-    participant p14 as LookupError
+    participant p14 as PlanningInputUnavailable
     participant p15 as dict
-    participant p16 as (…).mappings().all
-    participant p17 as (…).mappings (backend/app/services/plan….py:observe_planning_input)
-    participant p18 as select(…).where(…).order_by(…).limit
-    participant p19 as select(…).where(…).order_by
-    participant p20 as select(…).where (backend/app/services/plan….py:observe_planning_input)
+    participant p16 as (…).mappings().all (backend/app/services/plan…:observe_planning_input, 1)
+    participant p17 as (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
+    participant p18 as select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 1)
+    participant p19 as select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 1)
+    participant p20 as select(…).where (backend/app/services/plan…:observe_planning_input, 1)
     participant p21 as len
     participant p22 as PlanningConflict
+    participant p23 as (…).mappings().all (backend/app/services/plan….py:observe_planning_input)
     p0-->>p1: HTTPException (backend/app/routers/task_….py:planning_input_context)
     p0->>p2: domain_result
     p2-->>p3: HTTPException (backend/app/routers/task_domain.py:domain_result)
@@ -45,26 +46,26 @@ sequenceDiagram
     p6-->>p7: revisions
     p6-->>p8: list
     p6-->>p9: (…).mappings().first
-    p6-->>p10: (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
+    p6-->>p10: (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
     p6-->>p11: db.execute
-    p6-->>p12: select(…).where (backend/app/services/plan…:observe_planning_input, 1)
+    p6-->>p12: select(…).where (backend/app/services/plan…:observe_planning_input, 2)
     p6-->>p13: select
-    p6-->>p14: LookupError
+    p6->>p14: PlanningInputUnavailable
     p6-->>p15: dict
-    p6-->>p16: (…).mappings().all
-    p6-->>p17: (…).mappings (backend/app/services/plan….py:observe_planning_input)
+    p6-->>p16: (…).mappings().all (backend/app/services/plan…:observe_planning_input, 1)
+    p6-->>p17: (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
     p6-->>p11: db.execute
-    p6-->>p18: select(…).where(…).order_by(…).limit
-    p6-->>p19: select(…).where(…).order_by
-    p6-->>p20: select(…).where (backend/app/services/plan….py:observe_planning_input)
+    p6-->>p18: select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 1)
+    p6-->>p19: select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 1)
+    p6-->>p20: select(…).where (backend/app/services/plan…:observe_planning_input, 1)
     p6-->>p13: select
     p6-->>p21: len
     p6->>p22: PlanningConflict
     p6-->>p15: dict
-    p6-->>p7: revisions
+    p6-->>p23: (…).mappings().all (backend/app/services/plan….py:observe_planning_input)
 ```
 
-> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 45 interactions; 15 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -113,7 +114,7 @@ flowchart LR
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
-| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member` | - | `resource[...]` | `{...}` |
+| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member`, `intent` | - | `values[...]`, `resource[...]`, `resource[...]` | `{...}` |
 | `revisions` | - | - | - | - |
 
 ### Call data
@@ -122,15 +123,15 @@ flowchart LR
 |---|---|---:|---|
 | planning_input_context | HTTPException (backend/app/routers/task_….py:planning_input_context) | 33 | `HTTPException(422, detail='Use a positive planning resource identity and a supported member-create context.')` |
 | planning_input_context | domain_result | 35 | `domain_result(observe_planning_input(...))` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 42 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 44 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 44 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 46 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 46 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | planning_input_context | observe_planning_input | 35 | `observe_planning_input(db, kind, resource_id, creating_member=creating_member)` |
-| observe_planning_input | revisions | 87 | `revisions(data not statically known)` |
+| observe_planning_input | revisions | 147 | `revisions(data not statically known)` |
 
 ### Boundary effects
 
@@ -141,12 +142,12 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `planning_input_context` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 42 |
-| unresolved_call | `domain_result` | `exc.detail` | 42 |
-| external_call | `domain_result` | `HTTPException` | 44 |
-| external_call | `domain_result` | `HTTPException` | 46 |
-| external_call | `domain_result` | `HTTPException` | 48 |
-| unresolved_call | `observe_planning_input` | `revisions` | 87 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| unresolved_call | `observe_planning_input` | `revisions` | 147 |
 | step_limit | `planning_input_context` | `first 12 steps` | 0 |
 
 ## Behavior

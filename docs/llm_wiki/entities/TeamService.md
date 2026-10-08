@@ -43,7 +43,7 @@ Service for team member operations.
 | `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
 | `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
 | `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
-| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@atomic_command` | Import vacation ranges for iteration team members from CSV text. |
+| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@schedule_input_command('member')` | Import vacation ranges for iteration team members from CSV text. |
 | `calculate_capacity` | *(async)* `(member_id: int) -> MemberCapacity \| None` | — | Calculate capacity for a team member. |
 | `get_workload` | *(async)* `(member_id: int) -> MemberWorkload \| None` | — | Get workload information for a team member. |
 | `import_members` | *(async)* `(iteration_id: int, text: str, *, expected_revisions: dict[int, int] \| None = None) -> list[TeamMember]` | `@schedule_input_command('member')` | Import multiple team members from text format. |
@@ -116,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

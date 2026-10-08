@@ -18,7 +18,10 @@ _Auto-generated from `frontend/src/services/planningInputService.test.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `mock`, `beforeEach`, `it`, `it` |
+| Module calls | `mock`, `beforeEach`, `it`, `it`, `it.each([
+    { complete: false }, { resource_id: 8 }, { expected_revisions: { 1: 0 } },
+    { expected_revisions: { 1: true } }, { expected_revisions: { '-1': 4 } }, { resource: { id: 8 } },
+])` |
 
 ## Local dependency map
 

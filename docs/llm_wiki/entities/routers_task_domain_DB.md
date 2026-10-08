@@ -32,10 +32,10 @@ flowchart LR
     n6["execution_usage_summary (backend/app/routers/task_domain.py)"]
     n7["human_my_work (backend/app/routers/task_domain.py)"]
     n8["lookup_tasks (backend/app/routers/task_domain.py)"]
-    n9["planning_input_context (backend/app/routers/task_domain.py)"]
-    n10["record_task_progress (backend/app/routers/task_domain.py)"]
-    n11["restore_backlog (backend/app/routers/task_domain.py)"]
-    n12["review_task (backend/app/routers/task_domain.py)"]
+    n9["member_planning_context (backend/app/routers/task_domain.py)"]
+    n10["planning_input_context (backend/app/routers/task_domain.py)"]
+    n11["record_task_progress (backend/app/routers/task_domain.py)"]
+    n12["restore_backlog (backend/app/routers/task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -81,9 +81,9 @@ flowchart LR
 | `execution_usage_summary` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `human_my_work` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `lookup_tasks` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `member_planning_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `planning_input_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `restore_backlog` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `review_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 
-> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.

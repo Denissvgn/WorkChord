@@ -1,6 +1,6 @@
 # CalendarDraft
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:38`
+**Location:** `frontend/src/pages/CalendarPage.tsx:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)

@@ -28,6 +28,7 @@ flowchart LR
     n5["backend/app/mutation_versions.py"]
     n6["backend/app/runtime_telemetry.py"]
     n7["backend/tests/test_mutation_versions.py"]
+    n8["backend/tests/test_shared_member_revisions.py"]
     n0 --> n5
     n0 --> n6
     n2 --> n0
@@ -50,6 +51,9 @@ flowchart LR
     n7 --> n3
     n7 --> n4
     n7 --> n5
+    n8 --> n1
+    n8 --> n2
+    n8 --> n5
     click n0 "../modules/commands.md"
     click n1 "../modules/config.md"
     click n2 "../modules/app_main.md"
@@ -58,6 +62,7 @@ flowchart LR
     click n5 "../modules/mutation_versions.md"
     click n6 "../modules/runtime_telemetry.md"
     click n7 "../modules/test_mutation_versions.md"
+    click n8 "../modules/test_shared_member_revisions.md"
 ```
 
 ### Internal neighbors
@@ -69,6 +74,7 @@ flowchart LR
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [mcp_server](../modules/mcp_server.md) |
 | Inbound | [test_mutation_versions](../modules/test_mutation_versions.md) |
+| Inbound | [test_shared_member_revisions](../modules/test_shared_member_revisions.md) |
 | Outbound | [config](../modules/config.md) |
 | Outbound | [runtime_telemetry](../modules/runtime_telemetry.md) |
 

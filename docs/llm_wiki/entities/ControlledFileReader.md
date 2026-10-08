@@ -1,6 +1,6 @@
 # ControlledFileReader
 
-**Location:** `frontend/src/components/team/ImportTeamModal.test.tsx:23`
+**Location:** `frontend/src/components/team/ImportTeamModal.test.tsx:26`
 **Kind:** Class
 **Bases:** —
 **Module:** [ImportTeamModal.test](../modules/ImportTeamModal.test.md)

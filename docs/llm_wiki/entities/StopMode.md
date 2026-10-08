@@ -1,6 +1,6 @@
 # StopMode
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:33`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:37`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
