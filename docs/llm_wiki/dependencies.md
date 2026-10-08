@@ -198,6 +198,7 @@ flowchart TD
 | [models_label](modules/models_label.md) | 4 | 2 |
 | [models_plan_share](modules/models_plan_share.md) | 4 | 4 |
 | [models_system_settings](modules/models_system_settings.md) | 4 | 2 |
+| [schemas_calendar](modules/schemas_calendar.md) | 4 | 1 |
 | [schemas_external_link](modules/schemas_external_link.md) | 4 | 1 |
 | [schemas_gantt](modules/schemas_gantt.md) | 4 | 3 |
 | [schemas_github](modules/schemas_github.md) | 4 | 0 |
@@ -253,7 +254,6 @@ flowchart TD
 | [export](modules/export.md) | 3 | 13 |
 | [routers_gantt](modules/routers_gantt.md) | 3 | 12 |
 | [tasks](modules/tasks.md) | 3 | 21 |
-| [schemas_calendar](modules/schemas_calendar.md) | 3 | 1 |
 | [schemas_intake](modules/schemas_intake.md) | 3 | 0 |
 | [schemas_llm](modules/schemas_llm.md) | 3 | 1 |
 | [schemas_outbound_webhook](modules/schemas_outbound_webhook.md) | 3 | 1 |
@@ -580,7 +580,7 @@ flowchart TD
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
 | [test_process_roles](modules/test_process_roles.md) | 0 | 3 |
-| [test_profile_capacity](modules/test_profile_capacity.md) | 0 | 16 |
+| [test_profile_capacity](modules/test_profile_capacity.md) | 0 | 17 |
 | [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) | 0 | 4 |
 | [test_project_working_timezone](modules/test_project_working_timezone.md) | 0 | 13 |
 | [test_runtime_boundaries](modules/test_runtime_boundaries.md) | 0 | 9 |

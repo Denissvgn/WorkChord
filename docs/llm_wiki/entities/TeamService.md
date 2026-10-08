@@ -116,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.

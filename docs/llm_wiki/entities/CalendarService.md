@@ -96,4 +96,4 @@ flowchart LR
 | `AgentRoutingService._capacity_inputs` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `IterationService._calculate_team_capacity` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

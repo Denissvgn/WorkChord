@@ -25,16 +25,20 @@ flowchart LR
     n2["backend/app/schemas/calendar.py"]
     n3["backend/app/schemas/planning_inputs.py"]
     n4["backend/app/services/calendar_service.py"]
+    n5["backend/tests/test_profile_capacity.py"]
     n0 --> n2
     n0 --> n4
     n1 --> n2
     n2 --> n3
     n4 --> n2
+    n5 --> n2
+    n5 --> n4
     click n0 "../modules/calendars.md"
     click n1 "../modules/schemas___init__.md"
     click n2 "../modules/schemas_calendar.md"
     click n3 "../modules/planning_inputs.md"
     click n4 "../modules/calendar_service.md"
+    click n5 "../modules/test_profile_capacity.md"
 ```
 
 ### Internal neighbors
@@ -44,6 +48,7 @@ flowchart LR
 | Inbound | [calendars](../modules/calendars.md) |
 | Inbound | [schemas___init__](../modules/schemas___init__.md) |
 | Inbound | [calendar_service](../modules/calendar_service.md) |
+| Inbound | [test_profile_capacity](../modules/test_profile_capacity.md) |
 | Outbound | [planning_inputs](../modules/planning_inputs.md) |
 
 ### External packages

@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:ee5dd6e0358d93c0b15bc05a59556d241a3d0913a2d094370be854ec3e0dc3ee",
-    "knowledge_index_hash": "sha256:002a8b94a2572c3c6b8d00cd9df21d1bc36b7cb58c3b62ff90b0b637ac840618",
-    "surface_index_hash": "sha256:7ab11cf15967705d07e9b76dfc79b4225949740465cded9b5829a91a376eee88"
+    "evaluated_envelope_hash": "sha256:dae1225a15a279d0b990b2f9ec6d94063cc8140a2a245008ef1afec3bd516e66",
+    "knowledge_index_hash": "sha256:980af0fb52aeba3f45435d3c21eacd055c8e028194e63f61baa00ca825edb016",
+    "surface_index_hash": "sha256:7878b170e9eb085ed93e64624e227a4e3dc803bf00ad17061bc17be9a88547cf"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -2030,7 +2030,7 @@
         "concept_observation_hash": "sha256:8c17db3daa91666b2d3fcf13a30a5400a163d958c0a7b529b2525372f250a2d5",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:a71d33312b7cdbd5e067b46831b2767c41b843d1bdd4e20275db5f675c021999",
+        "source_content_hash": "sha256:21383f32f4a0c90784cae90e6754f61e3e8fb378006864f45babf376bd34ec01",
         "source_path": "backend/app/services/calendar_service.py"
       },
       "state": "known"
@@ -17630,7 +17630,7 @@
         "concept_observation_hash": "sha256:0e8080fe748ffda3b6845771c2f886fc709a8519377ac87d1089d12235fe5c74",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a71d33312b7cdbd5e067b46831b2767c41b843d1bdd4e20275db5f675c021999",
+        "source_content_hash": "sha256:21383f32f4a0c90784cae90e6754f61e3e8fb378006864f45babf376bd34ec01",
         "source_path": "backend/app/services/calendar_service.py"
       },
       "state": "known"
@@ -21317,10 +21317,10 @@
     },
     "modules/test_profile_capacity.md": {
       "basis": {
-        "concept_observation_hash": "sha256:d3636e9bceda579035374fae92ca2f8ff656fafd417ddca6594525e403f7b29b",
+        "concept_observation_hash": "sha256:ceab3944ddf5de0c0418a0d6df898f711b1f14eef5b92cbdc710a46dde82675c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:22838a605ab7588e20d604e0f8dbcdc897f475491427293cdaa6f5a716a1e27f",
+        "source_content_hash": "sha256:4ae96d6cf4affc80521b0099fc7530ce5278ced7dc328f24912dc6061d9f8156",
         "source_path": "backend/tests/test_profile_capacity.py"
       },
       "state": "known"
@@ -22340,13 +22340,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:fd1fe669159606deb888f457c1b797942e01b580ddaa5fef747faa80a1fa3ac5",
-      "lifecycle_hash": "sha256:897c3a652ac846768022b6e17d99b7222a48c4cc51a6373126f188658006cbd7",
-      "markdown_snapshot_hash": "sha256:ec36eef06e9cef2948afc34ddb87c73d1601fa059e6ce8d9072a15fc69e51b12",
-      "observation_inputs_hash": "sha256:116f51ddaecf58af11c5afd14c870351666e6ca9b7582e726064c1d8143a82a1",
+      "inventory_hash": "sha256:0fb81a196db338fa7d0fea95da785e7633baf833383eec34dcb16c1b8b8f259f",
+      "lifecycle_hash": "sha256:8c5fcffc2ac24d77a6de07e19b1fac5c623f30d9673d2afc8758d2907ce89322",
+      "markdown_snapshot_hash": "sha256:37ea340a98abcb973cba1ceef16ff26dcfd3f8e3f60225fa93937038126aa226",
+      "observation_inputs_hash": "sha256:e2f63b806967d37b4d3a9638394b93a0bf9dff7dcc6cec95008f9fd764cec29d",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:80ebe51501503af0ed40505b5992b8714caba42bb3f12ef2296f13f17d5e650d"
+      "source_snapshot_hash": "sha256:cf5aa9a36d378e63f2e308a0455098926c4fe5bc5ab7a250ee630e9f98bace02"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -55773,10 +55773,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:a71d33312b7cdbd5e067b46831b2767c41b843d1bdd4e20275db5f675c021999",
+      "hash": "sha256:21383f32f4a0c90784cae90e6754f61e3e8fb378006864f45babf376bd34ec01",
       "language": "python",
       "module_page": "calendar_service",
-      "semantic_hash": "sha256:3296f98057d26c1e4ecc3e86fce39eba572a456dc33dabf24a6ad2a5159a83f9"
+      "semantic_hash": "sha256:9a0d2a7e84017f89816d1bccf36938b5a35edba4bb9977e260db5231c83f6bd6"
     },
     "backend/app/services/capacity_service.py": {
       "entities": [
@@ -61906,6 +61906,7 @@
             "test_canonical_calendar_and_fractional_capacity_preserve_unknown_work": "—",
             "test_capacity_counts_union_of_absences_and_actual_calendar_hours": "—",
             "test_concurrent_absence_edits_have_one_winner": "—",
+            "test_created_short_days_apply_once_to_fractional_shared_capacity": "—",
             "test_iteration_restore_preserves_current_shared_absence": "—",
             "test_overallocated_person_can_preview_but_cannot_commit": "—",
             "test_overflow_forecast_cannot_commit_outside_allocation_dates": "—",
@@ -61921,10 +61922,10 @@
           }
         }
       },
-      "hash": "sha256:22838a605ab7588e20d604e0f8dbcdc897f475491427293cdaa6f5a716a1e27f",
+      "hash": "sha256:4ae96d6cf4affc80521b0099fc7530ce5278ced7dc328f24912dc6061d9f8156",
       "language": "python",
       "module_page": "test_profile_capacity",
-      "semantic_hash": "sha256:156fe9af188839163d124b6374c303d4beff8c2c4251e7dee2b1f8d721577eeb"
+      "semantic_hash": "sha256:099356e4a44a5e3623f1a1069a881ac9e1a9db705e6b87c6abe9bc861dc724b5"
     },
     "backend/tests/test_profile_capacity_migrations.py": {
       "entities": [],

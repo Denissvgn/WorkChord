@@ -35,15 +35,18 @@ flowchart LR
     n2["create_calendar (backend/app/routers/calendars.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["CalendarService.create (backend/app/services/calendar_service.py)"]
+    n5["test_created_short_days_apply_once_to_fractional_shared_capacity (backend/tests/test_profile_capacity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_calendar.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/calendars.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/calendar_service.md"
+    click n5 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -65,3 +68,4 @@ flowchart LR
 | `create_calendar` | type_reference | [calendars](../modules/calendars.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `CalendarService.create` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
+| `test_created_short_days_apply_once_to_fractional_shared_capacity` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |

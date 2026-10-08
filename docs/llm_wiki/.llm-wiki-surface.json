@@ -54073,7 +54073,8 @@
         "modules/calendars.md",
         "modules/planning_inputs.md",
         "modules/schemas___init__.md",
-        "modules/schemas_calendar.md"
+        "modules/schemas_calendar.md",
+        "modules/test_profile_capacity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/calendar.py",
@@ -70446,7 +70447,8 @@
         "modules/calendars.md",
         "modules/planning_inputs.md",
         "modules/schemas___init__.md",
-        "modules/schemas_calendar.md"
+        "modules/schemas_calendar.md",
+        "modules/test_profile_capacity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/calendar.py",
@@ -88744,5 +88746,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:81bb3ee9ae79d164bf9fa953188f28aa2973badee7540ce3f9e1555688b35114"
+  "source_hash": "sha256:b8b303c3d478ad01119f8a2fb0deba865cb9cc6afb5d1a12d8af995b6ed8d5d8"
 }

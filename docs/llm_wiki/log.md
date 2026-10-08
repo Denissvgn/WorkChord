@@ -1693,3 +1693,19 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:cf5aa9a36d378e63f2e308a0455098926c4fe5bc5ab7a250ee630e9f98bace02`
+- Pages created: 0
+- Pages updated: 10
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2928
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

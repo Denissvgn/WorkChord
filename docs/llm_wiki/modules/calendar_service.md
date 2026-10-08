@@ -6,6 +6,8 @@
 
 Calendar service with business logic.
 
+Creation persists submitted shortened working days along with the declared zone, nominal hours, holidays and weekends. Existing capacity arithmetic applies the one-hour reduction once on working days; holidays, weekends and canonical person absences retain precedence.
+
 Nominal-workday edits use the same task-unit refresh helper as iteration calendar reassignment, within the existing planning-input transaction.
 
 ## Imports
