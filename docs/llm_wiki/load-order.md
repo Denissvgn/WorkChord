@@ -1012,6 +1012,7 @@ Topological module load / startup order and import-time side effects.
 | `create_triage_item` | factory | [routers_triage](modules/routers_triage.md) |
 | `setup_exception_handlers` | wiring | [exceptions](modules/exceptions.md) |
 | `configure_database` | wiring | [conftest](modules/conftest.md) |
+| `create_empty_project_as_owner` | factory | [test_managed_authority](modules/test_managed_authority.md) |
 | `create_actor` | factory | [create_agent_actor](modules/create_agent_actor.md) |
 
 ## Indeterminate (cyclic) groups

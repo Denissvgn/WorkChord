@@ -32,6 +32,7 @@ flowchart LR
     n6["backend/app/routers/tasks.py"]
     n7["backend/app/services/delivery_dependency_service.py"]
     n8["backend/tests/test_delivery_dependencies.py"]
+    n0 --> n3
     n0 --> n4
     n1 --> n0
     n1 --> n3

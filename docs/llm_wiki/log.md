@@ -1613,3 +1613,19 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Workflow pages created: 1
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9335a35d5c760ae90043b4f6b3edc8da0050cb7ab992184218f512704da2d7be`
+- Pages created: 0
+- Pages updated: 19
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2917
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none

@@ -33,7 +33,8 @@ flowchart LR
     n7["backend/tests/database/test_postgresql_concurrency.py"]
     n8["backend/tests/test_agent_routing_observability.py"]
     n9["backend/tests/test_agent_routing_rollout.py"]
-    n10["backend/tests/test_task_discussion.py"]
+    n10["backend/tests/test_managed_authority.py"]
+    n11["backend/tests/test_task_discussion.py"]
     n0 --> n3
     n1 --> n2
     n2 --> n0
@@ -53,9 +54,11 @@ flowchart LR
     n9 --> n2
     n9 --> n6
     n10 --> n2
-    n10 --> n4
-    n10 --> n5
     n10 --> n6
+    n11 --> n2
+    n11 --> n4
+    n11 --> n5
+    n11 --> n6
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_outbound_webhook.md"
@@ -66,7 +69,8 @@ flowchart LR
     click n7 "../modules/test_postgresql_concurrency.md"
     click n8 "../modules/test_agent_routing_observability.md"
     click n9 "../modules/test_agent_routing_rollout.md"
-    click n10 "../modules/test_task_discussion.md"
+    click n10 "../modules/test_managed_authority.md"
+    click n11 "../modules/test_task_discussion.md"
 ```
 
 ### Internal neighbors
@@ -80,6 +84,7 @@ flowchart LR
 | Inbound | [test_postgresql_concurrency](../modules/test_postgresql_concurrency.md) |
 | Inbound | [test_agent_routing_observability](../modules/test_agent_routing_observability.md) |
 | Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
+| Inbound | [test_managed_authority](../modules/test_managed_authority.md) |
 | Inbound | [test_task_discussion](../modules/test_task_discussion.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [time](../modules/time.md) |

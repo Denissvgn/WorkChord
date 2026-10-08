@@ -37,13 +37,13 @@ flowchart TD
 | [config](modules/config.md) | 61 | 1 |
 | [types_task](modules/types_task.md) | 61 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 59 | 1 |
-| [models_agent](modules/models_agent.md) | 55 | 5 |
+| [models_agent](modules/models_agent.md) | 56 | 5 |
 | [task_service](modules/task_service.md) | 46 | 17 |
 | [models_iteration](modules/models_iteration.md) | 44 | 6 |
 | [apiError](modules/apiError.md) | 44 | 0 |
-| [authority](modules/authority.md) | 41 | 5 |
+| [authority](modules/authority.md) | 41 | 6 |
 | [team_member](modules/team_member.md) | 38 | 6 |
-| [models_project](modules/models_project.md) | 35 | 9 |
+| [models_project](modules/models_project.md) | 36 | 9 |
 | [schemas_task](modules/schemas_task.md) | 33 | 5 |
 | [i18n](modules/i18n.md) | 33 | 1 |
 | [api](modules/api.md) | 33 | 2 |
@@ -93,6 +93,7 @@ flowchart TD
 | [recovery](modules/recovery.md) | 11 | 3 |
 | [runtime_telemetry](modules/runtime_telemetry.md) | 11 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
+| [project_service](modules/project_service.md) | 11 | 12 |
 | [team_service](modules/team_service.md) | 11 | 8 |
 | [useConfirmDialog](modules/useConfirmDialog.md) | 11 | 1 |
 | [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
@@ -100,8 +101,8 @@ flowchart TD
 | [load_common](modules/load_common.md) | 11 | 1 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [security](modules/security.md) | 10 | 1 |
-| [project_service](modules/project_service.md) | 10 | 12 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
+| [models_outbound_webhook](modules/models_outbound_webhook.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
 | [schemas_project](modules/schemas_project.md) | 9 | 3 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 9 | 0 |
@@ -117,7 +118,6 @@ flowchart TD
 | [database_config](modules/database_config.md) | 8 | 0 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
 | [models___init__](modules/models___init__.md) | 8 | 31 |
-| [models_outbound_webhook](modules/models_outbound_webhook.md) | 8 | 2 |
 | [models_time_entry](modules/models_time_entry.md) | 8 | 2 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [calendar_service](modules/calendar_service.md) | 8 | 4 |
@@ -331,7 +331,7 @@ flowchart TD
 | [task_timeline_service](modules/task_timeline_service.md) | 2 | 4 |
 | [time_report_service](modules/time_report_service.md) | 2 | 5 |
 | [test_project_identity](modules/test_project_identity.md) | 2 | 8 |
-| [test_managed_authority](modules/test_managed_authority.md) | 2 | 13 |
+| [test_managed_authority](modules/test_managed_authority.md) | 2 | 16 |
 | [UserSessionBadge](modules/UserSessionBadge.md) | 2 | 3 |
 | [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) | 2 | 2 |
 | [TaskRoutingPanel](modules/TaskRoutingPanel.md) | 2 | 14 |

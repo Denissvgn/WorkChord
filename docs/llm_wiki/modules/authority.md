@@ -14,6 +14,8 @@ Principal-bound policy scopes task, project, backlog and triage reads/writes acr
 
 Deletion fences are internal recovery metadata and are excluded from ordinary managed principal-scoped ORM reads. Authorized recovery performs its narrowly scoped fence lookup through the internal authority boundary.
 
+Project removal requires management permission. Audit append checks live scope existence after the owning flush, retaining deleted scope identifiers in details and using null live foreign keys. Project domain changes, audit attribution and queued outbox records remain in the same transaction, and ordinary ORM commands cannot rewrite audit details.
+
 ## Imports
 
 | Source | Symbols |
@@ -22,6 +24,7 @@ Deletion fences are internal recovery metadata and are excluded from ordinary ma
 | `app.database` | `Base`, `Base`, `Base` |
 | `app.models.agent` | `AgentTaskAssignment` |
 | `app.models.identity` | `CommandAudit`, `CommandAudit` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
 | `contextlib` | `contextmanager` |
 | `dataclasses` | `dataclass`, `field` |
@@ -53,7 +56,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (40) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (5) |
+| Outbound | `backend` (6) |
 
 ### External packages
 
@@ -61,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

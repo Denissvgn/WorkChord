@@ -8,6 +8,8 @@ Project metadata pages have ascending IDs and a carried initial upper bound, so 
 
 Project service with CRUD and summary logic.
 
+Deletion preflights management authority, task and dependency constraints, and queued or active execution references. Unsafe execution scope prevents removal before task detachment; a successful removal retains attributable audit and outbox history without reusing the project's recording identity.
+
 ## Imports
 
 | Source | Symbols |
@@ -50,7 +52,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
+| Inbound | `backend` (10) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (12) |
 
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

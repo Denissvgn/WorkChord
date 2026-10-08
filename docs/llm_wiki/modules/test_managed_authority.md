@@ -14,12 +14,15 @@ Real principal, transport, scoped-read and command-denial contracts.
 | `app.commands` | `command_transaction` |
 | `app.config` | `get_settings` |
 | `app.main` | `app` |
-| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `WorkspaceMembership`, `WorkspaceAuthorityState`, `CommandAudit` |
-| `app.models.project` | `Project` |
+| `app.models.agent` | `AgentTaskAssignment` |
+| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `WorkspaceMembership`, `WorkspaceAuthorityState`, `CommandAudit`, `CommandAudit`, `CommandAudit`, `CommandAudit`, `CommandAudit` |
+| `app.models.outbound_webhook` | `OutboundWebhookEvent`, `OutboundWebhookEvent`, `OutboundWebhookEvent` |
+| `app.models.project` | `Project`, `Project`, `Project`, `Project`, `Project`, `Project` |
 | `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.saved_view` | `SavedView` |
 | `app.models.task` | `Task` |
 | `app.models.user_session` | `UserSession` |
+| `app.services` | `project_service` |
 | `app.services.identity_service` | `digest`, `validate_id_token` |
 | `app.utils.time` | `utc_now` |
 | `cryptography.hazmat.primitives.asymmetric` | `rsa` |
@@ -29,8 +32,9 @@ Real principal, transport, scoped-read and command-denial contracts.
 | `jwt` | `jwt` |
 | `pytest` | `pytest` |
 | `pytest_asyncio` | `pytest_asyncio` |
-| `sqlalchemy` | `func`, `select`, `update` |
+| `sqlalchemy` | `func`, `select`, `update`, `event` |
 | `sqlalchemy.exc` | `IntegrityError` |
+| `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
 
 ## Local dependency map
@@ -52,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (13) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -60,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 6 | 2 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -69,6 +73,12 @@ flowchart LR
 | `managed_store` | *(async)* `(delivery_store, monkeypatch)` | `@pytest_asyncio.fixture` | — |
 | `client` | `(token = None, **headers)` | — | — |
 | `test_workspace_owner_deletes_empty_project_with_retained_audit` | *(async)* `(managed_store)` | — | — |
+| `create_empty_project_as_owner` | *(async)* `(managed_store)` | — | — |
+| `test_project_deletion_has_one_attributable_audit_and_outbox_outcome` | *(async)* `(managed_store, credential)` | `@pytest.mark.parametrize('credential', ['owner', 'operator'])` | — |
+| `test_scoped_nonmanager_deletion_is_denied_without_domain_changes` | *(async)* `(managed_store, role)` | `@pytest.mark.parametrize('role', ['viewer', 'editor', 'executor', 'reviewer'])` | — |
+| `test_project_delete_failures_roll_back_domain_audit_and_outbox` | *(async)* `(managed_store, monkeypatch, failure_point)` | `@pytest.mark.parametrize('failure_point', ['before_delete', 'outbox', 'after_outbox', 'audit'])` | — |
+| `test_command_audit_details_cannot_be_rewritten` | *(async)* `(managed_store)` | — | — |
+| `test_project_deletion_refuses_live_assignment_scope_without_partial_detach` | *(async)* `(managed_store, state)` | `@pytest.mark.parametrize('state', ['queued', 'accepted'])` | — |
 | `test_managed_mode_rejects_missing_forged_and_conflicting_identity` | *(async)* `(managed_store)` | — | — |
 | `test_project_reads_hide_unrelated_ids_counts_and_people` | *(async)* `(managed_store)` | — | — |
 | `test_cookie_mutations_require_request_integrity` | *(async)* `(managed_store)` | — | — |

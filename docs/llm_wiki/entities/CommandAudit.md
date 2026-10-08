@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `CommandAudit` in `backend/app/models/identity.py`._
+Append-only command attribution with principal, source, correlation and reason. When a project has been deleted, the live foreign key is null and immutable details retain its original project identifier; related outbox audit records preserve the same scope without requiring a live project row.
 
 ## Attributes
 

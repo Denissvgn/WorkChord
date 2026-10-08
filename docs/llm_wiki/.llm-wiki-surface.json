@@ -50027,9 +50027,9 @@
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
         "modules/app_database.md",
+        "modules/authority.md",
         "modules/commands.md",
         "modules/delivery_metrics_service.md",
-        "modules/execution_usage_service.md",
         "modules/models___init__.md",
         "modules/models_iteration.md",
         "modules/models_project.md",
@@ -51715,7 +51715,6 @@
         "modules/models_identity.md",
         "modules/routers_identity.md",
         "modules/routers_task_domain.md",
-        "modules/serve_disposable_api.md",
         "modules/task_domain_service.md",
         "modules/test_managed_authority.md",
         "modules/test_project_identity.md",
@@ -63258,7 +63257,6 @@
         "modules/app_database.md",
         "modules/discussion_service.md",
         "modules/identity_service.md",
-        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
@@ -67629,6 +67627,7 @@
         "modules/outbound_webhook_service.md",
         "modules/test_agent_routing_observability.md",
         "modules/test_agent_routing_rollout.md",
+        "modules/test_managed_authority.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_task_discussion.md",
         "modules/time.md"
@@ -88704,5 +88703,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:157a22a5ae4b556927d5e76d45cfd2a4daf8a820a3243f5081366fcc69221245"
+  "source_hash": "sha256:a21f7d905fd4108ab12b48357a435322cbed54bf14d3091b644d1ee2132ed988"
 }

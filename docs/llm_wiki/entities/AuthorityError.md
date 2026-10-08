@@ -84,7 +84,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `_check_bulk_write` | call | [authority](../modules/authority.md) | 4 |
-| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 10 |
+| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 11 |
 | `require_operator` | call | [authority](../modules/authority.md) | 1 |
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
 | `scope_orm_operation` | call | [authority](../modules/authority.md) | 2 |
