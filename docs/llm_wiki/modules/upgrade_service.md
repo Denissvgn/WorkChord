@@ -22,6 +22,7 @@ PostgreSQL runners serialize through a session advisory lock. Future nonempty Po
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker` |
 | `app.database_config` | `DatabaseConfiguration`, `alembic_safe_url`, `parse_database_configuration` |
+| `app.database_migration.project_identity` | `ProjectIdentityError`, `inspect_project_identity` |
 | `app.maintenance` | `require_background_writes_enabled` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.github_status_automation_service` | `GitHubStatusAutomationService` |
@@ -61,9 +62,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
+| Inbound | `backend` (19) |
 | Inbound | `scripts` (3) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -71,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

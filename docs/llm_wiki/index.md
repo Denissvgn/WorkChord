@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1510 | [Open section](#entities) |
-| Modules | 694 | [Open section](#modules) |
-| Workflows | 177 | [Open section](#workflows) |
+| Entities | 1511 | [Open section](#entities) |
+| Modules | 697 | [Open section](#modules) |
+| Workflows | 179 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 543 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
@@ -596,6 +596,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProgramDecision](entities/ProgramDecision.md)
 - [ProgressWrite](entities/ProgressWrite.md)
 - [ProjectFormProps](entities/ProjectFormProps.md)
+- [ProjectIdentityError](entities/ProjectIdentityError.md)
 - [ProjectIterationsSectionProps](entities/ProjectIterationsSectionProps.md)
 - [ProjectMembership](entities/ProjectMembership.md)
 - [ProjectMilestoneCreate](entities/ProjectMilestoneCreate.md)
@@ -1540,6 +1541,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261004_0006_delivery_observations](modules/20261004_0006_delivery_observations.md) - Retain event-time delivery observations without guessing older history.
 - [20261004_0007_execution_usage](modules/20261004_0007_execution_usage.md) - Retain execution usage revisions and immutable pricing snapshots.
 - [20261007_0008_time_entries](modules/20261007_0008_time_entries.md) - Retain private minute records and append-only correction history.
+- [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) - Preserve project allocation identity across retained history.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1942,6 +1944,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [projectService](modules/projectService.md) - `frontend/src/services/projectService.ts`
 - [projectStatusStyles](modules/projectStatusStyles.md) - `frontend/src/components/projects/projectStatusStyles.ts`
 - [projectStatusStyles.test](modules/projectStatusStyles.test.md) - `frontend/src/components/projects/projectStatusStyles.test.ts`
+- [project_identity](modules/project_identity.md) - Read-only project identity qualification and retained allocation floors.
 - [project_service](modules/project_service.md) - Project service with CRUD and summary logic.
 - [projects](modules/projects.md) - Project API router.
 - [protectedQueries](modules/protectedQueries.md) - `frontend/src/utils/protectedQueries.ts`
@@ -2149,6 +2152,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_process_roles](modules/test_process_roles.md) - DBM-WORK-001 command ownership and process-role tests.
 - [test_profile_capacity](modules/test_profile_capacity.md) - Shared person capacity, calendar arithmetic and private availability boundaries.
 - [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) - Preserve legacy absence identities and report conflicting person calendars.
+- [test_project_identity](modules/test_project_identity.md) - Project allocation floors, dependent preservation and transactional rebuilds.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
@@ -2389,6 +2393,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [record_post_copy_repairs](workflows/record_post_copy_repairs.md) - entry: `transfer.record_post_copy_repairs`
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
+- [repair_sequences](workflows/repair_sequences.md) - entry: `transfer._repair_sequences`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
 - [reserve_restored_task_version](workflows/reserve_restored_task_version.md) - entry: `task_recovery_service.reserve_restored_task_version`
 - [reserve_task_context_revision](workflows/reserve_task_context_revision.md) - entry: `task_context_revision_service.reserve_task_context_revision`
@@ -2398,6 +2403,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
+- [sequence_facts](workflows/sequence_facts.md) - entry: `transfer._sequence_facts`
 - [service_worksets_flow](workflows/service_worksets_flow.md) - entry: `service_worksets.run`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
 - [summarize](workflows/summarize.md) - entry: `local_baseline.summarize`

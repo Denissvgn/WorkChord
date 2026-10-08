@@ -7,7 +7,7 @@
 
 ## Description
 
-Outcome-oriented planning container above tasks and iterations.
+Outcome-oriented planning container above tasks and iterations. SQLite allocates project identifiers without reusing deleted identities; the forward upgrade preserves dependent records and raises the allocation floor above retained historical scope identifiers.
 
 ## Attributes
 
@@ -119,4 +119,4 @@ flowchart LR
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 | `execution_usage_service` | import | [execution_usage_service](../modules/execution_usage_service.md) | — |
 
-> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.

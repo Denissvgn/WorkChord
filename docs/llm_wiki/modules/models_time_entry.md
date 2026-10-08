@@ -29,8 +29,9 @@ flowchart LR
     n3["backend/app/services/time_entry_service.py"]
     n4["backend/app/services/time_report_service.py"]
     n5["backend/app/utils/time.py"]
-    n6["backend/tests/test_time_entries.py"]
-    n7["backend/tests/test_time_reports.py"]
+    n6["backend/tests/migrations/test_project_identity.py"]
+    n7["backend/tests/test_time_entries.py"]
+    n8["backend/tests/test_time_reports.py"]
     n1 --> n2
     n2 --> n0
     n2 --> n5
@@ -39,20 +40,22 @@ flowchart LR
     n4 --> n2
     n4 --> n3
     n6 --> n2
-    n6 --> n3
     n7 --> n2
     n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n7 --> n6
+    n8 --> n2
+    n8 --> n3
+    n8 --> n4
+    n8 --> n5
+    n8 --> n7
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_time_entry.md"
     click n3 "../modules/time_entry_service.md"
     click n4 "../modules/time_report_service.md"
     click n5 "../modules/time.md"
-    click n6 "../modules/test_time_entries.md"
-    click n7 "../modules/test_time_reports.md"
+    click n6 "../modules/test_project_identity.md"
+    click n7 "../modules/test_time_entries.md"
+    click n8 "../modules/test_time_reports.md"
 ```
 
 ### Internal neighbors
@@ -62,6 +65,7 @@ flowchart LR
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [time_entry_service](../modules/time_entry_service.md) |
 | Inbound | [time_report_service](../modules/time_report_service.md) |
+| Inbound | [test_project_identity](../modules/test_project_identity.md) |
 | Inbound | [test_time_entries](../modules/test_time_entries.md) |
 | Inbound | [test_time_reports](../modules/test_time_reports.md) |
 | Outbound | [app_database](../modules/app_database.md) |

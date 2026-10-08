@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [cli_database_migration](../modules/cli_database_migration.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_database_migration](../modules/cli_database_migration.md), and 17 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_database_migration](../modules/cli_database_migration.md), and 18 more
 
 **Complete modules touched:**
 
@@ -20,6 +20,7 @@
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_identity](../modules/models_identity.md)
+- [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [source](../modules/source.md)
 - [system_settings_service](../modules/system_settings_service.md)
@@ -77,7 +78,7 @@ sequenceDiagram
     p2-->>p9: reconcile.add_argument
 ```
 
-> Call sequence diagram shows 30 of 1122 interactions; 1092 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1257 interactions; 1227 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

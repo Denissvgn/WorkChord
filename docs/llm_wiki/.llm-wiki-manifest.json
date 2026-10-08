@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:0d3b7a61cc69a9a9a67fc12579c65fe73e30422f573f5f7a11c1cf8db83728d0",
-    "knowledge_index_hash": "sha256:40ca1d74530aa7f99f3a4de9056f87f407605100701ff6d5e706a8d63872b561",
-    "surface_index_hash": "sha256:0602e24fa3ad931564b2d1b4ce066facb42d1cba662e6ec616e563bf59f68ebe"
+    "evaluated_envelope_hash": "sha256:f677db781bbfb23a82e1f8bc4c3cbb0d0445291f3a5540d4a8edec9ee05e66c6",
+    "knowledge_index_hash": "sha256:56f186f14b2d285222e73fa04281d5458180d93ce760b1986e1e6402607c6d6b",
+    "surface_index_hash": "sha256:acdb5ce84a7ccb8f474e00f6576b1037a8e407486223797e0da61ec16cc87898"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -2730,7 +2730,7 @@
         "concept_observation_hash": "sha256:531fa59dc698d75accc6215d471499c8fbd6ac42e4a689ccd92b5fd81a1feadf",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
+        "source_content_hash": "sha256:1bbfd402af2f3af1dd06b5f5fd5cef23c73d7bff51cebad1b111e9978b1f22b5",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -2740,7 +2740,7 @@
         "concept_observation_hash": "sha256:8b520b5b126f62c19923580740f65e663ee5d1022547498100f188188f8d3597",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
+        "source_content_hash": "sha256:1bbfd402af2f3af1dd06b5f5fd5cef23c73d7bff51cebad1b111e9978b1f22b5",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -5782,6 +5782,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:1c533f851e182962f7af653a9cffc506b1d6276814046eb5df6a8b62e3bddc49",
         "source_path": "frontend/src/components/projects/ProjectForm.tsx"
+      },
+      "state": "known"
+    },
+    "entities/ProjectIdentityError.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:826b2a9b9e04499e71b622c9949f6e1e4098e8febc69c3009374a6f67b73d623",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+        "source_path": "backend/app/database_migration/project_identity.py"
       },
       "state": "known"
     },
@@ -9670,7 +9680,7 @@
         "concept_observation_hash": "sha256:add03cafedcb882ce0165edc2d06e737a5750fe473f8e9a079b43bd926578102",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
+        "source_content_hash": "sha256:1bbfd402af2f3af1dd06b5f5fd5cef23c73d7bff51cebad1b111e9978b1f22b5",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -10840,7 +10850,7 @@
         "concept_observation_hash": "sha256:8a473d2932d972d7adfc35e59b565a405aa108af25d4a94cc201a509683f68c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10850,7 +10860,7 @@
         "concept_observation_hash": "sha256:2bf63c974461c8aeeb5cb5eac439b9b3c0450dfb134ac5bbad6796e998d7b558",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10860,7 +10870,7 @@
         "concept_observation_hash": "sha256:6ce9f982aa173952fd209d53fb73da841faaa9e44959ac498d3bcb960ab4ad62",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10870,7 +10880,7 @@
         "concept_observation_hash": "sha256:ae1f09818d49910c368ccc5441a3e4e620c90af63b6baba9646952aa1352380f",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10880,7 +10890,7 @@
         "concept_observation_hash": "sha256:d88499c6f814fe14422732e8dde7082c6572471e9ccf09b35bbd672c3c95b349",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10890,7 +10900,7 @@
         "concept_observation_hash": "sha256:2e40594462dc3da3359fc000fd238275800b450b7f244614331c72afcea85970",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -10900,7 +10910,7 @@
         "concept_observation_hash": "sha256:78eac3e4ccfdd5f70b12ed4a49a62f915a7278fab7cb28aabf630d8410d4b1ce",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -15195,6 +15205,16 @@
       },
       "state": "known"
     },
+    "modules/20261008_0009_project_identity.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:7d5f57e710156b4b290dce4f6820f2b179507ade39a4f957522975ac06d148c6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:17e3378561f41848746a1d714978fdccd9532323fb32537a6e7e2e6be8d867ab",
+        "source_path": "backend/app/migrations/versions/20261008_0009_project_identity.py"
+      },
+      "state": "known"
+    },
     "modules/AdminAccessGate.md": {
       "basis": {
         "concept_observation_hash": "sha256:bd5ccd73cc449656091115c1d25baa577fff497da78b84a1c282cf7dff1d4abf",
@@ -18607,10 +18627,10 @@
     },
     "modules/migrations_env.md": {
       "basis": {
-        "concept_observation_hash": "sha256:3b2bc9257edc3bf66d0b04d82b1077ed06b2ffb8164e28e2bbe56018c85edccc",
+        "concept_observation_hash": "sha256:995bdb001fe3054ceca35a848e50393a4352967617856b5acfa04d9d8fd4e43b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5dd87cfaab47f86f0f69bbd423561a1a7d9e2dacdebbf46e2dee736ae8c36690",
+        "source_content_hash": "sha256:fba33ea9d080f74320b00a5c399221363c16407b8e839769c16d931229af934d",
         "source_path": "backend/app/migrations/env.py"
       },
       "state": "known"
@@ -18800,7 +18820,7 @@
         "concept_observation_hash": "sha256:11693bfef210d1e164327380160d604e507a304340b8ea69103f812f86d82c25",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+        "source_content_hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
         "source_path": "backend/app/models/project.py"
       },
       "state": "known"
@@ -19212,6 +19232,16 @@
         "scope": "module",
         "source_content_hash": "sha256:af27171b56603ca1ff678eae71b024af1b9cade08304bf9f2a59c2c3e565c719",
         "source_path": "frontend/src/components/projects/projectStatusStyles.test.ts"
+      },
+      "state": "known"
+    },
+    "modules/project_identity.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ed5b93fa3ddcf6115e2baf0f62dde88464e7a3988c156f3a54ddc2a7f9f1bed4",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+        "source_path": "backend/app/database_migration/project_identity.py"
       },
       "state": "known"
     },
@@ -20770,7 +20800,7 @@
         "concept_observation_hash": "sha256:f4b890da55f865d9bbfc3343e2bb7a9ea2e10ac2b5aba9ae252675afc64b640b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:3866525f3679d7b4c3895c2b4c20625db075e2de276c1827790129e5973f517e",
+        "source_content_hash": "sha256:1dcee2622fbdf444e9649a0eaa106566c6a70e57174a59b5ee7396ea125e6c5b",
         "source_path": "backend/tests/test_agent_routing_migrations.py"
       },
       "state": "known"
@@ -20930,7 +20960,7 @@
         "concept_observation_hash": "sha256:8b7422020a201c7c4d1a11dc1aaa0a36cc95de22f015385ec11a57a4554199c1",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a5e291708fdc8286b4b79bcf590168c0ab9ced60047a0aa5f2ebb040a98a61de",
+        "source_content_hash": "sha256:fa2e072e35c8dd600872f34b57f76610d295f9d2371be8669c3886cb91e58516",
         "source_path": "backend/tests/autonomy/test_autonomy_migrations.py"
       },
       "state": "known"
@@ -21285,6 +21315,16 @@
       },
       "state": "known"
     },
+    "modules/test_project_identity.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:60f4d6a1384490f4c07a07d44e48673534e559666ea5e3278c350c56fa2c6138",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:fa1f7225387c48eff30731d09f6eb6da3c65fc118121ba3486d9d2e911c6f2d6",
+        "source_path": "backend/tests/migrations/test_project_identity.py"
+      },
+      "state": "known"
+    },
     "modules/test_query_boundaries.md": {
       "basis": {
         "concept_observation_hash": "sha256:664691b1d8fa381d27ad989ebebcc751dd9411a20dbf5c15ec476acd94092106",
@@ -21370,7 +21410,7 @@
         "concept_observation_hash": "sha256:b443f425ca41a4a3deeccd62f9e7ea84981f8c5dab5c8be3648dd88b8d528990",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:15070e28cc320c8731cc19b5d2f4fda69d616b5aa66ebbbdebd9057880fa8729",
+        "source_content_hash": "sha256:780de714549aea7312c932033bf71c823a9744f94526917aeec89c2e65fc4615",
         "source_path": "backend/tests/migrations/test_sqlite_migrations.py"
       },
       "state": "known"
@@ -21627,10 +21667,10 @@
     },
     "modules/transfer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:a401cda9cf80cb177b14b814fcf2a1bd26f5c51828130328a450bb651840e9fc",
+        "concept_observation_hash": "sha256:fb302822a09004fbafa77b51343e4e8c3efd1d806dd49f412e698b92a2073dd6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:c2e6692fbd9e6cde8f3b6621cf166d33e2f37cd4e8cc48523958cf2960cbdfa6",
+        "source_content_hash": "sha256:7721507848375f3e421cd3449576c48e3f23db35fc8623da7f7f80b565e53f34",
         "source_path": "backend/app/database_migration/transfer.py"
       },
       "state": "known"
@@ -21787,10 +21827,10 @@
     },
     "modules/upgrade_service.md": {
       "basis": {
-        "concept_observation_hash": "sha256:0d1d5dc3158eb48a6eadcd3ea63df001676bc113987a29ab2dba0e1ff00efde3",
+        "concept_observation_hash": "sha256:e45ced9486795638bd9e3f24d2061250cb57cbf2818fb0b1c6cb1f777670e841",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
+        "source_content_hash": "sha256:1bbfd402af2f3af1dd06b5f5fd5cef23c73d7bff51cebad1b111e9978b1f22b5",
         "source_path": "backend/app/services/upgrade_service.py"
       },
       "state": "known"
@@ -22260,13 +22300,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:76c43a661e6e8582e12968cf03890a9670bfb046874584fc1db17592a1366110",
-      "lifecycle_hash": "sha256:db4485cbb346bc444f253f823e8b53a9ccc74e479a66d2bceb3d4054ebf4dcd8",
-      "markdown_snapshot_hash": "sha256:d7ccd0baa36bccacb9c037545ca061919d330bd07b3d7445f0639b4ff469f14f",
-      "observation_inputs_hash": "sha256:f1b2b36bc7b7c74fa8f07b5fe53f4e5368e94403f892717c048ff748621987d7",
+      "inventory_hash": "sha256:281f24b84a0f083c4229f5b22ca1da7b9d60c4bee7847c74c6dd8e56c6d562f0",
+      "lifecycle_hash": "sha256:21e60cd0be71c36c86013e1556c00db49f01f8996fcc2ef0eaa40655d5d173cf",
+      "markdown_snapshot_hash": "sha256:802137a0751f983cd6fe9fe637e76fdafcc7e0f612b048f9925b542c3c0294b4",
+      "observation_inputs_hash": "sha256:9717ea081b1a2663f2975e482e0457ee251639ad4cf9ba61ffc83b5fcad2d057",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:46dd3251ada872eec60a446d279e0a177ab72bfd6b8eb3ef7ffeead3808593aa"
+      "source_snapshot_hash": "sha256:eba2ce7d0dccac5b6fc8c637b5888ac953977d21007087aa7e9b228f55035e82"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -25742,6 +25782,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "frontend/src/components/projects/ProjectForm.tsx"
+    },
+    "entities/ProjectIdentityError.md": {
+      "entity_name": "ProjectIdentityError",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "backend/app/database_migration/project_identity.py"
     },
     "entities/ProjectIterationsSectionProps.md": {
       "entity_name": "ProjectIterationsSectionProps",
@@ -31371,6 +31417,10 @@
       "scope": "module",
       "source_path": "backend/app/migrations/versions/20261007_0008_time_entries.py"
     },
+    "modules/20261008_0009_project_identity.md": {
+      "scope": "module",
+      "source_path": "backend/app/migrations/versions/20261008_0009_project_identity.py"
+    },
     "modules/AdminAccessGate.md": {
       "scope": "module",
       "source_path": "frontend/src/components/settings/AdminAccessGate.tsx"
@@ -32979,6 +33029,10 @@
       "scope": "module",
       "source_path": "frontend/src/components/projects/projectStatusStyles.test.ts"
     },
+    "modules/project_identity.md": {
+      "scope": "module",
+      "source_path": "backend/app/database_migration/project_identity.py"
+    },
     "modules/project_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/project_service.py"
@@ -33806,6 +33860,10 @@
     "modules/test_profile_capacity_migrations.md": {
       "scope": "module",
       "source_path": "backend/tests/test_profile_capacity_migrations.py"
+    },
+    "modules/test_project_identity.md": {
+      "scope": "module",
+      "source_path": "backend/tests/migrations/test_project_identity.py"
     },
     "modules/test_query_boundaries.md": {
       "scope": "module",
@@ -37984,6 +38042,49 @@
       "module_page": "database_migration_manifest",
       "semantic_hash": "sha256:52542c91d90d70fac31880de12ad92d5b1eaf98e6e0be9798e6eee6a9289aeb7"
     },
+    "backend/app/database_migration/project_identity.py": {
+      "entities": [
+        "ProjectIdentityError"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "ProjectIdentityError",
+          "occurrence": 1,
+          "page": "ProjectIdentityError"
+        }
+      ],
+      "entity_pages": {
+        "ProjectIdentityError": "ProjectIdentityError"
+      },
+      "generated_semantics": {
+        "entities": {
+          "ProjectIdentityError": {
+            "attributes": {},
+            "description": "Refuse an ambiguous identity without changing historical associations.",
+            "methods": {
+              "__init__": "—",
+              "detail": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "ProjectIdentityError": "Refuse an ambiguous identity without changing historical associations."
+          },
+          "description": "Read-only project identity qualification and retained allocation floors.",
+          "functions": {
+            "_project_ids": "—",
+            "_utc": "—",
+            "inspect_project_identity": "Bound diagnostics and historical JSON scans; never inspect private text fields.",
+            "project_allocation_floor": "Require identity qualification before returning a safe allocation floor."
+          }
+        }
+      },
+      "hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+      "language": "python",
+      "module_page": "project_identity",
+      "semantic_hash": "sha256:5a7c1a779ae31822a4b6b13123dee85a7ace28914229926ccb9fb81772c66b82"
+    },
     "backend/app/database_migration/source.py": {
       "entities": [
         "MigrationDataError"
@@ -38085,10 +38186,10 @@
           }
         }
       },
-      "hash": "sha256:c2e6692fbd9e6cde8f3b6621cf166d33e2f37cd4e8cc48523958cf2960cbdfa6",
+      "hash": "sha256:7721507848375f3e421cd3449576c48e3f23db35fc8623da7f7f80b565e53f34",
       "language": "python",
       "module_page": "transfer",
-      "semantic_hash": "sha256:cb310109ce2f6ce088dd26e6c4f4ba898e2bf24e783f966bf009930b2148dfc2"
+      "semantic_hash": "sha256:0837a422ab9efc6742e9e666c5b22d2ff92f4bf92bfb226a5fd4abcca13b5d7e"
     },
     "backend/app/database_runtime.py": {
       "entities": [
@@ -38591,15 +38692,16 @@
           "classes": {},
           "description": "Alembic environment configuration.",
           "functions": {
+            "migrate_connection": "Own SQLite's transactional rebuild without cascading dependent references.",
             "run_migrations_offline": "Run migrations in offline mode.",
             "run_migrations_online": "Run migrations in online mode."
           }
         }
       },
-      "hash": "sha256:5dd87cfaab47f86f0f69bbd423561a1a7d9e2dacdebbf46e2dee736ae8c36690",
+      "hash": "sha256:fba33ea9d080f74320b00a5c399221363c16407b8e839769c16d931229af934d",
       "language": "python",
       "module_page": "migrations_env",
-      "semantic_hash": "sha256:d58e22ef3bf3c14e77cfa56af2ff2712e32accd18308ea3de31784a701234647"
+      "semantic_hash": "sha256:62ea6f5e57717a2bc719f03d872f8b48e74b3edc5fcc5cb4b2a8a1999f78036a"
     },
     "backend/app/migrations/versions/20260928_0001_initial_schema.py": {
       "entities": [],
@@ -38760,6 +38862,26 @@
       "language": "python",
       "module_page": "20261007_0008_time_entries",
       "semantic_hash": "sha256:59a72fd566169c82fee7901e9a4277d546299cdbb755e6d77a63d44615945986"
+    },
+    "backend/app/migrations/versions/20261008_0009_project_identity.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Preserve project allocation identity across retained history.",
+          "functions": {
+            "downgrade": "—",
+            "upgrade": "—"
+          }
+        }
+      },
+      "hash": "sha256:17e3378561f41848746a1d714978fdccd9532323fb32537a6e7e2e6be8d867ab",
+      "language": "python",
+      "module_page": "20261008_0009_project_identity",
+      "semantic_hash": "sha256:504a3d92545db349d129bbb11066ae9659a3991c4decd001b7d34d7fec3e914d"
     },
     "backend/app/models/__init__.py": {
       "entities": [],
@@ -40805,7 +40927,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:7196e03494dc6ac46bb723842b420f95e9fb1af3d771d78cb00605438e561a99",
+      "hash": "sha256:38f91cbf682ff171523d31eb421bd30450817bf1d3d9bd8e60e2cf9d5dc159fe",
       "language": "python",
       "module_page": "models_project",
       "semantic_hash": "sha256:9286b3cebebbeae5cc06516382c02f3db62ca0c4bf6ee189d0180e55a30b78d0"
@@ -58762,10 +58884,10 @@
           }
         }
       },
-      "hash": "sha256:2220e83a5790e4de866f7c0f1c3cafbe5bf1685f5100e7c284ec0d2108902511",
+      "hash": "sha256:1bbfd402af2f3af1dd06b5f5fd5cef23c73d7bff51cebad1b111e9978b1f22b5",
       "language": "python",
       "module_page": "upgrade_service",
-      "semantic_hash": "sha256:ede58646a617310dda9a24f74ab842ed80c0f80a237c9ba8463847b47fcfc22c"
+      "semantic_hash": "sha256:a9e139ed508f5a440d2a9488618a27bdd032a5290330063b633b3be19622d685"
     },
     "backend/app/services/web_intake_service.py": {
       "entities": [
@@ -59395,7 +59517,7 @@
           }
         }
       },
-      "hash": "sha256:a5e291708fdc8286b4b79bcf590168c0ab9ced60047a0aa5f2ebb040a98a61de",
+      "hash": "sha256:fa2e072e35c8dd600872f34b57f76610d295f9d2371be8669c3886cb91e58516",
       "language": "python",
       "module_page": "test_autonomy_migrations",
       "semantic_hash": "sha256:6abaf0ce71019272a4a52599cfc89f3b226697e5ffeca76ea4b99795b5e57848"
@@ -60011,6 +60133,32 @@
       "module_page": "test_postgresql_migrations",
       "semantic_hash": "sha256:e2f9288da82892a43678437cfc08640f01a40467fc8ea935dfec286228e12e76"
     },
+    "backend/tests/migrations/test_project_identity.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Project allocation floors, dependent preservation and transactional rebuilds.",
+          "functions": {
+            "database_rows": "—",
+            "legacy_store": "—",
+            "retained_entry": "—",
+            "seed_dependents": "—",
+            "test_direct_upgrade_preserves_enabled_foreign_keys": "—",
+            "test_direct_upgrade_refuses_to_commit_a_callers_pending_writes": "—",
+            "test_failed_rebuild_rolls_back_schema_and_all_dependent_rows": "—",
+            "test_upgrade_preserves_dependents_and_retained_allocation_floor": "—"
+          }
+        }
+      },
+      "hash": "sha256:fa1f7225387c48eff30731d09f6eb6da3c65fc118121ba3486d9d2e911c6f2d6",
+      "language": "python",
+      "module_page": "test_project_identity",
+      "semantic_hash": "sha256:8f5fc2e98ef1ed64db94ff41d053b28f23190a093cb0fc9cba940c3cfe98395b"
+    },
     "backend/tests/migrations/test_sqlite_migrations.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -60032,7 +60180,7 @@
           }
         }
       },
-      "hash": "sha256:15070e28cc320c8731cc19b5d2f4fda69d616b5aa66ebbbdebd9057880fa8729",
+      "hash": "sha256:780de714549aea7312c932033bf71c823a9744f94526917aeec89c2e65fc4615",
       "language": "python",
       "module_page": "test_sqlite_migrations",
       "semantic_hash": "sha256:c31ff0633a44d7f3fac179fb3da7a99988d97b2f7cfd21845f6911874e724e7c"
@@ -60661,7 +60809,7 @@
           }
         }
       },
-      "hash": "sha256:3866525f3679d7b4c3895c2b4c20625db075e2de276c1827790129e5973f517e",
+      "hash": "sha256:1dcee2622fbdf444e9649a0eaa106566c6a70e57174a59b5ee7396ea125e6c5b",
       "language": "python",
       "module_page": "test_agent_routing_migrations",
       "semantic_hash": "sha256:d3c018d403b784322581646fe3efd2c1b9c22ea96d3f39fad184e94d2c4e58bd"

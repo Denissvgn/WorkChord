@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 25 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 26 more
 
 **Complete modules touched:**
 
@@ -27,6 +27,7 @@
 - [models_iteration](../modules/models_iteration.md)
 - [models_project](../modules/models_project.md)
 - [models_task](../modules/models_task.md)
+- [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [source](../modules/source.md)
 - [system_settings_service](../modules/system_settings_service.md)
@@ -121,7 +122,7 @@ sequenceDiagram
     p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
 ```
 
-> Call sequence diagram shows 30 of 1396 interactions; 1366 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1535 interactions; 1505 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

@@ -29,7 +29,7 @@ flowchart TD
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
 | [app_database](modules/app_database.md) | 87 | 5 |
-| [models_task](modules/models_task.md) | 83 | 9 |
+| [models_task](modules/models_task.md) | 84 | 9 |
 | [commands](modules/commands.md) | 74 | 12 |
 | [Button](modules/Button.md) | 73 | 0 |
 | [time](modules/time.md) | 72 | 0 |
@@ -40,23 +40,23 @@ flowchart TD
 | [models_agent](modules/models_agent.md) | 55 | 5 |
 | [task_service](modules/task_service.md) | 46 | 17 |
 | [apiError](modules/apiError.md) | 44 | 0 |
-| [models_iteration](modules/models_iteration.md) | 42 | 6 |
+| [models_iteration](modules/models_iteration.md) | 43 | 6 |
 | [authority](modules/authority.md) | 41 | 5 |
 | [team_member](modules/team_member.md) | 38 | 6 |
+| [models_project](modules/models_project.md) | 33 | 9 |
 | [schemas_task](modules/schemas_task.md) | 33 | 5 |
 | [i18n](modules/i18n.md) | 33 | 1 |
 | [api](modules/api.md) | 33 | 2 |
-| [models_project](modules/models_project.md) | 32 | 9 |
 | [Input](modules/Input.md) | 29 | 0 |
 | [formatDate](modules/formatDate.md) | 29 | 1 |
 | [agent_service](modules/agent_service.md) | 28 | 13 |
 | [taskService](modules/taskService.md) | 27 | 3 |
 | [query_limits](modules/query_limits.md) | 25 | 0 |
 | [user_session](modules/user_session.md) | 24 | 6 |
+| [models_identity](modules/models_identity.md) | 23 | 2 |
 | [index](modules/index.md) | 23 | 0 |
-| [models_identity](modules/models_identity.md) | 22 | 2 |
-| [models_calendar](modules/models_calendar.md) | 21 | 2 |
-| [upgrade_service](modules/upgrade_service.md) | 21 | 12 |
+| [models_calendar](modules/models_calendar.md) | 22 | 2 |
+| [upgrade_service](modules/upgrade_service.md) | 22 | 13 |
 | [schemas_agent](modules/schemas_agent.md) | 20 | 8 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
@@ -144,6 +144,7 @@ flowchart TD
 | [source](modules/source.md) | 6 | 4 |
 | [models_external_link](modules/models_external_link.md) | 6 | 2 |
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
+| [models_time_entry](modules/models_time_entry.md) | 6 | 2 |
 | [routers_task_domain](modules/routers_task_domain.md) | 6 | 19 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 6 | 0 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
@@ -151,6 +152,7 @@ flowchart TD
 | [scheduler_service](modules/scheduler_service.md) | 6 | 9 |
 | [task_detail_service](modules/task_detail_service.md) | 6 | 4 |
 | [services_work_metrics](modules/services_work_metrics.md) | 6 | 8 |
+| [support___init__](modules/support___init__.md) | 6 | 4 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 12 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
@@ -159,7 +161,6 @@ flowchart TD
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
 | [models_capacity](modules/models_capacity.md) | 5 | 1 |
 | [task_status_log](modules/task_status_log.md) | 5 | 3 |
-| [models_time_entry](modules/models_time_entry.md) | 5 | 2 |
 | [mutation_versions](modules/mutation_versions.md) | 5 | 2 |
 | [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 16 |
 | [agent_skill_bundle](modules/agent_skill_bundle.md) | 5 | 0 |
@@ -174,7 +175,6 @@ flowchart TD
 | [delivery_metrics_service](modules/delivery_metrics_service.md) | 5 | 9 |
 | [saved_view_service](modules/saved_view_service.md) | 5 | 4 |
 | [task_context_revision_service](modules/task_context_revision_service.md) | 5 | 5 |
-| [support___init__](modules/support___init__.md) | 5 | 4 |
 | [support_database](modules/support_database.md) | 5 | 0 |
 | [test_task_domain](modules/test_task_domain.md) | 5 | 25 |
 | [PlanReturnBar](modules/PlanReturnBar.md) | 5 | 1 |
@@ -189,7 +189,8 @@ flowchart TD
 | [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) | 5 | 0 |
 | [teamMemberLabels](modules/teamMemberLabels.md) | 5 | 2 |
 | [build_identity](modules/build_identity.md) | 4 | 1 |
-| [transfer](modules/transfer.md) | 4 | 8 |
+| [project_identity](modules/project_identity.md) | 4 | 0 |
+| [transfer](modules/transfer.md) | 4 | 9 |
 | [database_runtime](modules/database_runtime.md) | 4 | 1 |
 | [models_autonomy](modules/models_autonomy.md) | 4 | 2 |
 | [delivery_dependency](modules/delivery_dependency.md) | 4 | 3 |
@@ -499,7 +500,7 @@ flowchart TD
 | [agent_preflight](modules/agent_preflight.md) | 0 | 3 |
 | [cli_database_migration](modules/cli_database_migration.md) | 0 | 4 |
 | [database_migration___init__](modules/database_migration___init__.md) | 0 | 2 |
-| [migrations_env](modules/migrations_env.md) | 0 | 4 |
+| [migrations_env](modules/migrations_env.md) | 0 | 5 |
 | [20260928_0001_initial_schema](modules/20260928_0001_initial_schema.md) | 0 | 0 |
 | [20260930_0002_profile_capacity](modules/20260930_0002_profile_capacity.md) | 0 | 0 |
 | [20260930_0003_delivery_dependencies](modules/20260930_0003_delivery_dependencies.md) | 0 | 0 |
@@ -508,6 +509,7 @@ flowchart TD
 | [20261004_0006_delivery_observations](modules/20261004_0006_delivery_observations.md) | 0 | 0 |
 | [20261004_0007_execution_usage](modules/20261004_0007_execution_usage.md) | 0 | 0 |
 | [20261007_0008_time_entries](modules/20261007_0008_time_entries.md) | 0 | 0 |
+| [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) | 0 | 1 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [bounded_scope_reads](modules/bounded_scope_reads.md) | 0 | 0 |
@@ -537,6 +539,7 @@ flowchart TD
 | [0001_wave0_probe](modules/0001_wave0_probe.md) | 0 | 0 |
 | [test_initial_schema](modules/test_initial_schema.md) | 0 | 2 |
 | [test_postgresql_migrations](modules/test_postgresql_migrations.md) | 0 | 7 |
+| [test_project_identity](modules/test_project_identity.md) | 0 | 8 |
 | [test_sqlite_migrations](modules/test_sqlite_migrations.md) | 0 | 4 |
 | [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) | 0 | 1 |
 | [test_load_tooling](modules/test_load_tooling.md) | 0 | 1 |

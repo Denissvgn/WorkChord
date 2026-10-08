@@ -79,7 +79,7 @@ flowchart LR
 | `_validate_managed_revision` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 | `assert_database_current` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 | `head_revision` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
-| `run_alembic_upgrade` | call | [upgrade_service](../modules/upgrade_service.md) | 3 |
+| `run_alembic_upgrade` | call | [upgrade_service](../modules/upgrade_service.md) | 4 |
 | `run_database_repairs` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 | `test_initial_schema` | import | [test_initial_schema](../modules/test_initial_schema.md) | — |
 | `test_postgresql_migrations` | import | [test_postgresql_migrations](../modules/test_postgresql_migrations.md) | — |

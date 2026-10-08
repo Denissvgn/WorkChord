@@ -15,6 +15,7 @@ Catalogued PostgreSQL loading, repairs, and two-phase reconciliation.
 | `app.database_migration.canonical` | `canonical_value`, `digest_rows`, `row_sha256`, `storage_value` |
 | `app.database_migration.catalog` | `TRANSFER_CATALOG_VERSION`, `application_tables`, `catalog_entries`, `staged_reference_columns`, `transfer_order`, `transfer_tables` |
 | `app.database_migration.manifest` | `ManifestError`, `canonical_json_bytes`, `read_document`, `sha256_bytes`, `verify_document`, `write_document` |
+| `app.database_migration.project_identity` | `project_allocation_floor`, `project_allocation_floor` |
 | `app.database_migration.source` | `MigrationDataError`, `_file_sha256`, `_inspect_snapshot`, `_rows`, `read_only_sqlite` |
 | `app.models.database_migration` | `DatabaseMigrationGate` |
 | `app.services.upgrade_service` | `database_configuration`, `head_revision`, `run_database_repairs` |
@@ -54,7 +55,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (3) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (8) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -62,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
