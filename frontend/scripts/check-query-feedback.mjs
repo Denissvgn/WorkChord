@@ -89,12 +89,12 @@ const HOOK_KINDS = new Map([
 // while leaving Q/M totals unchanged.
 export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/features/timeEntries/useTimeEntries.ts': 'b689ed77e0980dbd',
-    'src/components/tasks/TimeEntriesPanel.tsx': '77bc1deef2b898ed',
+    'src/components/tasks/TimeEntriesPanel.tsx': 'e2f92f5e7db9c227',
     'src/components/projects/TimeEntriesReport.tsx': 'ec8a1aae42e5c20b',
     'src/components/tasks/PagedTaskBrowser.tsx': 'd1f37f9574a416f5',
     'src/pages/MyWorkPage.tsx': '2140982df0dafc9f',
     'src/components/tasks/TaskSearch.tsx': '1c836716acf30699',
-    'src/components/tasks/TaskDiscussion.tsx': '90fd117ca2c0dc6d',
+    'src/components/tasks/TaskDiscussion.tsx': 'ab78919abd6af621',
     'src/components/tasks/PersonCapacity.tsx': '9ed055ec8adb42aa',
     'src/components/tasks/DeliveryDependencies.tsx': '0606dde61002be81',
     'src/components/tasks/BacklogPanel.tsx': 'bed57a32098e94a8',
@@ -127,7 +127,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/TaskBulkOperationsPanel.tsx': 'da3ed54d577ce8a2',
     'src/components/tasks/TaskDependencySelector.tsx': 'a95773dee19beda4',
     'src/components/tasks/TaskFiltersBar.tsx': 'baf74934c27cea16',
-    'src/components/tasks/TaskForm.tsx': '683eda1f5d4ccbf0',
+    'src/components/tasks/TaskForm.tsx': '25d4d439cc45725b',
     'src/components/tasks/TaskList.tsx': '644c5a4adff141b7',
     'src/components/tasks/TaskTextEditorModal.tsx': '1a455f699d3e28df',
     'src/components/tasks/TaskTimelinePanel.tsx': 'd6c1a837cced1865',

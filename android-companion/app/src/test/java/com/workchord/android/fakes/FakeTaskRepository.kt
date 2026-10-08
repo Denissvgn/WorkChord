@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.CompletableDeferred
 
 class FakeTaskRepository(
     initialTasks: List<Task> = emptyList(),
@@ -60,6 +61,7 @@ class FakeTaskRepository(
     var lastProgress: ProgressRequest? = null
     var lastReview: ReviewRequest? = null
     var commandCalls = 0
+    var progressGate: CompletableDeferred<Result<Task>>? = null
     private val reviews = mutableListOf<TaskReview>()
     override val draftScope = "fixture-scope"
     private val saved = mutableMapOf<Int, SavedTaskDraft>()
@@ -80,6 +82,7 @@ class FakeTaskRepository(
     }
     override suspend fun recordProgress(taskId: Int, request: ProgressRequest): Result<Task> {
         lastProgress = request
+        progressGate?.let { return it.await() }
         progressResult?.let { return it }
         val task = getTaskById(taskId).getOrThrow()
         val next = (task.artifactRevision ?: 0) + 1

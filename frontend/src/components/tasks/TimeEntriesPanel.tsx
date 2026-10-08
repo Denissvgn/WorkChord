@@ -14,7 +14,7 @@ import type { TimeEntry } from '../../services/timeEntryService';
 import { taskService } from '../../services/taskService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
-import { useDraftDismissal } from './useDraftDismissal';
+import { useDraftDismissal, useActiveMount } from './useDraftDismissal';
 import { DraftDismissalDialog } from './DraftDismissalDialog';
 
 type Draft = { work_date: string; timezone: string; minutes: string; note: string; reason: string;
@@ -54,6 +54,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
 }) => {
     const { t } = useTranslation();
     const id = useId();
+    const isActive = useActiveMount();
     const formId = `${id}-time-form`;
     const { identity } = useTimeEntries();
     const queryClient = useQueryClient();
@@ -96,6 +97,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
         return draft.editing ? timeEntryService.correct(draft.editing, values, draft.reason)
             : timeEntryService.create(projectId, draft.task ? Number(draft.task) : null, draft.request, values);
     }, onSuccess: async () => {
+        if (!isActive()) return;
         clear(); const next = emptyDraft(taskId); setBaseline(next); setDraft(next); setCurrent(null); setMessage(t('timeEntries.saved')); setValidation('');
         await queryClient.invalidateQueries({ queryKey: ['time-entries'] });
         await queryClient.invalidateQueries({ queryKey: ['time-report'] });

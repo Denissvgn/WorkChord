@@ -33,9 +33,15 @@ export const readTaskDraft = (key: string | null, defaults: TaskEditorValues): T
     } catch { return null; }
 };
 
-export const writeTaskDraft = (key: string | null, values: TaskEditorValues) => {
+export const readPendingTaskWrite = (key: string | null): string | null => {
+    try { const record = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
+        return typeof record?.pendingWrite === 'string' && record.pendingWrite.length <= 64 ? record.pendingWrite : null;
+    } catch { return null; }
+};
+
+export const writeTaskDraft = (key: string | null, values: TaskEditorValues, pendingWrite: string | null = null) => {
     if (!key) return;
-    try { sessionStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), values })); } catch { /* The in-page draft remains available. */ }
+    try { sessionStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), values, pendingWrite })); } catch { /* The in-page draft remains available. */ }
 };
 
 export const removeTaskDraft = (key: string | null, includeProgress = false) => {

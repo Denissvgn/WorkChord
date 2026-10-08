@@ -48,7 +48,8 @@ import {
 import type { TaskUpdate } from '../../types/task';
 import { formatDate } from '../../utils/formatDate';
 import { useIdentity } from '../../features/identity/identityContext';
-import { readTaskDraft, writeTaskDraft, removeTaskDraft } from './taskDraftStorage';
+import { readTaskDraft, writeTaskDraft, removeTaskDraft, readPendingTaskWrite } from './taskDraftStorage';
+import { useActiveMount } from './useDraftDismissal';
 
 interface TaskFormProps {
     iterationId: number | null;
@@ -86,6 +87,7 @@ export const TaskForm = ({
     const { t } = useTranslation();
     const formId = useId();
     const identity = useIdentity();
+    const isActive = useActiveMount();
     const [currentTask, setCurrentTask] = useState(initialData);
     const iterationId = currentTask ? currentTask.iteration_id : requestedIterationId;
     const sessionUnavailable = identity?.identity?.mode === "managed" && !identity.identity.authenticated;
@@ -116,6 +118,8 @@ export const TaskForm = ({
         parentMilestoneId,
     }), [initialData, parentId, parentPriority, parentProjectId, parentMilestoneId]);
     const [recoveredDraft] = useState(() => readTaskDraft(draftKey, initialValues));
+    const [pendingWrite, setPendingWrite] = useState(() => readPendingTaskWrite(draftKey));
+    const [writeComparison, setWriteComparison] = useState<{ items: { id: number; title: string; version: number }[]; has_more: boolean } | null>(null);
     const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft ?? initialValues);
     const [baseline, setBaseline] = useState<TaskEditorValues>(() => initialValues);
     const isDirty = JSON.stringify(formData) !== JSON.stringify(baseline);
@@ -125,13 +129,22 @@ export const TaskForm = ({
         return () => onDiscardReady?.(null);
     }, [onDiscardReady, clearDraft]);
     useEffect(() => {
-        if (isDirty) writeTaskDraft(draftKey, formData);
+        if (isDirty || pendingWrite) writeTaskDraft(draftKey, formData, pendingWrite);
         else removeTaskDraft(draftKey);
-    }, [draftKey, formData, isDirty]);
+    }, [draftKey, formData, isDirty, pendingWrite]);
 
     useEffect(() => {
-        onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty);
-    }, [isDirty, workDirty, discussionDirty, timeDirty, onDirtyChange]);
+        onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty || Boolean(pendingWrite));
+    }, [isDirty, workDirty, discussionDirty, timeDirty, pendingWrite, onDirtyChange]);
+
+    const checkpointWrite = () => {
+        const operation = crypto.randomUUID(); setPendingWrite(operation); setWriteComparison(null);
+        writeTaskDraft(draftKey, formData, operation);
+    };
+    const definiteRejection = (cause: unknown) => {
+        const status = (cause as { response?: { status?: number } }).response?.status;
+        if (isActive() && status && status >= 400 && status < 500) setPendingWrite(null);
+    };
 
     // Fetch team for assignee dropdown
     const { data: teamMembers, error: teamError, refetch: refetchTeam } = useQuery({
@@ -193,36 +206,48 @@ export const TaskForm = ({
 
     const createMutation = useMutation({
         mutationFn: (data: TaskCreate) => taskService.create(iterationId, { ...data, expected_revision: iteration?.revision }),
+        onMutate: checkpointWrite,
         onSuccess: () => {
-            clearDraft();
             invalidateTaskProjectQueries();
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             setError(getApiErrorMessage(err, t('surfaces.taskForm.createFailed')));
         },
     });
 
     const createTriageMutation = useMutation({
         mutationFn: (data: TriageItemCreate) => triageService.create(data),
+        onMutate: checkpointWrite,
         onSuccess: () => {
-            clearDraft();
             queryClient.invalidateQueries({ queryKey: ['triage'] });
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             setError(getApiErrorMessage(err, t('surfaces.taskForm.createTriageFailed')));
         },
     });
 
     const updateMutation = useMutation({
         mutationFn: (data: TaskUpdate) => taskService.update(currentTask!.id, data),
+        onMutate: checkpointWrite,
         onSuccess: () => {
-            clearDraft();
             invalidateTaskProjectQueries();
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             const mapped = mapTaskEditorServerError(err, t('taskEditor.updateFailed'));
             if (mapped.kind === 'version-conflict') {
                 setConflict(mapped.currentTask);
@@ -251,6 +276,7 @@ export const TaskForm = ({
             setCurrentTask(latest);
             setFormData(latestValues);
             setBaseline(latestValues);
+            setPendingWrite(null);
             setConflict(null);
             setError(null);
             setStatusMessage(t('taskEditor.reloaded'));
@@ -272,9 +298,39 @@ export const TaskForm = ({
                 brief: values.brief ? { ...values.brief, acceptance_criteria: values.brief.acceptance_criteria.map(criterion => ({ ...criterion,
                     revision: latest.brief?.acceptance_criteria.find(current => current.id === criterion.id)?.revision ?? 1 })) } : null }));
             setConflict(null);
+            setPendingWrite(null);
             setStatusMessage(t('taskEditor.reapplyReady'));
         } catch (cause) { setError(getApiErrorMessage(cause, t('taskEditor.reloadFailed'))); }
         finally { setIsRefreshing(false); }
+    };
+
+    const comparePendingWrite = async () => {
+        if (isSubmitting) return;
+        setIsRefreshing(true);
+        try {
+            if (currentTask) {
+                const observed = await taskService.getById(currentTask.id);
+                if (!isActive()) return;
+                setConflictTask(observed);
+                setWriteComparison({ items: [observed], has_more: false });
+            } else {
+                const observed = await taskService.lookup({ project_id: effectiveProjectId ?? undefined,
+                    q: formData.title, limit: 50 });
+                if (isActive()) setWriteComparison(observed);
+            }
+        } catch (cause) { if (isActive()) setError(getApiErrorMessage(cause, t('taskEditor.reloadFailed'))); }
+        finally { if (isActive()) setIsRefreshing(false); }
+    };
+
+    const resumeComparedWrite = () => {
+        if (!writeComparison) return;
+        if (currentTask && conflictTask) {
+            setCurrentTask(conflictTask); setBaseline(buildTaskEditorDefaults({ task: conflictTask }));
+            setFormData(values => ({ ...values, expected_version: conflictTask.version,
+                brief: values.brief ? { ...values.brief, acceptance_criteria: values.brief.acceptance_criteria.map(criterion => ({ ...criterion,
+                    revision: conflictTask.brief?.acceptance_criteria.find(current => current.id === criterion.id)?.revision ?? 1 })) } : null }));
+        }
+        setPendingWrite(null); setWriteComparison(null); setConflict(null); setError(null);
     };
 
     const buildAISuggestPayload = (): TaskAISuggestRequest => ({
@@ -385,6 +441,7 @@ export const TaskForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (pendingWrite || isSubmitting) return;
         if (isSubmitting || workDirty || discussionDirty || timeDirty) return;
         setError(null);
         setConflict(null);
@@ -486,6 +543,16 @@ export const TaskForm = ({
                     {error}
                 </div>
             )}
+            {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
+                <p>{t('teamwork.uncertainTask')}</p>
+                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>
+                {writeComparison && <>
+                    <p>{t('teamwork.boundedComparison')}</p>
+                    <ul>{writeComparison.items.map(item => <li key={item.id}>#{item.id} · {item.title} · v{item.version}</li>)}</ul>
+                    {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
+                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
+                </>}
+            </div>}
             {conflict && (
                 <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                     <div className="font-semibold">{t('taskEditor.conflictTitle')}</div>
@@ -1060,7 +1127,7 @@ export const TaskForm = ({
                         type="submit"
                         className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(conflict)}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(conflict) || Boolean(pendingWrite)}
                     >
                         <Save className="w-4 h-4 mr-2" />
                         {mode === 'sandbox'

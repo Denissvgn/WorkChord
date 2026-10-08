@@ -86,6 +86,9 @@ try {
   await page.getByText('Disposable injected save failure', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   await page.unroute(`**/api/tasks/${nested.id}`);
+  await page.getByRole('button', { name: 'Reload current server work', exact: true }).click();
+  await page.getByRole('button', { name: 'I compared current work; resume this draft', exact: true }).click();
+  assert.match(await description.inputValue(), /Browser draft/);
   check('Dirty Cancel/Escape and failed save preserve description');
 
   const changed = await context.request.put(`/api/tasks/${nested.id}`, { headers, data: { title: 'Nested leaf', description: 'Other writer changed the work', expected_version: nested.version } });

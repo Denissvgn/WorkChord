@@ -23,12 +23,14 @@ fun AppNavigation(
     taskRepository: TaskRepository,
     initialTaskId: Int? = null,
     onInitialTaskOpened: () -> Unit = {},
+    exitGuard: (((() -> Unit) -> Unit)?) = null,
+    onExitGuardChanged: (Any, ((() -> Unit) -> Unit)?) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(initialTaskId) {
         if (initialTaskId != null && initialTaskId > 0) {
-            navController.navigate(Screen.TaskDetail.createRoute(initialTaskId)) { launchSingleTop = true }
-            onInitialTaskOpened()
+            val open = { navController.navigate(Screen.TaskDetail.createRoute(initialTaskId)) { launchSingleTop = true }; onInitialTaskOpened() }
+            if (exitGuard != null) exitGuard(open) else open()
         }
     }
     NavHost(
@@ -60,6 +62,7 @@ fun AppNavigation(
             )
             TaskDetailScreen(
                 viewModel = viewModel,
+                onExitGuardChanged = onExitGuardChanged,
                 onNavigateBack = {
                     navController.popBackStack()
                 },

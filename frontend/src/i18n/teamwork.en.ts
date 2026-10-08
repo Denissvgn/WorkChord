@@ -1,4 +1,11 @@
 export const teamworkEnglish = {
+    "uncertainTask": "The previous write may have reached the server. Compare current work before deciding to submit again. No write is retried automatically.",
+    "reloadCurrentWork": "Reload current server work",
+    "comparedWork": "I compared current work; resume this draft",
+    "boundedComparison": "This is a bounded comparison window. Missing matches do not prove that the previous write failed.",
+    "uncertainComment": "The previous write may have reached the server. Reload and compare current comments before submitting again. No write is retried automatically.",
+    "reloadCurrentComments": "Reload current comments",
+    "comparedComments": "I compared the current comments",
     "connectDevice": "Connect your Android companion",
     "connectHelp": "Approve only a connection you started on your device. Compare the code before continuing.",
     "connectInvalid": "This connection is missing or invalid. Start sign-in again on your device.",

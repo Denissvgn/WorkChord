@@ -7,9 +7,10 @@ import type { TaskComment } from '../../services/discussionService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
+import { useActiveMount } from './useDraftDismissal';
 
 type EditingComment = Pick<TaskComment, 'id' | 'version'>;
-const readDiscussionDraft = (key: string | null): { body: string; mentions: number[]; editing?: EditingComment } | null => {
+const readDiscussionDraft = (key: string | null): { body: string; mentions: number[]; editing?: EditingComment; uncertain?: boolean; writeId?: string } | null => {
     try {
         const value = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
         if (!value || typeof value.savedAt !== 'number' || Date.now() - value.savedAt < 0 || Date.now() - value.savedAt >= 86400000
@@ -36,6 +37,15 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
     const [mentionSearch, setMentionSearch] = useState('');
     const [historyId, setHistoryId] = useState<number | null>(null);
     const [message, setMessage] = useState('');
+    const isActive = useActiveMount();
+    const [uncertain, setUncertain] = useState(recovered?.uncertain === true);
+    const [writeId, setWriteId] = useState(recovered?.writeId);
+    const [comparisonRead, setComparisonRead] = useState(false);
+    const persist = (unknown: boolean, operation?: string) => {
+        if (!storageKey) return;
+        try { sessionStorage.setItem(storageKey, JSON.stringify({ body, mentions, editing, uncertain: unknown, writeId: operation, savedAt: Date.now() })); }
+        catch { /* The in-page draft remains available when storage is unavailable. */ }
+    };
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const comments = useInfiniteQuery({ queryKey: ['discussion', taskId], enabled,
         initialPageParam: 0, queryFn: ({ pageParam }) => discussionService.list(taskId, pageParam),
@@ -51,16 +61,29 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
         getNextPageParam: page => page.has_more ? page.next_after_version : undefined });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const save = useMutation({ mutationFn: (removed?: TaskComment) => discussionService.save(taskId, removed ? '' : body, removed ? [] : mentions, removed ?? editing, Boolean(removed)),
-        onSuccess: async () => { setBody(''); setMentions([]); setEditing(undefined); setMessage(t('teamwork.commentSaved')); await comments.refetch(); if (historyId !== null) await history.refetch(); } });
+        onMutate: () => { const operation = crypto.randomUUID(); setUncertain(true); setWriteId(operation); setComparisonRead(false); persist(true, operation); return operation; },
+        onSuccess: async (_result, _variables, operation) => {
+            if (storageKey) { try {
+                const stored = JSON.parse(sessionStorage.getItem(storageKey) ?? 'null');
+                if (stored?.writeId === operation) sessionStorage.removeItem(storageKey);
+            } catch { /* Preserve other scopes and newly edited inputs. */ } }
+            if (!isActive()) return;
+            setUncertain(false); setWriteId(undefined); setBody(''); setMentions([]); setEditing(undefined);
+            setMessage(t('teamwork.commentSaved')); await comments.refetch(); if (historyId !== null) await history.refetch();
+        },
+        onError: error => {
+            const status = (error as { response?: { status?: number } }).response?.status;
+            if (isActive() && status && status >= 400 && status < 500) { setUncertain(false); setWriteId(undefined); persist(false); }
+        } });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const subscribe = useMutation({ mutationFn: ({ enabled, events }: { enabled: boolean; events?: string[] }) => discussionService.subscribe(taskId, subscription.data!, enabled, events),
         onSuccess: () => subscription.refetch() });
-    const dirty = body.length > 0 || editing !== undefined || mentions.length > 0;
+    const dirty = body.length > 0 || editing !== undefined || mentions.length > 0 || uncertain;
     const latestEdit = comments.data?.pages.flatMap(page => page.items).find(comment => comment.id === editing?.id);
     const pending = save.isPending || subscribe.isPending;
     useEffect(() => { onDirty(dirty); if (!storageKey) return;
-        try { if (dirty) sessionStorage.setItem(storageKey, JSON.stringify({ body, mentions, editing, savedAt: Date.now() })); else sessionStorage.removeItem(storageKey); } catch { /* Keep the in-page draft usable. */ }
-    }, [body, mentions, editing, dirty, onDirty, storageKey]);
+        try { if (dirty) sessionStorage.setItem(storageKey, JSON.stringify({ body, mentions, editing, uncertain, writeId, savedAt: Date.now() })); else sessionStorage.removeItem(storageKey); } catch { /* Keep the in-page draft usable. */ }
+    }, [body, mentions, editing, uncertain, writeId, dirty, onDirty, storageKey]);
     useEffect(() => { onPending(pending); }, [pending, onPending]);
     useEffect(() => () => onDirty(false), [onDirty]);
 
@@ -90,7 +113,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             </li>)}</ol>
             {comments.hasNextPage && <Button type="button" size="sm" variant="secondary" onClick={() => void comments.fetchNextPage()} disabled={comments.isFetchingNextPage}>{t('teamwork.loadMore')}</Button>}
             <label className="field-lbl" htmlFor={`${id}-body`}>{t(editing ? 'teamwork.editComment' : 'teamwork.newComment')}</label>
-            <textarea id={`${id}-body`} className="input min-h-24 w-full" value={body} maxLength={12000} disabled={disabled || pending} onChange={event => { setBody(event.target.value); setMessage(''); }} />
+            <textarea id={`${id}-body`} className="input min-h-24 w-full" value={body} maxLength={12000} disabled={disabled || pending || uncertain} onChange={event => { setBody(event.target.value); setMessage(''); }} />
             <label className="field-lbl" htmlFor={`${id}-mentions`}>{t('teamwork.mention')}</label>
             <input id={`${id}-mentions`} className="input w-full" value={mentionSearch} maxLength={200} disabled={disabled || pending} onChange={event => setMentionSearch(event.target.value)} />
             {mentionSearch && options.isLoading && <p role="status">{t('common.loading')}</p>}
@@ -101,13 +124,22 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             {latestEdit && editing && latestEdit.version !== editing.version && <div className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
                 <p className="font-medium">{t('teamwork.currentComment')} · v{latestEdit.version}</p>
                 <p className="whitespace-pre-wrap break-words">{latestEdit.deleted ? t('teamwork.commentRemoved') : latestEdit.body}</p>
-                <Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => { setEditing(latestEdit.deleted ? undefined : latestEdit); save.reset(); }}>{t(latestEdit.deleted ? 'teamwork.newInstead' : 'teamwork.reapplyComment')}</Button>
+                <Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => { setEditing(latestEdit.deleted ? undefined : latestEdit); setUncertain(false); setWriteId(undefined); persist(false); save.reset(); }}>{t(latestEdit.deleted ? 'teamwork.newInstead' : 'teamwork.reapplyComment')}</Button>
+            </div>}
+            {uncertain && !pending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
+                <p>{t('teamwork.uncertainComment')}</p>
+                <Button type="button" size="sm" variant="secondary" disabled={comments.isFetching} onClick={async () => {
+                    const result = await comments.refetch(); if (!result.isError && isActive()) setComparisonRead(true);
+                }}>{t('teamwork.reloadCurrentComments')}</Button>
+                {comparisonRead && <Button type="button" size="sm" variant="secondary" disabled={comments.isError || comments.isFetching} onClick={() => {
+                    setUncertain(false); setWriteId(undefined); persist(false); save.reset();
+                }}>{t('teamwork.comparedComments')}</Button>}
             </div>}
             {save.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(save.error, t('teamwork.saveFailed'))} <Button type="button" size="sm" variant="ghost" onClick={() => void comments.refetch()}>{t('teamwork.reloadComments')}</Button></p>}
             {message && <p role="status" className="text-sm text-content-secondary">{message}</p>}
             <div className="flex flex-wrap gap-2">
-                <Button type="button" size="sm" disabled={disabled || pending || !body.trim()} isLoading={save.isPending} onClick={() => save.mutate(undefined)}>{t(editing ? 'teamwork.saveComment' : 'teamwork.postComment')}</Button>
-                {dirty && <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => { setEditing(undefined); setBody(''); setMentions([]); save.reset(); }}>{t('teamwork.discardComment')}</Button>}
+                <Button type="button" size="sm" disabled={disabled || pending || uncertain || !body.trim()} isLoading={save.isPending} onClick={() => save.mutate(undefined)}>{t(editing ? 'teamwork.saveComment' : 'teamwork.postComment')}</Button>
+                {dirty && <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => { setEditing(undefined); setBody(''); setMentions([]); setUncertain(false); setWriteId(undefined); save.reset(); }}>{t('teamwork.discardComment')}</Button>}
             </div>
             {subscription.isLoading && <p role="status">{t('common.loading')}</p>}
             {subscription.isError && <QueryErrorState error={subscription.error} fallback={t('teamwork.loadFailed')} onRetry={() => void subscription.refetch()} />}

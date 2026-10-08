@@ -51,4 +51,21 @@ describe('task discussion', () => {
         await user.click(screen.getByRole('button', { name: 'Save comment' }));
         await waitFor(() => expect(service.save).toHaveBeenCalledWith(42, 'Recovered edit', [2], { id: 7, version: 1 }, false));
     });
+
+    it('requires a current read and explicit comparison before resuming an uncertain recovered write', async () => {
+        service.save.mockRejectedValueOnce(new TypeError('No verified response'));
+        const view = renderDiscussion();
+        await view.user.type(await screen.findByRole('textbox', { name: 'New comment' }), 'Possibly committed comment');
+        await view.user.click(screen.getByRole('button', { name: 'Post comment' }));
+        await screen.findByRole('alert');
+        view.unmount();
+        service.list.mockResolvedValue({ items: [comment(1, 'Possibly committed comment')], has_more: false });
+        const reopened = renderDiscussion();
+        expect(await screen.findByRole('textbox', { name: 'New comment' })).toHaveValue('Possibly committed comment');
+        expect(screen.getByRole('button', { name: 'Post comment' })).toBeDisabled();
+        await reopened.user.click(screen.getByRole('button', { name: 'Reload current comments' }));
+        await reopened.user.click(await screen.findByRole('button', { name: 'I compared the current comments' }));
+        expect(screen.getByRole('button', { name: 'Post comment' })).toBeEnabled();
+        expect(service.save).toHaveBeenCalledTimes(1);
+    });
 });

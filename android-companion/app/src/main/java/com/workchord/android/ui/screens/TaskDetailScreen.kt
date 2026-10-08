@@ -21,7 +21,8 @@ import com.workchord.android.ui.viewmodels.TaskDetailViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
-    onNavigateTask: (Int) -> Unit = {}, modifier: Modifier = Modifier) {
+    onNavigateTask: (Int) -> Unit = {}, modifier: Modifier = Modifier,
+    onExitGuardChanged: (Any, ((() -> Unit) -> Unit)?) -> Unit = { _, _ -> }) {
     val state by viewModel.uiState.collectAsState()
     val lifecycle = LocalLifecycleOwner.current
     DisposableEffect(lifecycle, viewModel) {
@@ -30,11 +31,23 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
         onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
     var pendingExit by remember { mutableStateOf<(() -> Unit)?>(null) }
-    fun leave(action: () -> Unit) { if (state.hasUnsavedInputs) pendingExit = action else action() }
-    BackHandler(state.hasUnsavedInputs) { pendingExit = onNavigateBack }
+    fun leave(action: () -> Unit) { if (state.hasUnsavedInputs || state.isUpdatingStatus) pendingExit = action else action() }
+    val currentLeave by rememberUpdatedState<(()->Unit)->Unit>({ action -> leave(action) })
+    val exitOwner = remember(viewModel) { Any() }
+    DisposableEffect(viewModel, onExitGuardChanged) {
+        onExitGuardChanged(exitOwner) { action -> currentLeave(action) }
+        onDispose { onExitGuardChanged(exitOwner, null) }
+    }
+    BackHandler(state.hasUnsavedInputs || state.isUpdatingStatus) { leave(onNavigateBack) }
     pendingExit?.let { action -> AlertDialog(onDismissRequest = { pendingExit = null },
-        title = { Text("Unsaved evidence") }, text = { Text("These changes have not been saved to the server. Stay to keep editing, or discard them before leaving.") },
-        confirmButton = { TextButton(onClick = { viewModel.discardInputs { pendingExit = null; action() } }) { Text("Discard and leave") } },
+        title = { Text("Leave this task?") }, text = { Text(when {
+            state.isUpdatingStatus -> "Wait for the pending write to finish before leaving."
+            state.pendingWriteVersion != null -> "The write outcome is unknown. Keep your local draft and compare current server work before deciding to discard it."
+            state.hasUnsavedInputs -> "These changes have not been saved to the server. Stay to keep editing, or discard them before leaving."
+            else -> "The write has finished. You can leave this task."
+        }) },
+        confirmButton = { TextButton(enabled = !state.isUpdatingStatus,
+            onClick = { viewModel.discardInputs { pendingExit = null; action() } }) { Text("Discard and leave") } },
         dismissButton = { TextButton(onClick = { pendingExit = null }) { Text("Stay") } }) }
     Scaffold(modifier.fillMaxSize().imePadding(), topBar = {
         TopAppBar(title = { Text(state.task?.let { "Task #${it.id}" } ?: "Task") }, navigationIcon = {
@@ -44,6 +57,11 @@ fun TaskDetailScreen(viewModel: TaskDetailViewModel, onNavigateBack: () -> Unit,
         LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isLoading || state.isUpdatingStatus) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+            state.pendingWriteVersion?.let { version -> item {
+                Text("A write based on version $version may have reached the server. Reload and compare current work before taking another action.")
+                TextButton(enabled = state.authoritative && !state.isLoading && !state.isUpdatingStatus,
+                    onClick = { viewModel.comparePendingWrite() }) { Text("I compared current server work") }
+            } }
             state.errorMessage?.let { message -> item {
                 Text(message, color = MaterialTheme.colorScheme.error)
                 OutlinedButton(onClick = { viewModel.loadTask() }, enabled = !state.isUpdatingStatus) { Text("Reload current task") }
