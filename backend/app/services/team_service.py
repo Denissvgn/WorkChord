@@ -222,6 +222,7 @@ class TeamService:
         await commit_or_flush(self.db)
         return True
 
+    @schedule_input_command("profile")
     async def add_profile_skill(
         self,
         profile_id: int,

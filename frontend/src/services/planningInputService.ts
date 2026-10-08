@@ -9,6 +9,9 @@ export interface ObservedPlanningInput<T> {
     complete: true;
 }
 
+export type ObservedRevisions = Record<number, number>;
+export const revisionHeaders = (revisions: ObservedRevisions) => ({ 'X-Expected-Revisions': JSON.stringify(revisions) });
+
 export const planningInputService = {
     readInitial: async <T>(kind: PlanningInputKind, resourceId: number, creatingMember = false) => {
         const result = await api.get<ObservedPlanningInput<T>>(`/tasks/planning-inputs/${kind}/${resourceId}/context`, {

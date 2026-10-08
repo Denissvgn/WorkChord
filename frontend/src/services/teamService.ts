@@ -1,3 +1,4 @@
+import { revisionHeaders, type ObservedRevisions } from './planningInputService';
 import api from './api';
 import type {
     MemberCapacity,
@@ -47,28 +48,28 @@ export const teamService = {
         return response.data;
     },
 
-    updateProfile: async (profileId: number, data: TeamMemberProfileUpdate) => {
-        const response = await api.put<TeamMemberProfile>(`/team-member-profiles/${profileId}`, data);
+    updateProfile: async (profileId: number, data: TeamMemberProfileUpdate, revisions: ObservedRevisions) => {
+        const response = await api.put<TeamMemberProfile>(`/team-member-profiles/${profileId}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    deleteProfile: async (profileId: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/team-member-profiles/${profileId}`);
+    deleteProfile: async (profileId: number, revisions: ObservedRevisions) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/team-member-profiles/${profileId}`, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    createProfileSkill: async (profileId: number, data: TeamMemberProfileSkillCreate) => {
-        const response = await api.post<TeamMemberProfileSkill>(`/team-member-profiles/${profileId}/skills`, data);
+    createProfileSkill: async (profileId: number, data: TeamMemberProfileSkillCreate, revisions: ObservedRevisions) => {
+        const response = await api.post<TeamMemberProfileSkill>(`/team-member-profiles/${profileId}/skills`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    updateProfileSkill: async (profileId: number, skillId: number, data: TeamMemberProfileSkillUpdate) => {
-        const response = await api.put<TeamMemberProfileSkill>(`/team-member-profiles/${profileId}/skills/${skillId}`, data);
+    updateProfileSkill: async (profileId: number, skillId: number, data: TeamMemberProfileSkillUpdate, revisions: ObservedRevisions) => {
+        const response = await api.put<TeamMemberProfileSkill>(`/team-member-profiles/${profileId}/skills/${skillId}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    deleteProfileSkill: async (profileId: number, skillId: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/team-member-profiles/${profileId}/skills/${skillId}`);
+    deleteProfileSkill: async (profileId: number, skillId: number, revisions: ObservedRevisions) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/team-member-profiles/${profileId}/skills/${skillId}`, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 

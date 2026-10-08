@@ -89,10 +89,18 @@ async def observe_planning_input(db, kind, resource_id, *, creating_member=False
     row = (await db.execute(select(*columns).where(model.id == resource_id))).mappings().first()
     if row is None:
         raise LookupError("Planning input not found or inaccessible")
+    resource = dict(row)
+    if kind == 'profile':
+        from app.models.team_member import TeamMemberProfileSkill
+        skills = (await db.execute(select(*TeamMemberProfileSkill.__table__.columns)
+            .where(TeamMemberProfileSkill.profile_id == resource_id).order_by(TeamMemberProfileSkill.id).limit(501))).mappings().all()
+        if len(skills) > 500:
+            raise PlanningConflict('planning_scope_oversized', 'This profile exceeds the supported initial skill context limit.')
+        resource['skills'] = [dict(skill) for skill in skills]
     after = await revisions()
     if before != after:
         raise PlanningConflict("planning_context_changed", "Planning input changed during this initial read. Reload before opening a draft.")
     if len(json.dumps(before, separators=(",", ":")).encode()) > 16384:
         raise PlanningConflict("planning_scope_oversized", "The complete revision context exceeds the supported header limit.")
-    return {"kind": kind, "resource_id": resource_id, "resource": dict(row),
+    return {"kind": kind, "resource_id": resource_id, "resource": resource,
             "expected_revisions": before, "complete": True}

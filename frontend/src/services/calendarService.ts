@@ -1,3 +1,4 @@
+import { revisionHeaders, type ObservedRevisions } from './planningInputService';
 import api from './api';
 import type { Calendar, CalendarCreate, CalendarImportResponse, CalendarUpdate, WorkingDaysResponse } from '../types/calendar';
 
@@ -17,12 +18,12 @@ export const calendarService = {
         return response.data;
     },
 
-    delete: async (id: number) => {
-        await api.delete(`/calendars/${id}`);
+    delete: async (id: number, revisions: ObservedRevisions) => {
+        await api.delete(`/calendars/${id}`, { headers: revisionHeaders(revisions) });
     },
 
-    update: async (id: number, data: CalendarUpdate) => {
-        const response = await api.put<Calendar>(`/calendars/${id}`, data);
+    update: async (id: number, data: CalendarUpdate, revisions: ObservedRevisions) => {
+        const response = await api.put<Calendar>(`/calendars/${id}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
@@ -33,20 +34,20 @@ export const calendarService = {
         return response.data;
     },
 
-    importPublicHolidays: async (id: number, country: string, year: number) => {
+    importPublicHolidays: async (id: number, country: string, year: number, revisions: ObservedRevisions) => {
         const response = await api.post<CalendarImportResponse>(`/calendars/${id}/import-holidays`, {
             source: 'public',
             country,
             year,
-        });
+        }, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    importHolidayCsv: async (id: number, csvText: string) => {
+    importHolidayCsv: async (id: number, csvText: string, revisions: ObservedRevisions) => {
         const response = await api.post<CalendarImportResponse>(`/calendars/${id}/import-holidays`, {
             source: 'csv',
             csv_text: csvText,
-        });
+        }, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 };
