@@ -63630,6 +63630,7 @@
         "modules/agent_service.md",
         "modules/models_task.md",
         "modules/schemas_task.md",
+        "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -73255,17 +73256,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_agent_runtime_recovery",
       "outgoing_internal_links": [
-        "modules/agent_service.md",
-        "modules/app_main.md",
-        "modules/models_agent.md",
-        "modules/models_task.md",
-        "modules/schemas_task.md",
-        "modules/schemas_task_brief.md",
-        "modules/task_brief_service.md",
-        "modules/task_service.md",
-        "modules/test_agent_runtime_recovery.md",
-        "modules/test_delivery_scenarios.md",
-        "modules/time.md"
+        "modules/test_agent_runtime_recovery.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_agent_runtime_recovery.py",
@@ -75960,6 +75951,7 @@
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
         "modules/delivery_dependency_service.md",
+        "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/time.md"
       ],
@@ -75995,6 +75987,7 @@
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/schemas_agent.md",
+        "modules/services_work_metrics.md",
         "modules/time.md"
       ],
       "role": "mixed",
@@ -76660,6 +76653,7 @@
       "outgoing_internal_links": [
         "modules/agent_readiness.md",
         "modules/schemas_task.md",
+        "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/time.md"
       ],
@@ -88714,5 +88708,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:c6debe6903e37101dbd07c69dd953f57ee0e55874019cc09a368e8527edbf80f"
+  "source_hash": "sha256:ac324ad2c52995c2fac8f560d4a534511cb496a877024bc33fa84adf3d36a6e9"
 }

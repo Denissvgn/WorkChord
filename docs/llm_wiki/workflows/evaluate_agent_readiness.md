@@ -1,7 +1,7 @@
 # evaluate_agent_readiness
 
 **Entry point:** `agent_readiness.evaluate_agent_readiness`
-**Modules involved:** [agent_readiness](../modules/agent_readiness.md), [schemas_task](../modules/schemas_task.md), [task_brief_service](../modules/task_brief_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_readiness](../modules/agent_readiness.md), [schemas_task](../modules/schemas_task.md), [services_work_metrics](../modules/services_work_metrics.md), [task_brief_service](../modules/task_brief_service.md), [time](../modules/time.md)
 
 > Evaluate whether a task is ready for explicit agent execution.
 
@@ -9,15 +9,17 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `time.utc_now`
-2. `time.as_utc`
+2. `services_work_metrics.effective_work_flags`
 3. `time.as_utc`
-4. `task_brief_service.brief_definition_blockers`
-5. `schemas_task.TaskAgentReadiness`
+4. `time.as_utc`
+5. `task_brief_service.brief_definition_blockers`
+6. `schemas_task.TaskAgentReadiness`
 
 ## Touches
 
 - [agent_readiness](../modules/agent_readiness.md)
 - [schemas_task](../modules/schemas_task.md)
+- [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [time](../modules/time.md)
 

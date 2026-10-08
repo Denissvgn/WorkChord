@@ -1,7 +1,7 @@
 # AgentWorkService__work_item
 
 **Entry point:** `agent_work_service.AgentWorkService._work_item`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [schemas_agent](../modules/schemas_agent.md), [time](../modules/time.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [schemas_agent](../modules/schemas_agent.md), [services_work_metrics](../modules/services_work_metrics.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -9,13 +9,15 @@
 1. `agent_service.AgentConflictError`
 2. `time.as_utc`
 3. `time.as_utc`
-4. `schemas_agent.AgentWorkItem`
+4. `services_work_metrics.effective_work_flags`
+5. `schemas_agent.AgentWorkItem`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
 - [schemas_agent](../modules/schemas_agent.md)
+- [services_work_metrics](../modules/services_work_metrics.md)
 - [time](../modules/time.md)
 
 ## Behavior
