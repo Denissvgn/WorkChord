@@ -29,7 +29,7 @@ flowchart LR
     n0["frontend/src/features/planningMasters/planningNavigationInvalidation.test.ts"]
     n1["frontend/src/features/planningMasters/planningNavigationInvalidation.ts"]
     n2["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
-    n3["frontend/src/main.tsx"]
+    n3["frontend/src/features/workspaceQueryPolicy.ts"]
     n0 --> n1
     n0 --> n2
     n1 --> n2
@@ -37,7 +37,7 @@ flowchart LR
     click n0 "../modules/planningNavigationInvalidation.test.md"
     click n1 "../modules/planningNavigationInvalidation.md"
     click n2 "../modules/usePlanningNavigationSummary.md"
-    click n3 "../modules/src_main.md"
+    click n3 "../modules/workspaceQueryPolicy.md"
 ```
 
 ### Internal neighbors
@@ -45,7 +45,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [planningNavigationInvalidation.test](../modules/planningNavigationInvalidation.test.md) |
-| Inbound | [src_main](../modules/src_main.md) |
+| Inbound | [workspaceQueryPolicy](../modules/workspaceQueryPolicy.md) |
 | Outbound | [usePlanningNavigationSummary](../modules/usePlanningNavigationSummary.md) |
 
 ### External packages

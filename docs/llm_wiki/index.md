@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1511 | [Open section](#entities) |
-| Modules | 701 | [Open section](#modules) |
+| Entities | 1512 | [Open section](#entities) |
+| Modules | 703 | [Open section](#modules) |
 | Workflows | 180 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 543 | [Open section](#entry-point-flows) |
@@ -631,6 +631,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [QueryFeedbackSource](entities/QueryFeedbackSource.md)
 - [QueryKey](entities/QueryKey.md)
 - [QueryLoadingStateProps](entities/QueryLoadingStateProps.md)
+- [QueryPolicy](entities/QueryPolicy.md)
 - [QueryStaleStateProps](entities/QueryStaleStateProps.md)
 - [Queue](entities/Queue.md)
 - [RankableAttention](entities/RankableAttention.md)
@@ -2231,6 +2232,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
 - [workQueryFreshness.test](modules/workQueryFreshness.test.md) - `frontend/src/features/workQueryFreshness.test.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
+- [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) - `frontend/src/features/workspaceQueryPolicy.ts`
+- [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) - `frontend/src/features/workspaceQueryPolicy.test.ts`
 - [workspaces](modules/workspaces.md) - `frontend/src/navigation/workspaces.ts`
 - [workspaces.test](modules/workspaces.test.md) - `frontend/src/navigation/workspaces.test.ts`
 

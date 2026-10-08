@@ -382,6 +382,7 @@ flowchart TD
 | [attentionRanking](modules/attentionRanking.md) | 2 | 1 |
 | [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) | 2 | 1 |
 | [useTimeEntries](modules/useTimeEntries.md) | 2 | 2 |
+| [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 2 | 2 |
 | [pagination](modules/pagination.md) | 2 | 0 |
 | [resources.ru](modules/resources.ru.md) | 2 | 3 |
 | [schedulingDisplay](modules/schedulingDisplay.md) | 2 | 2 |
@@ -660,9 +661,10 @@ flowchart TD
 | [planningTaskIssues.test](modules/planningTaskIssues.test.md) | 0 | 2 |
 | [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) | 0 | 6 |
 | [workQueryFreshness.test](modules/workQueryFreshness.test.md) | 0 | 1 |
+| [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) | 0 | 2 |
 | [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) | 0 | 3 |
 | [i18n.test](modules/i18n.test.md) | 0 | 3 |
-| [src_main](modules/src_main.md) | 0 | 6 |
+| [src_main](modules/src_main.md) | 0 | 4 |
 | [workspaces.test](modules/workspaces.test.md) | 0 | 1 |
 | [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) | 0 | 5 |
 | [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) | 0 | 5 |

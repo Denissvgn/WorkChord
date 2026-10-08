@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1511,
+      "entities": 1512,
       "flows": 543,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 701,
+      "modules": 703,
       "workflows": 180
     },
     "dependency_architecture": 2,
-    "total": 2950
+    "total": 2953
   },
   "dependency_pages": {
     "count": 2,
@@ -40148,6 +40148,7 @@
         "entities/QueryFeedbackSource.md",
         "entities/QueryKey.md",
         "entities/QueryLoadingStateProps.md",
+        "entities/QueryPolicy.md",
         "entities/QueryStaleStateProps.md",
         "entities/Queue.md",
         "entities/RankableAttention.md",
@@ -42205,6 +42206,8 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md",
         "workflows/AgentModelCatalogService__execute.md",
@@ -52152,6 +52155,18 @@
       "role": "semantic",
       "source_path": "frontend/src/components/feedback/QueryState.tsx",
       "title": "QueryLoadingStateProps"
+    },
+    {
+      "canonical_path": "entities/QueryPolicy.md",
+      "id": "QueryPolicy",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/QueryPolicy",
+      "outgoing_internal_links": [
+        "modules/workQueryFreshness.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/workQueryFreshness.ts",
+      "title": "QueryPolicy"
     },
     {
       "canonical_path": "entities/QueryStaleStateProps.md",
@@ -68533,8 +68548,8 @@
       "outgoing_internal_links": [
         "modules/planningNavigationInvalidation.md",
         "modules/planningNavigationInvalidation.test.md",
-        "modules/src_main.md",
-        "modules/usePlanningNavigationSummary.md"
+        "modules/usePlanningNavigationSummary.md",
+        "modules/workspaceQueryPolicy.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/planningNavigationInvalidation.ts",
@@ -71573,11 +71588,9 @@
       "outgoing_internal_links": [
         "modules/App.md",
         "modules/IdentityProvider.md",
-        "modules/planningNavigationInvalidation.md",
         "modules/src_main.md",
         "modules/SystemLanguageProvider.md",
-        "modules/ToastProvider.md",
-        "modules/workQueryFreshness.md"
+        "modules/ToastProvider.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/main.tsx",
@@ -75564,10 +75577,11 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/workQueryFreshness",
       "outgoing_internal_links": [
-        "modules/IdentityProvider.md",
-        "modules/src_main.md",
+        "entities/QueryPolicy.md",
         "modules/workQueryFreshness.md",
-        "modules/workQueryFreshness.test.md"
+        "modules/workQueryFreshness.test.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/workQueryFreshness.ts",
@@ -75585,6 +75599,36 @@
       "role": "semantic",
       "source_path": "frontend/src/features/workQueryFreshness.test.ts",
       "title": "workQueryFreshness.test Module"
+    },
+    {
+      "canonical_path": "modules/workspaceQueryPolicy.md",
+      "id": "workspaceQueryPolicy",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/workspaceQueryPolicy",
+      "outgoing_internal_links": [
+        "modules/IdentityProvider.md",
+        "modules/planningNavigationInvalidation.md",
+        "modules/workQueryFreshness.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/workspaceQueryPolicy.ts",
+      "title": "workspaceQueryPolicy Module"
+    },
+    {
+      "canonical_path": "modules/workspaceQueryPolicy.test.md",
+      "id": "workspaceQueryPolicy.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/workspaceQueryPolicy.test",
+      "outgoing_internal_links": [
+        "modules/workQueryFreshness.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/workspaceQueryPolicy.test.ts",
+      "title": "workspaceQueryPolicy.test Module"
     },
     {
       "canonical_path": "modules/workspaces.md",
@@ -88025,6 +88069,8 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md"
       ],
@@ -88737,6 +88783,8 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/workspaceQueryPolicy.md",
+        "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md"
       ],
@@ -88746,5 +88794,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:b8b303c3d478ad01119f8a2fb0deba865cb9cc6afb5d1a12d8af995b6ed8d5d8"
+  "source_hash": "sha256:a1560f096277c9177b5233c2ce03eb9b9748d8aa35da18b746c4437039b9fb5a"
 }

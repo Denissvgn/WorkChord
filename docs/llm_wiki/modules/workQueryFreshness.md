@@ -6,7 +6,7 @@
 
 _Auto-generated from `frontend/src/features/workQueryFreshness.ts`._
 
-Shared work queries refresh on focus and every 30 seconds in the foreground, with bounded failure backoff and mutation invalidation. Background and unauthorized polling stop; identity-specific clients prevent old-account cache reuse.
+An explicit workspace registry separates live work, immutable history, editor snapshots, on-demand reference data, settings and identity ownership. Eligible active live queries refresh every 30 seconds while visible, retaining the existing failure backoff. Hidden, disabled and unauthorized queries stop polling. Automatic refresh does not replay more than five accumulated pages or replace editor/history snapshots. Explicit mutation effects limit unrelated settings traffic; unmapped mutations retain legacy work invalidation until adoption is complete.
 
 ## Imports
 
@@ -18,41 +18,48 @@ Shared work queries refresh on focus and every 30 seconds in the foreground, wit
 
 | Signal | Values |
 |--------|--------|
-| Exports | `WORK_QUERY_KEYS`, `installWorkFreshness` |
-| Constants | `WORK_QUERY_KEYS` |
+| Exports | `WORKSPACE_QUERY_POLICIES`, `WORK_QUERY_KEYS`, `installWorkFreshness` |
+| Constants | `ROOTS_BY_POLICY`, `WORKSPACE_QUERY_POLICIES`, `WORK_QUERY_KEYS`, `MUTATION_ROOT_EFFECTS` |
+| Module calls | `WORKSPACE_QUERY_POLICIES = fromEntries` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/identity/IdentityProvider.tsx"]
-    n1["frontend/src/features/workQueryFreshness.test.ts"]
-    n2["frontend/src/features/workQueryFreshness.ts"]
-    n3["frontend/src/main.tsx"]
-    n0 --> n2
-    n1 --> n2
-    n3 --> n0
-    n3 --> n2
-    click n0 "../modules/IdentityProvider.md"
-    click n1 "../modules/workQueryFreshness.test.md"
-    click n2 "../modules/workQueryFreshness.md"
-    click n3 "../modules/src_main.md"
+    n0["frontend/src/features/workQueryFreshness.test.ts"]
+    n1["frontend/src/features/workQueryFreshness.ts"]
+    n2["frontend/src/features/workspaceQueryPolicy.test.ts"]
+    n3["frontend/src/features/workspaceQueryPolicy.ts"]
+    n0 --> n1
+    n2 --> n1
+    n2 --> n3
+    n3 --> n1
+    click n0 "../modules/workQueryFreshness.test.md"
+    click n1 "../modules/workQueryFreshness.md"
+    click n2 "../modules/workspaceQueryPolicy.test.md"
+    click n3 "../modules/workspaceQueryPolicy.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [workQueryFreshness.test](../modules/workQueryFreshness.test.md) |
-| Inbound | [src_main](../modules/src_main.md) |
+| Inbound | [workspaceQueryPolicy.test](../modules/workspaceQueryPolicy.test.md) |
+| Inbound | [workspaceQueryPolicy](../modules/workspaceQueryPolicy.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | typescript | 1 | 0 |
+
+## Classes
+
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [QueryPolicy](../entities/QueryPolicy.md) | Type alias | 3 | — | — |
 
 ## Functions
 

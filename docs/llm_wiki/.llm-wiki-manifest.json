@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:dae1225a15a279d0b990b2f9ec6d94063cc8140a2a245008ef1afec3bd516e66",
-    "knowledge_index_hash": "sha256:980af0fb52aeba3f45435d3c21eacd055c8e028194e63f61baa00ca825edb016",
-    "surface_index_hash": "sha256:7878b170e9eb085ed93e64624e227a4e3dc803bf00ad17061bc17be9a88547cf"
+    "evaluated_envelope_hash": "sha256:3193e38aee8fdb53b1feb94b39e663034dcf6f92cf52a87569a6834abe910d45",
+    "knowledge_index_hash": "sha256:058355e0d4cfbc5c830e02fd7eefc619e69188e974f1597d6e09fc0f0abf6b83",
+    "surface_index_hash": "sha256:9bdcdb05d74f85312a0ee303a106193dcbf3f7477a25784cdd1b7715d50ee9dc"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -3170,7 +3170,7 @@
         "concept_observation_hash": "sha256:a8c984ca7d806be52b47e0b3aeaa179aed0420a5db84066c45005e56462ca5b7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:8ab261ff2cb2650a2b5c7cedb7165f71ed4be8276ad96cad38d4a8945e7da930",
+        "source_content_hash": "sha256:9783527eae81d178ee34c692d8ce488bda35f3fc94eca27f47b545329387fbda",
         "source_path": "frontend/src/components/settings/EmailSettingsPanel.tsx"
       },
       "state": "known"
@@ -3200,7 +3200,7 @@
         "concept_observation_hash": "sha256:6d24ac58e276d60833c8ca114d2b48d1e044ee9b1be5c33b54b806c8e6297b17",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:4a32c24e18fef84ca9aba870f9efc254894f4df55f69221a6ed92171092e43af",
+        "source_content_hash": "sha256:d1a41075858bdfac562818531f46331636b4524f7050efc2fc902e429a32a338",
         "source_path": "frontend/src/components/settings/OutboundWebhooksPanel.tsx"
       },
       "state": "known"
@@ -3480,7 +3480,7 @@
         "concept_observation_hash": "sha256:28dfe3cd6794d955d81a3e1d777cbf65011f1565debdc394f03f5878820d0017",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:4f221a69d31fc6b7117a8378ed51d64d97d60bc0ee387da4256de7f83dc8671b",
+        "source_content_hash": "sha256:07929dd52b10f3b689c0f0dbbc20efd4d388fec93ab5bc1f64989c920a189e29",
         "source_path": "frontend/src/components/settings/GitHubSettingsPanel.tsx"
       },
       "state": "known"
@@ -6135,6 +6135,16 @@
       },
       "state": "known"
     },
+    "entities/QueryPolicy.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:e5671f211f529b6934d2e1d696b766fa3892f3553735bc48548d640548976aa3",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "entity",
+        "source_content_hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
+        "source_path": "frontend/src/features/workQueryFreshness.ts"
+      },
+      "state": "known"
+    },
     "entities/QueryStaleStateProps.md": {
       "basis": {
         "concept_observation_hash": "sha256:24506cabdc613a28af1b9c8491dea4d58ee9fa291bed498b2790b1a88508cfd0",
@@ -8030,7 +8040,7 @@
         "concept_observation_hash": "sha256:ae012dab8984c58ef4f9012300d81fb84b65f2bac9e2d58e4b54604c18a41696",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:4a32c24e18fef84ca9aba870f9efc254894f4df55f69221a6ed92171092e43af",
+        "source_content_hash": "sha256:d1a41075858bdfac562818531f46331636b4524f7050efc2fc902e429a32a338",
         "source_path": "frontend/src/components/settings/OutboundWebhooksPanel.tsx"
       },
       "state": "known"
@@ -8040,7 +8050,7 @@
         "concept_observation_hash": "sha256:491ea65d8783910b9ea03305e6c97a23d7253abeddfaec9c89448d7e68d815ec",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:4a32c24e18fef84ca9aba870f9efc254894f4df55f69221a6ed92171092e43af",
+        "source_content_hash": "sha256:d1a41075858bdfac562818531f46331636b4524f7050efc2fc902e429a32a338",
         "source_path": "frontend/src/components/settings/OutboundWebhooksPanel.tsx"
       },
       "state": "known"
@@ -15630,7 +15640,7 @@
         "concept_observation_hash": "sha256:3c56387aabd386b85618259e1bc8d1a30ed950bdf18513cc30e2c1569c2804c4",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:8ab261ff2cb2650a2b5c7cedb7165f71ed4be8276ad96cad38d4a8945e7da930",
+        "source_content_hash": "sha256:9783527eae81d178ee34c692d8ce488bda35f3fc94eca27f47b545329387fbda",
         "source_path": "frontend/src/components/settings/EmailSettingsPanel.tsx"
       },
       "state": "known"
@@ -15720,7 +15730,7 @@
         "concept_observation_hash": "sha256:92d004fa88db04a7340ad29452ec57b5d9e5336f8b6e9d454d7f7396c395c5eb",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:4f221a69d31fc6b7117a8378ed51d64d97d60bc0ee387da4256de7f83dc8671b",
+        "source_content_hash": "sha256:07929dd52b10f3b689c0f0dbbc20efd4d388fec93ab5bc1f64989c920a189e29",
         "source_path": "frontend/src/components/settings/GitHubSettingsPanel.tsx"
       },
       "state": "known"
@@ -15747,10 +15757,10 @@
     },
     "modules/IdentityProvider.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4a87b2fefd08a572c801cf309e487d97d103a662173ea995dcd66190345aaf32",
+        "concept_observation_hash": "sha256:b19ce77426f3853d4aa832bee20ff552479d3f2ca594040df214f24a05c84036",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:431e2bb2b0feb25ff58589f76c92a1997860650428b40de928d9127700b1b7bd",
+        "source_content_hash": "sha256:9b59403493c2a2591a5a0d9c4933194e0be527fb86dbb6186ef7c050a5c16483",
         "source_path": "frontend/src/features/identity/IdentityProvider.tsx"
       },
       "state": "known"
@@ -15760,7 +15770,7 @@
         "concept_observation_hash": "sha256:faad555d7f936f6e754ea54532197d83a6715a07208a73496316fe6c493f7b7b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:8d8c22a6132c368f6a3c8680f2c81dcb0f6acb4a90f3843b48fd5827b3358418",
+        "source_content_hash": "sha256:ea9dc1a131ac42403f0dc9d84ea044faabe5dc9cd8bee09d5e3a30e21687961b",
         "source_path": "frontend/src/features/identity/IdentityProvider.test.tsx"
       },
       "state": "known"
@@ -16060,7 +16070,7 @@
         "concept_observation_hash": "sha256:48b135de900653bf51d590f1e1b525ca680367d6796c273ed49b32d43b280f1a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:4a32c24e18fef84ca9aba870f9efc254894f4df55f69221a6ed92171092e43af",
+        "source_content_hash": "sha256:d1a41075858bdfac562818531f46331636b4524f7050efc2fc902e429a32a338",
         "source_path": "frontend/src/components/settings/OutboundWebhooksPanel.tsx"
       },
       "state": "known"
@@ -20327,10 +20337,10 @@
     },
     "modules/src_main.md": {
       "basis": {
-        "concept_observation_hash": "sha256:dc3a55f4736a77e0cd4afe1690be82c1947de0244dfd0c3efe75b45fe9acc363",
+        "concept_observation_hash": "sha256:cf3c304fe7c7dee76e654b88272ddb39d233027afa5618fa22a89ea1699783c0",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:f6c9da7395611a8840e51b0ade4fd82c43af3bac94c38246c51270d7f67a024b",
+        "source_content_hash": "sha256:df4141e536424a4d010fccdb080d44501f5454ec3ab30e9f2be7d3124a3e986d",
         "source_path": "frontend/src/main.tsx"
       },
       "state": "known"
@@ -22077,10 +22087,10 @@
     },
     "modules/workQueryFreshness.md": {
       "basis": {
-        "concept_observation_hash": "sha256:c173c38ac7503be23f421009a64d0f8e61846f87e27879efc2d175f03f7b64eb",
+        "concept_observation_hash": "sha256:6c3da6453d7f14d7336c195771f2b786c2f564e6ba81cee0484cab6779757ee7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:c354148fd4891939c9717303cc3e121a875e4740c515f23bd811117f7fb60bc2",
+        "source_content_hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
         "source_path": "frontend/src/features/workQueryFreshness.ts"
       },
       "state": "known"
@@ -22102,6 +22112,26 @@
         "scope": "module",
         "source_content_hash": "sha256:2b6333a675496d930c48d2ae638b750a72a8ac1220af8cc2a837f0fec8a7ec2e",
         "source_path": "backend/app/cli/worker.py"
+      },
+      "state": "known"
+    },
+    "modules/workspaceQueryPolicy.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0172c3b1ed438e8ebb9ce16a473403ec02beb39bcc6e208afcf7df92b545945c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:c5de179cb9d0efd6f9e9aa8a1f876c3211e0ad0e0480bfa27675cff5161a46b7",
+        "source_path": "frontend/src/features/workspaceQueryPolicy.ts"
+      },
+      "state": "known"
+    },
+    "modules/workspaceQueryPolicy.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:045d6eb19b21c0d3ce0db31012e9041d39ed8b804c739d32d1a8a6c92ebfde4c",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:f08dcda9d4aa89862f33a48b96726dc0d8f18c4b9bc12d3fb125ff81a5eab786",
+        "source_path": "frontend/src/features/workspaceQueryPolicy.test.ts"
       },
       "state": "known"
     },
@@ -22340,13 +22370,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:0fb81a196db338fa7d0fea95da785e7633baf833383eec34dcb16c1b8b8f259f",
-      "lifecycle_hash": "sha256:8c5fcffc2ac24d77a6de07e19b1fac5c623f30d9673d2afc8758d2907ce89322",
-      "markdown_snapshot_hash": "sha256:37ea340a98abcb973cba1ceef16ff26dcfd3f8e3f60225fa93937038126aa226",
-      "observation_inputs_hash": "sha256:e2f63b806967d37b4d3a9638394b93a0bf9dff7dcc6cec95008f9fd764cec29d",
+      "inventory_hash": "sha256:fc2260c877095ff52dff8dae3244d9f1085da52740fbc0cf244df262d959e57f",
+      "lifecycle_hash": "sha256:e924338dfe3db463f5ea12b89643a9149c475d2da8c99c98b4518fc1cffff0e6",
+      "markdown_snapshot_hash": "sha256:81affe655a63b3828339e86bdd3cfcac1d68d9972228a0d74fdaeacb0eaea400",
+      "observation_inputs_hash": "sha256:23e98e65eced99234a15c764319978034b887c93864b880288f0d2f1758585a2",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:cf5aa9a36d378e63f2e308a0455098926c4fe5bc5ab7a250ee630e9f98bace02"
+      "source_snapshot_hash": "sha256:7202cbbf6a5c2124f8c6e26cf522f6449c88731af5dd7b74a568d9d013b940c7"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -26032,6 +26062,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "frontend/src/components/feedback/QueryState.tsx"
+    },
+    "entities/QueryPolicy.md": {
+      "entity_name": "QueryPolicy",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "frontend/src/features/workQueryFreshness.ts"
     },
     "entities/QueryStaleStateProps.md": {
       "entity_name": "QueryStaleStateProps",
@@ -34216,6 +34252,14 @@
     "modules/worker.md": {
       "scope": "module",
       "source_path": "backend/app/cli/worker.py"
+    },
+    "modules/workspaceQueryPolicy.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/workspaceQueryPolicy.ts"
+    },
+    "modules/workspaceQueryPolicy.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/workspaceQueryPolicy.test.ts"
     },
     "modules/workspaces.md": {
       "scope": "module",
@@ -65433,10 +65477,10 @@
           }
         }
       },
-      "hash": "sha256:8ab261ff2cb2650a2b5c7cedb7165f71ed4be8276ad96cad38d4a8945e7da930",
+      "hash": "sha256:9783527eae81d178ee34c692d8ce488bda35f3fc94eca27f47b545329387fbda",
       "language": "typescript",
       "module_page": "EmailSettingsPanel",
-      "semantic_hash": "sha256:f74781cb624cd113129966bec5b8f907531ece62c4868e5c4e73b7c1d5307b17"
+      "semantic_hash": "sha256:9d0fa615985425ac5d21d98a64acba867592575d4a5e8163328b35de5f9c40cf"
     },
     "frontend/src/components/settings/GitHubSettingsPanel.test.tsx": {
       "entities": [],
@@ -65487,10 +65531,10 @@
           }
         }
       },
-      "hash": "sha256:4f221a69d31fc6b7117a8378ed51d64d97d60bc0ee387da4256de7f83dc8671b",
+      "hash": "sha256:07929dd52b10f3b689c0f0dbbc20efd4d388fec93ab5bc1f64989c920a189e29",
       "language": "typescript",
       "module_page": "GitHubSettingsPanel",
-      "semantic_hash": "sha256:7dc6baa63e653cb51ecd696d1690c9e96bd95a34e8f91357e1fabc5813dd63d4"
+      "semantic_hash": "sha256:79cd7c58ea2de55cd3411c37f38760041c085e1f75f5fe45a476e704e0bf99af"
     },
     "frontend/src/components/settings/InterfaceLanguageSettings.tsx": {
       "entities": [],
@@ -65603,10 +65647,10 @@
           }
         }
       },
-      "hash": "sha256:4a32c24e18fef84ca9aba870f9efc254894f4df55f69221a6ed92171092e43af",
+      "hash": "sha256:d1a41075858bdfac562818531f46331636b4524f7050efc2fc902e429a32a338",
       "language": "typescript",
       "module_page": "OutboundWebhooksPanel",
-      "semantic_hash": "sha256:2b680e0208964bc397b7dda61cbf69d1f6edce8c61c26cabf76c6c6bc19a975b"
+      "semantic_hash": "sha256:c357c39d481a1c983145eca0cb838caacf36a90a156559ef4a163720449537be"
     },
     "frontend/src/components/settings/RuntimeConfigSettings.test.tsx": {
       "entities": [],
@@ -68862,7 +68906,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:8d8c22a6132c368f6a3c8680f2c81dcb0f6acb4a90f3843b48fd5827b3358418",
+      "hash": "sha256:ea9dc1a131ac42403f0dc9d84ea044faabe5dc9cd8bee09d5e3a30e21687961b",
       "language": "typescript",
       "module_page": "IdentityProvider.test",
       "semantic_hash": "sha256:e2fb252da9e7ad68aee30cb79c9a94823822deefbaf9b8320241943748017592"
@@ -68882,10 +68926,10 @@
           }
         }
       },
-      "hash": "sha256:431e2bb2b0feb25ff58589f76c92a1997860650428b40de928d9127700b1b7bd",
+      "hash": "sha256:9b59403493c2a2591a5a0d9c4933194e0be527fb86dbb6186ef7c050a5c16483",
       "language": "typescript",
       "module_page": "IdentityProvider",
-      "semantic_hash": "sha256:0e7b2a13f204ffec045f8e0085cd565384a87a3435efb2510f8b18d2a9c1083f"
+      "semantic_hash": "sha256:a70713f62852105b5d4511f409eb3b13344efadd410d1f168d4a4785decc82d7"
     },
     "frontend/src/features/identity/identityContext.ts": {
       "entities": [
@@ -69574,6 +69618,43 @@
       "semantic_hash": "sha256:a87d7c599bcee4d204736dd090cccd1ead968f6a7347af37ef315dcc60ece9e8"
     },
     "frontend/src/features/workQueryFreshness.ts": {
+      "entities": [
+        "QueryPolicy"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "QueryPolicy",
+          "occurrence": 1,
+          "page": "QueryPolicy"
+        }
+      ],
+      "entity_pages": {
+        "QueryPolicy": "QueryPolicy"
+      },
+      "generated_semantics": {
+        "entities": {
+          "QueryPolicy": {
+            "attributes": {},
+            "description": "_Auto-generated from `QueryPolicy` in `frontend/src/features/workQueryFreshness.ts`._",
+            "methods": {}
+          }
+        },
+        "module": {
+          "classes": {
+            "QueryPolicy": "—"
+          },
+          "description": "_Auto-generated from `frontend/src/features/workQueryFreshness.ts`._",
+          "functions": {
+            "installWorkFreshness": "—"
+          }
+        }
+      },
+      "hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
+      "language": "typescript",
+      "module_page": "workQueryFreshness",
+      "semantic_hash": "sha256:e34d688d08206faddcd36d32500756135ca37a193f4a4ef9a5bea608032c4f1e"
+    },
+    "frontend/src/features/workspaceQueryPolicy.test.ts": {
       "entities": [],
       "entity_page_occurrences": [],
       "entity_pages": {},
@@ -69581,16 +69662,34 @@
         "entities": {},
         "module": {
           "classes": {},
-          "description": "_Auto-generated from `frontend/src/features/workQueryFreshness.ts`._",
+          "description": "_Auto-generated from `frontend/src/features/workspaceQueryPolicy.test.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:f08dcda9d4aa89862f33a48b96726dc0d8f18c4b9bc12d3fb125ff81a5eab786",
+      "language": "typescript",
+      "module_page": "workspaceQueryPolicy.test",
+      "semantic_hash": "sha256:96fe18b6ec4413d7426cdb8b8056cb07c74e0ad61ed761180b9eba7cfd1b9cc5"
+    },
+    "frontend/src/features/workspaceQueryPolicy.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/workspaceQueryPolicy.ts`._",
           "functions": {
-            "installWorkFreshness": "—"
+            "createWorkspaceQueryClient": "—",
+            "installWorkspaceQueryPolicy": "—"
           }
         }
       },
-      "hash": "sha256:c354148fd4891939c9717303cc3e121a875e4740c515f23bd811117f7fb60bc2",
+      "hash": "sha256:c5de179cb9d0efd6f9e9aa8a1f876c3211e0ad0e0480bfa27675cff5161a46b7",
       "language": "typescript",
-      "module_page": "workQueryFreshness",
-      "semantic_hash": "sha256:279e9070175140265d15756b7022b5e20cc209462815ed462e74531149fdebf2"
+      "module_page": "workspaceQueryPolicy",
+      "semantic_hash": "sha256:f94973decab674a0274709c6e84c6ce1f8da5a19ab20935cdb274650d0340f72"
     },
     "frontend/src/hooks/useAdminAccess.ts": {
       "entities": [],
@@ -69961,10 +70060,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:f6c9da7395611a8840e51b0ade4fd82c43af3bac94c38246c51270d7f67a024b",
+      "hash": "sha256:df4141e536424a4d010fccdb080d44501f5454ec3ab30e9f2be7d3124a3e986d",
       "language": "typescript",
       "module_page": "src_main",
-      "semantic_hash": "sha256:75c4604c732c32f36bdcf280e1d5e3ed1b79e408e98376f1b54b0d20aaeae12d"
+      "semantic_hash": "sha256:e95b975d8f5e46292b6cc5d80432dd364b8092a8618f2243ed61d6e62f2aaf96"
     },
     "frontend/src/navigation/helpContexts.ts": {
       "entities": [
