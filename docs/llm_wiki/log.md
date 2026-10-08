@@ -1808,3 +1808,21 @@ Self-hosted acceptance now retains bounded public artifacts and supports indepen
 - Moved entities: none
 
 Assigned normal execution now uses the declared project working day for scheduled start decisions, consistent with human work and schedule signals.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:79becd9cd36d448344a0320b214bb0a86f1c0789ef1b0516d044173c23eae926`
+- Pages created: 3
+- Pages updated: 38
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2918
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Task editor openings now bind coherent current reads to isolated drafts, while bounded detail and project response projections preserve inherited parent policy without authorizing execution from UI windows.

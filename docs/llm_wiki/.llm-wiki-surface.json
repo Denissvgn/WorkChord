@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 711,
+      "modules": 714,
       "workflows": 182
     },
     "dependency_architecture": 2,
-    "total": 2968
+    "total": 2971
   },
   "dependency_pages": {
     "count": 2,
@@ -41821,6 +41821,7 @@
         "modules/contracts___init__.md",
         "modules/copyText.md",
         "modules/create_agent_actor.md",
+        "modules/CurrentTaskModal.test.md",
         "modules/database_config.md",
         "modules/database_migration___init__.md",
         "modules/database_migration_canonical.md",
@@ -42223,6 +42224,7 @@
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
+        "modules/taskEditorSnapshot.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -42289,6 +42291,7 @@
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
         "modules/test_autonomy_migrations.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_capacity_contract.md",
         "modules/test_ci_runtime.md",
         "modules/test_client_contract.md",
@@ -45426,11 +45429,11 @@
         "modules/identity_service.md",
         "modules/routers_identity.md",
         "modules/test_allocation_recovery.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_human_work_queries.md",
-        "modules/test_managed_authority.md",
-        "modules/test_mutation_versions.md"
+        "modules/test_managed_authority.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -46253,8 +46256,8 @@
         "modules/models___init__.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_managed_authority.md",
-        "modules/test_planning_input_context.md",
         "modules/test_project_identity.md",
         "modules/test_project_identity_scope.md"
       ],
@@ -58153,6 +58156,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskDetail",
       "outgoing_internal_links": [
+        "modules/CurrentTaskModal.test.md",
         "modules/TaskContextSummary.md",
         "modules/TaskEditorDrawer.test.md",
         "modules/taskService.md",
@@ -58186,8 +58190,8 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/task_detail_service.md",
-        "modules/test_human_work_queries.md",
-        "modules/test_task_domain.md"
+        "modules/test_bounded_task_policy.md",
+        "modules/test_human_work_queries.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_detail_service.py",
@@ -61839,15 +61843,15 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_task_Task",
       "outgoing_internal_links": [
+        "modules/CurrentTaskModal.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/GuardedTaskModal.md",
         "modules/KanbanBoard.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
         "modules/ProjectTaskTree.md",
         "modules/ReleaseForm.md",
-        "modules/StatusChangeControl.md",
-        "modules/TaskBulkOperationsPanel.md",
         "modules/TaskEditModal.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
@@ -65531,6 +65535,21 @@
       "title": "create_agent_actor Module"
     },
     {
+      "canonical_path": "modules/CurrentTaskModal.test.md",
+      "id": "CurrentTaskModal.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/CurrentTaskModal.test",
+      "outgoing_internal_links": [
+        "modules/CurrentTaskModal.test.md",
+        "modules/GuardedTaskModal.md",
+        "modules/renderWithProviders.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/CurrentTaskModal.test.tsx",
+      "title": "CurrentTaskModal.test Module"
+    },
+    {
       "canonical_path": "modules/database_config.md",
       "id": "database_config",
       "kind": "modules",
@@ -66694,16 +66713,7 @@
       "mcp_uri": "llm-wiki://modules/GuardedTaskModal",
       "outgoing_internal_links": [
         "entities/FormProps.md",
-        "modules/BacklogPanel.md",
-        "modules/DraftDismissalDialog.md",
-        "modules/GuardedTaskModal.md",
-        "modules/Modal.md",
-        "modules/MyWorkPage.md",
-        "modules/ProjectDetailPage.md",
-        "modules/TaskForm.md",
-        "modules/TaskList.md",
-        "modules/TasksPage.md",
-        "modules/useDraftDismissal.md"
+        "modules/GuardedTaskModal.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/GuardedTaskModal.tsx",
@@ -68196,7 +68206,18 @@
       "outgoing_internal_links": [
         "entities/Queue.md",
         "entities/WorkPage.md",
-        "modules/MyWorkPage.md"
+        "modules/api.md",
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/discussionService.md",
+        "modules/GuardedTaskModal.md",
+        "modules/identityContext.md",
+        "modules/index.md",
+        "modules/MyWorkPage.md",
+        "modules/MyWorkPage.test.md",
+        "modules/PersonCapacity.md",
+        "modules/QueryState.md",
+        "modules/types_task.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.tsx",
@@ -68208,9 +68229,13 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/MyWorkPage.test",
       "outgoing_internal_links": [
+        "modules/identityContext.md",
         "modules/MyWorkPage.md",
         "modules/MyWorkPage.test.md",
-        "modules/renderWithProviders.md"
+        "modules/renderWithProviders.md",
+        "modules/taskDraftStorage.md",
+        "modules/taskEditorContract.md",
+        "modules/types_task.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.test.tsx",
@@ -72285,6 +72310,7 @@
         "modules/service_worksets.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_human_work_queries.md",
         "modules/test_task_domain.md",
         "modules/test_task_pagination.md"
@@ -72607,6 +72633,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/taskDraftStorage",
       "outgoing_internal_links": [
+        "modules/MyWorkPage.test.md",
         "modules/taskDraftStorage.md",
         "modules/taskDraftStorage.test.md",
         "modules/taskEditorContract.md",
@@ -72670,6 +72697,7 @@
         "entities/TaskEditorValidationIssue.md",
         "entities/TaskEditorValues.md",
         "modules/apiError.md",
+        "modules/MyWorkPage.test.md",
         "modules/TaskBriefEditor.md",
         "modules/TaskBriefEditor.test.md",
         "modules/taskDraftStorage.md",
@@ -72711,6 +72739,22 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskEditorDrawer.test.tsx",
       "title": "TaskEditorDrawer.test Module"
+    },
+    {
+      "canonical_path": "modules/taskEditorSnapshot.md",
+      "id": "taskEditorSnapshot",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskEditorSnapshot",
+      "outgoing_internal_links": [
+        "modules/GuardedTaskModal.md",
+        "modules/TaskEditorDrawer.md",
+        "modules/taskEditorSnapshot.md",
+        "modules/taskService.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/taskEditorSnapshot.ts",
+      "title": "taskEditorSnapshot Module"
     },
     {
       "canonical_path": "modules/taskFilterDefaults.md",
@@ -73788,6 +73832,26 @@
       "role": "semantic",
       "source_path": "backend/tests/autonomy/test_autonomy_migrations.py",
       "title": "test_autonomy_migrations Module"
+    },
+    {
+      "canonical_path": "modules/test_bounded_task_policy.md",
+      "id": "test_bounded_task_policy",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_bounded_task_policy",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/models_identity.md",
+        "modules/models_task.md",
+        "modules/project_service.md",
+        "modules/task_detail_service.md",
+        "modules/task_service.md",
+        "modules/test_bounded_task_policy.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_managed_authority.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_bounded_task_policy.py",
+      "title": "test_bounded_task_policy Module"
     },
     {
       "canonical_path": "modules/test_capacity_contract.md",
@@ -78452,6 +78516,7 @@
       "mcp_uri": "llm-wiki://workflows/TaskDetailService_detail",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/commands.md",
         "modules/schemas_task.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
@@ -87921,6 +87986,7 @@
         "modules/contracts___init__.md",
         "modules/copyText.md",
         "modules/create_agent_actor.md",
+        "modules/CurrentTaskModal.test.md",
         "modules/database_config.md",
         "modules/database_migration___init__.md",
         "modules/database_migration_canonical.md",
@@ -88323,6 +88389,7 @@
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
+        "modules/taskEditorSnapshot.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -88389,6 +88456,7 @@
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
         "modules/test_autonomy_migrations.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_capacity_contract.md",
         "modules/test_ci_runtime.md",
         "modules/test_client_contract.md",
@@ -88643,6 +88711,7 @@
         "modules/contracts___init__.md",
         "modules/copyText.md",
         "modules/create_agent_actor.md",
+        "modules/CurrentTaskModal.test.md",
         "modules/database_config.md",
         "modules/database_migration___init__.md",
         "modules/database_migration_canonical.md",
@@ -89045,6 +89114,7 @@
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
+        "modules/taskEditorSnapshot.md",
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
@@ -89111,6 +89181,7 @@
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
         "modules/test_autonomy_migrations.md",
+        "modules/test_bounded_task_policy.md",
         "modules/test_capacity_contract.md",
         "modules/test_ci_runtime.md",
         "modules/test_client_contract.md",
@@ -89248,5 +89319,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1ba13d54d8abe51428f4db2f7ccd93cf5654e2f3139bd99382ebb3ecb4075c96"
+  "source_hash": "sha256:427f2790b80f332e4e84d258d156d3ba41468d5ed68da15aaf5357bb3f9acf37"
 }

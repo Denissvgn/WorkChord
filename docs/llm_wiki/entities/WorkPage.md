@@ -1,6 +1,6 @@
 # WorkPage
 
-**Location:** `frontend/src/pages/MyWorkPage.tsx:18`
+**Location:** `frontend/src/pages/MyWorkPage.tsx:17`
 **Kind:** Class
 **Bases:** —
 **Module:** [MyWorkPage](../modules/MyWorkPage.md)

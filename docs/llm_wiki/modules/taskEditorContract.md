@@ -32,29 +32,33 @@ flowchart LR
     n4["frontend/src/components/tasks/TaskForm.test.tsx"]
     n5["frontend/src/components/tasks/TaskForm.tsx"]
     n6["frontend/src/components/tasks/TaskWorkPanel.test.tsx"]
-    n7["frontend/src/pages/TriagePage.tsx"]
-    n8["frontend/src/types/task.ts"]
-    n9["frontend/src/utils/apiError.ts"]
+    n7["frontend/src/pages/MyWorkPage.test.tsx"]
+    n8["frontend/src/pages/TriagePage.tsx"]
+    n9["frontend/src/types/task.ts"]
+    n10["frontend/src/utils/apiError.ts"]
     n0 --> n1
     n0 --> n3
     n1 --> n3
-    n1 --> n8
+    n1 --> n9
     n2 --> n3
-    n3 --> n8
     n3 --> n9
+    n3 --> n10
     n4 --> n3
     n4 --> n5
     n5 --> n1
     n5 --> n2
     n5 --> n3
-    n5 --> n8
     n5 --> n9
+    n5 --> n10
     n6 --> n3
-    n6 --> n8
-    n7 --> n1
+    n6 --> n9
+    n7 --> n2
     n7 --> n3
-    n7 --> n8
     n7 --> n9
+    n8 --> n1
+    n8 --> n3
+    n8 --> n9
+    n8 --> n10
     click n0 "../modules/TaskBriefEditor.test.md"
     click n1 "../modules/TaskBriefEditor.md"
     click n2 "../modules/taskDraftStorage.md"
@@ -62,9 +66,10 @@ flowchart LR
     click n4 "../modules/TaskForm.test.md"
     click n5 "../modules/TaskForm.md"
     click n6 "../modules/TaskWorkPanel.test.md"
-    click n7 "../modules/TriagePage.md"
-    click n8 "../modules/types_task.md"
-    click n9 "../modules/apiError.md"
+    click n7 "../modules/MyWorkPage.test.md"
+    click n8 "../modules/TriagePage.md"
+    click n9 "../modules/types_task.md"
+    click n10 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -77,6 +82,7 @@ flowchart LR
 | Inbound | [TaskForm.test](../modules/TaskForm.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Inbound | [TaskWorkPanel.test](../modules/TaskWorkPanel.test.md) |
+| Inbound | [MyWorkPage.test](../modules/MyWorkPage.test.md) |
 | Inbound | [TriagePage](../modules/TriagePage.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 | Outbound | [apiError](../modules/apiError.md) |

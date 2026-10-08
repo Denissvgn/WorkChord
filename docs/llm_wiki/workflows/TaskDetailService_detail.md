@@ -1,7 +1,7 @@
 # TaskDetailService_detail
 
 **Entry point:** `task_detail_service.TaskDetailService.detail`
-**Modules involved:** [authority](../modules/authority.md), [schemas_task](../modules/schemas_task.md), [task_detail](../modules/task_detail.md), [task_detail_service](../modules/task_detail_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [schemas_task](../modules/schemas_task.md), [task_detail](../modules/task_detail.md), [task_detail_service](../modules/task_detail_service.md), [task_service](../modules/task_service.md)
 
 ## Sequence
 
@@ -10,11 +10,13 @@
 2. `task_service.TaskService`
 3. `task_service.TaskService`
 4. `schemas_task.TaskAgentReadiness`
-5. `task_detail.TaskDetailResponse`
+5. `commands.PlanningConflict`
+6. `task_detail.TaskDetailResponse`
 
 ## Touches
 
 - [authority](../modules/authority.md)
+- [commands](../modules/commands.md)
 - [schemas_task](../modules/schemas_task.md)
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)

@@ -29,14 +29,18 @@ flowchart LR
     n1["frontend/src/components/tasks/taskDraftStorage.ts"]
     n2["frontend/src/components/tasks/taskEditorContract.ts"]
     n3["frontend/src/components/tasks/TaskForm.tsx"]
+    n4["frontend/src/pages/MyWorkPage.test.tsx"]
     n0 --> n1
     n1 --> n2
     n3 --> n1
     n3 --> n2
+    n4 --> n1
+    n4 --> n2
     click n0 "../modules/taskDraftStorage.test.md"
     click n1 "../modules/taskDraftStorage.md"
     click n2 "../modules/taskEditorContract.md"
     click n3 "../modules/TaskForm.md"
+    click n4 "../modules/MyWorkPage.test.md"
 ```
 
 ### Internal neighbors
@@ -45,6 +49,7 @@ flowchart LR
 |---|---|
 | Inbound | [taskDraftStorage.test](../modules/taskDraftStorage.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [MyWorkPage.test](../modules/MyWorkPage.test.md) |
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |
 
 ## Functions

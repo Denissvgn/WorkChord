@@ -103,13 +103,13 @@ flowchart LR
     n3["TaskEditModal (frontend/src/components/gantt/TaskEditModal.tsx)"]
     n4["ProjectTaskTree (frontend/src/components/projects/ProjectTaskTree.tsx)"]
     n5["frontend/src/components/releases/ReleaseForm.tsx"]
-    n6["DeliveryDependencies (frontend/src/components/tasks/DeliveryDependencies.tsx)"]
-    n7["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
-    n8["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n9["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n10["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
-    n11["frontend/src/components/tasks/StatusChangeControl.tsx"]
-    n12["TaskBulkOperationsPanel (frontend/src/components/tasks/TaskBulkOperationsPanel.tsx)"]
+    n6["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]
+    n7["DeliveryDependencies (frontend/src/components/tasks/DeliveryDependencies.tsx)"]
+    n8["frontend/src/components/tasks/GuardedTaskModal.tsx"]
+    n9["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
+    n10["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
+    n11["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
+    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -128,13 +128,13 @@ flowchart LR
     click n3 "../modules/TaskEditModal.md"
     click n4 "../modules/ProjectTaskTree.md"
     click n5 "../modules/ReleaseForm.md"
-    click n6 "../modules/DeliveryDependencies.md"
-    click n7 "../modules/KanbanBoard.test.md"
-    click n8 "../modules/KanbanBoard.md"
-    click n9 "../modules/KanbanCard.md"
-    click n10 "../modules/KanbanColumn.md"
-    click n11 "../modules/StatusChangeControl.md"
-    click n12 "../modules/TaskBulkOperationsPanel.md"
+    click n6 "../modules/CurrentTaskModal.test.md"
+    click n7 "../modules/DeliveryDependencies.md"
+    click n8 "../modules/GuardedTaskModal.md"
+    click n9 "../modules/KanbanBoard.test.md"
+    click n10 "../modules/KanbanBoard.md"
+    click n11 "../modules/KanbanCard.md"
+    click n12 "../modules/KanbanColumn.md"
 ```
 
 ### Summary
@@ -152,12 +152,12 @@ flowchart LR
 | `TaskEditModal` | type_reference | [TaskEditModal](../modules/TaskEditModal.md) | — |
 | `ProjectTaskTree` | type_reference | [ProjectTaskTree](../modules/ProjectTaskTree.md) | — |
 | `ReleaseForm` | import | [ReleaseForm](../modules/ReleaseForm.md) | — |
+| `CurrentTaskModal.test` | import | [CurrentTaskModal.test](../modules/CurrentTaskModal.test.md) | — |
 | `DeliveryDependencies` | type_reference | [DeliveryDependencies](../modules/DeliveryDependencies.md) | — |
+| `GuardedTaskModal` | import | [GuardedTaskModal](../modules/GuardedTaskModal.md) | — |
 | `KanbanBoard.test` | import | [KanbanBoard.test](../modules/KanbanBoard.test.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
 | `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
-| `StatusChangeControl` | import | [StatusChangeControl](../modules/StatusChangeControl.md) | — |
-| `TaskBulkOperationsPanel` | type_reference | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 
-> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.
+> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.

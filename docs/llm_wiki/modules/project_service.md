@@ -12,6 +12,8 @@ Creation persists the validated declared working timezone, retaining the compati
 
 Deletion preflights management authority, task and dependency constraints, and queued or active execution references. Unsafe execution scope prevents removal before task detachment; a successful removal retains attributable audit and outbox history without reusing the project's recording identity.
 
+Project response trees explicitly link already loaded children to their loaded parents using committed relationship state. Inherited policy serialization therefore sees complete parent ancestry without introducing writes or lazy asynchronous I/O.
+
 ## Imports
 
 | Source | Symbols |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (12) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (12) |
 
@@ -64,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
