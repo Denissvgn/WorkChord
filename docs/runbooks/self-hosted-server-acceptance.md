@@ -109,6 +109,35 @@ atomically only after the pending receipt passes offline verification. Preserve
 while the database volume remains, the launcher refuses to invent replacements
 and explains the recovery boundary.
 
+## Retained public artifacts
+
+The deployment acceptance workflow retains public artifacts for 14 days,
+including on failure. Its validated staging directory contains the latest
+receipt, up to eight prior receipts, their associated Ed25519 public pins,
+an exact candidate and SHA-256 checksum index, and a sanitized status summary.
+Environment files, credentials, private keys, session state and runtime logs
+are excluded. Invalid or oversized receipt files are rejected. A missing
+required receipt or failed run remains failure evidence.
+
+After downloading and unpacking the artifact, use the matching installed
+backend to verify its membership, checksums, signatures and current latest
+receipt build identity:
+
+```bash
+workchord-server-acceptance \
+  --verify-exported-artifacts /path/to/downloaded-public-artifacts \
+  --trusted-signer-public-key-file /path/to/independently-preserved-public-pin.b64
+```
+
+Preserve the trust pin independently through a trusted signer bootstrap or
+owner-controlled channel. A key bundled beside a receipt establishes its
+association, not its authority; the verifier refuses a trust input inside the
+downloaded directory. Prior receipts are archival signature evidence, while
+the latest receipt must remain valid and match the verifier's baked build.
+The unsigned archive index provides byte integrity rather than a separate
+attestation of the hosted job. Public artifact verification retains the same
+non-production acceptance boundary.
+
 ## What is proved
 
 Acceptance performs live checks against the deployed services:

@@ -30,5 +30,12 @@ def test_self_hosted_acceptance_exports_receipts_even_on_failure():
         assert all(path.startswith(".runtime/autonomy/reports/") for path in paths)
         assert not any("server.env" in path or path.endswith("/**") for path in paths)
     paths = [path for step in exports for path in step["with"]["path"].splitlines()]
-    assert ".runtime/autonomy/reports/latest.json" in paths
-    assert ".runtime/autonomy/reports/trusted-signer-public-key.b64" in paths
+    assert paths == [".runtime/autonomy/reports/public-artifacts/*.json",
+                     ".runtime/autonomy/reports/public-artifacts/*.b64"]
+    assert exports[0]["with"]["retention-days"] == 14
+    assert exports[0]["with"]["if-no-files-found"] == "error"
+    assert exports[0]["uses"] == "actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f"
+    exporter = next(step for step in steps if step.get("name") == "Export bounded public evidence")
+    assert exporter["if"] == "always()"
+    assert "export_acceptance_artifacts.py" in exporter["run"]
+    assert steps.index(exporter) < steps.index(exports[0]) < next(i for i, step in enumerate(steps) if step.get("name") == "Stop the acceptance stack")

@@ -17,11 +17,20 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Prepare public receipt validators
+        run: |
+          python -m venv .runtime/acceptance-export-venv
+          .runtime/acceptance-export-venv/bin/pip install --require-hashes -r backend/requirements.lock
       - name: Build and accept the self-hosted stack
+        id: acceptance
         run: |
           ./scripts/server/accept_self_hosted.sh
           ./scripts/server/accept_self_hosted.sh
       - name: Validate the bounded receipt
+        id: receipt
         run: |
           test -s .runtime/autonomy/reports/latest.json
           test -s .runtime/autonomy/reports/trusted-signer-public-key.b64
@@ -31,6 +40,29 @@ jobs:
             .runtime/autonomy/reports/latest.json
           grep -q '"accepted_as_production_evidence": false' \
             .runtime/autonomy/reports/latest.json
+      - name: Export bounded public evidence
+        if: always()
+        env:
+          ACCEPTANCE_OUTCOME: ${{ steps.acceptance.outcome == 'success' && steps.receipt.outcome == 'success' && 'success' || 'failure' }}
+        run: |
+          exporter=python3
+          if test -x .runtime/acceptance-export-venv/bin/python; then
+            exporter=.runtime/acceptance-export-venv/bin/python
+          fi
+          "$exporter" scripts/server/export_acceptance_artifacts.py \
+            --reports .runtime/autonomy/reports \
+            --output .runtime/autonomy/reports/public-artifacts \
+            --outcome "$ACCEPTANCE_OUTCOME"
+      - name: Retain public acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: self-hosted-acceptance-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            .runtime/autonomy/reports/public-artifacts/*.json
+            .runtime/autonomy/reports/public-artifacts/*.b64
       - name: Stop the acceptance stack
         if: always()
         run: |

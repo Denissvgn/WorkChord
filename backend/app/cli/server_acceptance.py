@@ -116,11 +116,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Optional path for the secret-free acceptance receipt.",
     )
-    parser.add_argument(
+    verification = parser.add_mutually_exclusive_group()
+    verification.add_argument(
         "--verify-receipt",
         type=Path,
         help="Validate an existing receipt and both Ed25519 signatures offline.",
     )
+    verification.add_argument("--verify-exported-artifacts", type=Path,
+        help="Verify a downloaded public archive using an independently supplied public pin and matching build.")
     return parser.parse_args(argv)
 
 
@@ -168,6 +171,16 @@ def _emit(rendered: str, output: Path | None) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.verify_exported_artifacts is not None:
+        from app.autonomy.acceptance_artifacts import verify_exported_artifacts
+        try:
+            result = verify_exported_artifacts(args.verify_exported_artifacts,
+                args.trusted_signer_public_key_file, load_backend_build_identity())
+        except (OSError, ValueError, KeyError, TypeError, RecursionError):
+            print(json.dumps({"decision": "SELF-HOSTED-SERVER-ARTIFACTS-INVALID"}))
+            return 2
+        print(json.dumps(result, sort_keys=True, indent=2))
+        return 0
     if args.verify_receipt is not None:
         try:
             trusted_public_key = (
