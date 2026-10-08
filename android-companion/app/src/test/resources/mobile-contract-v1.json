@@ -903,6 +903,55 @@
           "title": "NativeTokenResponse",
           "type": "object"
         },
+        "PlanningInputContext": {
+          "properties": {
+            "complete": {
+              "const": true,
+              "default": true,
+              "title": "Complete",
+              "type": "boolean"
+            },
+            "expected_revisions": {
+              "additionalProperties": {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              "maxProperties": 500,
+              "title": "Expected Revisions",
+              "type": "object"
+            },
+            "kind": {
+              "enum": [
+                "calendar",
+                "project",
+                "iteration",
+                "profile",
+                "member",
+                "vacation"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "resource": {
+              "additionalProperties": true,
+              "title": "Resource",
+              "type": "object"
+            },
+            "resource_id": {
+              "exclusiveMinimum": 0.0,
+              "title": "Resource Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "resource_id",
+            "resource",
+            "expected_revisions"
+          ],
+          "title": "PlanningInputContext",
+          "type": "object"
+        },
         "ProgressWrite": {
           "additionalProperties": false,
           "properties": {
@@ -6270,6 +6319,75 @@
           ]
         }
       },
+      "/api/tasks/planning-inputs/{kind}/{resource_id}/context": {
+        "get": {
+          "operationId": "planning_input_context_api_tasks_planning_inputs__kind___resource_id__context_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "kind",
+              "required": true,
+              "schema": {
+                "enum": [
+                  "calendar",
+                  "project",
+                  "iteration",
+                  "profile",
+                  "member",
+                  "vacation"
+                ],
+                "title": "Kind",
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "resource_id",
+              "required": true,
+              "schema": {
+                "title": "Resource Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "creating_member",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Creating Member",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PlanningInputContext"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Planning Input Context",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
       "/api/tasks/review-queue": {
         "get": {
           "operationId": "task_review_queue_api_tasks_review_queue_get",
@@ -7939,6 +8057,7 @@
     },
     "schema_capabilities": {
       "canonical_work_metrics": true,
+      "planning_input_context": true,
       "task_aggregate_revision": true,
       "task_allowed_actions": true,
       "task_structured_acceptance_criteria": true,

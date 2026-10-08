@@ -174,7 +174,7 @@ async def lock_iterations(db: AsyncSession, iteration_ids, *, expected=None, req
     if state is None:
         raise RuntimeError("Iteration reservations require a command transaction")
     expected = dict(expected or {})
-    request_expected = db.info.get("request_expected_revisions", {})
+    request_expected = {} if db.info.get("authority_internal") and not require_expected else db.info.get("request_expected_revisions", {})
     if any(key in expected and expected[key] != value for key, value in request_expected.items()):
         raise PlanningConflict("conflicting_revision_context", "Body and header revisions disagree. Send one observed revision for each iteration.")
     expected = {**request_expected, **expected}
@@ -227,8 +227,6 @@ def schedule_input_command(kind):
         signature = python_inspect.signature(function)
         @wraps(function)
         async def wrapped(self, *args, **kwargs):
-            from app.models.iteration import Iteration
-            from app.models.team_member import TeamMember, Vacation
             from app.models.task import Task
             from app.services.snapshot_service import SnapshotService
             from app.services.task_service import TaskService
@@ -236,34 +234,22 @@ def schedule_input_command(kind):
             values = signature.bind(self, *args, **kwargs).arguments
             async with command_transaction(self.db, commit=kwargs.get("commit", True)):
                 await lock_planning(self.db)
-                ids = []
-                if kind == "calendar":
-                    ids = list((await self.db.scalars(select(Iteration.id).where(Iteration.calendar_id == values["calendar_id"])) ).all())
-                    from app.models.capacity import ProfileAvailability
-                    ids.extend((await self.db.scalars(select(TeamMember.iteration_id).join(
-                        ProfileAvailability, ProfileAvailability.profile_id == TeamMember.profile_id).where(
-                        ProfileAvailability.calendar_id == values["calendar_id"], TeamMember.iteration_id.is_not(None)))).all())
-                elif kind == "project":
-                    direct = select(Iteration.id).where(Iteration.project_id == values["project_id"])
-                    linked = select(Task.iteration_id).where(Task.project_id == values["project_id"])
-                    ids = [item for item in (await self.db.scalars(direct.union(linked))).all() if item is not None]
-                elif kind == "iteration":
-                    ids = [values["iteration_id"]]
-                elif kind == "profile":
-                    ids = list((await self.db.scalars(select(TeamMember.iteration_id).where(TeamMember.profile_id == values["profile_id"], TeamMember.iteration_id.is_not(None)).distinct())).all())
-                else:
-                    member_id = values.get("member_id")
-                    if "vacation_id" in values:
-                        member_id = await self.db.scalar(select(Vacation.team_member_id).where(Vacation.id == values["vacation_id"]))
-                    if member_id is not None:
-                        member = await self.db.get(TeamMember, member_id)
-                        if member is not None and member.iteration_id is not None:
-                            ids = [member.iteration_id]
-                    elif values.get("iteration_id") is not None:
-                        ids = [values["iteration_id"]]
+                from app.services.planning_input_context import affected_iteration_ids
+                resolved_kind = "vacation" if "vacation_id" in values else kind
+                ids = await affected_iteration_ids(self.db, resolved_kind, values)
+                data = values.get("data")
+                body_expected = values.get("expected_revisions", getattr(data, "expected_revisions", None))
+                explicit_body = "expected_revisions" in values and values["expected_revisions"] is not None or data is not None and "expected_revisions" in getattr(data, "model_fields_set", set())
+                supplied = dict(body_expected or {})
+                header = self.db.info.get("request_expected_revisions")
+                if header is not None:
+                    if any(key in supplied and supplied[key] != value for key, value in header.items()):
+                        raise PlanningConflict("conflicting_revision_context", "Body and header revisions disagree.")
+                    supplied = {**header, **supplied}
+                if (explicit_body or header is not None) and set(supplied) != set(ids):
+                    raise PlanningConflict("planning_scope_changed", "The affected planning scope changed or the observed context is incomplete. Reload the initial resource context.")
                 if ids:
-                    data = values.get("data")
-                    await lock_iterations(self.db, ids, expected=values.get("expected_revisions", getattr(data, "expected_revisions", None)), require_expected=True)
+                    await lock_iterations(self.db, ids, expected=body_expected, require_expected=True)
                     for iteration_id in sorted(set(ids)):
                         await SnapshotService(self.db).create_snapshot(iteration_id, "before_planning_input_change")
                     tasks = list((await self.db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != "closed").order_by(Task.id))).all())

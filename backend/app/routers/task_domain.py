@@ -1,6 +1,7 @@
 """Compatible domain commands, canonical briefs and bounded task reads."""
 
 from typing import Annotated
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
@@ -20,6 +21,18 @@ from app.services.task_detail_service import TaskDetailService
 
 router = APIRouter()
 DB = Annotated[AsyncSession, Depends(get_db, scope="function")]
+
+
+from app.schemas.planning_inputs import PlanningInputContext
+
+
+@router.get("/tasks/planning-inputs/{kind}/{resource_id}/context", response_model=PlanningInputContext)
+async def planning_input_context(kind: Literal["calendar", "project", "iteration", "profile", "member", "vacation"],
+    resource_id: int, db: DB, creating_member: bool = False):
+    if resource_id < 1 or creating_member and kind != "member":
+        raise HTTPException(422, detail="Use a positive planning resource identity and a supported member-create context.")
+    from app.services.planning_input_context import observe_planning_input
+    return await domain_result(observe_planning_input(db, kind, resource_id, creating_member=creating_member))
 
 
 async def domain_result(awaitable):

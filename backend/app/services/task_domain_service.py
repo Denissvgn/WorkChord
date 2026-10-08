@@ -61,6 +61,7 @@ async def domain_capabilities(db):
         "legacy_iteration_routes": True, "legacy_task_versions_required": get_settings().strict_mutation_versions,
         "aggregate_revisions_required": get_settings().strict_mutation_versions,
         "aggregate_revision_header": "X-Expected-Revisions",
+        "planning_input_context": "tasks/planning-inputs/{kind}/{resource_id}/context",
         "missing_revision_code": "mutation_revision_required",
         "current_review_projection": ready}
 
