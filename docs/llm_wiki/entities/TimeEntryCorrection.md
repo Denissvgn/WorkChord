@@ -31,12 +31,14 @@ flowchart LR
     n4["test_history_survives_task_removal_and_remains_append_only (backend/tests/test_time_entries.py)"]
     n5["test_record_correct_void_retains_private_history_and_task_state (backend/tests/test_time_entries.py)"]
     n6["test_task_snapshot_restore_does_not_rewind_recorded_time (backend/tests/test_time_entries.py)"]
+    n7["test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope (backend/tests/test_time_reports.py)"]
     n0 --> n1
     n0 --> n2
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_time_entry.md"
     click n1 "../modules/schemas_time_entry.md"
     click n2 "../modules/schemas_time_entry.md"
@@ -44,6 +46,7 @@ flowchart LR
     click n4 "../modules/test_time_entries.md"
     click n5 "../modules/test_time_entries.md"
     click n6 "../modules/test_time_entries.md"
+    click n7 "../modules/test_time_reports.md"
 ```
 
 ### Summary
@@ -67,3 +70,4 @@ flowchart LR
 | `test_history_survives_task_removal_and_remains_append_only` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_record_correct_void_retains_private_history_and_task_state` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_task_snapshot_restore_does_not_rewind_recorded_time` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
+| `test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope` | call | [test_time_reports](../modules/test_time_reports.md) | 2 |

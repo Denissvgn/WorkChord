@@ -38,8 +38,10 @@ flowchart LR
     n4["backend/app/models/task.py"]
     n5["backend/app/models/time_entry.py"]
     n6["backend/app/services/upgrade_service.py"]
-    n7["backend/tests/migrations/test_project_identity.py"]
-    n8["backend/tests/support/__init__.py"]
+    n7["backend/tests/database_migration/test_postgresql_transfer.py"]
+    n8["backend/tests/database_migration/test_project_identity_scope.py"]
+    n9["backend/tests/migrations/test_project_identity.py"]
+    n10["backend/tests/support/__init__.py"]
     n0 --> n2
     n2 --> n0
     n2 --> n3
@@ -49,13 +51,25 @@ flowchart LR
     n4 --> n2
     n4 --> n3
     n7 --> n0
-    n7 --> n1
     n7 --> n2
     n7 --> n3
     n7 --> n4
     n7 --> n5
     n7 --> n6
-    n7 --> n8
+    n7 --> n9
+    n8 --> n1
+    n8 --> n3
+    n8 --> n5
+    n8 --> n6
+    n8 --> n9
+    n9 --> n0
+    n9 --> n1
+    n9 --> n2
+    n9 --> n3
+    n9 --> n4
+    n9 --> n5
+    n9 --> n6
+    n9 --> n10
     click n0 "../modules/models_calendar.md"
     click n1 "../modules/models_identity.md"
     click n2 "../modules/models_iteration.md"
@@ -63,14 +77,18 @@ flowchart LR
     click n4 "../modules/models_task.md"
     click n5 "../modules/models_time_entry.md"
     click n6 "../modules/upgrade_service.md"
-    click n7 "../modules/test_project_identity.md"
-    click n8 "../modules/support___init__.md"
+    click n7 "../modules/test_postgresql_transfer.md"
+    click n8 "../modules/test_project_identity_scope.md"
+    click n9 "../modules/test_project_identity.md"
+    click n10 "../modules/support___init__.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) |
+| Inbound | [test_project_identity_scope](../modules/test_project_identity_scope.md) |
 | Outbound | [models_calendar](../modules/models_calendar.md) |
 | Outbound | [models_identity](../modules/models_identity.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |

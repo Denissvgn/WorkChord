@@ -36,7 +36,8 @@ flowchart LR
     n4["test_moved_task_keeps_original_scope_and_does_not_expose_new_title (backend/tests/test_time_reports.py)"]
     n5["test_personal_and_manager_totals_do_not_expose_private_records (backend/tests/test_time_reports.py)"]
     n6["test_personal_export_bound_is_explicit (backend/tests/test_time_reports.py)"]
-    n7["test_unknown_time_zero_estimates_project_work_and_finite_pages (backend/tests/test_time_reports.py)"]
+    n7["test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope (backend/tests/test_time_reports.py)"]
+    n8["test_unknown_time_zero_estimates_project_work_and_finite_pages (backend/tests/test_time_reports.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -44,6 +45,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/time_report_service.md"
     click n1 "../modules/time_entries.md"
     click n2 "../modules/time_entries.md"
@@ -52,6 +54,7 @@ flowchart LR
     click n5 "../modules/test_time_reports.md"
     click n6 "../modules/test_time_reports.md"
     click n7 "../modules/test_time_reports.md"
+    click n8 "../modules/test_time_reports.md"
 ```
 
 ### Summary
@@ -70,4 +73,5 @@ flowchart LR
 | `test_moved_task_keeps_original_scope_and_does_not_expose_new_title` | call | [test_time_reports](../modules/test_time_reports.md) | 1 |
 | `test_personal_and_manager_totals_do_not_expose_private_records` | call | [test_time_reports](../modules/test_time_reports.md) | 7 |
 | `test_personal_export_bound_is_explicit` | call | [test_time_reports](../modules/test_time_reports.md) | 1 |
+| `test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope` | call | [test_time_reports](../modules/test_time_reports.md) | 3 |
 | `test_unknown_time_zero_estimates_project_work_and_finite_pages` | call | [test_time_reports](../modules/test_time_reports.md) | 1 |

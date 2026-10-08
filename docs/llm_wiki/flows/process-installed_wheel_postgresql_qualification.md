@@ -122,7 +122,7 @@ sequenceDiagram
     p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
 ```
 
-> Call sequence diagram shows 30 of 1535 interactions; 1505 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1560 interactions; 1530 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

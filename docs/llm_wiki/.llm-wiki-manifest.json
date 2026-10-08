@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:f677db781bbfb23a82e1f8bc4c3cbb0d0445291f3a5540d4a8edec9ee05e66c6",
-    "knowledge_index_hash": "sha256:56f186f14b2d285222e73fa04281d5458180d93ce760b1986e1e6402607c6d6b",
-    "surface_index_hash": "sha256:acdb5ce84a7ccb8f474e00f6576b1037a8e407486223797e0da61ec16cc87898"
+    "evaluated_envelope_hash": "sha256:890bc996e9b2590d56674cc5b026260a9991009dfd59defadc2226fd124c1e41",
+    "knowledge_index_hash": "sha256:829af7d99cf94b41364bf2c4cb9a47ead821df3e0d5c75666a8ae8220e39c4bb",
+    "surface_index_hash": "sha256:9346f2bd49510e708330b117d87392bb1d661dde84faf704308c3fbe48a4700e"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -4730,7 +4730,7 @@
         "concept_observation_hash": "sha256:07d4009872980caafd6c8cf370428faa3337adcd2ce9b76e593618978a4182a8",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:e5fae99399fcc6d234c82ae2e9858b86dfc39e16ab94f23af036eea7363719b0",
+        "source_content_hash": "sha256:4494dd09ed2e78f97b4b4549026da322b96015181bd771b27ce75abcca2c9a28",
         "source_path": "backend/app/database_migration/source.py"
       },
       "state": "known"
@@ -5790,7 +5790,7 @@
         "concept_observation_hash": "sha256:826b2a9b9e04499e71b622c9949f6e1e4098e8febc69c3009374a6f67b73d623",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+        "source_content_hash": "sha256:eacdcca207abc3cd4318d12ebee2e32ce8f4751f8d9177e0f48594a202b70267",
         "source_path": "backend/app/database_migration/project_identity.py"
       },
       "state": "known"
@@ -19237,10 +19237,10 @@
     },
     "modules/project_identity.md": {
       "basis": {
-        "concept_observation_hash": "sha256:ed5b93fa3ddcf6115e2baf0f62dde88464e7a3988c156f3a54ddc2a7f9f1bed4",
+        "concept_observation_hash": "sha256:5c526cb6ec9002268366cdc9e8dc60fcd0fb32b38993ea462387010e1a91465e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+        "source_content_hash": "sha256:eacdcca207abc3cd4318d12ebee2e32ce8f4751f8d9177e0f48594a202b70267",
         "source_path": "backend/app/database_migration/project_identity.py"
       },
       "state": "known"
@@ -20307,10 +20307,10 @@
     },
     "modules/source.md": {
       "basis": {
-        "concept_observation_hash": "sha256:c6ee582505095dfa7587e23b2f90bf52e88bf4109d7f676e19988114cbe267b6",
+        "concept_observation_hash": "sha256:927dc3c07172e2dac339370355f2bfdd8a4eba0f843dd351b663b9f1a179fd4e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:e5fae99399fcc6d234c82ae2e9858b86dfc39e16ab94f23af036eea7363719b0",
+        "source_content_hash": "sha256:4494dd09ed2e78f97b4b4549026da322b96015181bd771b27ce75abcca2c9a28",
         "source_path": "backend/app/database_migration/source.py"
       },
       "state": "known"
@@ -21277,10 +21277,10 @@
     },
     "modules/test_postgresql_transfer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:9182ce649689f76b00a68f3ef8409f35f41d71bc2ae5f4d7596ac9f6b96908ce",
+        "concept_observation_hash": "sha256:6fa0000115efca6e599f2e76426dc50b732fc6d3efb047ca4f93ccc301832310",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a2c5a0f16ca178e9e4f96408732f5d7b7e7c69052d9914786dd6366156dd806c",
+        "source_content_hash": "sha256:f0c7d00b53db4682cf836f44784662ba3dfcc5ea15d52993b14159f12c1d498d",
         "source_path": "backend/tests/database_migration/test_postgresql_transfer.py"
       },
       "state": "known"
@@ -21322,6 +21322,16 @@
         "scope": "module",
         "source_content_hash": "sha256:fa1f7225387c48eff30731d09f6eb6da3c65fc118121ba3486d9d2e911c6f2d6",
         "source_path": "backend/tests/migrations/test_project_identity.py"
+      },
+      "state": "known"
+    },
+    "modules/test_project_identity_scope.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ad8edc9db749fede6f3252605cabffd756fdbda6e09e5838d3882d72005e4ad0",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:6431fceab4c76b1ee8e377234fc5429c007cc6822543f50a5632821f0887ea5c",
+        "source_path": "backend/tests/database_migration/test_project_identity_scope.py"
       },
       "state": "known"
     },
@@ -21477,10 +21487,10 @@
     },
     "modules/test_time_reports.md": {
       "basis": {
-        "concept_observation_hash": "sha256:f5805afa113742633497978fef263f35e4031c19f0633dbf1b27256773fa89cd",
+        "concept_observation_hash": "sha256:57843e9a1a0fd4f9c99cfb350384b2e1ce4bf8750fc36f8b3f9e05cf6f376964",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:9eba3fafaa61b825ed0102ed1d3ca8843f76521fbed53941ddbfb6e3ec4a78f1",
+        "source_content_hash": "sha256:f719827153178498d549fcb7e0223c0bd6317751b2eb2df87df8796c40517b7a",
         "source_path": "backend/tests/test_time_reports.py"
       },
       "state": "known"
@@ -21667,10 +21677,10 @@
     },
     "modules/transfer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:fb302822a09004fbafa77b51343e4e8c3efd1d806dd49f412e698b92a2073dd6",
+        "concept_observation_hash": "sha256:7dc316c3785bd1b13bdf414c2fd397d8d6dd900677abad5850808208e8c30b91",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:7721507848375f3e421cd3449576c48e3f23db35fc8623da7f7f80b565e53f34",
+        "source_content_hash": "sha256:d7c9a2c141ede2900aeb3a57182a81672a83edfc62ea76733e800934c4116c0e",
         "source_path": "backend/app/database_migration/transfer.py"
       },
       "state": "known"
@@ -22300,13 +22310,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:281f24b84a0f083c4229f5b22ca1da7b9d60c4bee7847c74c6dd8e56c6d562f0",
-      "lifecycle_hash": "sha256:21e60cd0be71c36c86013e1556c00db49f01f8996fcc2ef0eaa40655d5d173cf",
-      "markdown_snapshot_hash": "sha256:802137a0751f983cd6fe9fe637e76fdafcc7e0f612b048f9925b542c3c0294b4",
-      "observation_inputs_hash": "sha256:9717ea081b1a2663f2975e482e0457ee251639ad4cf9ba61ffc83b5fcad2d057",
+      "inventory_hash": "sha256:16387d2b31fc027f45f20f266b5a3972dae49e9ecf61dc7de480e27e5004986d",
+      "lifecycle_hash": "sha256:5f4d504d2b9412efda7313941b3021edcaace5f1713dfe06c42a72b9f453cd3b",
+      "markdown_snapshot_hash": "sha256:dc126ef05820bcfc3fee3700b00d845f9a87006c913f37b86501c902feaa9eb2",
+      "observation_inputs_hash": "sha256:06fabe86b65a60dead164fcd2d3660fffdd7fc97a094c4b8463c8f8048533afc",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:eba2ce7d0dccac5b6fc8c637b5888ac953977d21007087aa7e9b228f55035e82"
+      "source_snapshot_hash": "sha256:f2f2b9e4f0999ef6e2cdd298008b3c9d603beb47e16187d74ab245df517d2bcc"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -33865,6 +33875,10 @@
       "scope": "module",
       "source_path": "backend/tests/migrations/test_project_identity.py"
     },
+    "modules/test_project_identity_scope.md": {
+      "scope": "module",
+      "source_path": "backend/tests/database_migration/test_project_identity_scope.py"
+    },
     "modules/test_query_boundaries.md": {
       "scope": "module",
       "source_path": "backend/tests/database/test_query_boundaries.py"
@@ -38076,14 +38090,15 @@
             "_project_ids": "—",
             "_utc": "—",
             "inspect_project_identity": "Bound diagnostics and historical JSON scans; never inspect private text fields.",
-            "project_allocation_floor": "Require identity qualification before returning a safe allocation floor."
+            "project_allocation_floor": "Require identity qualification before returning a safe allocation floor.",
+            "sqlite_project_allocation_floor": "Qualify one immutable SQLite source through a separately owned read-only handle."
           }
         }
       },
-      "hash": "sha256:1bc1218c8ece0256464630ca06241f1368ad9321fb51d465400905200fcff9dd",
+      "hash": "sha256:eacdcca207abc3cd4318d12ebee2e32ce8f4751f8d9177e0f48594a202b70267",
       "language": "python",
       "module_page": "project_identity",
-      "semantic_hash": "sha256:5a7c1a779ae31822a4b6b13123dee85a7ace28914229926ccb9fb81772c66b82"
+      "semantic_hash": "sha256:a7344bbc6a9ce424d6f7f21adb10fff1e14bb4149a0c238e27aa7b6e76e165c6"
     },
     "backend/app/database_migration/source.py": {
       "entities": [
@@ -38135,10 +38150,10 @@
           }
         }
       },
-      "hash": "sha256:e5fae99399fcc6d234c82ae2e9858b86dfc39e16ab94f23af036eea7363719b0",
+      "hash": "sha256:4494dd09ed2e78f97b4b4549026da322b96015181bd771b27ce75abcca2c9a28",
       "language": "python",
       "module_page": "source",
-      "semantic_hash": "sha256:9ad077acd27314780d10039291ea96a0490a1c3d8808abc0a9b859e56a007191"
+      "semantic_hash": "sha256:5ee860f9c8c02b4e63e969e9b8a39586c836ac7a48aa8bb38f6f0178672b0ed4"
     },
     "backend/app/database_migration/transfer.py": {
       "entities": [],
@@ -38186,10 +38201,10 @@
           }
         }
       },
-      "hash": "sha256:7721507848375f3e421cd3449576c48e3f23db35fc8623da7f7f80b565e53f34",
+      "hash": "sha256:d7c9a2c141ede2900aeb3a57182a81672a83edfc62ea76733e800934c4116c0e",
       "language": "python",
       "module_page": "transfer",
-      "semantic_hash": "sha256:0837a422ab9efc6742e9e666c5b22d2ff92f4bf92bfb226a5fd4abcca13b5d7e"
+      "semantic_hash": "sha256:22cd1fd07d9de05be31d956a8c884198c47d4bdf48698cc1bf67dd95bba6b295"
     },
     "backend/app/database_runtime.py": {
       "entities": [
@@ -59985,14 +60000,37 @@
             "_source_artifacts": "—",
             "test_loader_is_idempotent_and_gate_opens_only_after_final_reconciliation": "—",
             "test_loader_rejects_concurrent_attempt_for_the_same_target": "—",
+            "test_transfer_preserves_deleted_project_allocation_progress_and_private_ledger": "—",
+            "test_transfer_rejects_a_misrepresented_allocation_floor_before_target_writes": "—",
             "test_typed_delivery_targets_survive_source_transfer": "—"
           }
         }
       },
-      "hash": "sha256:a2c5a0f16ca178e9e4f96408732f5d7b7e7c69052d9914786dd6366156dd806c",
+      "hash": "sha256:f0c7d00b53db4682cf836f44784662ba3dfcc5ea15d52993b14159f12c1d498d",
       "language": "python",
       "module_page": "test_postgresql_transfer",
-      "semantic_hash": "sha256:4210e3ebb18100318bd615c159bd1f187aade8703e261ce5934097e02227099e"
+      "semantic_hash": "sha256:431e1b60aee91f25aac7e92f5137faa85f7dfd0c0e2d0242c1b714511e827a4e"
+    },
+    "backend/tests/database_migration/test_project_identity_scope.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Ambiguous legacy identities stop before writes and never expose private records.",
+          "functions": {
+            "test_ambiguous_retained_scope_blocks_upgrade_and_snapshot_before_writes": "—",
+            "test_collision_diagnostics_are_bounded_and_do_not_include_notes": "—",
+            "test_incomplete_history_scan_fails_closed_without_mutation": "—"
+          }
+        }
+      },
+      "hash": "sha256:6431fceab4c76b1ee8e377234fc5429c007cc6822543f50a5632821f0887ea5c",
+      "language": "python",
+      "module_page": "test_project_identity_scope",
+      "semantic_hash": "sha256:350c7e58d4c7db07da8066fbddf524e4ef13ce81e6dd3afc694b5a00eb5d5cd0"
     },
     "backend/tests/database_migration/test_source_preflight.py": {
       "entities": [],
@@ -62096,14 +62134,15 @@
             "test_moved_task_keeps_original_scope_and_does_not_expose_new_title": "—",
             "test_personal_and_manager_totals_do_not_expose_private_records": "—",
             "test_personal_export_bound_is_explicit": "—",
+            "test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope": "—",
             "test_unknown_time_zero_estimates_project_work_and_finite_pages": "—"
           }
         }
       },
-      "hash": "sha256:9eba3fafaa61b825ed0102ed1d3ca8843f76521fbed53941ddbfb6e3ec4a78f1",
+      "hash": "sha256:f719827153178498d549fcb7e0223c0bd6317751b2eb2df87df8796c40517b7a",
       "language": "python",
       "module_page": "test_time_reports",
-      "semantic_hash": "sha256:63413369b045f5fa9d6c49188f5af333b8aed3e692310cd982f40d7cf2a87b81"
+      "semantic_hash": "sha256:eb08cb4839c4930a3f063507023d523a90a9978469b9b209dd803ca15dfa01ca"
     },
     "backend/tests/test_work_correctness.py": {
       "entities": [],

@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 697,
-      "workflows": 179
+      "modules": 698,
+      "workflows": 180
     },
     "dependency_architecture": 2,
-    "total": 2945
+    "total": 2947
   },
   "dependency_pages": {
     "count": 2,
@@ -36398,6 +36398,7 @@
             "backend/app/cli/database_migration.py",
             "backend/app/database_migration/source.py",
             "backend/app/database_migration/manifest.py",
+            "backend/app/database_migration/project_identity.py",
             "backend/app/database_migration/catalog.py",
             "backend/app/services/upgrade_service.py",
             "backend/app/database_config.py",
@@ -36405,7 +36406,6 @@
             "backend/app/database_migration/transfer.py",
             "backend/app/config.py",
             "backend/app/utils/time.py",
-            "backend/app/database_migration/project_identity.py",
             "backend/app/maintenance.py",
             "backend/app/services/identity_service.py",
             "backend/app/authority.py",
@@ -36418,7 +36418,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 1258,
+          "step_count": 1283,
           "truncated": true
         }
       },
@@ -37205,7 +37205,7 @@
             "backend/app/database_migration/transfer.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 1536,
+          "step_count": 1561,
           "truncated": true
         }
       },
@@ -42116,6 +42116,7 @@
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -42312,6 +42313,7 @@
         "workflows/OutboundWebhookService__enqueue_event_records.md",
         "workflows/OutboundWebhookService_retry_delivery.md",
         "workflows/PlanShareService_create.md",
+        "workflows/preflight_source.md",
         "workflows/preview_iteration_schedule.md",
         "workflows/process_import.md",
         "workflows/project_member.md",
@@ -46030,7 +46032,8 @@
         "modules/models_identity.md",
         "modules/routers_identity.md",
         "modules/test_managed_authority.md",
-        "modules/test_project_identity.md"
+        "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/identity.py",
@@ -50327,7 +50330,9 @@
         "modules/app_database.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
+        "modules/test_postgresql_transfer.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/time_entry_service.md",
@@ -51675,6 +51680,9 @@
       "mcp_uri": "llm-wiki://entities/ProjectIdentityError",
       "outgoing_internal_links": [
         "modules/project_identity.md",
+        "modules/source.md",
+        "modules/test_project_identity_scope.md",
+        "modules/transfer.md",
         "modules/upgrade_service.md"
       ],
       "role": "semantic",
@@ -54433,7 +54441,8 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_agent_planning.md",
         "modules/schemas___init__.md",
-        "modules/schemas_iteration.md"
+        "modules/schemas_iteration.md",
+        "modules/test_time_reports.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/iteration.py",
@@ -59273,6 +59282,7 @@
       "outgoing_internal_links": [
         "modules/schemas_time_entry.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/time_entries.md"
       ],
       "role": "semantic",
@@ -59330,7 +59340,9 @@
         "modules/models___init__.md",
         "modules/models_time_entry.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/time_entry_service.md"
       ],
       "role": "semantic",
@@ -62535,6 +62547,7 @@
       "outgoing_internal_links": [
         "modules/test_initial_schema.md",
         "modules/test_postgresql_migrations.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_sqlite_migrations.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md"
@@ -67818,7 +67831,9 @@
         "modules/app_database.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
+        "modules/test_postgresql_transfer.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/time.md",
@@ -68865,6 +68880,8 @@
         "modules/20261008_0009_project_identity.md",
         "modules/migrations_env.md",
         "modules/project_identity.md",
+        "modules/source.md",
+        "modules/test_project_identity_scope.md",
         "modules/transfer.md",
         "modules/upgrade_service.md"
       ],
@@ -71053,6 +71070,7 @@
         "entities/TimeRevisionResponse.md",
         "modules/schemas_time_entry.md",
         "modules/test_time_entries.md",
+        "modules/test_time_reports.md",
         "modules/time_entries.md",
         "modules/time_entry_service.md"
       ],
@@ -71518,17 +71536,7 @@
       "mcp_uri": "llm-wiki://modules/source",
       "outgoing_internal_links": [
         "entities/MigrationDataError.md",
-        "modules/catalog.md",
-        "modules/cli_database_migration.md",
-        "modules/database_migration___init__.md",
-        "modules/database_migration_canonical.md",
-        "modules/database_migration_manifest.md",
-        "modules/installed_wheel_postgresql_qualification.md",
-        "modules/source.md",
-        "modules/test_postgresql_transfer.md",
-        "modules/test_source_preflight.md",
-        "modules/transfer.md",
-        "modules/upgrade_service.md"
+        "modules/source.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/database_migration/source.py",
@@ -73906,12 +73914,34 @@
         "modules/models_task.md",
         "modules/models_time_entry.md",
         "modules/support___init__.md",
+        "modules/test_postgresql_transfer.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/upgrade_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/migrations/test_project_identity.py",
       "title": "test_project_identity Module"
+    },
+    {
+      "canonical_path": "modules/test_project_identity_scope.md",
+      "id": "test_project_identity_scope",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_project_identity_scope",
+      "outgoing_internal_links": [
+        "modules/models_identity.md",
+        "modules/models_project.md",
+        "modules/models_time_entry.md",
+        "modules/project_identity.md",
+        "modules/source.md",
+        "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
+        "modules/test_source_preflight.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/database_migration/test_project_identity_scope.py",
+      "title": "test_project_identity_scope Module"
     },
     {
       "canonical_path": "modules/test_query_boundaries.md",
@@ -74044,6 +74074,7 @@
         "modules/catalog.md",
         "modules/database_migration_manifest.md",
         "modules/source.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_source_preflight.md",
         "modules/upgrade_service.md"
       ],
@@ -77096,6 +77127,7 @@
         "modules/catalog.md",
         "modules/config.md",
         "modules/database_migration_manifest.md",
+        "modules/project_identity.md",
         "modules/source.md",
         "modules/time.md",
         "modules/transfer.md"
@@ -77112,6 +77144,7 @@
       "outgoing_internal_links": [
         "modules/catalog.md",
         "modules/database_migration_manifest.md",
+        "modules/project_identity.md",
         "modules/source.md",
         "modules/transfer.md",
         "modules/upgrade_service.md"
@@ -77305,6 +77338,21 @@
       "title": "PlanShareService_create"
     },
     {
+      "canonical_path": "workflows/preflight_source.md",
+      "id": "preflight_source",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/preflight_source",
+      "outgoing_internal_links": [
+        "modules/catalog.md",
+        "modules/database_migration_manifest.md",
+        "modules/project_identity.md",
+        "modules/source.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/database_migration/source.py",
+      "title": "preflight_source"
+    },
+    {
       "canonical_path": "workflows/preview_iteration_schedule.md",
       "id": "preview_iteration_schedule",
       "kind": "workflows",
@@ -77468,6 +77516,7 @@
       "mcp_uri": "llm-wiki://workflows/reconcile_snapshot",
       "outgoing_internal_links": [
         "modules/database_migration_manifest.md",
+        "modules/project_identity.md",
         "modules/source.md",
         "modules/time.md",
         "modules/transfer.md",
@@ -87851,6 +87900,7 @@
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -88559,6 +88609,7 @@
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
+        "modules/test_project_identity_scope.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -88653,5 +88704,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:4723e19f376f65f80adf5663989f33dcaeb1135eea03b3389084aff60003d6ee"
+  "source_hash": "sha256:157a22a5ae4b556927d5e76d45cfd2a4daf8a820a3243f5081366fcc69221245"
 }

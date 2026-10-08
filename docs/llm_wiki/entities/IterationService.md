@@ -110,4 +110,4 @@ flowchart LR
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `create_iteration_series` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

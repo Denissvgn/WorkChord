@@ -100,4 +100,4 @@ flowchart LR
 | `test_project_work_finite_paging_and_scope_validation` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 | `test_record_correct_void_retains_private_history_and_task_state` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

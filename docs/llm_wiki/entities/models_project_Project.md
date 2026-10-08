@@ -119,4 +119,4 @@ flowchart LR
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 | `execution_usage_service` | import | [execution_usage_service](../modules/execution_usage_service.md) | — |
 
-> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

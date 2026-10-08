@@ -7,8 +7,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1511 | [Open section](#entities) |
-| Modules | 697 | [Open section](#modules) |
-| Workflows | 179 | [Open section](#workflows) |
+| Modules | 698 | [Open section](#modules) |
+| Workflows | 180 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 543 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
@@ -2153,6 +2153,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_profile_capacity](modules/test_profile_capacity.md) - Shared person capacity, calendar arithmetic and private availability boundaries.
 - [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) - Preserve legacy absence identities and report conflicting person calendars.
 - [test_project_identity](modules/test_project_identity.md) - Project allocation floors, dependent preservation and transactional rebuilds.
+- [test_project_identity_scope](modules/test_project_identity_scope.md) - Ambiguous legacy identities stop before writes and never expose private records.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
@@ -2384,6 +2385,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `database_migration.main`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
+- [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
 - [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
 - [process_import](workflows/process_import.md) - entry: `export._process_import`
 - [project_member](workflows/project_member.md) - entry: `identity.project_member`

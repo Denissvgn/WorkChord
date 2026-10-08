@@ -10,20 +10,26 @@ Recorded coverage and manager totals preserve private entry boundaries.
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `Authority`, `AuthorityError` |
-| `app.config` | `get_settings` |
-| `app.models.time_entry` | `TimeEntry` |
+| `app.authority` | `Authority`, `AuthorityError`, `internal_authority` |
+| `app.config` | `get_settings`, `get_settings` |
+| `app.models.iteration` | `Iteration` |
+| `app.models.project` | `Project` |
+| `app.models.time_entry` | `TimeEntry`, `TimeEntryRevision`, `TimeEntry` |
 | `app.query_limits` | `CollectionLimitExceededError` |
-| `app.schemas.project` | `ProjectCreate` |
+| `app.schemas.iteration` | `IterationCreate` |
+| `app.schemas.project` | `ProjectCreate`, `ProjectCreate` |
 | `app.schemas.task` | `TaskCreate`, `TaskUpdate` |
-| `app.services.project_service` | `ProjectService` |
+| `app.schemas.time_entry` | `TimeEntryCorrection` |
+| `app.services.iteration_service` | `IterationService` |
+| `app.services.project_service` | `ProjectService`, `ProjectService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.time_entry_service` | `TimeEntryService` |
 | `app.services.time_report_service` | `TimeReportService` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `date`, `timedelta` |
 | `pytest` | `pytest` |
-| `sqlalchemy` | `insert` |
+| `sqlalchemy` | `create_engine`, `select`, `insert` |
+| `sqlite3` | `sqlite3` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
 | `tests.test_time_entries` | `prepare`, `entry_data`, `isolated_time_settings` |
 | `uuid` | `uuid4` |
@@ -45,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (13) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -53,13 +59,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `test_deleted_project_time_is_not_visible_to_replacement_manager` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope` | *(async)* `(delivery_store, monkeypatch, tmp_path)` | — | — |
 | `test_personal_and_manager_totals_do_not_expose_private_records` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_unknown_time_zero_estimates_project_work_and_finite_pages` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_moved_task_keeps_original_scope_and_does_not_expose_new_title` | *(async)* `(delivery_store, monkeypatch)` | — | — |
