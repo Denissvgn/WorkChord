@@ -94,6 +94,7 @@ export const GitHubSettingsPanel = () => {
 
     // feedback-policy: mutation pending,toast - freeze the draft snapshot and preserve it on failure.
     const createMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: githubService.createStatusAutomationRule,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['github-status-automation-rules'] });
@@ -107,6 +108,7 @@ export const GitHubSettingsPanel = () => {
 
     // feedback-policy: mutation pending,toast - freeze the draft snapshot and preserve it on failure.
     const updateMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: ({ ruleId, data }: { ruleId: number; data: GitHubStatusAutomationRuleCreate }) => (
             githubService.updateStatusAutomationRule(ruleId, data)
         ),
@@ -122,6 +124,7 @@ export const GitHubSettingsPanel = () => {
 
     // feedback-policy: mutation pending,toast - only the affected row reports progress; failures remain actionable.
     const toggleMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: ({ ruleId, enabled }: { ruleId: number; enabled: boolean }) => (
             githubService.updateStatusAutomationRule(ruleId, { enabled })
         ),
@@ -139,6 +142,7 @@ export const GitHubSettingsPanel = () => {
 
     // feedback-policy: mutation pending,toast - confirm first, mark only the affected row, and keep unrelated drafts.
     const deleteMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: githubService.deleteStatusAutomationRule,
         onSuccess: (_result, deletedRuleId) => {
             queryClient.invalidateQueries({ queryKey: ['github-status-automation-rules'] });

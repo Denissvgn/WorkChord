@@ -113,6 +113,7 @@ export const EmailSettingsPanel = () => {
 
     // Save mutation
     const saveMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: emailSettingsService.updateSettings,
         onSuccess: (updatedSettings) => {
             queryClient.setQueryData(['email-settings'], updatedSettings);
@@ -131,6 +132,7 @@ export const EmailSettingsPanel = () => {
 
     // Test email mutation
     const testMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: emailSettingsService.testConnection,
         onSuccess: (response) => {
             if (response.success) {

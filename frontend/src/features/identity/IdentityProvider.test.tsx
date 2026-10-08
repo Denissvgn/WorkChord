@@ -41,6 +41,34 @@ describe('signed-out navigation', () => {
         expect(client.getQueryState(planningNavigationSummaryKey(7))?.isInvalidated).toBe(true);
     });
 
+    it('replaces the access cache and cancels an old private request on account change', async () => {
+        let workspaceClient: QueryClient | undefined;
+        const CaptureClient = () => {
+            const client = useQueryClient();
+            useEffect(() => { workspaceClient = client; }, [client]);
+            return <IdentityBadge />;
+        };
+        const { queryClient: outer } = renderWithProviders(<IdentityProvider><CaptureClient /></IdentityProvider>);
+        await screen.findByText('Ada');
+        const previous = workspaceClient!;
+        let finish!: (value: string) => void;
+        let aborted = false;
+        const pending = previous.fetchQuery({ queryKey: ['tasks', 'private'], queryFn: ({ signal }) => {
+            signal.addEventListener('abort', () => { aborted = true; });
+            return new Promise<string>(resolve => { finish = resolve; });
+        } }).catch(() => undefined);
+        service.get.mockResolvedValue({ mode: 'managed', authenticated: true, configured: true,
+            principal: { id: 8, kind: 'human', display_name: 'Grace' }, profile: null,
+            workspace_role: null, projects: { 2: 'viewer' }, csrf_token: 'next-csrf' });
+        await act(async () => { await outer.invalidateQueries({ queryKey: ['workspaceIdentity'] }); });
+        await screen.findByText('Grace');
+        await waitFor(() => expect(workspaceClient).not.toBe(previous));
+        await act(async () => { finish('Old private data'); await pending; });
+        expect(aborted).toBe(true);
+        expect(previous.getQueryData(['tasks', 'private'])).toBeUndefined();
+        expect(workspaceClient!.getQueryData(['tasks', 'private'])).toBeUndefined();
+    });
+
     it.each([
         ['/mobile/connect?request=' + 'r'.repeat(43), '/mobile/connect?request=' + 'r'.repeat(43)],
         ['/tasks?project_id=1', '/'],
