@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1515 | [Open section](#entities) |
-| Modules | 714 | [Open section](#modules) |
+| Modules | 718 | [Open section](#modules) |
 | Workflows | 182 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 545 | [Open section](#entry-point-flows) |
@@ -1622,6 +1622,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
+- [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
@@ -1741,6 +1742,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
+- [WorkRefreshStatus](modules/WorkRefreshStatus.md) - `frontend/src/components/feedback/WorkRefreshStatus.tsx`
 - [acceptance_artifacts](modules/acceptance_artifacts.md) - Bounded public receipt exports and independent offline archive verification.
 - [accessibilityInvariants](modules/accessibilityInvariants.md) - `frontend/src/test/accessibilityInvariants.ts`
 - [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) - `frontend/src/test/accessibilityInvariants.test.ts`
@@ -2230,6 +2232,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [useConfirmDialog](modules/useConfirmDialog.md) - `frontend/src/components/common/useConfirmDialog.tsx`
 - [useDraftDismissal](modules/useDraftDismissal.md) - `frontend/src/components/tasks/useDraftDismissal.ts`
 - [useDraftDismissal.test](modules/useDraftDismissal.test.md) - `frontend/src/components/tasks/useDraftDismissal.test.tsx`
+- [useLiveWindow](modules/useLiveWindow.md) - `frontend/src/features/useLiveWindow.ts`
+- [useLiveWindow.test](modules/useLiveWindow.test.md) - `frontend/src/features/useLiveWindow.test.tsx`
 - [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) - `frontend/src/features/planningMasters/usePlanningNavigationSummary.ts`
 - [usePlanningReadiness](modules/usePlanningReadiness.md) - `frontend/src/features/planningMasters/usePlanningReadiness.ts`
 - [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`

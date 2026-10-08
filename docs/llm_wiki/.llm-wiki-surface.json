@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 714,
+      "modules": 718,
       "workflows": 182
     },
     "dependency_architecture": 2,
-    "total": 2971
+    "total": 2975
   },
   "dependency_pages": {
     "count": 2,
@@ -38229,7 +38229,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 150,
+              "line": 151,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -38237,7 +38237,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 151,
+              "line": 152,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38245,7 +38245,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 178,
+              "line": 179,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38253,7 +38253,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 181,
+              "line": 182,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
@@ -38261,7 +38261,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 197,
+              "line": 198,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38269,7 +38269,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 199,
+              "line": 200,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38277,7 +38277,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 205,
+              "line": 207,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38340,9 +38340,9 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 124,
+              "line": 123,
               "step": "parse_args",
-              "target": "parser.parse_args"
+              "target": "parser.add_argument"
             },
             {
               "kind": "step_limit",
@@ -38360,7 +38360,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 95,
+          "step_count": 96,
           "truncated": false
         }
       },
@@ -41936,6 +41936,7 @@
         "modules/LandingPage.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
@@ -42397,6 +42398,8 @@
         "modules/useConfirmDialog.md",
         "modules/useDraftDismissal.md",
         "modules/useDraftDismissal.test.md",
+        "modules/useLiveWindow.md",
+        "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
@@ -42418,6 +42421,7 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/WorkRefreshStatus.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -64609,7 +64613,8 @@
         "modules/CommandMenu.md",
         "modules/DocumentMetadata.md",
         "modules/RouteErrorBoundary.md",
-        "modules/themeStore.md"
+        "modules/themeStore.md",
+        "modules/WorkRefreshStatus.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/layout/AppShell.tsx",
@@ -64904,10 +64909,12 @@
         "modules/BacklogPanel.md",
         "modules/Button.md",
         "modules/GuardedTaskModal.md",
+        "modules/LiveWindowStatus.md",
         "modules/projectService.md",
         "modules/QueryState.md",
         "modules/taskService.md",
-        "modules/TasksPage.md"
+        "modules/TasksPage.md",
+        "modules/useLiveWindow.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/BacklogPanel.tsx",
@@ -67455,6 +67462,26 @@
       "title": "leases Module"
     },
     {
+      "canonical_path": "modules/LiveWindowStatus.md",
+      "id": "LiveWindowStatus",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/LiveWindowStatus",
+      "outgoing_internal_links": [
+        "modules/BacklogPanel.md",
+        "modules/Button.md",
+        "modules/LiveWindowStatus.md",
+        "modules/MyWorkPage.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/RoadmapPage.md",
+        "modules/TaskDiscussion.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/feedback/LiveWindowStatus.tsx",
+      "title": "LiveWindowStatus Module"
+    },
+    {
       "canonical_path": "modules/llm_service.md",
       "id": "llm_service",
       "kind": "modules",
@@ -68206,18 +68233,7 @@
       "outgoing_internal_links": [
         "entities/Queue.md",
         "entities/WorkPage.md",
-        "modules/api.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/discussionService.md",
-        "modules/GuardedTaskModal.md",
-        "modules/identityContext.md",
-        "modules/index.md",
-        "modules/MyWorkPage.md",
-        "modules/MyWorkPage.test.md",
-        "modules/PersonCapacity.md",
-        "modules/QueryState.md",
-        "modules/types_task.md"
+        "modules/MyWorkPage.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.tsx",
@@ -68619,11 +68635,13 @@
       "outgoing_internal_links": [
         "modules/Button.md",
         "modules/KanbanBoard.md",
+        "modules/LiveWindowStatus.md",
         "modules/PagedTaskBrowser.md",
         "modules/PagedTaskBrowser.test.md",
         "modules/QueryState.md",
         "modules/TaskList.md",
-        "modules/taskService.md"
+        "modules/taskService.md",
+        "modules/useLiveWindow.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/PagedTaskBrowser.tsx",
@@ -72603,11 +72621,13 @@
         "modules/Button.md",
         "modules/discussionService.md",
         "modules/identityContext.md",
+        "modules/LiveWindowStatus.md",
         "modules/QueryState.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/TaskForm.md",
-        "modules/useDraftDismissal.md"
+        "modules/useDraftDismissal.md",
+        "modules/useLiveWindow.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskDiscussion.tsx",
@@ -74881,17 +74901,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/TimeEntriesReport",
       "outgoing_internal_links": [
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/CollapsibleSection.md",
-        "modules/Input.md",
-        "modules/ProjectDetailPage.md",
-        "modules/QueryState.md",
-        "modules/TimeEntriesPanel.md",
-        "modules/TimeEntriesReport.md",
-        "modules/TimeEntriesReport.test.md",
-        "modules/timeEntryService.md",
-        "modules/useTimeEntries.md"
+        "modules/TimeEntriesReport.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/projects/TimeEntriesReport.tsx",
@@ -75707,6 +75717,40 @@
       "title": "useDraftDismissal.test Module"
     },
     {
+      "canonical_path": "modules/useLiveWindow.md",
+      "id": "useLiveWindow",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/useLiveWindow",
+      "outgoing_internal_links": [
+        "modules/BacklogPanel.md",
+        "modules/MyWorkPage.md",
+        "modules/PagedTaskBrowser.md",
+        "modules/RoadmapPage.md",
+        "modules/TaskDiscussion.md",
+        "modules/TimeEntriesPanel.md",
+        "modules/TimeEntriesReport.md",
+        "modules/useLiveWindow.md",
+        "modules/useLiveWindow.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/useLiveWindow.ts",
+      "title": "useLiveWindow Module"
+    },
+    {
+      "canonical_path": "modules/useLiveWindow.test.md",
+      "id": "useLiveWindow.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/useLiveWindow.test",
+      "outgoing_internal_links": [
+        "modules/useLiveWindow.md",
+        "modules/useLiveWindow.test.md",
+        "modules/workspaceQueryPolicy.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/useLiveWindow.test.tsx",
+      "title": "useLiveWindow.test Module"
+    },
+    {
       "canonical_path": "modules/usePlanningNavigationSummary.md",
       "id": "usePlanningNavigationSummary",
       "kind": "modules",
@@ -76027,6 +76071,7 @@
         "entities/QueryPolicy.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/WorkRefreshStatus.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md"
       ],
@@ -76048,6 +76093,20 @@
       "title": "workQueryFreshness.test Module"
     },
     {
+      "canonical_path": "modules/WorkRefreshStatus.md",
+      "id": "WorkRefreshStatus",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/WorkRefreshStatus",
+      "outgoing_internal_links": [
+        "modules/AppShell.md",
+        "modules/workQueryFreshness.md",
+        "modules/WorkRefreshStatus.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/feedback/WorkRefreshStatus.tsx",
+      "title": "WorkRefreshStatus Module"
+    },
+    {
       "canonical_path": "modules/workspaceQueryPolicy.md",
       "id": "workspaceQueryPolicy",
       "kind": "modules",
@@ -76055,6 +76114,7 @@
       "outgoing_internal_links": [
         "modules/IdentityProvider.md",
         "modules/planningNavigationInvalidation.md",
+        "modules/useLiveWindow.test.md",
         "modules/workQueryFreshness.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md"
@@ -88104,6 +88164,7 @@
         "modules/LandingPage.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
@@ -88565,6 +88626,8 @@
         "modules/useConfirmDialog.md",
         "modules/useDraftDismissal.md",
         "modules/useDraftDismissal.test.md",
+        "modules/useLiveWindow.md",
+        "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
@@ -88586,6 +88649,7 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/WorkRefreshStatus.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -88829,6 +88893,7 @@
         "modules/LandingPage.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
         "modules/loader.md",
@@ -89290,6 +89355,8 @@
         "modules/useConfirmDialog.md",
         "modules/useDraftDismissal.md",
         "modules/useDraftDismissal.test.md",
+        "modules/useLiveWindow.md",
+        "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
@@ -89311,6 +89378,7 @@
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
+        "modules/WorkRefreshStatus.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -89322,5 +89390,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:ab970e3083cf79682bdffca58b3c1e783e5655c9e926d8df8ce242e5313f7dab"
+  "source_hash": "sha256:4ef6e23a290a474da88a2db76d78dfb92dc95c7943931131800fd0d3a2ef9522"
 }

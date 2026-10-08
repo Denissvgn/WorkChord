@@ -1,6 +1,6 @@
 # RoadmapGroup
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:66`
+**Location:** `frontend/src/pages/RoadmapPage.tsx:68`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)

@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:c06086f0c198a58398a3dd73f106d66dd65e1b0c466c8cb899174068fddba48f",
-    "knowledge_index_hash": "sha256:b15d38f3329ae86fe463aafb92860d3eea00422cf0aff05e159200c3b40c22fa",
-    "surface_index_hash": "sha256:0dba4bc175329fb6fec5162fe4d4a6034d418e30a7ab181035a01872f8808083"
+    "evaluated_envelope_hash": "sha256:e55835e4091d38fcafcb8acbf29c942dae73a727bacf69a590cc2563630003b9",
+    "knowledge_index_hash": "sha256:4d097ea230f1b6729d52b603cde409184f196f952029444f391b8772da9acc81",
+    "surface_index_hash": "sha256:47df57598886eff62c61bba02df96863bc2d5f69dfb015faed77f0e1a36ad2a3"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -2790,7 +2790,7 @@
         "concept_observation_hash": "sha256:34ffafb633eaa89120ec31e54e7fbaa1c6e99290096c9957c8b52b6e20a99f97",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -3000,7 +3000,7 @@
         "concept_observation_hash": "sha256:69a6848199b15c4136b6688cd68fed74ef3919b1c0f5898a75f65234d2e26222",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:590916d9cfe8a774df61fbaf67de64cb548cb0ac9f144dddaf970455f8fd4654",
+        "source_content_hash": "sha256:f9f626d4ad17dc39784231f8bf567bcfe6d9837b2ca4ee5ff60447433ec4ff84",
         "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
       },
       "state": "known"
@@ -3100,7 +3100,7 @@
         "concept_observation_hash": "sha256:f43fc598fef62ca9cac117554f511a1b50243cef4e1a869545dbb69a624f24fa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e59f35f880cebbc7df1d8981e64e2369ceb10b9a462490c493ab56b461464b7d",
+        "source_content_hash": "sha256:3c14c5f1e3741490f0e6c83aad54312255fecbf820c527f171df5ae3224b3e77",
         "source_path": "frontend/src/components/tasks/TaskDiscussion.tsx"
       },
       "state": "known"
@@ -4080,7 +4080,7 @@
         "concept_observation_hash": "sha256:dd906658d8f6621557ec5d92f7ba6ef5f00ac3fa41fd7eda49eae09e94612d7f",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -6170,7 +6170,7 @@
         "concept_observation_hash": "sha256:e5671f211f529b6934d2e1d696b766fa3892f3553735bc48548d640548976aa3",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
+        "source_content_hash": "sha256:f62aea6f94e74bac83fc6c910145e2430f038c5e705e05fd16291533dfbfe55c",
         "source_path": "frontend/src/features/workQueryFreshness.ts"
       },
       "state": "known"
@@ -6190,7 +6190,7 @@
         "concept_observation_hash": "sha256:2fb7d3b1e5a22b1db467d7147d5b436f8355fa82f41fba3245c5326896106728",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e49a104c3625ec123fcb68418eb51abb3d596976916af892281c4a36d87a4860",
+        "source_content_hash": "sha256:dc155af911de8c6227589b7db9723b292052abbfcf6d0ed264bab2fbb2237612",
         "source_path": "frontend/src/pages/MyWorkPage.tsx"
       },
       "state": "known"
@@ -6640,7 +6640,7 @@
         "concept_observation_hash": "sha256:8c8f866ce45468c0b55b20be485e3b69734823691c9562f7defdc782a29ebaaa",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -6650,7 +6650,7 @@
         "concept_observation_hash": "sha256:bcd3763af8c15e66028fcf2785eb3c18d2cca0e30dd5e537326cbfb0769e5a9e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -6660,7 +6660,7 @@
         "concept_observation_hash": "sha256:f67a212e61e0908372f23cdf9afba1f09aeb7a31b3d1fde9b8f087dfc44dd307",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -6670,7 +6670,7 @@
         "concept_observation_hash": "sha256:e39dc4a3705758b7968423b45b30c551b4e6ed246c8e58475e355718b1096b31",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -10100,7 +10100,7 @@
         "concept_observation_hash": "sha256:943ae55426539e79f86563e71ec7e2fbc61fe4dcf63b8b0c2c4a9770500de39a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "entity",
-        "source_content_hash": "sha256:e49a104c3625ec123fcb68418eb51abb3d596976916af892281c4a36d87a4860",
+        "source_content_hash": "sha256:dc155af911de8c6227589b7db9723b292052abbfcf6d0ed264bab2fbb2237612",
         "source_path": "frontend/src/pages/MyWorkPage.tsx"
       },
       "state": "known"
@@ -15397,10 +15397,10 @@
     },
     "modules/AppShell.md": {
       "basis": {
-        "concept_observation_hash": "sha256:311ac1f4897fa0be391d3df2472f02853402611469dfaf58de536990238a7969",
+        "concept_observation_hash": "sha256:546deb64613ee5a10f65572437ba58d89ae62f5162a8552a435cf2d2ff30505c",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:1b4a573c1ee91c325ee0a9966e1859c33249bb1cdca28cb49154eb5de8f2c7d6",
+        "source_content_hash": "sha256:e42817762c4d52460b4400b4ed7fdd2928b35129ca4fd6deb54dc376e0f6cb03",
         "source_path": "frontend/src/components/layout/AppShell.tsx"
       },
       "state": "known"
@@ -15467,10 +15467,10 @@
     },
     "modules/BacklogPanel.md": {
       "basis": {
-        "concept_observation_hash": "sha256:8dda61457ac430a88fab10c6c63c19e3e7cda81ba4ab973b98facf2cbd426822",
+        "concept_observation_hash": "sha256:e546ba3267e7745fd3cf0b0de2d098ec44b6aea7b49b3589877d96546bd15628",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:c36f81554ede12adc8e9379c56807370e73e67a0d533708878cc766e09efb5d7",
+        "source_content_hash": "sha256:a73ddf6ecb057d904a1d056c2b06d304d68b4171f27f2705b997197f31c96e39",
         "source_path": "frontend/src/components/tasks/BacklogPanel.tsx"
       },
       "state": "known"
@@ -16015,6 +16015,16 @@
       },
       "state": "known"
     },
+    "modules/LiveWindowStatus.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:29186453902cf6887a0f8daad1991a4c3c8ef38a6e774cf0036539cf79a5ed0e",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:c76e67e5e248db6961450dd12df07b393eb13306807d7fcfc3a58073e1759a5d",
+        "source_path": "frontend/src/components/feedback/LiveWindowStatus.tsx"
+      },
+      "state": "known"
+    },
     "modules/MasterProgress.md": {
       "basis": {
         "concept_observation_hash": "sha256:062d13b344d26d0d4d4ac085f59911fd7d5bc8cc53584d0c063a2e8ffa13e134",
@@ -16047,10 +16057,10 @@
     },
     "modules/MyWorkPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4b2a997cc4afc12e1c05023ccf5c285c28ca770784f147c4f0c8c1aba7e5fc20",
+        "concept_observation_hash": "sha256:3f4fce65697b12ff4090f4cd231b9d2ecf5d47428dab6c0c7ca25f7c29278782",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:e49a104c3625ec123fcb68418eb51abb3d596976916af892281c4a36d87a4860",
+        "source_content_hash": "sha256:dc155af911de8c6227589b7db9723b292052abbfcf6d0ed264bab2fbb2237612",
         "source_path": "frontend/src/pages/MyWorkPage.tsx"
       },
       "state": "known"
@@ -16187,10 +16197,10 @@
     },
     "modules/PagedTaskBrowser.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b682b227478f7386bb66c8dc8c953c1623a8222946834474a2a4faef7a86ec99",
+        "concept_observation_hash": "sha256:4cd757ab1db0f851e3ce9c441ecf33c072f91779366d5ae709c738383bb0ad5a",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:60c6084cf266c8d3ba01545e2c018d9febbe5200173432f8ce7dda479bdd477a",
+        "source_content_hash": "sha256:87c19efda5e4105e8306f8f34bbb28930681bf201ca906fa3549991a5c19a637",
         "source_path": "frontend/src/components/tasks/PagedTaskBrowser.tsx"
       },
       "state": "known"
@@ -16457,10 +16467,10 @@
     },
     "modules/RoadmapPage.md": {
       "basis": {
-        "concept_observation_hash": "sha256:9e72c0b8dda5eb76c56da2005fd92476f0f7bd866292c04afedfbed5481c1ea4",
+        "concept_observation_hash": "sha256:15dac376df05badb09b0a46ed54d31b585eb31f504099de3e9ff201fb4e641cc",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+        "source_content_hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
         "source_path": "frontend/src/pages/RoadmapPage.tsx"
       },
       "state": "known"
@@ -16470,7 +16480,7 @@
         "concept_observation_hash": "sha256:43e57134f10961ed3a78a744eef4e57910b4cbb10eeaa62356b07dc5822ffbbd",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:37f3e05f5410492e4f4632148cf5f9e3103fb2b0a7e449baefc5ed113e2a0627",
+        "source_content_hash": "sha256:8dc671da1ae68b0ae09e6afc0254d92500d5fd64130233c11c9c2dd8b50acf40",
         "source_path": "frontend/src/pages/RoadmapPage.test.tsx"
       },
       "state": "known"
@@ -16787,10 +16797,10 @@
     },
     "modules/TaskDiscussion.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e69436ed19ed6232afac39a45adf9b856567ecd9c706d7e0ff2d985b9e5c53ef",
+        "concept_observation_hash": "sha256:cb0f2cda32b0eac2aee091c6ee21be789366e0d074d93841776e7e06c8ed5799",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:e59f35f880cebbc7df1d8981e64e2369ceb10b9a462490c493ab56b461464b7d",
+        "source_content_hash": "sha256:3c14c5f1e3741490f0e6c83aad54312255fecbf820c527f171df5ae3224b3e77",
         "source_path": "frontend/src/components/tasks/TaskDiscussion.tsx"
       },
       "state": "known"
@@ -17097,10 +17107,10 @@
     },
     "modules/TimeEntriesPanel.md": {
       "basis": {
-        "concept_observation_hash": "sha256:49c61484f9107f26410a875a663b70c853c80f3b93474dd59f868f1cd3edcd7f",
+        "concept_observation_hash": "sha256:41e61fa610d67244eb0c46f9ddea0cd2b48faa177214b0760b7313424ecc912b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:590916d9cfe8a774df61fbaf67de64cb548cb0ac9f144dddaf970455f8fd4654",
+        "source_content_hash": "sha256:f9f626d4ad17dc39784231f8bf567bcfe6d9837b2ca4ee5ff60447433ec4ff84",
         "source_path": "frontend/src/components/tasks/TimeEntriesPanel.tsx"
       },
       "state": "known"
@@ -17117,10 +17127,10 @@
     },
     "modules/TimeEntriesReport.md": {
       "basis": {
-        "concept_observation_hash": "sha256:be6d97d4578af0e86202b57ca2483e6adce08cde7359e34f759dcb994504145b",
+        "concept_observation_hash": "sha256:3dfc704b94a0e35f66359f22e4a62beca2524d4e853d24daaa31eeba0859a9f0",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:3ca76384b073f91840070ee5dadf4ae4538fc5c170df268724871bba94578fae",
+        "source_content_hash": "sha256:42f5d04e5262c9ae9f54c571ee6b80fa2c0f01a3d259f930f7e4f70a0a9ce865",
         "source_path": "frontend/src/components/projects/TimeEntriesReport.tsx"
       },
       "state": "known"
@@ -17202,6 +17212,16 @@
         "scope": "module",
         "source_content_hash": "sha256:de69be9a5237795dc376956cd5e40dc878969aa57c52dd25ed1d0d4da72aacad",
         "source_path": "frontend/src/components/tasks/WorkMetricsLine.tsx"
+      },
+      "state": "known"
+    },
+    "modules/WorkRefreshStatus.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0704cc169348f9855cd387b7e7c7ec2dcd813b923a23bd5b141eeaab39e64264",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:301c5592d6ee6923efc4d1bf310339c13dbcc6f4df5deec4836888a6ef7054e3",
+        "source_path": "frontend/src/components/feedback/WorkRefreshStatus.tsx"
       },
       "state": "known"
     },
@@ -19740,7 +19760,7 @@
         "concept_observation_hash": "sha256:2ae4d5f7679dde08254e372521140866c5e0795ae8a9e28aa2560d547cd80d7a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:3b4d2261cf2f7a9b30d27d496a90a27e7acf4862187ec805fb87ebfb22e8d69d",
+        "source_content_hash": "sha256:c1c209e812537e4324dfe41962af621fd652ef4e6876257a54ca98ced5269727",
         "source_path": "scripts/ci/run_disposable_checks.py"
       },
       "state": "known"
@@ -20800,7 +20820,7 @@
         "concept_observation_hash": "sha256:8ad807491ae8888df87daa2deaea6675ab3448703e0b4974973caa48dd51464e",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:222125d256550988954d5dacbddcfdf99e7ba0ed63a40eedcac2d1e7ef4f6901",
+        "source_content_hash": "sha256:fe07ff769dc92c7f997a8e5fb29b813d9b3b2b2ff910daace4f0ef7554d25cdd",
         "source_path": "frontend/src/i18n/teamwork.en.ts"
       },
       "state": "known"
@@ -20810,7 +20830,7 @@
         "concept_observation_hash": "sha256:d70e36ee811fd1785a5a11098d153f74e93d24d90bc3b956bbf57c7b8bd2dfb7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:74cc00fd0e2b82fcb04968e524bce9c6eba5deb4c932d6249a08a5b9e1eaf081",
+        "source_content_hash": "sha256:00d41f2bf537354bc9ce23a59177ff2ee4ec27fab59db3738621618197b012b0",
         "source_path": "frontend/src/i18n/teamwork.ru.ts"
       },
       "state": "known"
@@ -22095,6 +22115,26 @@
       },
       "state": "known"
     },
+    "modules/useLiveWindow.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:002594d4ef534ee22e400d03165b50530a5ddfbbd3284ed9545ff3119e562d10",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:6cde224abda10cbc29de12a2629c1b8c5df316518cdf5994db23f008151d2aee",
+        "source_path": "frontend/src/features/useLiveWindow.ts"
+      },
+      "state": "known"
+    },
+    "modules/useLiveWindow.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:ba3b478bd81e8ff1563bb0d04128ed8abe8a3640cca3c067fae08e27debee560",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:38bff8b43cc0f63ddb3766ff20c383bb2a1b4154bb128216d93f386d14edac3c",
+        "source_path": "frontend/src/features/useLiveWindow.test.tsx"
+      },
+      "state": "known"
+    },
     "modules/usePlanningNavigationSummary.md": {
       "basis": {
         "concept_observation_hash": "sha256:f942676050f20cedb0fc64f3797a547dbfcf31535c3fd018552d95f3fba83463",
@@ -22230,7 +22270,7 @@
         "concept_observation_hash": "sha256:6c3da6453d7f14d7336c195771f2b786c2f564e6ba81cee0484cab6779757ee7",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
+        "source_content_hash": "sha256:f62aea6f94e74bac83fc6c910145e2430f038c5e705e05fd16291533dfbfe55c",
         "source_path": "frontend/src/features/workQueryFreshness.ts"
       },
       "state": "known"
@@ -22510,13 +22550,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:d7c34f36bb17da9c485ef5ddad6bf254a24f19f5aa643dc393524441691d650c",
-      "lifecycle_hash": "sha256:c502dcb6128de92e88b3643f4f1d86fe6e76e4a8bbb950fbfda1086bea5ca001",
-      "markdown_snapshot_hash": "sha256:8e387534385a3d6b3618970a5f382d0ed39752711d8c99d9b3f9569cacff9be0",
-      "observation_inputs_hash": "sha256:358149eb03b397684fb993597121507c616b163d0ed1a97da07d3073170e7faf",
+      "inventory_hash": "sha256:46084e3cb6d5a3f1e6e98c0ae354282f510537a6cc4ee4a034e333b86569d2dd",
+      "lifecycle_hash": "sha256:e9cc7c99e8f9effd1bd46be668461fb8c25bbeb0ad795e7c3fe7278308fcafa0",
+      "markdown_snapshot_hash": "sha256:0557bb5f8d073052ced316e2618e566c4079804a42851c8f5c095e74c3c58a6d",
+      "observation_inputs_hash": "sha256:1ef48ad56cb8e3cad7daa70692bd356831bd272aaa1cac4c007efa95e54c2c44",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:9a9a3a898c29ce32826b6a47f944221f5edd419332ef36dc2df96ee721f9ed31"
+      "source_snapshot_hash": "sha256:ad647d54ea0d84ff8ede93e938810fc904286798b51cb34a64290a98421e33e1"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -31959,6 +31999,10 @@
       "scope": "module",
       "source_path": "frontend/src/pages/LandingPage.tsx"
     },
+    "modules/LiveWindowStatus.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/feedback/LiveWindowStatus.tsx"
+    },
     "modules/MasterProgress.md": {
       "scope": "module",
       "source_path": "frontend/src/components/ui/MasterProgress.tsx"
@@ -32434,6 +32478,10 @@
     "modules/WorkMetricsLine.md": {
       "scope": "module",
       "source_path": "frontend/src/components/tasks/WorkMetricsLine.tsx"
+    },
+    "modules/WorkRefreshStatus.md": {
+      "scope": "module",
+      "source_path": "frontend/src/components/feedback/WorkRefreshStatus.tsx"
     },
     "modules/acceptance_artifacts.md": {
       "scope": "module",
@@ -34390,6 +34438,14 @@
     "modules/useDraftDismissal.test.md": {
       "scope": "module",
       "source_path": "frontend/src/components/tasks/useDraftDismissal.test.tsx"
+    },
+    "modules/useLiveWindow.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/useLiveWindow.ts"
+    },
+    "modules/useLiveWindow.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/useLiveWindow.test.tsx"
     },
     "modules/usePlanningNavigationSummary.md": {
       "scope": "module",
@@ -63586,6 +63642,25 @@
       "module_page": "SavedViewDashboardCards",
       "semantic_hash": "sha256:a09e28276c5396100f11d75e579eaa36126c3f408f956a333a4ac597569da49f"
     },
+    "frontend/src/components/feedback/LiveWindowStatus.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/feedback/LiveWindowStatus.tsx`._",
+          "functions": {
+            "LiveWindowStatus": "—"
+          }
+        }
+      },
+      "hash": "sha256:c76e67e5e248db6961450dd12df07b393eb13306807d7fcfc3a58073e1759a5d",
+      "language": "typescript",
+      "module_page": "LiveWindowStatus",
+      "semantic_hash": "sha256:ad48ba8a60c4499742f4ee81cf1c14ebb05c1859fda2dab3d7ed11281aefa96a"
+    },
     "frontend/src/components/feedback/QueryState.tsx": {
       "entities": [
         "SharedStateProps",
@@ -63759,6 +63834,25 @@
       "language": "typescript",
       "module_page": "WorkFreshness",
       "semantic_hash": "sha256:d0f1efcb7e1781ee8d277f957df0f9dbd931bb868e91717c13bdfd97fef9eadf"
+    },
+    "frontend/src/components/feedback/WorkRefreshStatus.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._",
+          "functions": {
+            "WorkRefreshStatus": "—"
+          }
+        }
+      },
+      "hash": "sha256:301c5592d6ee6923efc4d1bf310339c13dbcc6f4df5deec4836888a6ef7054e3",
+      "language": "typescript",
+      "module_page": "WorkRefreshStatus",
+      "semantic_hash": "sha256:2f0fd6841504a61158a178e5a84af5a4ef806e0082e6d3b1ddc4f02dc92b22f7"
     },
     "frontend/src/components/feedback/toast.ts": {
       "entities": [
@@ -64347,10 +64441,10 @@
           }
         }
       },
-      "hash": "sha256:1b4a573c1ee91c325ee0a9966e1859c33249bb1cdca28cb49154eb5de8f2c7d6",
+      "hash": "sha256:e42817762c4d52460b4400b4ed7fdd2928b35129ca4fd6deb54dc376e0f6cb03",
       "language": "typescript",
       "module_page": "AppShell",
-      "semantic_hash": "sha256:1af7b82830fffc8e8c0e3d196c40dfd581722b596f362c4ff04ad51421be059a"
+      "semantic_hash": "sha256:a2b7065a4a110237ca10c8ffcca822e6036171e8be18094814bbd58675e87da5"
     },
     "frontend/src/components/layout/AppSidebar.test.tsx": {
       "entities": [],
@@ -65252,10 +65346,10 @@
           }
         }
       },
-      "hash": "sha256:3ca76384b073f91840070ee5dadf4ae4538fc5c170df268724871bba94578fae",
+      "hash": "sha256:42f5d04e5262c9ae9f54c571ee6b80fa2c0f01a3d259f930f7e4f70a0a9ce865",
       "language": "typescript",
       "module_page": "TimeEntriesReport",
-      "semantic_hash": "sha256:82c3a3749f433ebf2044c16d1ae25100c0423906c7cfcd9f91d080c47bc72a59"
+      "semantic_hash": "sha256:eacc03efd6c3a238946bccafb94991bbe47136061f9c9fed42752043bd1062c9"
     },
     "frontend/src/components/projects/projectStatusStyles.test.ts": {
       "entities": [],
@@ -66534,10 +66628,10 @@
           }
         }
       },
-      "hash": "sha256:c36f81554ede12adc8e9379c56807370e73e67a0d533708878cc766e09efb5d7",
+      "hash": "sha256:a73ddf6ecb057d904a1d056c2b06d304d68b4171f27f2705b997197f31c96e39",
       "language": "typescript",
       "module_page": "BacklogPanel",
-      "semantic_hash": "sha256:8a2a78a7d8ad70d9ce6c7e4e2036906e1f8c9f99d5229b81006479e6f62d42b5"
+      "semantic_hash": "sha256:b06d991952eeb434a8f356c54cfa7b46a813b6ef086405fce4e315f4eac4cc8d"
     },
     "frontend/src/components/tasks/CurrentTaskModal.test.tsx": {
       "entities": [],
@@ -66966,10 +67060,10 @@
           }
         }
       },
-      "hash": "sha256:60c6084cf266c8d3ba01545e2c018d9febbe5200173432f8ce7dda479bdd477a",
+      "hash": "sha256:87c19efda5e4105e8306f8f34bbb28930681bf201ca906fa3549991a5c19a637",
       "language": "typescript",
       "module_page": "PagedTaskBrowser",
-      "semantic_hash": "sha256:318ba6395d48c3e9c3ff7981bf719836ae9a63ea9355ab403e10aa4d752b6a69"
+      "semantic_hash": "sha256:c9594ffdd3652d6885422f28eb3274f6a2c53354a37cbacc98f63912ebb0419e"
     },
     "frontend/src/components/tasks/PersonCapacity.tsx": {
       "entities": [
@@ -67451,10 +67545,10 @@
           }
         }
       },
-      "hash": "sha256:e59f35f880cebbc7df1d8981e64e2369ceb10b9a462490c493ab56b461464b7d",
+      "hash": "sha256:3c14c5f1e3741490f0e6c83aad54312255fecbf820c527f171df5ae3224b3e77",
       "language": "typescript",
       "module_page": "TaskDiscussion",
-      "semantic_hash": "sha256:709fa40e6406cef87f86a8f33e3dffab7bd22d0ec144080d7a3b4c6d282f4bbd"
+      "semantic_hash": "sha256:af2128a5cd0fd47c418c3c19f4f31498cf667caedf1ad42730c6a6349ec5a186"
     },
     "frontend/src/components/tasks/TaskEditorDrawer.test.tsx": {
       "entities": [],
@@ -68071,10 +68165,10 @@
           }
         }
       },
-      "hash": "sha256:590916d9cfe8a774df61fbaf67de64cb548cb0ac9f144dddaf970455f8fd4654",
+      "hash": "sha256:f9f626d4ad17dc39784231f8bf567bcfe6d9837b2ca4ee5ff60447433ec4ff84",
       "language": "typescript",
       "module_page": "TimeEntriesPanel",
-      "semantic_hash": "sha256:b68507a35b19440b069b208ff84ccb036fffb0dc02d46451a2fada9dad643070"
+      "semantic_hash": "sha256:b62098c0e3075c3c03496488a9b0b677fe6e7c0e8d963b949e32fff2d7f9ab16"
     },
     "frontend/src/components/tasks/WorkMetricsLine.tsx": {
       "entities": [],
@@ -70006,6 +70100,44 @@
       "module_page": "useTimeEntries",
       "semantic_hash": "sha256:42f1601a64677dff65fdbbe46f27aa09fccf9a67e629c3a8ae632f59b2c5eba5"
     },
+    "frontend/src/features/useLiveWindow.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/useLiveWindow.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:38bff8b43cc0f63ddb3766ff20c383bb2a1b4154bb128216d93f386d14edac3c",
+      "language": "typescript",
+      "module_page": "useLiveWindow.test",
+      "semantic_hash": "sha256:4bcd04e6f061f4c7309f0af04b1cd4a426dd06e0ecd54d5d8de9ea00130b2e11"
+    },
+    "frontend/src/features/useLiveWindow.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/useLiveWindow.ts`._",
+          "functions": {
+            "deduplicateWindow": "—",
+            "useLiveWindow": "—",
+            "validateWindowCursor": "—"
+          }
+        }
+      },
+      "hash": "sha256:6cde224abda10cbc29de12a2629c1b8c5df316518cdf5994db23f008151d2aee",
+      "language": "typescript",
+      "module_page": "useLiveWindow",
+      "semantic_hash": "sha256:1dd56ef13e1833d340eaf7d402ff7187e4372082c5a3bb6cc52353173f1d20cc"
+    },
     "frontend/src/features/workQueryFreshness.test.ts": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -70055,10 +70187,10 @@
           }
         }
       },
-      "hash": "sha256:45cd7ce1c87003efcf7c4d6f99f62e5655f376660b508597c318c3e12092cddb",
+      "hash": "sha256:f62aea6f94e74bac83fc6c910145e2430f038c5e705e05fd16291533dfbfe55c",
       "language": "typescript",
       "module_page": "workQueryFreshness",
-      "semantic_hash": "sha256:e34d688d08206faddcd36d32500756135ca37a193f4a4ef9a5bea608032c4f1e"
+      "semantic_hash": "sha256:dbd7a745412ff198b20058b1885b1a78076059486a299264ae293b279d736f9b"
     },
     "frontend/src/features/workspaceQueryPolicy.test.ts": {
       "entities": [],
@@ -70415,7 +70547,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:222125d256550988954d5dacbddcfdf99e7ba0ed63a40eedcac2d1e7ef4f6901",
+      "hash": "sha256:fe07ff769dc92c7f997a8e5fb29b813d9b3b2b2ff910daace4f0ef7554d25cdd",
       "language": "typescript",
       "module_page": "teamwork.en",
       "semantic_hash": "sha256:5a2e5a086f8e265d21d03aa23653ce9ec95ada8bcb647706a4b0a836dea865d4"
@@ -70432,7 +70564,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:74cc00fd0e2b82fcb04968e524bce9c6eba5deb4c932d6249a08a5b9e1eaf081",
+      "hash": "sha256:00d41f2bf537354bc9ce23a59177ff2ee4ec27fab59db3738621618197b012b0",
       "language": "typescript",
       "module_page": "teamwork.ru",
       "semantic_hash": "sha256:26f27806d6d52e9cf7b6c843c041c07cd55725685ba239e13e254acb679c1c17"
@@ -71064,10 +71196,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:e49a104c3625ec123fcb68418eb51abb3d596976916af892281c4a36d87a4860",
+      "hash": "sha256:dc155af911de8c6227589b7db9723b292052abbfcf6d0ed264bab2fbb2237612",
       "language": "typescript",
       "module_page": "MyWorkPage",
-      "semantic_hash": "sha256:b2b76d7d2c9ff6f5402f5b15a59e28b82449b14d3859b5fb4f4244bd1ef8b425"
+      "semantic_hash": "sha256:c773651bcc2b55be266295212fb51e14f45222d1d41b8a5376104a1a88ea081a"
     },
     "frontend/src/pages/NativeConnectionPage.test.tsx": {
       "entities": [],
@@ -71700,7 +71832,7 @@
           "functions": {}
         }
       },
-      "hash": "sha256:37f3e05f5410492e4f4632148cf5f9e3103fb2b0a7e449baefc5ed113e2a0627",
+      "hash": "sha256:8dc671da1ae68b0ae09e6afc0254d92500d5fd64130233c11c9c2dd8b50acf40",
       "language": "typescript",
       "module_page": "RoadmapPage.test",
       "semantic_hash": "sha256:ccd3afdb504928a71ebfdf542a02a2f10a05ec21a4e8387bfec4696b4adb70ca"
@@ -71800,10 +71932,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:555b858a47f6612433640a84f4dfc1535abb8ed63dff5760bc430e1aa1513eb1",
+      "hash": "sha256:f5d5258b2f57aa1cd9d94b4ccd6dd7abd656107cccc28af0f64adbdb0a9787a7",
       "language": "typescript",
       "module_page": "RoadmapPage",
-      "semantic_hash": "sha256:e6e91054c54ab04dddd7b323e595f928cb9704155a5bfe2ab3f3e5db71e74ab0"
+      "semantic_hash": "sha256:d27793519d54d9fe55690d81844aafce06564d332c712389849d53a55ddfbb77"
     },
     "frontend/src/pages/SettingsPage.test.tsx": {
       "entities": [],
@@ -81267,10 +81399,10 @@
           }
         }
       },
-      "hash": "sha256:3b4d2261cf2f7a9b30d27d496a90a27e7acf4862187ec805fb87ebfb22e8d69d",
+      "hash": "sha256:c1c209e812537e4324dfe41962af621fd652ef4e6876257a54ca98ced5269727",
       "language": "python",
       "module_page": "run_disposable_checks",
-      "semantic_hash": "sha256:2b31c418c0e5dd4474ce86cbdfbe1ea8a228a1d2ee1eb91c824a49f62d3d170e"
+      "semantic_hash": "sha256:6a617a4c98eb49ac888dbdd21e27cfdcc58abca6168f02a096b47430db053360"
     },
     "scripts/ci/serve_disposable_api.py": {
       "entities": [],

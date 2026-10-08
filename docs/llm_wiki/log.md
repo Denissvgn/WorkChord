@@ -1844,3 +1844,21 @@ Task editor openings now bind coherent current reads to isolated drafts, while b
 - Moved entities: none
 
 Pending editor writes now retain isolated intent and suppress obsolete navigation callbacks; unverified task and comment outcomes require current readback and explicit comparison before resumption.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ad647d54ea0d84ff8ede93e938810fc904286798b51cb34a64290a98421e33e1`
+- Pages created: 4
+- Pages updated: 26
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2933
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+
+Live work and report consumers now use bounded retained windows with explicit head discovery and honest freshness/completeness feedback, while protected failures remove cached server data.

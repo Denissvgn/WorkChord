@@ -4,9 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/features/workQueryFreshness.ts`._
-
-An explicit workspace registry separates live work, immutable history, editor snapshots, on-demand reference data, settings and identity ownership. Eligible active live queries refresh every 30 seconds while visible, retaining the existing failure backoff. Hidden, disabled and unauthorized queries stop polling. Automatic refresh does not replay more than five accumulated pages or replace editor/history snapshots. Explicit mutation effects limit unrelated settings traffic; unmapped mutations retain legacy work invalidation until adoption is complete.
+Unauthorized query failures remove cached server data and suppress automatic retries and polling. Live retained-window heads participate in declared mutation effects through their owning root. Visible active windows retain the foreground interval and bounded error backoff; immutable histories and editor observations remain distinct.
 
 ## Imports
 
@@ -27,24 +25,28 @@ An explicit workspace registry separates live work, immutable history, editor sn
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/workQueryFreshness.test.ts"]
-    n1["frontend/src/features/workQueryFreshness.ts"]
-    n2["frontend/src/features/workspaceQueryPolicy.test.ts"]
-    n3["frontend/src/features/workspaceQueryPolicy.ts"]
-    n0 --> n1
-    n2 --> n1
-    n2 --> n3
-    n3 --> n1
-    click n0 "../modules/workQueryFreshness.test.md"
-    click n1 "../modules/workQueryFreshness.md"
-    click n2 "../modules/workspaceQueryPolicy.test.md"
-    click n3 "../modules/workspaceQueryPolicy.md"
+    n0["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
+    n1["frontend/src/features/workQueryFreshness.test.ts"]
+    n2["frontend/src/features/workQueryFreshness.ts"]
+    n3["frontend/src/features/workspaceQueryPolicy.test.ts"]
+    n4["frontend/src/features/workspaceQueryPolicy.ts"]
+    n0 --> n2
+    n1 --> n2
+    n3 --> n2
+    n3 --> n4
+    n4 --> n2
+    click n0 "../modules/WorkRefreshStatus.md"
+    click n1 "../modules/workQueryFreshness.test.md"
+    click n2 "../modules/workQueryFreshness.md"
+    click n3 "../modules/workspaceQueryPolicy.test.md"
+    click n4 "../modules/workspaceQueryPolicy.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [WorkRefreshStatus](../modules/WorkRefreshStatus.md) |
 | Inbound | [workQueryFreshness.test](../modules/workQueryFreshness.test.md) |
 | Inbound | [workspaceQueryPolicy.test](../modules/workspaceQueryPolicy.test.md) |
 | Inbound | [workspaceQueryPolicy](../modules/workspaceQueryPolicy.md) |

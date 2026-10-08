@@ -27,19 +27,22 @@ Creates the identity/access-scoped workspace client and installs both shared wor
 flowchart LR
     n0["frontend/src/features/identity/IdentityProvider.tsx"]
     n1["frontend/src/features/planningMasters/planningNavigationInvalidation.ts"]
-    n2["frontend/src/features/workQueryFreshness.ts"]
-    n3["frontend/src/features/workspaceQueryPolicy.test.ts"]
-    n4["frontend/src/features/workspaceQueryPolicy.ts"]
-    n0 --> n4
-    n3 --> n2
-    n3 --> n4
-    n4 --> n1
-    n4 --> n2
+    n2["frontend/src/features/useLiveWindow.test.tsx"]
+    n3["frontend/src/features/workQueryFreshness.ts"]
+    n4["frontend/src/features/workspaceQueryPolicy.test.ts"]
+    n5["frontend/src/features/workspaceQueryPolicy.ts"]
+    n0 --> n5
+    n2 --> n5
+    n4 --> n3
+    n4 --> n5
+    n5 --> n1
+    n5 --> n3
     click n0 "../modules/IdentityProvider.md"
     click n1 "../modules/planningNavigationInvalidation.md"
-    click n2 "../modules/workQueryFreshness.md"
-    click n3 "../modules/workspaceQueryPolicy.test.md"
-    click n4 "../modules/workspaceQueryPolicy.md"
+    click n2 "../modules/useLiveWindow.test.md"
+    click n3 "../modules/workQueryFreshness.md"
+    click n4 "../modules/workspaceQueryPolicy.test.md"
+    click n5 "../modules/workspaceQueryPolicy.md"
 ```
 
 ### Internal neighbors
@@ -47,6 +50,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
+| Inbound | [useLiveWindow.test](../modules/useLiveWindow.test.md) |
 | Inbound | [workspaceQueryPolicy.test](../modules/workspaceQueryPolicy.test.md) |
 | Outbound | [planningNavigationInvalidation](../modules/planningNavigationInvalidation.md) |
 | Outbound | [workQueryFreshness](../modules/workQueryFreshness.md) |

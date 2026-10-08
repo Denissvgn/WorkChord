@@ -32,7 +32,7 @@ flowchart TD
 | [app_database](modules/app_database.md) | 87 | 5 |
 | [commands](modules/commands.md) | 78 | 12 |
 | [time](modules/time.md) | 74 | 0 |
-| [Button](modules/Button.md) | 73 | 0 |
+| [Button](modules/Button.md) | 74 | 0 |
 | [types_task](modules/types_task.md) | 65 | 2 |
 | [config](modules/config.md) | 63 | 1 |
 | [QueryState](modules/QueryState.md) | 63 | 2 |
@@ -128,6 +128,7 @@ flowchart TD
 | [taskEditorContract](modules/taskEditorContract.md) | 8 | 2 |
 | [planningMasters_masters](modules/planningMasters_masters.md) | 8 | 2 |
 | [planningTaskIssues](modules/planningTaskIssues.md) | 8 | 2 |
+| [useLiveWindow](modules/useLiveWindow.md) | 8 | 0 |
 | [types_label](modules/types_label.md) | 8 | 0 |
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
@@ -141,6 +142,7 @@ flowchart TD
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
 | [task_detail_service](modules/task_detail_service.md) | 7 | 4 |
 | [sql_semantics](modules/sql_semantics.md) | 7 | 0 |
+| [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 7 | 0 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
@@ -230,6 +232,7 @@ flowchart TD
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 1 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
 | [planningReturn](modules/planningReturn.md) | 4 | 0 |
+| [workQueryFreshness](modules/workQueryFreshness.md) | 4 | 0 |
 | [useAgentAccess](modules/useAgentAccess.md) | 4 | 1 |
 | [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) | 4 | 1 |
 | [routeModules](modules/routeModules.md) | 4 | 0 |
@@ -275,15 +278,15 @@ flowchart TD
 | [AdminAccessGate](modules/AdminAccessGate.md) | 3 | 2 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 4 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
-| [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 3 |
+| [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 3 | 3 |
-| [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 3 | 11 |
+| [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 3 | 13 |
 | [taskDraftStorage](modules/taskDraftStorage.md) | 3 | 1 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
-| [workQueryFreshness](modules/workQueryFreshness.md) | 3 | 0 |
+| [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
 | [resources.en](modules/resources.en.md) | 3 | 3 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
 | [releaseService](modules/releaseService.md) | 3 | 2 |
@@ -347,14 +350,14 @@ flowchart TD
 | [GanttChart](modules/GanttChart.md) | 2 | 11 |
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
 | [IterationSelector](modules/IterationSelector.md) | 2 | 4 |
-| [AppShell](modules/AppShell.md) | 2 | 6 |
+| [AppShell](modules/AppShell.md) | 2 | 7 |
 | [AppTopNav](modules/AppTopNav.md) | 2 | 9 |
 | [ContextHelp](modules/ContextHelp.md) | 2 | 8 |
 | [DocumentMetadata](modules/DocumentMetadata.md) | 2 | 1 |
 | [SidebarIterationCard](modules/SidebarIterationCard.md) | 2 | 1 |
 | [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) | 2 | 2 |
 | [ProjectForm](modules/ProjectForm.md) | 2 | 13 |
-| [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 8 |
+| [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 10 |
 | [ReleaseForm](modules/ReleaseForm.md) | 2 | 9 |
 | [AgentAccessPanel](modules/AgentAccessPanel.md) | 2 | 7 |
 | [AgentModelAdministration](modules/AgentModelAdministration.md) | 2 | 13 |
@@ -370,7 +373,7 @@ flowchart TD
 | [KanbanCard](modules/KanbanCard.md) | 2 | 2 |
 | [PersonCapacity](modules/PersonCapacity.md) | 2 | 5 |
 | [TaskDependencySelector](modules/TaskDependencySelector.md) | 2 | 5 |
-| [TaskDiscussion](modules/TaskDiscussion.md) | 2 | 6 |
+| [TaskDiscussion](modules/TaskDiscussion.md) | 2 | 8 |
 | [TaskTextEditorModal](modules/TaskTextEditorModal.md) | 2 | 5 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 2 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 2 | 7 |
@@ -386,7 +389,6 @@ flowchart TD
 | [attentionRanking](modules/attentionRanking.md) | 2 | 1 |
 | [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) | 2 | 1 |
 | [useTimeEntries](modules/useTimeEntries.md) | 2 | 2 |
-| [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 2 | 2 |
 | [pagination](modules/pagination.md) | 2 | 0 |
 | [resources.ru](modules/resources.ru.md) | 2 | 3 |
 | [schedulingDisplay](modules/schedulingDisplay.md) | 2 | 2 |
@@ -448,6 +450,7 @@ flowchart TD
 | [TaskStatusFlow](modules/TaskStatusFlow.md) | 1 | 3 |
 | [InteractiveCalendar](modules/InteractiveCalendar.md) | 1 | 1 |
 | [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) | 1 | 4 |
+| [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
 | [IterationList](modules/IterationList.md) | 1 | 9 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
@@ -462,7 +465,7 @@ flowchart TD
 | [SchedulingPassCard](modules/SchedulingPassCard.md) | 1 | 4 |
 | [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) | 1 | 0 |
 | [SystemHealthPanel](modules/SystemHealthPanel.md) | 1 | 2 |
-| [BacklogPanel](modules/BacklogPanel.md) | 1 | 5 |
+| [BacklogPanel](modules/BacklogPanel.md) | 1 | 7 |
 | [DeliveryDependencies](modules/DeliveryDependencies.md) | 1 | 7 |
 | [KanbanColumn](modules/KanbanColumn.md) | 1 | 4 |
 | [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 14 |
@@ -482,14 +485,14 @@ flowchart TD
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 13 |
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 12 |
 | [GanttPage](modules/GanttPage.md) | 1 | 21 |
-| [MyWorkPage](modules/MyWorkPage.md) | 1 | 10 |
+| [MyWorkPage](modules/MyWorkPage.md) | 1 | 12 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 17 |
 | [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 13 |
 | [PlanPage](modules/PlanPage.md) | 1 | 5 |
 | [PlanSharePage](modules/PlanSharePage.md) | 1 | 7 |
 | [ProjectsPage](modules/ProjectsPage.md) | 1 | 16 |
-| [RoadmapPage](modules/RoadmapPage.md) | 1 | 11 |
+| [RoadmapPage](modules/RoadmapPage.md) | 1 | 13 |
 | [SettingsPage](modules/SettingsPage.md) | 1 | 17 |
 | [TasksPage](modules/TasksPage.md) | 1 | 27 |
 | [deliveryMetricsService](modules/deliveryMetricsService.md) | 1 | 2 |
@@ -669,6 +672,7 @@ flowchart TD
 | [planningNavigationInvalidation.test](modules/planningNavigationInvalidation.test.md) | 0 | 2 |
 | [planningTaskIssues.test](modules/planningTaskIssues.test.md) | 0 | 2 |
 | [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) | 0 | 6 |
+| [useLiveWindow.test](modules/useLiveWindow.test.md) | 0 | 2 |
 | [workQueryFreshness.test](modules/workQueryFreshness.test.md) | 0 | 1 |
 | [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) | 0 | 2 |
 | [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) | 0 | 3 |
