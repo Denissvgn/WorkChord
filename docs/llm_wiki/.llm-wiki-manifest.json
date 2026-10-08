@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:31b0f666005bd1a504f59006083e8c087515c2e2cc0b184d5380bade397529dd",
-    "knowledge_index_hash": "sha256:dd7321b0a5e5e22a474b6ebfc641b2a89341ad780fc15bb39af616eadb04410e",
-    "surface_index_hash": "sha256:259cd9e73ba480bc0368e506f95d5ab660e41e578be83455146ba4c9347cc30a"
+    "evaluated_envelope_hash": "sha256:50f992db2246bb48afa937ff78fe6fa4b269209f52de0daeec966f294b630e33",
+    "knowledge_index_hash": "sha256:f512460576d0eee9f6654e97afb9ccfc56599c826a39935ba5ebdba345500e7e",
+    "surface_index_hash": "sha256:3c948be9cadfb4ca7f434c81d5edf2c35341e7abd72773575846c2da9155f1e8"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -18777,10 +18777,10 @@
     },
     "modules/local_baseline.md": {
       "basis": {
-        "concept_observation_hash": "sha256:8df597c9a9005880ed2abd8660590b5cb8d57cecf24db6ac5e1e0b7e27c13eed",
+        "concept_observation_hash": "sha256:cfc980ddfcb3662cc0091ae07bba999ebcb064651ee5702c161228ac71d707e4",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:7374bc0809982d2fc451fbafbb9e585e97faab2db856f9e897d73bf3aa1e175f",
+        "source_content_hash": "sha256:4d483f1458cc97183bb912655c90ab476bdbcd8ea2a2aad92fd2d3fc4def2e91",
         "source_path": "scripts/load/local_baseline.py"
       },
       "state": "known"
@@ -20417,10 +20417,10 @@
     },
     "modules/service_worksets.md": {
       "basis": {
-        "concept_observation_hash": "sha256:df6cb95b57adf6236b60472e58797c970c580b1e5951c71d7db9183168dc495d",
+        "concept_observation_hash": "sha256:dc1486abf8060205b35074015c8ce2f2b8dc8759de2822d4433bec4e2067e7e7",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f0d4ab0278ccd6294fd48531591bbb794eef74bd6735b3cf69ffd0f5bb466f50",
+        "source_content_hash": "sha256:f6b7186552bbe1d385daac0267dff251eced8078acb526c72de9c4ef551e7b22",
         "source_path": "scripts/load/service_worksets.py"
       },
       "state": "known"
@@ -20552,6 +20552,16 @@
         "scope": "module",
         "source_content_hash": "sha256:4494dd09ed2e78f97b4b4549026da322b96015181bd771b27ce75abcca2c9a28",
         "source_path": "backend/app/database_migration/source.py"
+      },
+      "state": "known"
+    },
+    "modules/source_binding.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:dfa6981adca255aa1c2ad965a0e96c257b0619ef939f1454546f6e27b3352b2b",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:c6d4e399dcc87ec64b545b5e726f428cba495f4458bb26b52e5540723db4a6f9",
+        "source_path": "scripts/load/source_binding.py"
       },
       "state": "known"
     },
@@ -21457,10 +21467,10 @@
     },
     "modules/test_local_baseline.md": {
       "basis": {
-        "concept_observation_hash": "sha256:f59c22fba254b5f0e67d35d8c487b011d96c0bd0179915abecbc3d6caa4cc2f7",
+        "concept_observation_hash": "sha256:212160b49a6ff87f21610538fc44f5cc8fafe18b6963394203eab03848606108",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:619be2d4c06b7f6ca09d4b546738ea4b2aced80a79119d5d3065bfe08e604acf",
+        "source_content_hash": "sha256:e793fab0c06254a5d022138240d015d010a0ad6958798083b0c4a7b1f27f52f5",
         "source_path": "backend/tests/qualification/test_local_baseline.py"
       },
       "state": "known"
@@ -22740,13 +22750,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:dce301e428b0fb7ec5def47dc5790aac62d385850a7877db9e77ec83dc1ff4ab",
-      "lifecycle_hash": "sha256:c91b2d25af4f62380f448455c1004a1524692265f2a5cf9b800a91af29717954",
-      "markdown_snapshot_hash": "sha256:40c8a47bff1623eaca6b6384a8a2f247c87aaa0cbeff6e8fe14cc39fe682d5f3",
-      "observation_inputs_hash": "sha256:abb39c7d9c9832284fb36d70ae0e0d03af75ae219163bd4e3882a6986076d42b",
+      "inventory_hash": "sha256:c80896ac76b917b8c42f5fe5ae93536a9a486e260a14dba4a64657932048a9c5",
+      "lifecycle_hash": "sha256:c580a1362b581f76bb6f8b57b5f6159108ab2c387aae3f0586e5b321cfec14f1",
+      "markdown_snapshot_hash": "sha256:6ae0448fd9670167d606ebcef5e9752abd25b681aa396b6a197707a986fe2aef",
+      "observation_inputs_hash": "sha256:a36d0ae029759ece068e256151cb35b77b4bd9620671926c952714949582f744",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:dc0adb039ede0f22ccbbfdac7e11f94467cd3dcdfb1baea852d13e0852bd309b"
+      "source_snapshot_hash": "sha256:d05c9f4ea38df13f8d3ca6310fd6efcada32e429d63de3718cdc2a42564e6d8f"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -34012,6 +34022,10 @@
     "modules/source.md": {
       "scope": "module",
       "source_path": "backend/app/database_migration/source.py"
+    },
+    "modules/source_binding.md": {
+      "scope": "module",
+      "source_path": "scripts/load/source_binding.py"
     },
     "modules/sql_semantics.md": {
       "scope": "module",
@@ -61068,6 +61082,7 @@
             "declaration": "—",
             "observation": "—",
             "test_boundary_code_requires_its_contracted_status": "—",
+            "test_frozen_operation_coverage_cannot_omit_slow_or_missing_reads": "—",
             "test_limits_are_observed_without_certification": "—",
             "test_malformed_http_status_is_rejected": "—",
             "test_missing_or_mismatched_evidence_is_rejected": "—",
@@ -61078,10 +61093,10 @@
           }
         }
       },
-      "hash": "sha256:619be2d4c06b7f6ca09d4b546738ea4b2aced80a79119d5d3065bfe08e604acf",
+      "hash": "sha256:e793fab0c06254a5d022138240d015d010a0ad6958798083b0c4a7b1f27f52f5",
       "language": "python",
       "module_page": "test_local_baseline",
-      "semantic_hash": "sha256:137984837216a04cc6619dfd31abc4e3678d4c2948bc2978acdd57ffbf676ae8"
+      "semantic_hash": "sha256:3555eca84bee2fb0de6a46cc49549f55422d60653f2d6d1c2b9790852bf614b5"
     },
     "backend/tests/qualification/test_routing_evidence.py": {
       "entities": [],
@@ -82477,10 +82492,10 @@
           }
         }
       },
-      "hash": "sha256:7374bc0809982d2fc451fbafbb9e585e97faab2db856f9e897d73bf3aa1e175f",
+      "hash": "sha256:4d483f1458cc97183bb912655c90ab476bdbcd8ea2a2aad92fd2d3fc4def2e91",
       "language": "python",
       "module_page": "local_baseline",
-      "semantic_hash": "sha256:ce693ae540dce6818dcc495520e2dccffdb3590b173d89efe27c1f0cec1f8744"
+      "semantic_hash": "sha256:0f56b1685c187c4ccfad0b276886d1121ccb916cee1ac10b1d183430dd97297f"
     },
     "scripts/load/qualify.py": {
       "entities": [],
@@ -82802,14 +82817,35 @@
           "description": "Owned cross-dialect service measurements, separate from HTTP and certification.",
           "functions": {
             "main": "—",
-            "run": "—"
+            "run": "—",
+            "validate_declaration": "—"
           }
         }
       },
-      "hash": "sha256:f0d4ab0278ccd6294fd48531591bbb794eef74bd6735b3cf69ffd0f5bb466f50",
+      "hash": "sha256:f6b7186552bbe1d385daac0267dff251eced8078acb526c72de9c4ef551e7b22",
       "language": "python",
       "module_page": "service_worksets",
-      "semantic_hash": "sha256:efbfbb27a63c72af429589a80bf6f2a4a2393b65b564a1d3bd933b158c8a4996"
+      "semantic_hash": "sha256:4ab7b967a1bf306f4b666b0640d98d9eb0c86d5ddaeda222909aca540cb2f654"
+    },
+    "scripts/load/source_binding.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Independently bind local measurements to the source that actually executes.",
+          "functions": {
+            "source_binding": "—",
+            "verify_binding": "—"
+          }
+        }
+      },
+      "hash": "sha256:c6d4e399dcc87ec64b545b5e726f428cba495f4458bb26b52e5540723db4a6f9",
+      "language": "python",
+      "module_page": "source_binding",
+      "semantic_hash": "sha256:d01e09574f79a39a71cdff2571d3e2548a947b2846ac5f14d0e4fc313468e8b0"
     },
     "scripts/server/export_acceptance_artifacts.py": {
       "entities": [],

@@ -39,3 +39,4 @@ Local measurements retain limits and cannot become formal certification.
 | `test_malformed_http_status_is_rejected` | `(status)` | `@pytest.mark.parametrize('status', [None, True, 200.0, '200', 99, 600])` | — |
 | `test_missing_or_mismatched_evidence_is_rejected` | `()` | — | — |
 | `test_nonfinite_observation_is_rejected` | `()` | — | — |
+| `test_frozen_operation_coverage_cannot_omit_slow_or_missing_reads` | `()` | — | — |

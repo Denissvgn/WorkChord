@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [service_worksets](../modules/service_worksets.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [delivery](../modules/delivery.md), [load_common](../modules/load_common.md), [local_baseline](../modules/local_baseline.md), and 11 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [delivery](../modules/delivery.md), [load_common](../modules/load_common.md), [local_baseline](../modules/local_baseline.md), and 12 more
 
 **Complete modules touched:**
 
@@ -18,11 +18,12 @@
 - [result](../modules/result.md)
 - [run](../modules/run.md)
 - [service_worksets](../modules/service_worksets.md)
+- [source_binding](../modules/source_binding.md)
 - [support_database](../modules/support_database.md)
 - [team_member](../modules/team_member.md)
 - [user_session](../modules/user_session.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [authority](../modules/authority.md), [capacity_service](../modules/capacity_service.md), [delivery](../modules/delivery.md), and 11 more
+**Related modules:** [app_database](../modules/app_database.md), [authority](../modules/authority.md), [capacity_service](../modules/capacity_service.md), [delivery](../modules/delivery.md), and 12 more
 
 **Complete related modules:**
 
@@ -38,6 +39,7 @@
 - [models_task](../modules/models_task.md)
 - [project_service](../modules/project_service.md)
 - [query_limits](../modules/query_limits.md)
+- [source_binding](../modules/source_binding.md)
 - [support_database](../modules/support_database.md)
 - [task_detail_service](../modules/task_detail_service.md)
 - [task_service](../modules/task_service.md)
@@ -55,21 +57,22 @@ sequenceDiagram
     participant p5 as parser.error
     participant p6 as asyncio.run
     participant p7 as run
-    participant p8 as assert_safe_test_database_url
-    participant p9 as _deployment_environment
-    participant p10 as os.environ.get
-    participant p11 as UnsafeDatabaseTarget
-    participant p12 as make_url
-    participant p13 as url.get_backend_name
-    participant p14 as TEST_DATABASE_PATTERN.fullmatch
-    participant p15 as Path(…).resolve
-    participant p16 as Path
-    participant p17 as (…).resolve
-    participant p18 as tempfile.gettempdir
-    participant p19 as database_path.is_relative_to
-    participant p20 as database_path.name.startswith
-    participant p21 as url.startswith
-    participant p22 as create_async_engine
+    participant p8 as validate_declaration
+    participant p9 as declaration.get (scripts/load/service_work…s.py:validate_declaration)
+    participant p10 as type (scripts/load/service_work…s.py:validate_declaration)
+    participant p11 as declaration.get(…).get
+    participant p12 as ValueError (scripts/load/service_work…s.py:validate_declaration)
+    participant p13 as source_binding
+    participant p14 as Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    participant p15 as Path (scripts/load/source_binding.py:source_binding)
+    participant p16 as sorted (scripts/load/source_binding.py:source_binding)
+    participant p17 as root.glob
+    participant p18 as str (scripts/load/source_binding.py:source_binding)
+    participant p19 as path.relative_to
+    participant p20 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
+    participant p21 as hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    participant p22 as path.read_bytes
+    participant p23 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
     p0-->>p1: argparse.ArgumentParser
     p0-->>p2: parser.add_argument
     p0-->>p2: parser.add_argument
@@ -79,30 +82,30 @@ sequenceDiagram
     p0-->>p5: parser.error
     p0-->>p6: asyncio.run
     p0->>p7: run
-    p7->>p8: assert_safe_test_database_url
-    p8->>p9: _deployment_environment
-    p9-->>p10: os.environ.get
-    p8->>p11: UnsafeDatabaseTarget
-    p8-->>p12: make_url
-    p8-->>p13: url.get_backend_name
-    p8->>p11: UnsafeDatabaseTarget
-    p8-->>p14: TEST_DATABASE_PATTERN.fullmatch
-    p8->>p11: UnsafeDatabaseTarget
-    p8-->>p15: Path(…).resolve
-    p8-->>p16: Path
-    p8-->>p17: (…).resolve
-    p8-->>p16: Path
-    p8-->>p18: tempfile.gettempdir
-    p8-->>p19: database_path.is_relative_to
-    p8->>p11: UnsafeDatabaseTarget
-    p8-->>p20: database_path.name.startswith
-    p8->>p11: UnsafeDatabaseTarget
-    p8->>p11: UnsafeDatabaseTarget
-    p7-->>p21: url.startswith
-    p7-->>p22: create_async_engine
+    p7->>p8: validate_declaration
+    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
+    p8-->>p10: type (scripts/load/service_work…s.py:validate_declaration)
+    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
+    p8-->>p11: declaration.get(…).get
+    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
+    p8-->>p12: ValueError (scripts/load/service_work…s.py:validate_declaration)
+    p7->>p13: source_binding
+    p13-->>p14: Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    p13-->>p15: Path (scripts/load/source_binding.py:source_binding)
+    p13-->>p16: sorted (scripts/load/source_binding.py:source_binding)
+    p13-->>p17: root.glob
+    p13-->>p17: root.glob
+    p13-->>p17: root.glob
+    p13-->>p18: str (scripts/load/source_binding.py:source_binding)
+    p13-->>p19: path.relative_to
+    p13-->>p20: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
+    p13-->>p21: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    p13-->>p22: path.read_bytes
+    p13-->>p23: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
+    p13-->>p21: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
 ```
 
-> Call sequence diagram shows 30 of 204 interactions; 174 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 254 interactions; 224 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -119,8 +122,8 @@ flowchart LR
     s8["8. parser.error"]
     s9["9. asyncio.run"]
     s10["10. run"]
-    s11["11. assert_safe_test_database_url"]
-    s12["12. _deployment_environment"]
+    s11["11. validate_declaration"]
+    s12["12. declaration.get (scripts/load/service_work…s.py:validate_declaration)"]
     s1 -. "argparse.ArgumentParser(description=__doc__)" .-> s2
     s1 -. "parser.add_argument('--database-url', required=True)" .-> s3
     s1 -. "parser.add_argument('--declaration', type=Path, required=True)" .-> s4
@@ -130,8 +133,8 @@ flowchart LR
     s1 -. "parser.error('Output already exists')" .-> s8
     s1 -. "asyncio.run(run(...))" .-> s9
     s1 -->|"run(args.database_url, json.loads(...))"| s10
-    s10 -->|"assert_safe_test_database_url(url)"| s11
-    s11 -->|"_deployment_environment(deployment_environment)"| s12
+    s10 -->|"validate_declaration(declaration)"| s11
+    s11 -. "declaration.get (scripts/load/service_work…s.py:validate_declaration)('concurrency')" .-> s12
     b0["filesystem_read args.declaration.read_text"]
     s1 -. "filesystem_read args.declaration.read_text" .-> b0
     b1["output print"]
@@ -140,12 +143,11 @@ flowchart LR
     s10 -. "mutation db.add" .-> b2
     b3["mutation db.add"]
     s10 -. "mutation db.add" .-> b3
-    b4["environment_read os.environ.get"]
-    s12 -. "environment_read os.environ.get" .-> b4
+    b4["mutation plans.append"]
+    s10 -. "mutation plans.append" .-> b4
     click s1 "../modules/service_worksets.md"
     click s10 "../modules/service_worksets.md"
-    click s11 "../modules/support_database.md"
-    click s12 "../modules/support_database.md"
+    click s11 "../modules/service_worksets.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
@@ -167,46 +169,47 @@ flowchart LR
 | `args.output.exists` | - | - | - | - |
 | `parser.error` | - | - | - | - |
 | `asyncio.run` | - | - | - | - |
-| `run` | `url`, `declaration` | `Base`, `Task`, `Task`, `Task` | `task.title`, `result[...]` | `result` |
-| `assert_safe_test_database_url` | `database_url: str \| URL`, `deployment_environment: str \| None`, `allowed_postgres_hosts: frozenset[str]`, `allowed_sqlite_root: Path \| None` | `TEST_DATABASE_PREFIX`, `TEST_DATABASE_PREFIX` | - | `url`, `url`, `url` |
-| `_deployment_environment` | `explicit: str \| None` | - | - | `...` |
+| `run` | `url`, `declaration` | `Base`, `Task`, `Task`, `Task` | `task.title`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `result` |
+| `validate_declaration` | `declaration` | - | - | - |
+| `declaration.get (scripts/load/service_work…s.py:validate_declaration)` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 74 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 75 | `parser.add_argument('--database-url', required=True)` |
-| main | parser.add_argument | 75 | `parser.add_argument('--declaration', type=Path, required=True)` |
-| main | parser.add_argument | 76 | `parser.add_argument('--output', type=Path, required=True)` |
-| main | parser.parse_args | 76 | `parser.parse_args(data not statically known)` |
-| main | args.output.exists | 77 | `args.output.exists(data not statically known)` |
-| main | parser.error | 77 | `parser.error('Output already exists')` |
-| main | asyncio.run | 78 | `asyncio.run(run(...))` |
-| main | run | 78 | `run(args.database_url, json.loads(...))` |
-| run | assert_safe_test_database_url | 25 | `assert_safe_test_database_url(url)` |
-| assert_safe_test_database_url | _deployment_environment | 49 | `_deployment_environment(deployment_environment)` |
+| main | argparse.ArgumentParser | 122 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 123 | `parser.add_argument('--database-url', required=True)` |
+| main | parser.add_argument | 123 | `parser.add_argument('--declaration', type=Path, required=True)` |
+| main | parser.add_argument | 124 | `parser.add_argument('--output', type=Path, required=True)` |
+| main | parser.parse_args | 124 | `parser.parse_args(data not statically known)` |
+| main | args.output.exists | 125 | `args.output.exists(data not statically known)` |
+| main | parser.error | 125 | `parser.error('Output already exists')` |
+| main | asyncio.run | 126 | `asyncio.run(run(...))` |
+| main | run | 126 | `run(args.database_url, json.loads(...))` |
+| run | validate_declaration | 34 | `validate_declaration(declaration)` |
+| validate_declaration | declaration.get (scripts/load/service_work…s.py:validate_declaration) | 27 | `declaration.get('concurrency')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.declaration.read_text` | `main` | 78 |
-| output | `print` | `main` | 79 |
-| mutation | `db.add` | `run` | 32 |
-| mutation | `db.add` | `run` | 36 |
-| environment_read | `os.environ.get` | `_deployment_environment` | 32 |
+| filesystem_read | `args.declaration.read_text` | `main` | 126 |
+| output | `print` | `main` | 127 |
+| mutation | `db.add` | `run` | 56 |
+| mutation | `db.add` | `run` | 60 |
+| mutation | `plans.append` | `run` | 95 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 74 |
-| unresolved_call | `main` | `parser.add_argument` | 75 |
-| unresolved_call | `main` | `parser.add_argument` | 76 |
-| unresolved_call | `main` | `parser.parse_args` | 76 |
-| unresolved_call | `main` | `args.output.exists` | 77 |
-| unresolved_call | `main` | `parser.error` | 77 |
+| external_call | `main` | `argparse.ArgumentParser` | 122 |
+| unresolved_call | `main` | `parser.add_argument` | 123 |
+| unresolved_call | `main` | `parser.add_argument` | 124 |
+| unresolved_call | `main` | `parser.parse_args` | 124 |
+| unresolved_call | `main` | `args.output.exists` | 125 |
+| unresolved_call | `main` | `parser.error` | 125 |
+| unresolved_call | `validate_declaration` | `declaration.get` | 27 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

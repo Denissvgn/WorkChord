@@ -2009,3 +2009,21 @@ Self-hosted acceptance now supports owned isolated namespaces and runtime paths 
 - Moved entities: none
 
 Strict caller qualification now preserves merge and restore observations, supports managed operator confirmation, distinguishes omitted imports, and confirms native cleanup without weakening failures.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d05c9f4ea38df13f8d3ca6310fd6efcada32e429d63de3718cdc2a42564e6d8f`
+- Pages created: 1
+- Pages updated: 10
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2977
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+Local service measurements now retain raw SQL observations and independently bind executing source; empty-fixture and frozen sample coverage checks prevent incomplete runs from passing.

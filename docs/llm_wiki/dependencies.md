@@ -413,6 +413,7 @@ flowchart TD
 | [copyText](modules/copyText.md) | 2 | 0 |
 | [graphLimitError](modules/graphLimitError.md) | 2 | 0 |
 | [selectWorkNowTasks](modules/selectWorkNowTasks.md) | 2 | 1 |
+| [source_binding](modules/source_binding.md) | 2 | 0 |
 | [topology](modules/topology.md) | 1 | 1 |
 | [execution_mode](modules/execution_mode.md) | 1 | 0 |
 | [handoff](modules/handoff.md) | 1 | 5 |
@@ -512,7 +513,7 @@ flowchart TD
 | [outboundWebhookService](modules/outboundWebhookService.md) | 1 | 2 |
 | [requestSourceService](modules/requestSourceService.md) | 1 | 2 |
 | [schedulingRulesService](modules/schedulingRulesService.md) | 1 | 2 |
-| [local_baseline](modules/local_baseline.md) | 1 | 3 |
+| [local_baseline](modules/local_baseline.md) | 1 | 4 |
 | [run](modules/run.md) | 1 | 2 |
 | [autonomy___init__](modules/autonomy___init__.md) | 0 | 1 |
 | [contracts___init__](modules/contracts___init__.md) | 0 | 1 |
@@ -758,7 +759,7 @@ flowchart TD
 | [resilience](modules/resilience.md) | 0 | 2 |
 | [seal](modules/seal.md) | 0 | 1 |
 | [seed](modules/seed.md) | 0 | 2 |
-| [service_worksets](modules/service_worksets.md) | 0 | 15 |
+| [service_worksets](modules/service_worksets.md) | 0 | 16 |
 | [export_acceptance_artifacts](modules/export_acceptance_artifacts.md) | 0 | 1 |
 | [isolated_rehearsal](modules/isolated_rehearsal.md) | 0 | 0 |
 

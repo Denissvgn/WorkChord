@@ -27,6 +27,7 @@ Summarize declared local observations without issuing capacity certification.
 | `scripts.load.common` | `QualificationInputError`, `atomic_write_json`, `sha256_file`, `utc_now_text`, `authorized_base_url` |
 | `scripts.load.result` | `latency_summary` |
 | `scripts.load.run` | `Attempt`, `Recorder` |
+| `scripts.load.source_binding` | `source_binding`, `verify_binding` |
 | `subprocess` | `subprocess` |
 | `time` | `time` |
 | `urllib.parse` | `urlsplit` |
@@ -41,19 +42,23 @@ flowchart LR
     n2["scripts/load/result.py"]
     n3["scripts/load/run.py"]
     n4["scripts/load/service_worksets.py"]
+    n5["scripts/load/source_binding.py"]
     n1 --> n0
     n1 --> n2
     n1 --> n3
+    n1 --> n5
     n2 --> n0
     n3 --> n0
     n3 --> n2
     n4 --> n0
     n4 --> n1
+    n4 --> n5
     click n0 "../modules/load_common.md"
     click n1 "../modules/local_baseline.md"
     click n2 "../modules/result.md"
     click n3 "../modules/run.md"
     click n4 "../modules/service_worksets.md"
+    click n5 "../modules/source_binding.md"
 ```
 
 ### Internal neighbors
@@ -64,6 +69,7 @@ flowchart LR
 | Outbound | [load_common](../modules/load_common.md) |
 | Outbound | [result](../modules/result.md) |
 | Outbound | [run](../modules/run.md) |
+| Outbound | [source_binding](../modules/source_binding.md) |
 
 ### External packages
 

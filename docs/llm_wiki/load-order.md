@@ -732,12 +732,13 @@ Topological module load / startup order and import-time side effects.
 725. [qualify](modules/qualify.md)
 726. [resilience](modules/resilience.md)
 727. [run](modules/run.md)
-728. [local_baseline](modules/local_baseline.md)
-729. [seal](modules/seal.md)
-730. [seed](modules/seed.md)
-731. [service_worksets](modules/service_worksets.md)
-732. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
-733. [isolated_rehearsal](modules/isolated_rehearsal.md)
+728. [seal](modules/seal.md)
+729. [seed](modules/seed.md)
+730. [source_binding](modules/source_binding.md)
+731. [local_baseline](modules/local_baseline.md)
+732. [service_worksets](modules/service_worksets.md)
+733. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
+734. [isolated_rehearsal](modules/isolated_rehearsal.md)
 
 ## Module-level side effects
 

@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 733,
+      "modules": 734,
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 2999
+    "total": 3000
   },
   "dependency_pages": {
     "count": 2,
@@ -37721,7 +37721,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 134,
+              "line": 142,
               "step": "main",
               "step_index": 1,
               "target": "args.declaration.read_text"
@@ -37729,7 +37729,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 136,
+              "line": 144,
               "step": "main",
               "step_index": 1,
               "target": "args.observations.read_text"
@@ -37737,7 +37737,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 148,
+              "line": 158,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -37746,51 +37746,9 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 121,
-              "step": "main",
-              "target": "argparse.ArgumentParser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 122,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 123,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 124,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 125,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 126,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 127,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 128,
               "step": "main",
-              "target": "parser.add_argument"
+              "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
@@ -37807,6 +37765,48 @@
             {
               "kind": "unresolved_call",
               "line": 131,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 132,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 133,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 134,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 135,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 136,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 137,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 138,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -37825,11 +37825,12 @@
         "flow": {
           "modules_touched": [
             "scripts/load/local_baseline.py",
+            "scripts/load/source_binding.py",
             "scripts/load/common.py",
             "scripts/load/run.py",
             "scripts/load/result.py"
           ],
-          "step_count": 174,
+          "step_count": 198,
           "truncated": false
         }
       },
@@ -39370,7 +39371,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 78,
+              "line": 126,
               "step": "main",
               "step_index": 1,
               "target": "args.declaration.read_text"
@@ -39378,7 +39379,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 79,
+              "line": 127,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39386,7 +39387,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 32,
+              "line": 56,
               "step": "run",
               "step_index": 10,
               "target": "db.add"
@@ -39394,56 +39395,62 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 36,
+              "line": 60,
               "step": "run",
               "step_index": 10,
               "target": "db.add"
             },
             {
               "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 32,
-              "step": "_deployment_environment",
-              "step_index": 12,
-              "target": "os.environ.get"
+              "kind": "mutation",
+              "line": 95,
+              "step": "run",
+              "step_index": 10,
+              "target": "plans.append"
             }
           ],
           "gaps": [
             {
               "kind": "external_call",
-              "line": 74,
+              "line": 122,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 75,
+              "line": 123,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 76,
+              "line": 124,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 76,
+              "line": 124,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 125,
               "step": "main",
               "target": "args.output.exists"
             },
             {
               "kind": "unresolved_call",
-              "line": 77,
+              "line": 125,
               "step": "main",
               "target": "parser.error"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "validate_declaration",
+              "target": "declaration.get"
             },
             {
               "kind": "step_limit",
@@ -39460,6 +39467,7 @@
         "flow": {
           "modules_touched": [
             "scripts/load/service_worksets.py",
+            "scripts/load/source_binding.py",
             "backend/tests/support/database.py",
             "backend/tests/support/delivery.py",
             "backend/app/models/calendar.py",
@@ -39475,7 +39483,7 @@
             "scripts/load/run.py",
             "scripts/load/result.py"
           ],
-          "step_count": 205,
+          "step_count": 255,
           "truncated": false
         }
       },
@@ -42515,6 +42523,7 @@
         "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
+        "modules/source_binding.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -68012,7 +68021,8 @@
         "modules/local_baseline.md",
         "modules/result.md",
         "modules/run.md",
-        "modules/service_worksets.md"
+        "modules/service_worksets.md",
+        "modules/source_binding.md"
       ],
       "role": "semantic",
       "source_path": "scripts/load/local_baseline.py",
@@ -72442,6 +72452,20 @@
       "role": "semantic",
       "source_path": "backend/app/database_migration/source.py",
       "title": "source Module"
+    },
+    {
+      "canonical_path": "modules/source_binding.md",
+      "id": "source_binding",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/source_binding",
+      "outgoing_internal_links": [
+        "modules/local_baseline.md",
+        "modules/service_worksets.md",
+        "modules/source_binding.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/load/source_binding.py",
+      "title": "source_binding Module"
     },
     {
       "canonical_path": "modules/sql_semantics.md",
@@ -79081,6 +79105,7 @@
         "modules/models_iteration.md",
         "modules/models_task.md",
         "modules/service_worksets.md",
+        "modules/source_binding.md",
         "modules/support_database.md"
       ],
       "role": "mixed",
@@ -88158,7 +88183,8 @@
         "modules/load_common.md",
         "modules/local_baseline.md",
         "modules/result.md",
-        "modules/run.md"
+        "modules/run.md",
+        "modules/source_binding.md"
       ],
       "role": "mixed",
       "source_path": "scripts/load/local_baseline.py",
@@ -88408,6 +88434,7 @@
         "modules/result.md",
         "modules/run.md",
         "modules/service_worksets.md",
+        "modules/source_binding.md",
         "modules/support_database.md",
         "modules/task_detail_service.md",
         "modules/task_service.md",
@@ -89096,6 +89123,7 @@
         "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
+        "modules/source_binding.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -89840,6 +89868,7 @@
         "modules/snapshotVersions.test.md",
         "modules/SortableTaskItem.md",
         "modules/source.md",
+        "modules/source_binding.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -90100,5 +90129,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:28d6324623913a9198911bfbf317f78b111db3bdafeda53623bbd2be772b9d8a"
+  "source_hash": "sha256:0f57ce836f6f3911c451ae48e445db7f88eaeaaad3f42c485f2d87129a2ec069"
 }

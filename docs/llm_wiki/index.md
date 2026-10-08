@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1519 | [Open section](#entities) |
-| Modules | 733 | [Open section](#modules) |
+| Modules | 734 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 548 | [Open section](#entry-point-flows) |
@@ -2076,6 +2076,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [snapshot_service](modules/snapshot_service.md) - Snapshot service for iteration state backups.
 - [snapshots](modules/snapshots.md) - Snapshots API router.
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
+- [source_binding](modules/source_binding.md) - Independently bind local measurements to the source that actually executes.
 - [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
 - [src_main](modules/src_main.md) - `frontend/src/main.tsx`
 - [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
