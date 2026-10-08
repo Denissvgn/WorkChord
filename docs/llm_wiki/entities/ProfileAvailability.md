@@ -30,18 +30,21 @@ Profile-owned calendar selection with a version, backfill provenance and unresol
 flowchart LR
     n0["ProfileAvailability (backend/app/models/capacity.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/commands.py"]
-    n3["backend/app/models/__init__.py"]
-    n4["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
+    n2["backend/app/models/__init__.py"]
+    n3["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
+    n4["backend/app/services/planning_input_context.py"]
+    n5["backend/tests/test_planning_input_context.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/commands.md"
-    click n3 "../modules/models___init__.md"
-    click n4 "../modules/capacity_service.md"
+    click n2 "../modules/models___init__.md"
+    click n3 "../modules/capacity_service.md"
+    click n4 "../modules/planning_input_context.md"
+    click n5 "../modules/test_planning_input_context.md"
 ```
 
 ### Summary
@@ -60,6 +63,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `CapacityService.set_calendar` | call | [capacity_service](../modules/capacity_service.md) | 1 |
+| `planning_input_context` | import | [planning_input_context](../modules/planning_input_context.md) | — |
+| `test_planning_input_context` | import | [test_planning_input_context](../modules/test_planning_input_context.md) | — |

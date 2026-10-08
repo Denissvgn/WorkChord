@@ -80,13 +80,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | update_task_comment | domain_result | 54 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 42 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 44 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 44 | `str(exc)` |
+| domain_result | HTTPException | 46 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 46 | `str(exc)` |
+| domain_result | HTTPException | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | update_task_comment | DiscussionService(…).save | 54 | `DiscussionService(db).save(task_id, data.body, data.mentions, comment_id=comment_id, expected_version=data.expected_version, deleted=data.deleted)` |
 | update_task_comment | DiscussionService | 54 | `DiscussionService(db)` |
 
@@ -98,11 +98,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
+| external_call | `domain_result` | `HTTPException` | 42 |
+| unresolved_call | `domain_result` | `exc.detail` | 42 |
+| external_call | `domain_result` | `HTTPException` | 44 |
+| external_call | `domain_result` | `HTTPException` | 46 |
+| external_call | `domain_result` | `HTTPException` | 48 |
 | unresolved_call | `update_task_comment` | `DiscussionService(db).save` | 54 |
 
 ## Behavior

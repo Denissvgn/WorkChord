@@ -46,8 +46,9 @@ flowchart LR
     n7["backend/tests/test_identity_lifecycle.py"]
     n8["backend/tests/test_managed_authority.py"]
     n9["backend/tests/test_mutation_versions.py"]
-    n10["backend/tests/test_task_domain_integrity.py"]
-    n11["backend/tests/test_work_correctness.py"]
+    n10["backend/tests/test_planning_input_context.py"]
+    n11["backend/tests/test_task_domain_integrity.py"]
+    n12["backend/tests/test_work_correctness.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -59,6 +60,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/recovery.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -69,8 +71,9 @@ flowchart LR
     click n7 "../modules/test_identity_lifecycle.md"
     click n8 "../modules/test_managed_authority.md"
     click n9 "../modules/test_mutation_versions.md"
-    click n10 "../modules/test_task_domain_integrity.md"
-    click n11 "../modules/test_work_correctness.md"
+    click n10 "../modules/test_planning_input_context.md"
+    click n11 "../modules/test_task_domain_integrity.md"
+    click n12 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -97,5 +100,6 @@ flowchart LR
 | `test_identity_lifecycle` | import | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | — |
 | `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
 | `test_mutation_versions` | import | [test_mutation_versions](../modules/test_mutation_versions.md) | — |
+| `test_planning_input_context` | import | [test_planning_input_context](../modules/test_planning_input_context.md) | — |
 | `test_task_domain_integrity` | import | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | — |
 | `test_work_correctness` | import | [test_work_correctness](../modules/test_work_correctness.md) | — |

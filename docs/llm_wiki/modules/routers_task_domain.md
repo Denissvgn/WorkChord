@@ -18,6 +18,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.delivery_metrics` | `DeliveryMetricsResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageSummary` |
+| `app.schemas.planning_inputs` | `PlanningInputContext` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
@@ -25,6 +26,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
+| `app.services.planning_input_context` | `observe_planning_input` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
@@ -33,7 +35,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query` |
 | `sqlalchemy` | `select`, `or_`, `or_` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
-| `typing` | `Annotated` |
+| `typing` | `Annotated`, `Literal` |
 
 ## Local dependency map
 
@@ -54,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (19) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -62,18 +64,19 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/routers_task_domain_DB.md) | Type alias | 22 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 23 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `planning_input_context` | *(async)* `(kind: Literal['calendar', 'project', 'iteration', 'profile', 'member', 'vacation'], resource_id: int, db: DB, creating_member: bool = False)` | `@router.get('/tasks/planning-inputs/{kind}/{resource_id}/context', response_model=PlanningInputContext)` | — |
 | `domain_result` | *(async)* `(awaitable)` | — | — |
 | `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
 | `execution_usage_summary` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), budget_amount: Decimal \| None = Query(default=None, ge=0, max_digits=18, decimal_places=6), budget_currency: str \| None = Query(default=None, pattern='^[A-Z]{3}$'))` | `@router.get('/tasks/execution-usage', response_model=ExecutionUsageSummary)` | — |

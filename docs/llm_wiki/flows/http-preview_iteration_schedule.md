@@ -81,7 +81,7 @@ sequenceDiagram
     p5-->>p17: db.info.pop
 ```
 
-> Call sequence diagram shows 30 of 188 interactions; 158 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 189 interactions; 159 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

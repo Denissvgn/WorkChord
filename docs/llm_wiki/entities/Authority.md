@@ -107,4 +107,4 @@ flowchart LR
 | `test_worker_bulk_sql_cannot_bypass_review_authority` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit` | call | [test_mutation_versions](../modules/test_mutation_versions.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

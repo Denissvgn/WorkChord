@@ -8,20 +8,22 @@ Aggregate reservations can require complete observed revisions for structural an
 
 Owns apply and rollback-only transactions. Shared planning reserves the workspace coordinator before project, iteration and task locks; iterations and tasks are acquired in ascending ID order. Each command reserves one version per affected task. Before commit, delivery changes invalidate downstream evidence and notification intents join the same transaction. Failures and previews roll back snapshots, history, revisions and outbox rows together.
 
+Shared-input commands re-resolve the complete affected scope under the planning coordinator lock. Explicit empty or partial observations cannot acquire newly affected plans; conflicting body/header revisions fail before snapshots and reservations. Profile-local capacity writes retain their own version contract while internally invalidating private plans without consuming transport revision maps.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `internal_authority`, `internal_authority`, `require_project`, `AuthorityError`, `internal_authority` |
-| `app.models.capacity` | `PlanningState`, `ProfileAvailability` |
-| `app.models.iteration` | `Iteration`, `Iteration` |
+| `app.models.capacity` | `PlanningState` |
+| `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task` |
-| `app.models.team_member` | `TeamMember`, `Vacation` |
 | `app.mutation_versions` | `require_mutation_revision` |
 | `app.runtime_telemetry` | `metrics` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.discussion_service` | `DiscussionService` |
+| `app.services.planning_input_context` | `affected_iteration_ids` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
 | `contextlib` | `asynccontextmanager` |
@@ -53,7 +55,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (76) |
+| Inbound | `backend` (78) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -62,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 84 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 85 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

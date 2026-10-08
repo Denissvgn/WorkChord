@@ -22,44 +22,44 @@ flowchart TD
 
 > These groups reach each other only from inside functions or under `TYPE_CHECKING`, so nothing is imported while they load and their order is well defined. They are listed because they are cyclic on paper, not because they need fixing.
 
-- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [delivery_dependency](modules/delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_hierarchy_service](modules/task_hierarchy_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [upgrade_service](modules/upgrade_service.md) ⇄ [services_work_metrics](modules/services_work_metrics.md)
+- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [delivery_dependency](modules/delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [planning_input_context](modules/planning_input_context.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_hierarchy_service](modules/task_hierarchy_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [upgrade_service](modules/upgrade_service.md) ⇄ [services_work_metrics](modules/services_work_metrics.md)
 
 ## Fan-in / Fan-out
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
 | [app_database](modules/app_database.md) | 87 | 5 |
-| [models_task](modules/models_task.md) | 86 | 9 |
-| [commands](modules/commands.md) | 76 | 12 |
+| [models_task](modules/models_task.md) | 87 | 9 |
+| [commands](modules/commands.md) | 78 | 12 |
 | [time](modules/time.md) | 73 | 0 |
 | [Button](modules/Button.md) | 73 | 0 |
+| [config](modules/config.md) | 63 | 1 |
 | [QueryState](modules/QueryState.md) | 62 | 2 |
-| [config](modules/config.md) | 61 | 1 |
 | [types_task](modules/types_task.md) | 61 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 59 | 1 |
 | [models_agent](modules/models_agent.md) | 58 | 5 |
+| [models_iteration](modules/models_iteration.md) | 48 | 6 |
 | [task_service](modules/task_service.md) | 48 | 17 |
-| [models_iteration](modules/models_iteration.md) | 46 | 6 |
-| [authority](modules/authority.md) | 44 | 6 |
+| [authority](modules/authority.md) | 46 | 6 |
 | [apiError](modules/apiError.md) | 44 | 0 |
-| [team_member](modules/team_member.md) | 39 | 6 |
-| [models_project](modules/models_project.md) | 37 | 9 |
+| [team_member](modules/team_member.md) | 40 | 6 |
+| [models_project](modules/models_project.md) | 38 | 9 |
 | [schemas_task](modules/schemas_task.md) | 35 | 5 |
+| [api](modules/api.md) | 35 | 2 |
 | [i18n](modules/i18n.md) | 33 | 1 |
-| [api](modules/api.md) | 33 | 2 |
 | [Input](modules/Input.md) | 29 | 0 |
 | [formatDate](modules/formatDate.md) | 29 | 1 |
 | [agent_service](modules/agent_service.md) | 28 | 13 |
+| [models_identity](modules/models_identity.md) | 27 | 2 |
 | [taskService](modules/taskService.md) | 27 | 3 |
-| [models_identity](modules/models_identity.md) | 26 | 2 |
 | [query_limits](modules/query_limits.md) | 25 | 0 |
+| [models_calendar](modules/models_calendar.md) | 24 | 2 |
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [upgrade_service](modules/upgrade_service.md) | 23 | 13 |
 | [index](modules/index.md) | 23 | 0 |
-| [models_calendar](modules/models_calendar.md) | 22 | 2 |
-| [app_main](modules/app_main.md) | 21 | 46 |
+| [app_main](modules/app_main.md) | 22 | 46 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 21 | 9 |
 | [schemas_agent](modules/schemas_agent.md) | 20 | 8 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 20 | 9 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 19 | 0 |
 | [schemas_team](modules/schemas_team.md) | 19 | 1 |
@@ -77,10 +77,10 @@ flowchart TD
 | [agent_routing](modules/agent_routing.md) | 15 | 1 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 15 | 0 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 15 | 11 |
+| [recovery](modules/recovery.md) | 14 | 3 |
 | [schemas_task_brief](modules/schemas_task_brief.md) | 14 | 0 |
 | [iteration_service](modules/iteration_service.md) | 14 | 8 |
 | [snapshot_service](modules/snapshot_service.md) | 14 | 6 |
-| [recovery](modules/recovery.md) | 13 | 3 |
 | [schemas_triage](modules/schemas_triage.md) | 13 | 3 |
 | [agent_work_service](modules/agent_work_service.md) | 13 | 20 |
 | [identity_service](modules/identity_service.md) | 13 | 7 |
@@ -93,6 +93,7 @@ flowchart TD
 | [team_service](modules/team_service.md) | 12 | 8 |
 | [identityContext](modules/identityContext.md) | 12 | 1 |
 | [savedView](modules/savedView.md) | 12 | 0 |
+| [models_outbound_webhook](modules/models_outbound_webhook.md) | 11 | 2 |
 | [runtime_telemetry](modules/runtime_telemetry.md) | 11 | 0 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 11 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 11 | 16 |
@@ -100,7 +101,6 @@ flowchart TD
 | [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [load_common](modules/load_common.md) | 11 | 1 |
-| [models_outbound_webhook](modules/models_outbound_webhook.md) | 10 | 2 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [schemas_project](modules/schemas_project.md) | 10 | 3 |
 | [security](modules/security.md) | 10 | 1 |
@@ -109,6 +109,7 @@ flowchart TD
 | [services_work_metrics](modules/services_work_metrics.md) | 10 | 8 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
+| [calendar_service](modules/calendar_service.md) | 9 | 4 |
 | [session_service](modules/session_service.md) | 9 | 9 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
@@ -122,7 +123,6 @@ flowchart TD
 | [models___init__](modules/models___init__.md) | 8 | 31 |
 | [models_time_entry](modules/models_time_entry.md) | 8 | 2 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
-| [calendar_service](modules/calendar_service.md) | 8 | 4 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
 | [planningMasters_masters](modules/planningMasters_masters.md) | 8 | 2 |
@@ -134,6 +134,7 @@ flowchart TD
 | [catalog](modules/catalog.md) | 7 | 2 |
 | [source](modules/source.md) | 7 | 5 |
 | [mcp_server](modules/mcp_server.md) | 7 | 15 |
+| [models_capacity](modules/models_capacity.md) | 7 | 1 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
 | [models_task_brief](modules/models_task_brief.md) | 7 | 2 |
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
@@ -148,8 +149,9 @@ flowchart TD
 | [models_external_link](modules/models_external_link.md) | 6 | 2 |
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
 | [task_status_log](modules/task_status_log.md) | 6 | 3 |
-| [routers_task_domain](modules/routers_task_domain.md) | 6 | 19 |
+| [routers_task_domain](modules/routers_task_domain.md) | 6 | 21 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 6 | 0 |
+| [planning_inputs](modules/planning_inputs.md) | 6 | 0 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
 | [scheduler_service](modules/scheduler_service.md) | 6 | 9 |
@@ -161,10 +163,10 @@ flowchart TD
 | [result](modules/result.md) | 6 | 1 |
 | [charter](modules/charter.md) | 5 | 2 |
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
-| [models_capacity](modules/models_capacity.md) | 5 | 1 |
 | [mutation_versions](modules/mutation_versions.md) | 5 | 2 |
 | [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 16 |
 | [agent_skill_bundle](modules/agent_skill_bundle.md) | 5 | 0 |
+| [schemas_calendar](modules/schemas_calendar.md) | 5 | 1 |
 | [schemas_request_source](modules/schemas_request_source.md) | 5 | 1 |
 | [schemas_saved_view](modules/schemas_saved_view.md) | 5 | 0 |
 | [schemas_work_metrics](modules/schemas_work_metrics.md) | 5 | 0 |
@@ -173,10 +175,12 @@ flowchart TD
 | [agent_team_setup_service](modules/agent_team_setup_service.md) | 5 | 13 |
 | [assignee_recommendation_service](modules/assignee_recommendation_service.md) | 5 | 5 |
 | [backlog_snapshot_service](modules/backlog_snapshot_service.md) | 5 | 8 |
+| [capacity_service](modules/capacity_service.md) | 5 | 6 |
 | [delivery_metrics_service](modules/delivery_metrics_service.md) | 5 | 9 |
 | [saved_view_service](modules/saved_view_service.md) | 5 | 4 |
 | [task_context_revision_service](modules/task_context_revision_service.md) | 5 | 5 |
 | [support_database](modules/support_database.md) | 5 | 0 |
+| [test_managed_authority](modules/test_managed_authority.md) | 5 | 16 |
 | [test_task_domain](modules/test_task_domain.md) | 5 | 25 |
 | [PlanReturnBar](modules/PlanReturnBar.md) | 5 | 1 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 5 | 4 |
@@ -198,18 +202,15 @@ flowchart TD
 | [models_label](modules/models_label.md) | 4 | 2 |
 | [models_plan_share](modules/models_plan_share.md) | 4 | 4 |
 | [models_system_settings](modules/models_system_settings.md) | 4 | 2 |
-| [schemas_calendar](modules/schemas_calendar.md) | 4 | 1 |
 | [schemas_external_link](modules/schemas_external_link.md) | 4 | 1 |
 | [schemas_gantt](modules/schemas_gantt.md) | 4 | 3 |
 | [schemas_github](modules/schemas_github.md) | 4 | 0 |
 | [schemas_label](modules/schemas_label.md) | 4 | 0 |
-| [planning_inputs](modules/planning_inputs.md) | 4 | 0 |
 | [schemas_release](modules/schemas_release.md) | 4 | 1 |
 | [schemas_template](modules/schemas_template.md) | 4 | 1 |
 | [schemas_time_entry](modules/schemas_time_entry.md) | 4 | 0 |
 | [agent_routing_observability](modules/agent_routing_observability.md) | 4 | 5 |
 | [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) | 4 | 1 |
-| [capacity_service](modules/capacity_service.md) | 4 | 6 |
 | [delivery_dependency_service](modules/delivery_dependency_service.md) | 4 | 5 |
 | [email_settings_service](modules/email_settings_service.md) | 4 | 5 |
 | [execution_usage_service](modules/execution_usage_service.md) | 4 | 13 |
@@ -217,7 +218,6 @@ flowchart TD
 | [label_service](modules/label_service.md) | 4 | 6 |
 | [request_source_service](modules/request_source_service.md) | 4 | 9 |
 | [time_entry_service](modules/time_entry_service.md) | 4 | 9 |
-| [test_managed_authority](modules/test_managed_authority.md) | 4 | 16 |
 | [dialogLayer](modules/dialogLayer.md) | 4 | 0 |
 | [Breadcrumbs](modules/Breadcrumbs.md) | 4 | 0 |
 | [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) | 4 | 2 |
@@ -261,6 +261,7 @@ flowchart TD
 | [discussion_service](modules/discussion_service.md) | 3 | 6 |
 | [github_status_automation_service](modules/github_status_automation_service.md) | 3 | 7 |
 | [llm_service](modules/llm_service.md) | 3 | 6 |
+| [planning_input_context](modules/planning_input_context.md) | 3 | 9 |
 | [template_service](modules/template_service.md) | 3 | 3 |
 | [delivery](modules/delivery.md) | 3 | 8 |
 | [transactions](modules/transactions.md) | 3 | 0 |
@@ -493,6 +494,7 @@ flowchart TD
 | [githubService](modules/githubService.md) | 1 | 2 |
 | [healthService](modules/healthService.md) | 1 | 0 |
 | [outboundWebhookService](modules/outboundWebhookService.md) | 1 | 2 |
+| [planningInputService](modules/planningInputService.md) | 1 | 1 |
 | [requestSourceService](modules/requestSourceService.md) | 1 | 2 |
 | [schedulingRulesService](modules/schedulingRulesService.md) | 1 | 2 |
 | [snapshotService](modules/snapshotService.md) | 1 | 1 |
@@ -579,6 +581,7 @@ flowchart TD
 | [test_mutation_versions](modules/test_mutation_versions.md) | 0 | 15 |
 | [test_native_connections](modules/test_native_connections.md) | 0 | 6 |
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
+| [test_planning_input_context](modules/test_planning_input_context.md) | 0 | 18 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
 | [test_process_roles](modules/test_process_roles.md) | 0 | 3 |
 | [test_profile_capacity](modules/test_profile_capacity.md) | 0 | 17 |
@@ -689,6 +692,7 @@ flowchart TD
 | [TeamPage](modules/TeamPage.md) | 0 | 11 |
 | [TriagePage](modules/TriagePage.md) | 0 | 33 |
 | [agentService.test](modules/agentService.test.md) | 0 | 3 |
+| [planningInputService.test](modules/planningInputService.test.md) | 0 | 2 |
 | [timeEntryService.test](modules/timeEntryService.test.md) | 0 | 1 |
 | [planning-masters.test](modules/planning-masters.test.md) | 0 | 0 |
 | [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) | 0 | 1 |

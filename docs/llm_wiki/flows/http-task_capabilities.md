@@ -85,7 +85,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_capabilities | domain_capabilities | 72 | `domain_capabilities(db)` |
+| task_capabilities | domain_capabilities | 85 | `domain_capabilities(db)` |
 | domain_capabilities | internal_authority | 56 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
 | domain_capabilities | db.scalar | 57 | `db.scalar(...)` |

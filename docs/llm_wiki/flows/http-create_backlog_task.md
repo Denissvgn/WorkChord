@@ -89,17 +89,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_backlog_task | HTTPException (backend/app/routers/task_…ain.py:create_backlog_task) | 151 | `HTTPException(422, detail=[...])` |
-| create_backlog_task | domain_result | 152 | `domain_result(...)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_backlog_task | TaskService(…).create | 152 | `TaskService(db).create(None, data.model_copy(...))` |
-| create_backlog_task | TaskService | 152 | `TaskService(db)` |
+| create_backlog_task | HTTPException (backend/app/routers/task_…ain.py:create_backlog_task) | 164 | `HTTPException(422, detail=[...])` |
+| create_backlog_task | domain_result | 165 | `domain_result(...)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 42 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 44 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 44 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 46 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 46 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| create_backlog_task | TaskService(…).create | 165 | `TaskService(db).create(None, data.model_copy(...))` |
+| create_backlog_task | TaskService | 165 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -109,13 +109,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `create_backlog_task` | `HTTPException` | 151 |
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 152 |
+| external_call | `create_backlog_task` | `HTTPException` | 164 |
+| external_call | `domain_result` | `HTTPException` | 42 |
+| unresolved_call | `domain_result` | `exc.detail` | 42 |
+| external_call | `domain_result` | `HTTPException` | 44 |
+| external_call | `domain_result` | `HTTPException` | 46 |
+| external_call | `domain_result` | `HTTPException` | 48 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 165 |
 | step_limit | `create_backlog_task` | `first 12 steps` | 0 |
 
 ## Behavior

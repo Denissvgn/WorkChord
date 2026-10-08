@@ -13,7 +13,7 @@ _Auto-generated from `PlanningInputRevisions` in `backend/app/schemas/planning_i
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `expected_revisions` | `dict[int, PositiveInt]` | `expected_revisions` | No | No | factory: `dict` | — | — | — |
+| `expected_revisions` | `dict[PositiveInt, PositiveInt]` | `expected_revisions` | No | No | factory: `dict` | max_length=500 | — | — |
 
 ## Methods
 
@@ -41,6 +41,7 @@ flowchart LR
     n14["backend/app/schemas/iteration.py"]
     n15["backend/app/schemas/project.py"]
     n16["backend/app/schemas/team.py"]
+    n17["test_body_context_limits_and_positive_keys_match_header_contract (backend/tests/test_planning_input_context.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,6 +58,7 @@ flowchart LR
     n14 --> n0
     n15 --> n0
     n16 --> n0
+    n17 --> n0
     click n0 "../modules/planning_inputs.md"
     click n2 "../modules/schemas_calendar.md"
     click n3 "../modules/schemas_calendar.md"
@@ -73,6 +75,7 @@ flowchart LR
     click n14 "../modules/schemas_iteration.md"
     click n15 "../modules/schemas_project.md"
     click n16 "../modules/schemas_team.md"
+    click n17 "../modules/test_planning_input_context.md"
 ```
 
 ### Summary
@@ -106,3 +109,4 @@ flowchart LR
 | `iteration` | import | [schemas_iteration](../modules/schemas_iteration.md) | — |
 | `project` | import | [schemas_project](../modules/schemas_project.md) | — |
 | `team` | import | [schemas_team](../modules/schemas_team.md) | — |
+| `test_body_context_limits_and_positive_keys_match_header_contract` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 2 |

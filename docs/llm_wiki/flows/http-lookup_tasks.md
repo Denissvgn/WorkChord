@@ -79,16 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| lookup_tasks | domain_result | 65 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| lookup_tasks | TaskDetailService(…).lookup | 65 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id, status=task_status, parent_id=parent_id, roots_only=roots_only)` |
-| lookup_tasks | TaskDetailService | 65 | `TaskDetailService(db)` |
+| lookup_tasks | domain_result | 78 | `domain_result(...)` |
+| domain_result | HTTPException | 42 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 44 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 44 | `str(exc)` |
+| domain_result | HTTPException | 46 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 46 | `str(exc)` |
+| domain_result | HTTPException | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| lookup_tasks | TaskDetailService(…).lookup | 78 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id, status=task_status, parent_id=parent_id, roots_only=roots_only)` |
+| lookup_tasks | TaskDetailService | 78 | `TaskDetailService(db)` |
 
 ### Boundary effects
 
@@ -98,12 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 65 |
+| external_call | `domain_result` | `HTTPException` | 42 |
+| unresolved_call | `domain_result` | `exc.detail` | 42 |
+| external_call | `domain_result` | `HTTPException` | 44 |
+| external_call | `domain_result` | `HTTPException` | 46 |
+| external_call | `domain_result` | `HTTPException` | 48 |
+| unresolved_call | `lookup_tasks` | `TaskDetailService(db).lookup` | 78 |
 
 ## Behavior
 

@@ -79,16 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| execution_usage_summary | domain_result | 57 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| execution_usage_summary | ExecutionUsageService(…).summary | 57 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency)` |
-| execution_usage_summary | ExecutionUsageService | 57 | `ExecutionUsageService(db)` |
+| execution_usage_summary | domain_result | 70 | `domain_result(...)` |
+| domain_result | HTTPException | 42 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 42 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 44 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 44 | `str(exc)` |
+| domain_result | HTTPException | 46 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 46 | `str(exc)` |
+| domain_result | HTTPException | 48 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| execution_usage_summary | ExecutionUsageService(…).summary | 70 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency)` |
+| execution_usage_summary | ExecutionUsageService | 70 | `ExecutionUsageService(db)` |
 
 ### Boundary effects
 
@@ -98,12 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `execution_usage_summary` | `ExecutionUsageService(db).summary` | 57 |
+| external_call | `domain_result` | `HTTPException` | 42 |
+| unresolved_call | `domain_result` | `exc.detail` | 42 |
+| external_call | `domain_result` | `HTTPException` | 44 |
+| external_call | `domain_result` | `HTTPException` | 46 |
+| external_call | `domain_result` | `HTTPException` | 48 |
+| unresolved_call | `execution_usage_summary` | `ExecutionUsageService(db).summary` | 70 |
 
 ## Behavior
 

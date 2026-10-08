@@ -67,7 +67,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 157 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 158 | — | — |
 
 ## Functions
 

@@ -1741,3 +1741,25 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:328ee18098d295aac9629780008da3093152951cfffe4f52d920806a971ca53a`
+- Pages created: 10
+- Pages updated: 94
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2845
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Complete initial planning-input observations now share scope resolution and authorization with atomic writes, including explicit empty scopes and profile-local availability boundaries.

@@ -34,7 +34,6 @@ flowchart LR
     n6["backend/app/services/agent_routing_policy.py"]
     n7["backend/app/services/agent_team_setup_service.py"]
     n8["backend/tests/test_agent_routing_contract.py"]
-    n0 --> n2
     n1 --> n0
     n1 --> n4
     n1 --> n5

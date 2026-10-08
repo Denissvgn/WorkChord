@@ -76,7 +76,7 @@ sequenceDiagram
     p0->>p22: lock_iterations
 ```
 
-> Call sequence diagram shows 30 of 130 interactions; 100 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 131 interactions; 101 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

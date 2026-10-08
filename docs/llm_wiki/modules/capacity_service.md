@@ -32,13 +32,13 @@ flowchart LR
     n5["backend/app/models/team_member.py"]
     n6["backend/app/routers/capacity.py"]
     n7["backend/app/services/capacity_service.py"]
-    n8["backend/tests/test_profile_capacity.py"]
-    n9["backend/tests/test_work_correctness.py"]
-    n10["scripts/load/service_worksets.py"]
+    n8["backend/tests/test_planning_input_context.py"]
+    n9["backend/tests/test_profile_capacity.py"]
+    n10["backend/tests/test_work_correctness.py"]
+    n11["scripts/load/service_worksets.py"]
     n1 --> n0
     n1 --> n3
     n1 --> n4
-    n1 --> n5
     n2 --> n4
     n4 --> n2
     n4 --> n5
@@ -60,12 +60,19 @@ flowchart LR
     n9 --> n0
     n9 --> n1
     n9 --> n2
+    n9 --> n3
     n9 --> n4
     n9 --> n5
     n9 --> n7
     n10 --> n0
+    n10 --> n1
+    n10 --> n2
     n10 --> n4
+    n10 --> n5
     n10 --> n7
+    n11 --> n0
+    n11 --> n4
+    n11 --> n7
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
     click n2 "../modules/models_calendar.md"
@@ -74,9 +81,10 @@ flowchart LR
     click n5 "../modules/team_member.md"
     click n6 "../modules/routers_capacity.md"
     click n7 "../modules/capacity_service.md"
-    click n8 "../modules/test_profile_capacity.md"
-    click n9 "../modules/test_work_correctness.md"
-    click n10 "../modules/service_worksets.md"
+    click n8 "../modules/test_planning_input_context.md"
+    click n9 "../modules/test_profile_capacity.md"
+    click n10 "../modules/test_work_correctness.md"
+    click n11 "../modules/service_worksets.md"
 ```
 
 ### Internal neighbors
@@ -84,6 +92,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [routers_capacity](../modules/routers_capacity.md) |
+| Inbound | [test_planning_input_context](../modules/test_planning_input_context.md) |
 | Inbound | [test_profile_capacity](../modules/test_profile_capacity.md) |
 | Inbound | [test_work_correctness](../modules/test_work_correctness.md) |
 | Inbound | [service_worksets](../modules/service_worksets.md) |

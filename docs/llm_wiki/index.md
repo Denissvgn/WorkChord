@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1512 | [Open section](#entities) |
-| Modules | 703 | [Open section](#modules) |
-| Workflows | 180 | [Open section](#workflows) |
+| Entities | 1515 | [Open section](#entities) |
+| Modules | 707 | [Open section](#modules) |
+| Workflows | 182 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 543 | [Open section](#entry-point-flows) |
+| Entry-point flows | 544 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -530,6 +530,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NotificationsPanelProps](entities/NotificationsPanelProps.md)
 - [OIDCLoginAttempt](entities/OIDCLoginAttempt.md)
 - [ObjectStoreAcceptance](entities/ObjectStoreAcceptance.md)
+- [ObservedPlanningInput](entities/ObservedPlanningInput.md)
 - [OpenBaoTransitClient](entities/OpenBaoTransitClient.md)
 - [OperationBuilder](entities/OperationBuilder.md)
 - [OutboundDeliveryAttemptError](entities/OutboundDeliveryAttemptError.md)
@@ -566,6 +567,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanShareTask](entities/PlanShareTask.md)
 - [PlanShareTeamMember](entities/PlanShareTeamMember.md)
 - [PlanningConflict](entities/PlanningConflict.md)
+- [PlanningInputContext](entities/PlanningInputContext.md)
+- [PlanningInputKind](entities/PlanningInputKind.md)
 - [PlanningInputRevisions](entities/PlanningInputRevisions.md)
 - [PlanningJob](entities/PlanningJob.md)
 - [PlanningMember](entities/PlanningMember.md)
@@ -1929,6 +1932,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
 - [plan_shares](modules/plan_shares.md) - Read-only iteration plan sharing API.
 - [planning-masters.test](modules/planning-masters.test.md) - `frontend/src/styles/planning-masters.test.ts`
+- [planningInputService](modules/planningInputService.md) - `frontend/src/services/planningInputService.ts`
+- [planningInputService.test](modules/planningInputService.test.md) - `frontend/src/services/planningInputService.test.ts`
 - [planningMasters_masters](modules/planningMasters_masters.md) - `frontend/src/features/planningMasters/masters.ts`
 - [planningMasters_masters.test](modules/planningMasters_masters.test.md) - `frontend/src/features/planningMasters/masters.test.ts`
 - [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) - `frontend/src/features/planningMasters/planningNavigationInvalidation.ts`
@@ -1936,6 +1941,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [planningReturn](modules/planningReturn.md) - `frontend/src/features/planningMasters/planningReturn.ts`
 - [planningTaskIssues](modules/planningTaskIssues.md) - `frontend/src/features/planningMasters/planningTaskIssues.ts`
 - [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
+- [planning_input_context](modules/planning_input_context.md) - Complete permission-safe observations for shared planning input mutations.
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
@@ -2146,6 +2152,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
+- [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
 - [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.
 - [test_postgresql_documentation](modules/test_postgresql_documentation.md) - Machine-check the pre-cutover PostgreSQL operator documentation.
@@ -2365,6 +2372,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
 - [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
 - [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
+- [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
 - [batch_update_tasks](workflows/batch_update_tasks.md) - entry: `tasks.batch_update_tasks`
 - [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`
@@ -2419,6 +2427,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
 - [workspace_member](workflows/workspace_member.md) - entry: `identity.workspace_member`
+- [wrapped](workflows/wrapped.md) - entry: `commands.wrapped`
 
 <a id="entry-point-flows"></a>
 <a id="user-flows"></a>
@@ -2675,6 +2684,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-personal_inbox](flows/http-personal_inbox.md) - entry: `personal_inbox`
 - [http-personal_notification_deliveries](flows/http-personal_notification_deliveries.md) - entry: `personal_notification_deliveries`
 - [http-plan_agent_team_reconciliation](flows/http-plan_agent_team_reconciliation.md) - entry: `plan_agent_team_reconciliation`
+- [http-planning_input_context](flows/http-planning_input_context.md) - entry: `planning_input_context`
 - [http-preview_iteration_schedule](flows/http-preview_iteration_schedule.md) - entry: `preview_iteration_schedule`
 - [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
