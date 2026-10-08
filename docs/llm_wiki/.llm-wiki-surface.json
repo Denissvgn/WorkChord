@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 699,
+      "modules": 700,
       "workflows": 180
     },
     "dependency_architecture": 2,
-    "total": 2948
+    "total": 2949
   },
   "dependency_pages": {
     "count": 2,
@@ -42076,6 +42076,7 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -44911,6 +44912,7 @@
         "modules/models___init__.md",
         "modules/recovery.md",
         "modules/snapshot_service.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_effective_deferral.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_managed_authority.md",
@@ -45206,12 +45208,12 @@
         "modules/http_authority.md",
         "modules/identity_service.md",
         "modules/routers_identity.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_human_work_queries.md",
         "modules/test_managed_authority.md",
-        "modules/test_mutation_versions.md",
-        "modules/test_profile_capacity.md"
+        "modules/test_mutation_versions.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -55857,6 +55859,7 @@
         "modules/schemas_team.md",
         "modules/snapshots.md",
         "modules/team_service.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_work_correctness.md"
       ],
       "role": "semantic",
@@ -63220,6 +63223,7 @@
         "modules/identity_service.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_managed_authority.md"
       ],
       "role": "semantic",
@@ -73338,6 +73342,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_agent_work_routing_lineage.py",
       "title": "test_agent_work_routing_lineage Module"
+    },
+    {
+      "canonical_path": "modules/test_allocation_recovery.md",
+      "id": "test_allocation_recovery",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_allocation_recovery",
+      "outgoing_internal_links": [
+        "modules/test_allocation_recovery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_allocation_recovery.py",
+      "title": "test_allocation_recovery Module"
     },
     {
       "canonical_path": "modules/test_apt_runtime.md",
@@ -87862,6 +87878,7 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -88572,6 +88589,7 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_recovery.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -88708,5 +88726,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:ac324ad2c52995c2fac8f560d4a534511cb496a877024bc33fa84adf3d36a6e9"
+  "source_hash": "sha256:b586501a44b694610129738443f343a2599f55abd458b767199fb74244896e58"
 }

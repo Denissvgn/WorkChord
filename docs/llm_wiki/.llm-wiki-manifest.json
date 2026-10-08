@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:5a98d187ab91ad50285bfd8cec533da03dbac85e7554dd3651f38a3dc7d3357e",
-    "knowledge_index_hash": "sha256:699cbe9dc29280e1cecf32cf13026e30b84c3db1402c75e9babf50afb6abc5df",
-    "surface_index_hash": "sha256:de233dc63565f1e178f85f1a62dba81991096d90d64b2bfe7c7c6c27fd98904f"
+    "evaluated_envelope_hash": "sha256:385376ed6e516e503fafccedcbab073337afcd7363fafdecaed682023df510a1",
+    "knowledge_index_hash": "sha256:2fff1c05e82e29991523e4fa04aeed8475a172bda5b94b8dcf3a99596fb473b0",
+    "surface_index_hash": "sha256:788ebeb322cc60bc15e1e44f7dcf1afcb08285819b8fdec75c4d14247beeb6e2"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -7720,7 +7720,7 @@
         "concept_observation_hash": "sha256:b3e3cec11cb9f1ba3c3f99b9825278948e9ea4ca6a24d41a8a22bf7027af86ee",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
+        "source_content_hash": "sha256:c73e45836b39e8dd45dbfca6dc341e852179b3058f560f9f7299109de70bac3f",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -7737,10 +7737,10 @@
     },
     "entities/SnapshotService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b60a07b26631c7d7d91a56638d4c1a2f57afe93ec00195cd0a4ba8dc2e9658c2",
+        "concept_observation_hash": "sha256:20320e5a1810b8201bd05e02d53a688e604781c999df5953db11a9a7b9ab98e6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
+        "source_content_hash": "sha256:c73e45836b39e8dd45dbfca6dc341e852179b3058f560f9f7299109de70bac3f",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -20290,7 +20290,7 @@
         "concept_observation_hash": "sha256:cd31e6f58cbdebbd98a14f8355070850323614fc568d57c2cbc8b45cbe29d407",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
+        "source_content_hash": "sha256:c73e45836b39e8dd45dbfca6dc341e852179b3058f560f9f7299109de70bac3f",
         "source_path": "backend/app/services/snapshot_service.py"
       },
       "state": "known"
@@ -20922,6 +20922,16 @@
         "scope": "module",
         "source_content_hash": "sha256:1955441615ddc5e529ea60ed8a630e4e89f4b85d141fd0230fb05176e3a83d39",
         "source_path": "backend/tests/test_agent_work_routing_lineage.py"
+      },
+      "state": "known"
+    },
+    "modules/test_allocation_recovery.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:72bd12ad0d93a703968665ad6071e3874142dda6a9d8d3d5dca38358b2b46846",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:d90760482c14d0316faa1a3a3ad76b40b6e70285dad7588905e886f6bb521e63",
+        "source_path": "backend/tests/test_allocation_recovery.py"
       },
       "state": "known"
     },
@@ -22320,13 +22330,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:3130d15df76d5e6fb414aa8f68705b2a418a6b306ec670e8bd6ebee4adae49bc",
-      "lifecycle_hash": "sha256:eef5aa8627be6598353bda28783aa927c69da4647df5ce565b04ddb254e0a280",
-      "markdown_snapshot_hash": "sha256:b887c35b3b6562b2620ee660ae12b6f1d0e1853f885201a86de1d7739c269270",
-      "observation_inputs_hash": "sha256:20775f035b09d1985081ff96e53dd233c3a4ac5d7f3624f31e43ef29a410d80f",
+      "inventory_hash": "sha256:57cc89531489ef20cfafa12c881ea1beb73ec60390dbf1749769769110bfbd92",
+      "lifecycle_hash": "sha256:f787d8bdcc43299bda80b3a39c1b1b581fb07d46f9d062c5d063cede15aa8786",
+      "markdown_snapshot_hash": "sha256:4f9003e0a73207214b948000695d0c823dc50b98d14660ef53411cddd9feadc1",
+      "observation_inputs_hash": "sha256:4554fac3dabf3141b0780b1635951895cbdc4d536d2aafdac08e068be49df01a",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:d4b419ad53164016791ddd43942ab0c2a9e97dc4837b536a5ecbe1def3f9c58f"
+      "source_snapshot_hash": "sha256:f5b7893e6afeefc4055d51b3c6f5d974dce8d5d355fb53e50fe27fbce03f67a0"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -33724,6 +33734,10 @@
     "modules/test_agent_work_routing_lineage.md": {
       "scope": "module",
       "source_path": "backend/tests/test_agent_work_routing_lineage.py"
+    },
+    "modules/test_allocation_recovery.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_allocation_recovery.py"
     },
     "modules/test_apt_runtime.md": {
       "scope": "module",
@@ -57788,6 +57802,7 @@
               "_get_snapshot_dir": "Get the snapshot directory for an iteration.",
               "_member_to_export": "Convert team member to export format.",
               "_payload_visible": "Historical JSON must not bypass current project visibility through an unscoped iteration.",
+              "_preflight_allocation_membership": "Inventory complete allocation references before changing recovery state.",
               "_snapshot_files": "Return validated generated snapshot files without following unsafe links.",
               "_snapshot_path": "Resolve a generated basename beneath the iteration snapshot directory.",
               "_task_to_export": "Convert task to export format recursively.",
@@ -57811,10 +57826,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d639c7e5cfc0f09c82162d5e8c85dc336d6e1b6622986523c5203df4fff3418d",
+      "hash": "sha256:c73e45836b39e8dd45dbfca6dc341e852179b3058f560f9f7299109de70bac3f",
       "language": "python",
       "module_page": "snapshot_service",
-      "semantic_hash": "sha256:8c32f41f9a362f9cbdf2cead8ab0e9605c016b16f22f4cc522cc5debf83df41c"
+      "semantic_hash": "sha256:256e61d3f528fac69c0ab2e0cf06c558b199d501fb1559a3bf01f51e47058846"
     },
     "backend/app/services/system_settings_service.py": {
       "entities": [
@@ -61346,6 +61361,31 @@
       "language": "python",
       "module_page": "test_agent_work_routing_lineage",
       "semantic_hash": "sha256:4a37db869541299da3c64fb4da679248eb4fc6c1d155e0a5fb08dab266617a1b"
+    },
+    "backend/tests/test_allocation_recovery.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Allocation membership recovery preserves durable references and rolls back failures.",
+          "functions": {
+            "capture_then_add": "—",
+            "test_extra_allocation_detaches_but_global_owner_and_profile_identity_survive": "—",
+            "test_failure_after_detach_restores_membership_and_retains_recovery_history": "—",
+            "test_incompatible_allocation_reference_rejects_before_recovery_changes": "—",
+            "test_operator_rest_restore_reconciles_exact_allocation_membership": "—",
+            "test_saved_allocation_external_reference_is_preflighted_too": "—",
+            "test_unknown_physical_allocation_reference_fails_closed": "—"
+          }
+        }
+      },
+      "hash": "sha256:d90760482c14d0316faa1a3a3ad76b40b6e70285dad7588905e886f6bb521e63",
+      "language": "python",
+      "module_page": "test_allocation_recovery",
+      "semantic_hash": "sha256:4b151448c6a6d7dc8f1e5d273b2de4eefc557adf4051af54024e9863a73170dc"
     },
     "backend/tests/test_authority_migrations.py": {
       "entities": [],

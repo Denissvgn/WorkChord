@@ -119,4 +119,4 @@ flowchart LR
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

@@ -22,6 +22,7 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
+| `_preflight_allocation_membership` | *(async)* `(iteration_id, payload, current)` | — | Inventory complete allocation references before changing recovery state. |
 | `_get_snapshot_dir` | `(iteration_id: int) -> Path` | — | Get the snapshot directory for an iteration. |
 | `_validate_reason` | `(reason: str) -> str` | — | Return a filename-safe snapshot reason or reject the caller value. |
 | `_snapshot_path` | `(iteration_id: int, filename: str, *, reject_symlink: bool = True) -> Path` | — | Resolve a generated basename beneath the iteration snapshot directory. |
@@ -87,7 +88,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [snapshot_service](../modules/snapshot_service.md) | 16 | — |
+| [snapshot_service](../modules/snapshot_service.md) | 17 | — |
 
 ### References
 
@@ -106,4 +107,4 @@ flowchart LR
 | `TaskBriefService._locked` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `reserve_task_context_revision` | call | [task_context_revision_service](../modules/task_context_revision_service.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.

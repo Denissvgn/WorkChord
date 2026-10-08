@@ -49,14 +49,14 @@ flowchart LR
     n2["backend/app/routers/identity.py"]
     n3["bind_verified_system (backend/app/services/identity_service.py)"]
     n4["IdentityService.context (backend/app/services/identity_service.py)"]
-    n5["test_target_revocation_redacts_identity_and_denies_new_edges (backend/tests/test_delivery_dependencies.py)"]
-    n6["accepted_work (backend/tests/test_delivery_metrics.py)"]
-    n7["test_scope_at_event_and_permission_isolation_are_preserved (backend/tests/test_delivery_metrics.py)"]
-    n8["test_lookup_matches_id_case_and_literal_wildcards_without_private_counts (backend/tests/test_human_work_queries.py)"]
-    n9["test_my_work_includes_nested_and_backlog_without_private_work (backend/tests/test_human_work_queries.py)"]
-    n10["test_worker_bulk_sql_cannot_bypass_review_authority (backend/tests/test_managed_authority.py)"]
-    n11["test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit (backend/tests/test_mutation_versions.py)"]
-    n12["test_absence_owner_permission_and_projection_redaction (backend/tests/test_profile_capacity.py)"]
+    n5["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
+    n6["test_target_revocation_redacts_identity_and_denies_new_edges (backend/tests/test_delivery_dependencies.py)"]
+    n7["accepted_work (backend/tests/test_delivery_metrics.py)"]
+    n8["test_scope_at_event_and_permission_isolation_are_preserved (backend/tests/test_delivery_metrics.py)"]
+    n9["test_lookup_matches_id_case_and_literal_wildcards_without_private_counts (backend/tests/test_human_work_queries.py)"]
+    n10["test_my_work_includes_nested_and_backlog_without_private_work (backend/tests/test_human_work_queries.py)"]
+    n11["test_worker_bulk_sql_cannot_bypass_review_authority (backend/tests/test_managed_authority.py)"]
+    n12["test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit (backend/tests/test_mutation_versions.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -74,14 +74,14 @@ flowchart LR
     click n2 "../modules/routers_identity.md"
     click n3 "../modules/identity_service.md"
     click n4 "../modules/identity_service.md"
-    click n5 "../modules/test_delivery_dependencies.md"
-    click n6 "../modules/test_delivery_metrics.md"
+    click n5 "../modules/test_allocation_recovery.md"
+    click n6 "../modules/test_delivery_dependencies.md"
     click n7 "../modules/test_delivery_metrics.md"
-    click n8 "../modules/test_human_work_queries.md"
+    click n8 "../modules/test_delivery_metrics.md"
     click n9 "../modules/test_human_work_queries.md"
-    click n10 "../modules/test_managed_authority.md"
-    click n11 "../modules/test_mutation_versions.md"
-    click n12 "../modules/test_profile_capacity.md"
+    click n10 "../modules/test_human_work_queries.md"
+    click n11 "../modules/test_managed_authority.md"
+    click n12 "../modules/test_mutation_versions.md"
 ```
 
 ### Summary
@@ -98,6 +98,7 @@ flowchart LR
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `bind_verified_system` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | call | [identity_service](../modules/identity_service.md) | 1 |
+| `test_operator_rest_restore_reconciles_exact_allocation_membership` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_target_revocation_redacts_identity_and_denies_new_edges` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 1 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_scope_at_event_and_permission_isolation_are_preserved` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
@@ -105,6 +106,5 @@ flowchart LR
 | `test_my_work_includes_nested_and_backlog_without_private_work` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_worker_bulk_sql_cannot_bypass_review_authority` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `test_operator_web_commands_still_require_versions_and_offline_repair_is_explicit` | call | [test_mutation_versions](../modules/test_mutation_versions.md) | 1 |
-| `test_absence_owner_permission_and_projection_redaction` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |
 
-> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.
+> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1511 | [Open section](#entities) |
-| Modules | 699 | [Open section](#modules) |
+| Modules | 700 | [Open section](#modules) |
 | Workflows | 180 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 543 | [Open section](#entry-point-flows) |
@@ -2113,6 +2113,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_allocation_recovery](modules/test_allocation_recovery.md) - Allocation membership recovery preserves durable references and rolls back failures.
 - [test_apt_runtime](modules/test_apt_runtime.md) - Runner APT preparation preserves signed sources and bounds stalled downloads.
 - [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
