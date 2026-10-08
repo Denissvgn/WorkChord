@@ -10,17 +10,30 @@ def working_today(timezone="UTC", now: datetime | None = None):
     return as_utc(now or utc_now()).astimezone(ZoneInfo(timezone or "UTC")).date()
 
 
-def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC", now=None, composite=False):
-    today = working_today(timezone, now)
-    deferred, optional = bool(task.is_deferred), bool(task.is_optional)
-    parent, seen = task.__dict__.get("parent"), {task.id}
-    while parent is not None:
-        if parent.id in seen:
+def effective_work_flags(task, *, by_id=None):
+    """Use complete ancestry for inherited work policy; unknown links fail closed."""
+    deferred = optional = False
+    current, seen = task, set()
+    while current is not None:
+        if current.id in seen:
             raise ValueError("Task ancestry contains a cycle")
-        seen.add(parent.id)
-        deferred = deferred or parent.is_deferred
-        optional = optional or parent.is_optional
-        parent = parent.__dict__.get("parent")
+        seen.add(current.id)
+        deferred = deferred or bool(current.is_deferred)
+        optional = optional or bool(current.is_optional)
+        parent_id = getattr(current, "parent_id", None)
+        if parent_id is None:
+            break
+        parent = by_id.get(parent_id) if by_id is not None else current.__dict__.get("parent")
+        if parent is None or parent.id != parent_id:
+            raise ValueError("Task ancestry is incomplete")
+        current = parent
+    return {"effective_is_deferred": deferred, "effective_is_optional": optional}
+
+
+def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC", now=None, composite=False, effective_flags=None):
+    today = working_today(timezone, now)
+    flags = effective_flags if effective_flags is not None else effective_work_flags(task)
+    deferred, optional = flags["effective_is_deferred"], flags["effective_is_optional"]
     excluded = composite or deferred or bool(getattr(task, "canceled_at", None))
     implemented = task.status in {"resolved", "closed"}
     accepted = (task.status == "closed" and getattr(task, "accepted_at", None) is not None
@@ -61,22 +74,14 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
         if task.id in parents:
             result["structural_tasks"] += 1
             continue
-        deferred, optional = task.is_deferred, task.is_optional
-        ancestor, seen = task.parent_id, {task.id}
-        while ancestor in by_id:
-            if ancestor in seen:
-                raise ValueError("Cannot calculate metrics over a task hierarchy cycle")
-            seen.add(ancestor)
-            parent = by_id[ancestor]
-            deferred = deferred or parent.is_deferred
-            optional = optional or parent.is_optional
-            ancestor = parent.parent_id
+        flags = effective_work_flags(task, by_id=by_id)
+        deferred, optional = flags["effective_is_deferred"], flags["effective_is_optional"]
         if getattr(task, "canceled_at", None):
             continue
         if deferred:
             result["deferred_tasks"] += 1
             continue
-        signals = task_signals(task, iteration_end=iteration_end, project_target=project_target, timezone=timezone, now=now)
+        signals = task_signals(task, iteration_end=iteration_end, project_target=project_target, timezone=timezone, now=now, effective_flags=flags)
         result["total_tasks"] += 1
         result["optional_tasks" if optional else "required_tasks"] += 1
         result["tasks_by_status"][task.status] = result["tasks_by_status"].get(task.status, 0) + 1

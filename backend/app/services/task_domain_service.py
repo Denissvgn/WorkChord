@@ -94,6 +94,8 @@ async def require_owner(db, profile_id, project_id):
 def action_projection(task, authority, *, dependencies_complete=True, live_assignment=False):
     """Transport-independent availability; execution commands recheck under row locks."""
     human = authority is None or authority.kind in {"human", "local"}
+    from app.services.work_metrics import effective_work_flags
+    deferred = effective_work_flags(task)["effective_is_deferred"]
     claimed = task.claimed_by is not None or live_assignment
     output = []
     permissions = {"start_manual": "execute", "resolve_manual": "execute", "block": "edit", "unblock": "edit",
@@ -115,7 +117,7 @@ def action_projection(task, authority, *, dependencies_complete=True, live_assig
                 block("agent_ownership_active", "Recover or cancel agent ownership before manual execution.")
             if task.blocked_reason:
                 block("task_blocked", task.blocked_reason)
-            if task.is_deferred:
+            if deferred:
                 block("task_deferred", "Remove deferral before executing work.")
             if action == "start_manual":
                 if task.status != "planned":
@@ -168,8 +170,16 @@ class TaskDomainService:
             assignments, runs = assignments.with_for_update(), runs.with_for_update()
         return list((await self.db.scalars(assignments)).all()), list((await self.db.scalars(runs)).all())
 
+    async def _policy_task(self, task_id):
+        from app.commands import PlanningConflict
+        from app.services.task_hierarchy_service import TaskTreeIntegrityError
+        try:
+            return await self.tasks.get_by_id(task_id)
+        except TaskTreeIntegrityError as exc:
+            raise PlanningConflict("task_ancestry_invalid", "Reload or repair this task's ancestry before executing work.") from exc
+
     async def allowed_actions(self, task_id):
-        task = await self.db.scalar(select(Task).where(Task.id == task_id))
+        task = await self._policy_task(task_id)
         if task is None:
             raise ValueError("Task not found or inaccessible")
         assignments, runs = await self.ownership(task.id)
@@ -229,9 +239,14 @@ class TaskDomainService:
 
     @atomic_command
     async def command(self, task_id: int, data: TaskActionRequest):
-        await self.tasks._lock_task_scope(task_id, target_iteration_id=data.iteration_id, expected_revisions=data.expected_revisions,
-            require_revisions=data.action in {"commit", "uncommit"})
-        task = await self.tasks.get_by_id(task_id)
+        from app.commands import PlanningConflict
+        from app.services.task_hierarchy_service import TaskTreeIntegrityError
+        try:
+            await self.tasks._lock_task_scope(task_id, target_iteration_id=data.iteration_id, expected_revisions=data.expected_revisions,
+                require_revisions=data.action in {"commit", "uncommit"})
+        except TaskTreeIntegrityError as exc:
+            raise PlanningConflict("task_ancestry_invalid", "Reload or repair this task's ancestry before executing work.") from exc
+        task = await self._policy_task(task_id)
         if task is None:
             raise ValueError("Task not found or inaccessible")
         self.tasks.ensure_expected_version(task, data.expected_version)

@@ -41,12 +41,12 @@ async def test_deferred_ancestor_prevents_manual_start_over_http(delivery_store,
             assert response.status_code == 200, response.text
             start = next(action for action in response.json()["actions"] if action["action"] == "start_manual")
             assert not start["allowed"], response.text
-            assert "deferred" in {blocker["code"] for blocker in start["blockers"]}
+            assert "task_deferred" in {blocker["code"] for blocker in start["blockers"]}
         else:
             response = await client.post(f"/api/tasks/{task_id}/commands", json={
                 "action": "start_manual", "expected_version": version, "reason": "Deferred subtree"})
             assert response.status_code == 409, response.text
-            assert response.json()["detail"]["code"] == "deferred"
+            assert response.json()["detail"]["code"] == "task_deferred"
     async with factory() as db:
         child = await db.get(Task, task_id)
         assert child.status == "planned" and child.version == version
