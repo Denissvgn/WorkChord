@@ -25,9 +25,10 @@ flowchart LR
     n4["backend/app/services/task_domain_service.py"]
     n5["backend/tests/test_delivery_dependencies.py"]
     n6["backend/tests/test_delivery_metrics.py"]
-    n7["backend/tests/test_task_domain.py"]
-    n8["backend/tests/test_task_domain_integrity.py"]
-    n9["scripts/generate_mobile_contract_fixtures.py"]
+    n7["backend/tests/test_effective_deferral.py"]
+    n8["backend/tests/test_task_domain.py"]
+    n9["backend/tests/test_task_domain_integrity.py"]
+    n10["scripts/generate_mobile_contract_fixtures.py"]
     n0 --> n3
     n0 --> n4
     n1 --> n2
@@ -39,15 +40,17 @@ flowchart LR
     n5 --> n4
     n6 --> n3
     n6 --> n4
-    n6 --> n7
-    n7 --> n0
+    n6 --> n8
     n7 --> n3
     n7 --> n4
+    n8 --> n0
     n8 --> n3
     n8 --> n4
-    n8 --> n7
-    n9 --> n2
     n9 --> n3
+    n9 --> n4
+    n9 --> n8
+    n10 --> n2
+    n10 --> n3
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_task_domain.md"
     click n2 "../modules/task_detail.md"
@@ -55,9 +58,10 @@ flowchart LR
     click n4 "../modules/task_domain_service.md"
     click n5 "../modules/test_delivery_dependencies.md"
     click n6 "../modules/test_delivery_metrics.md"
-    click n7 "../modules/test_task_domain.md"
-    click n8 "../modules/test_task_domain_integrity.md"
-    click n9 "../modules/generate_mobile_contract_fixtures.md"
+    click n7 "../modules/test_effective_deferral.md"
+    click n8 "../modules/test_task_domain.md"
+    click n9 "../modules/test_task_domain_integrity.md"
+    click n10 "../modules/generate_mobile_contract_fixtures.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +74,7 @@ flowchart LR
 | Inbound | [task_domain_service](../modules/task_domain_service.md) |
 | Inbound | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) |
 | Inbound | [test_delivery_metrics](../modules/test_delivery_metrics.md) |
+| Inbound | [test_effective_deferral](../modules/test_effective_deferral.md) |
 | Inbound | [test_task_domain](../modules/test_task_domain.md) |
 | Inbound | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) |
 | Inbound | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) |

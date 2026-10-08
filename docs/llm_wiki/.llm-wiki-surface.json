@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 698,
+      "modules": 699,
       "workflows": 180
     },
     "dependency_architecture": 2,
-    "total": 2947
+    "total": 2948
   },
   "dependency_pages": {
     "count": 2,
@@ -7353,26 +7353,10 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 205,
+              "line": 210,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "columns.insert"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 219,
-              "step": "aggregate_metrics",
-              "step_index": 9,
-              "target": "values.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 222,
-              "step": "aggregate_metrics",
-              "step_index": 9,
-              "target": "values.pop"
             },
             {
               "confidence": "unknown",
@@ -7385,7 +7369,23 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
+              "line": 227,
+              "step": "aggregate_metrics",
+              "step_index": 9,
+              "target": "values.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
               "line": 229,
+              "step": "aggregate_metrics",
+              "step_index": 9,
+              "target": "values.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 234,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "results.append"
@@ -7418,13 +7418,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 135,
               "step": "aggregate_metrics",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 131,
+              "line": 136,
               "step": "aggregate_metrics",
               "target": "_scope_conditions(authority).get"
             },
@@ -9023,7 +9023,7 @@
             "backend/app/schemas/gantt.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 77,
+          "step_count": 81,
           "truncated": false
         }
       },
@@ -16078,7 +16078,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/gantt.py"
           ],
-          "step_count": 185,
+          "step_count": 189,
           "truncated": false
         }
       },
@@ -32419,7 +32419,7 @@
             "backend/app/schemas/gantt.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 189,
+          "step_count": 193,
           "truncated": true
         }
       },
@@ -42092,6 +42092,7 @@
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
+        "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
@@ -44910,6 +44911,7 @@
         "modules/models___init__.md",
         "modules/recovery.md",
         "modules/snapshot_service.md",
+        "modules/test_effective_deferral.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_managed_authority.md",
         "modules/test_mutation_versions.md",
@@ -57550,6 +57552,7 @@
         "modules/task_status_log.md",
         "modules/task_status_service.md",
         "modules/task_timeline_service.md",
+        "modules/test_effective_deferral.md",
         "modules/test_task_pagination.md"
       ],
       "role": "semantic",
@@ -57592,8 +57595,8 @@
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
-        "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/test_effective_deferral.md",
+        "modules/test_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_domain.py",
@@ -57948,6 +57951,7 @@
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_effective_deferral.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -67619,18 +67623,7 @@
         "entities/models_outbound_webhook_OutboundWebhookEvent.md",
         "entities/models_outbound_webhook_OutboundWebhookTarget.md",
         "entities/OutboundDeliveryChannel.md",
-        "modules/app_database.md",
-        "modules/discussion_service.md",
-        "modules/models___init__.md",
-        "modules/models_outbound_webhook.md",
-        "modules/observability.md",
-        "modules/outbound_webhook_service.md",
-        "modules/test_agent_routing_observability.md",
-        "modules/test_agent_routing_rollout.md",
-        "modules/test_managed_authority.md",
-        "modules/test_postgresql_concurrency.md",
-        "modules/test_task_discussion.md",
-        "modules/time.md"
+        "modules/models_outbound_webhook.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/outbound_webhook.py",
@@ -70989,6 +70982,7 @@
         "modules/task_domain_service.md",
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_effective_deferral.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -72034,6 +72028,7 @@
         "modules/task_status_log.md",
         "modules/task_status_service.md",
         "modules/task_timeline_service.md",
+        "modules/test_effective_deferral.md",
         "modules/test_task_pagination.md",
         "modules/time.md"
       ],
@@ -73571,6 +73566,18 @@
       "role": "semantic",
       "source_path": "backend/tests/database_migration/test_documentation_boundary.py",
       "title": "test_documentation_boundary Module"
+    },
+    {
+      "canonical_path": "modules/test_effective_deferral.md",
+      "id": "test_effective_deferral",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_effective_deferral",
+      "outgoing_internal_links": [
+        "modules/test_effective_deferral.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_effective_deferral.py",
+      "title": "test_effective_deferral Module"
     },
     {
       "canonical_path": "modules/test_execution_usage.md",
@@ -78026,6 +78033,7 @@
       "mcp_uri": "llm-wiki://workflows/TaskDomainService_command",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/commands.md",
         "modules/snapshot_service.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
@@ -78250,6 +78258,7 @@
         "modules/commands.md",
         "modules/delivery_dependency_service.md",
         "modules/language_service.md",
+        "modules/services_work_metrics.md",
         "modules/snapshot_service.md",
         "modules/task_brief_service.md",
         "modules/task_status_service.md"
@@ -87875,6 +87884,7 @@
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
+        "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
@@ -88584,6 +88594,7 @@
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
+        "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
@@ -88703,5 +88714,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a21f7d905fd4108ab12b48357a435322cbed54bf14d3091b644d1ee2132ed988"
+  "source_hash": "sha256:c6debe6903e37101dbd07c69dd953f57ee0e55874019cc09a368e8527edbf80f"
 }

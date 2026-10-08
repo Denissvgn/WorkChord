@@ -160,19 +160,19 @@ flowchart LR
 | export_iteration | TeamService | 97 | `TeamService(db)` |
 | export_iteration | team_service.get_by_iteration | 98 | `team_service.get_by_iteration(iteration_id)` |
 | export_iteration | aggregate_metrics | 130 | `aggregate_metrics(db, iteration_id=iteration_id)` |
-| aggregate_metrics | db.info.get | 130 | `db.info.get('authority')` |
-| aggregate_metrics | _scope_conditions(…).get | 131 | `_scope_conditions(authority).get(Task)` |
-| aggregate_metrics | _scope_conditions | 131 | `_scope_conditions(authority)` |
+| aggregate_metrics | db.info.get | 135 | `db.info.get('authority')` |
+| aggregate_metrics | _scope_conditions(…).get | 136 | `_scope_conditions(authority).get(Task)` |
+| aggregate_metrics | _scope_conditions | 136 | `_scope_conditions(authority)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `columns.insert` | `aggregate_metrics` | 205 |
-| mutation | `values.pop` | `aggregate_metrics` | 219 |
-| mutation | `values.pop` | `aggregate_metrics` | 222 |
+| mutation | `columns.insert` | `aggregate_metrics` | 210 |
 | mutation | `values.pop` | `aggregate_metrics` | 224 |
-| mutation | `results.append` | `aggregate_metrics` | 229 |
+| mutation | `values.pop` | `aggregate_metrics` | 227 |
+| mutation | `values.pop` | `aggregate_metrics` | 229 |
+| mutation | `results.append` | `aggregate_metrics` | 234 |
 
 ### Static analysis gaps
 
@@ -182,8 +182,8 @@ flowchart LR
 | external_call | `export_iteration` | `HTTPException` | 86 |
 | unresolved_call | `export_iteration` | `task_service.get_by_iteration` | 92 |
 | unresolved_call | `export_iteration` | `team_service.get_by_iteration` | 98 |
-| unresolved_call | `aggregate_metrics` | `db.info.get` | 130 |
-| unresolved_call | `aggregate_metrics` | `_scope_conditions(authority).get` | 131 |
+| unresolved_call | `aggregate_metrics` | `db.info.get` | 135 |
+| unresolved_call | `aggregate_metrics` | `_scope_conditions(authority).get` | 136 |
 | step_limit | `export_iteration` | `first 12 steps` | 0 |
 
 ## Behavior

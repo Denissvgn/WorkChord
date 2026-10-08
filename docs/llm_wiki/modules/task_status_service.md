@@ -6,6 +6,8 @@
 
 Task status transitions, roll-up reconciliation, and status reporting.
 
+Legacy execution transitions recheck the same complete ancestry policy as canonical manual actions. Deferral prevents execution start or resolution while review-authorized rework retains its distinct non-executor attribution. Rejected transitions roll back their aggregate and recovery reservations with the owning command.
+
 Retains planned/active/resolved/closed transitions while separating actual UTC start/resolve/accept events from forecast dates and committed baselines. Acceptance requires review authority and is bound to the current task revision; automatic parent roll-up cannot fabricate independent leaf acceptance.
 
 Direct lifecycle changes retain planned, active, resolved and closed values; summaries derive status from children. Human manual starts preserve forecast dates while recording actual UTC events. Independent acceptance is checked before closure. A review-authorized rejection returns work to active without attributing execution to the reviewer and requires fresh progress for subsequent acceptance.

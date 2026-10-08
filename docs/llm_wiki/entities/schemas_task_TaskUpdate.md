@@ -126,4 +126,4 @@ flowchart LR
 | `TaskImportService.bulk_update_tasks_from_text` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskService.update` | type_reference | [task_service](../modules/task_service.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

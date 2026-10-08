@@ -41,11 +41,12 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["BacklogSnapshotService.capture (backend/app/services/backlog_snapshot_service.py)"]
     n4["SnapshotService.create_snapshot (backend/app/services/snapshot_service.py)"]
-    n5["backend/tests/test_identity_lifecycle.py"]
-    n6["backend/tests/test_managed_authority.py"]
-    n7["backend/tests/test_mutation_versions.py"]
-    n8["backend/tests/test_task_domain_integrity.py"]
-    n9["backend/tests/test_work_correctness.py"]
+    n5["backend/tests/test_effective_deferral.py"]
+    n6["backend/tests/test_identity_lifecycle.py"]
+    n7["backend/tests/test_managed_authority.py"]
+    n8["backend/tests/test_mutation_versions.py"]
+    n9["backend/tests/test_task_domain_integrity.py"]
+    n10["backend/tests/test_work_correctness.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -55,16 +56,18 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/recovery.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/backlog_snapshot_service.md"
     click n4 "../modules/snapshot_service.md"
-    click n5 "../modules/test_identity_lifecycle.md"
-    click n6 "../modules/test_managed_authority.md"
-    click n7 "../modules/test_mutation_versions.md"
-    click n8 "../modules/test_task_domain_integrity.md"
-    click n9 "../modules/test_work_correctness.md"
+    click n5 "../modules/test_effective_deferral.md"
+    click n6 "../modules/test_identity_lifecycle.md"
+    click n7 "../modules/test_managed_authority.md"
+    click n8 "../modules/test_mutation_versions.md"
+    click n9 "../modules/test_task_domain_integrity.md"
+    click n10 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -86,6 +89,7 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `BacklogSnapshotService.capture` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 | `SnapshotService.create_snapshot` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
+| `test_effective_deferral` | import | [test_effective_deferral](../modules/test_effective_deferral.md) | — |
 | `test_identity_lifecycle` | import | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | — |
 | `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
 | `test_mutation_versions` | import | [test_mutation_versions](../modules/test_mutation_versions.md) | — |

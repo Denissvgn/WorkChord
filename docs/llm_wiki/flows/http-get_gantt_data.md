@@ -35,7 +35,7 @@ sequenceDiagram
     participant p11 as attributes.instance_state
     participant p12 as bool (backend/app/routers/gantt.py:_task_to_gantt)
     participant p13 as len
-    participant p14 as task.__dict__.get (backend/app/routers/gantt.py:_task_to_gantt)
+    participant p14 as task.__dict__.get
     participant p15 as task_signals
     participant p16 as working_today
     participant p17 as as_utc(…).astimezone(…).date
@@ -46,8 +46,9 @@ sequenceDiagram
     participant p22 as utc_now
     participant p23 as datetime.now
     participant p24 as ZoneInfo
-    participant p25 as bool (backend/app/services/work_metrics.py:task_signals)
-    participant p26 as task.__dict__.get (backend/app/services/work_metrics.py:task_signals)
+    participant p25 as effective_work_flags
+    participant p26 as set (backend/app/services/work…cs.py:effective_work_flags)
+    participant p27 as ValueError
     p0->>p1: IterationService
     p0->>p2: TaskService
     p0->>p3: TeamService
@@ -64,7 +65,7 @@ sequenceDiagram
     p10-->>p11: attributes.instance_state
     p10-->>p12: bool (backend/app/routers/gantt.py:_task_to_gantt)
     p10-->>p13: len
-    p10-->>p14: task.__dict__.get (backend/app/routers/gantt.py:_task_to_gantt)
+    p10-->>p14: task.__dict__.get
     p10->>p15: task_signals
     p15->>p16: working_today
     p16-->>p17: as_utc(…).astimezone(…).date
@@ -75,12 +76,12 @@ sequenceDiagram
     p16->>p22: utc_now
     p22-->>p23: datetime.now
     p16-->>p24: ZoneInfo
-    p15-->>p25: bool (backend/app/services/work_metrics.py:task_signals)
-    p15-->>p25: bool (backend/app/services/work_metrics.py:task_signals)
-    p15-->>p26: task.__dict__.get (backend/app/services/work_metrics.py:task_signals)
+    p15->>p25: effective_work_flags
+    p25-->>p26: set (backend/app/services/work…cs.py:effective_work_flags)
+    p25-->>p27: ValueError
 ```
 
-> Call sequence diagram shows 30 of 76 interactions; 46 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 80 interactions; 50 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

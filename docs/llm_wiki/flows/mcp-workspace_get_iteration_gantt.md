@@ -89,7 +89,7 @@ sequenceDiagram
     p19-->>p26: db.flush
 ```
 
-> Call sequence diagram shows 30 of 188 interactions; 158 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 192 interactions; 162 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

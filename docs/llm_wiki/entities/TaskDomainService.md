@@ -1,6 +1,6 @@
 # TaskDomainService
 
-**Location:** `backend/app/services/task_domain_service.py:155`
+**Location:** `backend/app/services/task_domain_service.py:157`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_domain_service](../modules/task_domain_service.md)
@@ -20,6 +20,7 @@ _Auto-generated from `TaskDomainService` in `backend/app/services/task_domain_se
 | `__init__` | `(db)` | — | — |
 | `tasks` | `()` | `@property` | — |
 | `ownership` | *(async)* `(task_id, *, lock = False)` | — | — |
+| `_policy_task` | *(async)* `(task_id)` | — | — |
 | `allowed_actions` | *(async)* `(task_id)` | — | — |
 | `command` | *(async)* `(task_id: int, data: TaskActionRequest)` | `@atomic_command` | — |
 | `_cancel_execution` | *(async)* `(task, data)` | — | — |
@@ -39,10 +40,10 @@ flowchart LR
     n6["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
     n7["accepted_work (backend/tests/test_delivery_metrics.py)"]
     n8["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
-    n9["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n10["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
-    n11["test_legacy_status_route_cannot_start_deferred_work (backend/tests/test_task_domain.py)"]
-    n12["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
+    n9["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
+    n10["test_reparenting_recomputes_inherited_deferral_without_copying_the_flag (backend/tests/test_effective_deferral.py)"]
+    n11["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
+    n12["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -64,9 +65,9 @@ flowchart LR
     click n6 "../modules/test_delivery_dependencies.md"
     click n7 "../modules/test_delivery_metrics.md"
     click n8 "../modules/test_delivery_metrics.md"
-    click n9 "../modules/test_task_domain.md"
-    click n10 "../modules/test_task_domain.md"
-    click n11 "../modules/test_task_domain.md"
+    click n9 "../modules/test_effective_deferral.md"
+    click n10 "../modules/test_effective_deferral.md"
+    click n11 "../modules/test_effective_deferral.md"
     click n12 "../modules/test_task_domain.md"
 ```
 
@@ -74,7 +75,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_domain_service](../modules/task_domain_service.md) | 7 | — |
+| [task_domain_service](../modules/task_domain_service.md) | 8 | — |
 
 ### References
 
@@ -88,9 +89,9 @@ flowchart LR
 | `test_dependency_requires_current_acceptance_and_blocks_manual_start` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 2 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
 | `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
+| `test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
+| `test_reparenting_recomputes_inherited_deferral_without_copying_the_flag` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
+| `test_stale_session_cannot_ignore_a_committed_ancestor_deferral` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
-| `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
-| `test_legacy_status_route_cannot_start_deferred_work` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
-| `test_owner_and_ids_survive_commit_uncommit` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

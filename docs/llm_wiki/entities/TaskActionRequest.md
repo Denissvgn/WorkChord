@@ -53,12 +53,12 @@ flowchart LR
     n5["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
     n6["accepted_work (backend/tests/test_delivery_metrics.py)"]
     n7["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
-    n8["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n9["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
-    n10["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
-    n11["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n12["test_blocked_metrics_include_explicit_and_canceled_dependencies (backend/tests/test_task_domain_integrity.py)"]
-    n13["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n8["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
+    n9["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
+    n10["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n11["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
+    n12["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
+    n13["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -79,12 +79,12 @@ flowchart LR
     click n5 "../modules/test_delivery_dependencies.md"
     click n6 "../modules/test_delivery_metrics.md"
     click n7 "../modules/test_delivery_metrics.md"
-    click n8 "../modules/test_task_domain.md"
-    click n9 "../modules/test_task_domain.md"
+    click n8 "../modules/test_effective_deferral.md"
+    click n9 "../modules/test_effective_deferral.md"
     click n10 "../modules/test_task_domain.md"
     click n11 "../modules/test_task_domain.md"
-    click n12 "../modules/test_task_domain_integrity.md"
-    click n13 "../modules/test_task_domain_integrity.md"
+    click n12 "../modules/test_task_domain.md"
+    click n13 "../modules/test_task_domain.md"
 ```
 
 ### Summary
@@ -109,11 +109,11 @@ flowchart LR
 | `test_dependency_requires_current_acceptance_and_blocks_manual_start` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 1 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
 | `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
+| `test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 1 |
+| `test_stale_session_cannot_ignore_a_committed_ancestor_deferral` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_owner_and_ids_survive_commit_uncommit` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
-| `test_blocked_metrics_include_explicit_and_canceled_dependencies` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
-| `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

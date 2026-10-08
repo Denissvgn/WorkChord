@@ -100,4 +100,4 @@ flowchart LR
 | `DeliveryDependencyService.require_unreferenced` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `DeliveryDependencyService.validate_cycles` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.
