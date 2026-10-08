@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 import secrets
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Any, Callable, Iterable, Optional
 
 from sqlalchemy import func, or_, select, text
@@ -3823,7 +3823,7 @@ class AgentWorkService:
         )
         if task.status != expected_status:
             blockers.append(f"task_status_{expected_status}_required")
-        from app.services.work_metrics import effective_work_flags
+        from app.services.work_metrics import effective_work_flags, working_today
         if effective_work_flags(task)["effective_is_deferred"] or task.canceled_at or task.blocked_reason:
             blockers.append("task_deferred")
         if task.effort_hours is None or task.effort_hours <= 0:
@@ -3832,8 +3832,10 @@ class AgentWorkService:
             blockers.append("composite_task")
         if task.iteration_id is None or task.start_date is None or task.end_date is None:
             blockers.append("schedule_missing")
-        elif assignment.queue_class == "normal" and task.start_date > date.today():
-            blockers.append("scheduled_start_future")
+        elif assignment.queue_class == "normal":
+            project = await self.db.get(Project, task.project_id) if task.project_id is not None else None
+            if task.start_date > working_today(project.timezone if project else "UTC", now):
+                blockers.append("scheduled_start_future")
         from app.services.delivery_dependency_service import DeliveryDependencyService
         if not await DeliveryDependencyService(self.db).ready(task.id):
             blockers.append("delivery_prerequisite_unavailable")
