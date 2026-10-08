@@ -44,6 +44,8 @@ GET `/api/iterations/{id}/snapshots` lists authorized recovery points; GET the f
 
 For a restore, drain writers and inspect the source point and current iteration revision. POST `/api/iterations/{id}/snapshots/{filename}/restore` with `{"confirm":true,"expected_revision":17}` using operator credentials. A conflict requires inspection of current state. Recover active claims first. The command preserves supported IDs, writes a pre-restore point and audit, and refuses unknown identity/provenance or incompatible project scope. Compare tasks, dependencies, capacity, absences, and dates afterward. Use the pre-restore point for a scoped reversal when safe.
 
+Restore recovers the saved allocation membership. Later safe allocations are detached from that iteration while their IDs and global references remain intact. External task or live execution references must be reconciled first; unsupported allocation-reference ownership prevents restoration. Shared person profiles, calendars, availability and absences remain current.
+
 Legacy files are never silently trusted. Mount the old snapshot directory read-only at `data/snapshots/{iteration_id}` relative to the backend working directory and POST `/api/iterations/{id}/snapshots/import-legacy` with `{"dry_run":true,"limit":25}`. Review checksums, shape, and disposition; `dry_run:false` records the bounded provenance inventory. Ambiguous preview-era files are quarantined for explicit reconciliation, not offered as trustworthy restore points. Keep the original files and full backup for operator recovery.
 
 ## Backup and deployment rollback
