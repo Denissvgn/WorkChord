@@ -171,8 +171,8 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
         dates, calendar_dates = {pid: working_today(zone) for pid, zone in zone_map.items()}, {}
     fallback = case(calendar_dates, value=iterations.c.calendar_id, else_=working_today()) if calendar_dates else working_today()
     today = case(dates, value=t.c.project_id, else_=fallback) if dates else fallback
-    descendants = t.alias("metric_descendant")
-    composite = or_(t.c.is_summary, select(descendants.c.id).where(descendants.c.parent_id == t.c.id).exists())
+    parent_ids = select(t.c.parent_id).where(t.c.parent_id.is_not(None)).distinct().subquery("metric_parent_ids")
+    composite = or_(t.c.is_summary, parent_ids.c.parent_id.is_not(None))
     leaf = ~composite
     included = and_(leaf, ~tree.c.deferred, t.c.canceled_at.is_(None))
     required = and_(included, ~tree.c.optional)
@@ -209,7 +209,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))
     validation = [visible_count.label("_visible"), reached_count.label("_reachable")]
-    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
+    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
     if task_ids is not None:
         query = query.where(t.c.id.in_(task_ids))
     if grouping is not None:
