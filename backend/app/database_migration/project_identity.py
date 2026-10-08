@@ -2,8 +2,11 @@
 
 from datetime import UTC, datetime
 import json
+import sqlite3
+from urllib.parse import quote
 
-from sqlalchemy import MetaData, String, Table, cast, func, inspect, select, text
+from sqlalchemy import MetaData, String, Table, cast, create_engine, func, inspect, select, text
+from sqlalchemy.pool import NullPool
 
 
 class ProjectIdentityError(RuntimeError):
@@ -166,3 +169,15 @@ def inspect_project_identity(connection, *, max_history_rows=10000, max_history_
 def project_allocation_floor(connection):
     """Require identity qualification before returning a safe allocation floor."""
     return inspect_project_identity(connection)["allocation_floor"]
+
+
+def sqlite_project_allocation_floor(path):
+    """Qualify one immutable SQLite source through a separately owned read-only handle."""
+    uri = f"file:{quote(str(path.resolve(strict=True)), safe='/')}?mode=ro"
+    engine = create_engine("sqlite://", creator=lambda: sqlite3.connect(uri, uri=True), poolclass=NullPool)
+    try:
+        with engine.connect() as connection:
+            connection.exec_driver_sql("PRAGMA query_only=ON")
+            return project_allocation_floor(connection)
+    finally:
+        engine.dispose()

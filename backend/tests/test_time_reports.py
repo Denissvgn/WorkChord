@@ -42,6 +42,88 @@ async def test_deleted_project_time_is_not_visible_to_replacement_manager(delive
         assert replacement.id != original_id
 
 
+async def test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope(delivery_store, monkeypatch, tmp_path):
+    import sqlite3
+    from sqlalchemy import create_engine, select
+    from app.config import get_settings
+    from app.models.project import Project
+    from app.models.iteration import Iteration
+    from app.models.time_entry import TimeEntry, TimeEntryRevision
+    from app.schemas.project import ProjectCreate
+    from app.schemas.iteration import IterationCreate
+    from app.schemas.time_entry import TimeEntryCorrection
+    from app.services.project_service import ProjectService
+    from app.services.iteration_service import IterationService
+
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        author, manager_id = await prepare(db, scenario, monkeypatch)
+        owner = Authority(author.principal_id, "human", workspace_role="owner")
+        db.info["authority"] = owner
+        original = await ProjectService(db).create(ProjectCreate(name="Original recording scope"))
+        original_id = original.id
+        calendar_id = (await db.get(Iteration, scenario.iterations[0])).calendar_id
+        original_iteration = await IterationService(db).create(IterationCreate(name="Original plan",
+            calendar_id=calendar_id, project_id=original_id, start_date=START, end_date=END))
+        task = await TaskService(db).create(original_iteration.id, TaskCreate(
+            title="Private original task label", project_id=original_id))
+        ledger = TimeEntryService(db)
+        row = await ledger.create(entry_data(scenario).model_copy(update={
+            "project_id": original_id, "task_id": task.id, "note": "Private retained note", "minutes": 90}))
+        corrected = await ledger.correct(row["id"], TimeEntryCorrection(work_date=START, timezone="UTC",
+            minutes=95, note="Private corrected note", expected_version=1, reason="Author correction"))
+        before_history = (await ledger.history(row["id"]))["items"]
+        assert (await ledger.get(row["id"])).principal_id == author.principal_id
+        db.info.pop("authority")
+        monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local"); get_settings.cache_clear()
+        assert await ProjectService(db).delete(original_id, detach_tasks=True) == "deleted"
+        monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed"); get_settings.cache_clear()
+        db.info["authority"] = owner
+        replacement = await ProjectService(db).create(ProjectCreate(name="Replacement scope"))
+        replacement_id = replacement.id
+        replacement_iteration = await IterationService(db).create(IterationCreate(name="Replacement plan",
+            calendar_id=calendar_id, project_id=replacement_id, start_date=START, end_date=END))
+        await TaskService(db).create(replacement_iteration.id, TaskCreate(title="Replacement task", project_id=replacement_id))
+        assert replacement_id > original_id
+        for read in [ledger.get(row["id"]), ledger.history(row["id"]), ledger.correct(row["id"],
+            TimeEntryCorrection(work_date=START, timezone="UTC", minutes=96, expected_version=2, reason="Unavailable original scope"))]:
+            with pytest.raises(LookupError, match="Project not found"):
+                await read
+        db.info["authority"] = Authority(manager_id, "human", projects={replacement_id: "manager"})
+        with pytest.raises(LookupError):
+            await ledger.get(row["id"])
+        assert (await ledger.list())["items"] == []
+        report = await TimeReportService(db).page(replacement_id, START, END, scope="project")
+        exported = await TimeReportService(db).export(replacement_id, START, END, scope="project")
+        assert report["totals"]["recorded_minutes"] is None
+        assert "Private original task label" not in repr(report) + exported
+        assert "Private corrected note" not in repr(report) + exported
+        with pytest.raises(AuthorityError, match="Only authors"):
+            await TimeReportService(db).export(replacement_id, START, END, scope="project", kind="entries")
+        from app.authority import internal_authority
+        with internal_authority(db):
+            retained = await db.get(TimeEntry, row["id"], populate_existing=True)
+            assert ledger.serialize(retained) == corrected
+            history = (await db.scalars(select(TimeEntryRevision).where(TimeEntryRevision.entry_id == row["id"]).order_by(TimeEntryRevision.version))).all()
+            assert [record.note for record in history] == [record["note"] for record in before_history]
+        await db.commit()
+
+    engine = factory.kw["bind"]
+    if engine.dialect.name == "sqlite":
+        restored = tmp_path / "restored-recording-scope.db"
+        with sqlite3.connect(engine.url.database) as source, sqlite3.connect(restored) as target:
+            source.backup(target)
+        clone = create_engine(f"sqlite:///{restored}")
+        try:
+            with clone.begin() as connection:
+                record = connection.execute(select(TimeEntry.__table__)).mappings().one()
+                assert record["project_id"] == original_id and record["note"] == "Private corrected note"
+                inserted = connection.execute(Project.__table__.insert().values(name="Restored new scope"))
+                assert inserted.inserted_primary_key[0] > replacement_id
+        finally:
+            clone.dispose()
+
+
 async def test_personal_and_manager_totals_do_not_expose_private_records(delivery_store, monkeypatch):
     factory, scenario, _ = delivery_store
     async with factory() as db:
