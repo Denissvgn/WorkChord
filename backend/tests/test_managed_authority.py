@@ -59,6 +59,31 @@ def client(token=None, **headers):
         cookies={"workchord_session": token} if token else {}, headers=headers)
 
 
+async def test_workspace_owner_deletes_empty_project_with_retained_audit(managed_store):
+    from app.models.identity import CommandAudit
+    from app.models.project import Project
+
+    factory, _, tokens, principal_ids = managed_store
+    async with factory() as db:
+        db.add(WorkspaceMembership(principal_id=principal_ids[0], role="owner"))
+        await db.commit()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),
+        base_url="https://test", cookies={"workchord_session": tokens[0]},
+        headers={"X-CSRF-Token": "csrf-0", "Origin": "https://test"}) as owner:
+        created = await owner.post("/api/projects", json={"name": "Empty project"})
+        assert created.status_code == 201, created.text
+        project_id = created.json()["id"]
+        deleted = await owner.delete(f"/api/projects/{project_id}", headers={"X-Correlation-ID": "empty-project-deletion"})
+        assert deleted.status_code == 200, deleted.text
+    async with factory() as db:
+        assert await db.get(Project, project_id) is None
+        audits = (await db.scalars(select(CommandAudit).where(
+            CommandAudit.action.like("projects:%"), CommandAudit.correlation_id == "empty-project-deletion"))).all()
+        assert audits
+        assert all(row.principal_id == principal_ids[0] and row.project_id is None for row in audits)
+        assert any(row.details.get("entity_id") == project_id for row in audits)
+
+
 async def test_managed_mode_rejects_missing_forged_and_conflicting_identity(managed_store):
     _, scenario, tokens, _ = managed_store
     async with client() as anonymous:

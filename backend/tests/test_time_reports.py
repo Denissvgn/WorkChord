@@ -14,6 +14,34 @@ from tests.test_time_entries import prepare, entry_data, isolated_time_settings
 START, END = date(2026, 10, 1), date(2026, 10, 31)
 
 
+async def test_deleted_project_time_is_not_visible_to_replacement_manager(delivery_store, monkeypatch):
+    from app.config import get_settings
+    from app.schemas.project import ProjectCreate
+    from app.services.project_service import ProjectService
+
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        author, manager_id = await prepare(db, scenario, monkeypatch)
+        db.info["authority"] = Authority(author.principal_id, "human", workspace_role="owner")
+        original = await ProjectService(db).create(ProjectCreate(name="Original recording scope"))
+        original_id = original.id
+        await TimeEntryService(db).create(entry_data(scenario).model_copy(update={
+            "project_id": original_id, "task_id": None, "minutes": 90}))
+        # Isolate retained scope from the separately tested authenticated audit path.
+        db.info.pop("authority")
+        monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+        get_settings.cache_clear()
+        assert await ProjectService(db).delete(original_id) == "deleted"
+        monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+        get_settings.cache_clear()
+        db.info["authority"] = Authority(author.principal_id, "human", workspace_role="owner")
+        replacement = await ProjectService(db).create(ProjectCreate(name="Unrelated replacement"))
+        db.info["authority"] = Authority(manager_id, "human", projects={replacement.id: "manager"})
+        report = await TimeReportService(db).page(replacement.id, START, END, scope="project")
+        assert report["totals"]["recorded_minutes"] is None, (original_id, replacement.id, report)
+        assert replacement.id != original_id
+
+
 async def test_personal_and_manager_totals_do_not_expose_private_records(delivery_store, monkeypatch):
     factory, scenario, _ = delivery_store
     async with factory() as db:
