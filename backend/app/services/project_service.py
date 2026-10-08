@@ -467,6 +467,7 @@ class ProjectService:
 
         project = Project(
             name=data.name,
+            timezone=data.timezone,
             description=data.description,
             status=self._enum_value(data.status),
             health=self._enum_value(data.health),
