@@ -2067,3 +2067,21 @@ Canonical SQL metrics now join one grouped structural-parent relation, removing 
 - Surface policy updated: no
 
 Integrated local performance qualification now records exact declared clients, bounded HTTP polling, contention/readback recovery and native source/toolchain identities while keeping HTTP and service datasets distinct.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3faea8a9479ea79da2b5f3d0a4f2066299b1aadad3773e53c234fb7e2e6000a0`
+- Pages created: 0
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2974
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+Database transfer now preserves deleted-row allocation high-water marks through sequence repair and final reconciliation; installed-wheel coverage includes private corrections and deleted task recording identities.

@@ -21,9 +21,10 @@ Real PostgreSQL loader and fail-closed reconciliation tests.
 | `app.models.delivery_dependency` | `DeliveryDependency`, `DeliveryDependency` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone`, `Project`, `Project` |
+| `app.models.recovery` | `TaskDeletionFence`, `TaskDeletionFence` |
 | `app.models.system_settings` | `SystemSetting` |
 | `app.models.task` | `Task` |
-| `app.models.time_entry` | `TimeEntry` |
+| `app.models.time_entry` | `TimeEntry`, `TimeEntry`, `TimeEntry` |
 | `app.models.user_session` | `UserSession` |
 | `app.services.upgrade_service` | `bootstrap_database_schema`, `database_configuration` |
 | `concurrent.futures` | `ThreadPoolExecutor` |
@@ -59,7 +60,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (15) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -67,15 +68,16 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `_source_artifacts` | `(tmp_path: Path, configure_database, *, include_delivery_dependencies = False, include_retained_project_identity = False) -> tuple[Path, Path, str]` | — | — |
+| `_source_artifacts` | `(tmp_path: Path, configure_database, *, include_delivery_dependencies = False, include_retained_project_identity = False, include_deleted_task_allocation = False) -> tuple[Path, Path, str]` | — | — |
 | `test_loader_rejects_concurrent_attempt_for_the_same_target` | `(tmp_path: Path, postgres_database, configure_database, monkeypatch: pytest.MonkeyPatch) -> None` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_loader_is_idempotent_and_gate_opens_only_after_final_reconciliation` | `(tmp_path: Path, postgres_database, configure_database) -> None` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_typed_delivery_targets_survive_source_transfer` | `(tmp_path, postgres_database, configure_database)` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_transfer_preserves_deleted_project_allocation_progress_and_private_ledger` | `(tmp_path, postgres_database, configure_database)` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_transfer_rejects_a_misrepresented_allocation_floor_before_target_writes` | `(tmp_path, postgres_database, configure_database)` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
+| `test_transfer_retains_deleted_task_allocation_and_private_recording_scope` | `(tmp_path, postgres_database, configure_database)` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |

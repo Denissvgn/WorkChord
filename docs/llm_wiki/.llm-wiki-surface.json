@@ -36702,7 +36702,7 @@
             "backend/app/services/github_status_automation_service.py",
             "backend/app/services/system_settings_service.py"
           ],
-          "step_count": 1283,
+          "step_count": 1306,
           "truncated": true
         }
       },
@@ -37490,55 +37490,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 664,
+              "line": 695,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 651,
+              "line": 682,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 652,
+              "line": 683,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 653,
+              "line": 684,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 658,
+              "line": 689,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 659,
+              "line": 690,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "external_call",
-              "line": 667,
+              "line": 698,
               "step": "main",
               "target": "SystemExit"
             },
             {
               "kind": "external_call",
-              "line": 611,
+              "line": 642,
               "step": "_coordinate",
               "target": "tempfile.TemporaryDirectory"
             },
             {
               "kind": "unresolved_call",
-              "line": 612,
+              "line": 643,
               "step": "_coordinate",
               "target": "Path(temporary).resolve"
             },
@@ -37593,7 +37593,7 @@
             "backend/app/database_migration/transfer.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 1561,
+          "step_count": 1625,
           "truncated": true
         }
       },
@@ -50956,6 +50956,7 @@
       "mcp_uri": "llm-wiki://entities/models_time_entry_TimeEntry",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
         "modules/test_postgresql_transfer.md",
@@ -58565,10 +58566,12 @@
       "outgoing_internal_links": [
         "modules/app_database.md",
         "modules/delivery_observation.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/recovery.md",
         "modules/task_recovery_service.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_postgresql_transfer.md",
         "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
@@ -60099,6 +60102,7 @@
       "mcp_uri": "llm-wiki://entities/TimeEntryRevision",
       "outgoing_internal_links": [
         "modules/app_database.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
         "modules/test_project_identity.md",
@@ -68689,6 +68693,7 @@
         "entities/models_time_entry_TimeEntry.md",
         "entities/TimeEntryRevision.md",
         "modules/app_database.md",
+        "modules/installed_wheel_postgresql_qualification.md",
         "modules/models___init__.md",
         "modules/models_time_entry.md",
         "modules/test_postgresql_transfer.md",
@@ -75343,7 +75348,9 @@
       "mcp_uri": "llm-wiki://modules/test_transfer_catalog",
       "outgoing_internal_links": [
         "modules/catalog.md",
-        "modules/test_transfer_catalog.md"
+        "modules/source.md",
+        "modules/test_transfer_catalog.md",
+        "modules/transfer.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/database_migration/test_transfer_catalog.py",
@@ -88203,7 +88210,9 @@
         "modules/models_iteration.md",
         "modules/models_project.md",
         "modules/models_task.md",
+        "modules/models_time_entry.md",
         "modules/project_identity.md",
+        "modules/recovery.md",
         "modules/saved_view_service.md",
         "modules/source.md",
         "modules/system_settings_service.md",
@@ -90185,5 +90194,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:be0b6bd1e827842a87ea454c585bd53007954051ea13c6d06ee59b385f8e43e2"
+  "source_hash": "sha256:6e058dff910d4346a90775370d3656c2b463389c1f999c468f3da6d5ae6e8dc1"
 }

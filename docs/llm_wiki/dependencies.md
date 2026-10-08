@@ -70,6 +70,7 @@ flowchart TD
 | [toast](modules/toast.md) | 18 | 0 |
 | [teamService](modules/teamService.md) | 18 | 3 |
 | [iterationService](modules/iterationService.md) | 17 | 3 |
+| [recovery](modules/recovery.md) | 16 | 3 |
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 16 | 0 |
 | [schemas_common](modules/schemas_common.md) | 16 | 0 |
 | [language_service](modules/language_service.md) | 16 | 2 |
@@ -80,7 +81,6 @@ flowchart TD
 | [iteration_service](modules/iteration_service.md) | 15 | 8 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 15 | 11 |
 | [snapshot_service](modules/snapshot_service.md) | 15 | 6 |
-| [recovery](modules/recovery.md) | 14 | 3 |
 | [schemas_task_brief](modules/schemas_task_brief.md) | 14 | 0 |
 | [agent_work_service](modules/agent_work_service.md) | 14 | 20 |
 | [team_service](modules/team_service.md) | 14 | 8 |
@@ -111,6 +111,7 @@ flowchart TD
 | [task_brief_service](modules/task_brief_service.md) | 10 | 5 |
 | [url_policy](modules/url_policy.md) | 10 | 1 |
 | [useAdminAccess](modules/useAdminAccess.md) | 10 | 2 |
+| [models_time_entry](modules/models_time_entry.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
 | [calendar_service](modules/calendar_service.md) | 9 | 4 |
 | [session_service](modules/session_service.md) | 9 | 9 |
@@ -121,9 +122,9 @@ flowchart TD
 | [types_project](modules/types_project.md) | 9 | 3 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
+| [source](modules/source.md) | 8 | 5 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
 | [models___init__](modules/models___init__.md) | 8 | 31 |
-| [models_time_entry](modules/models_time_entry.md) | 8 | 2 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
@@ -138,7 +139,6 @@ flowchart TD
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [catalog](modules/catalog.md) | 7 | 2 |
-| [source](modules/source.md) | 7 | 5 |
 | [mcp_server](modules/mcp_server.md) | 7 | 15 |
 | [models_capacity](modules/models_capacity.md) | 7 | 1 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
@@ -173,6 +173,7 @@ flowchart TD
 | [result](modules/result.md) | 6 | 1 |
 | [charter](modules/charter.md) | 5 | 2 |
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
+| [transfer](modules/transfer.md) | 5 | 9 |
 | [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 16 |
 | [agent_skill_bundle](modules/agent_skill_bundle.md) | 5 | 0 |
 | [schemas_calendar](modules/schemas_calendar.md) | 5 | 1 |
@@ -201,7 +202,6 @@ flowchart TD
 | [teamMemberLabels](modules/teamMemberLabels.md) | 5 | 2 |
 | [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) | 4 | 3 |
 | [build_identity](modules/build_identity.md) | 4 | 1 |
-| [transfer](modules/transfer.md) | 4 | 9 |
 | [database_runtime](modules/database_runtime.md) | 4 | 1 |
 | [models_autonomy](modules/models_autonomy.md) | 4 | 2 |
 | [delivery_dependency](modules/delivery_dependency.md) | 4 | 3 |
@@ -551,9 +551,9 @@ flowchart TD
 | [test_schema_behavior](modules/test_schema_behavior.md) | 0 | 6 |
 | [test_documentation_boundary](modules/test_documentation_boundary.md) | 0 | 1 |
 | [test_postgresql_closeout](modules/test_postgresql_closeout.md) | 0 | 3 |
-| [test_postgresql_transfer](modules/test_postgresql_transfer.md) | 0 | 15 |
+| [test_postgresql_transfer](modules/test_postgresql_transfer.md) | 0 | 16 |
 | [test_project_identity_scope](modules/test_project_identity_scope.md) | 0 | 8 |
-| [test_transfer_catalog](modules/test_transfer_catalog.md) | 0 | 1 |
+| [test_transfer_catalog](modules/test_transfer_catalog.md) | 0 | 3 |
 | [postgresql_migrations_env](modules/postgresql_migrations_env.md) | 0 | 0 |
 | [0001_wave0_probe](modules/0001_wave0_probe.md) | 0 | 0 |
 | [test_initial_schema](modules/test_initial_schema.md) | 0 | 2 |
@@ -739,7 +739,7 @@ flowchart TD
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
 | [ci_runtime](modules/ci_runtime.md) | 0 | 0 |
-| [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 17 |
+| [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 19 |
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |

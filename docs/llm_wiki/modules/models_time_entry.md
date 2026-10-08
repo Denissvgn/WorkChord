@@ -34,6 +34,7 @@ flowchart LR
     n8["backend/tests/migrations/test_project_identity.py"]
     n9["backend/tests/test_time_entries.py"]
     n10["backend/tests/test_time_reports.py"]
+    n11["scripts/ci/installed_wheel_postgresql_qualification.py"]
     n1 --> n2
     n2 --> n0
     n2 --> n5
@@ -53,6 +54,8 @@ flowchart LR
     n10 --> n4
     n10 --> n5
     n10 --> n9
+    n11 --> n0
+    n11 --> n2
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_time_entry.md"
@@ -64,6 +67,7 @@ flowchart LR
     click n8 "../modules/test_project_identity.md"
     click n9 "../modules/test_time_entries.md"
     click n10 "../modules/test_time_reports.md"
+    click n11 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Internal neighbors
@@ -78,6 +82,7 @@ flowchart LR
 | Inbound | [test_project_identity](../modules/test_project_identity.md) |
 | Inbound | [test_time_entries](../modules/test_time_entries.md) |
 | Inbound | [test_time_reports](../modules/test_time_reports.md) |
+| Inbound | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [time](../modules/time.md) |
 

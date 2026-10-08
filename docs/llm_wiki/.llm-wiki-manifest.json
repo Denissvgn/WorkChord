@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:7911ee03a72fbd8f9507fda3865b50ae19dc2001aaa909257fb0c359ebaf87db",
-    "knowledge_index_hash": "sha256:4f1e2f2f61e4964fe5fe62995c88141031c3bec7cfd8bad55e2d4651f8ac5a6e",
-    "surface_index_hash": "sha256:cf832d29016bb91a51fd198886b29194cec23b87fc56bce5e2ccaf0fe716adff"
+    "evaluated_envelope_hash": "sha256:3411cd152fe324545e143ea250676c0ec2eea05c9d0e55379b6fc39f0ffb1c1c",
+    "knowledge_index_hash": "sha256:ff7b129b6d8c06e2e7d3d95ee0d96f32dff8a8b58fc71dee65d6db30cfad07b9",
+    "surface_index_hash": "sha256:b851790a075da9acc4386d28ca65e2c4b0baccdb30b28373fc56ab11d5e0766a"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -18637,10 +18637,10 @@
     },
     "modules/installed_wheel_postgresql_qualification.md": {
       "basis": {
-        "concept_observation_hash": "sha256:0bc07b4b8ed5d14ccfa9b361a397d2bc25d090310e52b8692d1bb5f03242772b",
+        "concept_observation_hash": "sha256:5bb81a4aeda37050a74a44fff61af71af85a5457857d7f755324660e2a95681c",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:feab2bd57041eccb5f50918257e4a31b20933f91b6490744ffadb5c27351979c",
+        "source_content_hash": "sha256:bbcbdc54733fbbe83a64e0fe6f0d982723d96bbb6acd30796c4a5c0ab28c9a7f",
         "source_path": "scripts/ci/installed_wheel_postgresql_qualification.py"
       },
       "state": "known"
@@ -21607,10 +21607,10 @@
     },
     "modules/test_postgresql_transfer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:6fa0000115efca6e599f2e76426dc50b732fc6d3efb047ca4f93ccc301832310",
+        "concept_observation_hash": "sha256:359e2f780c395240709d67df738b70f32ee1803184cd719ae0d4d397e0ca6d59",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f0c7d00b53db4682cf836f44784662ba3dfcc5ea15d52993b14159f12c1d498d",
+        "source_content_hash": "sha256:011dab614917159d7efd5b70a3e2a38098f3626928d36bbd94b1458ad0573109",
         "source_path": "backend/tests/database_migration/test_postgresql_transfer.py"
       },
       "state": "known"
@@ -21887,10 +21887,10 @@
     },
     "modules/test_transfer_catalog.md": {
       "basis": {
-        "concept_observation_hash": "sha256:260ef4ef5719b141a7a0fde20c85ce8c2dd270a11beead51fca65c0108eeb7b6",
+        "concept_observation_hash": "sha256:062ae3fc37910aa07537c1300b3d9c17b7b32b7a6649cac1116a8ddc10ceef98",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:526cbd0432c19220cf728e3e70dc4fe389c6524fbda01f71f7f68c25c2b25829",
+        "source_content_hash": "sha256:7fc1baa73abaa09c0b193b858ddc0389967a30c2f784036a981e94365beb7771",
         "source_path": "backend/tests/database_migration/test_transfer_catalog.py"
       },
       "state": "known"
@@ -22067,10 +22067,10 @@
     },
     "modules/transfer.md": {
       "basis": {
-        "concept_observation_hash": "sha256:7dc316c3785bd1b13bdf414c2fd397d8d6dd900677abad5850808208e8c30b91",
+        "concept_observation_hash": "sha256:7e27212cba1fa00a2bdc0a8f63e7b0bdd5fb08d0844cd470fd586794898c594e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d7c9a2c141ede2900aeb3a57182a81672a83edfc62ea76733e800934c4116c0e",
+        "source_content_hash": "sha256:7fe2293ad6e3a4dbc23f61146aa2e5930600a93534bc3f4a4ad777268655d1be",
         "source_path": "backend/app/database_migration/transfer.py"
       },
       "state": "known"
@@ -22750,13 +22750,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:0bba165a949f7e43e919d13cd23d7fda3bc0086dd0b53f6ba7e6f18e2a38f571",
-      "lifecycle_hash": "sha256:302193c0ee0058dbe7e401e2f05723937d6ae1b4e80a05c1b35c4c531ad04a67",
-      "markdown_snapshot_hash": "sha256:1d6fa1934e8fdcc9e55e6fb1be80ad8b91670a01b9abe309b27dff813c33362b",
-      "observation_inputs_hash": "sha256:8b9fa49d2b3b1138775335ac060bbc03b1f125c05cae07b75ab0170aa0e3c387",
+      "inventory_hash": "sha256:a4ddb42ecbc5d3f33ad68bb2c40bea5843f4d25eef291f979faf61dba569bef6",
+      "lifecycle_hash": "sha256:6466f59b90ae8ae7d11d22ee8a4dc9ab13eb6753416abfe388a3c2cb4c356887",
+      "markdown_snapshot_hash": "sha256:0190cbe324fe9455919d2d438ab49ce869bdde189c214256ad78663ebe36757e",
+      "observation_inputs_hash": "sha256:e81d3d7f8c60a2f3ac73b5d72be3bdc298b40de788508297ff5d71e52579057e",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:7d0696cedc0af8233ab0166f8a47c3a677cf46e67dddab63c8b06194d2655a1d"
+      "source_snapshot_hash": "sha256:3faea8a9479ea79da2b5f3d0a4f2066299b1aadad3773e53c234fb7e2e6000a0"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -38848,6 +38848,7 @@
             "_sequence_facts": "—",
             "_signed_int32": "—",
             "_source_row_hash_map": "—",
+            "_source_sequence_floors": "Retain verified SQLite allocations even when the allocated row was deleted.",
             "_statistics_facts": "—",
             "_table_count": "—",
             "_target_engine": "—",
@@ -38861,10 +38862,10 @@
           }
         }
       },
-      "hash": "sha256:d7c9a2c141ede2900aeb3a57182a81672a83edfc62ea76733e800934c4116c0e",
+      "hash": "sha256:7fe2293ad6e3a4dbc23f61146aa2e5930600a93534bc3f4a4ad777268655d1be",
       "language": "python",
       "module_page": "transfer",
-      "semantic_hash": "sha256:22cd1fd07d9de05be31d956a8c884198c47d4bdf48698cc1bf67dd95bba6b295"
+      "semantic_hash": "sha256:04bc2b29257117f3656d1b38d46186a26f5a9a2c5e65dee9e1ef5f8d8e36c65e"
     },
     "backend/app/database_runtime.py": {
       "entities": [
@@ -60799,14 +60800,15 @@
             "test_loader_rejects_concurrent_attempt_for_the_same_target": "—",
             "test_transfer_preserves_deleted_project_allocation_progress_and_private_ledger": "—",
             "test_transfer_rejects_a_misrepresented_allocation_floor_before_target_writes": "—",
+            "test_transfer_retains_deleted_task_allocation_and_private_recording_scope": "—",
             "test_typed_delivery_targets_survive_source_transfer": "—"
           }
         }
       },
-      "hash": "sha256:f0c7d00b53db4682cf836f44784662ba3dfcc5ea15d52993b14159f12c1d498d",
+      "hash": "sha256:011dab614917159d7efd5b70a3e2a38098f3626928d36bbd94b1458ad0573109",
       "language": "python",
       "module_page": "test_postgresql_transfer",
-      "semantic_hash": "sha256:431e1b60aee91f25aac7e92f5137faa85f7dfd0c0e2d0242c1b714511e827a4e"
+      "semantic_hash": "sha256:ce1c355f945dfa11fd8390b4a851d01d627fe073a92c84ba34addaeeb38ee901"
     },
     "backend/tests/database_migration/test_project_identity_scope.py": {
       "entities": [],
@@ -60870,14 +60872,15 @@
           "description": "Versioned transfer catalog invariants.",
           "functions": {
             "test_catalog_disposes_every_packaged_table_exactly_once": "—",
-            "test_nullable_cycles_are_staged_without_weakening_required_foreign_keys": "—"
+            "test_nullable_cycles_are_staged_without_weakening_required_foreign_keys": "—",
+            "test_source_allocation_reader_refuses_corrupt_sequence_metadata_without_writes": "—"
           }
         }
       },
-      "hash": "sha256:526cbd0432c19220cf728e3e70dc4fe389c6524fbda01f71f7f68c25c2b25829",
+      "hash": "sha256:7fc1baa73abaa09c0b193b858ddc0389967a30c2f784036a981e94365beb7771",
       "language": "python",
       "module_page": "test_transfer_catalog",
-      "semantic_hash": "sha256:7ed606c4de5519cb2fda9108d4e37e7ecbead381c429a7aa4ddc66e2c93a39f2"
+      "semantic_hash": "sha256:8f8918a9e5a293a70d4ca8eed061832063a57a401e25284aab8556da131205a4"
     },
     "backend/tests/fixtures/postgresql_migrations/env.py": {
       "entities": [],
@@ -81967,10 +81970,10 @@
           }
         }
       },
-      "hash": "sha256:feab2bd57041eccb5f50918257e4a31b20933f91b6490744ffadb5c27351979c",
+      "hash": "sha256:bbcbdc54733fbbe83a64e0fe6f0d982723d96bbb6acd30796c4a5c0ab28c9a7f",
       "language": "python",
       "module_page": "installed_wheel_postgresql_qualification",
-      "semantic_hash": "sha256:87cc210fc653a541d225de578ea07ac448564dd500d82b1aba3225d3cda15e82"
+      "semantic_hash": "sha256:bd59f8738d7ea7463918d129acc87e41c143984c2c27c10d519a3b91017bbbb9"
     },
     "scripts/ci/postgres_runtime.py": {
       "entities": [],

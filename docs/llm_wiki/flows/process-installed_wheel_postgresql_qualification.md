@@ -37,7 +37,7 @@
 - [upgrade_service](../modules/upgrade_service.md)
 - [user_session](../modules/user_session.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [cli_closeout](../modules/cli_closeout.md), [cli_cutover](../modules/cli_cutover.md), and 13 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [cli_closeout](../modules/cli_closeout.md), [cli_cutover](../modules/cli_cutover.md), and 15 more
 
 **Complete related modules:**
 
@@ -54,6 +54,8 @@
 - [models_iteration](../modules/models_iteration.md)
 - [models_project](../modules/models_project.md)
 - [models_task](../modules/models_task.md)
+- [models_time_entry](../modules/models_time_entry.md)
+- [recovery](../modules/recovery.md)
 - [source](../modules/source.md)
 - [transfer](../modules/transfer.md)
 - [upgrade_service](../modules/upgrade_service.md)
@@ -122,7 +124,7 @@ sequenceDiagram
     p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
 ```
 
-> Call sequence diagram shows 30 of 1560 interactions; 1530 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1624 interactions; 1594 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -180,17 +182,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | _parser().parse_args | 664 | `_parser().parse_args(data not statically known)` |
-| main | _parser | 664 | `_parser(data not statically known)` |
-| _parser | argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser) | 651 | `argparse.ArgumentParser(data not statically known)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 652 | `parser.add_argument('--admin-url')` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 653 | `parser.add_argument('--phase', choices=(...), help=argparse.SUPPRESS)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 658 | `parser.add_argument('--workspace', type=Path, help=argparse.SUPPRESS)` |
-| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 659 | `parser.add_argument('--authorize-target', help=argparse.SUPPRESS)` |
-| main | SystemExit | 667 | `SystemExit('--admin-url is required')` |
-| main | _coordinate | 668 | `_coordinate(args.admin_url)` |
-| _coordinate | tempfile.TemporaryDirectory | 611 | `tempfile.TemporaryDirectory(prefix='workchord-wheel-qa-')` |
-| _coordinate | Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate) | 612 | `Path(temporary).resolve(data not statically known)` |
+| main | _parser().parse_args | 695 | `_parser().parse_args(data not statically known)` |
+| main | _parser | 695 | `_parser(data not statically known)` |
+| _parser | argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser) | 682 | `argparse.ArgumentParser(data not statically known)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 683 | `parser.add_argument('--admin-url')` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 684 | `parser.add_argument('--phase', choices=(...), help=argparse.SUPPRESS)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 689 | `parser.add_argument('--workspace', type=Path, help=argparse.SUPPRESS)` |
+| _parser | parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser) | 690 | `parser.add_argument('--authorize-target', help=argparse.SUPPRESS)` |
+| main | SystemExit | 698 | `SystemExit('--admin-url is required')` |
+| main | _coordinate | 699 | `_coordinate(args.admin_url)` |
+| _coordinate | tempfile.TemporaryDirectory | 642 | `tempfile.TemporaryDirectory(prefix='workchord-wheel-qa-')` |
+| _coordinate | Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate) | 643 | `Path(temporary).resolve(data not statically known)` |
 
 ### Boundary effects
 
@@ -200,15 +202,15 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `_parser().parse_args` | 664 |
-| external_call | `_parser` | `argparse.ArgumentParser` | 651 |
-| unresolved_call | `_parser` | `parser.add_argument` | 652 |
-| unresolved_call | `_parser` | `parser.add_argument` | 653 |
-| unresolved_call | `_parser` | `parser.add_argument` | 658 |
-| unresolved_call | `_parser` | `parser.add_argument` | 659 |
-| external_call | `main` | `SystemExit` | 667 |
-| external_call | `_coordinate` | `tempfile.TemporaryDirectory` | 611 |
-| unresolved_call | `_coordinate` | `Path(temporary).resolve` | 612 |
+| unresolved_call | `main` | `_parser().parse_args` | 695 |
+| external_call | `_parser` | `argparse.ArgumentParser` | 682 |
+| unresolved_call | `_parser` | `parser.add_argument` | 683 |
+| unresolved_call | `_parser` | `parser.add_argument` | 684 |
+| unresolved_call | `_parser` | `parser.add_argument` | 689 |
+| unresolved_call | `_parser` | `parser.add_argument` | 690 |
+| external_call | `main` | `SystemExit` | 698 |
+| external_call | `_coordinate` | `tempfile.TemporaryDirectory` | 642 |
+| unresolved_call | `_coordinate` | `Path(temporary).resolve` | 643 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

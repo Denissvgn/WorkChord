@@ -43,6 +43,7 @@ flowchart LR
     n5["backend/tests/migrations/test_project_identity.py"]
     n6["backend/tests/test_time_entries.py"]
     n7["backend/tests/test_time_reports.py"]
+    n8["scripts/ci/installed_wheel_postgresql_qualification.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -50,6 +51,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/models_time_entry.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -58,6 +60,7 @@ flowchart LR
     click n5 "../modules/test_project_identity.md"
     click n6 "../modules/test_time_entries.md"
     click n7 "../modules/test_time_reports.md"
+    click n8 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Summary
@@ -82,3 +85,4 @@ flowchart LR
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_time_entries` | import | [test_time_entries](../modules/test_time_entries.md) | — |
 | `test_time_reports` | import | [test_time_reports](../modules/test_time_reports.md) | — |
+| `installed_wheel_postgresql_qualification` | import | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) | — |

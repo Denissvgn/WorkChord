@@ -6,6 +6,8 @@
 
 Catalogued PostgreSQL loading, repairs, and two-phase reconciliation. Project sequence restoration preserves current identifiers, retained historical scope and independently measured SQLite allocation progress. A manifest's declared allocation floor is checked against the snapshot before target writes; reconciliation requires the target's next project identifier to exceed the verified floor.
 
+Sequence repair preserves independently read SQLite allocation floors, including allocated IDs whose live rows were deleted, and never rewinds the target sequence. Duplicate or malformed source allocation metadata fails before target writes. Final reconciliation checks the same source floors so a copied private recording scope cannot collide with newly allocated task identities.
+
 ## Imports
 
 | Source | Symbols |
@@ -53,7 +55,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (3) |
+| Inbound | `backend` (4) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -63,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -87,7 +89,8 @@ flowchart LR
 | `_converted_batch` | `(table: Any, rows: Iterable[Mapping[str, Any]], *, staged_columns: set[str]) -> list[dict[str, Any]]` | — | — |
 | `_load_table` | `(connection: Connection, source: Any, table: Any, *, chunk_size: int) -> int` | — | — |
 | `_restore_staged_references` | `(connection: Connection, source: Any, table: Any, *, chunk_size: int) -> int` | — | — |
-| `_repair_sequences` | `(connection: Connection, *, project_floor = 0) -> dict[str, Any]` | — | — |
+| `_source_sequence_floors` | `(snapshot_path: Path) -> dict[str, int]` | — | Retain verified SQLite allocations even when the allocated row was deleted. |
+| `_repair_sequences` | `(connection: Connection, *, project_floor = 0, allocation_floors = None) -> dict[str, Any]` | — | — |
 | `load_snapshot` | `(*, snapshot_path: Path, source_manifest_path: Path, report_path: Path, authorized_target: str, capacity_evidence_path: Path \| None = None, loader_method_evidence_path: Path \| None = None, chunk_size: int = 1000, _failure_after_table: str \| None = None) -> dict[str, Any]` | — | Load a catalogued snapshot into an empty, Alembic-current target. |
 | `_primary_key_sha256` | `(table: Any, row: Mapping[str, Any]) -> str` | — | — |
 | `_row_hash_map` | `(connection: Connection, table: Any) -> dict[str, str]` | — | — |
@@ -95,7 +98,7 @@ flowchart LR
 | `_transformations` | `(table_name: str, before: Mapping[str, str], after: Mapping[str, str]) -> list[dict[str, Any]]` | — | — |
 | `record_post_copy_repairs` | `(*, source_manifest_path: Path, report_path: Path, authorized_target: str) -> dict[str, Any]` | — | Run the versioned repair catalog and record its exact row-hash delta. |
 | `_repair_report` | `(path: Path, *, manifest: Mapping[str, Any], target_identity_sha256: str) -> tuple[str, list[dict[str, Any]]]` | — | — |
-| `_sequence_facts` | `(connection: Connection, *, project_floor = 0) -> dict[str, Any]` | — | — |
+| `_sequence_facts` | `(connection: Connection, *, project_floor = 0, allocation_floors = None) -> dict[str, Any]` | — | — |
 | `_statistics_facts` | `(connection: Connection) -> dict[str, Any]` | — | — |
 | `_representative_reads` | `(source: Any, target: Connection) -> dict[str, Any]` | — | — |
 | `_decrypt_secret_settings` | `(source: Any, target: Connection, *, encryption_key: str \| None) -> int` | — | — |

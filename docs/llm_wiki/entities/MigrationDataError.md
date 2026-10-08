@@ -95,4 +95,4 @@ flowchart LR
 | `preflight_source` | call | [source](../modules/source.md) | 12 |
 | `validate_writer_drain_evidence` | call | [source](../modules/source.md) | 17 |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

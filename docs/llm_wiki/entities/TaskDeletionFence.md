@@ -32,21 +32,27 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["backend/app/models/delivery_observation.py"]
     n4["backend/app/services/task_recovery_service.py"]
-    n5["test_ledger_is_immutable_and_restoration_does_not_create_capture_history (backend/tests/test_delivery_metrics.py)"]
-    n6["backend/tests/test_task_domain_integrity.py"]
+    n5["backend/tests/database_migration/test_postgresql_transfer.py"]
+    n6["test_ledger_is_immutable_and_restoration_does_not_create_capture_history (backend/tests/test_delivery_metrics.py)"]
+    n7["backend/tests/test_task_domain_integrity.py"]
+    n8["scripts/ci/installed_wheel_postgresql_qualification.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
+    n8 --> n0
     click n0 "../modules/recovery.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/delivery_observation.md"
     click n4 "../modules/task_recovery_service.md"
-    click n5 "../modules/test_delivery_metrics.md"
-    click n6 "../modules/test_task_domain_integrity.md"
+    click n5 "../modules/test_postgresql_transfer.md"
+    click n6 "../modules/test_delivery_metrics.md"
+    click n7 "../modules/test_task_domain_integrity.md"
+    click n8 "../modules/installed_wheel_postgresql_qualification.md"
 ```
 
 ### Summary
@@ -68,5 +74,7 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |
+| `test_postgresql_transfer` | import | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) | — |
 | `test_ledger_is_immutable_and_restoration_does_not_create_capture_history` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_task_domain_integrity` | import | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | — |
+| `installed_wheel_postgresql_qualification` | import | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) | — |
