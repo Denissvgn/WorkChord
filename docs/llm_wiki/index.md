@@ -10,7 +10,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Modules | 734 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 548 | [Open section](#entry-point-flows) |
+| Entry-point flows | 549 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -2546,6 +2546,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-create_vacation](flows/http-create_vacation.md) - entry: `create_vacation`
 - [http-create_web_intake_item](flows/http-create_web_intake_item.md) - entry: `create_web_intake_item`
 - [http-current_task_review](flows/http-current_task_review.md) - entry: `current_task_review`
+- [http-dataset](flows/http-dataset.md) - entry: `dataset`
 - [http-decline_planning_triage_item](flows/http-decline_planning_triage_item.md) - entry: `decline_planning_triage_item`
 - [http-decline_triage_item](flows/http-decline_triage_item.md) - entry: `decline_triage_item`
 - [http-delete_calendar](flows/http-delete_calendar.md) - entry: `delete_calendar`

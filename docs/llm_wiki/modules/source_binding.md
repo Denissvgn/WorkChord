@@ -6,11 +6,14 @@
 
 Independently bind local measurements to the source that actually executes.
 
+Measurement bindings hash executing backend service/migration and load-runner files plus lockfiles before and after execution, and record actual native Python/package identities. The digest scope is explicit and source drift fails the measurement. Full browser harness receipts additionally bind frontend and fixture orchestration source.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `hashlib` | `hashlib` |
+| `importlib.metadata` | `version` |
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `platform` | `platform` |

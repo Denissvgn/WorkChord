@@ -18,8 +18,8 @@ sequenceDiagram
     participant p4 as args.output.exists
     participant p5 as parser.error
     participant p6 as source_binding
-    participant p7 as Path(…).resolve
-    participant p8 as Path
+    participant p7 as Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    participant p8 as Path (scripts/load/source_binding.py:source_binding)
     participant p9 as sorted (scripts/load/source_binding.py:source_binding)
     participant p10 as root.glob
     participant p11 as str (scripts/load/source_binding.py:source_binding)
@@ -45,8 +45,8 @@ sequenceDiagram
     p0-->>p4: args.output.exists
     p0-->>p5: parser.error
     p0->>p6: source_binding
-    p6-->>p7: Path(…).resolve
-    p6-->>p8: Path
+    p6-->>p7: Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    p6-->>p8: Path (scripts/load/source_binding.py:source_binding)
     p6-->>p9: sorted (scripts/load/source_binding.py:source_binding)
     p6-->>p10: root.glob
     p6-->>p10: root.glob
@@ -63,7 +63,7 @@ sequenceDiagram
     p6-->>p19: platform.platform (scripts/load/source_binding.py:source_binding)
 ```
 
-> Call sequence diagram shows 30 of 197 interactions; 167 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 230 interactions; 200 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -110,7 +110,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `main` | - | `Path`, `Path`, `Path`, `Path`, `QualificationInputError` | `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `...` |
+| `main` | - | `Path`, `Path`, `Path`, `Path`, `QualificationInputError` | `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `...` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
@@ -127,41 +127,41 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 128 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 129 | `parser.add_argument('--observations', type=Path)` |
-| main | parser.add_argument | 130 | `parser.add_argument('--base-url')` |
-| main | parser.add_argument | 131 | `parser.add_argument('--nonce')` |
-| main | parser.add_argument | 132 | `parser.add_argument('--session-state', type=Path)` |
-| main | parser.add_argument | 133 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
-| main | parser.add_argument | 134 | `parser.add_argument('--declaration', type=Path, required=True)` |
-| main | parser.add_argument | 135 | `parser.add_argument('--source-revision')` |
-| main | parser.add_argument | 136 | `parser.add_argument('--source-sha256')` |
-| main | parser.add_argument | 137 | `parser.add_argument('--output', type=Path, required=True)` |
-| main | parser.parse_args | 138 | `parser.parse_args(data not statically known)` |
+| main | argparse.ArgumentParser | 172 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 173 | `parser.add_argument('--observations', type=Path)` |
+| main | parser.add_argument | 174 | `parser.add_argument('--base-url')` |
+| main | parser.add_argument | 175 | `parser.add_argument('--nonce')` |
+| main | parser.add_argument | 176 | `parser.add_argument('--session-state', type=Path)` |
+| main | parser.add_argument | 177 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
+| main | parser.add_argument | 178 | `parser.add_argument('--declaration', type=Path, required=True)` |
+| main | parser.add_argument | 179 | `parser.add_argument('--source-revision')` |
+| main | parser.add_argument | 180 | `parser.add_argument('--source-sha256')` |
+| main | parser.add_argument | 181 | `parser.add_argument('--output', type=Path, required=True)` |
+| main | parser.parse_args | 182 | `parser.parse_args(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.declaration.read_text` | `main` | 142 |
-| filesystem_read | `args.observations.read_text` | `main` | 144 |
-| output | `print` | `main` | 158 |
+| filesystem_read | `args.declaration.read_text` | `main` | 186 |
+| filesystem_read | `args.observations.read_text` | `main` | 188 |
+| output | `print` | `main` | 206 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 128 |
-| unresolved_call | `main` | `parser.add_argument` | 129 |
-| unresolved_call | `main` | `parser.add_argument` | 130 |
-| unresolved_call | `main` | `parser.add_argument` | 131 |
-| unresolved_call | `main` | `parser.add_argument` | 132 |
-| unresolved_call | `main` | `parser.add_argument` | 133 |
-| unresolved_call | `main` | `parser.add_argument` | 134 |
-| unresolved_call | `main` | `parser.add_argument` | 135 |
-| unresolved_call | `main` | `parser.add_argument` | 136 |
-| unresolved_call | `main` | `parser.add_argument` | 137 |
-| unresolved_call | `main` | `parser.parse_args` | 138 |
+| external_call | `main` | `argparse.ArgumentParser` | 172 |
+| unresolved_call | `main` | `parser.add_argument` | 173 |
+| unresolved_call | `main` | `parser.add_argument` | 174 |
+| unresolved_call | `main` | `parser.add_argument` | 175 |
+| unresolved_call | `main` | `parser.add_argument` | 176 |
+| unresolved_call | `main` | `parser.add_argument` | 177 |
+| unresolved_call | `main` | `parser.add_argument` | 178 |
+| unresolved_call | `main` | `parser.add_argument` | 179 |
+| unresolved_call | `main` | `parser.add_argument` | 180 |
+| unresolved_call | `main` | `parser.add_argument` | 181 |
+| unresolved_call | `main` | `parser.parse_args` | 182 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

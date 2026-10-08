@@ -10,6 +10,8 @@ Expected collection-limit outcomes require both the declared `collection_limit_e
 
 Summarize declared local observations without issuing capacity certification.
 
+Frozen observations must include every declared operation and client for the declared number of rounds. The owned HTTP lane measures four retained pages and one head refresh, separates human cookies from agent headers, preserves preliminary raw reads before recovery checks, and verifies stale-write rejection plus independent cleanup readback. Live source identities are independently computed; replayed observations identify the current binding as processor scope only.
+
 ## Imports
 
 | Source | Symbols |

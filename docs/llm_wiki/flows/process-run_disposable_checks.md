@@ -29,8 +29,6 @@ sequenceDiagram
     participant p17 as subprocess.check_output(…).strip
     participant p18 as subprocess.check_output
     participant p19 as digest
-    participant p20 as run.checkpoint
-    participant p21 as run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
     p0->>p1: parse_args
     p1-->>p2: argparse.ArgumentParser
     p1-->>p3: parser.add_argument
@@ -43,7 +41,9 @@ sequenceDiagram
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
     p1-->>p6: parser.parse_args
+    p1-->>p7: parser.error
     p1-->>p7: parser.error
     p1-->>p7: parser.error
     p1-->>p8: set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
@@ -59,11 +59,9 @@ sequenceDiagram
     p15-->>p17: subprocess.check_output(…).strip
     p15-->>p18: subprocess.check_output
     p15-->>p19: digest
-    p15-->>p20: run.checkpoint
-    p15-->>p21: run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
 ```
 
-> Call sequence diagram shows 30 of 98 interactions; 68 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 102 interactions; 72 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -92,7 +90,7 @@ flowchart LR
     s2 -. "parser.add_argument('--full-backend', action='store_true')" .-> s9
     s2 -. "parser.add_argument('--managed-browser', action='store_true')" .-> s10
     s2 -. "parser.add_argument('--planning-browser', action='store_true')" .-> s11
-    s2 -. "parser.add_argument('--time-entries', action='store_true')" .-> s12
+    s2 -. "parser.add_argument('--performance-browser', action='store_true')" .-> s12
     b0["mutation run.cleanups.append"]
     s1 -. "mutation run.cleanups.append" .-> b0
     b1["mutation run.validators.append"]
@@ -143,7 +141,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | parse_args | 143 | `parse_args(data not statically known)` |
+| main | parse_args | 146 | `parse_args(data not statically known)` |
 | parse_args | argparse.ArgumentParser | 114 | `argparse.ArgumentParser(description=__doc__)` |
 | parse_args | parser.add_argument | 115 | `parser.add_argument('--output', type=Path)` |
 | parse_args | parser.add_mutually_exclusive_group | 116 | `parser.add_mutually_exclusive_group(data not statically known)` |
@@ -153,20 +151,20 @@ flowchart LR
 | parse_args | parser.add_argument | 120 | `parser.add_argument('--full-backend', action='store_true')` |
 | parse_args | parser.add_argument | 121 | `parser.add_argument('--managed-browser', action='store_true')` |
 | parse_args | parser.add_argument | 122 | `parser.add_argument('--planning-browser', action='store_true')` |
-| parse_args | parser.add_argument | 123 | `parser.add_argument('--time-entries', action='store_true')` |
+| parse_args | parser.add_argument | 123 | `parser.add_argument('--performance-browser', action='store_true')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `run.cleanups.append` | `main` | 154 |
-| mutation | `run.validators.append` | `main` | 155 |
-| mutation | `run.validators.append` | `main` | 182 |
-| filesystem_write | `shutil.copytree` | `main` | 185 |
-| filesystem_write | `shutil.copyfile` | `main` | 201 |
-| filesystem_write | `shutil.copyfile` | `main` | 203 |
-| mutation | `app_env.update` | `main` | 209 |
+| mutation | `run.cleanups.append` | `main` | 157 |
+| mutation | `run.validators.append` | `main` | 158 |
+| mutation | `run.validators.append` | `main` | 185 |
+| filesystem_write | `shutil.copytree` | `main` | 188 |
+| filesystem_write | `shutil.copyfile` | `main` | 204 |
+| filesystem_write | `shutil.copyfile` | `main` | 206 |
 | mutation | `app_env.update` | `main` | 212 |
+| mutation | `app_env.update` | `main` | 215 |
 
 ### Static analysis gaps
 

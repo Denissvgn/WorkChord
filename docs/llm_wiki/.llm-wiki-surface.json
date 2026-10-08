@@ -19,7 +19,7 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1519,
-      "flows": 548,
+      "flows": 549,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
@@ -29,7 +29,7 @@
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 3000
+    "total": 3001
   },
   "dependency_pages": {
     "count": 2,
@@ -5348,6 +5348,47 @@
         }
       },
       "id": "http-current_task_review",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "dataset",
+        "source_path": "scripts/ci/serve_disposable_api.py",
+        "symbol": "dataset"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 78,
+              "step": "dataset",
+              "target": "request.headers.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 79,
+              "step": "dataset",
+              "target": "HTTPException"
+            }
+          ],
+          "generated": true,
+          "step_count": 3,
+          "transfer_count": 2,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/serve_disposable_api.py"
+          ],
+          "step_count": 3,
+          "truncated": false
+        }
+      },
+      "id": "http-dataset",
       "language": "python"
     },
     {
@@ -16617,7 +16658,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 70,
+              "line": 94,
               "step": "read_fault",
               "step_index": 1,
               "target": "faults.clear"
@@ -16626,61 +16667,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 60,
+              "line": 84,
               "step": "read_fault",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 61,
+              "line": 85,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 62,
+              "line": 86,
               "step": "read_fault",
               "target": "request.json"
             },
             {
               "kind": "external_call",
-              "line": 63,
+              "line": 87,
               "step": "read_fault",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 64,
+              "line": 88,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 65,
+              "line": 89,
               "step": "read_fault",
               "target": "body.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 66,
+              "line": 90,
               "step": "read_fault",
               "target": "body.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 67,
+              "line": 91,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 68,
+              "line": 92,
               "step": "read_fault",
               "target": "type"
             },
             {
               "kind": "unresolved_call",
-              "line": 69,
+              "line": 93,
               "step": "read_fault",
               "target": "HTTPException"
             },
@@ -37721,7 +37762,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 142,
+              "line": 186,
               "step": "main",
               "step_index": 1,
               "target": "args.declaration.read_text"
@@ -37729,7 +37770,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 144,
+              "line": 188,
               "step": "main",
               "step_index": 1,
               "target": "args.observations.read_text"
@@ -37737,7 +37778,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 158,
+              "line": 206,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -37746,67 +37787,67 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 128,
+              "line": 172,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 173,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 174,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 131,
+              "line": 175,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 132,
+              "line": 176,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 133,
+              "line": 177,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 134,
+              "line": 178,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 135,
+              "line": 179,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 136,
+              "line": 180,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 137,
+              "line": 181,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 138,
+              "line": 182,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -37830,7 +37871,7 @@
             "scripts/load/run.py",
             "scripts/load/result.py"
           ],
-          "step_count": 198,
+          "step_count": 231,
           "truncated": false
         }
       },
@@ -38542,7 +38583,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 154,
+              "line": 157,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -38550,7 +38591,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 155,
+              "line": 158,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38558,7 +38599,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 182,
+              "line": 185,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38566,7 +38607,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 185,
+              "line": 188,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
@@ -38574,7 +38615,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 201,
+              "line": 204,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38582,7 +38623,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 203,
+              "line": 206,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38590,7 +38631,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 209,
+              "line": 212,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38598,7 +38639,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 212,
+              "line": 215,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38681,7 +38722,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 99,
+          "step_count": 103,
           "truncated": false
         }
       },
@@ -39047,7 +39088,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 51,
+              "line": 69,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39055,7 +39096,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 85,
+              "line": 109,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39063,7 +39104,7 @@
             {
               "confidence": "unknown",
               "kind": "process",
-              "line": 89,
+              "line": 113,
               "step": "main",
               "step_index": 1,
               "target": "subprocess.Popen"
@@ -39071,7 +39112,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 91,
+              "line": 115,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39079,7 +39120,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 96,
+              "line": 120,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39483,7 +39524,7 @@
             "scripts/load/run.py",
             "scripts/load/result.py"
           ],
-          "step_count": 255,
+          "step_count": 267,
           "truncated": false
         }
       },
@@ -41560,6 +41601,7 @@
         "flows/http-create_vacation.md",
         "flows/http-create_web_intake_item.md",
         "flows/http-current_task_review.md",
+        "flows/http-dataset.md",
         "flows/http-decline_planning_triage_item.md",
         "flows/http-decline_triage_item.md",
         "flows/http-delete_calendar.md",
@@ -72119,6 +72161,7 @@
         "modules/app_main.md",
         "modules/delivery.md",
         "modules/models_identity.md",
+        "modules/models_iteration.md",
         "modules/models_task.md",
         "modules/serve_disposable_api.md",
         "modules/support_database.md",
@@ -80823,6 +80866,18 @@
       "title": "current_task_review"
     },
     {
+      "canonical_path": "flows/http-dataset.md",
+      "id": "http-dataset",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-dataset",
+      "outgoing_internal_links": [
+        "modules/serve_disposable_api.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/serve_disposable_api.py",
+      "title": "dataset"
+    },
+    {
       "canonical_path": "flows/http-decline_planning_triage_item.md",
       "id": "http-decline_planning_triage_item",
       "kind": "flows",
@@ -88367,6 +88422,7 @@
         "modules/label_service.md",
         "modules/maintenance.md",
         "modules/models_identity.md",
+        "modules/models_iteration.md",
         "modules/models_task.md",
         "modules/project_identity.md",
         "modules/saved_view_service.md",
@@ -90129,5 +90185,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:69002382bcb59f7723c116df90da0cae2fb403d36bf0c93859e5a9a954f2f999"
+  "source_hash": "sha256:be0b6bd1e827842a87ea454c585bd53007954051ea13c6d06ee59b385f8e43e2"
 }

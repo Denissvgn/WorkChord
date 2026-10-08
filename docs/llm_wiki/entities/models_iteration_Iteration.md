@@ -108,4 +108,4 @@ flowchart LR
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 
-> References: showing 12 of 78 logical references; 66 omitted by the 12-row generated summary limit.
+> References: showing 12 of 79 logical references; 67 omitted by the 12-row generated summary limit.

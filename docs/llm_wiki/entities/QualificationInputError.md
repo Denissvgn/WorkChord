@@ -93,4 +93,4 @@ flowchart LR
 | `read_json_object` | call | [load_common](../modules/load_common.md) | 2 |
 | `seal_document` | call | [load_common](../modules/load_common.md) | 1 |
 
-> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

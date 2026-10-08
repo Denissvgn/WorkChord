@@ -15,8 +15,10 @@
 7. `run.Attempt`
 8. `load_common.QualificationInputError`
 9. `load_common.QualificationInputError`
-10. `result.latency_summary`
-11. `load_common.utc_now_text`
+10. `load_common.QualificationInputError`
+11. `load_common.QualificationInputError`
+12. `result.latency_summary`
+13. `load_common.utc_now_text`
 
 ## Touches
 

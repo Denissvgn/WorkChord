@@ -2045,3 +2045,25 @@ Local service measurements now retain raw SQL observations and independently bin
 - Moved entities: none
 
 Canonical SQL metrics now join one grouped structural-parent relation, removing repeated child scans while retaining full hierarchy and authorization validation.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7d0696cedc0af8233ab0166f8a47c3a677cf46e67dddab63c8b06194d2655a1d`
+- Pages created: 1
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2973
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Integrated local performance qualification now records exact declared clients, bounded HTTP polling, contention/readback recovery and native source/toolchain identities while keeping HTTP and service datasets distinct.

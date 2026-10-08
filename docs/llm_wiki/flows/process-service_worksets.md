@@ -105,7 +105,7 @@ sequenceDiagram
     p13-->>p21: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
 ```
 
-> Call sequence diagram shows 30 of 254 interactions; 224 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 266 interactions; 236 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 

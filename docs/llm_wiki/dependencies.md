@@ -38,7 +38,7 @@ flowchart TD
 | [types_task](modules/types_task.md) | 65 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 61 | 1 |
 | [models_agent](modules/models_agent.md) | 60 | 5 |
-| [models_iteration](modules/models_iteration.md) | 51 | 6 |
+| [models_iteration](modules/models_iteration.md) | 52 | 6 |
 | [task_service](modules/task_service.md) | 51 | 17 |
 | [authority](modules/authority.md) | 49 | 6 |
 | [apiError](modules/apiError.md) | 48 | 0 |
@@ -743,7 +743,7 @@ flowchart TD
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
-| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 7 |
+| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 8 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
 | [test_apt_runtime](modules/test_apt_runtime.md) | 0 | 0 |
 | [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |

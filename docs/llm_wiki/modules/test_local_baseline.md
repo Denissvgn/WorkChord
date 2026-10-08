@@ -40,3 +40,4 @@ Local measurements retain limits and cannot become formal certification.
 | `test_missing_or_mismatched_evidence_is_rejected` | `()` | — | — |
 | `test_nonfinite_observation_is_rejected` | `()` | — | — |
 | `test_frozen_operation_coverage_cannot_omit_slow_or_missing_reads` | `()` | — | — |
+| `test_duplicate_client_cannot_stand_in_for_declared_concurrency` | `()` | — | — |
