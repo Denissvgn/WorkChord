@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:385376ed6e516e503fafccedcbab073337afcd7363fafdecaed682023df510a1",
-    "knowledge_index_hash": "sha256:2fff1c05e82e29991523e4fa04aeed8475a172bda5b94b8dcf3a99596fb473b0",
-    "surface_index_hash": "sha256:788ebeb322cc60bc15e1e44f7dcf1afcb08285819b8fdec75c4d14247beeb6e2"
+    "evaluated_envelope_hash": "sha256:ee5dd6e0358d93c0b15bc05a59556d241a3d0913a2d094370be854ec3e0dc3ee",
+    "knowledge_index_hash": "sha256:002a8b94a2572c3c6b8d00cd9df21d1bc36b7cb58c3b62ff90b0b637ac840618",
+    "surface_index_hash": "sha256:7ab11cf15967705d07e9b76dfc79b4225949740465cded9b5829a91a376eee88"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -5920,7 +5920,7 @@
         "concept_observation_hash": "sha256:be21eef80d31f32c8c08012afa6c5e6020ff1bad9023f3cd95b23ced14c2977b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:cc3f351cdcf4bbd1696af2c44ba61f0f3f6b399b778e2e5bba279ef0e34c30ad",
+        "source_content_hash": "sha256:c339e1abfe0694dc82b21ff93a2d408036b69c8c6447b4c8e74b1e7809800f7c",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -19250,7 +19250,7 @@
         "concept_observation_hash": "sha256:ed01bcd6105d51974159dcb061e55ad05ff8e714aef897ea61cb6d59bb35e64d",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:cc3f351cdcf4bbd1696af2c44ba61f0f3f6b399b778e2e5bba279ef0e34c30ad",
+        "source_content_hash": "sha256:c339e1abfe0694dc82b21ff93a2d408036b69c8c6447b4c8e74b1e7809800f7c",
         "source_path": "backend/app/services/project_service.py"
       },
       "state": "known"
@@ -21355,6 +21355,16 @@
       },
       "state": "known"
     },
+    "modules/test_project_working_timezone.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:0e2239198e9def28199bc91f3723530d3a2a1776524121ac8645c91a60e959a8",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:1ce355536cfcbc65bcd72722794aa9298958ca4e6ef191b9e9580019d05ca776",
+        "source_path": "backend/tests/test_project_working_timezone.py"
+      },
+      "state": "known"
+    },
     "modules/test_query_boundaries.md": {
       "basis": {
         "concept_observation_hash": "sha256:664691b1d8fa381d27ad989ebebcc751dd9411a20dbf5c15ec476acd94092106",
@@ -22330,13 +22340,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:57cc89531489ef20cfafa12c881ea1beb73ec60390dbf1749769769110bfbd92",
-      "lifecycle_hash": "sha256:f787d8bdcc43299bda80b3a39c1b1b581fb07d46f9d062c5d063cede15aa8786",
-      "markdown_snapshot_hash": "sha256:4f9003e0a73207214b948000695d0c823dc50b98d14660ef53411cddd9feadc1",
-      "observation_inputs_hash": "sha256:4554fac3dabf3141b0780b1635951895cbdc4d536d2aafdac08e068be49df01a",
+      "inventory_hash": "sha256:fd1fe669159606deb888f457c1b797942e01b580ddaa5fef747faa80a1fa3ac5",
+      "lifecycle_hash": "sha256:897c3a652ac846768022b6e17d99b7222a48c4cc51a6373126f188658006cbd7",
+      "markdown_snapshot_hash": "sha256:ec36eef06e9cef2948afc34ddb87c73d1601fa059e6ce8d9072a15fc69e51b12",
+      "observation_inputs_hash": "sha256:116f51ddaecf58af11c5afd14c870351666e6ca9b7582e726064c1d8143a82a1",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:f5b7893e6afeefc4055d51b3c6f5d974dce8d5d355fb53e50fe27fbce03f67a0"
+      "source_snapshot_hash": "sha256:80ebe51501503af0ed40505b5992b8714caba42bb3f12ef2296f13f17d5e650d"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -33906,6 +33916,10 @@
     "modules/test_project_identity_scope.md": {
       "scope": "module",
       "source_path": "backend/tests/database_migration/test_project_identity_scope.py"
+    },
+    "modules/test_project_working_timezone.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_project_working_timezone.py"
     },
     "modules/test_query_boundaries.md": {
       "scope": "module",
@@ -57138,10 +57152,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:cc3f351cdcf4bbd1696af2c44ba61f0f3f6b399b778e2e5bba279ef0e34c30ad",
+      "hash": "sha256:c339e1abfe0694dc82b21ff93a2d408036b69c8c6447b4c8e74b1e7809800f7c",
       "language": "python",
       "module_page": "project_service",
-      "semantic_hash": "sha256:8e0c9b2e1999ede7dcbbb69ef82a5611c940bb8a3a90d52851c1bbef9b64a2bd"
+      "semantic_hash": "sha256:ede3fdb3ab439e61e616ab9017c04b71efc513861c6422f941e5f9f74e9ef627"
     },
     "backend/app/services/release_service.py": {
       "entities": [
@@ -61930,6 +61944,26 @@
       "language": "python",
       "module_page": "test_profile_capacity_migrations",
       "semantic_hash": "sha256:3438f37dac751d045f6a9a07c34fdbb635543a4e96da3a7681db84c64f83a44c"
+    },
+    "backend/tests/test_project_working_timezone.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Declared project working zones survive transport and drive local work dates.",
+          "functions": {
+            "test_managed_creation_read_and_update_preserve_declared_zone": "—",
+            "test_project_zone_drives_actual_manual_day_and_metric_day": "—"
+          }
+        }
+      },
+      "hash": "sha256:1ce355536cfcbc65bcd72722794aa9298958ca4e6ef191b9e9580019d05ca776",
+      "language": "python",
+      "module_page": "test_project_working_timezone",
+      "semantic_hash": "sha256:2326c984b218d4e4258b9743e82b48eae802637719d1ce3d377dd464a41ac84f"
     },
     "backend/tests/test_runtime_boundaries.py": {
       "entities": [

@@ -8,6 +8,8 @@ Project metadata pages have ascending IDs and a carried initial upper bound, so 
 
 Project service with CRUD and summary logic.
 
+Creation persists the validated declared working timezone, retaining the compatible UTC default. Subsequent metadata updates preserve the stored zone unless the caller explicitly changes it; local work and metric dates consume that declared project zone rather than inferring historical location.
+
 Deletion preflights management authority, task and dependency constraints, and queued or active execution references. Unsafe execution scope prevents removal before task detachment; a successful removal retains attributable audit and outbox history without reusing the project's recording identity.
 
 ## Imports
@@ -52,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
+| Inbound | `backend` (11) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (12) |
 
@@ -62,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

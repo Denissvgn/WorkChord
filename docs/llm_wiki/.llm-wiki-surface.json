@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 700,
+      "modules": 701,
       "workflows": 180
     },
     "dependency_architecture": 2,
-    "total": 2949
+    "total": 2950
   },
   "dependency_pages": {
     "count": 2,
@@ -42119,6 +42119,7 @@
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
         "modules/test_project_identity_scope.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -54828,6 +54829,7 @@
         "modules/routers_agent_planning.md",
         "modules/schemas___init__.md",
         "modules/schemas_project.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_time_reports.md"
       ],
       "role": "semantic",
@@ -57599,6 +57601,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_effective_deferral.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -57955,7 +57958,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_effective_deferral.md",
-        "modules/test_task_domain.md"
+        "modules/test_project_working_timezone.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_domain_service.py",
@@ -70988,6 +70991,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_effective_deferral.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md"
       ],
@@ -73955,6 +73959,18 @@
       "role": "semantic",
       "source_path": "backend/tests/database_migration/test_project_identity_scope.py",
       "title": "test_project_identity_scope Module"
+    },
+    {
+      "canonical_path": "modules/test_project_working_timezone.md",
+      "id": "test_project_working_timezone",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_project_working_timezone",
+      "outgoing_internal_links": [
+        "modules/test_project_working_timezone.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_project_working_timezone.py",
+      "title": "test_project_working_timezone Module"
     },
     {
       "canonical_path": "modules/test_query_boundaries.md",
@@ -87921,6 +87937,7 @@
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
         "modules/test_project_identity_scope.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -88632,6 +88649,7 @@
         "modules/test_profile_capacity_migrations.md",
         "modules/test_project_identity.md",
         "modules/test_project_identity_scope.md",
+        "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
         "modules/test_routing_evidence.md",
         "modules/test_runtime_boundaries.md",
@@ -88726,5 +88744,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:b586501a44b694610129738443f343a2599f55abd458b767199fb74244896e58"
+  "source_hash": "sha256:81bb3ee9ae79d164bf9fa953188f28aa2973badee7540ce3f9e1555688b35114"
 }
