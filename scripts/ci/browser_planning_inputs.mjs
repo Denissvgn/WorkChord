@@ -1,0 +1,87 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+const baseURL = process.env.BROWSER_BASE_URL;
+if (baseURL !== 'http://localhost:4173' || process.env.WORKCHORD_FIXTURE_PLANNING !== 'true') throw Error('Owned planning fixture required');
+const browser = await chromium.launch({ headless: true });
+const artifacts = process.env.BROWSER_ARTIFACTS_DIR;
+const steps = [], errors = [];
+const login = async context => {
+  const page = await context.newPage();
+  for (let attempt = 0; attempt < 60; attempt++) {
+    try { if ((await context.request.get('/api/auth/me', { timeout: 1000 })).ok()) break; } catch { /* Wait only for the owned fixture. */ }
+    if (attempt === 59) throw Error('Owned application did not start');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const fixture = await context.request.get('/api/auth/me');
+  assert.equal(fixture.headers()['x-workchord-fixture'], process.env.WORKCHORD_FIXTURE_NONCE);
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Sign in', exact: true }).click();
+  await page.getByRole('link', { name: 'Continue as Dora' }).click();
+  await page.getByText('Dora', { exact: true }).first().waitFor();
+  const me = await (await context.request.get('/api/auth/me')).json();
+  return { page, headers: { 'X-CSRF-Token': me.csrf_token, Origin: baseURL } };
+};
+try {
+  const main = await browser.newContext({ baseURL, viewport: { width: 1440, height: 1000 } });
+  const peer = await browser.newContext({ baseURL });
+  const { page } = await login(main), { headers: peerHeaders } = await login(peer);
+  page.on('pageerror', error => errors.push(error.message));
+  const capability = await (await main.request.get('/api/tasks/capabilities')).json();
+  assert.equal(capability.aggregate_revisions_required, true);
+  const calendarRead = page.waitForResponse(response => /planning-inputs\/calendar\/\d+\/context$/.test(new URL(response.url()).pathname));
+  await page.goto('/calendar');
+  const calendar = await (await calendarRead).json();
+  await page.getByLabel('Date', { exact: true }).fill('2026-12-31');
+  await page.getByRole('button', { name: 'Add day', exact: true }).click();
+  const peerCalendar = await peer.request.put(`/api/calendars/${calendar.resource_id}`, { headers: { ...peerHeaders, 'X-Expected-Revisions': JSON.stringify(calendar.expected_revisions) }, data: { name: 'Peer calendar' } });
+  assert.equal(peerCalendar.status(), 200, await peerCalendar.text());
+  let saved = page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith(`/api/calendars/${calendar.resource_id}`));
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  let response = await saved;
+  assert.equal(response.status(), 409);
+  assert.deepEqual(JSON.parse(response.request().headers()['x-expected-revisions']), calendar.expected_revisions);
+  await page.getByRole('button', { name: 'Keep draft with current version', exact: true }).click();
+  await page.getByRole('button', { name: 'Save settings', exact: true }).waitFor({ state: 'visible' });
+  await page.waitForFunction(() => !Array.from(document.querySelectorAll('button')).find(button => button.textContent.trim() === 'Save settings')?.disabled);
+  saved = page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith(`/api/calendars/${calendar.resource_id}`));
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  assert.equal((await saved).status(), 200);
+  const readback = await (await peer.request.get(`/api/calendars/${calendar.resource_id}`)).json();
+  assert.ok(readback.holidays.includes('2026-12-31'));
+  steps.push('Strict calendar editor retains original map, rejects peer change, preserves holiday draft and explicitly reapplies');
+  await page.goto('/team');
+  const profileRead = page.waitForResponse(response => /planning-inputs\/profile\/\d+\/context$/.test(new URL(response.url()).pathname));
+  await page.locator('.card').filter({ has: page.getByRole('heading', { name: 'Shared owner', exact: true }) }).getByRole('button', { name: 'Edit', exact: true }).click();
+  const profile = await (await profileRead).json();
+  await page.getByRole('heading', { name: 'Edit profile', exact: true }).waitFor();
+  const input = page.getByRole('textbox', { name: 'Display name', exact: true });
+  await input.fill('Retained operator profile');
+  const peerProfile = await peer.request.put(`/api/team-member-profiles/${profile.resource_id}`, { headers: { ...peerHeaders, 'X-Expected-Revisions': JSON.stringify(profile.expected_revisions) }, data: { display_name: 'Peer profile' } });
+  assert.equal(peerProfile.status(), 200, await peerProfile.text());
+  saved = page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith(`/api/team-member-profiles/${profile.resource_id}`));
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  response = await saved; assert.equal(response.status(), 409);
+  assert.equal(await input.inputValue(), 'Retained operator profile');
+  assert.deepEqual(JSON.parse(response.request().headers()['x-expected-revisions']), profile.expected_revisions);
+  await page.getByRole('button', { name: 'Keep draft with current version', exact: true }).click();
+  await page.waitForFunction(() => !Array.from(document.querySelectorAll('button')).find(button => button.textContent.trim() === 'Save')?.disabled);
+  assert.equal(await input.inputValue(), 'Retained operator profile');
+  saved = page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith(`/api/team-member-profiles/${profile.resource_id}`));
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  const profileSaved = await saved;
+  assert.equal(profileSaved.status(), 200);
+  assert.equal(profileSaved.request().postDataJSON().display_name, 'Retained operator profile');
+  assert.equal((await profileSaved.json()).display_name, 'Retained operator profile');
+  const current = await (await peer.request.get(`/api/team-member-profiles/${profile.resource_id}`)).json();
+  assert.equal(current.display_name, 'Retained operator profile');
+  steps.push('Strict shared profile editor preserves text and original multi-iteration map until explicit comparison');
+  await page.screenshot({ path: join(artifacts, 'planning-operator-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: join(artifacts, 'planning-operator-mobile.png'), fullPage: true });
+  assert.deepEqual(errors, []);
+  await writeFile(join(artifacts, 'managed-browser.json'), JSON.stringify({ status: 'passed', browser: browser.version(), node: process.version, steps, pageErrors: errors, issuer: 'disposable-synthetic-oidc', realProviderPilot: false, strictMutationVersions: true }, null, 2));
+} catch (error) {
+  await writeFile(join(artifacts, 'planning-browser-failure.json'), JSON.stringify({ error: String(error), steps, pageErrors: errors }, null, 2)); throw error;
+} finally { await browser.close(); }

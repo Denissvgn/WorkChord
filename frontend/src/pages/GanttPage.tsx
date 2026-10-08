@@ -1,3 +1,6 @@
+import { useAdminAccess } from '../hooks/useAdminAccess';
+import { planningInputService } from '../services/planningInputService';
+import type { Iteration } from '../types/iteration';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +26,7 @@ import clsx from 'clsx';
 import { useToast } from '../components/feedback/toast';
 import { snapshotService } from '../services/snapshotService';
 import type { IterationSnapshot } from '../services/snapshotService';
-import { getAdminAccessErrorMessage, hasAdminApiKey } from '../utils/adminAccess';
+import { getAdminAccessErrorMessage } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
 import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
 
@@ -65,6 +68,7 @@ const markSandboxModified = (tasks: GanttTask[], changes: Record<number, Partial
 
 const GanttPage = () => {
     const queryClient = useQueryClient();
+    const { hasAdminAccess } = useAdminAccess();
     const { t } = useTranslation();
     const toast = useToast();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
@@ -73,7 +77,7 @@ const GanttPage = () => {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [editingExplanationTask, setEditingExplanationTask] = useState<GanttTask | null>(null);
     const [snapshotsOpen, setSnapshotsOpen] = useState(false);
-    const [restoreTarget, setRestoreTarget] = useState<IterationSnapshot | null>(null);
+    const [restoreTarget, setRestoreTarget] = useState<(IterationSnapshot & { iteration_id: number; expected_revision: number }) | null>(null);
     const [restoreError, setRestoreError] = useState<string | null>(null);
     const latestExplainIterationRef = useRef<number | null>(null);
 
@@ -98,8 +102,15 @@ const GanttPage = () => {
         enabled: snapshotsOpen && selectedIterationId > 0,
     });
 
+    const observeRestore = async (snapshot: IterationSnapshot) => {
+        try {
+            const observed = await planningInputService.readInitial<Iteration>('iteration', selectedIterationId);
+            setRestoreError(null); setRestoreTarget({ ...snapshot, iteration_id: selectedIterationId, expected_revision: observed.expected_revisions[selectedIterationId] });
+        } catch (cause) { setRestoreError(getApiErrorMessage(cause, t('snapshots.restoreFailed'))); }
+    };
+
     const restoreMutation = useMutation({
-        mutationFn: (snapshot: IterationSnapshot) => snapshotService.restore(selectedIterationId, snapshot.filename),
+        mutationFn: (snapshot: IterationSnapshot & { iteration_id: number; expected_revision: number }) => snapshotService.restore(snapshot.iteration_id, snapshot.filename, snapshot.expected_revision),
         onSuccess: async response => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['snapshots', selectedIterationId] }),
@@ -705,12 +716,12 @@ const GanttPage = () => {
                                     <p className="text-sm text-content-secondary">{snapshot.created_at ? t('snapshots.created', { date: formatDateTime(snapshot.created_at) }) : t('common.unknown')}</p>
                                     <p className="text-sm text-content-secondary">{t('snapshots.reason', { reason: snapshot.reason })}</p>
                                 </div>
-                                <Button variant="danger" disabled={!hasAdminApiKey()} onClick={() => { setRestoreError(null); setRestoreTarget(snapshot); }}>{t('snapshots.restore')}</Button>
+                                <Button variant="danger" disabled={!hasAdminAccess} onClick={() => void observeRestore(snapshot)}>{t('snapshots.restore')}</Button>
                             </li>
                         ))}
                     </ul>
                 )}
-                {!hasAdminApiKey() && (
+                {!hasAdminAccess && (
                     <div className="mt-4 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                         <p>{t('snapshots.adminRequired')}</p>
                         <Link className="mt-2 inline-block font-medium underline" to="/settings?tab=admin_access">{t('snapshots.goToSettings')}</Link>
@@ -721,13 +732,13 @@ const GanttPage = () => {
             <ConfirmDialog
                 open={restoreTarget !== null}
                 title={t('snapshots.restoreTitle')}
-                description={<>{t('snapshots.restoreBody')}{restoreError && <span role="alert" className="mt-2 block text-feedback-danger-foreground">{restoreError}</span>}</>}
+                description={<>{t('snapshots.restoreBody')}{restoreError && <span role="alert" className="mt-2 block text-feedback-danger-foreground">{restoreError}<Button type="button" variant="secondary" disabled={restoreMutation.isPending} onClick={() => { if (restoreTarget) void observeRestore(restoreTarget); }}>{t('planningInput.reviewAgain')}</Button></span>}</>}
                 confirmLabel={t('snapshots.restore')}
                 cancelLabel={t('actions.cancel')}
                 closeLabel={t('actions.close')}
                 pending={restoreMutation.isPending}
                 onCancel={() => { setRestoreTarget(null); setRestoreError(null); }}
-                onConfirm={() => { if (restoreTarget && hasAdminApiKey()) restoreMutation.mutate(restoreTarget); }}
+                onConfirm={() => { if (restoreTarget && restoreTarget.iteration_id === selectedIterationId && hasAdminAccess) restoreMutation.mutate(restoreTarget); }}
             />
 
             <TaskEditModal

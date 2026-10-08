@@ -37,6 +37,12 @@ def main():
                     db.add(ProjectMembership(principal_id=principal.id, project_id=scenario.projects[index if index < 2 else 0], role="manager" if index < 2 else "reviewer"))
                     if index == 0:
                         db.add(PrincipalProfileLink(principal_id=principal.id, profile_id=scenario.profile, linked_by_principal_id=principal.id))
+                if os.environ.get('WORKCHORD_FIXTURE_PLANNING') == 'true':
+                    from app.models.identity import WorkspaceMembership
+                    operator = Principal(kind='human', display_name='Dora')
+                    db.add(operator); await db.flush()
+                    db.add(IdentitySubject(principal_id=operator.id, issuer=os.environ.get('WORKCHORD_FIXTURE_ISSUER', 'http://oidc:8002'), subject='dora'))
+                    db.add(WorkspaceMembership(principal_id=operator.id, role='owner'))
                 await db.commit()
         await close_database()
 

@@ -119,6 +119,7 @@ def parse_args():
     mode.add_argument('--backend-only', action='store_true')
     parser.add_argument('--full-backend', action='store_true')
     parser.add_argument('--managed-browser', action='store_true')
+    parser.add_argument('--planning-browser', action='store_true')
     parser.add_argument('--time-entries', action='store_true')
     parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800,
                         help='Work budget; leave time outside this for cleanup and uploads')
@@ -129,6 +130,8 @@ def parse_args():
         selected = ['browser']
     else:
         selected = ['sqlite', 'postgresql'] + ([] if args.backend_only else ['frontend', 'browser'])
+    if args.planning_browser and not args.managed_browser:
+        parser.error('--planning-browser requires --managed-browser')
     if args.managed_browser and 'browser' not in selected:
         parser.error('--managed-browser requires browser checks')
     if args.full_backend and not set(selected).intersection({'sqlite', 'postgresql'}):
@@ -194,7 +197,7 @@ def main():
                 browser_dir.mkdir()
                 run.run('browser-install', ['npm', 'install', '--ignore-scripts', '--no-audit', '--no-fund', f'playwright@{PLAYWRIGHT_VERSION}'], cwd=browser_dir, env=env, timeout=180)
                 run.run('browser-runtime', ['npx', '--no-install', 'playwright', 'install', 'chromium'], cwd=browser_dir, env=env, timeout=180)
-                browser_file = 'browser_managed_work.mjs' if args.managed_browser else 'browser_write_readback.mjs'
+                browser_file = 'browser_planning_inputs.mjs' if args.planning_browser else 'browser_managed_work.mjs' if args.managed_browser else 'browser_write_readback.mjs'
                 shutil.copyfile(ROOT / 'scripts/ci' / browser_file, browser_dir / browser_file)
                 if args.managed_browser:
                     shutil.copyfile(ROOT / 'scripts/ci/browser_worker.mjs', browser_dir / 'browser_worker.mjs')
@@ -202,6 +205,8 @@ def main():
                     'VITE_API_URL': 'http://127.0.0.1:8001', 'BROWSER_BASE_URL': 'http://localhost:4173',
                     'BROWSER_ARTIFACTS_DIR': str(run.output), 'WORKCHORD_FIXTURE_ISSUER': 'http://localhost:8002',
                     'WORKCHORD_FIXTURE_NONCE': uuid4().hex, 'WORKCHORD_BROWSER_PYTHON': sys.executable}
+                if args.planning_browser:
+                    app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_PLANNING='true')
                 app_env['TIME_ENTRIES_ENABLED'] = 'true' if args.time_entries else 'false'
                 if args.managed_browser:
                     app_env.update(WORKCHORD_AUTH_MODE='managed', OIDC_ISSUER_URL='http://localhost:8002',

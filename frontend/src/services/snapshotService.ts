@@ -22,10 +22,10 @@ export const snapshotService = {
         return response.data;
     },
 
-    restore: async (iterationId: number, filename: string) => {
+    restore: async (iterationId: number, filename: string, expectedRevision: number) => {
         const response = await api.post<SnapshotRestoreResponse>(
             `/iterations/${iterationId}/snapshots/${encodeURIComponent(filename)}/restore`,
-            { confirm: true },
+            { confirm: true, expected_revision: expectedRevision },
         );
         return response.data;
     },
