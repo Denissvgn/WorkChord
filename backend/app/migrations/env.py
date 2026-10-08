@@ -23,6 +23,37 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 
+def migrate_connection(connection):
+    """Own SQLite's transactional rebuild without cascading dependent references."""
+    if connection.dialect.name != "sqlite":
+        context.configure(connection=connection, target_metadata=target_metadata)
+        with context.begin_transaction():
+            context.run_migrations()
+        return
+    if connection.connection.driver_connection.in_transaction:
+        raise RuntimeError("SQLite migrations require a connection without pending writes")
+    from app.database_migration.project_identity import inspect_project_identity
+    inspect_project_identity(connection)
+    foreign_keys = connection.exec_driver_sql("PRAGMA foreign_keys").scalar_one()
+    connection.commit()
+    connection.exec_driver_sql("PRAGMA foreign_keys=OFF")
+    connection.commit()
+    try:
+        connection.exec_driver_sql("BEGIN IMMEDIATE")
+        context.configure(connection=connection, target_metadata=target_metadata, transactional_ddl=True)
+        with context.begin_transaction():
+            context.run_migrations()
+        if connection.exec_driver_sql("PRAGMA foreign_key_check").first() is not None:
+            raise RuntimeError("Migration would leave inconsistent foreign-key references")
+        connection.commit()
+    except BaseException:
+        connection.rollback()
+        raise
+    finally:
+        connection.exec_driver_sql(f"PRAGMA foreign_keys={'ON' if foreign_keys else 'OFF'}")
+        connection.commit()
+
+
 def run_migrations_offline() -> None:
     """Run migrations in offline mode."""
     context.configure(
@@ -40,12 +71,7 @@ def run_migrations_online() -> None:
     """Run migrations in online mode."""
     provided_connection = config.attributes.get("connection")
     if provided_connection is not None:
-        context.configure(
-            connection=provided_connection,
-            target_metadata=target_metadata,
-        )
-        with context.begin_transaction():
-            context.run_migrations()
+        migrate_connection(provided_connection)
         return
 
     connectable = engine_from_config(
@@ -56,10 +82,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
-
-        with context.begin_transaction():
-            context.run_migrations()
+        migrate_connection(connection)
 
 
 if context.is_offline_mode():

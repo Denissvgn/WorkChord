@@ -568,6 +568,11 @@ def _repair_sequences(connection: Connection) -> dict[str, Any]:
         if not sequence:
             continue
         maximum = connection.execute(select(func.max(column))).scalar_one()
+        if table_name == "projects":
+            from app.database_migration.project_identity import project_allocation_floor
+            quoted_sequence = ".".join(connection.dialect.identifier_preparer.quote(part.strip('"')) for part in sequence.split("."))
+            allocated, called = connection.execute(text(f"SELECT last_value,is_called FROM {quoted_sequence}")).one()
+            maximum = max(int(maximum or 0), project_allocation_floor(connection), int(allocated) - (0 if called else 1)) or None
         if maximum is None:
             connection.execute(
                 text("SELECT setval(CAST(:sequence AS regclass), 1, false)"),
@@ -1034,6 +1039,9 @@ def _sequence_facts(connection: Connection) -> dict[str, Any]:
             text(f"SELECT last_value, is_called FROM {qualified}")
         ).one()
         maximum = connection.execute(select(func.max(column))).scalar_one()
+        if table_name == "projects":
+            from app.database_migration.project_identity import project_allocation_floor
+            maximum = max(int(maximum or 0), project_allocation_floor(connection)) or None
         next_value = int(state[0]) + (1 if state[1] else 0)
         safe = maximum is None or next_value > int(maximum)
         results[table_name] = {
