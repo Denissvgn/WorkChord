@@ -43,7 +43,7 @@ flowchart LR
     n9["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
     n10["test_reparenting_recomputes_inherited_deferral_without_copying_the_flag (backend/tests/test_effective_deferral.py)"]
     n11["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
-    n12["test_project_zone_drives_actual_manual_day_and_metric_day (backend/tests/test_project_working_timezone.py)"]
+    n12["test_scheduled_agent_start_and_human_dates_reconcile (backend/tests/test_execution_working_dates.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -68,7 +68,7 @@ flowchart LR
     click n9 "../modules/test_effective_deferral.md"
     click n10 "../modules/test_effective_deferral.md"
     click n11 "../modules/test_effective_deferral.md"
-    click n12 "../modules/test_project_working_timezone.md"
+    click n12 "../modules/test_execution_working_dates.md"
 ```
 
 ### Summary
@@ -92,6 +92,6 @@ flowchart LR
 | `test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 | `test_reparenting_recomputes_inherited_deferral_without_copying_the_flag` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 | `test_stale_session_cannot_ignore_a_committed_ancestor_deferral` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 1 |
-| `test_project_zone_drives_actual_manual_day_and_metric_day` | call | [test_project_working_timezone](../modules/test_project_working_timezone.md) | 1 |
+| `test_scheduled_agent_start_and_human_dates_reconcile` | call | [test_execution_working_dates](../modules/test_execution_working_dates.md) | 1 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

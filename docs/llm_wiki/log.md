@@ -1790,3 +1790,21 @@ Complete initial planning-input observations now share scope resolution and auth
 - Unsupported infrastructure YAML: 6
 
 Self-hosted acceptance now retains bounded public artifacts and supports independent offline archive verification, preserving exact signed identities and failure/non-production boundaries.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7ac058e28219c34a8b7f0feca258a331dde16d5875f6c7c395b6f88397efdc94`
+- Pages created: 1
+- Pages updated: 25
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2930
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Assigned normal execution now uses the declared project working day for scheduled start decisions, consistent with human work and schedule signals.

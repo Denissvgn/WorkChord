@@ -18,77 +18,30 @@ Explicit task commands and typed action availability.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/mcp_agent_tools.py"]
-    n1["backend/app/routers/task_domain.py"]
-    n2["backend/app/schemas/task_detail.py"]
-    n3["backend/app/schemas/task_domain.py"]
-    n4["backend/app/services/task_domain_service.py"]
-    n5["backend/tests/test_delivery_dependencies.py"]
-    n6["backend/tests/test_delivery_metrics.py"]
-    n7["backend/tests/test_effective_deferral.py"]
-    n8["backend/tests/test_project_working_timezone.py"]
-    n9["backend/tests/test_task_domain.py"]
-    n10["backend/tests/test_task_domain_integrity.py"]
-    n11["scripts/generate_mobile_contract_fixtures.py"]
-    n0 --> n3
-    n0 --> n4
-    n1 --> n2
-    n1 --> n3
-    n1 --> n4
-    n2 --> n3
-    n4 --> n3
-    n5 --> n3
-    n5 --> n4
-    n6 --> n3
-    n6 --> n4
-    n6 --> n9
-    n7 --> n3
-    n7 --> n4
-    n8 --> n3
-    n8 --> n4
-    n9 --> n0
-    n9 --> n3
-    n9 --> n4
-    n10 --> n3
-    n10 --> n4
-    n10 --> n9
-    n11 --> n2
-    n11 --> n3
-    click n0 "../modules/mcp_agent_tools.md"
-    click n1 "../modules/routers_task_domain.md"
-    click n2 "../modules/task_detail.md"
-    click n3 "../modules/schemas_task_domain.md"
-    click n4 "../modules/task_domain_service.md"
-    click n5 "../modules/test_delivery_dependencies.md"
-    click n6 "../modules/test_delivery_metrics.md"
-    click n7 "../modules/test_effective_deferral.md"
-    click n8 "../modules/test_project_working_timezone.md"
-    click n9 "../modules/test_task_domain.md"
-    click n10 "../modules/test_task_domain_integrity.md"
-    click n11 "../modules/generate_mobile_contract_fixtures.md"
+    n0["backend"]
+    n1["backend/app/schemas/task_domain.py"]
+    n2["scripts"]
+    n0 --> n1
+    n2 --> n1
+    click n1 "../modules/schemas_task_domain.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
-| Inbound | [task_detail](../modules/task_detail.md) |
-| Inbound | [task_domain_service](../modules/task_domain_service.md) |
-| Inbound | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) |
-| Inbound | [test_delivery_metrics](../modules/test_delivery_metrics.md) |
-| Inbound | [test_effective_deferral](../modules/test_effective_deferral.md) |
-| Inbound | [test_project_working_timezone](../modules/test_project_working_timezone.md) |
-| Inbound | [test_task_domain](../modules/test_task_domain.md) |
-| Inbound | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) |
-| Inbound | [generate_mobile_contract_fixtures](../modules/generate_mobile_contract_fixtures.md) |
+| Inbound | `backend` (11) |
+| Inbound | `scripts` (1) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -126,4 +126,4 @@ flowchart LR
 | `AgentService.create_task` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `TaskService.create` | type_reference | [task_service](../modules/task_service.md) | — |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.

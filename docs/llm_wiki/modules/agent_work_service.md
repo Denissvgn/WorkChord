@@ -10,6 +10,8 @@ Assigned work retains exact actor, assignment, claim generation, model and task-
 
 Assigned definition and start decisions use complete inherited deferral policy. Live renewal, successful submission and fence replay recheck execution eligibility; ancestor edits invalidate descendant task context even when a legacy structural parent's summary flag is stale. Old worker fences cannot authorize changed scope, while existing failure, recovery and independent rework paths remain distinct.
 
+Assigned normal execution compares scheduled starts with the project working date at the captured UTC instant, using the same date helper as human lifecycle and schedule signals. Future starts remain blocked across local midnight and DST boundaries. Inherited deferral, exact assignment lineage, dependency readiness, claims and structured verification fences remain mandatory.
+
 ## Imports
 
 | Source | Symbols |
@@ -37,7 +39,7 @@ Assigned definition and start decisions use complete inherited deferral policy. 
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `binascii` | `binascii` |
-| `datetime` | `date`, `datetime`, `timedelta` |
+| `datetime` | `datetime`, `timedelta` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `logging` | `logging` |
@@ -65,7 +67,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Outbound | `backend` (20) |
 
 ### External packages
@@ -74,7 +76,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

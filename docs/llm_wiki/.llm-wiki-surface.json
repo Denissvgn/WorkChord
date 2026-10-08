@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 710,
+      "modules": 711,
       "workflows": 182
     },
     "dependency_architecture": 2,
-    "total": 2967
+    "total": 2968
   },
   "dependency_pages": {
     "count": 2,
@@ -42303,6 +42303,7 @@
         "modules/test_documentation_boundary.md",
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
+        "modules/test_execution_working_dates.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -57873,6 +57874,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_effective_deferral.md",
+        "modules/test_execution_working_dates.md",
         "modules/test_project_working_timezone.md",
         "modules/test_task_domain.md"
       ],
@@ -58230,7 +58232,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_effective_deferral.md",
-        "modules/test_project_working_timezone.md"
+        "modules/test_execution_working_dates.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_domain_service.py",
@@ -71347,18 +71349,7 @@
         "entities/TaskActionBlocker.md",
         "entities/TaskActionRequest.md",
         "entities/TaskActionsResponse.md",
-        "modules/generate_mobile_contract_fixtures.md",
-        "modules/mcp_agent_tools.md",
-        "modules/routers_task_domain.md",
-        "modules/schemas_task_domain.md",
-        "modules/task_detail.md",
-        "modules/task_domain_service.md",
-        "modules/test_delivery_dependencies.md",
-        "modules/test_delivery_metrics.md",
-        "modules/test_effective_deferral.md",
-        "modules/test_project_working_timezone.md",
-        "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/schemas_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_domain.py",
@@ -73991,6 +73982,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_execution_usage.py",
       "title": "test_execution_usage Module"
+    },
+    {
+      "canonical_path": "modules/test_execution_working_dates.md",
+      "id": "test_execution_working_dates",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_execution_working_dates",
+      "outgoing_internal_links": [
+        "modules/test_execution_working_dates.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_execution_working_dates.py",
+      "title": "test_execution_working_dates Module"
     },
     {
       "canonical_path": "modules/test_human_work_queries.md",
@@ -88400,6 +88403,7 @@
         "modules/test_documentation_boundary.md",
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
+        "modules/test_execution_working_dates.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -89121,6 +89125,7 @@
         "modules/test_documentation_boundary.md",
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
+        "modules/test_execution_working_dates.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -89243,5 +89248,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f9a4dab95bcf526e044be93fcf98b8f04e428179d3dcfe921a63e65f7af69195"
+  "source_hash": "sha256:1ba13d54d8abe51428f4db2f7ccd93cf5654e2f3139bd99382ebb3ecb4075c96"
 }

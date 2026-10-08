@@ -40,6 +40,7 @@ Separate-process protocol simulation; no provider or pilot acceptance implied.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_agent_runtime_recovery.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_agent_runtime_recovery.md"
 ```
@@ -50,6 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -58,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
