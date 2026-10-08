@@ -930,7 +930,7 @@ class TaskService:
                     "new": sorted(new_dep_ids),
                 }
 
-        if changed_fields and task.is_summary:
+        if changed_fields and (task.is_summary or task.children):
             for child_id in sorted((await self._task_subtree_ids(task.id)) - {task.id}):
                 child = await self.db.get(Task, child_id)
                 await self.reserve_task_version(child, child.version)

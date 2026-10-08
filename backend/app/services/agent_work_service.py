@@ -2418,6 +2418,7 @@ class AgentWorkService:
                 data.expected_task_version,
                 self.task_service._metadata_from_task(task),
             )
+        self._require_current_execution_policy(task)
         await self.task_service.reserve_task_version(task, task.version)
         now = utc_now()
         task.claim_expires_at = now + timedelta(seconds=data.lease_seconds)
@@ -2556,6 +2557,8 @@ class AgentWorkService:
                 data.expected_task_version,
                 self.task_service._metadata_from_task(task),
             )
+        if success:
+            self._require_current_execution_policy(task)
         now = utc_now()
         run.status = "succeeded" if success else data.status
         run.ended_at = now
@@ -3735,7 +3738,8 @@ class AgentWorkService:
     def _definition_blockers(self, task: Task) -> list[str]:
         brief = parse_task_brief(task.description)
         blockers: list[str] = []
-        if task.status != TaskStatus.PLANNED.value or task.is_deferred or task.canceled_at or task.blocked_reason:
+        from app.services.work_metrics import effective_work_flags
+        if task.status != TaskStatus.PLANNED.value or effective_work_flags(task)["effective_is_deferred"] or task.canceled_at or task.blocked_reason:
             blockers.append("definition_status")
         if task.children or task.is_summary:
             blockers.append("composite_task")
@@ -3819,7 +3823,8 @@ class AgentWorkService:
         )
         if task.status != expected_status:
             blockers.append(f"task_status_{expected_status}_required")
-        if task.is_deferred or task.canceled_at or task.blocked_reason:
+        from app.services.work_metrics import effective_work_flags
+        if effective_work_flags(task)["effective_is_deferred"] or task.canceled_at or task.blocked_reason:
             blockers.append("task_deferred")
         if task.effort_hours is None or task.effort_hours <= 0:
             blockers.append("effort_priority")
@@ -3884,6 +3889,9 @@ class AgentWorkService:
         else:
             if assignment.state == "accepted":
                 blockers = []
+                from app.services.work_metrics import effective_work_flags
+                if effective_work_flags(task)["effective_is_deferred"]:
+                    blockers.append("task_deferred")
                 if assignment.task_version != task.version:
                     blockers.append("assignment_task_version_stale")
             else:
@@ -4127,9 +4135,16 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Idempotent live-work receipt is no longer authoritative; refetch work state"
             )
+        self._require_current_execution_policy(task)
         replay = dict(snapshot)
         replay["claim_id"] = current_claim
         return AgentWorkBeginResponse.model_validate(replay)
+
+    @staticmethod
+    def _require_current_execution_policy(task):
+        from app.services.work_metrics import effective_work_flags
+        if effective_work_flags(task)["effective_is_deferred"]:
+            raise AgentConflictError("Current task ancestry is deferred; recovery is required before executing work")
 
     async def _record_idempotency(
         self,

@@ -9,6 +9,7 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.schemas.task import TaskAgentReadiness, TaskAgentReadinessCriterion
 from app.services.agent_routing_policy import CAPABILITY_LABEL_SKILL_KEYS
 from app.utils.time import as_utc, utc_now
+from app.services.work_metrics import effective_work_flags
 
 
 DEFAULT_AGENT_CAPABILITY_SLUGS = frozenset(CAPABILITY_LABEL_SKILL_KEYS)
@@ -89,12 +90,19 @@ def evaluate_agent_readiness(
     blockers: list[str] = []
     warnings: list[str] = []
 
-    planned_and_available = task.status == TaskStatus.PLANNED.value and not task.is_deferred and not task.canceled_at and not task.blocked_reason
+    try:
+        deferred = effective_work_flags(task)["effective_is_deferred"]
+        ancestry_known = True
+    except ValueError:
+        deferred, ancestry_known = True, False
+    planned_and_available = task.status == TaskStatus.PLANNED.value and not deferred and not task.canceled_at and not task.blocked_reason
     status_reason = (
         "Task is planned and not deferred."
         if planned_and_available
         else "Task must be planned and not deferred."
     )
+    if not ancestry_known:
+        status_reason = "Task ancestry is unavailable; repair or reload it before handoff."
     _add_criterion(
         criteria,
         blockers,
