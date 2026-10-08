@@ -2,6 +2,10 @@ import { expect, it, vi } from 'vitest';
 import { act, screen, waitFor } from '@testing-library/react';
 import { createTestQueryClient, renderWithProviders } from '../test/renderWithProviders';
 import MyWorkPage from './MyWorkPage';
+import { IdentityContext } from '../features/identity/identityContext';
+import { buildTaskEditorDefaults } from '../components/tasks/taskEditorContract';
+import { writeTaskDraft } from '../components/tasks/taskDraftStorage';
+import type { Task } from '../types/task';
 
 const api = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
@@ -43,4 +47,24 @@ it('waits for a current task read before initializing a clean editor', async () 
     } finally {
         client.clear();
     }
+});
+
+it('recovers user input with its original observed version instead of silently rebasing it', async () => {
+    const original = { id: 9, iteration_id: null, project_id: 1, title: 'Original task', version: 1,
+        status: 'planned', priority: 50, effort_days: null, effort_hours: null, tags: [], dependencies: [], brief: null, parent_id: null } as unknown as Task;
+    const key = 'workchord-draft:local:direct:null:1:9';
+    writeTaskDraft(key, { ...buildTaskEditorDefaults({ task: original }), title: 'Recovered user intent' });
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/9/detail') return { data: { task: { ...original, title: 'External task edit', version: 3 }, dependencies: { items: [] }, children: { items: [] }, ancestors: [] } };
+        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: {}, has_more: false } };
+        if (path === '/projects/page') return { data: { items: [{ id: 1, name: 'Project' }], has_more: false } };
+        if (path === '/tasks/owner-options' || path === '/tasks/lookup') return { data: { items: [], has_more: false } };
+        return { data: [] };
+    });
+    const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local' } as never, refresh: vi.fn(), signOut: vi.fn() }}>
+        <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?task=9'] });
+    expect(await screen.findByRole('textbox', { name: /Task title/i })).toHaveValue('Recovered user intent');
+    await waitFor(() => expect(JSON.parse(sessionStorage.getItem(key)!).values.expected_version).toBe(1));
+    view.unmount();
+    sessionStorage.removeItem(key);
 });

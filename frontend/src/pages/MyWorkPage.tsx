@@ -1,14 +1,13 @@
 import { PageLayout, PageHeader } from '../components/ui';
 import { PersonCapacity } from '../components/tasks/PersonCapacity';
 import { useIdentity } from '../features/identity/identityContext';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../services/api';
-import { taskService } from '../services/taskService';
 import { discussionService } from '../services/discussionService';
 import type { TaskReference, TaskReferencePage } from '../types/task';
-import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
+import { CurrentTaskModal } from '../components/tasks/GuardedTaskModal';
 import { Button } from '../components/common/Button';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -37,8 +36,6 @@ const MyWorkPage = () => {
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const deliveries = useInfiniteQuery({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox', initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.deliveries(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
-    // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const detail = useQuery({ queryKey: ['task', selectedId], enabled: selectedId !== null, queryFn: () => taskService.getById(selectedId!) });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const read = useMutation({ mutationFn: ({ id, value }: { id: number; value: boolean }) => discussionService.read(id, value), onSuccess: () => inbox.refetch() });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
@@ -77,9 +74,7 @@ const MyWorkPage = () => {
             {(read.isError || retry.isError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(read.error ?? retry.error, t('teamwork.saveFailed'))}</p>}
         </>}
         {selectedQuery.hasNextPage && <Button variant="secondary" disabled={selectedQuery.isFetchingNextPage} onClick={() => void selectedQuery.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
-        {selectedId && detail.isLoading && <p role="status">{t('common.loading')}</p>}
-        {selectedId && detail.isError && <div><QueryErrorState error={detail.error} fallback={t('teamwork.taskUnavailable')} onRetry={() => void detail.refetch()} /><Button variant="ghost" onClick={() => selectTask(null)}>{t('actions.close')}</Button></div>}
-        {selectedId && detail.data && <GuardedTaskModal key={detail.data.id} title={detail.data.title} closeLabel={t('actions.close')} iterationId={detail.data.iteration_id} initialData={detail.data}
+        {selectedId && <CurrentTaskModal key={selectedId} taskId={selectedId}
             onClose={() => { selectTask(null); void work.refetch(); void reviews.refetch(); }} />}
     </section></PageLayout>;
 };

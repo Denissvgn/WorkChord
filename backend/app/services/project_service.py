@@ -996,11 +996,16 @@ class ProjectService:
         )
         result = await self.db.execute(query)
         roots = list(result.scalars().all())
+        from sqlalchemy.orm import attributes
+        for root in roots:
+            attributes.set_committed_value(root, 'parent', None)
         loaded, pending = [], list(roots)
         while pending:
             task = pending.pop()
             loaded.append(task)
-            pending.extend(task.__dict__.get("children", []))
+            for child in task.__dict__.get('children', []):
+                attributes.set_committed_value(child, 'parent', task)
+                pending.append(child)
         from app.services.task_service import TaskService
         await TaskService(self.db).load_owner_names(loaded)
         return roots

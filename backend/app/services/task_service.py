@@ -1610,7 +1610,7 @@ class TaskService:
             raise
         return await self.get_by_id(task_id)
 
-    def task_to_response(self, task: Task, iteration_end_date: Optional[date] = None) -> TaskResponse:
+    def task_to_response(self, task: Task, iteration_end_date: Optional[date] = None, *, effective_flags=None) -> TaskResponse:
         """Convert Task model to TaskResponse schema."""
         from sqlalchemy.orm import attributes
 
@@ -1649,7 +1649,7 @@ class TaskService:
         from app.services.work_metrics import task_signals
         signals = task_signals(task, iteration_end=iteration_end_date,
             project_target=loaded_project.target_date if loaded_project else None,
-            timezone=loaded_project.timezone if loaded_project else (iteration.__dict__.get("calendar").timezone if iteration is not None and iteration.__dict__.get("calendar") else "UTC"), composite=is_composite)
+            timezone=loaded_project.timezone if loaded_project else (iteration.__dict__.get("calendar").timezone if iteration is not None and iteration.__dict__.get("calendar") else "UTC"), composite=is_composite, effective_flags=effective_flags)
         is_overdue, is_delayed = signals.pop("is_overdue"), signals["is_late_start"]
 
         assignee = None
