@@ -41,7 +41,8 @@ from app.models.user_session import UserSession
 
 
 def _source_artifacts(
-    tmp_path: Path, configure_database, *, include_delivery_dependencies=False, include_retained_project_identity=False
+    tmp_path: Path, configure_database, *, include_delivery_dependencies=False, include_retained_project_identity=False,
+    include_deleted_task_allocation=False
 ) -> tuple[Path, Path, str]:
     source = tmp_path / "transfer-source.db"
     configure_database(f"sqlite+aiosqlite:///{source}")
@@ -129,6 +130,15 @@ def _source_artifacts(
                 connection.execute(Project.__table__.insert().values(id=170, name="Deleted allocation"))
                 connection.execute(Project.__table__.delete().where(Project.id == 170))
                 retained_entry(connection, 90)
+                if include_deleted_task_allocation:
+                    from app.models.recovery import TaskDeletionFence
+                    from app.models.time_entry import TimeEntry
+                    connection.execute(Project.__table__.insert().values(id=90, name="Original recording scope"))
+                    connection.execute(Task.__table__.insert().values(id=350, title="Retained task label", project_id=90, version=8))
+                    connection.execute(TimeEntry.__table__.update().values(task_id=350, task_title="Retained task label"))
+                    connection.execute(Task.__table__.delete().where(Task.id == 350))
+                    connection.execute(TaskDeletionFence.__table__.insert().values(original_task_id=350,last_version=8))
+                    connection.execute(Project.__table__.delete().where(Project.id == 90))
     finally:
         engine.dispose()
     fingerprint = "d" * 64
@@ -576,5 +586,33 @@ def test_transfer_rejects_a_misrepresented_allocation_floor_before_target_writes
         with engine.connect() as connection:
             assert connection.scalar(text("SELECT count(*) FROM database_migration_gates")) == 0
             assert connection.scalar(text("SELECT count(*) FROM time_entries")) == 0
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+def test_transfer_retains_deleted_task_allocation_and_private_recording_scope(tmp_path, postgres_database, configure_database):
+    from app.models.time_entry import TimeEntry
+    from app.models.recovery import TaskDeletionFence
+
+    snapshot, manifest, _ = _source_artifacts(tmp_path, configure_database,
+        include_retained_project_identity=True, include_deleted_task_allocation=True)
+    configure_database(postgres_database.url)
+    bootstrap_database_schema()
+    report = load_snapshot(snapshot_path=snapshot, source_manifest_path=manifest,
+        report_path=tmp_path / "retained-task-load.json", authorized_target=target_identifier(database_configuration()))
+    assert report["sequences"]["tasks"]["maximum"] == 350
+    assert report["sequences"]["tasks"]["reset_next_value"] > 350
+    engine = create_engine(postgres_database.url)
+    try:
+        with engine.begin() as connection:
+            retained = connection.execute(select(TimeEntry.__table__)).mappings().one()
+            assert retained["project_id"] == 90 and retained["task_id"] == 350
+            assert retained["task_title"] == "Retained task label"
+            assert connection.scalar(select(TaskDeletionFence.last_version).where(TaskDeletionFence.original_task_id == 350)) == 8
+            inserted = connection.execute(Task.__table__.insert().values(title="New unrelated work", iteration_id=1))
+            assert inserted.inserted_primary_key[0] > 350
     finally:
         engine.dispose()
