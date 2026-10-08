@@ -49,8 +49,14 @@ def summarize(raw, declaration):
         raise QualificationInputError("An empty run is not evidence")
     required = declaration.get('operations')
     if required is not None:
-        expected_counts = {(c, path): c * declaration['rounds'] for c in declaration['concurrency'] for path in required}
-        actual_counts = Counter((s['concurrency'], s['path']) for s in raw['samples'])
+        if (type(declaration.get('rounds')) is not int or declaration['rounds'] < 1
+                or not required or len(set(required)) != len(required)):
+            raise QualificationInputError('Frozen workload needs unique operations and positive rounds')
+        expected_counts = {(c, path, client): declaration['rounds'] for c in declaration['concurrency']
+                           for path in required for client in range(c)}
+        if any(type(s.get('client')) is not int for s in raw['samples']):
+            raise QualificationInputError('Frozen sample counts require explicit client identities')
+        actual_counts = Counter((s['concurrency'], s['path'], s['client']) for s in raw['samples'])
         if actual_counts != expected_counts:
             raise QualificationInputError('Observed operations/sample counts differ from frozen workload')
     distributions=[]
@@ -84,7 +90,7 @@ async def measure(args, declaration):
     agent_key=os.environ.get(args.agent_key_env, "")
     if not agent_key:raise QualificationInputError("Set the explicitly selected synthetic agent-key environment variable")
     profiles=[("human_reads_v1","synthetic_authenticated_human",[
-        "/api/tasks/lookup?iteration_id=1&limit=100", "/api/tasks/9/detail?children_after_id=2560",
+        "/api/tasks/lookup?iteration_id=1&limit=100", "/api/tasks/9/detail?children_after_id=2560", "bounded_polling_window",
         "/api/projects/portfolio-summaries/page?limit=100", "/api/tasks/delivery-metrics?iteration_id=3", "/api/iterations/3/tasks", "/api/team-member-profiles/1/capacity?start=2026-01-01&end=2026-02-01"]),
         ("agent_poll_v1","synthetic_agent",["/api/agent/me/work","/api/agent/me/claims","/api/agent/capabilities"]),
         ("bounded_read_limits_v1","synthetic_browser",["/api/tasks/delivery-metrics?project_id=1","/api/iterations/1/tasks"])]
@@ -99,17 +105,55 @@ async def measure(args, declaration):
             for profile,kind,paths in profiles:
                 async def client(index):
                     transport=agent if kind=="synthetic_agent" else human
+                    retained = []
                     for _ in range(declaration["rounds"]):
                         for path in paths:
-                            before=time.perf_counter();response=await transport.get(path)
+                            before=time.perf_counter()
+                            window = []
+                            if path == 'bounded_polling_window':
+                                response = await human.get('/api/tasks/lookup?iteration_id=1&limit=100')
+                                window.append(response)
+                                cursor = response.json().get('next_after_id')
+                                for position in range(4):
+                                    cursor = retained[position] if position < len(retained) else cursor
+                                    if type(cursor) is not int or cursor <= 0:
+                                        raise QualificationInputError('Retained polling cursor is unavailable')
+                                    if position == len(retained): retained.append(cursor)
+                                    response = await human.get(f'/api/tasks/lookup?iteration_id=1&limit=100&after_id={cursor}')
+                                    window.append(response); cursor = response.json().get('next_after_id')
+                                if any(r.status_code != 200 or r.headers.get('X-WorkChord-Fixture') != args.nonce
+                                       or len(r.json().get('items', [])) > 100 for r in window):
+                                    raise QualificationInputError('Bounded polling window failed')
+                            else:
+                                response=await transport.get(path)
                             if response.headers.get("X-WorkChord-Fixture")!=args.nonce:raise QualificationInputError("Fixture changed during measurement")
                             data=response.json();detail=data.get("detail") if isinstance(data,dict) else None
                             samples.append(dict(profile=profile,client_kind=kind,concurrency=concurrency,client=index,path=path,
                                 status=response.status_code,latency_ms=(time.perf_counter()-before)*1000,
-                                response_bytes=len(response.content),response_cardinality=len(data.get("items", [])) if isinstance(data,dict) and "items" in data else len(data) if isinstance(data,list) else 1,
+                                response_bytes=sum(len(r.content) for r in window) if window else len(response.content),
+                                response_cardinality=sum(len(r.json()['items']) for r in window) if window else len(data.get("items", [])) if isinstance(data,dict) and "items" in data else len(data) if isinstance(data,list) else 1,
+                                http_requests=len(window) or 1,
                                 code=detail.get("code") if isinstance(detail,dict) else None,state=data.get("state") if isinstance(data,dict) else None))
                             await asyncio.sleep(.1)
                 await asyncio.gather(*(client(i) for i in range(concurrency)))
+        atomic_write_json(args.output.with_name(args.output.stem + '-raw.json'),
+            dict(nonce=args.nonce,fixture='synthetic-owned',real_provider_pilot=False,samples=samples,
+                 resilience={'status':'recovery_pending'}),sealed=False)
+        headers={"X-CSRF-Token":identity.get("csrf_token", ""),"Origin":"http://localhost:4173"}
+        task_path = '/api/tasks/2510'
+        observed = await human.get(task_path + '/detail')
+        if observed.status_code != 200:
+            raise QualificationInputError(f'Bounded contention task unavailable: {observed.status_code}')
+        current = observed.json()['task']
+        original = current['description']
+        first = await human.put(task_path, headers=headers, json={'description': 'Owned contention probe', 'expected_version': current['version']})
+        stale = await human.put(task_path, headers=headers, json={'description': 'Stale contention probe', 'expected_version': current['version']})
+        saved = await human.get(task_path + '/detail')
+        if first.status_code != 200 or stale.status_code != 409 or saved.json().get('task', {}).get('description') != 'Owned contention probe':
+            raise QualificationInputError('Contending write fences or independent readback failed')
+        restored = await human.put(task_path, headers=headers, json={'description': original, 'expected_version': saved.json()['task']['version']})
+        if restored.status_code != 200 or (await human.get(task_path + '/detail')).json()['task']['description'] != original:
+            raise QualificationInputError('Contention cleanup/readback failed')
         headers={"X-Fixture-Key":args.nonce,"X-CSRF-Token":identity.get("csrf_token", ""),"Origin":"http://localhost:4173"}
         response=await human.post("/api/tasks/9/_fixture/read-fault",headers=headers,json={"task_id":9,"status":503})
         if response.status_code!=200:raise QualificationInputError("Controlled interruption was not authorized")
@@ -119,7 +163,7 @@ async def measure(args, declaration):
             if response.status_code!=200:raise QualificationInputError("Controlled interruption cleanup failed")
         recovered=(await human.get("/api/tasks/9/detail")).status_code
     return dict(nonce=args.nonce,fixture="synthetic-owned",real_provider_pilot=False,samples=samples,
-        resilience=dict(interruption_status=interrupted,recovery_status=recovered),
+        resilience=dict(interruption_status=interrupted,recovery_status=recovered,contention_statuses=[first.status_code,stale.status_code],contention_readback_verified=True),
         environment=dict(client_platform=platform.platform(),client_architecture=platform.machine(),python=platform.python_version(),
             httpx=httpx.__version__,base_url=base,identity_basis="synthetic_OIDC_human_and_cookie_free_agent"))
 
@@ -148,9 +192,13 @@ def main():
         result=summarize(raw,declaration)
         result['raw_observations'] = raw
         result['source_binding'] = {'before': binding, 'after': verify_binding(binding)}
-        result["source_revision"]=args.source_revision or subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
-        result["source_sha256"]=args.source_sha256
-        result["source_dirty_measurement_basis"]=bool(args.source_revision and args.source_sha256)
+        revision = subprocess.check_output(["git","rev-parse","HEAD"],cwd=Path(__file__).resolve().parents[2],text=True).strip()
+        result['source_revision'] = revision
+        result['source_sha256'] = binding['sha256']
+        result['source_binding_scope'] = 'summary_processor_only' if args.observations else 'executing_service_and_runner'
+        result['caller_source_claims'] = {'revision': args.source_revision, 'sha256': args.source_sha256}
+        if not args.observations and (args.source_revision and args.source_revision != revision or args.source_sha256 and args.source_sha256 != binding['sha256']):
+            raise QualificationInputError('Caller source claim differs from independently observed source')
         result["observations_sha256"]=sha256_file(args.observations) if args.observations else None
         result["declaration_sha256"]=sha256_file(args.declaration)
         atomic_write_json(args.output,result)

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import platform
 import sys
+from importlib.metadata import version
 
 
 def source_binding():
@@ -14,7 +15,8 @@ def source_binding():
              for path in paths}
     return {'method': 'executing_service_and_runner_files_sha256', 'files': files,
             'sha256': hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest(),
-            'python': sys.version, 'platform': platform.platform(), 'architecture': platform.machine()}
+            'python': sys.version, 'platform': platform.platform(), 'architecture': platform.machine(),
+            'packages': {name: version(name) for name in ('SQLAlchemy', 'psycopg', 'greenlet', 'httpx')}}
 
 
 def verify_binding(before):
