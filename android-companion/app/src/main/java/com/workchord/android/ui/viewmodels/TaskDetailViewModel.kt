@@ -143,7 +143,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
         val before = state.value
         val task = before.task ?: return
         val actions = before.actions ?: return
-        if (!before.allowed(action) || before.reason.isBlank()) {
+        if (action !in com.workchord.android.data.models.companionTaskCommands || !before.allowed(action) || before.reason.isBlank()) {
             state.value = before.copy(errorMessage = "Choose an available action and explain the reason.")
             return
         }

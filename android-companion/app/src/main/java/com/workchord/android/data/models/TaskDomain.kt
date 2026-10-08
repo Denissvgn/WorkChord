@@ -59,3 +59,6 @@ data class TaskDetail(val task: Task, val ancestors: List<TaskReference>?,
     @SerializedName("execution_context_complete") val executionContextComplete: Boolean?)
 data class HumanWork(val state: String?, val queues: Map<String, List<TaskReference>>?,
     @SerializedName("has_more") val hasMore: Boolean?, @SerializedName("next_after_id") val nextAfterId: Int?)
+
+
+val companionTaskCommands = setOf("start_manual", "resolve_manual", "block", "unblock", "cancel", "reopen")

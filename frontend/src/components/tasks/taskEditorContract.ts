@@ -31,6 +31,7 @@ export interface TaskEditorValues {
     source_url: string | null;
     status: TaskStatus;
     expected_version: number | null;
+    expected_revision: number | null;
 }
 
 interface TaskEditorDefaultsContext {
@@ -168,6 +169,7 @@ export const TASK_EDITOR_FIELD_SCHEMA: {
         availability: 'existing-task',
         defaultValue: ({ task }) => task?.status ?? 'planned',
     },
+    expected_revision: { section: 'internal', availability: 'preserved-metadata', defaultValue: ({ task }) => task?.iteration_revision ?? null },
     expected_version: {
         section: 'internal',
         availability: 'existing-task',
@@ -249,7 +251,7 @@ const mutationFields = (values: TaskEditorValues): TaskCreate => ({
     source_url: values.source_url,
 });
 
-export const toTaskCreate = (values: TaskEditorValues): TaskCreate => mutationFields(values);
+export const toTaskCreate = (values: TaskEditorValues): TaskCreate => ({ ...mutationFields(values), expected_revision: values.expected_revision ?? undefined });
 
 export const toTaskUpdate = (
     values: TaskEditorValues,

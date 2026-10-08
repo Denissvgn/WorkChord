@@ -221,7 +221,7 @@ PM-owned fields accidentally.
 ## Verify Every Mutation
 
 After each call, accept returned versions, expiry, claim/run state, and task
-status as authoritative. Re-read the affected context before the next mutation.
+status as authoritative. Read an authoritative context before constructing the next command, retain its task version with the payload, and compare current state explicitly after a conflict. Do not replace an existing command's version immediately before sending it.
 Handle REST and MCP errors according to
 [events-errors-and-recovery.md](events-errors-and-recovery.md). Never switch
 actors or transports to bypass a permission, conflict, or lifecycle error.

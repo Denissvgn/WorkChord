@@ -20,5 +20,6 @@ export const usePlanningObservation = <T,>() => {
         } catch (cause) { if (current === token.current) { setError(cause); if ([401, 403].includes(getApiErrorStatus(cause) ?? 0)) setObservation(null); } return null; }
         finally { if (current === token.current) setLoading(false); }
     }, []);
-    return { observation, loading, error, read };
+    const reset = useCallback(() => { token.current++; if (!active.current) return; setObservation(null); setLoading(false); setError(null); }, []);
+    return { observation, loading, error, read, reset };
 };

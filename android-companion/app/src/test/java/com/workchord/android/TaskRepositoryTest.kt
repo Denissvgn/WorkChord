@@ -84,6 +84,17 @@ class TaskRepositoryTest {
     }
 
     @Test
+    fun structuralCommandsAreUnavailableAndStatusWritesRequireCallerVersion() = runTest(testDispatcher) {
+        for (action in listOf("commit", "uncommit", "unknown_action")) {
+            val result = repository.executeCommand(1, com.workchord.android.data.models.TaskCommandRequest(action, 1, "Requested action"))
+            assertEquals("unsupported_companion_action", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        }
+        val status = repository.updateTaskStatus(1, TaskStatus.ACTIVE, "Start", null)
+        assertEquals("task_version_required", (status.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertEquals(0, mockWebServer.requestCount)
+    }
+
+    @Test
     fun unsupportedStatusOrMissingVersionCannotIssueAMutation() = runTest(testDispatcher) {
         mockWebServer.enqueue(MockResponse().setBody("""[
             {"id":99,"title":"Future work","status":"future_status","version":7},
@@ -560,7 +571,7 @@ class TaskRepositoryTest {
             }
         """.trimIndent()
         mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(updatedJson))
-        repository.updateTaskStatus(5, TaskStatus.ACTIVE, "Start")
+        repository.updateTaskStatus(5, TaskStatus.ACTIVE, "Start", observedFirst?.authoritativeVersion)
 
         val observedSecond = repository.observeTask(5).first()
         assertEquals(TaskStatus.ACTIVE, observedSecond?.status)

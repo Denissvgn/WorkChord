@@ -14,7 +14,8 @@ export const readTaskDraft = (key: string | null, defaults: TaskEditorValues): T
             if (!(field in record.values)) continue;
             const value = record.values[field];
             const initial = defaults[field];
-            const nullable = ['brief', 'effort_days', 'owner_profile_id', 'description', 'assignee_id', 'project_id', 'milestone_id', 'parent_id', 'expected_version', 'min_start_date', 'max_end_date', 'effort_hours'].includes(field);
+            if (field === 'expected_revision' && value !== null && (!Number.isSafeInteger(value) || value < 1)) continue;
+            const nullable = ['brief', 'effort_days', 'owner_profile_id', 'description', 'assignee_id', 'project_id', 'milestone_id', 'parent_id', 'expected_version', 'expected_revision', 'min_start_date', 'max_end_date', 'effort_hours'].includes(field);
             if (field === 'brief' && value !== null) {
                 const fields = ['goal', 'context', 'scope', 'exclusions', 'verification', 'artifact_expectations'];
                 if (value?.schema_version === 1 && fields.every(key => typeof value[key] === 'string')

@@ -18,6 +18,7 @@ const validateObservation = <T,>(value: ObservedPlanningInput<T>, kind: Planning
         (value.resource as { id?: unknown }).id !== id || !value.expected_revisions || Array.isArray(value.expected_revisions)) {
         throw new Error('The initial planning context is incomplete. Reload before editing.');
     }
+    if (kind === 'iteration' && value.expected_revisions[id] === undefined) throw new Error('The initial iteration context is incomplete.');
     const entries = Object.entries(value.expected_revisions);
     if (entries.length > 500 || entries.some(([key, revision]) => !/^[1-9][0-9]*$/.test(key) ||
         !Number.isSafeInteger(Number(key)) || !Number.isSafeInteger(revision) || revision < 1) ||

@@ -82,13 +82,13 @@ export const taskService = {
         return response.data;
     },
 
-    addDependency: async (taskId: number, dependsOnId: number) => {
-        const response = await api.post(`/tasks/${taskId}/dependencies`, { depends_on_id: dependsOnId });
+    addDependency: async (taskId: number, dependsOnId: number, expectedVersion: number) => {
+        const response = await api.post(`/tasks/${taskId}/dependencies`, { depends_on_id: dependsOnId, expected_version: expectedVersion });
         return response.data;
     },
 
-    removeDependency: async (taskId: number, dependsOnId: number) => {
-        const response = await api.delete(`/tasks/${taskId}/dependencies/${dependsOnId}`);
+    removeDependency: async (taskId: number, dependsOnId: number, expectedVersion: number) => {
+        const response = await api.delete(`/tasks/${taskId}/dependencies/${dependsOnId}`, { params: { expected_version: expectedVersion } });
         return response.data;
     },
 

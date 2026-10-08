@@ -91,4 +91,22 @@ describe('task template application', () => {
         await act(async () => finish({ data: { id: 44 } }));
         expect(completed).not.toHaveBeenCalled();
     });
+    it('retains the opening iteration revision when a live reference query advances', async () => {
+        configure(template());
+        const original = api.get.getMockImplementation()!;
+        const iteration = { id: 1, name: 'Observed window', revision: 1, nominal_day_hours: 8, project_id: 1, project: { id: 1, name: 'Project' } };
+        api.get.mockImplementation(async (path: string) => {
+            if (path === '/iterations/1') return { data: iteration };
+            if (path === '/tasks/planning-inputs/iteration/1/context') return { data: { kind: 'iteration', resource_id: 1, resource: iteration, complete: true, expected_revisions: { 1: 1 } } };
+            return original(path);
+        });
+        const { user, queryClient } = renderWithProviders(<TaskForm iterationId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Pinned aggregate draft');
+        await act(async () => { queryClient.setQueryData(['iteration', 1], { ...iteration, revision: 9 }); });
+        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        expect(api.post.mock.lastCall?.[0]).toBe('/iterations/1/tasks');
+        expect(api.post.mock.lastCall?.[1].expected_revision).toBe(1);
+    });
+
 });

@@ -1,3 +1,5 @@
+import { usePlanningObservation } from '../../features/usePlanningObservation';
+import type { Iteration } from '../../types/iteration';
 import { DeliveryDependencies } from './DeliveryDependencies';
 import { PersonCapacity } from './PersonCapacity';
 import { TaskDiscussion } from './TaskDiscussion';
@@ -88,6 +90,8 @@ export const TaskForm = ({
     const formId = useId();
     const identity = useIdentity();
     const isActive = useActiveMount();
+    const creationContext = usePlanningObservation<Iteration>();
+    const readCreationContext = creationContext.read;
     const [currentTask, setCurrentTask] = useState(initialData);
     const iterationId = currentTask ? currentTask.iteration_id : requestedIterationId;
     const sessionUnavailable = identity?.identity?.mode === "managed" && !identity.identity.authenticated;
@@ -144,6 +148,21 @@ export const TaskForm = ({
     const definiteRejection = (cause: unknown) => {
         const status = (cause as { response?: { status?: number } }).response?.status;
         if (isActive() && status && status >= 400 && status < 500) setPendingWrite(null);
+    };
+
+    useEffect(() => {
+        if (currentTask || iterationId === null || mode !== 'direct') return;
+        void readCreationContext('iteration', iterationId).then(observed => {
+            const revision = observed?.expected_revisions[iterationId];
+            if (revision === undefined) return;
+            setFormData(values => !recoveredDraft && values.expected_revision === null ? { ...values, expected_revision: revision } : values);
+            setBaseline(values => ({ ...values, expected_revision: revision }));
+        });
+    }, [currentTask, iterationId, mode, readCreationContext, recoveredDraft]);
+    const compareCreationContext = async () => {
+        if (iterationId === null) return;
+        const observed = await readCreationContext('iteration', iterationId, true);
+        if (observed) setFormData(values => ({ ...values, expected_revision: observed.expected_revisions[iterationId] }));
     };
 
     // Fetch team for assignee dropdown
@@ -205,7 +224,7 @@ export const TaskForm = ({
     };
 
     const createMutation = useMutation({
-        mutationFn: (data: TaskCreate) => taskService.create(iterationId, { ...data, expected_revision: iteration?.revision }),
+        mutationFn: (data: TaskCreate) => taskService.create(iterationId, data),
         onMutate: checkpointWrite,
         onSuccess: () => {
             invalidateTaskProjectQueries();
@@ -441,7 +460,7 @@ export const TaskForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (pendingWrite || isSubmitting) return;
+        if (pendingWrite || isSubmitting || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null)) return;
         if (isSubmitting || workDirty || discussionDirty || timeDirty) return;
         setError(null);
         setConflict(null);
@@ -521,6 +540,11 @@ export const TaskForm = ({
 
     return (
         <form onSubmit={handleSubmit} className="task-form space-y-6">
+            {!currentTask && iterationId !== null && <div className="space-y-2">
+                {creationContext.loading && <p role="status">{t('common.loading')}</p>}
+                {Boolean(creationContext.error) && <QueryErrorState error={creationContext.error} onRetry={() => void compareCreationContext()} />}
+                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
+            </div>}
             {sessionUnavailable && <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                 <p>{t('identity.expired')}</p>
                 <a className="inline-flex min-h-11 items-center font-semibold underline" href={`/api/auth/login?return_to=${encodeURIComponent(window.location.pathname + window.location.search)}`}>{t('identity.signIn')}</a>
@@ -1127,7 +1151,7 @@ export const TaskForm = ({
                         type="submit"
                         className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(conflict) || Boolean(pendingWrite)}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null) || Boolean(conflict) || Boolean(pendingWrite)}
                     >
                         <Save className="w-4 h-4 mr-2" />
                         {mode === 'sandbox'
