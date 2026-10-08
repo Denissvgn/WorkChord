@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:46ecd5a95b8ee50c004ccb88832f1c3984cabeca24360277d225b314801f36ce",
-    "knowledge_index_hash": "sha256:f84577b02c98b09a576c97a67dddde4f8752ca27ae020cb9de9ee2f2a7452c61",
-    "surface_index_hash": "sha256:1e24953b77ea61c9a7d7dfb0c8ad314949185a992de8dddf143e9413b69efab1"
+    "evaluated_envelope_hash": "sha256:0d3b7a61cc69a9a9a67fc12579c65fe73e30422f573f5f7a11c1cf8db83728d0",
+    "knowledge_index_hash": "sha256:40ca1d74530aa7f99f3a4de9056f87f407605100701ff6d5e706a8d63872b561",
+    "surface_index_hash": "sha256:0602e24fa3ad931564b2d1b4ce066facb42d1cba662e6ec616e563bf59f68ebe"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -15737,10 +15737,10 @@
     },
     "modules/IdentityProvider.test.md": {
       "basis": {
-        "concept_observation_hash": "sha256:e50868dcfbd37ec64c52f279503bcc993861de7d7e1f6f34353c7c498b3ebdc5",
+        "concept_observation_hash": "sha256:faad555d7f936f6e754ea54532197d83a6715a07208a73496316fe6c493f7b7b",
         "extractor_ref": "llm-wiki/extractor/typescript",
         "scope": "module",
-        "source_content_hash": "sha256:d04bd4c7868dbf5544723c6da6c77345cacceb8215b1266b1b0c214483ca773f",
+        "source_content_hash": "sha256:8d8c22a6132c368f6a3c8680f2c81dcb0f6acb4a90f3843b48fd5827b3358418",
         "source_path": "frontend/src/features/identity/IdentityProvider.test.tsx"
       },
       "state": "known"
@@ -15982,6 +15982,16 @@
         "scope": "module",
         "source_content_hash": "sha256:37088feb49061178ef8b903b6d6b253802b37ade40f0c7089b96f0ae8c6f7c86",
         "source_path": "frontend/src/pages/MyWorkPage.tsx"
+      },
+      "state": "known"
+    },
+    "modules/MyWorkPage.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:e37b87de1c24426a6b547ffeba4bc0cf89d6b129e1ada701eb76c203cba82d62",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:758a003eb7489f50a8c1753191e655358688d1da1a48ea54fc4cffa2c1be963e",
+        "source_path": "frontend/src/pages/MyWorkPage.test.tsx"
       },
       "state": "known"
     },
@@ -21015,6 +21025,16 @@
       },
       "state": "known"
     },
+    "modules/test_deployment_configuration.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:733957311c1c15269e91cdf1d7ea8f90392f5c62d91013c2d600777f54a4c608",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:330659de62c6d1cdf2493ea91c7894f9baa2174b91ecdf0b1bb25c509d4749b7",
+        "source_path": "backend/tests/test_deployment_configuration.py"
+      },
+      "state": "known"
+    },
     "modules/test_deployment_topology.md": {
       "basis": {
         "concept_observation_hash": "sha256:5b7bd7dce977013c22f9611c8e6d9b19863438189cd2b3a22bd281ec1226f797",
@@ -21107,10 +21127,10 @@
     },
     "modules/test_managed_authority.md": {
       "basis": {
-        "concept_observation_hash": "sha256:a0ca526133d3b37e11696a2edecfe643319794c82b0c58ec21c85e70a60d5e93",
+        "concept_observation_hash": "sha256:aaf038a1e6770977a2a86037de9aadb7bede947a57c3873a01ce56012ee33b39",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:5464f57f00c8ef40d2ddce13489a3393a6a3299b745411014f82c2a343f1a483",
+        "source_content_hash": "sha256:48d7530f49428c67bb095f601c32b4f632b685f11e2e73ef8c7a82398b4072fd",
         "source_path": "backend/tests/test_managed_authority.py"
       },
       "state": "known"
@@ -21367,10 +21387,10 @@
     },
     "modules/test_task_domain.md": {
       "basis": {
-        "concept_observation_hash": "sha256:b5bd86a19027dbb9edc021671a93e55751353fa7e538c9acb61329c61c1b80c2",
+        "concept_observation_hash": "sha256:4bb3b97197e61402f427004c2ecddd901d124b2c11532f1456cd32ea3d85adfe",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:ed5d267c3cd469dba72ca9073c65c61fd5c5d92aa846e0b1e25944e4d4d92724",
+        "source_content_hash": "sha256:62d0756b8829e8ff13398e13878ffd0ee2e4f230f87019bea7770be5503ce412",
         "source_path": "backend/tests/test_task_domain.py"
       },
       "state": "known"
@@ -21417,10 +21437,10 @@
     },
     "modules/test_time_reports.md": {
       "basis": {
-        "concept_observation_hash": "sha256:8ebd6f35c946d20bca3113833ecdd836975517683f2e39c869aec6686a395c68",
+        "concept_observation_hash": "sha256:f5805afa113742633497978fef263f35e4031c19f0633dbf1b27256773fa89cd",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:2d534c078ca0ad9e68588d818778b53e556f08cdc85f9506880462caa86aee01",
+        "source_content_hash": "sha256:9eba3fafaa61b825ed0102ed1d3ca8843f76521fbed53941ddbfb6e3ec4a78f1",
         "source_path": "backend/tests/test_time_reports.py"
       },
       "state": "known"
@@ -21437,10 +21457,10 @@
     },
     "modules/test_work_correctness.md": {
       "basis": {
-        "concept_observation_hash": "sha256:92a0a94999bdf799af6a6fa46d672a60ad0bf1f6defa2683ccb984da2778dcf0",
+        "concept_observation_hash": "sha256:d6e43ea2b67daa30994433fb4853ca6f150fb3f4c948667795fdea4260a46657",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:504db3105ed6dde70b5dce3a7433f36540e59ce9db5a40cb6a3ab26edd118304",
+        "source_content_hash": "sha256:c1a87ce7e1adf25b80bb99fbd497d4e88ee2c1100c655c961381db75020f8eac",
         "source_path": "backend/tests/test_work_correctness.py"
       },
       "state": "known"
@@ -21985,6 +22005,16 @@
       },
       "state": "known"
     },
+    "modules/workQueryFreshness.test.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:b58f42e2d5167384983df2ad9c26a18b57800ba381d303c50e0203f3555d5ef1",
+        "extractor_ref": "llm-wiki/extractor/typescript",
+        "scope": "module",
+        "source_content_hash": "sha256:c31d054c00dafa62176913a42b7c05210c75160f57c1d2d5a9b2186312b85971",
+        "source_path": "frontend/src/features/workQueryFreshness.test.ts"
+      },
+      "state": "known"
+    },
     "modules/worker.md": {
       "basis": {
         "concept_observation_hash": "sha256:f7148af36091366a267a74ccdf5e2529cd2678010d01ec962ee01e3b1bc24a73",
@@ -22230,13 +22260,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:40dbc2f21d27f7af870c12453c93edb953b9f9a5acedfa86fa5f410af03c6135",
-      "lifecycle_hash": "sha256:898edc6025c8638924ab0cffb75ef6f25e5bc9da6fd5d7e978b92a27fda6fc95",
-      "markdown_snapshot_hash": "sha256:f336ddde5f4472eeba825d674f69302b0affc4c35fc01e1fcdcaef8dfb65aab7",
-      "observation_inputs_hash": "sha256:1a3313449e3a1da823e1ab11b6cd627fdca5cfb92b967db378e8e4525796bf5d",
+      "inventory_hash": "sha256:76c43a661e6e8582e12968cf03890a9670bfb046874584fc1db17592a1366110",
+      "lifecycle_hash": "sha256:db4485cbb346bc444f253f823e8b53a9ccc74e479a66d2bceb3d4054ebf4dcd8",
+      "markdown_snapshot_hash": "sha256:d7ccd0baa36bccacb9c037545ca061919d330bd07b3d7445f0639b4ff469f14f",
+      "observation_inputs_hash": "sha256:f1b2b36bc7b7c74fa8f07b5fe53f4e5368e94403f892717c048ff748621987d7",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:5bd40dfb4fee0e343911a00fb4ecde0f143444f34e7950389e28553d4c983940"
+      "source_snapshot_hash": "sha256:46dd3251ada872eec60a446d279e0a177ab72bfd6b8eb3ef7ffeead3808593aa"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -31657,6 +31687,10 @@
       "scope": "module",
       "source_path": "frontend/src/pages/MyWorkPage.tsx"
     },
+    "modules/MyWorkPage.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/pages/MyWorkPage.test.tsx"
+    },
     "modules/NativeConnectionPage.md": {
       "scope": "module",
       "source_path": "frontend/src/pages/NativeConnectionPage.tsx"
@@ -33669,6 +33703,10 @@
       "scope": "module",
       "source_path": "backend/tests/test_delivery_scenarios.py"
     },
+    "modules/test_deployment_configuration.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_deployment_configuration.py"
+    },
     "modules/test_deployment_topology.md": {
       "scope": "module",
       "source_path": "backend/tests/database/test_deployment_topology.py"
@@ -34056,6 +34094,10 @@
     "modules/workQueryFreshness.md": {
       "scope": "module",
       "source_path": "frontend/src/features/workQueryFreshness.ts"
+    },
+    "modules/workQueryFreshness.test.md": {
+      "scope": "module",
+      "source_path": "frontend/src/features/workQueryFreshness.test.ts"
     },
     "modules/worker.md": {
       "scope": "module",
@@ -61292,6 +61334,26 @@
       "module_page": "test_delivery_scenarios",
       "semantic_hash": "sha256:404cf032ea12413108951ee6737432709dc0aa0e5d5b03b9c46c68106dffa795"
     },
+    "backend/tests/test_deployment_configuration.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Deployment policy propagation and bounded acceptance artifact retention.",
+          "functions": {
+            "test_mutation_version_policy_is_forwarded_with_safe_default": "—",
+            "test_self_hosted_acceptance_exports_receipts_even_on_failure": "—"
+          }
+        }
+      },
+      "hash": "sha256:330659de62c6d1cdf2493ea91c7894f9baa2174b91ecdf0b1bb25c509d4749b7",
+      "language": "python",
+      "module_page": "test_deployment_configuration",
+      "semantic_hash": "sha256:291096e69ddfe356bbd8557ae831d3a9164e4a7d64dd3cecf12dae93c3140457"
+    },
     "backend/tests/test_execution_usage.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -61389,14 +61451,15 @@
             "test_project_reads_hide_unrelated_ids_counts_and_people": "—",
             "test_viewer_cannot_reorder_via_bulk_sql": "—",
             "test_viewer_denials_cover_alternate_commands_and_private_reads": "—",
-            "test_worker_bulk_sql_cannot_bypass_review_authority": "—"
+            "test_worker_bulk_sql_cannot_bypass_review_authority": "—",
+            "test_workspace_owner_deletes_empty_project_with_retained_audit": "—"
           }
         }
       },
-      "hash": "sha256:5464f57f00c8ef40d2ddce13489a3393a6a3299b745411014f82c2a343f1a483",
+      "hash": "sha256:48d7530f49428c67bb095f601c32b4f632b685f11e2e73ef8c7a82398b4072fd",
       "language": "python",
       "module_page": "test_managed_authority",
-      "semantic_hash": "sha256:1f4287ae9bca7f096377666a8fd9d6eedaf6d5a89faceb6fdc3d5ea1e1a92ea7"
+      "semantic_hash": "sha256:b31b2ba269e070c16ed6e26b98ac61171d291b2ba1c6fdb11d13a310e42d778e"
     },
     "backend/tests/test_mobile_contract.py": {
       "entities": [],
@@ -61743,8 +61806,10 @@
             "test_cancel_requires_current_execution_ownership_and_invalidates_fence": "—",
             "test_criteria_keep_identity_and_explicit_revisions": "—",
             "test_current_review_does_not_depend_on_first_history_page": "—",
+            "test_deferred_ancestor_prevents_manual_start_over_http": "—",
             "test_estimates_preserve_unknown_zero_and_nominal_day": "—",
             "test_legacy_brief_conversion_is_stable_and_does_not_accept_checkmarks": "—",
+            "test_legacy_status_route_cannot_start_deferred_work": "—",
             "test_managed_assigned_submission_and_independent_rework": "—",
             "test_owner_and_ids_survive_commit_uncommit": "—",
             "test_progress_availability_matches_open_leaf_execution_permission": "—",
@@ -61754,10 +61819,10 @@
           }
         }
       },
-      "hash": "sha256:ed5d267c3cd469dba72ca9073c65c61fd5c5d92aa846e0b1e25944e4d4d92724",
+      "hash": "sha256:62d0756b8829e8ff13398e13878ffd0ee2e4f230f87019bea7770be5503ce412",
       "language": "python",
       "module_page": "test_task_domain",
-      "semantic_hash": "sha256:71c494f0879c8b36597d3fb4b253b04e63160cd0fb9058b0559d8241297d9695"
+      "semantic_hash": "sha256:8e0bb248141c78c430fb15ac965099d1a2203dfb5d090269a5715ff474eacd42"
     },
     "backend/tests/test_task_domain_integrity.py": {
       "entities": [],
@@ -61879,6 +61944,7 @@
           "description": "Recorded coverage and manager totals preserve private entry boundaries.",
           "functions": {
             "test_csv_rejects_spreadsheet_formula_interpretation_without_manufacturing_missing_values": "—",
+            "test_deleted_project_time_is_not_visible_to_replacement_manager": "—",
             "test_moved_task_keeps_original_scope_and_does_not_expose_new_title": "—",
             "test_personal_and_manager_totals_do_not_expose_private_records": "—",
             "test_personal_export_bound_is_explicit": "—",
@@ -61886,10 +61952,10 @@
           }
         }
       },
-      "hash": "sha256:2d534c078ca0ad9e68588d818778b53e556f08cdc85f9506880462caa86aee01",
+      "hash": "sha256:9eba3fafaa61b825ed0102ed1d3ca8843f76521fbed53941ddbfb6e3ec4a78f1",
       "language": "python",
       "module_page": "test_time_reports",
-      "semantic_hash": "sha256:bd7c530885e83d49e743573a9d599b5c3234a7a58fe2a2847fe22ea3401f7aba"
+      "semantic_hash": "sha256:63413369b045f5fa9d6c49188f5af333b8aed3e692310cd982f40d7cf2a87b81"
     },
     "backend/tests/test_work_correctness.py": {
       "entities": [],
@@ -61903,27 +61969,30 @@
           "functions": {
             "test_agent_schedule_preview_is_transient_and_reports_input_versions": "—",
             "test_bulk_preview_default_and_input_revisions_protect_apply": "—",
+            "test_calendar_creation_round_trip_preserves_short_day_capacity": "—",
             "test_calendar_midnight_is_not_server_midnight": "—",
             "test_failed_command_cannot_evict_old_snapshots": "—",
             "test_late_start_does_not_overwrite_committed_baseline": "—",
             "test_merge_failure_preserves_every_task_and_recovery_point": "—",
             "test_merge_truth_and_leaf_totals_are_stable": "—",
             "test_preview_revision_rejects_apply_after_another_edit": "—",
+            "test_project_creation_round_trip_preserves_working_timezone": "—",
             "test_project_iteration_and_portfolio_share_metric_definitions": "—",
             "test_rearrangement_preserves_accepted_leaves_and_inherited_facets": "—",
             "test_repair_is_dry_by_default_and_does_not_invent_acceptance": "—",
             "test_restore_recovers_dates_and_absences_without_inventing_acceptance": "—",
             "test_saved_dashboard_counts_matching_leaves_across_hierarchy_changes": "—",
+            "test_snapshot_restores_exact_allocation_membership": "—",
             "test_snapshot_survives_new_session_and_restores_ids_in_place": "—",
             "test_two_http_writers_cannot_overwrite_the_same_revision": "—",
             "test_unmerge_preserves_child_ids_and_rejects_referenced_parent": "—"
           }
         }
       },
-      "hash": "sha256:504db3105ed6dde70b5dce3a7433f36540e59ce9db5a40cb6a3ab26edd118304",
+      "hash": "sha256:c1a87ce7e1adf25b80bb99fbd497d4e88ee2c1100c655c961381db75020f8eac",
       "language": "python",
       "module_page": "test_work_correctness",
-      "semantic_hash": "sha256:94847b4a3666b582774e4f077f62ae9c75d926d3302d00fd2918efd881cc74e6"
+      "semantic_hash": "sha256:205e3aca716d134a56bed82bf493de12a20a85e729c320201979a1e5a181f0b9"
     },
     "frontend/eslint.config.js": {
       "entities": [],
@@ -68478,10 +68547,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:d04bd4c7868dbf5544723c6da6c77345cacceb8215b1266b1b0c214483ca773f",
+      "hash": "sha256:8d8c22a6132c368f6a3c8680f2c81dcb0f6acb4a90f3843b48fd5827b3358418",
       "language": "typescript",
       "module_page": "IdentityProvider.test",
-      "semantic_hash": "sha256:60b9cf3f12420d7f36754e13a90b39ef206375c5a2cd2978cd0cc858a72575ec"
+      "semantic_hash": "sha256:e2fb252da9e7ad68aee30cb79c9a94823822deefbaf9b8320241943748017592"
     },
     "frontend/src/features/identity/IdentityProvider.tsx": {
       "entities": [],
@@ -69171,6 +69240,23 @@
       "language": "typescript",
       "module_page": "useTimeEntries",
       "semantic_hash": "sha256:42f1601a64677dff65fdbbe46f27aa09fccf9a67e629c3a8ae632f59b2c5eba5"
+    },
+    "frontend/src/features/workQueryFreshness.test.ts": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/features/workQueryFreshness.test.ts`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:c31d054c00dafa62176913a42b7c05210c75160f57c1d2d5a9b2186312b85971",
+      "language": "typescript",
+      "module_page": "workQueryFreshness.test",
+      "semantic_hash": "sha256:a87d7c599bcee4d204736dd090cccd1ead968f6a7347af37ef315dcc60ece9e8"
     },
     "frontend/src/features/workQueryFreshness.ts": {
       "entities": [],
@@ -70092,6 +70178,23 @@
       "language": "typescript",
       "module_page": "LandingPage",
       "semantic_hash": "sha256:d9b0aea75d7e459b0fafe8630f95ca6c79cc1efb274a224da5be1bf1c4ad2e08"
+    },
+    "frontend/src/pages/MyWorkPage.test.tsx": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "_Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._",
+          "functions": {}
+        }
+      },
+      "hash": "sha256:758a003eb7489f50a8c1753191e655358688d1da1a48ea54fc4cffa2c1be963e",
+      "language": "typescript",
+      "module_page": "MyWorkPage.test",
+      "semantic_hash": "sha256:8863c06008d08185b7ca27636f59988bfef764976bc7d285317fa8be1aafaf12"
     },
     "frontend/src/pages/MyWorkPage.tsx": {
       "entities": [

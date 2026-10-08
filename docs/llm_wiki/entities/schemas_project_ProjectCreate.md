@@ -42,6 +42,7 @@ flowchart LR
     n5["backend/app/schemas/__init__.py"]
     n6["AgentPlanningService.create_project (backend/app/services/agent_planning_service.py)"]
     n7["ProjectService.create (backend/app/services/project_service.py)"]
+    n8["test_deleted_project_time_is_not_visible_to_replacement_manager (backend/tests/test_time_reports.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,6 +50,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_project.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
@@ -56,6 +58,7 @@ flowchart LR
     click n5 "../modules/schemas___init__.md"
     click n6 "../modules/agent_planning_service.md"
     click n7 "../modules/project_service.md"
+    click n8 "../modules/test_time_reports.md"
 ```
 
 ### Summary
@@ -80,3 +83,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.create_project` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `ProjectService.create` | type_reference | [project_service](../modules/project_service.md) | — |
+| `test_deleted_project_time_is_not_visible_to_replacement_manager` | call | [test_time_reports](../modules/test_time_reports.md) | 2 |

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1510 | [Open section](#entities) |
-| Modules | 691 | [Open section](#modules) |
+| Modules | 694 | [Open section](#modules) |
 | Workflows | 177 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 543 | [Open section](#entry-point-flows) |
@@ -1619,6 +1619,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
 - [MyWorkPage](modules/MyWorkPage.md) - `frontend/src/pages/MyWorkPage.tsx`
+- [MyWorkPage.test](modules/MyWorkPage.test.md) - `frontend/src/pages/MyWorkPage.test.tsx`
 - [NativeConnectionPage](modules/NativeConnectionPage.md) - `frontend/src/pages/NativeConnectionPage.tsx`
 - [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) - `frontend/src/pages/NativeConnectionPage.test.tsx`
 - [NotFoundPage](modules/NotFoundPage.md) - `frontend/src/pages/NotFoundPage.tsx`
@@ -2122,6 +2123,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_delivery_dependencies](modules/test_delivery_dependencies.md) - Cross-project readiness, cycle prevention and retained acceptance history.
 - [test_delivery_metrics](modules/test_delivery_metrics.md) - Recorded workflow instants, durable scope and missing history stay distinct.
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
+- [test_deployment_configuration](modules/test_deployment_configuration.md) - Deployment policy propagation and bounded acceptance artifact retention.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_documentation_boundary](modules/test_documentation_boundary.md) - A concise entrypoint still binds release evidence to authoritative operator policy.
 - [test_execution_usage](modules/test_execution_usage.md) - Usage provenance, corrections, immutable pricing and permission isolation.
@@ -2219,6 +2221,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [web_intake_service](modules/web_intake_service.md) - Controlled external web intake service.
 - [workMetrics](modules/workMetrics.md) - `frontend/src/types/workMetrics.ts`
 - [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
+- [workQueryFreshness.test](modules/workQueryFreshness.test.md) - `frontend/src/features/workQueryFreshness.test.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
 - [workspaces](modules/workspaces.md) - `frontend/src/navigation/workspaces.ts`
 - [workspaces.test](modules/workspaces.test.md) - `frontend/src/navigation/workspaces.test.ts`

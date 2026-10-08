@@ -40,6 +40,7 @@ flowchart LR
     n7["backend/app/schemas/__init__.py"]
     n8["AgentPlanningService.create_team_member (backend/app/services/agent_planning_service.py)"]
     n9["TeamService.create (backend/app/services/team_service.py)"]
+    n10["test_snapshot_restores_exact_allocation_membership (backend/tests/test_work_correctness.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,6 +50,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_team.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -59,6 +61,7 @@ flowchart LR
     click n7 "../modules/schemas___init__.md"
     click n8 "../modules/agent_planning_service.md"
     click n9 "../modules/team_service.md"
+    click n10 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -85,3 +88,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.create_team_member` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `TeamService.create` | type_reference | [team_service](../modules/team_service.md) | — |
+| `test_snapshot_restores_exact_allocation_membership` | call | [test_work_correctness](../modules/test_work_correctness.md) | 1 |

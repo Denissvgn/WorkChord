@@ -37,7 +37,7 @@ flowchart LR
     n8["backend/app/services/task_domain_service.py"]
     n9["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
     n10["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
-    n11["backend/tests/test_managed_authority.py"]
+    n11["test_workspace_owner_deletes_empty_project_with_retained_audit (backend/tests/test_managed_authority.py)"]
     n12["_source_phase (scripts/ci/installed_wheel_postgresql_qualification.py)"]
     n0 --> n1
     n2 --> n0
@@ -91,5 +91,5 @@ flowchart LR
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_shared_iteration_snapshots_cannot_reveal_another_project` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
-| `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
+| `test_workspace_owner_deletes_empty_project_with_retained_audit` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `_source_phase` | call | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) | 1 |

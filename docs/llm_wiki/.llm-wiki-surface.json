@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 691,
+      "modules": 694,
       "workflows": 177
     },
     "dependency_architecture": 2,
-    "total": 2936
+    "total": 2939
   },
   "dependency_pages": {
     "count": 2,
@@ -41766,6 +41766,7 @@
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
+        "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
         "modules/native_session_service.md",
         "modules/NativeConnectionPage.md",
@@ -42081,6 +42082,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
         "modules/test_execution_usage.md",
@@ -42190,6 +42192,7 @@
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
+        "modules/workQueryFreshness.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md",
         "workflows/AgentModelCatalogService__execute.md",
@@ -46015,7 +46018,8 @@
         "modules/identity_service.md",
         "modules/models___init__.md",
         "modules/models_identity.md",
-        "modules/routers_identity.md"
+        "modules/routers_identity.md",
+        "modules/test_managed_authority.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/identity.py",
@@ -54785,7 +54789,8 @@
         "modules/projects.md",
         "modules/routers_agent_planning.md",
         "modules/schemas___init__.md",
-        "modules/schemas_project.md"
+        "modules/schemas_project.md",
+        "modules/test_time_reports.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/project.py",
@@ -55815,7 +55820,8 @@
         "modules/schemas___init__.md",
         "modules/schemas_team.md",
         "modules/snapshots.md",
-        "modules/team_service.md"
+        "modules/team_service.md",
+        "modules/test_work_correctness.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/team.py",
@@ -64713,7 +64719,8 @@
         "modules/routers_capacity.md",
         "modules/service_worksets.md",
         "modules/team_member.md",
-        "modules/test_profile_capacity.md"
+        "modules/test_profile_capacity.md",
+        "modules/test_work_correctness.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/capacity_service.py",
@@ -66499,7 +66506,8 @@
       "outgoing_internal_links": [
         "modules/IdentityProvider.md",
         "modules/IdentityProvider.test.md",
-        "modules/renderWithProviders.md"
+        "modules/renderWithProviders.md",
+        "modules/usePlanningNavigationSummary.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/identity/IdentityProvider.test.tsx",
@@ -67822,22 +67830,25 @@
       "outgoing_internal_links": [
         "entities/Queue.md",
         "entities/WorkPage.md",
-        "modules/api.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/discussionService.md",
-        "modules/GuardedTaskModal.md",
-        "modules/identityContext.md",
-        "modules/index.md",
-        "modules/MyWorkPage.md",
-        "modules/PersonCapacity.md",
-        "modules/QueryState.md",
-        "modules/taskService.md",
-        "modules/types_task.md"
+        "modules/MyWorkPage.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.tsx",
       "title": "MyWorkPage Module"
+    },
+    {
+      "canonical_path": "modules/MyWorkPage.test.md",
+      "id": "MyWorkPage.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/MyWorkPage.test",
+      "outgoing_internal_links": [
+        "modules/MyWorkPage.md",
+        "modules/MyWorkPage.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/MyWorkPage.test.tsx",
+      "title": "MyWorkPage.test Module"
     },
     {
       "canonical_path": "modules/native_connection.md",
@@ -70664,18 +70675,7 @@
         "entities/schemas_project_ProjectUpdateEntryCreate.md",
         "entities/schemas_project_ProjectUpdateFreshness.md",
         "entities/schemas_project_RoadmapMilestonePage.md",
-        "modules/agent_planning_service.md",
-        "modules/agent_work_service.md",
-        "modules/mcp_agent_tools.md",
-        "modules/planning_inputs.md",
-        "modules/project_service.md",
-        "modules/projects.md",
-        "modules/routers_agent_planning.md",
-        "modules/schemas___init__.md",
-        "modules/schemas_agent.md",
-        "modules/schemas_project.md",
-        "modules/schemas_team.md",
-        "modules/schemas_work_metrics.md"
+        "modules/schemas_project.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/project.py",
@@ -73473,6 +73473,16 @@
       "title": "test_delivery_scenarios Module"
     },
     {
+      "canonical_path": "modules/test_deployment_configuration.md",
+      "id": "test_deployment_configuration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_deployment_configuration",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/tests/test_deployment_configuration.py",
+      "title": "test_deployment_configuration Module"
+    },
+    {
       "canonical_path": "modules/test_deployment_topology.md",
       "id": "test_deployment_topology",
       "kind": "modules",
@@ -74057,17 +74067,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_time_reports",
       "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/models_time_entry.md",
-        "modules/query_limits.md",
-        "modules/schemas_task.md",
-        "modules/task_service.md",
-        "modules/test_delivery_scenarios.md",
-        "modules/test_time_entries.md",
-        "modules/test_time_reports.md",
-        "modules/time.md",
-        "modules/time_entry_service.md",
-        "modules/time_report_service.md"
+        "modules/test_time_reports.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_time_reports.py",
@@ -75111,6 +75111,7 @@
       "mcp_uri": "llm-wiki://modules/usePlanningNavigationSummary",
       "outgoing_internal_links": [
         "modules/AppTopNav.md",
+        "modules/IdentityProvider.test.md",
         "modules/iterationService.md",
         "modules/iterationStore.md",
         "modules/planningMasters_masters.md",
@@ -75423,11 +75424,25 @@
       "outgoing_internal_links": [
         "modules/IdentityProvider.md",
         "modules/src_main.md",
-        "modules/workQueryFreshness.md"
+        "modules/workQueryFreshness.md",
+        "modules/workQueryFreshness.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/workQueryFreshness.ts",
       "title": "workQueryFreshness Module"
+    },
+    {
+      "canonical_path": "modules/workQueryFreshness.test.md",
+      "id": "workQueryFreshness.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/workQueryFreshness.test",
+      "outgoing_internal_links": [
+        "modules/workQueryFreshness.md",
+        "modules/workQueryFreshness.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/workQueryFreshness.test.ts",
+      "title": "workQueryFreshness.test Module"
     },
     {
       "canonical_path": "modules/workspaces.md",
@@ -87377,6 +87392,7 @@
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
+        "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
         "modules/native_session_service.md",
         "modules/NativeConnectionPage.md",
@@ -87692,6 +87708,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
         "modules/test_execution_usage.md",
@@ -87801,6 +87818,7 @@
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
+        "modules/workQueryFreshness.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md"
       ],
@@ -88079,6 +88097,7 @@
         "modules/models_triage.md",
         "modules/mutation_versions.md",
         "modules/MyWorkPage.md",
+        "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
         "modules/native_session_service.md",
         "modules/NativeConnectionPage.md",
@@ -88394,6 +88413,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
         "modules/test_execution_usage.md",
@@ -88503,6 +88523,7 @@
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
         "modules/workQueryFreshness.md",
+        "modules/workQueryFreshness.test.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md"
       ],
@@ -88512,5 +88533,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:c5d10bb6792d82c7b0181f400dbe0cf248c4c1ac53ccaae3dfa55b4c4b69ab37"
+  "source_hash": "sha256:3f7ff4aa4846dff1a7ab07c15c109a26c78086e54cc1c356dc57da2b1a83c8e9"
 }

@@ -14,7 +14,8 @@ Real principal, transport, scoped-read and command-denial contracts.
 | `app.commands` | `command_transaction` |
 | `app.config` | `get_settings` |
 | `app.main` | `app` |
-| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `WorkspaceMembership`, `WorkspaceAuthorityState` |
+| `app.models.identity` | `Principal`, `IdentitySubject`, `ProjectMembership`, `WorkspaceMembership`, `WorkspaceAuthorityState`, `CommandAudit` |
+| `app.models.project` | `Project` |
 | `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.saved_view` | `SavedView` |
 | `app.models.task` | `Task` |
@@ -51,7 +52,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -59,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 6 | 2 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -67,6 +68,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `managed_store` | *(async)* `(delivery_store, monkeypatch)` | `@pytest_asyncio.fixture` | — |
 | `client` | `(token = None, **headers)` | — | — |
+| `test_workspace_owner_deletes_empty_project_with_retained_audit` | *(async)* `(managed_store)` | — | — |
 | `test_managed_mode_rejects_missing_forged_and_conflicting_identity` | *(async)* `(managed_store)` | — | — |
 | `test_project_reads_hide_unrelated_ids_counts_and_people` | *(async)* `(managed_store)` | — | — |
 | `test_cookie_mutations_require_request_integrity` | *(async)* `(managed_store)` | — | — |

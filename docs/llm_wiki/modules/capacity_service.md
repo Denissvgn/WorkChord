@@ -33,7 +33,8 @@ flowchart LR
     n6["backend/app/routers/capacity.py"]
     n7["backend/app/services/capacity_service.py"]
     n8["backend/tests/test_profile_capacity.py"]
-    n9["scripts/load/service_worksets.py"]
+    n9["backend/tests/test_work_correctness.py"]
+    n10["scripts/load/service_worksets.py"]
     n1 --> n0
     n1 --> n3
     n1 --> n4
@@ -57,8 +58,14 @@ flowchart LR
     n8 --> n5
     n8 --> n7
     n9 --> n0
+    n9 --> n1
+    n9 --> n2
     n9 --> n4
+    n9 --> n5
     n9 --> n7
+    n10 --> n0
+    n10 --> n4
+    n10 --> n7
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
     click n2 "../modules/models_calendar.md"
@@ -68,7 +75,8 @@ flowchart LR
     click n6 "../modules/routers_capacity.md"
     click n7 "../modules/capacity_service.md"
     click n8 "../modules/test_profile_capacity.md"
-    click n9 "../modules/service_worksets.md"
+    click n9 "../modules/test_work_correctness.md"
+    click n10 "../modules/service_worksets.md"
 ```
 
 ### Internal neighbors
@@ -77,6 +85,7 @@ flowchart LR
 |---|---|
 | Inbound | [routers_capacity](../modules/routers_capacity.md) |
 | Inbound | [test_profile_capacity](../modules/test_profile_capacity.md) |
+| Inbound | [test_work_correctness](../modules/test_work_correctness.md) |
 | Inbound | [service_worksets](../modules/service_worksets.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |

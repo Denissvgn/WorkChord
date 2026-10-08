@@ -13,7 +13,7 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app` | `mcp_agent_tools` |
 | `app.authority` | `Authority`, `AuthorityError` |
 | `app.commands` | `command_transaction` |
-| `app.main` | `app`, `app` |
+| `app.main` | `app`, `app`, `app`, `app` |
 | `app.models.agent` | `AgentRun`, `AgentTaskAssignment`, `AgentActor`, `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership` |
 | `app.models.task` | `Task` |
@@ -32,11 +32,11 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app.services.task_domain_service` | `TaskDomainService`, `normalize_effort` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
-| `app.services.work_metrics` | `aggregate_metrics` |
+| `app.services.work_metrics` | `aggregate_metrics`, `task_signals` |
 | `app.utils.time` | `utc_now`, `utc_now` |
 | `dataclasses` | `replace` |
 | `datetime` | `timedelta`, `timedelta` |
-| `httpx` | `httpx`, `httpx` |
+| `httpx` | `httpx`, `httpx`, `httpx`, `httpx` |
 | `json` | `json` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `func`, `select` |
@@ -75,6 +75,8 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `test_deferred_ancestor_prevents_manual_start_over_http` | *(async)* `(delivery_store, boundary)` | `@pytest.mark.parametrize('boundary', ['actions', 'commands'])` | — |
+| `test_legacy_status_route_cannot_start_deferred_work` | *(async)* `(delivery_store)` | — | — |
 | `human_context` | *(async)* `(db, project_id)` | — | — |
 | `test_backlog_manual_execution_independent_review_and_reopen` | *(async)* `(delivery_store)` | — | — |
 | `test_owner_and_ids_survive_commit_uncommit` | *(async)* `(delivery_store)` | — | — |

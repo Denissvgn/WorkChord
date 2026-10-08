@@ -41,8 +41,8 @@ flowchart LR
     n8["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
     n9["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
     n10["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
-    n11["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
-    n12["test_progress_availability_matches_open_leaf_execution_permission (backend/tests/test_task_domain.py)"]
+    n11["test_legacy_status_route_cannot_start_deferred_work (backend/tests/test_task_domain.py)"]
+    n12["test_owner_and_ids_survive_commit_uncommit (backend/tests/test_task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -90,7 +90,7 @@ flowchart LR
 | `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 | `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
+| `test_legacy_status_route_cannot_start_deferred_work` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_owner_and_ids_survive_commit_uncommit` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
-| `test_progress_availability_matches_open_leaf_execution_permission` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
