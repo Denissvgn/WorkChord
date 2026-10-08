@@ -6,6 +6,8 @@
 
 Keeps discussion distinct from execution and acceptance. Plain-text comments preserve authorship, versioned edits and history. Same-account drafts retain edit identity and mentions; conflicts require an explicit current-version comparison. Subscription settings, pending states and errors remain visible without dismissing the task editor.
 
+Comment drafts checkpoint uncertainty before writing and retain input through missing responses. A current read and explicit comparison are required to resume; confirmed version conflicts retain the original edit observation until deliberate reapplication. Operation markers prevent obsolete acknowledgments from clearing newer local input.
+
 ## Imports
 
 | Source | Symbols |
@@ -15,6 +17,7 @@ Keeps discussion distinct from execution and acceptance. Plain-text comments pre
 | `../../utils/apiError` | `getApiErrorMessage` |
 | `../common/Button` | `Button` |
 | `../feedback/QueryState` | `QueryErrorState` |
+| `./useDraftDismissal` | `useActiveMount` |
 | `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery` |
 | `react` | `useEffect`, `useId`, `useState` |
 | `react-i18next` | `useTranslation` |
@@ -35,31 +38,35 @@ flowchart LR
     n2["frontend/src/components/tasks/TaskDiscussion.test.tsx"]
     n3["frontend/src/components/tasks/TaskDiscussion.tsx"]
     n4["frontend/src/components/tasks/TaskForm.tsx"]
-    n5["frontend/src/features/identity/identityContext.ts"]
-    n6["frontend/src/services/discussionService.ts"]
-    n7["frontend/src/utils/apiError.ts"]
+    n5["frontend/src/components/tasks/useDraftDismissal.ts"]
+    n6["frontend/src/features/identity/identityContext.ts"]
+    n7["frontend/src/services/discussionService.ts"]
+    n8["frontend/src/utils/apiError.ts"]
     n1 --> n0
-    n1 --> n7
+    n1 --> n8
     n2 --> n3
-    n2 --> n5
+    n2 --> n6
     n3 --> n0
     n3 --> n1
     n3 --> n5
     n3 --> n6
     n3 --> n7
+    n3 --> n8
     n4 --> n0
     n4 --> n1
     n4 --> n3
     n4 --> n5
-    n4 --> n7
+    n4 --> n6
+    n4 --> n8
     click n0 "../modules/Button.md"
     click n1 "../modules/QueryState.md"
     click n2 "../modules/TaskDiscussion.test.md"
     click n3 "../modules/TaskDiscussion.md"
     click n4 "../modules/TaskForm.md"
-    click n5 "../modules/identityContext.md"
-    click n6 "../modules/discussionService.md"
-    click n7 "../modules/apiError.md"
+    click n5 "../modules/useDraftDismissal.md"
+    click n6 "../modules/identityContext.md"
+    click n7 "../modules/discussionService.md"
+    click n8 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +77,7 @@ flowchart LR
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [useDraftDismissal](../modules/useDraftDismissal.md) |
 | Outbound | [identityContext](../modules/identityContext.md) |
 | Outbound | [discussionService](../modules/discussionService.md) |
 | Outbound | [apiError](../modules/apiError.md) |
@@ -84,7 +92,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EditingComment](../entities/EditingComment.md) | Type alias | 11 | — | — |
+| [EditingComment](../entities/EditingComment.md) | Type alias | 12 | — | — |
 
 ## Functions
 

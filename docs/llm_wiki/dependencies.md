@@ -141,6 +141,7 @@ flowchart TD
 | [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
 | [task_detail_service](modules/task_detail_service.md) | 7 | 4 |
 | [sql_semantics](modules/sql_semantics.md) | 7 | 0 |
+| [useDraftDismissal](modules/useDraftDismissal.md) | 7 | 0 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
 | [taskFilterDefaults](modules/taskFilterDefaults.md) | 7 | 1 |
@@ -184,7 +185,6 @@ flowchart TD
 | [support_database](modules/support_database.md) | 5 | 0 |
 | [test_task_domain](modules/test_task_domain.md) | 5 | 25 |
 | [PlanReturnBar](modules/PlanReturnBar.md) | 5 | 1 |
-| [useDraftDismissal](modules/useDraftDismissal.md) | 5 | 0 |
 | [SlideOverDrawer](modules/SlideOverDrawer.md) | 5 | 1 |
 | [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 5 | 4 |
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
@@ -225,7 +225,7 @@ flowchart TD
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 8 |
-| [TaskForm](modules/TaskForm.md) | 4 | 33 |
+| [TaskForm](modules/TaskForm.md) | 4 | 34 |
 | [TaskList](modules/TaskList.md) | 4 | 21 |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 1 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
@@ -370,7 +370,7 @@ flowchart TD
 | [KanbanCard](modules/KanbanCard.md) | 2 | 2 |
 | [PersonCapacity](modules/PersonCapacity.md) | 2 | 5 |
 | [TaskDependencySelector](modules/TaskDependencySelector.md) | 2 | 5 |
-| [TaskDiscussion](modules/TaskDiscussion.md) | 2 | 5 |
+| [TaskDiscussion](modules/TaskDiscussion.md) | 2 | 6 |
 | [TaskTextEditorModal](modules/TaskTextEditorModal.md) | 2 | 5 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 2 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 2 | 7 |

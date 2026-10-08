@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/components/tasks/useDraftDismissal.test.tsx`.
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `it`, `describe` |
+| Module calls | `it`, `describe`, `it` |
 
 ## Local dependency map
 

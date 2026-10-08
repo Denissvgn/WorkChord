@@ -883,7 +883,7 @@ Topological module load / startup order and import-time side effects.
 | [TaskWorkPanel.test](modules/TaskWorkPanel.test.md) | `service = hoisted`, `mock`, `mock`, `describe` |
 | [TimeEntriesPanel.test](modules/TimeEntriesPanel.test.md) | `service = hoisted`, `mock`, `beforeEach`, `it`, `it`, `it`, `it`, `it`, `it.each([true, false])`, `it` |
 | [taskDraftStorage.test](modules/taskDraftStorage.test.md) | `it` |
-| [useDraftDismissal.test](modules/useDraftDismissal.test.md) | `it`, `describe` |
+| [useDraftDismissal.test](modules/useDraftDismissal.test.md) | `it`, `describe`, `it` |
 | [ImportTeamModal.test](modules/ImportTeamModal.test.md) | `teamServiceMock = hoisted`, `mock`, `describe` |
 | [TeamForm.test](modules/TeamForm.test.md) | `teamServiceMock = hoisted`, `mock`, `describe` |
 | [TeamProfileManager.test](modules/TeamProfileManager.test.md) | `teamServiceMock = hoisted`, `mock`, `describe` |

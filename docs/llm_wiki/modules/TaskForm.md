@@ -6,6 +6,8 @@
 
 Places title, durable owner, capacity assignment, estimates and commitment state before the canonical brief. AI assistance is an intentional disclosure. The shared editor guards task, work and discussion drafts, preserves conflicts, and separates delivery prerequisites and discussion from current execution evidence.
 
+Task writes persist an uncertain-outcome checkpoint before the request. Restored or unverified outcomes require an authoritative current read and explicit comparison before submitting again; bounded missing matches do not prove failure. Inputs and original observations remain intact, and completion of a removed editor cannot clear or navigate its replacement.
+
 ## Imports
 
 | Source | Symbols |
@@ -41,8 +43,9 @@ Places title, durable owner, capacity assignment, estimates and commitment state
 | `./TaskTimelinePanel` | `TaskTimelinePanel` |
 | `./TaskWorkPanel` | `TaskWorkPanel` |
 | `./TimeEntriesPanel` | `TimeEntriesPanel` |
-| `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft` |
+| `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft`, `readPendingTaskWrite` |
 | `./taskEditorContract` | `emptyTaskBrief`, `newCriterion`, `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor`, `TaskConflictMetadata`, `TaskEditorValues` |
+| `./useDraftDismissal` | `useActiveMount` |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` |
 | `lucide-react` | `Inbox`, `Save`, `Sparkles` |
 | `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useState` |
@@ -73,7 +76,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (33) |
+| Outbound | `frontend` (34) |
 
 ### External packages
 
@@ -81,13 +84,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 53 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Class | 54 | — | — |
 
 ## Functions
 

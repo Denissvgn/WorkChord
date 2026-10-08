@@ -1826,3 +1826,21 @@ Assigned normal execution now uses the declared project working day for schedule
 - Moved entities: none
 
 Task editor openings now bind coherent current reads to isolated drafts, while bounded detail and project response projections preserve inherited parent policy without authorizing execution from UI windows.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9a9a3a898c29ce32826b6a47f944221f5edd419332ef36dc2df96ee721f9ed31`
+- Pages created: 0
+- Pages updated: 11
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2948
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+Pending editor writes now retain isolated intent and suppress obsolete navigation callbacks; unverified task and comment outcomes require current readback and explicit comparison before resumption.

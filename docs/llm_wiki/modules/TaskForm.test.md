@@ -14,7 +14,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskForm.test.tsx`._
 | `../../types/template` | `WorkTemplate` |
 | `./TaskForm` | `TaskForm` |
 | `./taskEditorContract` | `emptyTaskBrief` |
-| `@testing-library/react` | `screen`, `waitFor` |
+| `@testing-library/react` | `act`, `screen`, `waitFor` |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
 
 ## Module Signals

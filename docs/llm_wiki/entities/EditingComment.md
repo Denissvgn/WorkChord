@@ -1,6 +1,6 @@
 # EditingComment
 
-**Location:** `frontend/src/components/tasks/TaskDiscussion.tsx:11`
+**Location:** `frontend/src/components/tasks/TaskDiscussion.tsx:12`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskDiscussion](../modules/TaskDiscussion.md)

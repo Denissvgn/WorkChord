@@ -22,7 +22,7 @@ The optional task/project disclosure retains scoped personal drafts and creation
 | `../common/Input` | `Input` |
 | `../feedback/QueryState` | `QueryErrorState` |
 | `./DraftDismissalDialog` | `DraftDismissalDialog` |
-| `./useDraftDismissal` | `useDraftDismissal` |
+| `./useDraftDismissal` | `useDraftDismissal`, `useActiveMount` |
 | `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
 | `date-fns` | `format` |
 | `react` | `useCallback`, `useEffect`, `useId`, `useState`, `KeyboardEvent` |

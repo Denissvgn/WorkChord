@@ -72606,7 +72606,8 @@
         "modules/QueryState.md",
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
-        "modules/TaskForm.md"
+        "modules/TaskForm.md",
+        "modules/useDraftDismissal.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskDiscussion.tsx",
@@ -75681,7 +75682,9 @@
       "outgoing_internal_links": [
         "modules/DraftDismissalDialog.md",
         "modules/GuardedTaskModal.md",
+        "modules/TaskDiscussion.md",
         "modules/TaskEditorDrawer.md",
+        "modules/TaskForm.md",
         "modules/TimeEntriesPanel.md",
         "modules/useDraftDismissal.md",
         "modules/useDraftDismissal.test.md"
@@ -89319,5 +89322,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:427f2790b80f332e4e84d258d156d3ba41468d5ed68da15aaf5357bb3f9acf37"
+  "source_hash": "sha256:ab970e3083cf79682bdffca58b3c1e783e5655c9e926d8df8ce242e5313f7dab"
 }

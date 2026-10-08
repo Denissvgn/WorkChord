@@ -4,9 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/components/tasks/taskDraftStorage.ts`._
-
-Parent discard removes the task draft and, when auxiliary cleanup is requested, progress, discussion, legacy time and all scoped time drafts under that parent key. Unrelated parent keys remain intact.
+Private task draft records can retain a pending operation marker alongside the original editor values. Recovery does not silently advance expected task versions or retry writes.
 
 ## Imports
 
@@ -18,7 +16,7 @@ Parent discard removes the task draft and, when auxiliary cleanup is requested, 
 
 | Signal | Values |
 |--------|--------|
-| Exports | `readTaskDraft`, `removeTaskDraft`, `writeTaskDraft` |
+| Exports | `readPendingTaskWrite`, `readTaskDraft`, `removeTaskDraft`, `writeTaskDraft` |
 
 ## Local dependency map
 
@@ -57,5 +55,6 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `readTaskDraft` | `(key: string \| null, defaults: TaskEditorValues) -> TaskEditorValues \| null` | — | — |
-| `writeTaskDraft` | `(key: string \| null, values: TaskEditorValues)` | — | — |
+| `readPendingTaskWrite` | `(key: string \| null) -> string \| null` | — | — |
+| `writeTaskDraft` | `(key: string \| null, values: TaskEditorValues, pendingWrite: string \| null = null)` | — | — |
 | `removeTaskDraft` | `(key: string \| null, includeProgress = false)` | — | — |
