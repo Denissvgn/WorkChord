@@ -1862,3 +1862,37 @@ Pending editor writes now retain isolated intent and suppress obsolete navigatio
 - Moved entities: none
 
 Live work and report consumers now use bounded retained windows with explicit head discovery and honest freshness/completeness feedback, while protected failures remove cached server data.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:595fcd3d9ce80efcdfd96077bb9e8cc7b53e982a1891ce15d155b098cf2e69b7`
+- Pages created: 3
+- Pages updated: 31
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2932
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+
+Calendar and profile editors retain complete initial shared-input observations with their drafts and deletion confirmations.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c2668ddb256363be747932afb5d2fb5284c2038c3d118b3f77eb3908f5a9a57a`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2961
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none

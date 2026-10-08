@@ -20,8 +20,8 @@ _Auto-generated from `frontend/src/components/team/TeamProfileManager.test.tsx`.
 
 | Signal | Values |
 |--------|--------|
-| Constants | `teamServiceMock` |
-| Module calls | `teamServiceMock = hoisted`, `mock`, `describe` |
+| Constants | `teamServiceMock`, `planningMock` |
+| Module calls | `teamServiceMock = hoisted`, `planningMock = hoisted`, `mock`, `mock`, `describe`, `describe` |
 
 ## Local dependency map
 

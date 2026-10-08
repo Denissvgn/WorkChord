@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1515,
+      "entities": 1516,
       "flows": 545,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 718,
+      "modules": 720,
       "workflows": 182
     },
     "dependency_architecture": 2,
-    "total": 2975
+    "total": 2978
   },
   "dependency_pages": {
     "count": 2,
@@ -16032,7 +16032,7 @@
             "backend/app/services/planning_input_context.py",
             "backend/app/commands.py"
           ],
-          "step_count": 26,
+          "step_count": 36,
           "truncated": false
         }
       },
@@ -40235,6 +40235,7 @@
         "entities/NotificationsPanelProps.md",
         "entities/ObjectStoreAcceptance.md",
         "entities/ObservedPlanningInput.md",
+        "entities/ObservedRevisions.md",
         "entities/OIDCLoginAttempt.md",
         "entities/OpenBaoTransitClient.md",
         "entities/OperationBuilder.md",
@@ -42341,6 +42342,7 @@
         "modules/test_saved_view_service.md",
         "modules/test_schema_behavior.md",
         "modules/test_server_acceptance.md",
+        "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_task_discussion.md",
@@ -42401,6 +42403,7 @@
         "modules/useLiveWindow.md",
         "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
+        "modules/usePlanningObservation.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/user_session.md",
@@ -45044,7 +45047,8 @@
         "modules/hierarchy_repair_service.md",
         "modules/mcp_server.md",
         "modules/tasks.md",
-        "modules/test_planning_input_context.md"
+        "modules/test_planning_input_context.md",
+        "modules/test_shared_profile_revisions.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/commands.py",
@@ -50892,11 +50896,26 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/ObservedPlanningInput",
       "outgoing_internal_links": [
-        "modules/planningInputService.md"
+        "modules/planningInputService.md",
+        "modules/usePlanningObservation.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/services/planningInputService.ts",
       "title": "ObservedPlanningInput"
+    },
+    {
+      "canonical_path": "entities/ObservedRevisions.md",
+      "id": "ObservedRevisions",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ObservedRevisions",
+      "outgoing_internal_links": [
+        "modules/calendarService.md",
+        "modules/planningInputService.md",
+        "modules/teamService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/planningInputService.ts",
+      "title": "ObservedRevisions"
     },
     {
       "canonical_path": "entities/OIDCLoginAttempt.md",
@@ -51416,7 +51435,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/PlanningInputKind",
       "outgoing_internal_links": [
-        "modules/planningInputService.md"
+        "modules/planningInputService.md",
+        "modules/usePlanningObservation.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/services/planningInputService.ts",
@@ -56186,10 +56206,12 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_team_TeamMemberProfileSkillCreate",
       "outgoing_internal_links": [
+        "modules/planning_inputs.md",
         "modules/routers_team.md",
         "modules/schemas___init__.md",
         "modules/schemas_team.md",
-        "modules/team_service.md"
+        "modules/team_service.md",
+        "modules/test_shared_profile_revisions.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/team.py",
@@ -59192,6 +59214,7 @@
         "modules/app_database.md",
         "modules/assignee_recommendation_service.md",
         "modules/models___init__.md",
+        "modules/planning_input_context.md",
         "modules/team_member.md",
         "modules/team_service.md",
         "modules/test_agent_model_catalog_api.md",
@@ -65062,6 +65085,7 @@
         "modules/CalendarPage.md",
         "modules/calendarService.md",
         "modules/PersonCapacity.md",
+        "modules/planningInputService.md",
         "modules/types_calendar.md"
       ],
       "role": "semantic",
@@ -68822,18 +68846,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/planning_input_context",
       "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/commands.md",
-        "modules/config.md",
-        "modules/models_calendar.md",
-        "modules/models_capacity.md",
-        "modules/models_iteration.md",
-        "modules/models_project.md",
-        "modules/models_task.md",
-        "modules/planning_input_context.md",
-        "modules/routers_task_domain.md",
-        "modules/team_member.md",
-        "modules/test_planning_input_context.md"
+        "modules/planning_input_context.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/planning_input_context.py",
@@ -68867,10 +68880,16 @@
       "mcp_uri": "llm-wiki://modules/planningInputService",
       "outgoing_internal_links": [
         "entities/ObservedPlanningInput.md",
+        "entities/ObservedRevisions.md",
         "entities/PlanningInputKind.md",
         "modules/api.md",
+        "modules/CalendarPage.md",
+        "modules/calendarService.md",
         "modules/planningInputService.md",
-        "modules/planningInputService.test.md"
+        "modules/planningInputService.test.md",
+        "modules/TeamProfileManager.md",
+        "modules/teamService.md",
+        "modules/usePlanningObservation.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/services/planningInputService.ts",
@@ -73311,13 +73330,15 @@
         "modules/apiError.md",
         "modules/Button.md",
         "modules/Input.md",
+        "modules/planningInputService.md",
         "modules/QueryState.md",
         "modules/TeamPage.md",
         "modules/TeamProfileManager.md",
         "modules/TeamProfileManager.test.md",
         "modules/teamService.md",
         "modules/types_team.md",
-        "modules/useConfirmDialog.md"
+        "modules/useConfirmDialog.md",
+        "modules/usePlanningObservation.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/team/TeamProfileManager.tsx",
@@ -74575,6 +74596,25 @@
       "title": "test_server_acceptance Module"
     },
     {
+      "canonical_path": "modules/test_shared_profile_revisions.md",
+      "id": "test_shared_profile_revisions",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_shared_profile_revisions",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/planning_input_context.md",
+        "modules/schemas_team.md",
+        "modules/team_member.md",
+        "modules/team_service.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_shared_profile_revisions.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_shared_profile_revisions.py",
+      "title": "test_shared_profile_revisions Module"
+    },
+    {
       "canonical_path": "modules/test_source_preflight.md",
       "id": "test_source_preflight",
       "kind": "modules",
@@ -75770,6 +75810,21 @@
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/usePlanningNavigationSummary.ts",
       "title": "usePlanningNavigationSummary Module"
+    },
+    {
+      "canonical_path": "modules/usePlanningObservation.md",
+      "id": "usePlanningObservation",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/usePlanningObservation",
+      "outgoing_internal_links": [
+        "modules/CalendarPage.md",
+        "modules/planningInputService.md",
+        "modules/TeamProfileManager.md",
+        "modules/usePlanningObservation.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/usePlanningObservation.ts",
+      "title": "usePlanningObservation Module"
     },
     {
       "canonical_path": "modules/usePlanningReadiness.md",
@@ -88569,6 +88624,7 @@
         "modules/test_saved_view_service.md",
         "modules/test_schema_behavior.md",
         "modules/test_server_acceptance.md",
+        "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_task_discussion.md",
@@ -88629,6 +88685,7 @@
         "modules/useLiveWindow.md",
         "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
+        "modules/usePlanningObservation.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/user_session.md",
@@ -89298,6 +89355,7 @@
         "modules/test_saved_view_service.md",
         "modules/test_schema_behavior.md",
         "modules/test_server_acceptance.md",
+        "modules/test_shared_profile_revisions.md",
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_task_discussion.md",
@@ -89358,6 +89416,7 @@
         "modules/useLiveWindow.md",
         "modules/useLiveWindow.test.md",
         "modules/usePlanningNavigationSummary.md",
+        "modules/usePlanningObservation.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/user_session.md",
@@ -89390,5 +89449,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:4ef6e23a290a474da88a2db76d78dfb92dc95c7943931131800fd0d3a2ef9522"
+  "source_hash": "sha256:346efc1e1c94c4381201c076d44601b09a7da19b235431bcb5b4e8579368de8e"
 }

@@ -2,7 +2,7 @@
 
 **Location:** `backend/app/schemas/team.py:107`
 **Kind:** Pydantic model
-**Bases:** `BaseModel`
+**Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 
 ## Description
@@ -44,18 +44,22 @@ Schema for creating a profile skill or weakness.
 ```mermaid
 flowchart LR
     n0["TeamMemberProfileSkillCreate (backend/app/schemas/team.py)"]
-    n1["BaseModel"]
+    n1["PlanningInputRevisions (backend/app/schemas/planning_inputs.py)"]
     n2["create_team_member_profile_skill (backend/app/routers/team.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["TeamService.add_profile_skill (backend/app/services/team_service.py)"]
+    n5["test_skill_create_uses_initial_profile_map_and_exposes_current_skill_resource (backend/tests/test_shared_profile_revisions.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_team.md"
+    click n1 "../modules/planning_inputs.md"
     click n2 "../modules/routers_team.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/team_service.md"
+    click n5 "../modules/test_shared_profile_revisions.md"
 ```
 
 ### Summary
@@ -68,7 +72,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `BaseModel` | — |
+| Base | `PlanningInputRevisions` | [planning_inputs](../modules/planning_inputs.md) |
 
 ### References
 
@@ -77,3 +81,4 @@ flowchart LR
 | `create_team_member_profile_skill` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `TeamService.add_profile_skill` | type_reference | [team_service](../modules/team_service.md) | — |
+| `test_skill_create_uses_initial_profile_map_and_exposes_current_skill_resource` | call | [test_shared_profile_revisions](../modules/test_shared_profile_revisions.md) | 2 |

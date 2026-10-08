@@ -29,7 +29,7 @@ Service for team member operations.
 | `create_profile` | *(async)* `(data: TeamMemberProfileCreate, *, commit: bool = True) -> TeamMemberProfile` | — | Create a profile, optionally leaving commit ownership to the caller. |
 | `update_profile` | *(async)* `(profile_id: int, data: TeamMemberProfileUpdate, *, commit: bool = True) -> TeamMemberProfile \| None` | `@schedule_input_command('profile')` | Update profile metadata, optionally deferring the commit. |
 | `delete_profile` | *(async)* `(profile_id: int) -> bool` | `@schedule_input_command('profile')` | Delete a reusable profile and detach linked team members. |
-| `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | — | Add a skill or weakness to a profile. |
+| `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Add a skill or weakness to a profile. |
 | `update_profile_skill` | *(async)* `(profile_id: int, skill_id: int, data: TeamMemberProfileSkillUpdate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Update a profile skill or weakness. |
 | `delete_profile_skill` | *(async)* `(profile_id: int, skill_id: int) -> bool` | `@schedule_input_command('profile')` | Delete one profile skill or weakness. |
 | `get_by_iteration` | *(async)* `(iteration_id: int) -> Sequence[TeamMember]` | — | Get all team members for an iteration. |
@@ -116,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.

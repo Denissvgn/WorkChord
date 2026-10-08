@@ -17,17 +17,20 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
 | `../components/ui` | `OverflowMenu` |
+| `../features/usePlanningObservation` | `usePlanningObservation` |
 | `../i18n/dateLocale` | `dateFnsLocale` |
 | `../services/calendarService` | `calendarService` |
 | `../services/iterationService` | `iterationService` |
+| `../services/planningInputService` | `planningInputService` |
 | `../services/teamService` | `teamService` |
 | `../store/iterationStore` | `useIterationStore` |
 | `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` |
 | `../types/team` | `TeamMember`, `Vacation` |
+| `../utils/apiError` | `getApiErrorMessage` |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
 | `date-fns` | `eachDayOfInterval`, `format`, `parseISO`, `Locale` |
 | `lucide-react` | `CalendarDays`, `CalendarRange`, `Download`, `Grid`, `List`, `Plane`, `Plus`, `Save`, `Trash2`, `Upload`, `X` |
-| `react` | `useEffect`, `useMemo`, `useRef`, `useState` |
+| `react` | `useEffect`, `useMemo`, `useState` |
 | `react-i18next` | `useTranslation` |
 | `react-router-dom` | `Link` |
 
@@ -54,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -62,13 +65,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Class | 35 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Class | 42 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Class | 1087 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Class | 1150 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Class | 38 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Class | 45 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Class | 1105 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Class | 1168 | — | — |

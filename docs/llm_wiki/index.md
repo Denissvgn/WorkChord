@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1515 | [Open section](#entities) |
-| Modules | 718 | [Open section](#modules) |
+| Entities | 1516 | [Open section](#entities) |
+| Modules | 720 | [Open section](#modules) |
 | Workflows | 182 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 545 | [Open section](#entry-point-flows) |
@@ -531,6 +531,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OIDCLoginAttempt](entities/OIDCLoginAttempt.md)
 - [ObjectStoreAcceptance](entities/ObjectStoreAcceptance.md)
 - [ObservedPlanningInput](entities/ObservedPlanningInput.md)
+- [ObservedRevisions](entities/ObservedRevisions.md)
 - [OpenBaoTransitClient](entities/OpenBaoTransitClient.md)
 - [OperationBuilder](entities/OperationBuilder.md)
 - [OutboundDeliveryAttemptError](entities/OutboundDeliveryAttemptError.md)
@@ -2181,6 +2182,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh schema and inspection migration matrix.
 - [test_task_discussion](modules/test_task_discussion.md) - Discussion is attributable, versioned, private and independent from execution.
@@ -2235,6 +2237,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [useLiveWindow](modules/useLiveWindow.md) - `frontend/src/features/useLiveWindow.ts`
 - [useLiveWindow.test](modules/useLiveWindow.test.md) - `frontend/src/features/useLiveWindow.test.tsx`
 - [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) - `frontend/src/features/planningMasters/usePlanningNavigationSummary.ts`
+- [usePlanningObservation](modules/usePlanningObservation.md) - `frontend/src/features/usePlanningObservation.ts`
 - [usePlanningReadiness](modules/usePlanningReadiness.md) - `frontend/src/features/planningMasters/usePlanningReadiness.ts`
 - [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`
 - [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) - `frontend/src/hooks/useSingleKeyShortcutPreference.ts`

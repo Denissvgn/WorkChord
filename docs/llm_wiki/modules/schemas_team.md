@@ -33,7 +33,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (1) |
 
 ### External packages
@@ -42,7 +42,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -56,7 +56,7 @@ flowchart LR
 | [VacationImportResponse](../entities/schemas_team_VacationImportResponse.md) | 77 | `BaseModel` | Summary of bulk vacation import results. |
 | [TeamMemberCreate](../entities/schemas_team_TeamMemberCreate.md) | 85 | `PlanningInputRevisions` | Schema for creating a team member. |
 | [TeamMemberUpdate](../entities/TeamMemberUpdate.md) | 96 | `PlanningInputRevisions` | Schema for updating a team member. |
-| [TeamMemberProfileSkillCreate](../entities/schemas_team_TeamMemberProfileSkillCreate.md) | 107 | `BaseModel` | Schema for creating a profile skill or weakness. |
+| [TeamMemberProfileSkillCreate](../entities/schemas_team_TeamMemberProfileSkillCreate.md) | 107 | `PlanningInputRevisions` | Schema for creating a profile skill or weakness. |
 | [TeamMemberProfileSkillUpdate](../entities/schemas_team_TeamMemberProfileSkillUpdate.md) | 141 | `PlanningInputRevisions` | Schema for updating a profile skill or weakness. |
 | [TeamMemberProfileSkillResponse](../entities/TeamMemberProfileSkillResponse.md) | 177 | `BaseModel` | Schema for profile skill responses. |
 | [TeamMemberProfileCreate](../entities/schemas_team_TeamMemberProfileCreate.md) | 195 | `BaseModel` | Schema for creating a reusable team-member profile. |

@@ -19,16 +19,19 @@ sequenceDiagram
     participant p7 as revisions
     participant p8 as list
     participant p9 as (…).mappings().first
-    participant p10 as (…).mappings
+    participant p10 as (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
     participant p11 as db.execute
-    participant p12 as select(…).where
+    participant p12 as select(…).where (backend/app/services/plan…:observe_planning_input, 1)
     participant p13 as select
     participant p14 as LookupError
-    participant p15 as PlanningConflict
-    participant p16 as len
-    participant p17 as json.dumps(…).encode
-    participant p18 as json.dumps
-    participant p19 as dict
+    participant p15 as dict
+    participant p16 as (…).mappings().all
+    participant p17 as (…).mappings (backend/app/services/plan….py:observe_planning_input)
+    participant p18 as select(…).where(…).order_by(…).limit
+    participant p19 as select(…).where(…).order_by
+    participant p20 as select(…).where (backend/app/services/plan….py:observe_planning_input)
+    participant p21 as len
+    participant p22 as PlanningConflict
     p0-->>p1: HTTPException (backend/app/routers/task_….py:planning_input_context)
     p0->>p2: domain_result
     p2-->>p3: HTTPException (backend/app/routers/task_domain.py:domain_result)
@@ -42,19 +45,26 @@ sequenceDiagram
     p6-->>p7: revisions
     p6-->>p8: list
     p6-->>p9: (…).mappings().first
-    p6-->>p10: (…).mappings
+    p6-->>p10: (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
     p6-->>p11: db.execute
-    p6-->>p12: select(…).where
+    p6-->>p12: select(…).where (backend/app/services/plan…:observe_planning_input, 1)
     p6-->>p13: select
     p6-->>p14: LookupError
+    p6-->>p15: dict
+    p6-->>p16: (…).mappings().all
+    p6-->>p17: (…).mappings (backend/app/services/plan….py:observe_planning_input)
+    p6-->>p11: db.execute
+    p6-->>p18: select(…).where(…).order_by(…).limit
+    p6-->>p19: select(…).where(…).order_by
+    p6-->>p20: select(…).where (backend/app/services/plan….py:observe_planning_input)
+    p6-->>p13: select
+    p6-->>p21: len
+    p6->>p22: PlanningConflict
+    p6-->>p15: dict
     p6-->>p7: revisions
-    p6->>p15: PlanningConflict
-    p6-->>p16: len
-    p6-->>p17: json.dumps(…).encode
-    p6-->>p18: json.dumps
-    p6->>p15: PlanningConflict
-    p6-->>p19: dict
 ```
+
+> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -103,7 +113,7 @@ flowchart LR
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
-| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member` | - | - | `{...}` |
+| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member` | - | `resource[...]` | `{...}` |
 | `revisions` | - | - | - | - |
 
 ### Call data
