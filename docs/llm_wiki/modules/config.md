@@ -4,7 +4,7 @@
 
 ## Description
 
-_Auto-generated from `backend/app/config.py`._
+Strict mutation revision enforcement defaults to compatibility false. Base and production Compose web/worker environments forward the configured value; server and replica overlays inherit it. Recreating those services applies activation or rollback without relaxing authorization or supplied-version conflict checks.
 
 ## Imports
 
@@ -38,7 +38,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (63) |
+| Inbound | `backend` (64) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (1) |
 
@@ -48,7 +48,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 65 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

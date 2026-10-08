@@ -1896,3 +1896,30 @@ Calendar and profile editors retain complete initial shared-input observations w
 - Pages deprecated: 0
 - Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87833a8dbd5be25088a772bdbb2d54f2e1a3818bfbc95a95bdff09de8ca96478`
+- Pages created: 1
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2960
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Compose web and worker services forward strict mutation policy with compatibility defaults and explicit recreation for activation or rollback.

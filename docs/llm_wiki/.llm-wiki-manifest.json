@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:be525a26b04a150490b5de3c2fb701db229081bb520f0398a0decf6300ce8912",
-    "knowledge_index_hash": "sha256:db07ef39c50c0b72113acbe097c31eef221799a0dfe953dcd058c2e867a501dd",
-    "surface_index_hash": "sha256:cb735301a386ee155457d25b4f76ecc13024dcf171176d910d3aac9767e9ce77"
+    "evaluated_envelope_hash": "sha256:9ab67d54182f3530490c9dc92e886e2cfb1c62d9850a1787956c53a762413323",
+    "knowledge_index_hash": "sha256:8d5d3d840f61eee40607fd1e9b6c0cede7765042c8fac167e556a3ce9ac9f085",
+    "surface_index_hash": "sha256:0e1a70a48602815e591919c76a33a36a6baf62642e993f9e8e966e9f1ca9e595"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -21575,6 +21575,16 @@
       },
       "state": "known"
     },
+    "modules/test_runtime_mutation_policy.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:48b3591e77adbc60b53ac04cf33744506e1b15f06536da2391691ff378e4be60",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:c4c95675ed26adec8d3aa4fef6a2b4ce819527e8ac92230762869ad38888f9c6",
+        "source_path": "backend/tests/test_runtime_mutation_policy.py"
+      },
+      "state": "known"
+    },
     "modules/test_runtime_policy.md": {
       "basis": {
         "concept_observation_hash": "sha256:7e4f77964885179774879cd01fdb1cace5ac3badc92f010f61c1f65d62c554e7",
@@ -22493,12 +22503,12 @@
           "evidence_basis": {
             "adapter": "compose",
             "discovery_root": ".",
-            "observation_hash": "sha256:dc5b6b98b3372c6f600e3cab4272d7b5d3d5a671cc913dde33c373589ac63bdf",
-            "source_content_hash": "sha256:757f29ffc6709386c43ada0a91aa000003eae427b91890c4bae6b933def9ee3d"
+            "observation_hash": "sha256:97f7221d2beb949f6f6f41dc4299700789422976cebbbf916009f44846a38c75",
+            "source_content_hash": "sha256:832d072392acb298e21ab3ac965e1ba1bc19db9545873332c3a7061e564f06bd"
           },
-          "observation_hash": "sha256:dc5b6b98b3372c6f600e3cab4272d7b5d3d5a671cc913dde33c373589ac63bdf",
+          "observation_hash": "sha256:97f7221d2beb949f6f6f41dc4299700789422976cebbbf916009f44846a38c75",
           "page_path": "infrastructure/docker-compose_prod_yml.md",
-          "source_content_hash": "sha256:757f29ffc6709386c43ada0a91aa000003eae427b91890c4bae6b933def9ee3d",
+          "source_content_hash": "sha256:832d072392acb298e21ab3ac965e1ba1bc19db9545873332c3a7061e564f06bd",
           "source_path": "docker-compose.prod.yml",
           "state": "current"
         },
@@ -22535,12 +22545,12 @@
           "evidence_basis": {
             "adapter": "compose",
             "discovery_root": ".",
-            "observation_hash": "sha256:863a1d781581deaf34d5550f2d367919917263baf730034cae7b6191388b0758",
-            "source_content_hash": "sha256:459ec0ebb0e03b14622567c8e988c0b93f85531a25648aa67416744330427d4c"
+            "observation_hash": "sha256:3d9b644235f051e956519f110ff724dc4a0a4c58117970d3dc59ea5a85cfa9b3",
+            "source_content_hash": "sha256:c1e2e20d4fbf8d6e660f9b9b1e7b3b3f8142f938c92738fc5ae1f679b6844bfe"
           },
-          "observation_hash": "sha256:863a1d781581deaf34d5550f2d367919917263baf730034cae7b6191388b0758",
+          "observation_hash": "sha256:3d9b644235f051e956519f110ff724dc4a0a4c58117970d3dc59ea5a85cfa9b3",
           "page_path": "infrastructure/docker-compose_yml.md",
-          "source_content_hash": "sha256:459ec0ebb0e03b14622567c8e988c0b93f85531a25648aa67416744330427d4c",
+          "source_content_hash": "sha256:c1e2e20d4fbf8d6e660f9b9b1e7b3b3f8142f938c92738fc5ae1f679b6844bfe",
           "source_path": "docker-compose.yml",
           "state": "current"
         },
@@ -22580,13 +22590,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:f5c94ed855dde9c9a84565cfbe0f8fdea36c6b5842a884a871762de4ba034325",
-      "lifecycle_hash": "sha256:337ab2761bb80a883a8234ee2d32c485f27f7699f2dd55ae4d87dd49b026f650",
-      "markdown_snapshot_hash": "sha256:a5aff50aeab9baed7d28bfe94056288a84fdd71ea55c8ba13f6345487c8ffb4a",
-      "observation_inputs_hash": "sha256:1317ece73a8754d63c06fc92376c93af94295d1cc91e00dafe6ed0772d7d00d0",
+      "inventory_hash": "sha256:fa13a2635d9e7a971a16420d9aaad5921d3f5ac8f92a7ffe5045da27b832aaa7",
+      "lifecycle_hash": "sha256:15125e6594f348260b989a2602d6030601762fafc6c5caab3cf935c4ddd13f9e",
+      "markdown_snapshot_hash": "sha256:246154da7dec30a67e11bb9121bdee007a2827c0788487544eae89abac15616b",
+      "observation_inputs_hash": "sha256:9e8a340b6bd36f9d5d9b13726c55565bb4ec2ac07ded6b530dbf142fa46ce35e",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:c2668ddb256363be747932afb5d2fb5284c2038c3d118b3f77eb3908f5a9a57a"
+      "source_snapshot_hash": "sha256:87833a8dbd5be25088a772bdbb2d54f2e1a3818bfbc95a95bdff09de8ca96478"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -34254,6 +34264,10 @@
     "modules/test_runtime_boundaries.md": {
       "scope": "module",
       "source_path": "backend/tests/test_runtime_boundaries.py"
+    },
+    "modules/test_runtime_mutation_policy.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_runtime_mutation_policy.py"
     },
     "modules/test_runtime_policy.md": {
       "scope": "module",
@@ -62561,6 +62575,25 @@
       "language": "python",
       "module_page": "test_runtime_boundaries",
       "semantic_hash": "sha256:a5b076eb233bea4c24b7c9531955d4473b6cb2394feaac32a7f88c994643d5b2"
+    },
+    "backend/tests/test_runtime_mutation_policy.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Runtime configuration preserves supplied conflicts in either rollout mode.",
+          "functions": {
+            "test_effective_policy_and_compatibility_conflicts": "—"
+          }
+        }
+      },
+      "hash": "sha256:c4c95675ed26adec8d3aa4fef6a2b4ce819527e8ac92230762869ad38888f9c6",
+      "language": "python",
+      "module_page": "test_runtime_mutation_policy",
+      "semantic_hash": "sha256:48b33ce724c069df8d2987b399ec05adae5dc3acdf32e7855dbd696a600012b4"
     },
     "backend/tests/test_saved_view_service.py": {
       "entities": [],
