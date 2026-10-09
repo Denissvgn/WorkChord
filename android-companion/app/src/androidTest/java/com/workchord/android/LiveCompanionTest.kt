@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-/** Opt-in cross-app checks confined to the safety-fenced synthetic HTTP fixture. */
+/** Opt-in cross-app checks confined to the safety-fenced synthetic fixture. */
 @RunWith(AndroidJUnit4::class)
 class LiveCompanionTest {
     @get:Rule val app = createEmptyComposeRule()
@@ -33,13 +33,18 @@ class LiveCompanionTest {
     private val device get() = UiDevice.getInstance(instrumentation)
     private val context get() = instrumentation.targetContext
     private val tokens get() = (context.applicationContext as WorkChordApplication).tokenManager
-    private val origin = "http://localhost:4173"
+    private val arguments get() = InstrumentationRegistry.getArguments()
+    private val origin get() = arguments.getString("fixtureOrigin")?.trimEnd('/') ?: "http://localhost:4173"
     private lateinit var nonce: String
     private val http = OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS).readTimeout(5, TimeUnit.SECONDS).build()
 
     private fun qualify() {
-        val arguments = InstrumentationRegistry.getArguments()
-        assumeTrue("A disposable live fixture must be selected explicitly", arguments.getString("fixtureOrigin") == origin)
+        selected(arguments.getString("fixtureOrigin") != null, "A disposable live fixture must be selected explicitly")
+        val parsed = Uri.parse(origin)
+        check(parsed.host in setOf("localhost", "127.0.0.1", "10.0.2.2") && parsed.userInfo == null)
+        if (arguments.getString("releaseQualification") == "true") {
+            check(parsed.scheme == "https" && arguments.getString("browserOrigin") == origin)
+        }
         nonce = requireNotNull(arguments.getString("fixtureNonce"))
         val deadline = android.os.SystemClock.elapsedRealtime() + 15000
         var ready = false
@@ -53,6 +58,10 @@ class LiveCompanionTest {
         }
         check(ready) { "The marked disposable application is unavailable; no writes are allowed." }
         launchApp()
+    }
+    private fun selected(value: Boolean, message: String) {
+        if (arguments.getString("releaseQualification") == "true") check(value) { message }
+        else assumeTrue(message, value)
     }
     private fun launchApp() {
         context.startActivity(context.packageManager.getLaunchIntentForPackage("com.workchord.android")!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -74,7 +83,7 @@ class LiveCompanionTest {
             response.code to JSONObject(response.body!!.string())
         }
     }
-    private fun current(id: Int) = request("/api/tasks/$id").also { assertEquals(200, it.first) }.second
+    private fun current(id: Int) = request("/api/tasks/$id/detail").also { assertEquals(200, it.first) }.second.getJSONObject("task")
     private fun waitText(text: String) { app.waitUntil(15000) { app.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() } }
     private fun click(text: String) {
         println("Native control: $text")
@@ -114,7 +123,10 @@ class LiveCompanionTest {
         click("Sign in")
         click("Open browser to sign in")
         // The isolated emulator may show Chrome's first-run consent once.
-        for (label in listOf("Use without an account", "Accept & continue", "No thanks", "Got it")) {
+        if (arguments.getString("releaseQualification") == "true") {
+            check(!device.hasObject(By.text("Accept & continue"))) { "Prepare an approved emulator browser before qualification." }
+        }
+        for (label in if (arguments.getString("releaseQualification") == "true") listOf("Use without an account", "No thanks", "Got it") else listOf("Use without an account", "Accept & continue", "No thanks", "Got it")) {
             device.wait(Until.findObject(By.text(label)), 1000)?.click()
         }
         if (device.wait(Until.findObject(By.clazz("android.widget.CheckBox")), 1500) != null &&
@@ -201,7 +213,7 @@ class LiveCompanionTest {
     fun reopenedProcessRestoresAuthorizedDraftAndRevocationClearsPrivateView() {
         qualify()
         val idFile = File(instrumentation.targetContext.noBackupFilesDir, "live-task-id")
-        assumeTrue("Run the sign-in/evidence scenario in a separate process first", idFile.exists())
+        selected(idFile.exists(), "Run the sign-in/evidence scenario in a separate process first")
         val id = idFile.readText().toInt()
         waitText("My Work")
         openTask(id)
@@ -343,15 +355,14 @@ class LiveCompanionTest {
     @Test
     fun networkInterruptionLocksCurrentWorkAndRecoversLocalInputs() {
         qualify()
-        assumeTrue("A host-controlled network interruption must be explicitly selected",
-            InstrumentationRegistry.getArguments().getString("networkControl") == "enabled")
+        selected(arguments.getString("networkControl") == "enabled", "A host-controlled network interruption must be explicitly selected")
         signIn("Alice")
         val queued = request("/api/tasks/my-work").second.getJSONObject("queues").getJSONArray("queued")
         val id = (0 until queued.length()).map { queued.getJSONObject(it) }.single { it.getString("title") == "Planned" }.getInt("id")
         openTask(id, "Planned")
         field("Reason for action or review", "Protected draft during a real network interruption")
         scroll("Save draft on this device"); click("Save draft on this device")
-        val marker = File(context.noBackupFilesDir, "network-stage.txt")
+        val marker = File(requireNotNull(context.getExternalFilesDir(null)), "network-stage.txt")
         fun awaitStage(expected: String) {
             val until = android.os.SystemClock.elapsedRealtime() + 60000
             while (marker.readText() != expected && android.os.SystemClock.elapsedRealtime() < until) android.os.SystemClock.sleep(100)
@@ -381,8 +392,7 @@ class LiveCompanionTest {
     @Test
     fun actualWebEditorAndNativeDraftProduceRecoverableConflict() {
         qualify()
-        assumeTrue("A separate web editor must be explicitly selected",
-            InstrumentationRegistry.getArguments().getString("webPeerControl") == "enabled")
+        selected(arguments.getString("webPeerControl") == "enabled", "A separate web editor must be explicitly selected")
         signIn("Alice")
         val queues = request("/api/tasks/my-work").second.getJSONObject("queues").getJSONArray("queued")
         val planned = (0 until queues.length()).map { queues.getJSONObject(it) }.single { it.getString("title") == "Planned" }
@@ -393,14 +403,15 @@ class LiveCompanionTest {
             .put("acceptance_criteria", JSONArray().put(JSONObject().put("id", "native-web-peer").put("revision", 1)
                 .put("text", "Retained evidence survives a browser edit")))
         val created = request("/api/iterations/$iteration/tasks", "POST", JSONObject().put("title", "Native peer work")
-            .put("project_id", planned.getInt("project_id")).put("owner_profile_id", profile).put("effort_hours", 2).put("brief", brief))
+            .put("project_id", planned.getInt("project_id")).put("owner_profile_id", profile).put("effort_hours", 2).put("brief", brief)
+            .put("expected_revision", request("/api/iterations/$iteration").second.getInt("revision")))
         assertEquals(201, created.first)
         val id = created.second.getInt("id")
         openTask(id, "Native peer work")
         scroll("Edit evidence"); click("Edit evidence")
         field("Criterion evidence", "Retained native evidence during an actual web editor update")
         app.onNode(isToggleable()).performScrollTo().performClick().assertIsOn()
-        val marker = File(context.noBackupFilesDir, "web-peer-stage.txt")
+        val marker = File(requireNotNull(context.getExternalFilesDir(null)), "web-peer-stage.txt")
         marker.writeText(id.toString())
         val until = android.os.SystemClock.elapsedRealtime() + 90000
         while (marker.readText() != "saved" && android.os.SystemClock.elapsedRealtime() < until) android.os.SystemClock.sleep(100)
@@ -484,8 +495,7 @@ class LiveCompanionTest {
     @Test
     @androidx.test.filters.SdkSuppress(minSdkVersion = 33)
     fun captureCompanionPresentation() {
-        assumeTrue("Presentation capture must be explicitly selected",
-            InstrumentationRegistry.getArguments().getString("presentationControl") == "enabled")
+        selected(arguments.getString("presentationControl") == "enabled", "Presentation capture must be explicitly selected")
         qualify()
         if (tokens.baseUrl.trimEnd('/') != origin) {
             app.onNodeWithText("Server address").performTextReplacement(origin)

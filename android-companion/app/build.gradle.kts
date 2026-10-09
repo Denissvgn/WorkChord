@@ -8,6 +8,17 @@ plugins {
 android {
     namespace = "com.workchord.android"
     compileSdk = 34
+    val qualifyRelease = providers.environmentVariable("WORKCHORD_ANDROID_RELEASE_QUALIFICATION").orNull == "true"
+    testBuildType = if (qualifyRelease) "release" else "debug"
+    if (qualifyRelease) {
+        signingConfigs.create("qualification") {
+            storeFile = file(requireNotNull(System.getenv("WORKCHORD_ANDROID_QUALIFICATION_KEYSTORE")))
+            storeType = "PKCS12"
+            storePassword = requireNotNull(System.getenv("WORKCHORD_QUALIFICATION_KEY_PASSWORD"))
+            keyAlias = "workchord-qualification"
+            keyPassword = storePassword
+        }
+    }
 
     defaultConfig {
         applicationId = "com.workchord.android"
@@ -24,6 +35,8 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = false
+            if (qualifyRelease) signingConfig = signingConfigs.getByName("qualification")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
