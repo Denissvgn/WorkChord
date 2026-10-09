@@ -197,7 +197,7 @@ compose() {
 }
 
 if [ "$isolated" = "true" ]; then
-    compose config --format json >"$runtime_dir/resolved.compose.json"
+    compose --profile '*' config --format json >"$runtime_dir/resolved.compose.json"
     python3 "$script_dir/isolated_rehearsal.py" override --runtime-root "$runtime_dir" <"$runtime_dir/resolved.compose.json"
     rm "$runtime_dir/resolved.compose.json"
 fi
