@@ -2214,3 +2214,19 @@ Calendar reload and import completion now respect intervening operations and res
 Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.
 
 Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:494ee96e90287a4236bc677f48970b4c4ec0aa3ec33a047af192b1eea3105acf`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3010
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

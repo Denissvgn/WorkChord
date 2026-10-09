@@ -1,7 +1,7 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:dd21c0936339e5ef769332bf1b60a8b7132a4f2cd454aec0bbe75dfc385343fa",
-    "knowledge_index_hash": "sha256:b7cb7ddb383ad09dd8b2e509a768601a866244e2fe4b9aed05277f29c49e2be9",
+    "evaluated_envelope_hash": "sha256:66b3f7d7cd39a187f998ebdf78d64c6bd04ebdc1c21d2fd2bdf6cfc1ba5be8d6",
+    "knowledge_index_hash": "sha256:aba6aa41e2ab440151af879ac71a7894acd26b2f7e3b5aba28067c2c8301c3d5",
     "surface_index_hash": "sha256:e1e67623f9e24fdea87d80adc7860bf64bc813b0a68083701811797c27c82d78"
   },
   "evidence_baselines": {
@@ -18420,7 +18420,7 @@
         "concept_observation_hash": "sha256:60ebfa1e984be85829511c651fce5ccfcb5ed0f9d8b4d2bc8ae2c4a27d441556",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:d5b0bb81fecd19834dea2d8f5cecf3fbfa45620f1a82b211e3a90788239cff0a",
+        "source_content_hash": "sha256:d5b4f4ac3f586937a398a8bf3f613e609aae6ba268b4d9624c624cd714b77ed8",
         "source_path": "scripts/server/export_acceptance_artifacts.py"
       },
       "state": "known"
@@ -22891,12 +22891,12 @@
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
       "inventory_hash": "sha256:56d4b1906d72d0bdbc46ce0d984702edd940bd7bae54252ac88bd32d096bcf29",
-      "lifecycle_hash": "sha256:14a9ea04d1e6da12997b14c626d80b2309ff2aebe041327948859a03126f2511",
-      "markdown_snapshot_hash": "sha256:bc135cd254632155339b6b5477ff871afd5143f48df564af4dfed305e3a188bb",
+      "lifecycle_hash": "sha256:0ea6c976942d181e5186bf4f758b597f0fcd269ef09ffd9397f886a75abb7047",
+      "markdown_snapshot_hash": "sha256:04f99e01ea913a9ad22ad436da94d81023c09ac268e01fef835920e6dc18e575",
       "observation_inputs_hash": "sha256:5e669cd8a40a0536fef8adde432d78f1f5d12f29f926ebf446398e516d1f65bb",
       "repository_hash": "sha256:acc3901bfd36dd6f2564de7ccb315de144b339dba0b47e64a6a228009d9596aa",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:5603ddebff367e57c7a42048bc7dc1ee58c2d3103caa7dcd3f78226ac33c3e74"
+      "source_snapshot_hash": "sha256:494ee96e90287a4236bc677f48970b4c4ec0aa3ec33a047af192b1eea3105acf"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -83377,7 +83377,7 @@
           }
         }
       },
-      "hash": "sha256:d5b0bb81fecd19834dea2d8f5cecf3fbfa45620f1a82b211e3a90788239cff0a",
+      "hash": "sha256:d5b4f4ac3f586937a398a8bf3f613e609aae6ba268b4d9624c624cd714b77ed8",
       "language": "python",
       "module_page": "export_acceptance_artifacts",
       "semantic_hash": "sha256:aba5a7128afaef1dcc2a9f0c7bfa2e684330b8e75e30b0789295ae134a5c2f47"
