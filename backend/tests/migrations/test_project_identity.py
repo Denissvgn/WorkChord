@@ -73,6 +73,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         allocation = after_catalog["team_members"]
         assert allocation["columns"].pop("allocation_token") == {"type": {"family": "text"}, "nullable": False}
         allocation["unique_constraints"].remove(("allocation_token",))
+        profiles = after_catalog["team_member_profiles"]
+        assert profiles["columns"].pop("profile_token") == {"type": {"family": "text"}, "nullable": False}
+        profiles["unique_constraints"].remove(("profile_token",))
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))

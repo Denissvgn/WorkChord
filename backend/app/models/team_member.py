@@ -75,9 +75,12 @@ class TeamMemberProfile(Base):
         Index("ix_team_member_profiles_display_name", "display_name"),
         Index("ix_team_member_profiles_email", "email"),
         Index("ix_team_member_profiles_automation_enabled", "automation_enabled"),
+        UniqueConstraint("profile_token", name="uq_team_member_profiles_profile_token"),
+        {"sqlite_autoincrement": True},
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    profile_token: Mapped[str] = mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))
     seed_key: Mapped[Optional[str]] = mapped_column(
         String(120), nullable=True, unique=True, index=True
     )

@@ -222,3 +222,136 @@ async def test_missing_snapshot_lifetime_is_preserved_but_restore_is_held(delive
     async with factory() as db:
         row = await db.scalar(select(ApplicationSnapshot).where(ApplicationSnapshot.filename == saved))
         assert (row.payload, row.checksum) == before
+
+
+@pytest.mark.parametrize("reference", ["member_profile", "task_owner"])
+async def test_snapshot_refuses_reused_profile_lifetime(delivery_store, reference):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original = TeamMemberProfile(display_name="Captured person", profile_kind="human")
+        db.add(original)
+        await db.commit()
+        original_id = original.id
+        if reference == "member_profile":
+            member = await TeamService(db).create(scenario.iterations[0], TeamMemberCreate(
+                name="Captured person", position="Engineer", profile_id=original_id))
+            record_id = member.id
+        else:
+            task = await db.get(Task, scenario.tasks["planned"])
+            task.owner_profile_id = original_id
+            await db.commit()
+            record_id = task.id
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "profile_identity")
+        if reference == "task_owner":
+            task.owner_profile_id = None
+            await db.commit()
+        assert await TeamService(db).delete_profile(original_id)
+    async with factory() as db:
+        replacement = TeamMemberProfile(display_name="Unrelated replacement person", profile_kind="human")
+        db.add(replacement)
+        await db.commit()
+        replacement_id = replacement.id
+        assert replacement_id > original_id
+        record = await db.get(TeamMember if reference == "member_profile" else Task, record_id)
+        field = "profile_id" if reference == "member_profile" else "owner_profile_id"
+        before = getattr(record, field)
+        assert before is None
+        try:
+            await SnapshotService(db).restore(scenario.iterations[0], saved)
+        except PlanningConflict:
+            pass
+    async with factory() as db:
+        record = await db.get(TeamMember if reference == "member_profile" else Task, record_id)
+        after = getattr(record, field)
+        assert after == before, {
+            "reference": reference, "captured_profile_id": original_id,
+            "replacement_profile_id": replacement_id, "before": before,
+            "after": after, "snapshot": saved,
+        }
+        assert (await db.get(TeamMemberProfile, replacement_id)).display_name == "Unrelated replacement person"
+
+
+async def test_replaced_profile_token_rejects_before_recovery_state_changes(delivery_store):
+    from uuid import uuid4
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "profile_lifetime_guard")
+        profile = await db.get(TeamMemberProfile, scenario.profile)
+        profile.profile_token = str(uuid4())
+        await db.commit()
+        token = profile.profile_token
+        snapshots = await db.scalar(select(func.count()).select_from(ApplicationSnapshot))
+        with pytest.raises(PlanningConflict, match="person lifetime"):
+            await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        assert (await db.get(TeamMemberProfile, scenario.profile)).profile_token == token
+        assert await db.scalar(select(func.count()).select_from(ApplicationSnapshot)) == snapshots
+
+
+async def test_backlog_restore_preflights_person_lifetime_before_recovery_writes(delivery_store):
+    from uuid import uuid4
+    from app.services.backlog_snapshot_service import BacklogSnapshotService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        profile = TeamMemberProfile(display_name="Backlog owner", profile_kind="human")
+        db.add(profile)
+        await db.flush()
+        task = Task(title="Backlog deliverable", project_id=scenario.projects[0], owner_profile_id=profile.id)
+        db.add(task)
+        await db.commit()
+        saved = await BacklogSnapshotService(db).capture(scenario.projects[0])
+        profile.profile_token = str(uuid4())
+        await db.commit()
+        before = await db.scalar(select(func.count()).select_from(ApplicationSnapshot))
+        versions = dict((await db.execute(select(Task.id, Task.version).where(Task.project_id == scenario.projects[0], Task.iteration_id.is_(None)))).all())
+        with pytest.raises(PlanningConflict, match="person lifetime"):
+            await BacklogSnapshotService(db).restore(scenario.projects[0], saved, versions, reason="Recover captured work")
+    async with factory() as db:
+        assert await db.scalar(select(func.count()).select_from(ApplicationSnapshot)) == before
+
+
+async def test_missing_person_lifetime_map_preserves_snapshot_and_rejects_restore(delivery_store):
+    import hashlib
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "legacy_person_provenance")
+        row = await db.scalar(select(ApplicationSnapshot).where(ApplicationSnapshot.filename == saved))
+        payload = dict(row.payload)
+        payload.pop("profile_lifetimes")
+        row.payload = payload
+        row.checksum = hashlib.sha256(SnapshotService._encode(payload)).hexdigest()
+        await db.commit()
+        before = (row.payload, row.checksum)
+        with pytest.raises(PlanningConflict, match="person lifetime provenance"):
+            await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        row = await db.scalar(select(ApplicationSnapshot).where(ApplicationSnapshot.filename == saved))
+        assert (row.payload, row.checksum) == before
+
+
+async def test_scoped_manager_can_restore_another_eligible_person_without_profile_access(managed_store):
+    from app.authority import Authority
+    from app.models.identity import PrincipalProfileLink, ProjectMembership
+    from app.services.backlog_snapshot_service import BacklogSnapshotService
+    factory, scenario, _, principals = managed_store
+    async with factory() as db:
+        owner = TeamMemberProfile(display_name="Eligible project owner", profile_kind="human")
+        db.add(owner)
+        await db.flush()
+        owner_id = owner.id
+        db.add(PrincipalProfileLink(principal_id=principals[1], profile_id=owner_id, linked_by_principal_id=principals[0]))
+        db.add(ProjectMembership(principal_id=principals[1], project_id=scenario.projects[0], role="editor"))
+        manager_role = await db.scalar(select(ProjectMembership).where(ProjectMembership.principal_id == principals[0], ProjectMembership.project_id == scenario.projects[0]))
+        manager_role.role = "manager"
+        task = Task(title="Scoped backlog work", project_id=scenario.projects[0], owner_profile_id=owner_id)
+        db.add(task)
+        await db.commit()
+        task_id = task.id
+    async with factory() as db:
+        db.info["authority"] = Authority(principals[0], "human", projects={scenario.projects[0]: "manager"})
+        assert await db.scalar(select(TeamMemberProfile.id).where(TeamMemberProfile.id == owner_id)) is None
+        saved = await BacklogSnapshotService(db).capture(scenario.projects[0])
+        versions = dict((await db.execute(select(Task.id, Task.version).where(Task.project_id == scenario.projects[0], Task.iteration_id.is_(None)))).all())
+        await BacklogSnapshotService(db).restore(scenario.projects[0], saved, versions, reason="Recover authorized backlog")
+    async with factory() as db:
+        assert (await db.get(Task, task_id)).owner_profile_id == owner_id

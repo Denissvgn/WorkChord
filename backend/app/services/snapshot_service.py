@@ -34,6 +34,54 @@ class SnapshotService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    @staticmethod
+    def _profile_references(payload):
+        """Collect every profile reference from the complete saved planning graph."""
+        from app.commands import PlanningConflict
+        values = [member.get("profile_id") for member in payload.get("team_members", [])]
+        pending = list(payload["tasks"])
+        while pending:
+            task = pending.pop()
+            values.append(task.get("owner_profile_id"))
+            pending.extend(task.get("children", []))
+        if any(value is not None and (type(value) is not int or value < 1) for value in values):
+            raise PlanningConflict("snapshot_profile_identity_invalid", "Snapshot profile identities must be known.")
+        return {value for value in values if value is not None}
+
+    async def profile_lifetimes(self, payload):
+        """Capture only the stable person lifetimes referenced by this saved graph."""
+        from app.authority import internal_authority
+        from app.commands import PlanningConflict
+        from app.models.team_member import TeamMemberProfile
+        references = self._profile_references(payload)
+        with internal_authority(self.db):
+            rows = (await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.profile_token)
+                .where(TeamMemberProfile.id.in_(references)))).all()
+        if {identifier for identifier, _ in rows} != references:
+            raise PlanningConflict("snapshot_profile_unavailable", "Reconcile unavailable person identities before capturing recovery state.")
+        return {str(identifier): token for identifier, token in rows}
+
+    async def _preflight_profile_lifetimes(self, payload):
+        from uuid import UUID
+        from app.commands import PlanningConflict
+        from app.models.team_member import TeamMemberProfile
+        references = self._profile_references(payload)
+        lifetimes = payload.get("profile_lifetimes", {})
+        if not isinstance(lifetimes, dict) or set(lifetimes) != {str(value) for value in references}:
+            raise PlanningConflict("snapshot_profile_identity_unknown", "This snapshot lacks complete person lifetime provenance; reconcile it before restoring.")
+        from app.authority import internal_authority
+        with internal_authority(self.db):
+            current = dict((await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.profile_token)
+                .where(TeamMemberProfile.id.in_(references)))).all())
+        for identifier in references:
+            token = lifetimes[str(identifier)]
+            try:
+                if not isinstance(token, str) or str(UUID(token)) != token:raise ValueError
+            except (ValueError, AttributeError):
+                raise PlanningConflict("snapshot_profile_identity_invalid", "Snapshot person lifetimes must be known.") from None
+            if current.get(identifier) != token:
+                raise PlanningConflict("snapshot_profile_identity_conflict", "A saved person lifetime is unavailable or no longer matches its identity.")
+
     async def _preflight_allocation_membership(self, iteration_id, payload, current):
         """Inventory complete allocation references before changing recovery state."""
         from sqlalchemy import inspect, or_
@@ -58,6 +106,7 @@ class SnapshotService:
             tokens.append(token)
         if len(set(tokens)) != len(tokens):
             raise PlanningConflict("snapshot_capacity_identity_invalid", "Snapshot allocation lifetimes must be unique.")
+        await self._preflight_profile_lifetimes(payload)
         saved = set(ids)
         allocated = set((await self.db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == iteration_id))).all())
         extra = allocated - saved
@@ -169,7 +218,7 @@ class SnapshotService:
         team_members = await TeamService(self.db).get_by_iteration(iteration_id)
         created_at = utc_now()
 
-        return {
+        payload = {
             "iteration": {
                 "id": iteration.id,
                 "name": iteration.name,
@@ -193,6 +242,8 @@ class SnapshotService:
                 "reason": reason,
             },
         }
+        payload["profile_lifetimes"] = await self.profile_lifetimes(payload)
+        return payload
 
     @atomic_command
     async def create_snapshot(self, iteration_id: int, reason: str = "auto") -> str | None:

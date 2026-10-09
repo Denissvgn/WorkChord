@@ -88,4 +88,4 @@ def test_autonomy_projection_postgresql_ddl_preserves_fences() -> None:
 @pytest.mark.contract
 def test_autonomy_migration_chain_has_one_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["20261009_0010"]
+    assert script.get_heads() == ["20261009_0011"]

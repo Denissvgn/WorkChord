@@ -1,6 +1,6 @@
 """Preserve legacy absence identities and report conflicting person calendars."""
 
-from datetime import date
+from datetime import UTC, date, datetime
 
 from alembic import command
 import pytest
@@ -24,9 +24,10 @@ def test_legacy_backfill_retains_ids_deduplicates_and_reports_conflict(dialect, 
     command.upgrade(config, "20260928_0001")
     engine = create_engine(make_url(url).set(drivername="sqlite" if dialect == "sqlite" else "postgresql+psycopg"))
     try:
+        legacy_profiles = Table("team_member_profiles", MetaData(), autoload_with=engine)
         legacy_members = Table("team_members", MetaData(), autoload_with=engine)
         with engine.begin() as connection:
-            connection.execute(TeamMemberProfile.__table__.insert().values(id=1, display_name="Shared person"))
+            connection.execute(legacy_profiles.insert().values(id=1, display_name="Shared person", automation_enabled=True, profile_kind="human", assignment_modes=[], created_at=datetime(2026, 1, 1, tzinfo=UTC), updated_at=datetime(2026, 1, 1, tzinfo=UTC)))
             for number, hours in [(1, 8), (2, 6)]:
                 connection.execute(Calendar.__table__.insert().values(id=number, name="Calendar", year=2026, nominal_day_hours=hours))
                 connection.execute(Iteration.__table__.insert().values(id=number, name="Plan", calendar_id=number,
