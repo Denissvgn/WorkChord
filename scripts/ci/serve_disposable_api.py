@@ -73,6 +73,18 @@ def main():
         import time
         faults = {}
 
+        @app.post('/api/tasks/{task_id}/_fixture/time-feature')
+        async def time_feature(request: Request, task_id: int):
+            if request.headers.get('X-Fixture-Key') != nonce or os.environ.get('WORKCHORD_FIXTURE_WORKFLOWS') != 'true' or task_id != 1:
+                raise HTTPException(404)
+            body = await request.json()
+            if not isinstance(body, dict) or type(body.get('enabled')) is not bool:
+                raise HTTPException(422)
+            from app.config import get_settings
+            os.environ['TIME_ENTRIES_ENABLED'] = 'true' if body['enabled'] else 'false'
+            get_settings.cache_clear()
+            return {'enabled': body['enabled']}
+
         @app.get('/api/tasks/{task_id}/_fixture/dataset')
         async def dataset(request: Request, task_id: int):
             if request.headers.get('X-Fixture-Key') != nonce or dataset_counts is None or task_id != 1:

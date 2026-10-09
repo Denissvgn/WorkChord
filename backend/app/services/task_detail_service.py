@@ -112,6 +112,8 @@ class TaskDetailService:
             statement = statement.where(Task.iteration_id.is_(None))
         page = await self.page(statement, limit=limit, after_id=after_id)
         for item in page.items:
+            if (await self._policy_flags(item.id))['effective_is_deferred']:
+                continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(
                 blocker.code in {"dependencies_incomplete", "dependency_incomplete"}

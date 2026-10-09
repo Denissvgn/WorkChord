@@ -409,3 +409,24 @@ async def test_current_review_does_not_depend_on_first_history_page(delivery_sto
         assert current.status_code == 200, current.text
         assert current.json()["task_version"] == 99
         assert current.json()["review"]["reason"] == "Current inspection"
+
+
+async def test_human_queue_excludes_inherited_deferred_work_across_pagination(delivery_store):
+    from app.services.task_detail_service import TaskDetailService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        authority, _ = await human_context(db, scenario.projects[0])
+        for name in ('planned', 'nested'):
+            (await db.get(Task, scenario.tasks[name])).owner_profile_id = scenario.profile
+        parent = await db.get(Task, scenario.tasks['parent'])
+        parent.is_deferred = True
+        await db.commit()
+        db.info['authority'] = Authority(authority.principal_id, 'human', profile_id=scenario.profile,
+            projects={scenario.projects[0]: 'manager'})
+        work = await TaskDetailService(db).my_work(limit=1)
+        values = [task for queue in work['queues'].values() for task in queue]
+        while work['has_more']:
+            work = await TaskDetailService(db).my_work(limit=1, after_id=work['next_after_id'])
+            values.extend(task for queue in work['queues'].values() for task in queue)
+        assert scenario.tasks['nested'] not in {task['id'] for task in values}
+        assert scenario.tasks['planned'] in {task['id'] for task in values}

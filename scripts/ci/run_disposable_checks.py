@@ -121,6 +121,7 @@ def parse_args():
     parser.add_argument('--managed-browser', action='store_true')
     parser.add_argument('--planning-browser', action='store_true')
     parser.add_argument('--performance-browser', action='store_true')
+    parser.add_argument('--workflow-browser', action='store_true')
     parser.add_argument('--time-entries', action='store_true')
     parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800,
                         help='Work budget; leave time outside this for cleanup and uploads')
@@ -133,6 +134,8 @@ def parse_args():
         selected = ['sqlite', 'postgresql'] + ([] if args.backend_only else ['frontend', 'browser'])
     if args.performance_browser and (not args.managed_browser or args.planning_browser):
         parser.error('--performance-browser requires managed access and its own fixture')
+    if args.workflow_browser and (not args.managed_browser or not args.time_entries or args.planning_browser or args.performance_browser):
+        parser.error('--workflow-browser requires managed access, enabled time entries and its own fixture')
     if args.planning_browser and not args.managed_browser:
         parser.error('--planning-browser requires --managed-browser')
     if args.managed_browser and 'browser' not in selected:
@@ -211,6 +214,8 @@ def main():
                 if args.performance_browser:
                     app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_PERFORMANCE='true',
                         WORKCHORD_BENCHMARK_AGENT_KEY='delivery-scenario-worker-key')
+                if args.workflow_browser:
+                    app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_WORKFLOWS='true')
                 if args.planning_browser:
                     app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_PLANNING='true')
                 app_env['TIME_ENTRIES_ENABLED'] = 'true' if args.time_entries else 'false'
