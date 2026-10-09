@@ -14,6 +14,8 @@ Deletion preflights management authority, task and dependency constraints, and q
 
 Project response trees explicitly link already loaded children to their loaded parents using committed relationship state. Inherited policy serialization therefore sees complete parent ancestry without introducing writes or lazy asynchronous I/O.
 
+Project summaries capture one UTC instant and interpret target risk, elapsed schedule and update freshness in the declared project working timezone.
+
 ## Imports
 
 | Source | Symbols |
@@ -28,6 +30,7 @@ Project response trees explicitly link already loaded children to their loaded p
 | `app.schemas.team` | `TeamMemberOptionResponse`, `TeamMemberProfileCompact` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
+| `app.services.work_metrics` | `working_today` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `date`, `datetime` |
@@ -56,9 +59,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
+| Inbound | `backend` (13) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -66,10 +69,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ProjectService](../entities/ProjectService.md) | 53 | — | Service for project CRUD, linked task retrieval, and summary metrics. |
+| [ProjectService](../entities/ProjectService.md) | 54 | — | Service for project CRUD, linked task retrieval, and summary metrics. |

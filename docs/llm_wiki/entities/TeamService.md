@@ -35,7 +35,7 @@ Service for team member operations.
 | `get_by_iteration` | *(async)* `(iteration_id: int) -> Sequence[TeamMember]` | — | Get all team members for an iteration. |
 | `get_all_unique_members` | *(async)* `() -> list[dict]` | — | Get unique members by name across all iterations (for reuse). |
 | `list_member_options` | *(async)* `() -> list[TeamMemberOptionResponse]` | — | List all team members with enough context for owner selectors. |
-| `get_by_id` | *(async)* `(member_id: int) -> TeamMember \| None` | — | Get team member by ID. |
+| `get_by_id` | *(async)* `(member_id: int, *, load_tasks: bool = True) -> TeamMember \| None` | — | Get team member by ID. |
 | `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
 | `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
 | `detach_absence_adapters` | *(async)* `(member, next_profile_id)` | — | Allocation identity changes must not expose another person's absence adapters. |
@@ -116,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.

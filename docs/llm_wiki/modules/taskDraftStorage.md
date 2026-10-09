@@ -18,7 +18,7 @@ Private task draft values include the captured creation revision; malformed revi
 
 | Signal | Values |
 |--------|--------|
-| Exports | `readPendingTaskWrite`, `readTaskDraft`, `removeTaskDraft`, `writeTaskDraft` |
+| Exports | `PendingTaskWrite`, `readPendingTaskWrite`, `readTaskDraft`, `removeTaskDraft`, `writeTaskDraft` |
 
 ## Local dependency map
 
@@ -52,11 +52,17 @@ flowchart LR
 | Inbound | [MyWorkPage.test](../modules/MyWorkPage.test.md) |
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |
 
+## Classes
+
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [PendingTaskWrite](../entities/PendingTaskWrite.md) | Type alias | 37 | — | — |
+
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `readTaskDraft` | `(key: string \| null, defaults: TaskEditorValues) -> TaskEditorValues \| null` | — | — |
-| `readPendingTaskWrite` | `(key: string \| null) -> string \| null` | — | — |
-| `writeTaskDraft` | `(key: string \| null, values: TaskEditorValues, pendingWrite: string \| null = null)` | — | — |
+| `readPendingTaskWrite` | `(key: string \| null) -> PendingTaskWrite \| null` | — | — |
+| `writeTaskDraft` | `(key: string \| null, values: TaskEditorValues, pendingWrite: PendingTaskWrite \| null = null)` | — | — |
 | `removeTaskDraft` | `(key: string \| null, includeProgress = false)` | — | — |

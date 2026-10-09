@@ -8,6 +8,8 @@ Release-behavior qualification confined to an explicitly owned ARM64 emulator.
 
 Qualification validates environment and emulator ownership before writes, requires nonce-marked strict HTTPS API/browser and synthetic issuer origins, verifies emulator system CA identity, and uses an isolated browser fixture. Exact APK hashes, generated certificate identity and same-identity rebuild equivalence gate installation. Required scenario inventory and executed status events must match without skips; controlled offline and web-peer stages precede independent readback. No production signer, physical-device claim or shipping trust exception is accepted.
 
+Owned emulator controllers drain before resource cleanup. Device-scoped reverse mappings are checked by exact source/destination; acquisition refuses rebinding, replaced resources remain untouched, and independent cleanup failures are aggregated.
+
 ## Imports
 
 | Source | Symbols |

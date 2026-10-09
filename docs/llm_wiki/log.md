@@ -2136,3 +2136,61 @@ Android tooling now provides an opt-in owned emulator release-behavior qualifica
 - Surface policy updated: no
 
 Managed web/time qualification now reconciles strict workflows, private correction intent, disabled/account privacy and full restored fixture state. Human work queues exclude inherited deferred work without dropping cursor progress or hydrating execution graphs.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e874f2b108b18db03f9261b26f2128ae27488f92485a21509f1a8abe28c0bc47`
+- Pages created: 15
+- Pages updated: 55
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2942
+- Pages deprecated: 0
+- Semantic fields preserved: 14
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3d98f2b3516e844b781322a924823ae063b5e634611e2e673c424aa56f6f744f`
+- Pages created: 0
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2990
+- Pages deprecated: 0
+- Semantic fields preserved: 14
+- Moved entities: none
+
+Allocation lifetime recovery, calendar-based capacity and inherited scheduling policy now share explicit identity and inclusion boundaries. Project date signals use the working timezone; editors preserve pending intent and emulator cleanup respects observed resource ownership.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:2fe261bfa77032e658f45a5d062dacb87e8bb418c57ef4be2d7070fc6f4d9348`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 3006
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.
+
+Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.

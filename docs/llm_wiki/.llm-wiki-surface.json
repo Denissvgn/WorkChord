@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1522,
+      "entities": 1523,
       "flows": 550,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 735,
-      "workflows": 184
+      "modules": 742,
+      "workflows": 191
     },
     "dependency_architecture": 2,
-    "total": 3006
+    "total": 3021
   },
   "dependency_pages": {
     "count": 2,
@@ -7380,7 +7380,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 210,
+              "line": 237,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "columns.insert"
@@ -7388,7 +7388,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 224,
+              "line": 251,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "values.pop"
@@ -7396,7 +7396,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 227,
+              "line": 254,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "values.pop"
@@ -7404,7 +7404,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 229,
+              "line": 256,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "values.pop"
@@ -7412,7 +7412,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 234,
+              "line": 261,
               "step": "aggregate_metrics",
               "step_index": 9,
               "target": "results.append"
@@ -7444,16 +7444,16 @@
               "target": "team_service.get_by_iteration"
             },
             {
-              "kind": "unresolved_call",
-              "line": 135,
-              "step": "aggregate_metrics",
-              "target": "db.info.get"
+              "kind": "external_call",
+              "line": 13,
+              "step": "utc_now",
+              "target": "datetime.now"
             },
             {
               "kind": "unresolved_call",
-              "line": 136,
+              "line": 162,
               "step": "aggregate_metrics",
-              "target": "_scope_conditions(authority).get"
+              "target": "db.info.get"
             },
             {
               "kind": "step_limit",
@@ -7474,11 +7474,11 @@
             "backend/app/services/task_service.py",
             "backend/app/services/team_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/authority.py",
             "backend/app/utils/time.py",
+            "backend/app/authority.py",
             "backend/app/commands.py"
           ],
-          "step_count": 287,
+          "step_count": 288,
           "truncated": false
         }
       },
@@ -40736,6 +40736,7 @@
         "entities/ParsedGitHubLink.md",
         "entities/ParsedTask.md",
         "entities/ParsedTeamMember.md",
+        "entities/PendingTaskWrite.md",
         "entities/PersistedState.md",
         "entities/PersistedTaskRoutingAssessmentFields.md",
         "entities/PillTone.md",
@@ -42195,6 +42196,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/20261009_0010_allocation_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -42237,6 +42239,7 @@
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
+        "modules/allocation_identity.md",
         "modules/AnalyticsPage.md",
         "modules/android_qualification.md",
         "modules/api.md",
@@ -42270,6 +42273,7 @@
         "modules/Button.test.md",
         "modules/calendar_service.md",
         "modules/CalendarPage.md",
+        "modules/CalendarPage.test.md",
         "modules/calendars.md",
         "modules/calendarService.md",
         "modules/capacity_service.md",
@@ -42486,6 +42490,7 @@
         "modules/PageLayout.md",
         "modules/pagination.md",
         "modules/PersonCapacity.md",
+        "modules/PersonCapacity.test.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -42774,7 +42779,9 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
+        "modules/test_android_cleanup.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -42809,6 +42816,7 @@
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -42958,6 +42966,7 @@
         "workflows/AgentWorkService_requeue_recovery.md",
         "workflows/AgentWorkService_review.md",
         "workflows/AgentWorkService_update_assignment.md",
+        "workflows/aggregate_metrics.md",
         "workflows/assert_postgresql_contract.md",
         "workflows/AutonomyWorkPackageService__append_event.md",
         "workflows/AutonomyWorkPackageService__lease_transition.md",
@@ -42972,6 +42981,7 @@
         "workflows/build_examples.md",
         "workflows/callback.md",
         "workflows/CapacityService_invalidate_profile.md",
+        "workflows/CapacityService_projection.md",
         "workflows/CapacityService_save_absence.md",
         "workflows/CapacityService_set_calendar.md",
         "workflows/change_task_status.md",
@@ -43012,8 +43022,10 @@
         "workflows/IdentityService_issue_session.md",
         "workflows/IdentityService_transfer_guest.md",
         "workflows/import_new_iteration.md",
+        "workflows/IncrementalScheduler__reschedule_subset.md",
         "workflows/initialize_gate.md",
         "workflows/IterationService__reconcile_tasks_for_project_scope.md",
+        "workflows/IterationService_get_planning_readiness_summary.md",
         "workflows/IterationService_get_summary.md",
         "workflows/LabelService_create_label.md",
         "workflows/link_profile.md",
@@ -43036,10 +43048,12 @@
         "workflows/preview_iteration_schedule.md",
         "workflows/process_import.md",
         "workflows/project_member.md",
+        "workflows/ProjectService__portfolio_summaries.md",
         "workflows/ProjectService_create.md",
         "workflows/ProjectService_create_initiative.md",
         "workflows/ProjectService_create_project_update.md",
         "workflows/ProjectService_delete.md",
+        "workflows/ProjectService_get_summary.md",
         "workflows/ProjectService_update.md",
         "workflows/prospective_member_profiles.md",
         "workflows/raw_table_results.md",
@@ -43092,6 +43106,7 @@
         "workflows/TeamService_add_vacation.md",
         "workflows/TeamService_calculate_capacity.md",
         "workflows/TeamService_delete_vacation.md",
+        "workflows/TeamService_get_workload.md",
         "workflows/TeamService_import_members.md",
         "workflows/TeamService_update_vacation.md",
         "workflows/TimeEntryService_create.md",
@@ -45632,6 +45647,7 @@
         "modules/models___init__.md",
         "modules/recovery.md",
         "modules/snapshot_service.md",
+        "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
         "modules/test_effective_deferral.md",
         "modules/test_identity_lifecycle.md",
@@ -46492,6 +46508,7 @@
       "mcp_uri": "llm-wiki://entities/CapacityService",
       "outgoing_internal_links": [
         "modules/capacity_service.md",
+        "modules/iteration_service.md",
         "modules/routers_capacity.md",
         "modules/scheduler_service.md",
         "modules/team_service.md"
@@ -46757,8 +46774,8 @@
         "modules/models___init__.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
+        "modules/test_allocation_identity.md",
         "modules/test_bounded_task_policy.md",
-        "modules/test_managed_authority.md",
         "modules/test_project_identity.md",
         "modules/test_project_identity_scope.md"
       ],
@@ -49207,7 +49224,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/IncrementalScheduler",
       "outgoing_internal_links": [
-        "modules/scheduler_service.md"
+        "modules/scheduler_service.md",
+        "modules/test_planning_read_models.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/scheduler_service.py",
@@ -51877,6 +51895,18 @@
       "role": "semantic",
       "source_path": "backend/app/utils/import_parser.py",
       "title": "ParsedTeamMember"
+    },
+    {
+      "canonical_path": "entities/PendingTaskWrite.md",
+      "id": "PendingTaskWrite",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/PendingTaskWrite",
+      "outgoing_internal_links": [
+        "modules/taskDraftStorage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/taskDraftStorage.ts",
+      "title": "PendingTaskWrite"
     },
     {
       "canonical_path": "entities/PersistedState.md",
@@ -54600,7 +54630,7 @@
         "modules/routers_llm.md",
         "modules/scheduler_service.md",
         "modules/tasks.md",
-        "modules/test_profile_capacity.md"
+        "modules/test_planning_read_models.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/scheduler_service.py",
@@ -64321,6 +64351,19 @@
       "title": "20261008_0009_project_identity Module"
     },
     {
+      "canonical_path": "modules/20261009_0010_allocation_identity.md",
+      "id": "20261009_0010_allocation_identity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261009_0010_allocation_identity",
+      "outgoing_internal_links": [
+        "modules/20261009_0010_allocation_identity.md",
+        "modules/allocation_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261009_0010_allocation_identity.py",
+      "title": "20261009_0010_allocation_identity Module"
+    },
+    {
       "canonical_path": "modules/acceptance_artifacts.md",
       "id": "acceptance_artifacts",
       "kind": "modules",
@@ -65120,6 +65163,19 @@
       "title": "AgentTeamStepList Module"
     },
     {
+      "canonical_path": "modules/allocation_identity.md",
+      "id": "allocation_identity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/allocation_identity",
+      "outgoing_internal_links": [
+        "modules/20261009_0010_allocation_identity.md",
+        "modules/allocation_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/database_migration/allocation_identity.py",
+      "title": "allocation_identity Module"
+    },
+    {
       "canonical_path": "modules/AnalyticsPage.md",
       "id": "AnalyticsPage",
       "kind": "modules",
@@ -65662,6 +65718,20 @@
       "title": "CalendarPage Module"
     },
     {
+      "canonical_path": "modules/CalendarPage.test.md",
+      "id": "CalendarPage.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/CalendarPage.test",
+      "outgoing_internal_links": [
+        "modules/CalendarPage.md",
+        "modules/CalendarPage.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/CalendarPage.test.tsx",
+      "title": "CalendarPage.test Module"
+    },
+    {
       "canonical_path": "modules/calendars.md",
       "id": "calendars",
       "kind": "modules",
@@ -65703,18 +65773,7 @@
       "mcp_uri": "llm-wiki://modules/capacity_service",
       "outgoing_internal_links": [
         "entities/CapacityService.md",
-        "modules/authority.md",
-        "modules/capacity_service.md",
-        "modules/commands.md",
-        "modules/models_calendar.md",
-        "modules/models_capacity.md",
-        "modules/models_iteration.md",
-        "modules/routers_capacity.md",
-        "modules/service_worksets.md",
-        "modules/team_member.md",
-        "modules/test_planning_input_context.md",
-        "modules/test_profile_capacity.md",
-        "modules/test_work_correctness.md"
+        "modules/capacity_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/capacity_service.py",
@@ -69374,12 +69433,27 @@
         "modules/calendarService.md",
         "modules/MyWorkPage.md",
         "modules/PersonCapacity.md",
+        "modules/PersonCapacity.test.md",
         "modules/QueryState.md",
         "modules/TaskForm.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/PersonCapacity.tsx",
       "title": "PersonCapacity Module"
+    },
+    {
+      "canonical_path": "modules/PersonCapacity.test.md",
+      "id": "PersonCapacity.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/PersonCapacity.test",
+      "outgoing_internal_links": [
+        "modules/PersonCapacity.md",
+        "modules/PersonCapacity.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/PersonCapacity.test.tsx",
+      "title": "PersonCapacity.test Module"
     },
     {
       "canonical_path": "modules/Pill.md",
@@ -73391,6 +73465,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/taskDraftStorage",
       "outgoing_internal_links": [
+        "entities/PendingTaskWrite.md",
         "modules/MyWorkPage.test.md",
         "modules/taskDraftStorage.md",
         "modules/taskDraftStorage.test.md",
@@ -74505,6 +74580,24 @@
       "title": "test_agent_work_routing_lineage Module"
     },
     {
+      "canonical_path": "modules/test_allocation_identity.md",
+      "id": "test_allocation_identity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_allocation_identity",
+      "outgoing_internal_links": [
+        "modules/models_calendar.md",
+        "modules/models_identity.md",
+        "modules/models_iteration.md",
+        "modules/recovery.md",
+        "modules/team_member.md",
+        "modules/test_allocation_identity.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_allocation_identity.py",
+      "title": "test_allocation_identity Module"
+    },
+    {
       "canonical_path": "modules/test_allocation_recovery.md",
       "id": "test_allocation_recovery",
       "kind": "modules",
@@ -74515,6 +74608,16 @@
       "role": "semantic",
       "source_path": "backend/tests/test_allocation_recovery.py",
       "title": "test_allocation_recovery Module"
+    },
+    {
+      "canonical_path": "modules/test_android_cleanup.md",
+      "id": "test_android_cleanup",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_android_cleanup",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/tests/qualification/test_android_cleanup.py",
+      "title": "test_android_cleanup Module"
     },
     {
       "canonical_path": "modules/test_apt_runtime.md",
@@ -74998,6 +75101,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_planning_input_context.py",
       "title": "test_planning_input_context Module"
+    },
+    {
+      "canonical_path": "modules/test_planning_read_models.md",
+      "id": "test_planning_read_models",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_planning_read_models",
+      "outgoing_internal_links": [
+        "modules/test_planning_read_models.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_planning_read_models.py",
+      "title": "test_planning_read_models Module"
     },
     {
       "canonical_path": "modules/test_postgresql_closeout.md",
@@ -77618,6 +77733,21 @@
       "title": "AgentWorkService_update_assignment"
     },
     {
+      "canonical_path": "workflows/aggregate_metrics.md",
+      "id": "aggregate_metrics",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/aggregate_metrics",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/services_work_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/work_metrics.py",
+      "title": "aggregate_metrics"
+    },
+    {
       "canonical_path": "workflows/assert_postgresql_contract.md",
       "id": "assert_postgresql_contract",
       "kind": "workflows",
@@ -77845,6 +77975,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/capacity_service.py",
       "title": "CapacityService_invalidate_profile"
+    },
+    {
+      "canonical_path": "workflows/CapacityService_projection.md",
+      "id": "CapacityService_projection",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/CapacityService_projection",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/capacity_service.md",
+        "modules/commands.md",
+        "modules/services_work_metrics.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/capacity_service.py",
+      "title": "CapacityService_projection"
     },
     {
       "canonical_path": "workflows/CapacityService_save_absence.md",
@@ -78476,6 +78621,21 @@
       "title": "import_new_iteration"
     },
     {
+      "canonical_path": "workflows/IncrementalScheduler__reschedule_subset.md",
+      "id": "IncrementalScheduler__reschedule_subset",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/IncrementalScheduler__reschedule_subset",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/iteration_service.md",
+        "modules/scheduler_service.md",
+        "modules/services_work_metrics.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/scheduler_service.py",
+      "title": "IncrementalScheduler__reschedule_subset"
+    },
+    {
       "canonical_path": "workflows/initialize_gate.md",
       "id": "initialize_gate",
       "kind": "workflows",
@@ -78504,6 +78664,22 @@
       "role": "mixed",
       "source_path": "backend/app/services/iteration_service.py",
       "title": "IterationService__reconcile_tasks_for_project_scope"
+    },
+    {
+      "canonical_path": "workflows/IterationService_get_planning_readiness_summary.md",
+      "id": "IterationService_get_planning_readiness_summary",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/IterationService_get_planning_readiness_summary",
+      "outgoing_internal_links": [
+        "modules/capacity_service.md",
+        "modules/iteration_service.md",
+        "modules/schemas_iteration.md",
+        "modules/services_work_metrics.md",
+        "modules/team_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/iteration_service.py",
+      "title": "IterationService_get_planning_readiness_summary"
     },
     {
       "canonical_path": "workflows/IterationService_get_summary.md",
@@ -78851,6 +79027,21 @@
       "title": "project_member"
     },
     {
+      "canonical_path": "workflows/ProjectService__portfolio_summaries.md",
+      "id": "ProjectService__portfolio_summaries",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/ProjectService__portfolio_summaries",
+      "outgoing_internal_links": [
+        "modules/project_service.md",
+        "modules/schemas_project.md",
+        "modules/services_work_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/project_service.py",
+      "title": "ProjectService__portfolio_summaries"
+    },
+    {
       "canonical_path": "workflows/ProjectService_create.md",
       "id": "ProjectService_create",
       "kind": "workflows",
@@ -78910,6 +79101,22 @@
       "role": "mixed",
       "source_path": "backend/app/services/project_service.py",
       "title": "ProjectService_delete"
+    },
+    {
+      "canonical_path": "workflows/ProjectService_get_summary.md",
+      "id": "ProjectService_get_summary",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/ProjectService_get_summary",
+      "outgoing_internal_links": [
+        "modules/project_service.md",
+        "modules/request_source_service.md",
+        "modules/schemas_project.md",
+        "modules/services_work_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/project_service.py",
+      "title": "ProjectService_get_summary"
     },
     {
       "canonical_path": "workflows/ProjectService_update.md",
@@ -79274,7 +79481,8 @@
         "modules/iteration_service.md",
         "modules/recovery.md",
         "modules/scheduler_service.md",
-        "modules/schemas_gantt.md"
+        "modules/schemas_gantt.md",
+        "modules/services_work_metrics.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/services/scheduler_service.py",
@@ -79772,6 +79980,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/team_service.py",
       "title": "TeamService_delete_vacation"
+    },
+    {
+      "canonical_path": "workflows/TeamService_get_workload.md",
+      "id": "TeamService_get_workload",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TeamService_get_workload",
+      "outgoing_internal_links": [
+        "modules/capacity_service.md",
+        "modules/schemas_team.md",
+        "modules/services_work_metrics.md",
+        "modules/team_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/team_service.py",
+      "title": "TeamService_get_workload"
     },
     {
       "canonical_path": "workflows/TeamService_import_members.md",
@@ -88882,6 +89105,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/20261009_0010_allocation_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -88924,6 +89148,7 @@
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
+        "modules/allocation_identity.md",
         "modules/AnalyticsPage.md",
         "modules/android_qualification.md",
         "modules/api.md",
@@ -88957,6 +89182,7 @@
         "modules/Button.test.md",
         "modules/calendar_service.md",
         "modules/CalendarPage.md",
+        "modules/CalendarPage.test.md",
         "modules/calendars.md",
         "modules/calendarService.md",
         "modules/capacity_service.md",
@@ -89173,6 +89399,7 @@
         "modules/PageLayout.md",
         "modules/pagination.md",
         "modules/PersonCapacity.md",
+        "modules/PersonCapacity.test.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -89461,7 +89688,9 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
+        "modules/test_android_cleanup.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -89496,6 +89725,7 @@
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -89628,6 +89858,7 @@
         "modules/20261004_0007_execution_usage.md",
         "modules/20261007_0008_time_entries.md",
         "modules/20261008_0009_project_identity.md",
+        "modules/20261009_0010_allocation_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -89670,6 +89901,7 @@
         "modules/AgentTeamSetupMasterPage.md",
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
+        "modules/allocation_identity.md",
         "modules/AnalyticsPage.md",
         "modules/android_qualification.md",
         "modules/api.md",
@@ -89703,6 +89935,7 @@
         "modules/Button.test.md",
         "modules/calendar_service.md",
         "modules/CalendarPage.md",
+        "modules/CalendarPage.test.md",
         "modules/calendars.md",
         "modules/calendarService.md",
         "modules/capacity_service.md",
@@ -89919,6 +90152,7 @@
         "modules/PageLayout.md",
         "modules/pagination.md",
         "modules/PersonCapacity.md",
+        "modules/PersonCapacity.test.md",
         "modules/Pill.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -90207,7 +90441,9 @@
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_work_routing_lineage.md",
+        "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
+        "modules/test_android_cleanup.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -90242,6 +90478,7 @@
         "modules/test_observability.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -90360,5 +90597,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a6d432a2d644c4bcd2da4935d76756054786aef48bfd443415a11bc50ae74abb"
+  "source_hash": "sha256:59d217d2a7a9d96d4b204e25deb7735530d02ed31cc479e7e2a81964fda7c80e"
 }

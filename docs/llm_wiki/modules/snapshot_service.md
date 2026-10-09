@@ -10,6 +10,8 @@ Stores bounded recovery points within the owning planning transaction. Iteration
 
 Restoration reconciles the exact saved allocation membership. Safe allocations created after capture detach from the iteration while retaining their identifiers, profiles and global/history references. Complete registered and physical reference ownership is checked before recovery mutation; external task, live assignment, run or evaluating-package references block incompatible restoration. Current shared profiles, availability and canonical absences are preserved.
 
+Allocation recovery validates stable lifetime provenance before any writes, preserves global owner references, and recreates deleted allocations with their saved lifetime. Snapshots lacking lifetime provenance remain immutable and require explicit reconciliation before restore.
+
 ## Imports
 
 | Source | Symbols |

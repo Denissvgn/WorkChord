@@ -1,6 +1,6 @@
 # TeamMemberProfileSkill
 
-**Location:** `backend/app/models/team_member.py:122`
+**Location:** `backend/app/models/team_member.py:125`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)

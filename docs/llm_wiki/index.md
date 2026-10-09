@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1522 | [Open section](#entities) |
-| Modules | 735 | [Open section](#modules) |
-| Workflows | 184 | [Open section](#workflows) |
+| Entities | 1523 | [Open section](#entities) |
+| Modules | 742 | [Open section](#modules) |
+| Workflows | 191 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
@@ -559,6 +559,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ParsedGitHubLink](entities/ParsedGitHubLink.md)
 - [ParsedTask](entities/ParsedTask.md)
 - [ParsedTeamMember](entities/ParsedTeamMember.md)
+- [PendingTaskWrite](entities/PendingTaskWrite.md)
 - [PersistedState](entities/PersistedState.md)
 - [PersistedTaskRoutingAssessmentFields](entities/PersistedTaskRoutingAssessmentFields.md)
 - [PillTone](entities/PillTone.md)
@@ -1553,6 +1554,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261004_0007_execution_usage](modules/20261004_0007_execution_usage.md) - Retain execution usage revisions and immutable pricing snapshots.
 - [20261007_0008_time_entries](modules/20261007_0008_time_entries.md) - Retain private minute records and append-only correction history.
 - [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) - Preserve project allocation identity across retained history.
+- [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) - Preserve allocation lifetimes across recovery and deletion.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1579,6 +1581,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Button](modules/Button.md) - `frontend/src/components/common/Button.tsx`
 - [Button.test](modules/Button.test.md) - `frontend/src/components/common/Button.test.tsx`
 - [CalendarPage](modules/CalendarPage.md) - `frontend/src/pages/CalendarPage.tsx`
+- [CalendarPage.test](modules/CalendarPage.test.md) - `frontend/src/pages/CalendarPage.test.tsx`
 - [Checkbox](modules/Checkbox.md) - `frontend/src/components/common/Checkbox.tsx`
 - [CollapsibleSection](modules/CollapsibleSection.md) - `frontend/src/components/common/CollapsibleSection.tsx`
 - [CommandMenu](modules/CommandMenu.md) - `frontend/src/components/layout/CommandMenu.tsx`
@@ -1651,6 +1654,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PagedTaskBrowser](modules/PagedTaskBrowser.md) - `frontend/src/components/tasks/PagedTaskBrowser.tsx`
 - [PagedTaskBrowser.test](modules/PagedTaskBrowser.test.md) - `frontend/src/components/tasks/PagedTaskBrowser.test.tsx`
 - [PersonCapacity](modules/PersonCapacity.md) - `frontend/src/components/tasks/PersonCapacity.tsx`
+- [PersonCapacity.test](modules/PersonCapacity.test.md) - `frontend/src/components/tasks/PersonCapacity.test.tsx`
 - [Pill](modules/Pill.md) - `frontend/src/components/ui/Pill.tsx`
 - [PlanMasterPage](modules/PlanMasterPage.md) - `frontend/src/pages/PlanMasterPage.tsx`
 - [PlanMasterPage.test](modules/PlanMasterPage.test.md) - `frontend/src/pages/PlanMasterPage.test.tsx`
@@ -1784,6 +1788,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_team_setup](modules/agent_team_setup.md) - Portable agent-team setup, reconciliation, and readiness contracts.
 - [agent_team_setup_service](modules/agent_team_setup_service.md) - Operator-only agent-team validation, reconciliation, setup, and readiness.
 - [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
+- [allocation_identity](modules/allocation_identity.md) - Reserve numeric allocation identities retained by immutable recovery history.
 - [android_qualification](modules/android_qualification.md) - Release-behavior qualification confined to an explicitly owned ARM64 emulator.
 - [api](modules/api.md) - `frontend/src/services/api.ts`
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
@@ -2145,7 +2150,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
+- [test_allocation_identity](modules/test_allocation_identity.md) - Forward allocation identity migration preserves history and sequence high water.
 - [test_allocation_recovery](modules/test_allocation_recovery.md) - Allocation membership recovery preserves durable references and rolls back failures.
+- [test_android_cleanup](modules/test_android_cleanup.md) - Emulator cleanup retains unrelated replacements and drains owned controllers.
 - [test_apt_runtime](modules/test_apt_runtime.md) - Runner APT preparation preserves signed sources and bounds stalled downloads.
 - [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
@@ -2180,6 +2187,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
+- [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
 - [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.
 - [test_postgresql_documentation](modules/test_postgresql_documentation.md) - Machine-check the pre-cutover PostgreSQL operator documentation.
@@ -2327,6 +2335,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [BacklogSnapshotService_capture](workflows/BacklogSnapshotService_capture.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.capture`
 - [BacklogSnapshotService_restore](workflows/BacklogSnapshotService_restore.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.restore`
 - [CapacityService_invalidate_profile](workflows/CapacityService_invalidate_profile.md) - entry: `capacity_service.CapacityService.invalidate_profile`
+- [CapacityService_projection](workflows/CapacityService_projection.md) - entry: `capacity_service.CapacityService.projection`
 - [CapacityService_save_absence](workflows/CapacityService_save_absence.md) - entry: `capacity_service.CapacityService.save_absence`
 - [CapacityService_set_calendar](workflows/CapacityService_set_calendar.md) - entry: `capacity_service.CapacityService.set_calendar`
 - [DeliveryDependencyService_add](workflows/DeliveryDependencyService_add.md) - entry: `delivery_dependency_service.DeliveryDependencyService.add`
@@ -2353,7 +2362,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [IdentityService_finish_login](workflows/IdentityService_finish_login.md) - entry: `identity_service.IdentityService.finish_login`
 - [IdentityService_issue_session](workflows/IdentityService_issue_session.md) - entry: `identity_service.IdentityService.issue_session`
 - [IdentityService_transfer_guest](workflows/IdentityService_transfer_guest.md) - entry: `identity_service.IdentityService.transfer_guest`
+- [IncrementalScheduler__reschedule_subset](workflows/IncrementalScheduler__reschedule_subset.md) - entry: `scheduler_service.IncrementalScheduler._reschedule_subset`
 - [IterationService__reconcile_tasks_for_project_scope](workflows/IterationService__reconcile_tasks_for_project_scope.md) - entry: `iteration_service.IterationService._reconcile_tasks_for_project_scope`
+- [IterationService_get_planning_readiness_summary](workflows/IterationService_get_planning_readiness_summary.md) - entry: `iteration_service.IterationService.get_planning_readiness_summary`
 - [IterationService_get_summary](workflows/IterationService_get_summary.md) - entry: `iteration_service.IterationService.get_summary`
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
@@ -2364,10 +2375,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OutboundWebhookService__enqueue_event_records](workflows/OutboundWebhookService__enqueue_event_records.md) - entry: `outbound_webhook_service.OutboundWebhookService._enqueue_event_records`
 - [OutboundWebhookService_retry_delivery](workflows/OutboundWebhookService_retry_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService.retry_delivery`
 - [PlanShareService_create](workflows/PlanShareService_create.md) - entry: `plan_share_service.PlanShareService.create`
+- [ProjectService__portfolio_summaries](workflows/ProjectService__portfolio_summaries.md) - entry: `project_service.ProjectService._portfolio_summaries`
 - [ProjectService_create](workflows/ProjectService_create.md) - entry: `project_service.ProjectService.create`
 - [ProjectService_create_initiative](workflows/ProjectService_create_initiative.md) - entry: `project_service.ProjectService.create_initiative`
 - [ProjectService_create_project_update](workflows/ProjectService_create_project_update.md) - entry: `project_service.ProjectService.create_project_update`
 - [ProjectService_delete](workflows/ProjectService_delete.md) - entry: `project_service.ProjectService.delete`
+- [ProjectService_get_summary](workflows/ProjectService_get_summary.md) - entry: `project_service.ProjectService.get_summary`
 - [ProjectService_update](workflows/ProjectService_update.md) - entry: `project_service.ProjectService.update`
 - [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
@@ -2399,6 +2412,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamService_add_vacation](workflows/TeamService_add_vacation.md) - entry: `team_service.TeamService.add_vacation`
 - [TeamService_calculate_capacity](workflows/TeamService_calculate_capacity.md) - entry: `team_service.TeamService.calculate_capacity`
 - [TeamService_delete_vacation](workflows/TeamService_delete_vacation.md) - entry: `team_service.TeamService.delete_vacation`
+- [TeamService_get_workload](workflows/TeamService_get_workload.md) - entry: `team_service.TeamService.get_workload`
 - [TeamService_import_members](workflows/TeamService_import_members.md) - entry: `team_service.TeamService.import_members`
 - [TeamService_update_vacation](workflows/TeamService_update_vacation.md) - entry: `team_service.TeamService.update_vacation`
 - [TimeEntryService_create](workflows/TimeEntryService_create.md) - entry: `time_entry_service.TimeEntryService.create`
@@ -2408,6 +2422,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
 - [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
 - [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
+- [aggregate_metrics](workflows/aggregate_metrics.md) - entry: `work_metrics.aggregate_metrics`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
 - [batch_update_tasks](workflows/batch_update_tasks.md) - entry: `tasks.batch_update_tasks`
 - [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`

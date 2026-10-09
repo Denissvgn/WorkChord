@@ -41,13 +41,13 @@ flowchart LR
     n3["get_profile_capacity (backend/app/routers/capacity.py)"]
     n4["set_availability (backend/app/routers/capacity.py)"]
     n5["update_absence (backend/app/routers/capacity.py)"]
-    n6["SchedulerService._build_member_schedules (backend/app/services/scheduler_service.py)"]
-    n7["SchedulerService.schedule_iteration (backend/app/services/scheduler_service.py)"]
-    n8["TeamService.add_vacation (backend/app/services/team_service.py)"]
-    n9["TeamService.calculate_capacity (backend/app/services/team_service.py)"]
-    n10["TeamService.delete_vacation (backend/app/services/team_service.py)"]
-    n11["TeamService.get_workload (backend/app/services/team_service.py)"]
-    n12["TeamService.update_vacation (backend/app/services/team_service.py)"]
+    n6["IterationService._calculate_team_capacity (backend/app/services/iteration_service.py)"]
+    n7["IterationService.get_planning_readiness_summary (backend/app/services/iteration_service.py)"]
+    n8["SchedulerService._build_member_schedules (backend/app/services/scheduler_service.py)"]
+    n9["SchedulerService.schedule_iteration (backend/app/services/scheduler_service.py)"]
+    n10["TeamService.add_vacation (backend/app/services/team_service.py)"]
+    n11["TeamService.calculate_capacity (backend/app/services/team_service.py)"]
+    n12["TeamService.delete_vacation (backend/app/services/team_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -66,10 +66,10 @@ flowchart LR
     click n3 "../modules/routers_capacity.md"
     click n4 "../modules/routers_capacity.md"
     click n5 "../modules/routers_capacity.md"
-    click n6 "../modules/scheduler_service.md"
-    click n7 "../modules/scheduler_service.md"
-    click n8 "../modules/team_service.md"
-    click n9 "../modules/team_service.md"
+    click n6 "../modules/iteration_service.md"
+    click n7 "../modules/iteration_service.md"
+    click n8 "../modules/scheduler_service.md"
+    click n9 "../modules/scheduler_service.md"
     click n10 "../modules/team_service.md"
     click n11 "../modules/team_service.md"
     click n12 "../modules/team_service.md"
@@ -90,12 +90,12 @@ flowchart LR
 | `get_profile_capacity` | call | [routers_capacity](../modules/routers_capacity.md) | 1 |
 | `set_availability` | call | [routers_capacity](../modules/routers_capacity.md) | 1 |
 | `update_absence` | call | [routers_capacity](../modules/routers_capacity.md) | 1 |
+| `IterationService._calculate_team_capacity` | call | [iteration_service](../modules/iteration_service.md) | 1 |
+| `IterationService.get_planning_readiness_summary` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `SchedulerService._build_member_schedules` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 2 |
 | `TeamService.add_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.calculate_capacity` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.delete_vacation` | call | [team_service](../modules/team_service.md) | 1 |
-| `TeamService.get_workload` | call | [team_service](../modules/team_service.md) | 1 |
-| `TeamService.update_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 
-> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

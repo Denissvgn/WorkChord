@@ -1,6 +1,6 @@
 # TeamMember
 
-**Location:** `backend/app/models/team_member.py:18`
+**Location:** `backend/app/models/team_member.py:19`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)
@@ -14,6 +14,7 @@ Team member model with availability and capacity settings.
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
+| `allocation_token` | `Mapped[str]` | `mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))` | — |
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `position` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `email` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
@@ -87,7 +88,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [team_member](../modules/team_member.md) | 1 | `availability_percent`, `email`, `id`, `iteration`, `iteration_id`, `name`, `operational_utilization`, `owned_initiatives`, `owned_projects`, `position`, `professionalism_coefficient`, `profile` |
+| [team_member](../modules/team_member.md) | 1 | `allocation_token`, `availability_percent`, `email`, `id`, `iteration`, `iteration_id`, `name`, `operational_utilization`, `owned_initiatives`, `owned_projects`, `position`, `professionalism_coefficient` |
 
 ### Structure
 
@@ -112,4 +113,4 @@ flowchart LR
 | `AgentRoutingService._capacity_inputs` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService._member_for_candidate` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 63 logical references; 51 omitted by the 12-row generated summary limit.
+> References: showing 12 of 64 logical references; 52 omitted by the 12-row generated summary limit.

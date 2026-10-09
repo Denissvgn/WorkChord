@@ -43,9 +43,9 @@ flowchart LR
     n8["workspace_member (backend/app/routers/identity.py)"]
     n9["IdentityService.transfer_guest (backend/app/services/identity_service.py)"]
     n10["backend/tests/database_migration/test_project_identity_scope.py"]
-    n11["backend/tests/migrations/test_project_identity.py"]
-    n12["backend/tests/test_bounded_task_policy.py"]
-    n13["backend/tests/test_managed_authority.py"]
+    n11["backend/tests/migrations/test_allocation_identity.py"]
+    n12["backend/tests/migrations/test_project_identity.py"]
+    n13["backend/tests/test_bounded_task_policy.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,9 +70,9 @@ flowchart LR
     click n8 "../modules/routers_identity.md"
     click n9 "../modules/identity_service.md"
     click n10 "../modules/test_project_identity_scope.md"
-    click n11 "../modules/test_project_identity.md"
-    click n12 "../modules/test_bounded_task_policy.md"
-    click n13 "../modules/test_managed_authority.md"
+    click n11 "../modules/test_allocation_identity.md"
+    click n12 "../modules/test_project_identity.md"
+    click n13 "../modules/test_bounded_task_policy.md"
 ```
 
 ### Summary
@@ -100,8 +100,8 @@ flowchart LR
 | `workspace_member` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `IdentityService.transfer_guest` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `test_project_identity_scope` | import | [test_project_identity_scope](../modules/test_project_identity_scope.md) | — |
+| `test_allocation_identity` | import | [test_allocation_identity](../modules/test_allocation_identity.md) | — |
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_bounded_task_policy` | import | [test_bounded_task_policy](../modules/test_bounded_task_policy.md) | — |
-| `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

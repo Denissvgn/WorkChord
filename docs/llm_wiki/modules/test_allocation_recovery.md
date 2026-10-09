@@ -24,11 +24,13 @@ Allocation membership recovery preserves durable references and rolls back failu
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.team_service` | `TeamService` |
+| `hashlib` | `hashlib` |
 | `httpx` | `httpx` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `func`, `select`, `text` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
 | `tests.test_managed_authority` | `managed_store` |
+| `uuid` | `uuid4` |
 
 ## Local dependency map
 
@@ -68,3 +70,7 @@ flowchart LR
 | `test_unknown_physical_allocation_reference_fails_closed` | *(async)* `(delivery_store)` | — | — |
 | `test_saved_allocation_external_reference_is_preflighted_too` | *(async)* `(delivery_store)` | — | — |
 | `test_operator_rest_restore_reconciles_exact_allocation_membership` | *(async)* `(managed_store)` | — | — |
+| `test_deleted_allocation_restore_preserves_replacement_global_owner` | *(async)* `(delivery_store)` | — | — |
+| `test_reused_lifetime_rejects_atomically_even_for_same_person` | *(async)* `(delivery_store, same_profile)` | `@pytest.mark.parametrize('same_profile', [False, True])` | — |
+| `test_profile_edit_retains_recoverable_allocation_lifetime` | *(async)* `(delivery_store)` | — | — |
+| `test_missing_snapshot_lifetime_is_preserved_but_restore_is_held` | *(async)* `(delivery_store)` | — | — |

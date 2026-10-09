@@ -28,6 +28,9 @@ _Auto-generated from `Qualification` in `scripts/ci/android_qualification.py`._
 | `await_marker` | `(name, predicate, timeout = 90)` | — | — |
 | `controller` | `(method)` | — | — |
 | `validate_results` | `()` | — | — |
+| `reverse_mapping` | `(port)` | — | — |
+| `remove_reverse` | `(port)` | — | — |
+| `stop_controller` | `()` | — | — |
 | `cleanup` | `()` | — | — |
 
 ## Relationships
@@ -39,4 +42,4 @@ _Auto-generated from `Qualification` in `scripts/ci/android_qualification.py`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [android_qualification](../modules/android_qualification.md) | 12 | — |
+| [android_qualification](../modules/android_qualification.md) | 15 | — |

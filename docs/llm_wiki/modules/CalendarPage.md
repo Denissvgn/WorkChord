@@ -4,7 +4,9 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
+Calendar operations freeze controls while pending, bind delayed completion to the active resource and draft generation, and recheck resource identity after asynchronous CSV reads.
+
+Calendar reads and writes retain resource and draft generation boundaries. Pending reads freeze editable controls; every write invalidates older CSV reads, and explicit reload only applies to the observed resource/generation.
 
 ## Imports
 
@@ -31,7 +33,7 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
 | `date-fns` | `eachDayOfInterval`, `format`, `parseISO`, `Locale` |
 | `lucide-react` | `CalendarDays`, `CalendarRange`, `Download`, `Grid`, `List`, `Plane`, `Plus`, `Save`, `Trash2`, `Upload`, `X` |
-| `react` | `useEffect`, `useMemo`, `useState` |
+| `react` | `useEffect`, `useMemo`, `useRef`, `useState` |
 | `react-i18next` | `useTranslation` |
 | `react-router-dom` | `Link` |
 
@@ -48,6 +50,7 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 flowchart LR
     n0["frontend"]
     n1["frontend/src/pages/CalendarPage.tsx"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/CalendarPage.md"
 ```
@@ -58,6 +61,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `frontend` (1) |
 | Outbound | `frontend` (18) |
 
 ### External packages
@@ -66,7 +70,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -74,5 +78,5 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [CalendarDraft](../entities/CalendarDraft.md) | Class | 39 | — | — |
 | [VacationRow](../entities/VacationRow.md) | Class | 46 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Class | 1088 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Class | 1151 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Class | 1127 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Class | 1190 | — | — |

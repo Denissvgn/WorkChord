@@ -42,6 +42,7 @@ Shared person capacity, calendar arithmetic and private availability boundaries.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_profile_capacity.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_profile_capacity.md"
 ```
@@ -52,6 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (17) |
 
 ### External packages
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 2 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

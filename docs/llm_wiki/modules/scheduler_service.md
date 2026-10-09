@@ -6,6 +6,8 @@
 
 Builds forecasts from canonical person calendars and shared absences, retaining actual execution dates. Productive-hour reservations include shortened days, existing execution slots and overflow dates. Preview and apply use the same shared planning revision. A forecast may overflow, but a new commitment must fit allocation dates and shared capacity; accepted baselines are changed only through deliberate rebaselining.
 
+YAML and fallback scheduling, incremental rescheduling and reservations use complete inherited deferred and optional policy. Deferred descendants cannot consume schedule capacity or acquire forecast dates through these paths.
+
 ## Imports
 
 | Source | Symbols |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
+| Inbound | `backend` (7) |
 | Outbound | `backend` (9) |
 
 ### External packages
@@ -55,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -66,4 +68,4 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 282 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1292 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1298 | — | Handles incremental rescheduling when a single task changes. |

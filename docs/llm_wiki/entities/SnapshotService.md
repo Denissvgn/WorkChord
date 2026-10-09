@@ -107,4 +107,4 @@ flowchart LR
 | `TaskBriefService._locked` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `reserve_task_context_revision` | call | [task_context_revision_service](../modules/task_context_revision_service.md) | 1 |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.

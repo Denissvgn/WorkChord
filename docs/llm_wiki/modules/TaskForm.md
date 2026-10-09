@@ -10,6 +10,8 @@ Task writes persist an uncertain-outcome checkpoint before the request. Restored
 
 New scheduled task drafts capture one coherent initial iteration revision and persist it alongside user input. Live reference-query revisions never replace this base at save; recovered unversioned drafts require explicit comparison before adoption.
 
+An unresolved write freezes its submitted draft and every write target. Its persisted operation kind selects the correct bounded task or triage comparison; older unknown targets compare both explicitly before resuming.
+
 ## Imports
 
 | Source | Symbols |

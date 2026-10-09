@@ -1,6 +1,6 @@
 # Vacation
 
-**Location:** `backend/app/models/team_member.py:164`
+**Location:** `backend/app/models/team_member.py:167`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)
@@ -98,4 +98,4 @@ flowchart LR
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `test_context_covers_each_shared_resource_and_new_member_target` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

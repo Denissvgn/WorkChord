@@ -1,6 +1,6 @@
 # TeamMemberProfile
 
-**Location:** `backend/app/models/team_member.py:68`
+**Location:** `backend/app/models/team_member.py:71`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)
@@ -109,4 +109,4 @@ flowchart LR
 | `AgentRoutingService._profile_revision` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 60 logical references; 48 omitted by the 12-row generated summary limit.
+> References: showing 12 of 66 logical references; 54 omitted by the 12-row generated summary limit.
