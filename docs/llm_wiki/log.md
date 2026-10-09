@@ -2085,3 +2085,5 @@ Integrated local performance qualification now records exact declared clients, b
 - Moved entities: none
 
 Database transfer now preserves deleted-row allocation high-water marks through sequence repair and final reconciliation; installed-wheel coverage includes private corrections and deleted task recording identities.
+
+Public recovery guidance now explains strict observed contexts, retained allocation and recorded-time scope, inherited scheduling policy, working timezones and bounded foreground refresh. Android artifact guidance preserves the distinction between disposable identity and approved distribution.
