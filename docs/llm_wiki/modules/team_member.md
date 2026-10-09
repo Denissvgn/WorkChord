@@ -8,6 +8,8 @@ Team member model.
 
 Allocation numeric IDs do not reuse deleted identities. Each allocation also carries a unique opaque lifetime token retained through person edits and recovery; person profile identity remains a separate durable association.
 
+Person profiles carry stable unique lifetime tokens as well as nonreusing numeric IDs. Allocation lifetime and person lifetime remain separate; metadata edits retain both identities.
+
 ## Imports
 
 | Source | Symbols |
@@ -42,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (45) |
+| Inbound | `backend` (46) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -51,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -59,5 +61,5 @@ flowchart LR
 |-------|------|-------|-------------|
 | [TeamMember](../entities/team_member_TeamMember.md) | 19 | `Base` | Team member model with availability and capacity settings. |
 | [TeamMemberProfile](../entities/team_member_TeamMemberProfile.md) | 71 | `Base` | Reusable person profile for durable capability and preference metadata. |
-| [TeamMemberProfileSkill](../entities/team_member_TeamMemberProfileSkill.md) | 125 | `Base` | Structured skill or weakness attached to a reusable team-member profile. |
-| [Vacation](../entities/team_member_Vacation.md) | 167 | `Base` | Vacation period for a team member. |
+| [TeamMemberProfileSkill](../entities/team_member_TeamMemberProfileSkill.md) | 128 | `Base` | Structured skill or weakness attached to a reusable team-member profile. |
+| [Vacation](../entities/team_member_Vacation.md) | 170 | `Base` | Vacation period for a team member. |

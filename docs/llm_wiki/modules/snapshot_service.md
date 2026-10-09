@@ -12,6 +12,8 @@ Restoration reconciles the exact saved allocation membership. Safe allocations c
 
 Allocation recovery validates stable lifetime provenance before any writes, preserves global owner references, and recreates deleted allocations with their saved lifetime. Snapshots lacking lifetime provenance remain immutable and require explicit reconciliation before restore.
 
+Saved planning graphs include complete person lifetime provenance for allocation profiles and all recursive task owners. Preflight validates these references before any recovery mutation, using internal ID/token projections without serializing private profile data; current owner eligibility remains required.
+
 ## Imports
 
 | Source | Symbols |

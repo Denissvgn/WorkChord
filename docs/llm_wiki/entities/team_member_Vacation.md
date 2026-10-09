@@ -1,6 +1,6 @@
 # Vacation
 
-**Location:** `backend/app/models/team_member.py:167`
+**Location:** `backend/app/models/team_member.py:170`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)

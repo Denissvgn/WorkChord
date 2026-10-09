@@ -43,7 +43,7 @@ flowchart LR
     n10["capture_then_add (backend/tests/test_allocation_recovery.py)"]
     n11["test_deleted_allocation_restore_preserves_replacement_global_owner (backend/tests/test_allocation_recovery.py)"]
     n12["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
-    n13["test_snapshot_restores_exact_allocation_membership (backend/tests/test_work_correctness.py)"]
+    n13["test_snapshot_refuses_reused_profile_lifetime (backend/tests/test_allocation_recovery.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,7 +70,7 @@ flowchart LR
     click n10 "../modules/test_allocation_recovery.md"
     click n11 "../modules/test_allocation_recovery.md"
     click n12 "../modules/test_allocation_recovery.md"
-    click n13 "../modules/test_work_correctness.md"
+    click n13 "../modules/test_allocation_recovery.md"
 ```
 
 ### Summary
@@ -100,4 +100,6 @@ flowchart LR
 | `capture_then_add` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_deleted_allocation_restore_preserves_replacement_global_owner` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 2 |
 | `test_operator_rest_restore_reconciles_exact_allocation_membership` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
-| `test_snapshot_restores_exact_allocation_membership` | call | [test_work_correctness](../modules/test_work_correctness.md) | 1 |
+| `test_snapshot_refuses_reused_profile_lifetime` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

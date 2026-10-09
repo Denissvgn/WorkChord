@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1523 | [Open section](#entities) |
-| Modules | 742 | [Open section](#modules) |
+| Modules | 744 | [Open section](#modules) |
 | Workflows | 191 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
@@ -1555,6 +1555,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261007_0008_time_entries](modules/20261007_0008_time_entries.md) - Retain private minute records and append-only correction history.
 - [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) - Preserve project allocation identity across retained history.
 - [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) - Preserve allocation lifetimes across recovery and deletion.
+- [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -2197,6 +2198,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_process_roles](modules/test_process_roles.md) - DBM-WORK-001 command ownership and process-role tests.
 - [test_profile_capacity](modules/test_profile_capacity.md) - Shared person capacity, calendar arithmetic and private availability boundaries.
 - [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) - Preserve legacy absence identities and report conflicting person calendars.
+- [test_profile_identity](modules/test_profile_identity.md) - Person lifetime migration retains history and never rewinds numeric identities.
 - [test_project_identity](modules/test_project_identity.md) - Project allocation floors, dependent preservation and transactional rebuilds.
 - [test_project_identity_scope](modules/test_project_identity_scope.md) - Ambiguous legacy identities stop before writes and never expose private records.
 - [test_project_working_timezone](modules/test_project_working_timezone.md) - Declared project working zones survive transport and drive local work dates.

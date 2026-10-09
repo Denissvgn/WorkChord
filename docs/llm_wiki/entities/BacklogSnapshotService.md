@@ -34,14 +34,14 @@ flowchart LR
     n2["restore_backlog (backend/app/routers/task_domain.py)"]
     n3["TaskService._lock_task_scope (backend/app/services/task_service.py)"]
     n4["TaskService.create (backend/app/services/task_service.py)"]
-    n5["test_discussion_history_reappears_with_the_restored_task_identity (backend/tests/test_task_discussion.py)"]
-    n6["test_backlog_recovery_keeps_ids_and_append_only_brief_history (backend/tests/test_task_domain.py)"]
-    n7["test_backlog_subtree_move_preserves_internal_edges_and_captures_both_scopes (backend/tests/test_task_domain_integrity.py)"]
-    n8["test_restore_advances_above_deleted_version_and_rejects_stale_writes (backend/tests/test_task_domain_integrity.py)"]
-    n9["test_restore_rejects_missing_historical_deletion_fence (backend/tests/test_task_domain_integrity.py)"]
-    n10["test_restore_removals_record_deletion_fences (backend/tests/test_task_domain_integrity.py)"]
-    n11["test_subtree_deletion_fences_survive_rollback_and_repeated_restoration (backend/tests/test_task_domain_integrity.py)"]
-    n12["test_task_snapshot_restore_does_not_rewind_recorded_time (backend/tests/test_time_entries.py)"]
+    n5["test_backlog_restore_preflights_person_lifetime_before_recovery_writes (backend/tests/test_allocation_recovery.py)"]
+    n6["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
+    n7["test_discussion_history_reappears_with_the_restored_task_identity (backend/tests/test_task_discussion.py)"]
+    n8["test_backlog_recovery_keeps_ids_and_append_only_brief_history (backend/tests/test_task_domain.py)"]
+    n9["test_backlog_subtree_move_preserves_internal_edges_and_captures_both_scopes (backend/tests/test_task_domain_integrity.py)"]
+    n10["test_restore_advances_above_deleted_version_and_rejects_stale_writes (backend/tests/test_task_domain_integrity.py)"]
+    n11["test_restore_rejects_missing_historical_deletion_fence (backend/tests/test_task_domain_integrity.py)"]
+    n12["test_restore_removals_record_deletion_fences (backend/tests/test_task_domain_integrity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -59,14 +59,14 @@ flowchart LR
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/task_service.md"
     click n4 "../modules/task_service.md"
-    click n5 "../modules/test_task_discussion.md"
-    click n6 "../modules/test_task_domain.md"
-    click n7 "../modules/test_task_domain_integrity.md"
-    click n8 "../modules/test_task_domain_integrity.md"
+    click n5 "../modules/test_allocation_recovery.md"
+    click n6 "../modules/test_allocation_recovery.md"
+    click n7 "../modules/test_task_discussion.md"
+    click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_domain_integrity.md"
     click n10 "../modules/test_task_domain_integrity.md"
     click n11 "../modules/test_task_domain_integrity.md"
-    click n12 "../modules/test_time_entries.md"
+    click n12 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -83,11 +83,13 @@ flowchart LR
 | `restore_backlog` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `TaskService._lock_task_scope` | call | [task_service](../modules/task_service.md) | 1 |
 | `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
+| `test_backlog_restore_preflights_person_lifetime_before_recovery_writes` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 2 |
+| `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 2 |
 | `test_discussion_history_reappears_with_the_restored_task_identity` | call | [test_task_discussion](../modules/test_task_discussion.md) | 2 |
 | `test_backlog_recovery_keeps_ids_and_append_only_brief_history` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_backlog_subtree_move_preserves_internal_edges_and_captures_both_scopes` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 2 |
 | `test_restore_advances_above_deleted_version_and_rejects_stale_writes` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
 | `test_restore_rejects_missing_historical_deletion_fence` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
 | `test_restore_removals_record_deletion_fences` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
-| `test_subtree_deletion_fences_survive_rollback_and_repeated_restoration` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
-| `test_task_snapshot_restore_does_not_rewind_recorded_time` | call | [test_time_entries](../modules/test_time_entries.md) | 1 |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

@@ -2194,3 +2194,23 @@ Allocation lifetime recovery, calendar-based capacity and inherited scheduling p
 Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.
 
 Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5603ddebff367e57c7a42048bc7dc1ee58c2d3103caa7dcd3f78226ac33c3e74`
+- Pages created: 2
+- Pages updated: 33
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2978
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.
+
+Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.

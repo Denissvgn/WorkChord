@@ -11,13 +11,14 @@
 3. `snapshot_service.SnapshotService._encode`
 4. `task_service.TaskService`
 5. `authority.AuthorityError`
-6. `authority.internal_authority`
-7. `delivery_dependency_service.DeliveryDependencyService`
-8. `task_recovery_service.reserve_restored_task_version`
-9. `models_task.Task`
-10. `task_domain_service.require_owner`
-11. `task_brief_service.TaskBriefService`
-12. `models_task.TaskDependency`
+6. `snapshot_service.SnapshotService`
+7. `authority.internal_authority`
+8. `delivery_dependency_service.DeliveryDependencyService`
+9. `task_recovery_service.reserve_restored_task_version`
+10. `models_task.Task`
+11. `task_domain_service.require_owner`
+12. `task_brief_service.TaskBriefService`
+13. `models_task.TaskDependency`
 
 ## Touches
 

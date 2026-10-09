@@ -6,6 +6,8 @@
 
 Restores project backlog identities under the shared planning and project locks. Incoming delivery references require explicit resolution before target removal. Retained discussion follows original task identity, while current execution evidence and acceptance are cleared and downstream delivery context is reconciled.
 
+Project backlog snapshots share the complete person lifetime capture and preflight boundary. A scoped manager can recover another eligible project member while private profile queries remain scoped. Missing or replaced provenance rejects before writing the pre-restore point.
+
 ## Imports
 
 | Source | Symbols |
@@ -41,7 +43,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
+| Inbound | `backend` (7) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -50,7 +52,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

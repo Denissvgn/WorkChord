@@ -10,27 +10,28 @@ Allocation membership recovery preserves durable references and rolls back failu
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `Authority` |
+| `app.authority` | `Authority`, `Authority` |
 | `app.commands` | `PlanningConflict` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentTaskAssignment` |
-| `app.models.identity` | `WorkspaceAuthorityState` |
+| `app.models.identity` | `WorkspaceAuthorityState`, `PrincipalProfileLink`, `ProjectMembership` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.schemas.team` | `TeamMemberCreate` |
+| `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.team_service` | `TeamService` |
-| `hashlib` | `hashlib` |
+| `hashlib` | `hashlib`, `hashlib` |
 | `httpx` | `httpx` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `func`, `select`, `text` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
 | `tests.test_managed_authority` | `managed_store` |
-| `uuid` | `uuid4` |
+| `uuid` | `uuid4`, `uuid4`, `uuid4` |
 
 ## Local dependency map
 
@@ -49,7 +50,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (16) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -57,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -74,3 +75,8 @@ flowchart LR
 | `test_reused_lifetime_rejects_atomically_even_for_same_person` | *(async)* `(delivery_store, same_profile)` | `@pytest.mark.parametrize('same_profile', [False, True])` | — |
 | `test_profile_edit_retains_recoverable_allocation_lifetime` | *(async)* `(delivery_store)` | — | — |
 | `test_missing_snapshot_lifetime_is_preserved_but_restore_is_held` | *(async)* `(delivery_store)` | — | — |
+| `test_snapshot_refuses_reused_profile_lifetime` | *(async)* `(delivery_store, reference)` | `@pytest.mark.parametrize('reference', ['member_profile', 'task_owner'])` | — |
+| `test_replaced_profile_token_rejects_before_recovery_state_changes` | *(async)* `(delivery_store)` | — | — |
+| `test_backlog_restore_preflights_person_lifetime_before_recovery_writes` | *(async)* `(delivery_store)` | — | — |
+| `test_missing_person_lifetime_map_preserves_snapshot_and_rejects_restore` | *(async)* `(delivery_store)` | — | — |
+| `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | *(async)* `(managed_store)` | — | — |

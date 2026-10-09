@@ -100,4 +100,4 @@ flowchart LR
 | `DeliveryDependencyService.reconcile` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `DeliveryDependencyService.require_unreferenced` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 
-> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
