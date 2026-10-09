@@ -10,6 +10,12 @@ Tasks can belong to a project backlog before they are committed to an iteration.
 
 Cancellation retains lifecycle history and invalidates agent execution ownership. Canceling an active claim requires the current claim generation, running run IDs and live assignment IDs returned by the actions endpoint. Reopening invalidates current acceptance. Agent execution continues through the assigned-work protocol with its current claim fence; manual execution is for humans.
 
+## Deferred and optional work
+
+`is_deferred` and `is_optional` are scheduling policy fields inherited through a task's complete ancestry. Deferred leaves are excluded from active required work and ordinary queue/execution eligibility. Optional leaves remain distinguishable from required commitments. Structural parents do not add delivered work; canceled and deferred work do not increase required completion or acceptance denominators. Deferral retains identity, content and history. Use the current actions projection to determine which commands are available after policy or ownership changes.
+
+Scheduling day boundaries use the project's IANA timezone, with the availability calendar used for work without a project. An author's recorded-time work date remains an explicit local date with its separately selected timezone. Capacity reflects current shared calendars and absences; task recovery points restore their supported planning state while those shared inputs remain current.
+
 ## Estimates
 
 `effort_hours` is authoritative. `effort_days` is derived using `nominal_day_hours`, independent of personal availability and productivity coefficients. A calendar declares its nominal workday; the compatibility default is eight hours. Inputs supplying both units must agree. Hours are rounded to six decimal places.
@@ -36,7 +42,7 @@ A template's structured brief takes precedence over its legacy description and c
 
 ## Bounded reads and recovery
 
-`GET /api/tasks/{task_id}/detail` returns the task with bounded parent, child and dependency context. Child and dependency pages expose `has_more` and `next_after_id`; parent context exposes its completeness. This UI projection explicitly declares that it is not complete execution context. `GET /api/tasks/lookup` supports project, iteration, backlog and text filters with deterministic ID pagination. These pages describe live data, not a fixed snapshot.
+`GET /api/tasks/{task_id}/detail` returns the task with bounded parent, child and dependency context. Child and dependency pages expose `has_more` and `next_after_id`; parent context exposes its completeness. This UI projection explicitly declares that it is not complete execution context. `GET /api/tasks/lookup` supports project, iteration, backlog and text filters with deterministic ID pagination. These pages describe live data, not a fixed snapshot. Foreground work, discussion, notifications and recorded-time lists refresh the current head and at most four retained pages. Use explicit reload for older pages or changed filters. Loading errors expose retry; authentication or access loss clears private rows and actions. A write with an unknown outcome requires current-state comparison before an explicit retry.
 
 `GET /api/tasks/review-queue` lists independently reviewable resolved work within the caller's review scope. Owner selectors use `/api/tasks/owner-options`, which returns public display information for eligible human owners.
 
@@ -48,7 +54,7 @@ Moving backlog work between projects requires edit permission in both projects. 
 
 ## Compatibility and migration
 
-`GET /api/tasks/capabilities` reports installed domain support and backfill readiness. REST and MCP share action and capability projections. Existing task update versions remain optional on supported legacy routes; new explicit commands require their supplied versions.
+`GET /api/tasks/capabilities` reports installed domain support and backfill readiness. REST and MCP share action and capability projections. Existing task update versions remain optional on supported legacy routes while `STRICT_MUTATION_VERSIONS=false`; strict mode requires observed versions and revisions. New explicit commands require their supplied versions in either mode. A supplied stale version is rejected in both modes. Compare retained intent with current state before applying again.
 
 The legacy `/api/triage/{triage_item_id}/convert-to-task` endpoint still requires `iteration_id`. Unscheduled conversion uses the explicit `/api/triage/{triage_item_id}/convert-to-backlog` endpoint and requires `project_id`.
 
