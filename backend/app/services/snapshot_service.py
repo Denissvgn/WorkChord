@@ -46,11 +46,26 @@ class SnapshotService:
         ids = [row.get("id") for row in payload["team_members"]]
         if any(type(value) is not int or value < 1 for value in ids) or len(set(ids)) != len(ids):
             raise PlanningConflict("snapshot_capacity_identity_invalid", "Snapshot capacity identities must be known and unique.")
+        from uuid import UUID
+        tokens = []
+        for row in payload["team_members"]:
+            token = row.get("allocation_token")
+            try:
+                if not isinstance(token, str) or str(UUID(token)) != token:
+                    raise ValueError
+            except (ValueError, AttributeError):
+                raise PlanningConflict("snapshot_capacity_identity_unknown", "This snapshot lacks allocation lifetime provenance; reconcile it before restoring.") from None
+            tokens.append(token)
+        if len(set(tokens)) != len(tokens):
+            raise PlanningConflict("snapshot_capacity_identity_invalid", "Snapshot allocation lifetimes must be unique.")
         saved = set(ids)
         allocated = set((await self.db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == iteration_id))).all())
         extra = allocated - saved
         for row in payload["team_members"]:
             member = await self.db.get(TeamMember, row["id"])
+            token_owner = await self.db.scalar(select(TeamMember.id).where(TeamMember.allocation_token == row["allocation_token"]))
+            if member is not None and member.allocation_token != row["allocation_token"] or token_owner not in (None, row["id"]):
+                raise PlanningConflict("snapshot_capacity_identity_conflict", "A saved allocation lifetime no longer matches its identity.")
             if member is not None and member.iteration_id not in (None, iteration_id):
                 raise PlanningConflict("snapshot_capacity_scope_conflict", "A saved allocation is now in another iteration.")
             profile_id = row.get("profile_id")
@@ -330,7 +345,7 @@ class SnapshotService:
             if member is not None and member.iteration_id not in (None, iteration_id):
                 raise ValueError("Snapshot capacity ID belongs to another iteration")
             if member is None:
-                member = TeamMember(id=data["id"], iteration_id=iteration_id)
+                member = TeamMember(id=data["id"], allocation_token=data["allocation_token"], iteration_id=iteration_id)
                 self.db.add(member)
             elif "profile_id" in data and member.profile_id != data["profile_id"]:
                 from app.services.team_service import TeamService
@@ -503,6 +518,7 @@ class SnapshotService:
         """Convert team member to export format."""
         return {
             "id": member.id,
+            "allocation_token": member.allocation_token,
             "profile_id": member.profile_id,
             "name": member.name,
             "position": member.position,

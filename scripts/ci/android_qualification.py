@@ -134,6 +134,8 @@ class Qualification:
         self.tools = sdk / 'build-tools/34.0.0'; self.installed = {}; self.reversed = []
         self.cases = required_cases(project); self.executed = []
         self.controller_errors = []
+        self.controller_stop = threading.Event()
+        self.controller_thread = None
         run.cleanups.insert(0, self.cleanup)
         run.validators.append(self.validate_results)
 
@@ -163,10 +165,9 @@ class Qualification:
         for package in (APP, TEST_APP):
             if self.adb_read('shell','pm','path',package):
                 raise ValueError('Qualification refuses to overwrite existing application storage')
-        existing = self.adb_read('reverse','--list')
         for port in sorted({urlsplit(self.data[field]).port for field in ('api_origin','issuer_origin')}):
-            if 'tcp:' + str(port) in existing: raise ValueError('An existing reverse mapping is not owned by this run')
-            self.run.run('reverse-'+str(port),[*self.adb,'reverse','tcp:'+str(port),'tcp:'+str(port)],cwd=self.project,env=self.env,timeout=15)
+            if self.reverse_mapping(port) is not None: raise ValueError('An existing reverse mapping is not owned by this run')
+            self.run.run('reverse-'+str(port),[*self.adb,'reverse','--no-rebind','tcp:'+str(port),'tcp:'+str(port)],cwd=self.project,env=self.env,timeout=15)
             self.reversed.append(port)
         fixture_probe(self.data)
         key = self.scratch / 'qualification.p12'
@@ -220,15 +221,18 @@ class Qualification:
         for index,(classname,method) in enumerate(self.cases):
             self.command('process-boundary-'+str(index),[*self.adb,'shell','am','force-stop',APP])
             thread=None
+            self.controller_stop.clear()
             if method in ('networkInterruptionLocksCurrentWorkAndRecoversLocalInputs','actualWebEditorAndNativeDraftProduceRecoverableConflict'):
-                thread=threading.Thread(target=self.controller,args=(method,),daemon=True);thread.start()
+                thread=threading.Thread(target=self.controller,args=(method,),daemon=True);self.controller_thread=thread;thread.start()
             argv=[*self.adb,'shell','am','instrument','-w','-r','-e','class',classname+'#'+method,
                 '-e','fixtureOrigin',self.data['api_origin'],'-e','browserOrigin',self.data['browser_origin'],
                 '-e','fixtureNonce',self.data['fixture_nonce'],'-e','fixtureParentId',str(self.data['fixture_parent_id']),
                 '-e','releaseQualification','true','-e','networkControl','enabled','-e','webPeerControl','enabled','-e','presentationControl','enabled',RUNNER]
-            output=self.command('instrumentation-'+str(index),argv,150)
-            if thread:thread.join(timeout=10)
-            if thread and thread.is_alive(): raise ValueError('Scenario controller did not complete')
+            try:
+                output=self.command('instrumentation-'+str(index),argv,150)
+                if thread:thread.join(timeout=10)
+            finally:
+                self.stop_controller()
             if self.controller_errors: raise ValueError('Scenario controller failed: '+str(self.controller_errors))
             self.executed.append(executed_case(output,classname,method))
         self.command('instrumentation-artifacts', [*self.adb, 'pull', '/sdcard/Android/data/'+APP+'/files',
@@ -246,9 +250,10 @@ class Qualification:
     def await_marker(self,name,predicate,timeout=90):
         deadline=time.monotonic()+timeout
         while time.monotonic()<deadline:
+            if self.controller_stop.is_set():raise ValueError('Scenario controller cancelled')
             self.run.check_budget();value=self.marker(name)
             if predicate(value):return value
-            time.sleep(.2)
+            self.controller_stop.wait(.2)
         raise ValueError('Required controlled stage did not arrive: '+name)
 
     def controller(self, method):
@@ -256,11 +261,14 @@ class Qualification:
             if method.startswith('networkInterruption'):
                 name='network-stage.txt';port=urlsplit(self.data['api_origin']).port
                 self.await_marker(name,lambda value:value=='ready')
-                self.owner();subprocess.run([*self.adb,'reverse','--remove','tcp:'+str(port)],check=True,timeout=10)
+                self.remove_reverse(port)
                 try:
                     self.marker(name,'offline');self.await_marker(name,lambda value:value=='observed_offline')
                 finally:
-                    self.owner();subprocess.run([*self.adb,'reverse','tcp:'+str(port),'tcp:'+str(port)],check=True,timeout=10)
+                    if not self.controller_stop.is_set():
+                        self.owner()
+                        if self.reverse_mapping(port) is not None:raise ValueError('Reverse mapping changed while offline')
+                        subprocess.run([*self.adb,'reverse','--no-rebind','tcp:'+str(port),'tcp:'+str(port)],check=True,timeout=10)
                 self.marker(name,'restored');self.await_marker(name,lambda value:value=='done')
             else:
                 value=self.await_marker('web-peer-stage.txt',lambda value:value.isdigit())
@@ -272,7 +280,10 @@ class Qualification:
                 with log.open('w') as handle:
                     process=subprocess.Popen(argv,cwd=self.project,env=self.env,stdout=handle,stderr=subprocess.STDOUT,start_new_session=True)
                     try:
-                        if process.wait(timeout=90):raise ValueError('Owned browser peer failed')
+                        deadline=time.monotonic()+90
+                        while process.poll() is None and time.monotonic()<deadline:
+                            if self.controller_stop.wait(.2):raise ValueError('Scenario controller cancelled')
+                        if process.poll() != 0:raise ValueError('Owned browser peer failed')
                     finally:stop_process_group(process)
                 self.run.data['web_peer_controller']={'status':'passed','argv':argv,'log':'web-peer.log'}
                 self.marker('web-peer-stage.txt','saved')
@@ -287,11 +298,47 @@ class Qualification:
             for path in (self.run.output/directory).glob('TEST-*.xml'):
                 if int(ET.parse(path).getroot().get('skipped',0)):raise ValueError('Required release unit variants cannot skip cases')
 
+    def reverse_mapping(self, port):
+        source = 'tcp:'+str(port)
+        matches = []
+        for row in self.adb_read('reverse','--list').splitlines():
+            fields = row.split()
+            if len(fields) != 3:
+                raise ValueError('Reverse mapping inventory is malformed')
+            if fields[1] == source:
+                matches.append(fields[2])
+        if len(matches) > 1:raise ValueError('Reverse mapping inventory is ambiguous')
+        return matches[0] if matches else None
+
+    def remove_reverse(self, port):
+        self.owner()
+        destination = self.reverse_mapping(port)
+        if destination is None:return
+        if destination != 'tcp:'+str(port):raise ValueError('Reverse mapping changed; refusing to remove unrelated mapping')
+        subprocess.run([*self.adb,'reverse','--remove','tcp:'+str(port)],check=True,timeout=10)
+
+    def stop_controller(self):
+        self.controller_stop.set()
+        if self.controller_thread:
+            self.controller_thread.join(timeout=20)
+            if self.controller_thread.is_alive():raise ValueError('Scenario controller did not stop; cleanup is held')
+            self.controller_thread = None
+
     def cleanup(self):
+        self.stop_controller()
         if not self.installed and not self.reversed:return
         self.owner()
-        for package,digest in self.installed.items():
-            if self.installed_hash(package,'cleanup-'+package) != digest:raise ValueError('Application changed; refusing to remove unrelated artifact')
-            subprocess.run([*self.adb,'uninstall',package],check=True,timeout=30,stdout=subprocess.DEVNULL)
-        for port in self.reversed:
-            subprocess.run([*self.adb,'reverse','--remove','tcp:'+str(port)],check=True,timeout=10)
+        errors=[]
+        for package,digest in list(self.installed.items()):
+            try:
+                if self.installed_hash(package,'cleanup-'+package) != digest:raise ValueError('Application changed; refusing to remove unrelated artifact')
+                self.owner()
+                subprocess.run([*self.adb,'uninstall',package],check=True,timeout=30,stdout=subprocess.DEVNULL)
+                del self.installed[package]
+            except Exception as error:errors.append(str(error))
+        for port in list(self.reversed):
+            try:
+                self.remove_reverse(port)
+                self.reversed.remove(port)
+            except Exception as error:errors.append(str(error))
+        if errors:raise ValueError('Owned cleanup incomplete: '+ '; '.join(errors))

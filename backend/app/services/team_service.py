@@ -6,7 +6,7 @@ from datetime import date
 from io import StringIO
 from typing import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -338,13 +338,13 @@ class TeamService:
             for member in members
         ]
 
-    async def get_by_id(self, member_id: int) -> TeamMember | None:
+    async def get_by_id(self, member_id: int, *, load_tasks: bool = True) -> TeamMember | None:
         """Get team member by ID."""
         result = await self.db.execute(
             select(TeamMember)
             .options(
                 *self._member_options(),
-                selectinload(TeamMember.tasks),
+                *([selectinload(TeamMember.tasks)] if load_tasks else []),
                 selectinload(TeamMember.iteration).selectinload(Iteration.calendar)
             )
             .where(TeamMember.id == member_id)
@@ -639,7 +639,7 @@ class TeamService:
 
     async def calculate_capacity(self, member_id: int) -> MemberCapacity | None:
         """Calculate capacity for a team member."""
-        member = await self.get_by_id(member_id)
+        member = await self.get_by_id(member_id, load_tasks=False)
         if not member or not member.iteration:
             return None
 
@@ -664,7 +664,7 @@ class TeamService:
 
     async def get_workload(self, member_id: int) -> MemberWorkload | None:
         """Get workload information for a team member."""
-        member = await self.get_by_id(member_id)
+        member = await self.get_by_id(member_id, load_tasks=False)
         if not member:
             return None
 
@@ -674,7 +674,10 @@ class TeamService:
 
         from app.services.capacity_service import CapacityService
         calendar = await CapacityService(self.db).calendar_for(member)
-        allocated_hours = sum(t.effort_hours for t in member.tasks if not t.is_summary and not t.is_deferred and not t.canceled_at and t.effort_hours is not None)
+        from app.services.work_metrics import included_work_ids
+        included = await included_work_ids(self.db, {member.iteration_id})
+        allocated_hours = await self.db.scalar(select(func.coalesce(func.sum(Task.effort_hours), 0)).where(
+            Task.assignee_id == member_id, Task.id.in_(included)))
         allocated_days = allocated_hours / calendar.nominal_day_hours
         capacity_days = capacity.hours / calendar.nominal_day_hours
         free_days = capacity_days - allocated_days

@@ -34,13 +34,17 @@ export const readTaskDraft = (key: string | null, defaults: TaskEditorValues): T
     } catch { return null; }
 };
 
-export const readPendingTaskWrite = (key: string | null): string | null => {
+export type PendingTaskWrite = { id: string; kind: 'task' | 'triage' | 'unknown' };
+
+export const readPendingTaskWrite = (key: string | null): PendingTaskWrite | null => {
     try { const record = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
-        return typeof record?.pendingWrite === 'string' && record.pendingWrite.length <= 64 ? record.pendingWrite : null;
+        const pending = record?.pendingWrite;
+        if (typeof pending === 'string' && pending.length <= 64) return { id: pending, kind: 'unknown' };
+        return typeof pending?.id === 'string' && pending.id.length <= 64 && ['task', 'triage', 'unknown'].includes(pending.kind) ? pending : null;
     } catch { return null; }
 };
 
-export const writeTaskDraft = (key: string | null, values: TaskEditorValues, pendingWrite: string | null = null) => {
+export const writeTaskDraft = (key: string | null, values: TaskEditorValues, pendingWrite: PendingTaskWrite | null = null) => {
     if (!key) return;
     try { sessionStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), values, pendingWrite })); } catch { /* The in-page draft remains available. */ }
 };

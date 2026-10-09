@@ -496,16 +496,14 @@ class IterationService:
         if not iteration:
             return None
 
-        working_days = CalendarService(self.db).calculate_working_days(
-            iteration.calendar,
-            iteration.start_date,
-            iteration.end_date,
-        ).working_days
+        from app.services.work_metrics import included_work_ids, working_today
+        today = working_today(iteration.project.timezone if iteration.project else iteration.calendar.timezone)
 
+        included = await included_work_ids(self.db, {iteration_id})
         child_task = aliased(Task)
         is_planning_leaf = and_(
             Task.iteration_id == iteration_id,
-            Task.is_deferred.is_(False),
+            Task.id.in_(included),
             ~exists(select(child_task.id).where(child_task.parent_id == Task.id)),
         )
         task_row = (
@@ -545,7 +543,7 @@ class IterationService:
                                         Task.end_date > iteration.end_date,
                                         and_(
                                             Task.status == TaskStatusModel.PLANNED.value,
-                                            Task.start_date < date.today(),
+                                            Task.start_date < today,
                                         ),
                                         Task.start_date < Task.min_start_date,
                                         Task.end_date > Task.max_end_date,
@@ -563,84 +561,39 @@ class IterationService:
         task_count = int(task_row[0])
         unscheduled_count = int(task_row[3])
 
-        capacity_days = (
-            working_days
-            * (TeamMember.availability_percent / 100.0)
-            * (1.0 - TeamMember.operational_utilization / 100.0)
-            * TeamMember.professionalism_coefficient
-        )
-        team_row = (
-            await self.db.execute(
-                select(
-                    func.count(TeamMember.id),
-                    func.coalesce(func.sum(capacity_days), 0.0),
-                    func.coalesce(
-                        func.sum(case((capacity_days <= 0, 1), else_=0)),
-                        0,
-                    ),
-                ).where(TeamMember.iteration_id == iteration_id)
-            )
-        ).one()
-
-        planned_hours = (
-            select(
-                Task.assignee_id.label("assignee_id"),
-                func.sum(Task.effort_hours).label("planned_hours"),
-            )
-            .where(is_planning_leaf, Task.assignee_id.is_not(None))
-            .group_by(Task.assignee_id)
-            .subquery()
-        )
-        overloaded_count = int(
-            (
-                await self.db.execute(
-                    select(func.count(TeamMember.id))
-                    .join(
-                        planned_hours,
-                        planned_hours.c.assignee_id == TeamMember.id,
-                    )
-                    .where(
-                        TeamMember.iteration_id == iteration_id,
-                        planned_hours.c.planned_hours > capacity_days * 8.0,
-                    )
-                )
-            ).scalar_one()
-        )
+        from app.services.team_service import TeamService
+        members = await TeamService(self.db).get_by_iteration(iteration_id)
+        capacities = {member.id: await TeamService(self.db).calculate_capacity(member.id) for member in members}
+        planned_hours = dict((await self.db.execute(select(Task.assignee_id, func.sum(Task.effort_hours))
+            .where(is_planning_leaf, Task.assignee_id.is_not(None)).group_by(Task.assignee_id))).all())
+        total_hours = sum(value.hours for value in capacities.values() if value is not None)
+        no_capacity = sum(value is None or value.hours <= 0 for value in capacities.values())
+        overloaded_count = sum(planned_hours.get(member.id, 0) > capacities[member.id].hours
+            for member in members if capacities[member.id] is not None)
+        from app.services.capacity_service import CapacityService
+        shared_issues = await CapacityService(self.db).schedule_issues(iteration, members)
+        uncertain_count = len(shared_issues)
 
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
-            team_member_count=int(team_row[0]),
-            team_capacity_hours=round(float(team_row[1]) * 8.0, 2),
-            team_members_no_capacity=int(team_row[2]),
+            team_member_count=len(members),
+            team_capacity_hours=round(total_hours, 2),
+            team_members_no_capacity=no_capacity,
             task_count=task_count,
             tasks_without_assignee=int(task_row[1]),
             tasks_without_effort=int(task_row[2]),
             has_schedule=task_count > 0 and unscheduled_count == 0,
-            risk_count=int(task_row[4]) + overloaded_count,
+            risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
         )
 
     async def _calculate_team_capacity(self, iteration: Iteration) -> float:
         """Calculate total team capacity for iteration."""
-        calendar_service = CalendarService(self.db)
-        working_days = calendar_service.calculate_working_days(
-            iteration.calendar, iteration.start_date, iteration.end_date
-        ).working_days
-
-        total_capacity = float(
-            (
-                await self.db.execute(
-                    select(
-                        func.coalesce(
-                            func.sum(
-                                (TeamMember.availability_percent / 100.0)
-                                * (1.0 - TeamMember.operational_utilization / 100.0)
-                                * TeamMember.professionalism_coefficient
-                            ),
-                            0.0,
-                        )
-                    ).where(TeamMember.iteration_id == iteration.id)
-                )
-            ).scalar_one()
-        ) * working_days
-
-        return round(total_capacity, 1)
+        from app.services.capacity_service import CapacityService
+        from app.services.team_service import TeamService
+        total = 0.0
+        for member in await TeamService(self.db).get_by_iteration(iteration.id):
+            capacity = await TeamService(self.db).calculate_capacity(member.id)
+            calendar = await CapacityService(self.db).calendar_for(member)
+            if capacity:
+                total += capacity.hours / calendar.nominal_day_hours
+        return round(total, 2)

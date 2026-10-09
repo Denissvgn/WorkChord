@@ -136,3 +136,89 @@ async def test_operator_rest_restore_reconciles_exact_allocation_membership(mana
         ids = set((await db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == scenario.iterations[0]))).all())
         assert ids == {scenario.capacity_rows[0]}
         assert (await db.get(TeamMember, member_id)).iteration_id is None
+
+
+async def test_deleted_allocation_restore_preserves_replacement_global_owner(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original_profile = TeamMemberProfile(display_name="Original captured person", profile_kind="human")
+        replacement_profile = TeamMemberProfile(display_name="Unrelated replacement person", profile_kind="human")
+        db.add_all([original_profile, replacement_profile])
+        await db.commit()
+        original_profile_id, replacement_profile_id = original_profile.id, replacement_profile.id
+        original = await TeamService(db).create(scenario.iterations[0], TeamMemberCreate(
+            name="Captured allocation", position="Engineer", profile_id=original_profile_id))
+        original_id = original.id
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "allocation_identity")
+        assert await TeamService(db).delete(original_id)
+        replacement = await TeamService(db).create(scenario.iterations[0], TeamMemberCreate(
+            name="Replacement allocation", position="Engineer", profile_id=replacement_profile_id))
+        replacement_id = replacement.id
+        assert replacement_id > original_id
+        project = await db.get(Project, scenario.projects[0])
+        project.owner_id = replacement_id
+        await db.commit()
+        before = (replacement.name, replacement.profile_id, replacement.iteration_id, project.owner_id)
+        await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        replacement = await db.get(TeamMember, replacement_id)
+        project = await db.get(Project, scenario.projects[0])
+        assert replacement is not None
+        after = (replacement.name, replacement.profile_id, project.owner_id)
+        assert after == (before[0], replacement_profile_id, replacement_id), {
+            "captured_id": original_id, "replacement_id": replacement_id,
+            "before": before, "after": after, "source_snapshot": saved,
+        }
+
+
+@pytest.mark.parametrize("same_profile", [False, True])
+async def test_reused_lifetime_rejects_atomically_even_for_same_person(delivery_store, same_profile):
+    from uuid import uuid4
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        member = await db.get(TeamMember, scenario.capacity_rows[0])
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "lifetime_guard")
+        member.allocation_token = str(uuid4())
+        if not same_profile:member.profile_id = None
+        await db.commit()
+        before = (member.allocation_token, member.profile_id)
+        snapshots = await db.scalar(select(func.count()).select_from(ApplicationSnapshot))
+        with pytest.raises(PlanningConflict, match="lifetime"):
+            await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        member = await db.get(TeamMember, scenario.capacity_rows[0])
+        assert (member.allocation_token, member.profile_id) == before
+        assert await db.scalar(select(func.count()).select_from(ApplicationSnapshot)) == snapshots
+
+
+async def test_profile_edit_retains_recoverable_allocation_lifetime(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        member = await db.get(TeamMember, scenario.capacity_rows[0])
+        original = (member.allocation_token, member.profile_id)
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "profile_edit")
+        member.profile_id = None
+        await db.commit()
+        await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        member = await db.get(TeamMember, scenario.capacity_rows[0])
+        assert (member.allocation_token, member.profile_id) == original
+
+
+async def test_missing_snapshot_lifetime_is_preserved_but_restore_is_held(delivery_store):
+    import hashlib
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        saved = await SnapshotService(db).create_snapshot(scenario.iterations[0], "legacy_identity")
+        row = await db.scalar(select(ApplicationSnapshot).where(ApplicationSnapshot.filename == saved))
+        payload = dict(row.payload)
+        payload["team_members"] = [{key: value for key, value in member.items() if key != "allocation_token"} for member in payload["team_members"]]
+        row.payload = payload
+        row.checksum = hashlib.sha256(SnapshotService._encode(payload)).hexdigest()
+        await db.commit()
+        before = (row.payload, row.checksum)
+        with pytest.raises(PlanningConflict, match="provenance"):
+            await SnapshotService(db).restore(scenario.iterations[0], saved)
+    async with factory() as db:
+        row = await db.scalar(select(ApplicationSnapshot).where(ApplicationSnapshot.filename == saved))
+        assert (row.payload, row.checksum) == before

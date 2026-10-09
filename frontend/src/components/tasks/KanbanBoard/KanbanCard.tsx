@@ -70,8 +70,9 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </button>
                     {task.is_overdue && (
-                        <div className="text-feedback-danger" title={t('surfaces.kanbanCard.overdue')}>
-                            <AlertCircle className="w-4 h-4" />
+                        <div className="flex items-center gap-1 text-xs text-feedback-danger-foreground">
+                            <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                            <span>{t('surfaces.kanbanCard.overdue')}</span>
                         </div>
                     )}
                     {task.claimed_by && (

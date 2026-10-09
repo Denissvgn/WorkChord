@@ -331,6 +331,8 @@ class SchedulerService:
 
         # Build task map for dependency lookup during scheduling
         task_map = {t.id: t for t in all_tasks}
+        from app.services.work_metrics import effective_work_flags
+        self._work_flags = {task.id: effective_work_flags(task, by_id=task_map) for task in all_tasks}
 
         # Collect all leaf tasks (tasks without children) that need scheduling
         # IMPORTANT: Only schedule tasks with PLANNED status
@@ -338,7 +340,7 @@ class SchedulerService:
         # that should not be modified by auto-scheduling
         from app.models.task import TaskStatus
 
-        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not t.is_deferred and not t.canceled_at and not t.blocked_reason]
+        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not self._effective_flags(t)["effective_is_deferred"] and not t.canceled_at and not t.blocked_reason]
 
         # Split into schedulable (PLANNED) and locked (non-PLANNED) tasks
         leaf_tasks = [t for t in all_leaf_tasks if t.status == TaskStatus.PLANNED.value]
@@ -457,7 +459,7 @@ class SchedulerService:
             available_days = assignee_days_before_vacation.get(assignee_id, 0)
 
             # Sort by priority (lower = higher priority), then by effort (smaller first)
-            sorted_tasks = sorted(assignee_tasks, key=lambda t: (t.is_optional, t.priority, self._calculate_adjusted_effort(t)))
+            sorted_tasks = sorted(assignee_tasks, key=lambda t: (self._effective_flags(t)["effective_is_optional"], t.priority, self._calculate_adjusted_effort(t)))
 
             remaining_days = available_days
             for task in sorted_tasks:
@@ -509,7 +511,7 @@ class SchedulerService:
                 size_order = -effort
 
             # Sort by: vacation_priority, is_optional, priority, size_order
-            return (vacation_priority, task.is_optional, task.priority, size_order)
+            return (vacation_priority, self._effective_flags(task)["effective_is_optional"], task.priority, size_order)
 
         def topological_sort_with_dependencies(
             tasks_with_start: list[tuple[Task, date]],
@@ -872,7 +874,7 @@ class SchedulerService:
         result = []
 
         # Sort by (is_optional, priority) first, then apply topological order
-        priority_sorted = sorted(children, key=lambda c: (c.is_optional, c.priority))
+        priority_sorted = sorted(children, key=lambda c: (self._effective_flags(c)["effective_is_optional"], c.priority))
 
         def visit(task: Task):
             if task.id in visited:
@@ -942,8 +944,8 @@ class SchedulerService:
         """
         return {
             "priority": task.priority,
-            "is_optional": task.is_optional,
-            "is_deferred": task.is_deferred,
+            "is_optional": self._effective_flags(task)["effective_is_optional"],
+            "is_deferred": self._effective_flags(task)["effective_is_deferred"],
             "adjusted_effort": self._calculate_adjusted_effort(task),
             "fits_before_vacation": task_can_fit_before_vacation.get(task.id, True),
             "max_finish_date": task.max_end_date,
@@ -1058,6 +1060,10 @@ class SchedulerService:
 
         return levels
 
+    def _effective_flags(self, task):
+        from app.services.work_metrics import effective_work_flags
+        return getattr(self, "_work_flags", {}).get(task.id) or effective_work_flags(task)
+
     async def _schedule_leaf_task(
         self,
         task: Task,
@@ -1074,7 +1080,7 @@ class SchedulerService:
                            If None, calculate from iteration start and dependencies.
         """
         # Skip deferred tasks - they are excluded from scheduling
-        if task.is_deferred:
+        if self._effective_flags(task)["effective_is_deferred"]:
             return
 
         if not task.assignee_id or task.assignee_id not in member_schedules:
@@ -1175,7 +1181,7 @@ class SchedulerService:
         sorted_children = self._topological_sort_children(task.children, child_ids)
 
         for child in sorted_children:
-            if child.is_deferred:
+            if self._effective_flags(child)["effective_is_deferred"]:
                 continue  # Skip deferred tasks
             if child.children:
                 await self._schedule_composite_task(
@@ -1187,7 +1193,7 @@ class SchedulerService:
                 )
 
         # Compute parent dates from children (excluding deferred tasks)
-        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not c.is_deferred]
+        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._effective_flags(c)["effective_is_deferred"]]
 
         if children_with_dates:
             child_start_dates = [
@@ -1238,7 +1244,7 @@ class SchedulerService:
                 self._update_composite_task_dates(child, iteration, decisions)
 
         # Compute dates from children (excluding deferred tasks)
-        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not c.is_deferred]
+        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._effective_flags(c)["effective_is_deferred"]]
 
         if children_with_dates:
             child_start_dates = [
@@ -1461,11 +1467,16 @@ class IncrementalScheduler:
                 decisions=[],
             )
 
+        all_tasks = await self.task_service.get_all_tasks(iteration_id)
+        task_map = {task.id: task for task in all_tasks}
+        from app.services.work_metrics import effective_work_flags
+        self.scheduler._work_flags = {task.id: effective_work_flags(task, by_id=task_map) for task in all_tasks}
+
         # Load affected tasks
         tasks: list[Task] = []
         for task_id in affected_task_ids:
             task = await self.task_service.get_by_id(task_id)
-            if task and task.status == TaskStatus.PLANNED.value:
+            if task and task.status == TaskStatus.PLANNED.value and not self.scheduler._effective_flags(task)["effective_is_deferred"]:
                 task.start_date = None
                 task.end_date = None
                 tasks.append(task)
@@ -1486,9 +1497,8 @@ class IncrementalScheduler:
         )
 
         # Track existing allocations for non-affected tasks
-        all_tasks = await self.task_service.get_all_tasks(iteration_id)
         for existing_task in all_tasks:
-            if existing_task.id not in affected_task_ids and existing_task.start_date:
+            if existing_task.id not in affected_task_ids and existing_task.start_date and not self.scheduler._effective_flags(existing_task)["effective_is_deferred"]:
                 if existing_task.assignee_id and existing_task.assignee_id in member_schedules:
                     schedule = member_schedules[existing_task.assignee_id]
                     if existing_task.end_date:
@@ -1499,7 +1509,6 @@ class IncrementalScheduler:
                         schedule._invalidate_cache()
 
         decisions: list[SchedulingDecision] = []
-        task_map = {t.id: t for t in all_tasks}
 
         # Schedule each affected task
         for task in tasks:

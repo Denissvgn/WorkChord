@@ -176,6 +176,7 @@ class CapacityService:
         await self.require_visible(profile_id)
         from sqlalchemy.orm import selectinload
         from app.models.task import Task
+        from app.services.work_metrics import included_work_ids
         authority = self.db.info.get("authority")
         with internal_authority(self.db):
             revision = await self.db.scalar(select(PlanningState.revision).where(PlanningState.id == 1)) or 0
@@ -190,8 +191,9 @@ class CapacityService:
             ranges = await self.absence_ranges(members[0]) if members else list((await self.db.execute(
                 select(ProfileAbsence.start_date, ProfileAbsence.end_date).where(
                     ProfileAbsence.profile_id == profile_id, ProfileAbsence.deleted.is_(False)))).all())
-            tasks = list((await self.db.scalars(select(Task).where(Task.assignee_id.in_([m.id for m in members]),
-                Task.is_summary.is_(False), Task.is_deferred.is_(False), Task.canceled_at.is_(None), Task.status != "closed"))).all())
+            included = await included_work_ids(self.db, {member.iteration_id for member in members})
+            tasks = list((await self.db.execute(select(Task.id, Task.assignee_id, Task.baseline_start_date, Task.baseline_end_date, Task.effort_hours).where(Task.assignee_id.in_([m.id for m in members]),
+                Task.id.in_(included), Task.status != "closed"))).all())
             commitments = {}
             for task in tasks:
                 if not task.baseline_start_date or not task.baseline_end_date:

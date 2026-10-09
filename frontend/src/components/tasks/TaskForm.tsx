@@ -123,7 +123,7 @@ export const TaskForm = ({
     }), [initialData, parentId, parentPriority, parentProjectId, parentMilestoneId]);
     const [recoveredDraft] = useState(() => readTaskDraft(draftKey, initialValues));
     const [pendingWrite, setPendingWrite] = useState(() => readPendingTaskWrite(draftKey));
-    const [writeComparison, setWriteComparison] = useState<{ items: { id: number; title: string; version: number }[]; has_more: boolean } | null>(null);
+    const [writeComparison, setWriteComparison] = useState<{ items: { id: number; title: string; version?: number; kind?: 'task' | 'triage' }[]; has_more: boolean } | null>(null);
     const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft ?? initialValues);
     const [baseline, setBaseline] = useState<TaskEditorValues>(() => initialValues);
     const isDirty = JSON.stringify(formData) !== JSON.stringify(baseline);
@@ -141,8 +141,8 @@ export const TaskForm = ({
         onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty || Boolean(pendingWrite));
     }, [isDirty, workDirty, discussionDirty, timeDirty, pendingWrite, onDirtyChange]);
 
-    const checkpointWrite = () => {
-        const operation = crypto.randomUUID(); setPendingWrite(operation); setWriteComparison(null);
+    const checkpointWrite = (kind: 'task' | 'triage') => {
+        const operation = { id: crypto.randomUUID(), kind }; setPendingWrite(operation); setWriteComparison(null);
         writeTaskDraft(draftKey, formData, operation);
     };
     const definiteRejection = (cause: unknown) => {
@@ -225,7 +225,7 @@ export const TaskForm = ({
 
     const createMutation = useMutation({
         mutationFn: (data: TaskCreate) => taskService.create(iterationId, data),
-        onMutate: checkpointWrite,
+        onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
             invalidateTaskProjectQueries();
             if (!isActive()) return;
@@ -241,7 +241,7 @@ export const TaskForm = ({
 
     const createTriageMutation = useMutation({
         mutationFn: (data: TriageItemCreate) => triageService.create(data),
-        onMutate: checkpointWrite,
+        onMutate: () => checkpointWrite('triage'),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['triage'] });
             if (!isActive()) return;
@@ -257,7 +257,7 @@ export const TaskForm = ({
 
     const updateMutation = useMutation({
         mutationFn: (data: TaskUpdate) => taskService.update(currentTask!.id, data),
-        onMutate: checkpointWrite,
+        onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
             invalidateTaskProjectQueries();
             if (!isActive()) return;
@@ -332,6 +332,15 @@ export const TaskForm = ({
                 if (!isActive()) return;
                 setConflictTask(observed);
                 setWriteComparison({ items: [observed], has_more: false });
+            } else if (pendingWrite?.kind === 'triage') {
+                const items = await triageService.getAll({ q: formData.title, source: 'task_form', limit: 50 });
+                if (isActive()) setWriteComparison({ items: items.map(item => ({ ...item, kind: 'triage' })), has_more: items.length === 50 });
+            } else if (pendingWrite?.kind === 'unknown') {
+                const [tasks, triage] = await Promise.all([
+                    taskService.lookup({ q: formData.title, limit: 50 }),
+                    triageService.getAll({ q: formData.title, source: 'task_form', limit: 50 }),
+                ]);
+                if (isActive()) setWriteComparison({ items: [...tasks.items.map(item => ({ ...item, kind: 'task' as const })), ...triage.map(item => ({ ...item, kind: 'triage' as const }))], has_more: tasks.has_more || triage.length === 50 });
             } else {
                 const observed = await taskService.lookup({ project_id: effectiveProjectId ?? undefined,
                     q: formData.title, limit: 50 });
@@ -511,6 +520,7 @@ export const TaskForm = ({
     };
 
     const handleSendToTriage = () => {
+        if (pendingWrite || isSubmitting || sessionUnavailable || workDirty || discussionDirty || timeDirty) return;
         const title = formData.title.trim();
         if (!title) {
             setError(t('taskEditor.validation.titleRequired'));
@@ -572,7 +582,7 @@ export const TaskForm = ({
                 <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>
                 {writeComparison && <>
                     <p>{t('teamwork.boundedComparison')}</p>
-                    <ul>{writeComparison.items.map(item => <li key={item.id}>#{item.id} · {item.title} · v{item.version}</li>)}</ul>
+                    <ul>{writeComparison.items.map(item => <li key={`${item.kind ?? 'task'}:${item.id}`}>{item.kind === 'triage' ? t('surfaces.taskForm.sendToTriage') : t('surfaces.taskForm.taskTitle')} · #{item.id} · {item.title} {item.version !== undefined ? ` · v${item.version}` : ''}</li>)}</ul>
                     {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
                     <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
                 </>}
@@ -639,7 +649,7 @@ export const TaskForm = ({
                 currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
             )}
 
-            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting} className="contents">
+            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting || Boolean(pendingWrite)} className="contents">
             {/* === ESSENTIAL SECTION (always visible) === */}
 
             {/* Title - required */}
@@ -1130,7 +1140,7 @@ export const TaskForm = ({
                         className="w-full sm:w-auto"
                         onClick={handleSendToTriage}
                         isLoading={createTriageMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(pendingWrite)}
                     >
                         <Inbox className="w-4 h-4 mr-2" />
                         {t('surfaces.taskForm.sendToTriage')}

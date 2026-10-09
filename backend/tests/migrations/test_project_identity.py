@@ -69,7 +69,11 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         before_rows, before_catalog = database_rows(engine), schema_snapshot(engine)
         run_alembic_upgrade(backup=False, run_repairs=False)
         assert database_rows(engine) == before_rows
-        assert schema_snapshot(engine) == before_catalog
+        after_catalog = schema_snapshot(engine)
+        allocation = after_catalog["team_members"]
+        assert allocation["columns"].pop("allocation_token") == {"type": {"family": "text"}, "nullable": False}
+        allocation["unique_constraints"].remove(("allocation_token",))
+        assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))
             inserted = db.execute(Project.__table__.insert().values(name="Unrelated new scope"))

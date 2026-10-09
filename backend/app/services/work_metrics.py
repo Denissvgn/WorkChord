@@ -108,6 +108,32 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
     return result
 
 
+async def included_work_ids(db, iteration_ids):
+    """Select leaves with complete reachable ancestry and inherited work policy."""
+    from sqlalchemy import select, or_, exists, func
+    from app.models.task import Task
+    table = Task.__table__
+    scope = or_(table.c.iteration_id.in_([value for value in iteration_ids if value is not None]),
+                table.c.iteration_id.is_(None) if None in iteration_ids else False)
+    tree = select(table.c.id, table.c.project_id, table.c.iteration_id,
+                  table.c.is_deferred.label("deferred")).where(table.c.parent_id.is_(None), scope).cte("included_work_tree", recursive=True)
+    child = table.alias("included_work_child")
+    tree = tree.union_all(select(child.c.id, child.c.project_id, child.c.iteration_id,
+        or_(tree.c.deferred, child.c.is_deferred)).join(tree, child.c.parent_id == tree.c.id)
+        .where(child.c.iteration_id.is_not_distinct_from(tree.c.iteration_id),
+               child.c.project_id.is_not_distinct_from(tree.c.project_id)))
+    total, reached = (await db.execute(select(
+        select(func.count()).select_from(table).where(scope).scalar_subquery(),
+        select(func.count()).select_from(tree).scalar_subquery()))).one()
+    if total != reached:
+        from app.commands import PlanningConflict
+        raise PlanningConflict("work_ancestry_incomplete", "Reconcile incomplete work ancestry before calculating capacity.")
+    descendant = table.alias("included_work_descendant")
+    return select(tree.c.id).join(table, table.c.id == tree.c.id).where(
+        ~tree.c.deferred, ~table.c.is_summary, table.c.canceled_at.is_(None),
+        ~exists(select(descendant.c.id).where(descendant.c.parent_id == table.c.id)))
+
+
 async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
     from sqlalchemy import select
     from app.models.task import Task
@@ -123,7 +149,7 @@ async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
     return rows
 
 
-async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None):
+async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None):
     """Aggregate all authorized leaves in SQL, including inherited scheduling facets."""
     from sqlalchemy import select, case, func, or_, and_, false, literal
     from app.models.task import Task, TaskDependency
@@ -131,6 +157,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     from app.models.iteration import Iteration
     from app.authority import _scope_conditions
 
+    now = now or utc_now()
     t, iterations, projects = Task.__table__, Iteration.__table__, Project.__table__
     authority = db.info.get("authority")
     scope = _scope_conditions(authority).get(Task) if authority is not None and not authority.operator and not authority.local else None
@@ -165,11 +192,11 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     if zone_map is None:
         zones = (await db.execute(select(literal("project"), Project.id, Project.timezone).union_all(
             select(literal("calendar"), Calendar.id, Calendar.timezone)))).all()
-        dates = {identifier: working_today(zone) for kind, identifier, zone in zones if kind == "project"}
-        calendar_dates = {identifier: working_today(zone) for kind, identifier, zone in zones if kind == "calendar"}
+        dates = {identifier: working_today(zone, now) for kind, identifier, zone in zones if kind == "project"}
+        calendar_dates = {identifier: working_today(zone, now) for kind, identifier, zone in zones if kind == "calendar"}
     else:
-        dates, calendar_dates = {pid: working_today(zone) for pid, zone in zone_map.items()}, {}
-    fallback = case(calendar_dates, value=iterations.c.calendar_id, else_=working_today()) if calendar_dates else working_today()
+        dates, calendar_dates = {pid: working_today(zone, now) for pid, zone in zone_map.items()}, {}
+    fallback = case(calendar_dates, value=iterations.c.calendar_id, else_=working_today(now=now)) if calendar_dates else working_today(now=now)
     today = case(dates, value=t.c.project_id, else_=fallback) if dates else fallback
     parent_ids = select(t.c.parent_id).where(t.c.parent_id.is_not(None)).distinct().subquery("metric_parent_ids")
     composite = or_(t.c.is_summary, parent_ids.c.parent_id.is_not(None))

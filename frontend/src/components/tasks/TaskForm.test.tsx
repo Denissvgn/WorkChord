@@ -78,6 +78,22 @@ describe('task template application', () => {
         expect(api.post).toHaveBeenCalledTimes(1);
     });
 
+    it('holds both write targets after an unknown triage outcome and compares triage before resuming', async () => {
+        configure(template());
+        api.post.mockRejectedValueOnce(new TypeError('No verified response'));
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Uncertain intake');
+        await user.click(screen.getByRole('button', { name: 'Send to Triage' }));
+        await screen.findByText('Failed to create triage item');
+        expect(screen.getByRole('button', { name: 'Send to Triage' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Create Task' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Reload current server work' }));
+        await screen.findByRole('button', { name: 'I compared current work; resume this draft' });
+        expect(api.get.mock.calls.some(([path]) => path.startsWith('/triage?'))).toBe(true);
+        expect(api.get.mock.calls.some(([path]) => path === '/tasks/lookup')).toBe(false);
+        expect(api.post).toHaveBeenCalledTimes(1);
+    });
+
     it('does not notify an obsolete route when a delayed create completes after unmount', async () => {
         configure(template());
         let finish!: (value: unknown) => void;

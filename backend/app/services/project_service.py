@@ -48,6 +48,7 @@ from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.request_source_service import RequestSourceService
 from app.sql_semantics import portable_case_insensitive_equal
 from app.utils.time import as_utc, utc_now
+from app.services.work_metrics import working_today
 
 
 class ProjectService:
@@ -429,7 +430,8 @@ class ProjectService:
         if not projects:
             return []
         from app.services.work_metrics import aggregate_metrics
-        rows = await aggregate_metrics(self.db, project_ids=[project.id for project in projects], group_by="project", zone_map={project.id: project.timezone for project in projects})
+        now = utc_now()
+        rows = await aggregate_metrics(self.db, project_ids=[project.id for project in projects], group_by="project", zone_map={project.id: project.timezone for project in projects}, now=now)
         aggregates = {row["group_id"]: row for row in rows}
         summaries = []
         for project in projects:
@@ -438,7 +440,7 @@ class ProjectService:
                 total_tasks=values.get("total_tasks", 0), completed_tasks=values.get("implemented_tasks", 0),
                 completion_percent=values.get("completion_percent", 0), blocked_tasks=values.get("blocked_tasks", 0),
                 overdue_tasks=values.get("project_target_overflow_tasks", 0), remaining_effort_days=values.get("remaining_effort_days", 0),
-                task_start_date=values.get("task_start_date"), task_end_date=values.get("task_end_date"))
+                task_start_date=values.get("task_start_date"), task_end_date=values.get("task_end_date"), now=now)
             summaries.append(ProjectPortfolioSummary(project_id=project.id, target_date_risk=risk,
                 **{key: value for key, value in values.items() if key in ProjectPortfolioSummary.model_fields and key not in {"project_id", "target_date_risk"}}))
         return summaries
@@ -1045,6 +1047,7 @@ class ProjectService:
         self,
         project: Project,
         task_start_date: Optional[date],
+        *, now=None,
     ) -> Optional[float]:
         """Calculate elapsed schedule percentage against the project target."""
         if project.target_date is None:
@@ -1058,7 +1061,7 @@ class ProjectService:
         if total_days <= 0:
             return None
 
-        elapsed_days = (date.today() - schedule_start).days
+        elapsed_days = (working_today(project.timezone, now) - schedule_start).days
         progress = (elapsed_days / total_days) * 100
         return max(0.0, min(100.0, progress))
 
@@ -1073,9 +1076,10 @@ class ProjectService:
         remaining_effort_days: float,
         task_start_date: Optional[date],
         task_end_date: Optional[date],
+        *, now=None,
     ) -> tuple[ProjectTargetDateRisk, Optional[str], int, Optional[int]]:
         """Calculate target-date risk and supporting date deltas."""
-        today = date.today()
+        today = working_today(project.timezone, now)
         days_until_target = (
             (project.target_date - today).days
             if project.target_date is not None
@@ -1163,7 +1167,7 @@ class ProjectService:
                 days_until_target,
             )
 
-        schedule_progress = self._calculate_schedule_progress(project, task_start_date)
+        schedule_progress = self._calculate_schedule_progress(project, task_start_date, now=now)
         if schedule_progress is not None:
             progress_gap = schedule_progress - completion_percent
             if progress_gap > 15:
@@ -1294,18 +1298,20 @@ class ProjectService:
     async def _project_task_aggregates(
         self,
         project: Project,
+        *, now=None,
     ) -> dict[str, object]:
         """Compute canonical authorized leaf metrics in a bounded result aggregate."""
         from app.services.work_metrics import aggregate_metrics
-        return await aggregate_metrics(self.db, project_id=project.id, zone_map={project.id: project.timezone})
+        return await aggregate_metrics(self.db, project_id=project.id, zone_map={project.id: project.timezone}, now=now)
 
     async def _aggregated_milestone_groups(
         self,
         project_id: int,
+        *, now=None,
     ) -> list[ProjectMilestoneTaskGroup]:
         """Use the same canonical leaf denominators for each milestone."""
         from app.services.work_metrics import aggregate_metrics
-        groups = {row["group_id"]: row for row in await aggregate_metrics(self.db, project_id=project_id, group_by="milestone")}
+        groups = {row["group_id"]: row for row in await aggregate_metrics(self.db, project_id=project_id, group_by="milestone", now=now)}
         milestones = list(await self.list_milestones(project_id) or [])
         result = []
         for milestone in [*milestones, None]:
@@ -1328,10 +1334,11 @@ class ProjectService:
         if not project:
             return None
 
-        aggregates = await self._project_task_aggregates(project)
+        now = utc_now()
+        aggregates = await self._project_task_aggregates(project, now=now)
         latest_update = await self.get_latest_project_update(project_id)
         days_since_latest_update = (
-            (date.today() - latest_update.created_at.date()).days
+            (working_today(project.timezone, now) - working_today(project.timezone, latest_update.created_at)).days
             if latest_update is not None
             else None
         )
@@ -1347,7 +1354,7 @@ class ProjectService:
         remaining_effort_days = float(aggregates["remaining_effort_days"])
         task_start_date = aggregates["task_start_date"]
         task_end_date = aggregates["task_end_date"]
-        milestone_groups = await self._aggregated_milestone_groups(project_id)
+        milestone_groups = await self._aggregated_milestone_groups(project_id, now=now)
         request_count = await RequestSourceService(self.db).count_for_project(project_id)
 
         total_tasks = int(aggregates["total_tasks"])
@@ -1373,6 +1380,7 @@ class ProjectService:
             remaining_effort_days=remaining_effort_days,
             task_start_date=task_start_date,
             task_end_date=task_end_date,
+            now=now,
         )
 
         from app.schemas.work_metrics import WorkMetricSummary

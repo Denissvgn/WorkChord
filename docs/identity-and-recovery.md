@@ -46,6 +46,8 @@ For a restore, drain writers and inspect the source point and current iteration 
 
 Restore recovers the saved allocation membership. Later safe allocations are detached from that iteration while their IDs and global references remain intact. External task or live execution references must be reconciled first; unsupported allocation-reference ownership prevents restoration. Shared person profiles, calendars, availability and absences remain current.
 
+Each allocation has a stable lifetime token, separate from its person profile, and deleted numeric allocation IDs are never reused. Recovery checks that lifetime before changing membership or profile associations. Older snapshots without lifetime provenance remain available for inspection and export, but their restores are held for identity reconciliation. Do not edit retained snapshot bytes or infer an allocation lifetime from a matching name, profile or numeric ID. Use a matching verified full backup when whole-workspace recovery is required.
+
 Legacy files are never silently trusted. Mount the old snapshot directory read-only at `data/snapshots/{iteration_id}` relative to the backend working directory and POST `/api/iterations/{id}/snapshots/import-legacy` with `{"dry_run":true,"limit":25}`. Review checksums, shape, and disposition; `dry_run:false` records the bounded provenance inventory. Ambiguous preview-era files are quarantined for explicit reconciliation, not offered as trustworthy restore points. Keep the original files and full backup for operator recovery.
 
 ## Backup and deployment rollback
