@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1519 | [Open section](#entities) |
-| Modules | 734 | [Open section](#modules) |
+| Entities | 1522 | [Open section](#entities) |
+| Modules | 735 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 549 | [Open section](#entry-point-flows) |
@@ -522,6 +522,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NativeSessionService](entities/NativeSessionService.md)
 - [NativeTokenResponse](entities/NativeTokenResponse.md)
 - [NavItem](entities/NavItem.md)
+- [NoRedirect](entities/NoRedirect.md)
 - [NormalizedApiError](entities/NormalizedApiError.md)
 - [NotFoundException](entities/NotFoundException.md)
 - [NotificationDelivery](entities/NotificationDelivery.md)
@@ -629,6 +630,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProviderSourceCollector](entities/ProviderSourceCollector.md)
 - [PublicTrustAnchor](entities/PublicTrustAnchor.md)
 - [PublicTrustResolver](entities/PublicTrustResolver.md)
+- [Qualification](entities/Qualification.md)
 - [QualificationInputError](entities/QualificationInputError.md)
 - [Quantity](entities/Quantity.md)
 - [QueryEmptyStateProps](entities/QueryEmptyStateProps.md)
@@ -656,6 +658,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ReleaseFormState](entities/ReleaseFormState.md)
 - [ReleaseForm_FlattenedTask](entities/ReleaseForm_FlattenedTask.md)
 - [ReleaseLimits](entities/ReleaseLimits.md)
+- [ReleaseQualificationContracts](entities/ReleaseQualificationContracts.md)
 - [ReleaseResponse](entities/ReleaseResponse.md)
 - [ReleaseService](entities/ReleaseService.md)
 - [ReleaseUpdate](entities/ReleaseUpdate.md)
@@ -1781,6 +1784,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_team_setup](modules/agent_team_setup.md) - Portable agent-team setup, reconciliation, and readiness contracts.
 - [agent_team_setup_service](modules/agent_team_setup_service.md) - Operator-only agent-team validation, reconciliation, setup, and readiness.
 - [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
+- [android_qualification](modules/android_qualification.md) - Release-behavior qualification confined to an explicitly owned ARM64 emulator.
 - [api](modules/api.md) - `frontend/src/services/api.ts`
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
 - [app_database](modules/app_database.md) - `backend/app/database.py`

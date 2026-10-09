@@ -2087,3 +2087,30 @@ Integrated local performance qualification now records exact declared clients, b
 Database transfer now preserves deleted-row allocation high-water marks through sequence repair and final reconciliation; installed-wheel coverage includes private corrections and deleted task recording identities.
 
 Public recovery guidance now explains strict observed contexts, retained allocation and recorded-time scope, inherited scheduling policy, working timezones and bounded foreground refresh. Android artifact guidance preserves the distinction between disposable identity and approved distribution.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1661e1aa0bf0bf60812c0500dd5cd1b760ac3b360424c12daf342ab7c3b04387`
+- Pages created: 4
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2982
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Android tooling now provides an opt-in owned emulator release-behavior qualification contract with artifact/signing identity, strict trusted HTTPS and complete scenario/skip gates; compiled and installed execution requires a licensed toolchain and remains a separate evidence boundary.

@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1519,
+      "entities": 1522,
       "flows": 549,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 734,
+      "modules": 735,
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 3001
+    "total": 3005
   },
   "dependency_pages": {
     "count": 2,
@@ -38461,7 +38461,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 31,
+              "line": 36,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -38469,15 +38469,23 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 33,
+              "line": 38,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
             },
             {
               "confidence": "unknown",
+              "kind": "filesystem_write",
+              "line": 65,
+              "step": "main",
+              "step_index": 1,
+              "target": "shutil.copyfile"
+            },
+            {
+              "confidence": "unknown",
               "kind": "mutation",
-              "line": 55,
+              "line": 82,
               "step": "main",
               "step_index": 1,
               "target": "run.finalizers.append"
@@ -38485,7 +38493,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 78,
+              "line": 105,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38494,15 +38502,9 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 18,
-              "step": "main",
-              "target": "argparse.ArgumentParser"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 19,
               "step": "main",
-              "target": "parser.add_argument"
+              "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
@@ -38514,37 +38516,43 @@
               "kind": "unresolved_call",
               "line": 21,
               "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 22,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 23,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 24,
+              "step": "main",
               "target": "parser.parse_args"
             },
             {
+              "kind": "unresolved_call",
+              "line": 26,
+              "step": "main",
+              "target": "parser.error"
+            },
+            {
               "kind": "external_call",
-              "line": 22,
+              "line": 27,
               "step": "main",
               "target": "tempfile.mkdtemp"
             },
             {
               "kind": "external_call",
-              "line": 24,
+              "line": 29,
               "step": "main",
               "target": "RunReceipt"
-            },
-            {
-              "kind": "external_call",
-              "line": 26,
-              "step": "main",
-              "target": "SystemExit"
-            },
-            {
-              "kind": "external_call",
-              "line": 28,
-              "step": "main",
-              "target": "bind_source"
-            },
-            {
-              "kind": "external_call",
-              "line": 30,
-              "step": "main",
-              "target": "tempfile.TemporaryDirectory"
             },
             {
               "kind": "step_limit",
@@ -38562,7 +38570,7 @@
           "modules_touched": [
             "scripts/ci/run_android_checks.py"
           ],
-          "step_count": 42,
+          "step_count": 66,
           "truncated": false
         }
       },
@@ -39690,7 +39698,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 374,
+              "line": 423,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -40596,6 +40604,7 @@
         "entities/NativeSessionService.md",
         "entities/NativeTokenResponse.md",
         "entities/NavItem.md",
+        "entities/NoRedirect.md",
         "entities/NormalizedApiError.md",
         "entities/NotFoundException.md",
         "entities/NotificationDelivery.md",
@@ -40713,6 +40722,7 @@
         "entities/ProviderSourceCollector.md",
         "entities/PublicTrustAnchor.md",
         "entities/PublicTrustResolver.md",
+        "entities/Qualification.md",
         "entities/QualificationInputError.md",
         "entities/Quantity.md",
         "entities/QueryEmptyStateProps.md",
@@ -40740,6 +40750,7 @@
         "entities/ReleaseFormProps.md",
         "entities/ReleaseFormState.md",
         "entities/ReleaseLimits.md",
+        "entities/ReleaseQualificationContracts.md",
         "entities/ReleaseResponse.md",
         "entities/ReleaseService.md",
         "entities/ReleaseUpdate.md",
@@ -42138,6 +42149,7 @@
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
+        "modules/android_qualification.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.md",
@@ -51198,6 +51210,18 @@
       "title": "NavItem"
     },
     {
+      "canonical_path": "entities/NoRedirect.md",
+      "id": "NoRedirect",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/NoRedirect",
+      "outgoing_internal_links": [
+        "modules/android_qualification.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/android_qualification.py",
+      "title": "NoRedirect"
+    },
+    {
       "canonical_path": "entities/NormalizedApiError.md",
       "id": "NormalizedApiError",
       "kind": "entities",
@@ -52803,6 +52827,18 @@
       "title": "PublicTrustResolver"
     },
     {
+      "canonical_path": "entities/Qualification.md",
+      "id": "Qualification",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Qualification",
+      "outgoing_internal_links": [
+        "modules/android_qualification.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/android_qualification.py",
+      "title": "Qualification"
+    },
+    {
       "canonical_path": "entities/QualificationInputError.md",
       "id": "QualificationInputError",
       "kind": "entities",
@@ -53134,6 +53170,18 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
       "title": "_ReleaseLimits"
+    },
+    {
+      "canonical_path": "entities/ReleaseQualificationContracts.md",
+      "id": "ReleaseQualificationContracts",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReleaseQualificationContracts",
+      "outgoing_internal_links": [
+        "modules/test_native_runtimes.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py",
+      "title": "ReleaseQualificationContracts"
     },
     {
       "canonical_path": "entities/ReleaseResponse.md",
@@ -65007,6 +65055,19 @@
       "title": "AnalyticsPage Module"
     },
     {
+      "canonical_path": "modules/android_qualification.md",
+      "id": "android_qualification",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/android_qualification",
+      "outgoing_internal_links": [
+        "entities/NoRedirect.md",
+        "entities/Qualification.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/android_qualification.py",
+      "title": "android_qualification Module"
+    },
+    {
       "canonical_path": "modules/api.md",
       "id": "api",
       "kind": "modules",
@@ -74794,6 +74855,7 @@
         "entities/AndroidArtifacts.md",
         "entities/NativeChecks.md",
         "entities/PostgresOwnership.md",
+        "entities/ReleaseQualificationContracts.md",
         "entities/WorkflowContracts.md"
       ],
       "role": "semantic",
@@ -88761,6 +88823,7 @@
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
+        "modules/android_qualification.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.md",
@@ -89506,6 +89569,7 @@
         "modules/AgentTeamSetupMasterPage.test.md",
         "modules/AgentTeamStepList.md",
         "modules/AnalyticsPage.md",
+        "modules/android_qualification.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.md",
@@ -90194,5 +90258,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:6e058dff910d4346a90775370d3656c2b463389c1f999c468f3da6d5ae6e8dc1"
+  "source_hash": "sha256:a7c42c681203154d2baa635a74713a9ec2d5b0bf593b68c13141b8cd5e62fab5"
 }

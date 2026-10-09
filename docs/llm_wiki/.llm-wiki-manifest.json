@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:3dd06317da357df7d5722c9be4f96e1434b9241729161e817c862dcb6e9fb5f2",
-    "knowledge_index_hash": "sha256:1657a3bd8ed3da5a32baa7d2ec461dc831cd515f45854d56c60c33121e629486",
-    "surface_index_hash": "sha256:b851790a075da9acc4386d28ca65e2c4b0baccdb30b28373fc56ab11d5e0766a"
+    "evaluated_envelope_hash": "sha256:a7cdba40caf682b5f9c3f3d4cce1dfa79246fb0fa30adc5632800ff93fbb2d8c",
+    "knowledge_index_hash": "sha256:25d7488d6c5a1fab039d5302476695757444fdfd2677a18f70edb1bfb344fae2",
+    "surface_index_hash": "sha256:73f7a42f6515de13278d0ab4a4e74375a8ac580dcb9163e730594c16b2e1d6ab"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -1410,7 +1410,7 @@
         "concept_observation_hash": "sha256:c5eef96b4b86c320873cbbe5f99bfc37258b154f3718c5053f123ca10930c5a9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -4940,7 +4940,7 @@
         "concept_observation_hash": "sha256:83b5d86e4e3a42c0b67306534b5d1e9936d6f0e003259be500be1beb4e0ebbdd",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -5042,6 +5042,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:1bda3d9ca3e2789367ea5250d09bc9594356c085bc2012029dd79a987d007305",
         "source_path": "frontend/src/navigation/workspaces.ts"
+      },
+      "state": "known"
+    },
+    "entities/NoRedirect.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:650ac5d8a1c3f951bcaa5375dccf2250dc4163d9f36cdc5be95646e0412a5147",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:64b0379bd36820a597e97d3c611b6092424903bdf1f69e44b509875a5798c7ba",
+        "source_path": "scripts/ci/android_qualification.py"
       },
       "state": "known"
     },
@@ -5710,7 +5720,7 @@
         "concept_observation_hash": "sha256:0cd0984005dc19ba135eb12f89c6edc9448622b5acf0335beebc8562017f8e60",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -6115,6 +6125,16 @@
       },
       "state": "known"
     },
+    "entities/Qualification.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:bd33cf55a467a1b17e65a0dfe71aead42dd721de84a915d1152ed7c975b0a405",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:64b0379bd36820a597e97d3c611b6092424903bdf1f69e44b509875a5798c7ba",
+        "source_path": "scripts/ci/android_qualification.py"
+      },
+      "state": "known"
+    },
     "entities/QualificationInputError.md": {
       "basis": {
         "concept_observation_hash": "sha256:f4c8eea609c3a6d1f75b22b2daab28a4167bfca9a4b3dab5bcf92aba06566448",
@@ -6382,6 +6402,16 @@
         "scope": "entity",
         "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
+      },
+      "state": "known"
+    },
+    "entities/ReleaseQualificationContracts.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:d6fdc8abf4342f18c3ac37675b8968e48d2fb031c03c686bc098c68d57001f11",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "entity",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
+        "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
     },
@@ -10140,7 +10170,7 @@
         "concept_observation_hash": "sha256:94dab6d02f78599d6afd89167da80dc8f1a2a875b6b9fdd64caeff760667f0de",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -17605,6 +17635,16 @@
       },
       "state": "known"
     },
+    "modules/android_qualification.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:540c746e5318685ec71806770dcf6a8ba2101f36dc8bddb1a4c18f204267b82a",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:64b0379bd36820a597e97d3c611b6092424903bdf1f69e44b509875a5798c7ba",
+        "source_path": "scripts/ci/android_qualification.py"
+      },
+      "state": "known"
+    },
     "modules/api.md": {
       "basis": {
         "concept_observation_hash": "sha256:44f203790c5f52fc9a084babbcc7630c4e12f4458c7c4616f2dcd185e7a7e5df",
@@ -19857,10 +19897,10 @@
     },
     "modules/run_android_checks.md": {
       "basis": {
-        "concept_observation_hash": "sha256:73e4c9029c79e29fc56c40dc02b02420c613d53a3052a4aa039b83bd5eb03309",
+        "concept_observation_hash": "sha256:b58755554c9ad5a139d9bf1ce610163dad64b6a12ef06beae2864d75e7ee23be",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:874378caba5b5b2d9934249a702a1b249f8d1d76420a82df3877c2a18fb0f806",
+        "source_content_hash": "sha256:89ad12bf3791c02b523dbc078e2230485dd7566ea9650d5f62ded84907a73ed7",
         "source_path": "scripts/ci/run_android_checks.py"
       },
       "state": "known"
@@ -21517,10 +21557,10 @@
     },
     "modules/test_native_runtimes.md": {
       "basis": {
-        "concept_observation_hash": "sha256:2b3f4e44b0763f4e7a5fe4b4c8eb4e8ee032b6b1c4f03458d6c39da30728debc",
+        "concept_observation_hash": "sha256:d692415e19731461b5bde352bb492cbd7bd9dcdcfb7fe88933ec2c9fc390833e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+        "source_content_hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
         "source_path": "scripts/ci/tests/test_native_runtimes.py"
       },
       "state": "known"
@@ -22607,12 +22647,12 @@
           "evidence_basis": {
             "adapter": "github_actions",
             "discovery_root": ".",
-            "observation_hash": "sha256:ad6e87168d8cf19c2344891b96aff5b27a985c3f8f9b5d35be60f459e0a17d3f",
-            "source_content_hash": "sha256:81139c12b7c926067031a69a42f658ad6a4b8ae22000fcafe74e4b899737ed68"
+            "observation_hash": "sha256:466e3967e8d6810e9b359f2d3614f678cac232924899014d8573118e79b7d09c",
+            "source_content_hash": "sha256:9a119c2b61ab02100e7389146402d9823ccc5ecb7ea5b252c457e951f3cc3a6f"
           },
-          "observation_hash": "sha256:ad6e87168d8cf19c2344891b96aff5b27a985c3f8f9b5d35be60f459e0a17d3f",
+          "observation_hash": "sha256:466e3967e8d6810e9b359f2d3614f678cac232924899014d8573118e79b7d09c",
           "page_path": "infrastructure/_github_workflows_client-baseline_yml.md",
-          "source_content_hash": "sha256:81139c12b7c926067031a69a42f658ad6a4b8ae22000fcafe74e4b899737ed68",
+          "source_content_hash": "sha256:9a119c2b61ab02100e7389146402d9823ccc5ecb7ea5b252c457e951f3cc3a6f",
           "source_path": ".github/workflows/client-baseline.yml",
           "state": "current"
         },
@@ -22750,13 +22790,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:a4ddb42ecbc5d3f33ad68bb2c40bea5843f4d25eef291f979faf61dba569bef6",
-      "lifecycle_hash": "sha256:6466f59b90ae8ae7d11d22ee8a4dc9ab13eb6753416abfe388a3c2cb4c356887",
-      "markdown_snapshot_hash": "sha256:a38237cacc42a6d075c9097f656af4b8b622da1888f668327bd4e6fceaaccbdb",
-      "observation_inputs_hash": "sha256:e81d3d7f8c60a2f3ac73b5d72be3bdc298b40de788508297ff5d71e52579057e",
+      "inventory_hash": "sha256:ef3ec4b0a0bf51b3fbd447ebb36e9ed4da099ab133ff794870a4ba24fb91f731",
+      "lifecycle_hash": "sha256:3f0442b538c98c40257c5f527c8797133b7d7363d2e60764d3419a51fc940d21",
+      "markdown_snapshot_hash": "sha256:95963f1a9c3fcd28564f3c96b9efb260f6202a34e3f32052855249925d039a2e",
+      "observation_inputs_hash": "sha256:712ab2bdd6cf8472981018280429858c5828031c7b9a13fa49e08dade1eeb062",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:3faea8a9479ea79da2b5f3d0a4f2066299b1aadad3773e53c234fb7e2e6000a0"
+      "source_snapshot_hash": "sha256:1661e1aa0bf0bf60812c0500dd5cd1b760ac3b360424c12daf342ab7c3b04387"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -25789,6 +25829,12 @@
       "scope": "entity",
       "source_path": "frontend/src/navigation/workspaces.ts"
     },
+    "entities/NoRedirect.md": {
+      "entity_name": "NoRedirect",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/android_qualification.py"
+    },
     "entities/NormalizedApiError.md": {
       "entity_name": "NormalizedApiError",
       "occurrence": 1,
@@ -26431,6 +26477,12 @@
       "scope": "entity",
       "source_path": "backend/app/autonomy/signing.py"
     },
+    "entities/Qualification.md": {
+      "entity_name": "Qualification",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/android_qualification.py"
+    },
     "entities/QualificationInputError.md": {
       "entity_name": "QualificationInputError",
       "occurrence": 1,
@@ -26592,6 +26644,12 @@
       "occurrence": 1,
       "scope": "entity",
       "source_path": "backend/app/services/agent_skill_bundle_service.py"
+    },
+    "entities/ReleaseQualificationContracts.md": {
+      "entity_name": "ReleaseQualificationContracts",
+      "occurrence": 1,
+      "scope": "entity",
+      "source_path": "scripts/ci/tests/test_native_runtimes.py"
     },
     "entities/ReleaseResponse.md": {
       "entity_name": "ReleaseResponse",
@@ -32842,6 +32900,10 @@
     "modules/agent_work_service.md": {
       "scope": "module",
       "source_path": "backend/app/services/agent_work_service.py"
+    },
+    "modules/android_qualification.md": {
+      "scope": "module",
+      "source_path": "scripts/ci/android_qualification.py"
     },
     "modules/api.md": {
       "scope": "module",
@@ -81757,6 +81819,75 @@
       "module_page": "build_agent_skills",
       "semantic_hash": "sha256:ba27f167dd04899c5304f7238926de3276fc2278ca772a9534b74ca312da3587"
     },
+    "scripts/ci/android_qualification.py": {
+      "entities": [
+        "NoRedirect",
+        "Qualification"
+      ],
+      "entity_page_occurrences": [
+        {
+          "name": "NoRedirect",
+          "occurrence": 1,
+          "page": "NoRedirect"
+        },
+        {
+          "name": "Qualification",
+          "occurrence": 1,
+          "page": "Qualification"
+        }
+      ],
+      "entity_pages": {
+        "NoRedirect": "NoRedirect",
+        "Qualification": "Qualification"
+      },
+      "generated_semantics": {
+        "entities": {
+          "NoRedirect": {
+            "attributes": {},
+            "description": "_Auto-generated from `NoRedirect` in `scripts/ci/android_qualification.py`._",
+            "methods": {
+              "redirect_request": "—"
+            }
+          },
+          "Qualification": {
+            "attributes": {},
+            "description": "_Auto-generated from `Qualification` in `scripts/ci/android_qualification.py`._",
+            "methods": {
+              "__init__": "—",
+              "adb_read": "—",
+              "await_marker": "—",
+              "cleanup": "—",
+              "command": "—",
+              "controller": "—",
+              "exercise": "—",
+              "installed_hash": "—",
+              "marker": "—",
+              "owner": "—",
+              "prepare": "—",
+              "validate_results": "—"
+            }
+          }
+        },
+        "module": {
+          "classes": {
+            "NoRedirect": "—",
+            "Qualification": "—"
+          },
+          "description": "Release-behavior qualification confined to an explicitly owned ARM64 emulator.",
+          "functions": {
+            "executed_case": "—",
+            "fixture_probe": "—",
+            "load_inputs": "—",
+            "manifest_flags": "—",
+            "required_cases": "—"
+          }
+        }
+      },
+      "hash": "sha256:64b0379bd36820a597e97d3c611b6092424903bdf1f69e44b509875a5798c7ba",
+      "language": "python",
+      "module_page": "android_qualification",
+      "semantic_hash": "sha256:6467e98bf3a0c6106679d6fcff5b06dad50e609dea4e4ad4aec98d2a2deec01f"
+    },
     "scripts/ci/apt_runtime.py": {
       "entities": [],
       "entity_page_occurrences": [],
@@ -82008,10 +82139,10 @@
           }
         }
       },
-      "hash": "sha256:874378caba5b5b2d9934249a702a1b249f8d1d76420a82df3877c2a18fb0f806",
+      "hash": "sha256:89ad12bf3791c02b523dbc078e2230485dd7566ea9650d5f62ded84907a73ed7",
       "language": "python",
       "module_page": "run_android_checks",
-      "semantic_hash": "sha256:3bf036ea0d883c5bb93f8b4da291d57bfc4e208218b91f3b6da2d5116faa8892"
+      "semantic_hash": "sha256:f72288469ec1acb56cff0b6da38522211c1614866fc3541480b9d1d666bcaced"
     },
     "scripts/ci/run_disposable_checks.py": {
       "entities": [],
@@ -82172,7 +82303,8 @@
         "WorkflowContracts",
         "NativeChecks",
         "PostgresOwnership",
-        "AndroidArtifacts"
+        "AndroidArtifacts",
+        "ReleaseQualificationContracts"
       ],
       "entity_page_occurrences": [
         {
@@ -82194,12 +82326,18 @@
           "name": "AndroidArtifacts",
           "occurrence": 1,
           "page": "AndroidArtifacts"
+        },
+        {
+          "name": "ReleaseQualificationContracts",
+          "occurrence": 1,
+          "page": "ReleaseQualificationContracts"
         }
       ],
       "entity_pages": {
         "AndroidArtifacts": "AndroidArtifacts",
         "NativeChecks": "NativeChecks",
         "PostgresOwnership": "PostgresOwnership",
+        "ReleaseQualificationContracts": "ReleaseQualificationContracts",
         "WorkflowContracts": "WorkflowContracts"
       },
       "generated_semantics": {
@@ -82239,6 +82377,17 @@
               "test_unowned_cluster_cannot_be_stopped": "—"
             }
           },
+          "ReleaseQualificationContracts": {
+            "attributes": {},
+            "description": "_Auto-generated from `ReleaseQualificationContracts` in `scripts/ci/tests/test_native_runtimes.py`._",
+            "methods": {
+              "test_inventory_contains_every_declared_live_and_storage_scenario": "—",
+              "test_qualification_flags_are_explicit_and_paired": "—",
+              "test_release_manifest_forbids_cleartext_backup_and_debug": "—",
+              "test_required_case_parser_rejects_skips_failures_and_missing_cases": "—",
+              "test_unowned_or_production_inputs_cannot_reach_device_operations": "—"
+            }
+          },
           "WorkflowContracts": {
             "attributes": {},
             "description": "_Auto-generated from `WorkflowContracts` in `scripts/ci/tests/test_native_runtimes.py`._",
@@ -82258,16 +82407,17 @@
             "AndroidArtifacts": "—",
             "NativeChecks": "—",
             "PostgresOwnership": "—",
+            "ReleaseQualificationContracts": "—",
             "WorkflowContracts": "—"
           },
           "description": "Native orchestration preserves isolation, real result requirements and cleanup.",
           "functions": {}
         }
       },
-      "hash": "sha256:8d27e66327c2cd75eaf11b6404f5e7fcbfd330b86dbb82290b1434adacbce800",
+      "hash": "sha256:b451679fe1302c36276dc85801d4f816502d2e8b4614d187aa0a656e4277329d",
       "language": "python",
       "module_page": "test_native_runtimes",
-      "semantic_hash": "sha256:3764cddf9f120f9390c99ddf311b4fc24f1332edc49b4a9dcc7970d603066f6f"
+      "semantic_hash": "sha256:6bda10a7b764823c213ae2a51dd1497b747b86fd36c47dac96b6159a07a53c1a"
     },
     "scripts/generate_agent_team_contract.py": {
       "entities": [],

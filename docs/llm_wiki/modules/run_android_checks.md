@@ -8,11 +8,13 @@ Builds a temporary Android source copy with native JDK 17, SDK 34 and the checks
 
 The Android client requires HTTPS in release builds and limits debug HTTP to explicit loopback/emulator hosts. NetworkClient disables redirect forwarding and verbose release logging; sensitive headers are redacted and endpoint changes clear credentials. MyWorkViewModel obtains authenticated identity from /api/auth/me and selects loaded leaf work by its linked human owner profile, with no guest-session ownership inference. Its existing iteration selection scope remains unchanged. Kotlin/XML behavior is outside the static extractor coverage and requires direct client-source inspection.
 
+An explicit paired release-qualification/input-manifest mode retains the ordinary debug baseline and confines release installation to a fresh owned ARM64 emulator with existing licensed tools. It builds an ephemeral qualification signing identity, binds APK/certificate/manifest identities, rejects missing or skipped required scenarios and cleans only matching installed artifacts. Shipping cleartext and trust resources remain unchanged. Source safety contracts do not establish compiled or live Android execution.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
+| `android_qualification` | `load_inputs`, `Qualification` |
 | `argparse` | `argparse` |
 | `ci_runtime` | `RunReceipt`, `positive_seconds` |
 | `hashlib` | `hashlib` |
@@ -33,7 +35,7 @@ The Android client requires HTTPS in release builds and limits debug HTTP to exp
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 2 | 2 |
+| python | 3 | 3 |
 
 ## Functions
 
