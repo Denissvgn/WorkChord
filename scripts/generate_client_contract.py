@@ -20,6 +20,10 @@ CLIENT_PATHS = (
     "/api/tasks/{task_id}/actions", "/api/tasks/{task_id}/commands", "/api/tasks/{task_id}/brief",
     "/api/tasks/{task_id}/brief/convert", "/api/tasks/{task_id}/progress", "/api/tasks/{task_id}/review",
     "/api/tasks/{task_id}/detail", "/api/tasks/lookup",
+    "/api/tasks/planning-inputs/{kind}/{resource_id}/context",
+    "/api/tasks/planning-inputs/member/{resource_id}/context",
+    "/api/iterations/import-context", "/api/iterations/{iteration_id}/import-context",
+    "/api/iterations/import", "/api/iterations/{iteration_id}/import",
     "/api/projects/page", "/api/iterations/page", "/api/projects/portfolio-summaries/page",
     "/api/tasks/{task_id}/timeline/page",
     "/api/time-entries/capabilities", "/api/time-entries", "/api/time-entries/{entry_id}",
@@ -66,6 +70,7 @@ def build_contract():
             "task_structured_acceptance_criteria": "brief" in task_fields and "acceptance_criteria" in components["TaskBrief"]["properties"],
             "triage_explicit_destination": "/api/triage/{triage_item_id}/convert-to-backlog" in paths,
             "task_update_version_required": "expected_version" in components["TaskUpdate"].get("required", []),
+            "planning_input_context": "/api/tasks/planning-inputs/{kind}/{resource_id}/context" in paths,
         },
     }
 

@@ -8,13 +8,16 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `commands.lock_planning`
-2. `delivery_dependency_service.DeliveryDependencyService`
+1. `authority.require_project`
+2. `commands.lock_planning`
 3. `authority.internal_authority`
 4. `commands.PlanningConflict`
 5. `delivery_dependency_service.DeliveryDependencyService`
-6. `outbound_webhook_service.emit_outbound_webhook_event`
-7. `commands.commit_or_flush`
+6. `authority.internal_authority`
+7. `commands.PlanningConflict`
+8. `delivery_dependency_service.DeliveryDependencyService`
+9. `outbound_webhook_service.emit_outbound_webhook_event`
+10. `commands.commit_or_flush`
 
 ## Touches
 

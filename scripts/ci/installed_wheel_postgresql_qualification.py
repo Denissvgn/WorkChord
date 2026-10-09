@@ -233,6 +233,8 @@ def _source_phase(workspace: Path) -> None:
     from app.models.identity import Principal, ProjectMembership, WorkspaceMembership
     from app.models.project import Project
     from app.models.task import Task
+    from app.models.time_entry import TimeEntry, TimeEntryRevision
+    from app.models.recovery import TaskDeletionFence
     from app.models.user_session import UserSession
     from app.services.upgrade_service import bootstrap_database_schema
 
@@ -305,7 +307,24 @@ def _source_phase(workspace: Path) -> None:
                     ),
                 ]
             )
+            principal_id = principal.id
             session.commit()
+        with sync_engine.begin() as connection:
+            # Retained recording identities intentionally outlive their project and task.
+            connection.execute(Project.__table__.insert().values(id=90, name='Retained recording scope'))
+            connection.execute(Task.__table__.insert().values(id=72, title='Retained task label', project_id=90, version=8))
+            values = dict(project_id=90, task_id=72, principal_id=principal_id,
+                work_date=date(2026, 7, 1), timezone='Asia/Tokyo', minutes=45,
+                note='Synthetic retained correction', version=2, voided=False)
+            connection.execute(TimeEntry.__table__.insert().values(id=51, **values,
+                task_title='Retained task label', request_id='12345678-1234-4234-8234-123456789abc', creation_digest='c' * 64))
+            for version, minutes, note in [(1, 30, 'Synthetic original record'), (2, 45, 'Synthetic retained correction')]:
+                connection.execute(TimeEntryRevision.__table__.insert().values(entry_id=51, project_id=90,
+                    principal_id=principal_id, version=version, work_date=date(2026, 7, 1), timezone='Asia/Tokyo',
+                    minutes=minutes, note=note, voided=False, reason='Synthetic author record'))
+            connection.execute(Task.__table__.delete().where(Task.id==72))
+            connection.execute(TaskDeletionFence.__table__.insert().values(original_task_id=72,last_version=8))
+            connection.execute(Project.__table__.delete().where(Project.id==90))
     finally:
         sync_engine.dispose()
 
@@ -428,6 +447,18 @@ def _target_phase(workspace: Path, authorized_target: str) -> None:
             ).one()
             if tuple(values) != (1, 1, 1, "reconciled"):
                 raise RuntimeError(f"Installed-wheel transfer counts differ: {values}")
+            retained = connection.execute(text('SELECT id,project_id,task_id,principal_id,minutes,version,task_title,note FROM time_entries')).one()
+            if tuple(retained) != (51, 90, 72, 1, 45, 2, 'Retained task label', 'Synthetic retained correction'):
+                raise RuntimeError(f'Installed-wheel retained ledger differs: {retained}')
+            revisions = connection.execute(text('SELECT version,minutes,note FROM time_entry_revisions ORDER BY version')).all()
+            if [tuple(row) for row in revisions] != [(1,30,'Synthetic original record'),(2,45,'Synthetic retained correction')]:
+                raise RuntimeError('Installed-wheel correction history differs')
+            if connection.execute(text('SELECT last_version FROM task_deletion_fences WHERE original_task_id=72')).scalar_one() != 8:
+                raise RuntimeError('Installed-wheel deletion fence differs')
+            if load_report['sequences']['projects']['reset_next_value'] <= 90:
+                raise RuntimeError('Installed-wheel project allocation can collide with retained recording scope')
+            if load_report['sequences']['tasks']['reset_next_value'] <= 72:
+                raise RuntimeError('Installed-wheel task allocation can collide with retained recording scope')
             search_path = connection.execute(text("SHOW search_path")).scalar_one()
             if [part.strip() for part in search_path.split(",")] != [
                 "workchord",

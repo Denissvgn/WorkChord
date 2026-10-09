@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/layout/AppShell.tsx`._
 | Source | Symbols |
 |--------|---------|
 | `../../store/themeStore` | `useThemeStore` |
+| `../feedback/WorkRefreshStatus` | `WorkRefreshStatus` |
 | `./AppSidebar` | `AppSidebar` |
 | `./AppTopNav` | `AppTopNav` |
 | `./CommandMenu` | `CommandMenu` |
@@ -34,33 +35,36 @@ _Auto-generated from `frontend/src/components/layout/AppShell.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/App.tsx"]
-    n1["frontend/src/components/layout/AppShell.test.tsx"]
-    n2["frontend/src/components/layout/AppShell.tsx"]
-    n3["frontend/src/components/layout/AppSidebar.tsx"]
-    n4["frontend/src/components/layout/AppTopNav.tsx"]
-    n5["frontend/src/components/layout/CommandMenu.tsx"]
-    n6["frontend/src/components/layout/DocumentMetadata.tsx"]
-    n7["frontend/src/components/layout/RouteErrorBoundary.tsx"]
-    n8["frontend/src/store/themeStore.ts"]
-    n0 --> n2
-    n0 --> n6
-    n1 --> n2
+    n1["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
+    n2["frontend/src/components/layout/AppShell.test.tsx"]
+    n3["frontend/src/components/layout/AppShell.tsx"]
+    n4["frontend/src/components/layout/AppSidebar.tsx"]
+    n5["frontend/src/components/layout/AppTopNav.tsx"]
+    n6["frontend/src/components/layout/CommandMenu.tsx"]
+    n7["frontend/src/components/layout/DocumentMetadata.tsx"]
+    n8["frontend/src/components/layout/RouteErrorBoundary.tsx"]
+    n9["frontend/src/store/themeStore.ts"]
+    n0 --> n3
+    n0 --> n7
     n2 --> n3
-    n2 --> n4
-    n2 --> n5
-    n2 --> n6
-    n2 --> n7
-    n2 --> n8
-    n4 --> n3
+    n3 --> n1
+    n3 --> n4
+    n3 --> n5
+    n3 --> n6
+    n3 --> n7
+    n3 --> n8
+    n3 --> n9
+    n5 --> n4
     click n0 "../modules/App.md"
-    click n1 "../modules/AppShell.test.md"
-    click n2 "../modules/AppShell.md"
-    click n3 "../modules/AppSidebar.md"
-    click n4 "../modules/AppTopNav.md"
-    click n5 "../modules/CommandMenu.md"
-    click n6 "../modules/DocumentMetadata.md"
-    click n7 "../modules/RouteErrorBoundary.md"
-    click n8 "../modules/themeStore.md"
+    click n1 "../modules/WorkRefreshStatus.md"
+    click n2 "../modules/AppShell.test.md"
+    click n3 "../modules/AppShell.md"
+    click n4 "../modules/AppSidebar.md"
+    click n5 "../modules/AppTopNav.md"
+    click n6 "../modules/CommandMenu.md"
+    click n7 "../modules/DocumentMetadata.md"
+    click n8 "../modules/RouteErrorBoundary.md"
+    click n9 "../modules/themeStore.md"
 ```
 
 ### Internal neighbors
@@ -69,6 +73,7 @@ flowchart LR
 |---|---|
 | Inbound | [App](../modules/App.md) |
 | Inbound | [AppShell.test](../modules/AppShell.test.md) |
+| Outbound | [WorkRefreshStatus](../modules/WorkRefreshStatus.md) |
 | Outbound | [AppSidebar](../modules/AppSidebar.md) |
 | Outbound | [AppTopNav](../modules/AppTopNav.md) |
 | Outbound | [CommandMenu](../modules/CommandMenu.md) |

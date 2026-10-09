@@ -3,6 +3,15 @@ name: Client and scenario baseline
 on:
   workflow_call:
   workflow_dispatch:
+    inputs:
+      android_release_qualification:
+        description: Run the owned ARM64 emulator release qualification
+        type: boolean
+        default: false
+      qualification_inputs:
+        description: Absolute path to the provisioned owned fixture input manifest
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -69,6 +78,36 @@ jobs:
         with:
           name: client-baseline-${{ matrix.access }}-${{ github.sha }}
           path: /tmp/workchord-client-results
+          if-no-files-found: error
+          retention-days: 14
+
+  android-release-qualification:
+    if: github.event_name == 'workflow_dispatch' && inputs.android_release_qualification
+    runs-on: [self-hosted, ARM64, workchord-android-disposable]
+    timeout-minutes: 35
+    steps:
+      - name: Reserve cleanup and artifact time
+        run: |
+          python3 - <<'PYTHON'
+          import os, time
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={time.time() + 32 * 60}\n")
+          PYTHON
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Qualify the explicitly owned release artifact
+        env:
+          QUALIFICATION_INPUTS: ${{ inputs.qualification_inputs }}
+          WORKCHORD_ANDROID_QUALIFICATION_OWNER: ${{ secrets.ANDROID_QUALIFICATION_OWNER }}
+        run: |
+          python3 scripts/ci/run_android_checks.py --release-qualification \
+            --qualification-inputs "$QUALIFICATION_INPUTS" --timeout-seconds 1800 \
+            --output "$RUNNER_TEMP/workchord-android-release-$GITHUB_RUN_ID"
+      - name: Upload owned artifact identity and executed scenario receipts
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: android-release-qualification-${{ github.sha }}
+          path: ${{ runner.temp }}/workchord-android-release-${{ github.run_id }}
           if-no-files-found: error
           retention-days: 14
 

@@ -84,7 +84,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `_check_bulk_write` | call | [authority](../modules/authority.md) | 4 |
-| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 10 |
+| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 11 |
 | `require_operator` | call | [authority](../modules/authority.md) | 1 |
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
 | `scope_orm_operation` | call | [authority](../modules/authority.md) | 2 |
@@ -96,4 +96,4 @@ flowchart LR
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 | `link_profile` | call | [routers_identity](../modules/routers_identity.md) | 2 |
 
-> References: showing 12 of 63 logical references; 51 omitted by the 12-row generated summary limit.
+> References: showing 12 of 67 logical references; 55 omitted by the 12-row generated summary limit.

@@ -1,3 +1,4 @@
+import { revisionHeaders, type ObservedRevisions } from './planningInputService';
 import api from './api';
 import type { Task } from '../types/task';
 import type { Iteration } from '../types/iteration';
@@ -71,15 +72,15 @@ export const projectService = {
         return response.data;
     },
 
-    update: async (id: number, data: ProjectUpdate) => {
-        const response = await api.put<Project>(`/projects/${id}`, data);
+    update: async (id: number, data: ProjectUpdate, revisions: ObservedRevisions) => {
+        const response = await api.put<Project>(`/projects/${id}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    delete: async (id: number, detachTasks = false) => {
+    delete: async (id: number, revisions: ObservedRevisions, detachTasks = false) => {
         const response = await api.delete<{ success: boolean; message: string }>(
             `/projects/${id}`,
-            { params: { detach_tasks: detachTasks } }
+            { params: { detach_tasks: detachTasks }, headers: revisionHeaders(revisions) }
         );
         return response.data;
     },

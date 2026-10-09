@@ -12,7 +12,9 @@ The optional task/project disclosure retains scoped personal drafts and creation
 
 | Source | Symbols |
 |--------|---------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
 | `../../features/timeEntries/useTimeEntries` | `useTimeEntries` |
+| `../../features/useLiveWindow` | `useLiveWindow` |
 | `../../services/taskService` | `taskService` |
 | `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied`, `TimeEntry` |
 | `../../utils/apiError` | `getApiErrorMessage` |
@@ -22,7 +24,7 @@ The optional task/project disclosure retains scoped personal drafts and creation
 | `../common/Input` | `Input` |
 | `../feedback/QueryState` | `QueryErrorState` |
 | `./DraftDismissalDialog` | `DraftDismissalDialog` |
-| `./useDraftDismissal` | `useDraftDismissal` |
+| `./useDraftDismissal` | `useDraftDismissal`, `useActiveMount` |
 | `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
 | `date-fns` | `format` |
 | `react` | `useCallback`, `useEffect`, `useId`, `useState`, `KeyboardEvent` |
@@ -54,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,13 +64,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Draft](../entities/Draft.md) | Type alias | 20 | — | — |
+| [Draft](../entities/Draft.md) | Type alias | 22 | — | — |
 
 ## Functions
 

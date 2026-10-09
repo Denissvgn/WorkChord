@@ -1,3 +1,5 @@
+import { useLiveWindow } from '../../features/useLiveWindow';
+import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useCallback, useEffect, useId, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
@@ -14,7 +16,7 @@ import type { TimeEntry } from '../../services/timeEntryService';
 import { taskService } from '../../services/taskService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
-import { useDraftDismissal } from './useDraftDismissal';
+import { useDraftDismissal, useActiveMount } from './useDraftDismissal';
 import { DraftDismissalDialog } from './DraftDismissalDialog';
 
 type Draft = { work_date: string; timezone: string; minutes: string; note: string; reason: string;
@@ -54,6 +56,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
 }) => {
     const { t } = useTranslation();
     const id = useId();
+    const isActive = useActiveMount();
     const formId = `${id}-time-form`;
     const { identity } = useTimeEntries();
     const queryClient = useQueryClient();
@@ -79,7 +82,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
     useEffect(() => () => onDirty?.(false), [onDirty]);
     useEffect(() => { guardDiscardReady(clear); return () => guardDiscardReady(null); }, [clear, guardDiscardReady]);
     // feedback-policy: query loading,error,retry,empty - errors hide cached private entries and actions.
-    const entries = useInfiniteQuery({ queryKey: ['time-entries', projectId, taskId, start, end], initialPageParam: { after: 0, upper: undefined as number | undefined },
+    const entries = useLiveWindow({ queryKey: ['time-entries', projectId, taskId, start, end], initialPageParam: { after: 0, upper: undefined as number | undefined },
         queryFn: ({ pageParam, signal }) => timeEntryService.list({ project_id: projectId, task_id: taskId, start, end }, pageParam.after, pageParam.upper, signal),
         getNextPageParam: page => page.has_more ? { after: page.next_after_id!, upper: page.upper_id } : undefined });
     // feedback-policy: query loading,error,retry,empty - bounded task choices show loading, retry and incomplete-list copy.
@@ -96,6 +99,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
         return draft.editing ? timeEntryService.correct(draft.editing, values, draft.reason)
             : timeEntryService.create(projectId, draft.task ? Number(draft.task) : null, draft.request, values);
     }, onSuccess: async () => {
+        if (!isActive()) return;
         clear(); const next = emptyDraft(taskId); setBaseline(next); setDraft(next); setCurrent(null); setMessage(t('timeEntries.saved')); setValidation('');
         await queryClient.invalidateQueries({ queryKey: ['time-entries'] });
         await queryClient.invalidateQueries({ queryKey: ['time-report'] });
@@ -119,6 +123,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
     return <section className="space-y-4" aria-label={t('timeEntries.title')}>
         {createPortal(<form id={formId} onSubmit={event => { event.preventDefault(); run(); }} />, document.body)}
         <p className="text-sm text-content-secondary">{t('timeEntries.privacy')}</p>
+        <LiveWindowStatus window={entries} />
         {entries.isLoading && <p role="status">{t('common.loading')}</p>}
         {entries.isError && <QueryErrorState error={entries.error} fallback={t('timeEntries.loadFailed')} onRetry={() => void entries.refetch()} />}
         {!privateUnavailable && <>

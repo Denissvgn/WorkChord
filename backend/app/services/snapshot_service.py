@@ -34,6 +34,122 @@ class SnapshotService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    @staticmethod
+    def _profile_references(payload):
+        """Collect every profile reference from the complete saved planning graph."""
+        from app.commands import PlanningConflict
+        values = [member.get("profile_id") for member in payload.get("team_members", [])]
+        pending = list(payload["tasks"])
+        while pending:
+            task = pending.pop()
+            values.append(task.get("owner_profile_id"))
+            pending.extend(task.get("children", []))
+        if any(value is not None and (type(value) is not int or value < 1) for value in values):
+            raise PlanningConflict("snapshot_profile_identity_invalid", "Snapshot profile identities must be known.")
+        return {value for value in values if value is not None}
+
+    async def profile_lifetimes(self, payload):
+        """Capture only the stable person lifetimes referenced by this saved graph."""
+        from app.authority import internal_authority
+        from app.commands import PlanningConflict
+        from app.models.team_member import TeamMemberProfile
+        references = self._profile_references(payload)
+        with internal_authority(self.db):
+            rows = (await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.profile_token)
+                .where(TeamMemberProfile.id.in_(references)))).all()
+        if {identifier for identifier, _ in rows} != references:
+            raise PlanningConflict("snapshot_profile_unavailable", "Reconcile unavailable person identities before capturing recovery state.")
+        return {str(identifier): token for identifier, token in rows}
+
+    async def _preflight_profile_lifetimes(self, payload):
+        from uuid import UUID
+        from app.commands import PlanningConflict
+        from app.models.team_member import TeamMemberProfile
+        references = self._profile_references(payload)
+        lifetimes = payload.get("profile_lifetimes", {})
+        if not isinstance(lifetimes, dict) or set(lifetimes) != {str(value) for value in references}:
+            raise PlanningConflict("snapshot_profile_identity_unknown", "This snapshot lacks complete person lifetime provenance; reconcile it before restoring.")
+        from app.authority import internal_authority
+        with internal_authority(self.db):
+            current = dict((await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.profile_token)
+                .where(TeamMemberProfile.id.in_(references)))).all())
+        for identifier in references:
+            token = lifetimes[str(identifier)]
+            try:
+                if not isinstance(token, str) or str(UUID(token)) != token:raise ValueError
+            except (ValueError, AttributeError):
+                raise PlanningConflict("snapshot_profile_identity_invalid", "Snapshot person lifetimes must be known.") from None
+            if current.get(identifier) != token:
+                raise PlanningConflict("snapshot_profile_identity_conflict", "A saved person lifetime is unavailable or no longer matches its identity.")
+
+    async def _preflight_allocation_membership(self, iteration_id, payload, current):
+        """Inventory complete allocation references before changing recovery state."""
+        from sqlalchemy import inspect, or_
+        from app.commands import PlanningConflict
+        from app.database import Base
+        from app.models.agent import AgentRun, AgentTaskAssignment
+        from app.models.autonomy import AgentWorkPackage
+        from app.models.task import Task
+        from app.models.team_member import TeamMember, TeamMemberProfile
+        ids = [row.get("id") for row in payload["team_members"]]
+        if any(type(value) is not int or value < 1 for value in ids) or len(set(ids)) != len(ids):
+            raise PlanningConflict("snapshot_capacity_identity_invalid", "Snapshot capacity identities must be known and unique.")
+        from uuid import UUID
+        tokens = []
+        for row in payload["team_members"]:
+            token = row.get("allocation_token")
+            try:
+                if not isinstance(token, str) or str(UUID(token)) != token:
+                    raise ValueError
+            except (ValueError, AttributeError):
+                raise PlanningConflict("snapshot_capacity_identity_unknown", "This snapshot lacks allocation lifetime provenance; reconcile it before restoring.") from None
+            tokens.append(token)
+        if len(set(tokens)) != len(tokens):
+            raise PlanningConflict("snapshot_capacity_identity_invalid", "Snapshot allocation lifetimes must be unique.")
+        await self._preflight_profile_lifetimes(payload)
+        saved = set(ids)
+        allocated = set((await self.db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == iteration_id))).all())
+        extra = allocated - saved
+        for row in payload["team_members"]:
+            member = await self.db.get(TeamMember, row["id"])
+            token_owner = await self.db.scalar(select(TeamMember.id).where(TeamMember.allocation_token == row["allocation_token"]))
+            if member is not None and member.allocation_token != row["allocation_token"] or token_owner not in (None, row["id"]):
+                raise PlanningConflict("snapshot_capacity_identity_conflict", "A saved allocation lifetime no longer matches its identity.")
+            if member is not None and member.iteration_id not in (None, iteration_id):
+                raise PlanningConflict("snapshot_capacity_scope_conflict", "A saved allocation is now in another iteration.")
+            profile_id = row.get("profile_id")
+            if profile_id is not None and await self.db.get(TeamMemberProfile, profile_id) is None:
+                raise PlanningConflict("snapshot_capacity_profile_unavailable", "A saved profile is unavailable; reconcile its identity before restoring.")
+        affected = allocated | saved
+        if affected:
+            connection = await self.db.connection()
+            def references(sync):
+                inspector = inspect(sync)
+                return {(name, column) for name in inspector.get_table_names()
+                        for foreign in inspector.get_foreign_keys(name) if foreign["referred_table"] == "team_members"
+                        for column in foreign["constrained_columns"]}
+            physical = await connection.run_sync(references)
+            known = {("tasks", "assignee_id"), ("projects", "owner_id"), ("initiatives", "owner_id"),
+                     ("vacations", "team_member_id"), ("agent_task_assignments", "team_member_id"),
+                     ("triage_classification_suggestions", "suggested_assignee_id")}
+            mapped = {(table.name, foreign.parent.name) for table in Base.metadata.tables.values()
+                      for foreign in table.foreign_keys if foreign.target_fullname == "team_members.id"}
+            if physical != mapped or physical - known:
+                raise PlanningConflict("snapshot_reference_inventory_incomplete", "Allocation reference ownership must be reconciled before restoring.")
+            external = await self.db.scalar(select(Task.id).where(Task.assignee_id.in_(affected),
+                or_(Task.iteration_id != iteration_id, Task.iteration_id.is_(None))).limit(1))
+            assignment = await self.db.scalar(select(AgentTaskAssignment.id).where(
+                AgentTaskAssignment.team_member_id.in_(affected), AgentTaskAssignment.state.in_(["queued", "accepted"])).limit(1))
+            if external is not None or assignment is not None:
+                raise PlanningConflict("snapshot_allocation_referenced", "Recover external task or execution references before detaching allocations.")
+        current_ids = [task.id for task in current]
+        run = await self.db.scalar(select(AgentRun.id).where(AgentRun.task_id.in_(current_ids), AgentRun.status == "running").limit(1))
+        package = await self.db.scalar(select(AgentWorkPackage.id).where(
+            AgentWorkPackage.execution_task_id.in_(current_ids), AgentWorkPackage.state == "evaluating").limit(1))
+        if run is not None or package is not None:
+            raise PlanningConflict("snapshot_execution_in_use", "Recover live execution before restoring this iteration.")
+        return extra
+
     def _get_snapshot_dir(self, iteration_id: int) -> Path:
         """Get the snapshot directory for an iteration."""
         return SNAPSHOTS_DIR / str(iteration_id)
@@ -102,7 +218,7 @@ class SnapshotService:
         team_members = await TeamService(self.db).get_by_iteration(iteration_id)
         created_at = utc_now()
 
-        return {
+        payload = {
             "iteration": {
                 "id": iteration.id,
                 "name": iteration.name,
@@ -126,6 +242,8 @@ class SnapshotService:
                 "reason": reason,
             },
         }
+        payload["profile_lifetimes"] = await self.profile_lifetimes(payload)
+        return payload
 
     @atomic_command
     async def create_snapshot(self, iteration_id: int, reason: str = "auto") -> str | None:
@@ -259,6 +377,7 @@ class SnapshotService:
         await _validate_snapshot_task_payloads(iteration_id, payload, service)
         current = await service.get_all_tasks(iteration_id)
         await service._require_unclaimed_structure([task.id for task in current])
+        extra_allocations = await self._preflight_allocation_membership(iteration_id, payload, current)
         recovery = await self.create_snapshot(iteration_id, "before_restore")
         iteration = await self.db.get(Iteration, iteration_id)
         saved_iteration = payload["iteration"]
@@ -277,7 +396,7 @@ class SnapshotService:
             if member is not None and member.iteration_id not in (None, iteration_id):
                 raise ValueError("Snapshot capacity ID belongs to another iteration")
             if member is None:
-                member = TeamMember(id=data["id"], iteration_id=iteration_id)
+                member = TeamMember(id=data["id"], allocation_token=data["allocation_token"], iteration_id=iteration_id)
                 self.db.add(member)
             elif "profile_id" in data and member.profile_id != data["profile_id"]:
                 from app.services.team_service import TeamService
@@ -319,6 +438,10 @@ class SnapshotService:
         for task in current:
             if task.id not in ids:
                 await self.db.delete(task)
+        await self.db.flush()
+        for allocation_id in sorted(extra_allocations):
+            member = await self.db.get(TeamMember, allocation_id)
+            member.iteration_id = None
         await self.db.flush()
         for row, parent_id in flat:
             task = await self.db.get(Task, row["id"])
@@ -446,6 +569,7 @@ class SnapshotService:
         """Convert team member to export format."""
         return {
             "id": member.id,
+            "allocation_token": member.allocation_token,
             "profile_id": member.profile_id,
             "name": member.name,
             "position": member.position,

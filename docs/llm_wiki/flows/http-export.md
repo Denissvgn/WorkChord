@@ -85,13 +85,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | export | domain_result | 60 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | export | TimeReportService(…).export | 60 | `TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind)` |
 | export | TimeReportService | 60 | `TimeReportService(db)` |
 | export | Response | 61 | `Response(content=content, media_type='text/csv', headers={...})` |
@@ -104,11 +104,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
 | unresolved_call | `export` | `TimeReportService(db).export` | 60 |
 | external_call | `export` | `Response` | 61 |
 

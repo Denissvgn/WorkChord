@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import type { Task } from '../../types/task';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { TaskList } from './TaskList';
@@ -113,4 +113,26 @@ describe('TaskList accessibility', () => {
             name: 'New parent task title',
         })).toHaveFocus();
     });
+});
+
+
+it('retains the merge opening revision while a live list refreshes', async () => {
+    const original = [task(1), task(2)].map(value => ({ ...value, iteration_revision: 1 }));
+    taskServiceMock.getByIteration.mockResolvedValue(original);
+    taskServiceMock.mergeTasks.mockRejectedValue({ response: { status: 409, data: { detail: { message: 'Observed plan changed' } } } });
+    const { user, queryClient } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} requestedMode="merge" />);
+    const selections = await screen.findAllByRole('checkbox', { name: 'Select for merge' });
+    await user.click(selections[0]); await user.click(selections[1]);
+    await user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+    const title = screen.getByRole('textbox', { name: 'New parent task title' });
+    await user.type(title, 'Retained merged intent');
+    await act(async () => queryClient.setQueryData(['tasks', 1], original.map(value => ({ ...value, iteration_revision: 9 }))));
+    await user.click(screen.getByRole('button', { name: 'Merge tasks' }));
+    await waitFor(() => expect(taskServiceMock.mergeTasks.mock.lastCall?.[1].expected_revision).toBe(1));
+    expect(title).toHaveValue('Retained merged intent');
+    taskServiceMock.getByIteration.mockResolvedValue(original.map(value => ({ ...value, iteration_revision: 9 })));
+    await user.click(await screen.findByRole('button', { name: 'Review current inputs' }));
+    await waitFor(() => expect(title).toHaveValue('Retained merged intent'));
+    await user.click(screen.getByRole('button', { name: 'Merge tasks' }));
+    await waitFor(() => expect(taskServiceMock.mergeTasks.mock.lastCall?.[1].expected_revision).toBe(9));
 });

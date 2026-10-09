@@ -4,7 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/pages/GanttPage.tsx`._
+Snapshot restore captures the target iteration identity and its observed revision before confirmation. Managed workspace operators use identity-based admin access; conflicts retain the snapshot for explicit comparison without fetching versions at save.
 
 ## Imports
 
@@ -21,14 +21,17 @@ _Auto-generated from `frontend/src/pages/GanttPage.tsx`._
 | `../components/iteration/IterationSelector` | `IterationSelector` |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
 | `../components/ui` | `OverflowMenu` |
+| `../hooks/useAdminAccess` | `useAdminAccess` |
 | `../services/ganttService` | `ganttService` |
 | `../services/iterationService` | `iterationService` |
+| `../services/planningInputService` | `planningInputService` |
 | `../services/snapshotService` | `snapshotService`, `IterationSnapshot` |
 | `../services/taskService` | `taskService` |
 | `../store/iterationStore` | `useIterationStore` |
 | `../types/gantt` | `ExplainScheduleResponse`, `GanttTask` |
+| `../types/iteration` | `Iteration` |
 | `../types/task` | `TaskBatchUpdateItem`, `TaskUpdate` |
-| `../utils/adminAccess` | `getAdminAccessErrorMessage`, `hasAdminApiKey` |
+| `../utils/adminAccess` | `getAdminAccessErrorMessage` |
 | `../utils/apiError` | `getApiErrorMessage` |
 | `../utils/formatDate` | `formatDateTime` |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
@@ -64,7 +67,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (21) |
+| Outbound | `frontend` (24) |
 
 ### External packages
 
@@ -72,4 +75,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

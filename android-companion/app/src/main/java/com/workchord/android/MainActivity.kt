@@ -64,11 +64,18 @@ class MainActivity : ComponentActivity() {
                         key(state.scope) {
                             val repository = remember(state.scope) { app.reconnect(); app.taskRepository }
                             val navController = rememberNavController()
+                            var exitGuard by remember { mutableStateOf<((() -> Unit) -> Unit)?>(null) }
+                            var exitOwner by remember { mutableStateOf<Any?>(null) }
+                            val registerExitGuard: (Any, ((() -> Unit) -> Unit)?) -> Unit = remember { { owner, guard ->
+                                if (guard != null) { exitOwner = owner; exitGuard = guard }
+                                else if (exitOwner === owner) { exitOwner = null; exitGuard = null }
+                            } }
                             Column(Modifier.safeDrawingPadding()) {
-                                TextButton(onClick = { session.logout() }, enabled = !state.loading) {
+                                TextButton(onClick = { val leave: () -> Unit = { session.logout() }; exitGuard?.invoke(leave) ?: leave() }, enabled = !state.loading) {
                                     Text(stringResource(R.string.account_sign_out, state.identity?.principal?.displayName ?: stringResource(R.string.account_signed_in)))
                                 }
                                 AppNavigation(navController = navController, taskRepository = repository,
+                                    exitGuard = exitGuard, onExitGuardChanged = registerExitGuard,
                                     initialTaskId = requestedTaskId,
                                     onInitialTaskOpened = { requestedTaskId = null; intent.data = null },
                                     modifier = Modifier.weight(1f))

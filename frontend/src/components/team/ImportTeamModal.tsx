@@ -1,3 +1,4 @@
+import { usePlanningObservation } from '../../features/usePlanningObservation';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,6 @@ const MAX_IMPORT_ROWS = 500;
 
 interface ImportTeamModalProps {
     iterationId: number;
-    expectedRevision?: number;
     onClose: () => void;
     onSuccess?: () => void;
     onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
@@ -22,12 +22,12 @@ export const ImportTeamModal = ({
     onClose,
     onSuccess: onImportSuccess,
     onStateChange,
-    expectedRevision,
 }: ImportTeamModalProps) => {
     const [text, setText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isReadingFile, setIsReadingFile] = useState(false);
-    const [baseRevision] = useState(expectedRevision);
+    const [previewText, setPreviewText] = useState<string | null>(null);
+    const context = usePlanningObservation();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const fileReaderRef = useRef<FileReader | null>(null);
     const readRequestRef = useRef(0);
@@ -38,8 +38,7 @@ export const ImportTeamModal = ({
     const textHintId = useId();
 
     const importMutation = useMutation({
-        mutationFn: (text: string) => baseRevision === undefined ? teamService.importFromText(iterationId, text)
-            : teamService.importFromText(iterationId, text, { [iterationId]: baseRevision }),
+        mutationFn: (text: string) => teamService.importFromText(iterationId, text, context.observation!.expected_revisions),
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['team', iterationId] }),
@@ -136,9 +135,7 @@ export const ImportTeamModal = ({
         }
     };
 
-    const handleImport = () => {
-        if (isPending || isReadingFile) return;
-
+    const validateDraft = () => {
         const rows = text
             .split(/\r?\n/)
             .map(row => row.trim())
@@ -146,7 +143,7 @@ export const ImportTeamModal = ({
 
         if (rows.length === 0) {
             setError(t('teamImport.emptyError'));
-            return;
+            return false;
         }
 
         if (rows.length > MAX_IMPORT_ROWS) {
@@ -154,7 +151,7 @@ export const ImportTeamModal = ({
                 'teamImport.tooManyRows',
                 'Import up to 500 non-empty rows at a time.',
             ));
-            return;
+            return false;
         }
 
         if (!rows.some(row => row.startsWith('-- '))) {
@@ -162,11 +159,14 @@ export const ImportTeamModal = ({
                 'teamImport.noRecognizedRows',
                 'No team rows were found. Each team row must start with --.',
             ));
-            return;
+            return false;
         }
 
-        setError(null);
-        importMutation.mutate(text);
+        return true;
+    };
+    const handleImport = () => {
+        if (isPending || isReadingFile || context.loading || !validateDraft() || !context.observation || previewText !== text) return;
+        setError(null); importMutation.mutate(text);
     };
 
     const handleTextChange = (value: string) => {
@@ -194,10 +194,14 @@ export const ImportTeamModal = ({
                     <Button type="button" variant="secondary" onClick={handleClose} disabled={isPending}>
                         {t('actions.cancel')}
                     </Button>
+                    <Button type="button" variant="secondary" disabled={isPending || isReadingFile || context.loading}
+                        onClick={() => { if (!validateDraft()) return; const reviewedText = text; void context.read('member', iterationId, false, true, { text: reviewedText }).then(value => {
+                            if (value) { setPreviewText(reviewedText); importMutation.reset(); }
+                        }); }}>{t('planningInput.preview')}</Button>
                     <Button
                         type="button"
                         onClick={handleImport}
-                        disabled={isPending || isReadingFile}
+                        disabled={isPending || isReadingFile || context.loading || !context.observation || previewText !== text || importMutation.isError}
                         isLoading={isPending}
                     >
                         {t('teamImport.submit')}
@@ -273,6 +277,8 @@ export const ImportTeamModal = ({
                     />
                 </div>
 
+                {context.loading && <p role="status">{t('common.loading')}</p>}
+                {Boolean(context.error) && <p role="alert">{getApiErrorMessage(context.error, t('teamImport.importError'))}</p>}
                 {error && (
                     <div
                         className="flex items-start gap-2 rounded-lg bg-feedback-danger-muted p-3 text-feedback-danger-foreground"

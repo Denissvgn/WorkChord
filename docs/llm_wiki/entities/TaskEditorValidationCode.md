@@ -1,6 +1,6 @@
 # TaskEditorValidationCode
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:187`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:189`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)

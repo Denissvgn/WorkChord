@@ -1,6 +1,6 @@
 # RoadmapRow
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:46`
+**Location:** `frontend/src/pages/RoadmapPage.tsx:48`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)

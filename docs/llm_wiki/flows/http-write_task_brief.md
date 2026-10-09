@@ -86,17 +86,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| write_task_brief | domain_result | 169 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| write_task_brief | TaskBriefService(…).write | 169 | `TaskBriefService(db).write(task_id, data)` |
-| write_task_brief | TaskBriefService | 169 | `TaskBriefService(db)` |
-| write_task_brief | TaskService(…).task_to_response | 170 | `TaskService(db).task_to_response(task)` |
+| write_task_brief | domain_result | 191 | `domain_result(...)` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| write_task_brief | TaskBriefService(…).write | 191 | `TaskBriefService(db).write(task_id, data)` |
+| write_task_brief | TaskBriefService | 191 | `TaskBriefService(db)` |
+| write_task_brief | TaskService(…).task_to_response | 192 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
@@ -106,13 +106,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 169 |
-| unresolved_call | `write_task_brief` | `TaskService(db).task_to_response` | 170 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 191 |
+| unresolved_call | `write_task_brief` | `TaskService(db).task_to_response` | 192 |
 | step_limit | `write_task_brief` | `first 12 steps` | 0 |
 
 ## Behavior

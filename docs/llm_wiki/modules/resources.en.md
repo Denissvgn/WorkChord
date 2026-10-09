@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/i18n/resources.en.ts`._
 | Source | Symbols |
 |--------|---------|
 | `./pagination` | `paginationEN` |
+| `./planningInputMessages` | `planningInputEnglish` |
 | `./teamwork.en` | `teamworkEnglish` |
 | `./timeEntries` | `timeEntriesEN` |
 
@@ -29,25 +30,28 @@ flowchart LR
     n0["frontend/src/i18n/i18n.test.ts"]
     n1["frontend/src/i18n/i18n.ts"]
     n2["frontend/src/i18n/pagination.ts"]
-    n3["frontend/src/i18n/resources.en.ts"]
-    n4["frontend/src/i18n/teamwork.en.ts"]
-    n5["frontend/src/i18n/timeEntries.ts"]
-    n6["frontend/src/pages/PlanMasterPage.test.tsx"]
+    n3["frontend/src/i18n/planningInputMessages.ts"]
+    n4["frontend/src/i18n/resources.en.ts"]
+    n5["frontend/src/i18n/teamwork.en.ts"]
+    n6["frontend/src/i18n/timeEntries.ts"]
+    n7["frontend/src/pages/PlanMasterPage.test.tsx"]
     n0 --> n1
-    n0 --> n3
-    n1 --> n3
-    n3 --> n2
-    n3 --> n4
-    n3 --> n5
-    n6 --> n1
-    n6 --> n3
+    n0 --> n4
+    n1 --> n4
+    n4 --> n2
+    n4 --> n3
+    n4 --> n5
+    n4 --> n6
+    n7 --> n1
+    n7 --> n4
     click n0 "../modules/i18n.test.md"
     click n1 "../modules/i18n.md"
     click n2 "../modules/pagination.md"
-    click n3 "../modules/resources.en.md"
-    click n4 "../modules/teamwork.en.md"
-    click n5 "../modules/timeEntries.md"
-    click n6 "../modules/PlanMasterPage.test.md"
+    click n3 "../modules/planningInputMessages.md"
+    click n4 "../modules/resources.en.md"
+    click n5 "../modules/teamwork.en.md"
+    click n6 "../modules/timeEntries.md"
+    click n7 "../modules/PlanMasterPage.test.md"
 ```
 
 ### Internal neighbors
@@ -58,5 +62,6 @@ flowchart LR
 | Inbound | [i18n](../modules/i18n.md) |
 | Inbound | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) |
 | Outbound | [pagination](../modules/pagination.md) |
+| Outbound | [planningInputMessages](../modules/planningInputMessages.md) |
 | Outbound | [teamwork.en](../modules/teamwork.en.md) |
 | Outbound | [timeEntries](../modules/timeEntries.md) |

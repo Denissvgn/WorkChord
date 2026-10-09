@@ -5,7 +5,7 @@ import type { Task } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskWorkPanel } from './TaskWorkPanel';
 
-const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn() }));
+const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn() }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 
@@ -54,4 +54,26 @@ describe('criterion progress saves', () => {
         await user.click(screen.getByRole('button', { name: 'Save progress' }));
         await waitFor(() => expect(service.progress).toHaveBeenCalledWith(42, expect.objectContaining({ expected_version: 3 })));
     });
+});
+
+
+it('keeps the initial aggregate map through a failed uncommit and explicit current comparison', async () => {
+    sessionStorage.clear();
+    const committed = { ...task, iteration_id: 1, iteration_revision: 4 };
+    service.actions.mockResolvedValue({ task_id: 42, version: 3, actions: [{ action: 'uncommit', allowed: true, blockers: [] }], claim_generation: 0, running_run_ids: [], live_assignment_ids: [] });
+    service.command.mockRejectedValue({ response: { status: 409, data: { detail: { message: 'Planning scope changed' } } } });
+    const props = { disabled: false, draftKey: 'scoped-command', onDirty: vi.fn(), onPending: vi.fn(), onUpdated: vi.fn(), onReload: vi.fn() };
+    const view = renderWithProviders(<TaskWorkPanel {...props} task={committed} />);
+    await view.user.selectOptions(await screen.findByLabelText('Action'), 'uncommit');
+    await view.user.type(screen.getByRole('textbox', { name: 'Reason for the action or review'  }), 'Keep this reason');
+    view.rerender(<TaskWorkPanel {...props} task={{ ...committed, iteration_revision: 99 }} />);
+    await view.user.click(screen.getByRole('button', { name: 'Apply action' }));
+    await screen.findByText('Planning scope changed');
+    expect(service.command.mock.lastCall?.[1].expected_revisions).toEqual({ 1: 4 });
+    expect(screen.getByRole('textbox', { name: 'Reason for the action or review'  })).toHaveValue('Keep this reason');
+    expect(JSON.parse(sessionStorage.getItem('scoped-command:progress')!).commandRevisions).toEqual({ 1: 4 });
+    service.getDetail.mockResolvedValue({ task: { ...committed, iteration_revision: 99 } });
+    await view.user.click(screen.getByRole('button', { name: 'Review current inputs' }));
+    await waitFor(() => expect(JSON.parse(sessionStorage.getItem('scoped-command:progress')!).commandRevisions).toEqual({ 1: 99 }));
+    expect(screen.getByRole('textbox', { name: 'Reason for the action or review'  })).toHaveValue('Keep this reason');
 });

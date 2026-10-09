@@ -14,6 +14,7 @@ from typing import Any, Iterator, Mapping
 from urllib.parse import quote
 
 from sqlalchemy import Index, UniqueConstraint
+from sqlalchemy.exc import DatabaseError
 from sqlalchemy.dialects import sqlite as sqlite_dialect
 from sqlalchemy.sql.schema import Table
 
@@ -566,6 +567,13 @@ def preflight_source(
     evidence_sha256 = validate_writer_drain_evidence(evidence, now=now)
 
     before_files = _source_file_set(source)
+    from app.database_migration.project_identity import ProjectIdentityError, sqlite_project_allocation_floor
+    try:
+        allocation_floor = sqlite_project_allocation_floor(source)
+    except ProjectIdentityError as exc:
+        raise MigrationDataError(exc.code, str(exc)) from None
+    except (DatabaseError, sqlite3.DatabaseError) as exc:
+        raise MigrationDataError("sqlite_snapshot_failure", "SQLite rejected the source before snapshot capture") from exc
     source_size = sum(int(item["size_bytes"]) for item in before_files.values())
     required_free = max(MINIMUM_FREE_SPACE_BYTES, source_size * 4)
     snapshot_path.parent.mkdir(parents=True, exist_ok=True)
@@ -591,6 +599,14 @@ def preflight_source(
         )
 
     snapshot_sha256 = _file_sha256(snapshot_path)
+    try:
+        snapshot_floor = sqlite_project_allocation_floor(snapshot_path)
+    except ProjectIdentityError as exc:
+        raise MigrationDataError(exc.code, str(exc)) from None
+    except (DatabaseError, sqlite3.DatabaseError) as exc:
+        raise MigrationDataError("sqlite_snapshot_recheck_failure", "SQLite rejected the completed snapshot during identity recheck") from exc
+    if snapshot_floor != allocation_floor:
+        raise MigrationDataError("project_allocation_identity_changed", "Project allocation identity changed during snapshot capture")
     try:
         with read_only_sqlite(snapshot_path) as connection:
             revision, table_results = _inspect_snapshot(connection)
@@ -620,6 +636,7 @@ def preflight_source(
                 "snapshot_sha256": snapshot_sha256,
                 "source_revision": revision,
                 "tables": table_results,
+                "project_allocation_floor": allocation_floor,
             }
         )
     )
@@ -632,6 +649,7 @@ def preflight_source(
         "source_revision": revision,
         "target_revision": revision,
         "source_identity": stable_identity,
+        "project_allocation_floor": allocation_floor,
         "snapshot": {
             "sha256": snapshot_sha256,
             "size_bytes": snapshot_path.stat().st_size,

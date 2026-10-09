@@ -10,17 +10,30 @@ def working_today(timezone="UTC", now: datetime | None = None):
     return as_utc(now or utc_now()).astimezone(ZoneInfo(timezone or "UTC")).date()
 
 
-def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC", now=None, composite=False):
-    today = working_today(timezone, now)
-    deferred, optional = bool(task.is_deferred), bool(task.is_optional)
-    parent, seen = task.__dict__.get("parent"), {task.id}
-    while parent is not None:
-        if parent.id in seen:
+def effective_work_flags(task, *, by_id=None):
+    """Use complete ancestry for inherited work policy; unknown links fail closed."""
+    deferred = optional = False
+    current, seen = task, set()
+    while current is not None:
+        if current.id in seen:
             raise ValueError("Task ancestry contains a cycle")
-        seen.add(parent.id)
-        deferred = deferred or parent.is_deferred
-        optional = optional or parent.is_optional
-        parent = parent.__dict__.get("parent")
+        seen.add(current.id)
+        deferred = deferred or bool(current.is_deferred)
+        optional = optional or bool(current.is_optional)
+        parent_id = getattr(current, "parent_id", None)
+        if parent_id is None:
+            break
+        parent = by_id.get(parent_id) if by_id is not None else current.__dict__.get("parent")
+        if parent is None or parent.id != parent_id:
+            raise ValueError("Task ancestry is incomplete")
+        current = parent
+    return {"effective_is_deferred": deferred, "effective_is_optional": optional}
+
+
+def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC", now=None, composite=False, effective_flags=None):
+    today = working_today(timezone, now)
+    flags = effective_flags if effective_flags is not None else effective_work_flags(task)
+    deferred, optional = flags["effective_is_deferred"], flags["effective_is_optional"]
     excluded = composite or deferred or bool(getattr(task, "canceled_at", None))
     implemented = task.status in {"resolved", "closed"}
     accepted = (task.status == "closed" and getattr(task, "accepted_at", None) is not None
@@ -61,22 +74,14 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
         if task.id in parents:
             result["structural_tasks"] += 1
             continue
-        deferred, optional = task.is_deferred, task.is_optional
-        ancestor, seen = task.parent_id, {task.id}
-        while ancestor in by_id:
-            if ancestor in seen:
-                raise ValueError("Cannot calculate metrics over a task hierarchy cycle")
-            seen.add(ancestor)
-            parent = by_id[ancestor]
-            deferred = deferred or parent.is_deferred
-            optional = optional or parent.is_optional
-            ancestor = parent.parent_id
+        flags = effective_work_flags(task, by_id=by_id)
+        deferred, optional = flags["effective_is_deferred"], flags["effective_is_optional"]
         if getattr(task, "canceled_at", None):
             continue
         if deferred:
             result["deferred_tasks"] += 1
             continue
-        signals = task_signals(task, iteration_end=iteration_end, project_target=project_target, timezone=timezone, now=now)
+        signals = task_signals(task, iteration_end=iteration_end, project_target=project_target, timezone=timezone, now=now, effective_flags=flags)
         result["total_tasks"] += 1
         result["optional_tasks" if optional else "required_tasks"] += 1
         result["tasks_by_status"][task.status] = result["tasks_by_status"].get(task.status, 0) + 1
@@ -103,6 +108,32 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
     return result
 
 
+async def included_work_ids(db, iteration_ids):
+    """Select leaves with complete reachable ancestry and inherited work policy."""
+    from sqlalchemy import select, or_, exists, func
+    from app.models.task import Task
+    table = Task.__table__
+    scope = or_(table.c.iteration_id.in_([value for value in iteration_ids if value is not None]),
+                table.c.iteration_id.is_(None) if None in iteration_ids else False)
+    tree = select(table.c.id, table.c.project_id, table.c.iteration_id,
+                  table.c.is_deferred.label("deferred")).where(table.c.parent_id.is_(None), scope).cte("included_work_tree", recursive=True)
+    child = table.alias("included_work_child")
+    tree = tree.union_all(select(child.c.id, child.c.project_id, child.c.iteration_id,
+        or_(tree.c.deferred, child.c.is_deferred)).join(tree, child.c.parent_id == tree.c.id)
+        .where(child.c.iteration_id.is_not_distinct_from(tree.c.iteration_id),
+               child.c.project_id.is_not_distinct_from(tree.c.project_id)))
+    total, reached = (await db.execute(select(
+        select(func.count()).select_from(table).where(scope).scalar_subquery(),
+        select(func.count()).select_from(tree).scalar_subquery()))).one()
+    if total != reached:
+        from app.commands import PlanningConflict
+        raise PlanningConflict("work_ancestry_incomplete", "Reconcile incomplete work ancestry before calculating capacity.")
+    descendant = table.alias("included_work_descendant")
+    return select(tree.c.id).join(table, table.c.id == tree.c.id).where(
+        ~tree.c.deferred, ~table.c.is_summary, table.c.canceled_at.is_(None),
+        ~exists(select(descendant.c.id).where(descendant.c.parent_id == table.c.id)))
+
+
 async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
     from sqlalchemy import select
     from app.models.task import Task
@@ -118,7 +149,7 @@ async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
     return rows
 
 
-async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None):
+async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None):
     """Aggregate all authorized leaves in SQL, including inherited scheduling facets."""
     from sqlalchemy import select, case, func, or_, and_, false, literal
     from app.models.task import Task, TaskDependency
@@ -126,6 +157,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     from app.models.iteration import Iteration
     from app.authority import _scope_conditions
 
+    now = now or utc_now()
     t, iterations, projects = Task.__table__, Iteration.__table__, Project.__table__
     authority = db.info.get("authority")
     scope = _scope_conditions(authority).get(Task) if authority is not None and not authority.operator and not authority.local else None
@@ -160,14 +192,14 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     if zone_map is None:
         zones = (await db.execute(select(literal("project"), Project.id, Project.timezone).union_all(
             select(literal("calendar"), Calendar.id, Calendar.timezone)))).all()
-        dates = {identifier: working_today(zone) for kind, identifier, zone in zones if kind == "project"}
-        calendar_dates = {identifier: working_today(zone) for kind, identifier, zone in zones if kind == "calendar"}
+        dates = {identifier: working_today(zone, now) for kind, identifier, zone in zones if kind == "project"}
+        calendar_dates = {identifier: working_today(zone, now) for kind, identifier, zone in zones if kind == "calendar"}
     else:
-        dates, calendar_dates = {pid: working_today(zone) for pid, zone in zone_map.items()}, {}
-    fallback = case(calendar_dates, value=iterations.c.calendar_id, else_=working_today()) if calendar_dates else working_today()
+        dates, calendar_dates = {pid: working_today(zone, now) for pid, zone in zone_map.items()}, {}
+    fallback = case(calendar_dates, value=iterations.c.calendar_id, else_=working_today(now=now)) if calendar_dates else working_today(now=now)
     today = case(dates, value=t.c.project_id, else_=fallback) if dates else fallback
-    descendants = t.alias("metric_descendant")
-    composite = or_(t.c.is_summary, select(descendants.c.id).where(descendants.c.parent_id == t.c.id).exists())
+    parent_ids = select(t.c.parent_id).where(t.c.parent_id.is_not(None)).distinct().subquery("metric_parent_ids")
+    composite = or_(t.c.is_summary, parent_ids.c.parent_id.is_not(None))
     leaf = ~composite
     included = and_(leaf, ~tree.c.deferred, t.c.canceled_at.is_(None))
     required = and_(included, ~tree.c.optional)
@@ -204,7 +236,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))
     validation = [visible_count.label("_visible"), reached_count.label("_reachable")]
-    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
+    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
     if task_ids is not None:
         query = query.where(t.c.id.in_(task_ids))
     if grouping is not None:

@@ -6,6 +6,8 @@
 
 Manages durable profiles and iteration allocations while adapting legacy vacation routes to canonical profile absences. Imports use the shared planning transaction. Reassigning an allocation removes old absence adapters without changing the former person’s canonical absence; unresolved legacy ranges need reconciliation. Workload comparisons use authoritative hours and the selected nominal workday.
 
+Capacity and workload reads can omit task relationship hydration. Workload hours use the canonical scoped inclusion selector; private person calendar and absence factors remain the same basis as scheduling and readiness.
+
 ## Imports
 
 | Source | Symbols |
@@ -21,7 +23,7 @@ Manages durable profiles and iteration allocations while adapting legacy vacatio
 | `csv` | `csv` |
 | `datetime` | `date` |
 | `io` | `StringIO` |
-| `sqlalchemy` | `select` |
+| `sqlalchemy` | `select`, `func` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
 | `typing` | `Sequence` |
@@ -44,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
+| Inbound | `backend` (15) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -53,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

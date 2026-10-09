@@ -1,5 +1,7 @@
+import { useLiveWindow } from '../../features/useLiveWindow';
+import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useId, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
@@ -17,7 +19,7 @@ export const BacklogPanel = () => {
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const projects = useQuery({ queryKey: ['projects'], queryFn: projectService.getAll });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const tasks = useInfiniteQuery({ queryKey: ['backlog', projectId], initialPageParam: 0,
+    const tasks = useLiveWindow({ queryKey: ['backlog', projectId], initialPageParam: 0,
         queryFn: ({ pageParam }) => taskService.lookup({ project_id: projectId ?? undefined, backlog_only: true, after_id: pageParam }),
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     return <section className="space-y-3" aria-labelledby={`${id}-title`}>
@@ -29,6 +31,7 @@ export const BacklogPanel = () => {
         {!projectId && <p className="text-sm text-content-secondary">{t('teamwork.chooseProject')}</p>}
         {projects.isLoading && <p role="status">{t('common.loading')}</p>}
         {projects.isError && <QueryErrorState error={projects.error} fallback={t('teamwork.loadFailed')} onRetry={() => void projects.refetch()} />}
+        <LiveWindowStatus window={tasks} />
         {tasks.isLoading && <p role="status">{t('common.loading')}</p>}
         {tasks.isError && <QueryErrorState error={tasks.error} fallback={t('teamwork.loadFailed')} onRetry={() => void tasks.refetch()} />}
         <ul className="divide-y divide-border">{tasks.data?.pages.flatMap(page => page.items).map(task => {

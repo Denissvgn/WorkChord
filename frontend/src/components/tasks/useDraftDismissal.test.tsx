@@ -41,3 +41,13 @@ describe('clean forms', () => {
         expect(second.defaultPrevented).toBe(false);
     });
 });
+
+it('does not navigate an obsolete destination when a pending write completes after unmount', () => {
+    const close = vi.fn();
+    const { result, unmount } = renderHook(() => useDraftDismissal(close));
+    const complete = result.current.complete;
+    act(() => result.current.setPending(true));
+    unmount();
+    act(() => complete());
+    expect(close).not.toHaveBeenCalled();
+});

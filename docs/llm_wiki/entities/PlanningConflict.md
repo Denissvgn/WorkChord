@@ -30,16 +30,16 @@ flowchart LR
     n2["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
     n3["lock_iterations (backend/app/commands.py)"]
     n4["lock_planning (backend/app/commands.py)"]
-    n5["planning_conflict (backend/app/main.py)"]
-    n6["CalendarService.delete (backend/app/services/calendar_service.py)"]
-    n7["CapacityService.projection (backend/app/services/capacity_service.py)"]
-    n8["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
-    n9["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
-    n10["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
-    n11["DeliveryDependencyService.add (backend/app/services/delivery_dependency_service.py)"]
-    n12["DeliveryDependencyService.reconcile (backend/app/services/delivery_dependency_service.py)"]
-    n13["DeliveryDependencyService.require_unreferenced (backend/app/services/delivery_dependency_service.py)"]
-    n14["DeliveryDependencyService.validate_cycles (backend/app/services/delivery_dependency_service.py)"]
+    n5["planning_input_reservation (backend/app/commands.py)"]
+    n6["planning_conflict (backend/app/main.py)"]
+    n7["CalendarService.delete (backend/app/services/calendar_service.py)"]
+    n8["CapacityService.projection (backend/app/services/capacity_service.py)"]
+    n9["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
+    n10["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
+    n11["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
+    n12["DeliveryDependencyService.add (backend/app/services/delivery_dependency_service.py)"]
+    n13["DeliveryDependencyService.reconcile (backend/app/services/delivery_dependency_service.py)"]
+    n14["DeliveryDependencyService.require_unreferenced (backend/app/services/delivery_dependency_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -58,13 +58,13 @@ flowchart LR
     click n2 "../modules/time_entry_service.md"
     click n3 "../modules/commands.md"
     click n4 "../modules/commands.md"
-    click n5 "../modules/app_main.md"
-    click n6 "../modules/calendar_service.md"
-    click n7 "../modules/capacity_service.md"
+    click n5 "../modules/commands.md"
+    click n6 "../modules/app_main.md"
+    click n7 "../modules/calendar_service.md"
     click n8 "../modules/capacity_service.md"
     click n9 "../modules/capacity_service.md"
     click n10 "../modules/capacity_service.md"
-    click n11 "../modules/delivery_dependency_service.md"
+    click n11 "../modules/capacity_service.md"
     click n12 "../modules/delivery_dependency_service.md"
     click n13 "../modules/delivery_dependency_service.md"
     click n14 "../modules/delivery_dependency_service.md"
@@ -89,6 +89,7 @@ flowchart LR
 |---|---|---|---:|
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
 | `lock_planning` | call | [commands](../modules/commands.md) | 1 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 3 |
 | `planning_conflict` | type_reference | [app_main](../modules/app_main.md) | — |
 | `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 1 |
 | `CapacityService.projection` | call | [capacity_service](../modules/capacity_service.md) | 1 |
@@ -98,6 +99,5 @@ flowchart LR
 | `DeliveryDependencyService.add` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `DeliveryDependencyService.reconcile` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `DeliveryDependencyService.require_unreferenced` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
-| `DeliveryDependencyService.validate_cycles` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

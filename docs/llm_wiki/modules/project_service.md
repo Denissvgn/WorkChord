@@ -8,6 +8,14 @@ Project metadata pages have ascending IDs and a carried initial upper bound, so 
 
 Project service with CRUD and summary logic.
 
+Creation persists the validated declared working timezone, retaining the compatible UTC default. Subsequent metadata updates preserve the stored zone unless the caller explicitly changes it; local work and metric dates consume that declared project zone rather than inferring historical location.
+
+Deletion preflights management authority, task and dependency constraints, and queued or active execution references. Unsafe execution scope prevents removal before task detachment; a successful removal retains attributable audit and outbox history without reusing the project's recording identity.
+
+Project response trees explicitly link already loaded children to their loaded parents using committed relationship state. Inherited policy serialization therefore sees complete parent ancestry without introducing writes or lazy asynchronous I/O.
+
+Project summaries capture one UTC instant and interpret target risk, elapsed schedule and update freshness in the declared project working timezone.
+
 ## Imports
 
 | Source | Symbols |
@@ -22,6 +30,7 @@ Project service with CRUD and summary logic.
 | `app.schemas.team` | `TeamMemberOptionResponse`, `TeamMemberProfileCompact` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
+| `app.services.work_metrics` | `working_today` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `date`, `datetime` |
@@ -50,9 +59,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (13) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -60,10 +69,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ProjectService](../entities/ProjectService.md) | 53 | — | Service for project CRUD, linked task retrieval, and summary metrics. |
+| [ProjectService](../entities/ProjectService.md) | 54 | — | Service for project CRUD, linked task retrieval, and summary metrics. |

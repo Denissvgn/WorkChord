@@ -143,7 +143,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| metrics_endpoint | collect_metrics | 278 | `collect_metrics(data not statically known)` |
+| metrics_endpoint | collect_metrics | 286 | `collect_metrics(data not statically known)` |
 | collect_metrics | readiness_snapshot | 399 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |

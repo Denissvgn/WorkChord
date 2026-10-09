@@ -5,6 +5,7 @@ import com.workchord.android.fakes.FakeTaskRepository
 import com.workchord.android.ui.viewmodels.TaskDetailViewModel
 import com.workchord.android.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Rule
@@ -17,6 +18,40 @@ class TaskDetailViewModelTest {
         brief = TaskBrief(1, goal = "Deliver an outline", acceptanceCriteria = listOf(BriefCriterion("outline", 2, "A clear outline", "Read revision"))),
         briefRevision = 1, artifactRevision = 0, ownerProfileId = 7)
     private fun repository() = FakeTaskRepository(listOf(task))
+
+    @Test fun pendingEvidenceWritePersistsRecoverableInputsBeforeTheResponse() = runTest {
+        val repo = repository()
+        repo.progressGate = CompletableDeferred()
+        val model = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        model.beginEvidenceEdit()
+        model.setCriterion("outline", progress = "completed", evidence = "Preserve this pending intent")
+        model.saveProgress()
+        assertTrue(model.uiState.value.isUpdatingStatus)
+        val saved = repo.savedDraft(72)
+        assertNotNull(saved)
+        assertEquals("Preserve this pending intent", saved!!.evidence!!.criteria.single().evidence)
+        repo.progressGate!!.complete(Result.failure(java.io.IOException("No verified response")))
+    }
+
+    @Test fun uncertainWriteRestoresWithoutReplayAndRequiresCurrentComparison() = runTest {
+        val repo = repository()
+        repo.progressResult = Result.failure(java.io.IOException("Response lost after possible commit"))
+        val model = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        model.beginEvidenceEdit()
+        model.setCriterion("outline", progress = "completed", evidence = "Retained pending evidence")
+        model.saveProgress()
+        assertEquals(3, repo.savedDraft(72)!!.pendingWriteVersion)
+        repo.setTasks(listOf(task.copy(version = 4)))
+        val restored = TaskDetailViewModel(72, repo, mainDispatcherRule.testDispatcher)
+        assertEquals(3, restored.uiState.value.pendingWriteVersion)
+        assertFalse(restored.uiState.value.allowed("record_progress"))
+        assertEquals(3, restored.uiState.value.draft!!.base.version)
+        restored.comparePendingWrite()
+        assertNull(restored.uiState.value.pendingWriteVersion)
+        assertEquals(3, restored.uiState.value.draft!!.base.version)
+        restored.reconcileDraft()
+        assertEquals(4, restored.uiState.value.draft!!.base.version)
+    }
 
     @Test fun unavailableActionsNeverIssueACommand() = runTest {
         val repo = repository()

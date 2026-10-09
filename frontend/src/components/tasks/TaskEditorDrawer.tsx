@@ -1,10 +1,10 @@
-import { useId, useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { taskService } from '../../services/taskService';
+import { readTaskEditorSnapshot, keepNewestTaskSnapshot } from './taskEditorSnapshot';
 import type { Task, TaskUpdate } from '../../types/task';
 import { Button } from '../common/Button';
 import { DraftDismissalDialog } from './DraftDismissalDialog';
@@ -101,9 +101,9 @@ const TaskEditorDrawerContent = ({
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const openingId = useId();
+    const [openingSnapshot, setOpeningSnapshot] = useState<Task | null>(null);
     // The drawer renders a spinner, inline retry, and withholds the editor until a task exists.
     const {
-        data: fullTask,
         isLoading,
         isError,
         refetch,
@@ -113,14 +113,16 @@ const TaskEditorDrawerContent = ({
         queryKey: ['taskEditor', taskId, openingId],
         gcTime: 0,
         staleTime: 0,
-        queryFn: async () => {
-            const detail = await taskService.getDetail(taskId);
-            return { ...detail.task, dependencies: detail.dependencies.items.map(item => item.id), detail_context: detail };
+        queryFn: async ({ signal }) => {
+            const snapshot = await readTaskEditorSnapshot(taskId, signal);
+            if (!signal.aborted) setOpeningSnapshot(previous => previous ?? snapshot);
+            return snapshot;
         },
+        structuralSharing: keepNewestTaskSnapshot,
     });
     const editorTask = useMemo(
-        () => fullTask && !isError ? prepareTask?.(fullTask) ?? fullTask : null,
-        [fullTask, prepareTask, isError],
+        () => openingSnapshot && !isError ? prepareTask?.(openingSnapshot) ?? openingSnapshot : null,
+        [openingSnapshot, prepareTask, isError],
     );
     const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? null;
 
@@ -161,12 +163,17 @@ const TaskEditorDrawerContent = ({
                     </div>
                 )}
                 {beforeForm}
-                {editorTask?.detail_context && <TaskContextSummary key={`context:${editorTask.version}`} detail={editorTask.detail_context} onReload={() => void refetch()} onNavigate={id => guard.request(() => {
+                {editorTask?.detail_context && <TaskContextSummary key={`context:${editorTask.version}`} detail={editorTask.detail_context} onReload={() => guard.request(() => {
+                    guard.setPending(true);
+                    void refetch().then(result => { if (result.data && !result.isError) setOpeningSnapshot(result.data); })
+                        .finally(() => guard.setPending(false));
+                })} onNavigate={id => guard.request(() => {
                     const next = new URLSearchParams(params); next.set('task', String(id));
                     onClose(); navigate(`/tasks?${next}`);
                 })} />}
                 {editorTask && (
                     <TaskForm
+                        key={editorTask.version}
                         iterationId={resolvedIterationId}
                         initialData={editorTask}
                         mode={mode}

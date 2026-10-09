@@ -1,3 +1,4 @@
+import { VacationCsvImport } from '../components/team/VacationCsvImport';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -31,6 +32,9 @@ import { dateFnsLocale } from '../i18n/dateLocale';
 import { useIterationStore } from '../store/iterationStore';
 import type { Calendar as WorkCalendar, CalendarCreate, CalendarUpdate } from '../types/calendar';
 import type { TeamMember, Vacation } from '../types/team';
+import { usePlanningObservation } from '../features/usePlanningObservation';
+import { getApiErrorMessage } from '../utils/apiError';
+import { planningInputService } from '../services/planningInputService';
 
 interface CalendarDraft {
     year: number;
@@ -54,7 +58,7 @@ const makeDraft = (calendar: WorkCalendar): CalendarDraft => ({
 const apiErrorMessage = (error: unknown, fallback: string) => {
     if (typeof error === 'object' && error !== null && 'response' in error) {
         const response = (error as { response?: { data?: { detail?: string } } }).response;
-        return response?.data?.detail || fallback;
+        return typeof response?.data?.detail === 'string' ? response.data.detail : getApiErrorMessage(error, fallback);
     }
     return fallback;
 };
@@ -92,9 +96,16 @@ const CalendarPage = () => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
-    const draftedCalendarId = useRef<number | null>(null);
+    const calendarContext = usePlanningObservation<WorkCalendar>();
+    const vacationContext = usePlanningObservation<TeamMember>();
+    const [vacationImportBusy, setVacationImportBusy] = useState(false);
 
     const [draft, setDraft] = useState<CalendarDraft | null>(null);
+    const draftGeneration = useRef(0);
+    const activeCalendar = useRef<number | undefined>(undefined);
+    const editDraft: typeof setDraft = value => { draftGeneration.current += 1; setDraft(value); };
+    const currentCompletion = (context?: { calendarId: number; generation: number }) => Boolean(context &&
+        activeCalendar.current === context.calendarId && draftGeneration.current === context.generation);
     const [selectedCalendarId, setSelectedCalendarId] = useState<number | null>(null);
     const [isCreatingCalendar, setIsCreatingCalendar] = useState(false);
     const [newCalendarName, setNewCalendarName] = useState('');
@@ -126,22 +137,27 @@ const CalendarPage = () => {
         queryFn: iterationService.getAll,
     });
 
+    const calendarId = calendar?.id;
+    const readCalendarContext = calendarContext.read;
     useEffect(() => {
-        if (!calendar) return;
-        if (draftedCalendarId.current === calendar.id) return;
-        draftedCalendarId.current = calendar.id;
+        activeCalendar.current = calendarId;
+        if (!calendarId) return;
+        const generation = ++draftGeneration.current;
         let cancelled = false;
         queueMicrotask(() => {
             if (cancelled) return;
-            setDraft(makeDraft(calendar));
+            void readCalendarContext('calendar', calendarId).then(observed => {
+                if (!cancelled && generation === draftGeneration.current && observed) setDraft(makeDraft(observed.resource));
+            });
             setVisibleMonth(0);
             setCalendarSummary('');
             setCalendarError('');
         });
         return () => {
             cancelled = true;
+            activeCalendar.current = undefined;
         };
-    }, [calendar]);
+    }, [calendarId, readCalendarContext]);
 
     useEffect(() => {
         if (iterations.length === 0) {
@@ -190,17 +206,28 @@ const CalendarPage = () => {
         }
     }, [teamMembers, selectedMemberId]);
 
+    const vacationMemberId = selectedMemberId ? Number(selectedMemberId) : null;
+    const readVacationContext = vacationContext.read;
+    useEffect(() => {
+        if (vacationMemberId) void readVacationContext('member', vacationMemberId);
+    }, [vacationMemberId, readVacationContext]);
+
     // feedback-policy: mutation pending,inline
     const updateCalendarMutation = useMutation({
         mutationFn: ({ calendarId, data }: { calendarId: number; data: CalendarUpdate }) =>
-            calendarService.update(calendarId, data),
-        onSuccess: (data) => {
+            calendarService.update(calendarId, data, calendarContext.observation!.expected_revisions),
+        onMutate: ({ calendarId }) => ({ calendarId, generation: ++draftGeneration.current }),
+        onSuccess: (data, _variables, context) => {
+            queryClient.invalidateQueries({ queryKey: ['calendars'] });
+            if (!currentCompletion(context)) return;
             setDraft(makeDraft(data));
+            void calendarContext.read('calendar', data.id);
             queryClient.invalidateQueries({ queryKey: ['calendars'] });
             setCalendarError('');
             setCalendarSummary(t('calendar.settingsSaved'));
         },
-        onError: (error: unknown) => {
+        onError: (error: unknown, _variables, context) => {
+            if (context && !currentCompletion(context)) return;
             setCalendarSummary('');
             setCalendarError(apiErrorMessage(error, t('calendar.saveFailed')));
         },
@@ -209,6 +236,7 @@ const CalendarPage = () => {
     // feedback-policy: mutation pending,inline
     const createCalendarMutation = useMutation({
         mutationFn: (data: CalendarCreate) => calendarService.create(data),
+        onMutate: () => { draftGeneration.current += 1; },
         onSuccess: (created) => {
             queryClient.invalidateQueries({ queryKey: ['calendars'] });
             setSelectedCalendarId(created.id);
@@ -226,11 +254,11 @@ const CalendarPage = () => {
 
     // feedback-policy: mutation pending,inline
     const deleteCalendarMutation = useMutation({
-        mutationFn: (calendarId: number) => calendarService.delete(calendarId),
+        mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => calendarService.delete(id, revisions),
+        onMutate: () => { draftGeneration.current += 1; },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['calendars'] });
             setSelectedCalendarId(null);
-            draftedCalendarId.current = null;
             setCalendarError('');
             setCalendarSummary(t('calendar.calendarDeleted'));
         },
@@ -243,14 +271,18 @@ const CalendarPage = () => {
     // feedback-policy: mutation pending,inline
     const publicImportMutation = useMutation({
         mutationFn: ({ calendarId, country, year }: { calendarId: number; country: string; year: number }) =>
-            calendarService.importPublicHolidays(calendarId, country, year),
-        onSuccess: (data) => {
+            calendarService.importPublicHolidays(calendarId, country, year, calendarContext.observation!.expected_revisions),
+        onMutate: ({ calendarId }) => ({ calendarId, generation: ++draftGeneration.current }),
+        onSuccess: (data, _variables, context) => {
+            queryClient.invalidateQueries({ queryKey: ['calendars'] });
+            if (!currentCompletion(context)) return;
             setDraft(prev => prev ? ({
                 ...prev,
                 holidays: data.calendar.holidays,
                 weekend_days: data.calendar.weekend_days,
                 short_days: data.calendar.short_days,
             }) : makeDraft(data.calendar));
+            void calendarContext.read('calendar', data.calendar.id);
             queryClient.invalidateQueries({ queryKey: ['calendars'] });
             setCalendarError(data.errors.length ? data.errors.map(err => `${err.row}: ${err.message}`).join('; ') : '');
             setCalendarSummary(t('calendar.importSummary', {
@@ -258,7 +290,8 @@ const CalendarPage = () => {
                 skipped: data.skipped_count,
             }));
         },
-        onError: (error: unknown) => {
+        onError: (error: unknown, _variables, context) => {
+            if (context && !currentCompletion(context)) return;
             setCalendarSummary('');
             setCalendarError(apiErrorMessage(error, t('calendar.importFailed')));
         },
@@ -267,14 +300,18 @@ const CalendarPage = () => {
     // feedback-policy: mutation pending,inline
     const holidayCsvImportMutation = useMutation({
         mutationFn: ({ calendarId, csvText }: { calendarId: number; csvText: string }) =>
-            calendarService.importHolidayCsv(calendarId, csvText),
-        onSuccess: (data) => {
+            calendarService.importHolidayCsv(calendarId, csvText, calendarContext.observation!.expected_revisions),
+        onMutate: ({ calendarId }) => ({ calendarId, generation: ++draftGeneration.current }),
+        onSuccess: (data, _variables, context) => {
+            queryClient.invalidateQueries({ queryKey: ['calendars'] });
+            if (!currentCompletion(context)) return;
             setDraft(prev => prev ? ({
                 ...prev,
                 holidays: data.calendar.holidays,
                 weekend_days: data.calendar.weekend_days,
                 short_days: data.calendar.short_days,
             }) : makeDraft(data.calendar));
+            void calendarContext.read('calendar', data.calendar.id);
             queryClient.invalidateQueries({ queryKey: ['calendars'] });
             setCalendarError(data.errors.length ? data.errors.map(err => `${err.row}: ${err.message}`).join('; ') : '');
             setCalendarSummary(t('calendar.importSummary', {
@@ -282,18 +319,23 @@ const CalendarPage = () => {
                 skipped: data.skipped_count,
             }));
         },
-        onError: (error: unknown) => {
+        onError: (error: unknown, _variables, context) => {
+            if (context && !currentCompletion(context)) return;
             setCalendarSummary('');
             setCalendarError(apiErrorMessage(error, t('calendar.importFailed')));
         },
     });
 
+    const calendarBusy = updateCalendarMutation.isPending || publicImportMutation.isPending ||
+        holidayCsvImportMutation.isPending || createCalendarMutation.isPending || deleteCalendarMutation.isPending;
+
     // feedback-policy: mutation pending,inline
     const addVacationMutation = useMutation({
         mutationFn: ({ memberId, start_date, end_date }: { memberId: number; start_date: string; end_date: string }) =>
-            teamService.addVacation(memberId, { start_date, end_date }),
+            teamService.addVacation(memberId, { start_date, end_date }, vacationContext.observation!.expected_revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
+            if (vacationMemberId) void readVacationContext('member', vacationMemberId, true);
             setVacationStart('');
             setVacationEnd('');
             setVacationError('');
@@ -307,7 +349,7 @@ const CalendarPage = () => {
 
     // feedback-policy: mutation pending,inline
     const deleteVacationMutation = useMutation({
-        mutationFn: teamService.deleteVacation,
+        mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => teamService.deleteVacation(id, revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
             setVacationError('');
@@ -316,24 +358,6 @@ const CalendarPage = () => {
         onError: (error: unknown) => {
             setVacationSummary('');
             setVacationError(apiErrorMessage(error, t('calendar.vacationDeleteFailed')));
-        },
-    });
-
-    // feedback-policy: mutation pending,inline
-    const vacationCsvImportMutation = useMutation({
-        mutationFn: ({ iterationId, csvText }: { iterationId: number; csvText: string }) =>
-            teamService.importVacationsCsv(iterationId, csvText),
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['team', selectedIterationId] });
-            setVacationSummary(t('teamVacations.importSummary', {
-                imported: data.imported_count,
-                skipped: data.skipped_count,
-            }));
-            setVacationError(data.errors.length ? data.errors.map(err => `${err.row}: ${err.message}`).join('; ') : '');
-        },
-        onError: (error: unknown) => {
-            setVacationSummary('');
-            setVacationError(apiErrorMessage(error, t('teamVacations.importFailed')));
         },
     });
 
@@ -381,7 +405,7 @@ const CalendarPage = () => {
 
     const setDraftYear = (year: number) => {
         if (!Number.isFinite(year)) return;
-        setDraft(prev => prev ? { ...prev, year } : prev);
+        editDraft(prev => prev ? { ...prev, year } : prev);
     };
 
     const setCalendarMonth = (month: number) => {
@@ -390,7 +414,7 @@ const CalendarPage = () => {
     };
 
     const toggleWeekend = (day: number) => {
-        setDraft(prev => {
+        editDraft(prev => {
             if (!prev) return prev;
             const exists = prev.weekend_days.includes(day);
             return {
@@ -404,7 +428,7 @@ const CalendarPage = () => {
 
     const addCompanyDay = (dateKey: string) => {
         if (!dateKey) return;
-        setDraft(prev => prev ? ({
+        editDraft(prev => prev ? ({
             ...prev,
             holidays: mergeDate(prev.holidays, dateKey),
             short_days: prev.short_days.filter(day => day !== dateKey),
@@ -412,7 +436,7 @@ const CalendarPage = () => {
     };
 
     const removeCompanyDay = (dateKey: string) => {
-        setDraft(prev => prev ? ({
+        editDraft(prev => prev ? ({
             ...prev,
             holidays: prev.holidays.filter(day => day !== dateKey),
         }) : prev);
@@ -420,14 +444,14 @@ const CalendarPage = () => {
 
     const addShortDay = (dateKey: string) => {
         if (!dateKey) return;
-        setDraft(prev => prev && !prev.holidays.includes(dateKey) ? ({
+        editDraft(prev => prev && !prev.holidays.includes(dateKey) ? ({
             ...prev,
             short_days: mergeDate(prev.short_days, dateKey),
         }) : prev);
     };
 
     const removeShortDay = (dateKey: string) => {
-        setDraft(prev => prev ? ({
+        editDraft(prev => prev ? ({
             ...prev,
             short_days: prev.short_days.filter(day => day !== dateKey),
         }) : prev);
@@ -446,7 +470,7 @@ const CalendarPage = () => {
         })
             .map(toDateKey)
             .filter(day => isDateInYear(day, displayYear));
-        setDraft(prev => prev ? ({
+        editDraft(prev => prev ? ({
             ...prev,
             holidays: Array.from(new Set([...prev.holidays, ...days])).sort(),
             short_days: prev.short_days.filter(day => !days.includes(day)),
@@ -456,17 +480,15 @@ const CalendarPage = () => {
     };
 
     const handleHolidayCsvFile = async (file: File | null) => {
-        if (!file || !calendar) return;
-        holidayCsvImportMutation.mutate({ calendarId: calendar.id, csvText: await file.text() });
-    };
-
-    const handleVacationCsvFile = async (file: File | null) => {
-        if (!file || !selectedIteration) return;
-        vacationCsvImportMutation.mutate({ iterationId: selectedIteration.id, csvText: await file.text() });
+        if (calendarBusy || !file || !calendar || !calendarContext.observation || calendarContext.loading) return;
+        const context = { calendarId: calendar.id, generation: draftGeneration.current };
+        const csvText = await file.text();
+        if (!currentCompletion(context) || calendarBusy) return;
+        holidayCsvImportMutation.mutate({ calendarId: context.calendarId, csvText });
     };
 
     const saveSettings = () => {
-        if (!calendar || !draft) return;
+        if (calendarBusy || !calendar || !draft || !calendarContext.observation || calendarContext.loading) return;
         updateCalendarMutation.mutate({
             calendarId: calendar.id,
             data: {
@@ -501,21 +523,34 @@ const CalendarPage = () => {
         });
     };
 
-    const confirmDeleteCalendar = () => {
+    const confirmDeleteCalendar = async () => {
         if (!calendar) return;
+        const observed = await planningInputService.readInitial<WorkCalendar>('calendar', calendar.id).catch(cause => {
+            setCalendarError(getApiErrorMessage(cause, t('calendar.loadFailed'))); return null;
+        });
+        if (!observed) return;
         requestConfirmation({
             title: t('calendar.deleteCalendar'),
             description: t('calendar.deleteCalendarConfirm', { name: calendar.name, year: calendar.year }),
             confirmLabel: t('actions.delete'),
             cancelLabel: t('actions.cancel'),
             closeLabel: t('actions.close'),
-            onConfirm: () => deleteCalendarMutation.mutateAsync(calendar.id),
+            onConfirm: () => deleteCalendarMutation.mutateAsync({ id: observed.resource_id, revisions: observed.expected_revisions }),
         });
+    };
+
+    const confirmVacationDelete = async (vacation: Vacation) => {
+        try {
+            const observed = await planningInputService.readInitial<Vacation>('vacation', vacation.id);
+            requestConfirmation({ title: t('actions.delete'), description: t('teamVacations.deleteConfirm'),
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteVacationMutation.mutateAsync({ id: vacation.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { setVacationError(getApiErrorMessage(cause, t('calendar.vacationDeleteFailed'))); }
     };
 
     const addVacation = () => {
         const memberId = Number(selectedMemberId);
-        if (!memberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) return;
+        if (!vacationContext.observation || vacationContext.loading || !memberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) return;
         addVacationMutation.mutate({
             memberId,
             start_date: vacationStart,
@@ -569,6 +604,7 @@ const CalendarPage = () => {
                                     aria-label={t('calendar.calendarName')}
                                     placeholder={t('calendar.calendarName')}
                                     value={newCalendarName}
+                                disabled={calendarBusy}
                                     onChange={event => setNewCalendarName(event.target.value)}
                                 />
                                 <Input
@@ -578,12 +614,13 @@ const CalendarPage = () => {
                                     min="2000"
                                     max="2100"
                                     value={newCalendarYear}
+                                disabled={calendarBusy}
                                     onChange={event => setNewCalendarYear(event.target.value)}
                                 />
                                 <Button type="button" onClick={submitCreateCalendar} isLoading={createCalendarMutation.isPending}>
                                     {t('calendar.createCalendar')}
                                 </Button>
-                                <Button type="button" variant="ghost" onClick={() => setIsCreatingCalendar(false)}>
+                                <Button type="button" variant="ghost" disabled={calendarBusy} onClick={() => setIsCreatingCalendar(false)}>
                                     {t('actions.cancel')}
                                 </Button>
                             </div>
@@ -594,7 +631,7 @@ const CalendarPage = () => {
                             </Button>
                         )}
                     </div>
-                    {calendarError && <div className="banner warn" style={{marginTop:12}}>{calendarError}</div>}
+                    {(calendarError || Boolean(calendarContext.error)) && <div className="banner warn" style={{marginTop:12}}>{calendarError}</div>}
                 </div>
             </PlanningWorkbenchFrame>
         );
@@ -643,6 +680,7 @@ const CalendarPage = () => {
                     value={calendar.id}
                     onChange={event => setSelectedCalendarId(Number(event.target.value))}
                     aria-label={t('calendar.selectCalendar')}
+                    disabled={calendarBusy || calendarContext.loading}
                 >
                     {calendars.map(item => (
                         <option key={item.id} value={item.id}>
@@ -652,7 +690,7 @@ const CalendarPage = () => {
                 </select>
             ) : undefined}
             secondaryActions={(
-                <Button type="button" variant="secondary" onClick={startCreateCalendar}>
+                <Button type="button" variant="secondary" disabled={calendarBusy} onClick={startCreateCalendar}>
                     <Plus className="h-4 w-4" />
                     {t('calendar.newCalendar')}
                 </Button>
@@ -661,6 +699,7 @@ const CalendarPage = () => {
                 <Button
                     type="button"
                     onClick={saveSettings}
+                    disabled={calendarBusy || !calendarContext.observation || calendarContext.loading}
                     isLoading={updateCalendarMutation.isPending}
                 >
                     <Save className="h-4 w-4" />
@@ -677,13 +716,13 @@ const CalendarPage = () => {
                                 : t('calendar.deleteCalendar'),
                             icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
                             onSelect: confirmDeleteCalendar,
-                            disabled: calendars.length <= 1 || deleteCalendarMutation.isPending,
+                            disabled: calendars.length <= 1 || calendarBusy,
                             tone: 'danger',
                         },
                     ]}
                 />
             )}
-            state={(isCreatingCalendar || calendarSummary || calendarError) ? (
+            state={(isCreatingCalendar || calendarSummary || calendarError || calendarContext.loading || Boolean(calendarContext.error)) ? (
                 <>
             {isCreatingCalendar && (
                 <div className="card card-pad">
@@ -692,6 +731,7 @@ const CalendarPage = () => {
                             <span className="field-lbl">{t('calendar.calendarName')}</span>
                             <Input
                                 value={newCalendarName}
+                                disabled={calendarBusy}
                                 onChange={event => setNewCalendarName(event.target.value)}
                                 placeholder={t('calendar.calendarName')}
                             />
@@ -703,6 +743,7 @@ const CalendarPage = () => {
                                 min="2000"
                                 max="2100"
                                 value={newCalendarYear}
+                                disabled={calendarBusy}
                                 onChange={event => setNewCalendarYear(event.target.value)}
                                 placeholder={t('calendar.calendarYear')}
                             />
@@ -710,7 +751,7 @@ const CalendarPage = () => {
                         <Button type="button" onClick={submitCreateCalendar} isLoading={createCalendarMutation.isPending}>
                             {t('calendar.createCalendar')}
                         </Button>
-                        <Button type="button" variant="ghost" onClick={() => setIsCreatingCalendar(false)}>
+                        <Button type="button" variant="ghost" disabled={calendarBusy} onClick={() => setIsCreatingCalendar(false)}>
                             {t('actions.cancel')}
                         </Button>
                     </div>
@@ -718,16 +759,26 @@ const CalendarPage = () => {
                 </div>
             )}
 
-            {(calendarSummary || calendarError) && (
+            {(calendarSummary || calendarError || calendarContext.loading || Boolean(calendarContext.error)) && (
                 <div className={`banner ${calendarError ? 'warn' : 'done'}`}>
                     {calendarSummary}
-                    {calendarError && <div>{calendarError}</div>}
+                    {(calendarContext.loading || Boolean(calendarContext.error)) && <p role="status">{calendarContext.loading ? t('common.loading') : getApiErrorMessage(calendarContext.error, t('calendar.loadFailed'))}</p>}
+                    {(calendarError || Boolean(calendarContext.error)) && <div className="banner warn" style={{marginTop:12}}>{calendarError}
+                        <Button type="button" variant="secondary" disabled={calendarBusy || calendarContext.loading} onClick={() => {
+                            if (!calendar) return;
+                            const context = { calendarId: calendar.id, generation: draftGeneration.current };
+                            void calendarContext.read('calendar', calendar.id).then(value => { if (value && currentCompletion(context)) setDraft(makeDraft(value.resource)); });
+                        }}>{t('taskEditor.reload')}</Button>
+                        <Button type="button" variant="secondary" disabled={calendarBusy || calendarContext.loading} onClick={() => { if (calendar) void calendarContext.read('calendar', calendar.id, true); }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+                    </div>}
+
                 </div>
             )}
                 </>
             ) : undefined}
         >
 
+            <fieldset disabled={calendarBusy || calendarContext.loading} className="min-w-0 space-y-4">
             <section className="wc-content-rail">
                 <div className="card card-pad">
                     <div className="between wrap" style={{marginBottom:16}}>
@@ -786,6 +837,7 @@ const CalendarPage = () => {
                                 country: publicCountry,
                                 year: displayYear,
                             })}
+                            disabled={calendarBusy || !calendarContext.observation || calendarContext.loading}
                             isLoading={publicImportMutation.isPending}
                         >
                             <Download className="w-4 h-4" />
@@ -926,6 +978,7 @@ const CalendarPage = () => {
                 </div>
             </section>
 
+            </fieldset>
             <section className="card card-pad">
                 <div className="between wrap" style={{marginBottom:16}}>
                     <div>
@@ -940,6 +993,7 @@ const CalendarPage = () => {
                     {iterations.length > 0 && (
                         <select
                             value={selectedIterationId}
+                            disabled={Boolean(vacationStart || vacationEnd) || vacationImportBusy || addVacationMutation.isPending}
                             onChange={event => setSelectedIterationId(Number.parseInt(event.target.value, 10))}
                             className="input"
                             style={{ width: 'auto' }}
@@ -975,10 +1029,14 @@ const CalendarPage = () => {
                 ) : (
                     <div className="wc-content-rail">
                         <div>
-                            {(vacationSummary || vacationError) && (
+                            {(vacationSummary || vacationError || vacationContext.loading || Boolean(vacationContext.error)) && (
                                 <div className={`banner ${vacationError ? 'warn' : 'done'}`} style={{marginBottom:12}}>
                                     {vacationSummary}
-                                    {vacationError && <div>{vacationError}</div>}
+                                    {vacationContext.loading && <p role="status">{t('common.loading')}</p>}
+                                    {Boolean(vacationContext.error) && <p role="alert">{getApiErrorMessage(vacationContext.error, t('calendar.loadFailed'))}</p>}
+                                    {vacationError && <div role="alert">{vacationError}</div>}
+                                    {(vacationError || Boolean(vacationContext.error)) && <Button type="button" variant="secondary" disabled={addVacationMutation.isPending || vacationContext.loading}
+                                        onClick={() => { if (vacationMemberId) void readVacationContext('member', vacationMemberId, true); }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>}
                                 </div>
                             )}
                             <div className="wc-toolbar">
@@ -986,6 +1044,7 @@ const CalendarPage = () => {
                                     <span className="field-lbl">{t('calendar.teamMember')}</span>
                                     <select
                                         value={selectedMemberId}
+                                        disabled={Boolean(vacationStart || vacationEnd) || addVacationMutation.isPending}
                                         onChange={event => setSelectedMemberId(event.target.value)}
                                         className="input"
                                     >
@@ -1012,25 +1071,14 @@ const CalendarPage = () => {
                                 <Button
                                     type="button"
                                     onClick={addVacation}
-                                    disabled={!selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd}
+                                    disabled={!vacationContext.observation || vacationContext.loading || !selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd}
                                     isLoading={addVacationMutation.isPending}
                                 >
                                     <Plus className="w-4 h-4" />
                                     {t('teamVacations.addVacation')}
                                 </Button>
-                                <label className="btn secondary cursor-pointer">
-                                    <Upload className="w-4 h-4" />
-                                    {t('calendar.importVacationCsv')}
-                                    <input
-                                        type="file"
-                                        accept=".csv,text/csv"
-                                        className="hidden"
-                                        onChange={event => {
-                                            handleVacationCsvFile(event.target.files?.[0] || null);
-                                            event.currentTarget.value = '';
-                                        }}
-                                    />
-                                </label>
+                                <VacationCsvImport key={selectedIterationId} iterationId={selectedIterationId} onBusyChange={setVacationImportBusy}
+                                    onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['team'] }); if (vacationMemberId) void readVacationContext('member', vacationMemberId, true); }} />
                             </div>
                         </div>
                         <div>
@@ -1052,15 +1100,7 @@ const CalendarPage = () => {
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => requestConfirmation({
-                                                title: t('actions.delete'),
-                                                description: t('teamVacations.deleteConfirm'),
-                                                confirmLabel: t('actions.delete'),
-                                                cancelLabel: t('actions.cancel'),
-                                                closeLabel: t('actions.close'),
-                                                onConfirm: () => deleteVacationMutation.mutateAsync(vacation.id),
-                                                tone: 'danger',
-                                            })}
+                                            onClick={() => void confirmVacationDelete(vacation)}
                                             aria-label={t('actions.delete')}
                                             isLoading={deleteVacationMutation.isPending}
                                             className="text-feedback-danger hover:text-feedback-danger-foreground"

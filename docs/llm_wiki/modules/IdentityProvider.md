@@ -8,6 +8,8 @@ _Auto-generated from `frontend/src/features/identity/IdentityProvider.tsx`._
 
 The web shell exposes managed identity, profile and access state. Work queries are partitioned by principal and grants, cleared across account changes, and periodically refreshed. Expiry retains a same-account draft; a task editor provides a reachable sign-in path even when a modal covers the shell. Explicit logout clears private drafts, credentials and work caches before document navigation. A validated native connection request stays on its consent route to support a different browser account; ordinary or invalid routes return to the homepage.
 
+The workspace factory owns both query freshness and planning invalidation. Account or grant replacement disposes subscriptions and cancels old work requests before clearing that cache; the outer identity client does not install duplicate work policies.
+
 ## Imports
 
 | Source | Symbols |
@@ -18,10 +20,10 @@ The web shell exposes managed identity, profile and access state. Work queries a
 | `../../utils/adminAccess` | `clearAdminApiKey`, `ADMIN_API_KEY_CHANGED_EVENT` |
 | `../../utils/agentAccess` | `clearAgentApiKey`, `AGENT_API_KEY_CHANGED_EVENT` |
 | `../../utils/apiError` | `getApiErrorMessage` |
-| `../workQueryFreshness` | `installWorkFreshness` |
+| `../workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` |
 | `./identityContext` | `IdentityContext`, `useIdentity` |
 | `./identityService` | `identityService`, `WorkspaceIdentity` |
-| `@tanstack/react-query` | `QueryClient`, `QueryClientProvider`, `useQuery`, `useQueryClient` |
+| `@tanstack/react-query` | `QueryClientProvider`, `useQuery`, `useQueryClient` |
 | `lucide-react` | `LogIn`, `LogOut`, `ShieldCheck`, `User` |
 | `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `ReactNode` |
 | `react-i18next` | `useTranslation` |

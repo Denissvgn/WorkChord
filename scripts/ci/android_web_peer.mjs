@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+const [origin, task, nonce] = process.argv.slice(2);
+const pin = process.env.WORKCHORD_QUALIFICATION_SPKI;
+if (!/^https:\/\/localhost:\d+$/.test(origin || '') || !/^\d+$/.test(task || '') || !/^[0-9a-f]{32}$/.test(nonce || '') || !pin) throw new Error('Owned HTTPS peer inputs required');
+const browser = await chromium.launch({ headless: true, args: [`--ignore-certificate-errors-spki-list=${pin}`] });
+process.on('SIGTERM', async () => { await browser.close(); process.exit(1); });
+process.on('SIGINT', async () => { await browser.close(); process.exit(1); });
+try {
+  const context = await browser.newContext({ baseURL: origin });
+  const page = await context.newPage(); const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const proof = await context.request.get('/api/auth/me');
+  assert.equal(proof.headers()['x-workchord-fixture'], nonce);
+  await page.goto(`/my-work?task=${task}`);
+  await page.getByRole('link', { name: 'Sign in', exact: true }).click();
+  await page.getByRole('link', { name: 'Continue as Alice', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  const saved = page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname === `/api/tasks/${task}`);
+  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Native peer work');
+  const priority = page.getByLabel('Priority', { exact: true });
+  await priority.selectOption((await priority.inputValue()) === '3' ? '4' : '3');
+  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  const response = await saved; assert.equal(response.status(), 200, await response.text());
+  const readback = await context.request.get(`/api/tasks/${task}/detail`);
+  assert.equal(readback.headers()['x-workchord-fixture'], nonce); assert.equal(readback.status(), 200);
+  assert.equal((await readback.json()).task.priority, (await response.json()).priority);
+  assert.deepEqual(errors, []);
+  console.log(JSON.stringify({ status: 'passed', taskId: Number(task), independentReadback: true, pageErrors: errors, synthetic: true }));
+} finally { await browser.close(); }

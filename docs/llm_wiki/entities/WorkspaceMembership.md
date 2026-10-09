@@ -37,8 +37,9 @@ flowchart LR
     n8["backend/app/services/task_domain_service.py"]
     n9["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
     n10["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
-    n11["backend/tests/test_managed_authority.py"]
-    n12["_source_phase (scripts/ci/installed_wheel_postgresql_qualification.py)"]
+    n11["create_empty_project_as_owner (backend/tests/test_managed_authority.py)"]
+    n12["test_project_deletion_refuses_live_assignment_scope_without_partial_detach (backend/tests/test_managed_authority.py)"]
+    n13["test_workspace_owner_deletes_empty_project_with_retained_audit (backend/tests/test_managed_authority.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -51,6 +52,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -63,7 +65,8 @@ flowchart LR
     click n9 "../modules/test_agent_team_setup.md"
     click n10 "../modules/test_identity_lifecycle.md"
     click n11 "../modules/test_managed_authority.md"
-    click n12 "../modules/installed_wheel_postgresql_qualification.md"
+    click n12 "../modules/test_managed_authority.md"
+    click n13 "../modules/test_managed_authority.md"
 ```
 
 ### Summary
@@ -91,5 +94,8 @@ flowchart LR
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_shared_iteration_snapshots_cannot_reveal_another_project` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
-| `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
-| `_source_phase` | call | [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md) | 1 |
+| `create_empty_project_as_owner` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `test_project_deletion_refuses_live_assignment_scope_without_partial_detach` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `test_workspace_owner_deletes_empty_project_with_retained_audit` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

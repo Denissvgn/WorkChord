@@ -4,25 +4,23 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/components/tasks/TaskEditorDrawer.tsx`._
-
-The drawer opens a fresh bounded task detail projection, displays context completeness and keeps draft dismissal explicit. Each opening owns a separate query identity, so a form waits for its current read instead of initializing from a closed editor's cache before garbage collection. Prefix invalidation still refreshes the active editor; authoritative execution uses the complete server context.
+Each drawer opening now retains its initial coherent snapshot while the user types. Explicit context reload goes through the established dirty/pending dismissal guard and remounts the form only with the deliberately chosen current version. Snapshot requests are abortable and lower-version responses are ignored.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `../../services/taskService` | `taskService` |
 | `../../types/task` | `Task`, `TaskUpdate` |
 | `../common/Button` | `Button` |
 | `../ui/SlideOverDrawer` | `SlideOverDrawer` |
 | `./DraftDismissalDialog` | `DraftDismissalDialog` |
 | `./TaskContextSummary` | `TaskContextSummary` |
 | `./TaskForm` | `TaskForm` |
+| `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` |
 | `./useDraftDismissal` | `useDraftDismissal` |
 | `@tanstack/react-query` | `useQuery` |
 | `lucide-react` | `Loader2` |
-| `react` | `useId`, `useMemo`, `ReactNode`, `RefObject` |
+| `react` | `useId`, `useMemo`, `useState`, `ReactNode`, `RefObject` |
 | `react-i18next` | `useTranslation` |
 | `react-router-dom` | `useNavigate`, `useSearchParams` |
 

@@ -12,7 +12,7 @@ def declaration():
 
 def observation(status=200,code=None,latency=10):
     return dict(nonce="owned",fixture="synthetic-owned",real_provider_pilot=False,
-        samples=[dict(concurrency=1,latency_ms=latency,response_bytes=50,response_cardinality=1,
+        samples=[dict(concurrency=1,client=0,latency_ms=latency,response_bytes=50,response_cardinality=1,
             status=status,code=code,path="/bounded",profile="local_reads_v1",client_kind="synthetic")],
         resilience=dict(interruption_status=503,recovery_status=200))
 
@@ -62,3 +62,26 @@ def test_missing_or_mismatched_evidence_is_rejected():
 def test_nonfinite_observation_is_rejected():
     with pytest.raises(QualificationInputError):summarize(observation(latency=float("nan")),declaration())
     with pytest.raises(QualificationInputError):summarize(observation(latency=float("inf")),declaration())
+
+
+def test_frozen_operation_coverage_cannot_omit_slow_or_missing_reads():
+    spec = declaration() | {'operations': ['/bounded', '/summary'], 'rounds': 1}
+    with pytest.raises(QualificationInputError, match='sample counts'):
+        summarize(observation(), spec)
+    raw = observation()
+    raw['samples'].append(raw['samples'][0] | {'path': '/summary'})
+    assert summarize(raw, spec)['status'] == 'passed'
+    raw['samples'].append(raw['samples'][0])
+    with pytest.raises(QualificationInputError, match='sample counts'):
+        summarize(raw, spec)
+
+
+def test_duplicate_client_cannot_stand_in_for_declared_concurrency():
+    spec = declaration() | {'concurrency': [2], 'operations': ['/bounded'], 'rounds': 1}
+    raw = observation()
+    raw['samples'][0]['concurrency'] = 2
+    raw['samples'].append(raw['samples'][0].copy())
+    with pytest.raises(QualificationInputError, match='sample counts'):
+        summarize(raw, spec)
+    raw['samples'][1]['client'] = 1
+    assert summarize(raw, spec)['status'] == 'passed'

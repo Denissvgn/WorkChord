@@ -20,12 +20,13 @@ data class TaskDetailUiState(val isLoading: Boolean = true, val isUpdatingStatus
     val reviews: List<TaskReview> = emptyList(), val reviewSnapshot: CurrentTaskReview? = null, val draft: EvidenceDraft? = null,
     val reason: String = "", val reviewEvidence: String = "", val errorMessage: String? = null,
     val isLoadingRelations: Boolean = false, val relationError: String? = null,
-    val successMessage: String? = null, val conflict: Task? = null, val authoritative: Boolean = false) {
+    val successMessage: String? = null, val conflict: Task? = null, val authoritative: Boolean = false,
+    val pendingWriteVersion: Int? = null) {
     val acceptanceCriteria get() = task?.extractAcceptanceCriteria().orEmpty()
-    val hasUnsavedInputs get() = draft != null || reason.isNotBlank() || reviewEvidence.isNotBlank()
+    val hasUnsavedInputs get() = draft != null || reason.isNotBlank() || reviewEvidence.isNotBlank() || pendingWriteVersion != null
     val currentReview get() = reviewSnapshot?.review?.takeIf { reviewSnapshot?.taskVersion == task?.version &&
         it.taskVersion == task?.version && it.briefRevision == task?.briefRevision && it.artifactRevision == task?.artifactRevision }
-    fun allowed(action: String) = authoritative && !isLoading && !isUpdatingStatus && !isLoadingRelations && actions?.version == task?.version &&
+    fun allowed(action: String) = authoritative && pendingWriteVersion == null && !isLoading && !isUpdatingStatus && !isLoadingRelations && actions?.version == task?.version &&
         actions?.actions.orEmpty().any { it.action == action && it.allowed }
     fun blockers(action: String) = actions?.actions.orEmpty().firstOrNull { it.action == action }?.blockers.orEmpty()
 }
@@ -72,7 +73,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
                     coroutineContext.ensureActive()
                     if (current != generation || scopeAtRead != repository.draftScope) return@launch
                     if (saved != null) state.value = state.value.copy(draft = saved.evidence,
-                        reason = saved.reason, reviewEvidence = saved.reviewEvidence,
+                        reason = saved.reason, reviewEvidence = saved.reviewEvidence, pendingWriteVersion = saved.pendingWriteVersion,
                         successMessage = "Saved local draft restored. Compare its version before submitting.")
                 }
             } catch (error: CancellationException) { throw error }
@@ -142,7 +143,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
         val before = state.value
         val task = before.task ?: return
         val actions = before.actions ?: return
-        if (!before.allowed(action) || before.reason.isBlank()) {
+        if (action !in com.workchord.android.data.models.companionTaskCommands || !before.allowed(action) || before.reason.isBlank()) {
             state.value = before.copy(errorMessage = "Choose an available action and explain the reason.")
             return
         }
@@ -172,6 +173,7 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
     }
     fun setArtifacts(value: String) { state.value.draft?.let { state.value = state.value.copy(draft = it.copy(artifacts = value)) } }
     fun discardDraft() {
+        if (state.value.isUpdatingStatus) return
         val before = state.value
         val scope = scopeAtRead
         viewModelScope.launch {
@@ -185,23 +187,26 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
         }
     }
     fun discardInputs(onComplete: () -> Unit = {}) {
+        if (state.value.isUpdatingStatus) return
         val scope = scopeAtRead
         viewModelScope.launch {
             try {
                 withContext(ioDispatcher) { repository.saveDraft(taskId, null, scope) }
-                state.value = state.value.copy(draft = null, reason = "", reviewEvidence = "", conflict = null)
+                state.value = state.value.copy(draft = null, reason = "", reviewEvidence = "", conflict = null, pendingWriteVersion = null)
                 onComplete()
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage ?: "Could not discard the saved draft.") }
         }
     }
     fun saveLocalDraft() {
+        if (state.value.isUpdatingStatus) return
         val before = state.value
         val scope = scopeAtRead
         viewModelScope.launch {
             try {
                 withContext(ioDispatcher) { repository.saveDraft(taskId, SavedTaskDraft(evidence = before.draft,
-                    reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis()), scope) }
+                    reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis(),
+                    pendingWriteVersion = before.pendingWriteVersion), scope) }
                 state.value = state.value.copy(successMessage = "Draft saved only on this device. It has not changed server progress or acceptance.")
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage ?: "Could not save the local draft.") }
@@ -242,18 +247,40 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
             task.artifactRevision, verdict, before.reason, before.reviewEvidence)) }
     }
 
-    private fun mutate(clearDraft: Boolean = false, clearInputs: Boolean = false, call: suspend () -> Result<Task>) {
-        if (state.value.isUpdatingStatus) return
+    fun comparePendingWrite() {
+        val before = state.value
+        if (!before.authoritative || before.isLoading || before.isUpdatingStatus || before.pendingWriteVersion == null) return
         val scope = scopeAtRead
-        state.value = state.value.copy(isUpdatingStatus = true, errorMessage = null, successMessage = null)
         viewModelScope.launch {
             try {
+                withContext(ioDispatcher) { repository.saveDraft(taskId, SavedTaskDraft(evidence = before.draft,
+                    reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis()), scope) }
+                state.value = state.value.copy(pendingWriteVersion = null,
+                    successMessage = "Current server work compared. Retained evidence still needs its own version reconciliation.")
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { state.value = state.value.copy(errorMessage = error.localizedMessage) }
+        }
+    }
+
+    private fun mutate(clearDraft: Boolean = false, clearInputs: Boolean = false, call: suspend () -> Result<Task>) {
+        if (state.value.isUpdatingStatus) return
+        val before = state.value
+        val version = before.task?.authoritativeVersion ?: return
+        val scope = scopeAtRead
+        state.value = state.value.copy(isUpdatingStatus = true, errorMessage = null, successMessage = null, pendingWriteVersion = version)
+        viewModelScope.launch {
+            var sent = false
+            try {
+                withContext(ioDispatcher) { repository.saveDraft(taskId, SavedTaskDraft(evidence = before.draft,
+                    reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis(),
+                    pendingWriteVersion = version), scope) }
+                sent = true
                 call().fold(onSuccess = { task ->
                     state.value = state.value.copy(task = task, isUpdatingStatus = false, authoritative = false,
                         draft = if (clearDraft) null else state.value.draft, conflict = null,
                         reason = if (clearInputs) "" else state.value.reason,
                         reviewEvidence = if (clearInputs) "" else state.value.reviewEvidence,
-                        successMessage = "Saved on the server. Reloading current work.")
+                        pendingWriteVersion = null, successMessage = "Saved on the server. Reloading current work.")
                     val remaining = state.value
                     withContext(ioDispatcher) {
                         repository.saveDraft(taskId, if (remaining.hasUnsavedInputs) SavedTaskDraft(evidence = remaining.draft,
@@ -261,12 +288,17 @@ class TaskDetailViewModel(private val taskId: Int, private val repository: TaskR
                     }
                     loadTask()
                 }, onFailure = { error ->
+                    val rejected = error is ApiProblem && error.statusCode in 400..499
                     state.value = state.value.copy(isUpdatingStatus = false, authoritative = false,
+                        pendingWriteVersion = if (rejected) null else version,
                         conflict = (error as? ApiProblem)?.problem?.currentTask,
                         errorMessage = error.localizedMessage ?: "Save failed. Your inputs are retained.")
+                    if (rejected) withContext(ioDispatcher) { repository.saveDraft(taskId, SavedTaskDraft(evidence = before.draft,
+                        reason = before.reason, reviewEvidence = before.reviewEvidence, savedAt = System.currentTimeMillis()), scope) }
                 })
             } catch (error: CancellationException) { state.value = state.value.copy(isUpdatingStatus = false, authoritative = false); throw error }
             catch (error: Exception) { state.value = state.value.copy(isUpdatingStatus = false, authoritative = false,
+                pendingWriteVersion = if (sent) version else null,
                 errorMessage = error.localizedMessage ?: "Save could not be verified. Reload before submitting again.") }
         }
     }

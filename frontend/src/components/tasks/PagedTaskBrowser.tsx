@@ -1,5 +1,6 @@
+import { useLiveWindow } from '../../features/useLiveWindow';
+import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
@@ -12,7 +13,7 @@ export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
     const [status, setStatus] = useState('');
     const [params, setParams] = useSearchParams();
     // feedback-policy: query loading,error,retry,empty - bounded pages retain explicit recovery and completeness.
-    const tasks = useInfiniteQuery({
+    const tasks = useLiveWindow({
         queryKey: ['taskBrowser', iterationId, query, status],
         initialPageParam: 0,
         queryFn: ({ pageParam, signal }) => taskService.lookup({ iteration_id: iterationId, q: query || undefined,
@@ -35,6 +36,7 @@ export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
             <Button variant="secondary" disabled={tasks.isFetching} onClick={() => void tasks.refetch()}>{t('actions.refresh')}</Button>
         </div>
         <p role="status" className="text-sm text-content-secondary">{t(tasks.hasNextPage ? 'pagination.partial' : 'pagination.loaded', { count: items.length })}</p>
+        <LiveWindowStatus window={tasks} />
         {tasks.isLoading && <QueryLoadingState />}
         {tasks.isError && <QueryErrorState error={tasks.error} onRetry={() => void tasks.refetch()} />}
         <ul className="divide-y divide-border">{items.map(task => <li key={task.id} className="flex flex-wrap items-center justify-between gap-2 py-2">

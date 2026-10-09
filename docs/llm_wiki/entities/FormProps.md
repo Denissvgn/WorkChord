@@ -1,6 +1,6 @@
 # FormProps
 
-**Location:** `frontend/src/components/tasks/GuardedTaskModal.tsx:7`
+**Location:** `frontend/src/components/tasks/GuardedTaskModal.tsx:12`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GuardedTaskModal](../modules/GuardedTaskModal.md)

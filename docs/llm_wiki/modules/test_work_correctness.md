@@ -15,14 +15,17 @@ Atomic recovery, hierarchy, aggregate versions and cross-surface metric contract
 | `app.config` | `get_settings` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
+| `app.models.calendar` | `Calendar` |
 | `app.models.identity` | `Principal` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.recovery` | `ApplicationSnapshot`, `TaskScheduleBaseline` |
 | `app.models.task` | `Task`, `TaskDependency` |
-| `app.models.team_member` | `TeamMember`, `Vacation`, `TeamMember` |
+| `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMember`, `Vacation`, `TeamMember` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.task` | `TaskUpdate`, `TaskCreate` |
+| `app.schemas.team` | `TeamMemberCreate` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |
+| `app.services.capacity_service` | `day_hours` |
 | `app.services.hierarchy_repair_service` | `HierarchyRepairService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.project_service` | `ProjectService` |
@@ -30,10 +33,11 @@ Atomic recovery, hierarchy, aggregate versions and cross-surface metric contract
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.team_service` | `TeamService` |
 | `app.services.work_metrics` | `aggregate_metrics`, `leaf_metrics`, `working_today` |
 | `app.utils.time` | `utc_now` |
 | `asyncio` | `asyncio` |
-| `datetime` | `datetime`, `timezone`, `date` |
+| `datetime` | `datetime`, `timezone`, `date`, `date` |
 | `httpx` | `httpx` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `func`, `select`, `delete` |
@@ -56,7 +60,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (23) |
+| Outbound | `backend` (27) |
 
 ### External packages
 
@@ -64,12 +68,15 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `test_snapshot_restores_exact_allocation_membership` | *(async)* `(delivery_store)` | — | — |
+| `test_project_creation_round_trip_preserves_working_timezone` | *(async)* `(delivery_store)` | — | — |
+| `test_calendar_creation_round_trip_preserves_short_day_capacity` | *(async)* `(delivery_store)` | — | — |
 | `test_merge_failure_preserves_every_task_and_recovery_point` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_merge_truth_and_leaf_totals_are_stable` | *(async)* `(delivery_store, states, expected)` | `@pytest.mark.parametrize(('states', 'expected'), [(('closed', 'closed'), 'closed'), (('resolved', 'closed'), 'resolved'), (('planned', 'active'), 'active')])` | — |
 | `test_unmerge_preserves_child_ids_and_rejects_referenced_parent` | *(async)* `(delivery_store)` | — | — |

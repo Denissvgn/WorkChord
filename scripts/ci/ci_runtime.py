@@ -41,6 +41,18 @@ def stop_process_group(process, grace_seconds=3):
             os.killpg(process.pid, 0)
         except ProcessLookupError:
             return False
+        except PermissionError:
+            if sys.platform != 'darwin':
+                raise
+            # Darwin can deny a group probe after its last member exits. Confirm
+            # absence through a read-only group inventory rather than treating
+            # a permission error as successful termination.
+            result = subprocess.run(['ps', '-ax', '-o', 'pgid=,stat='], capture_output=True, text=True, check=True)
+            for line in result.stdout.splitlines():
+                fields = line.split()
+                if len(fields) >= 2 and fields[0] == str(process.pid) and not fields[1].startswith(('Z', 'X')):
+                    raise
+            return False
         if sys.platform.startswith('linux') and Path('/proc').is_dir():
             # Orphan zombies retain a group ID until init reaps them, but no
             # longer execute or hold resources such as sockets and log pipes.
@@ -62,6 +74,11 @@ def stop_process_group(process, grace_seconds=3):
     try:
         os.killpg(process.pid, signal.SIGTERM)
     except ProcessLookupError:
+        process.wait(timeout=3)
+        return True
+    except PermissionError:
+        if alive():
+            raise
         process.wait(timeout=3)
         return True
     deadline = time.monotonic() + grace_seconds

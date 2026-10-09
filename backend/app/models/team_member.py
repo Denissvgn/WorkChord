@@ -1,5 +1,6 @@
 """Team member model."""
 from datetime import date, datetime
+from uuid import uuid4
 from typing import TYPE_CHECKING, Any, Optional
 
 from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint
@@ -18,8 +19,10 @@ if TYPE_CHECKING:
 class TeamMember(Base):
     """Team member model with availability and capacity settings."""
     __tablename__ = "team_members"
+    __table_args__ = (UniqueConstraint("allocation_token", name="uq_team_members_allocation_token"), {"sqlite_autoincrement": True})
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    allocation_token: Mapped[str] = mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     position: Mapped[str] = mapped_column(String(255), nullable=False)
 
@@ -72,9 +75,12 @@ class TeamMemberProfile(Base):
         Index("ix_team_member_profiles_display_name", "display_name"),
         Index("ix_team_member_profiles_email", "email"),
         Index("ix_team_member_profiles_automation_enabled", "automation_enabled"),
+        UniqueConstraint("profile_token", name="uq_team_member_profiles_profile_token"),
+        {"sqlite_autoincrement": True},
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    profile_token: Mapped[str] = mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))
     seed_key: Mapped[Optional[str]] = mapped_column(
         String(120), nullable=True, unique=True, index=True
     )

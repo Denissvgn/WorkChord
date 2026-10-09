@@ -45,7 +45,6 @@ flowchart LR
     n2 --> n5
     n3 --> n0
     n3 --> n2
-    n3 --> n4
     n3 --> n5
     n4 --> n5
     click n0 "../modules/Button.md"

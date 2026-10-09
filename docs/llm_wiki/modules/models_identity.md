@@ -15,8 +15,8 @@ Durable human/agent/system principals, unique issuer/subject mappings, membershi
 | `app.database` | `Base` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
-| `sqlalchemy` | `Boolean`, `CheckConstraint`, `ForeignKey`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint` |
-| `sqlalchemy.orm` | `Mapped`, `mapped_column` |
+| `sqlalchemy` | `Boolean`, `CheckConstraint`, `ForeignKey`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint`, `event` |
+| `sqlalchemy.orm` | `Mapped`, `Session`, `mapped_column` |
 
 ## Local dependency map
 
@@ -38,7 +38,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (29) |
 | Inbound | `scripts` (2) |
 | Outbound | `backend` (2) |
 
@@ -48,7 +48,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -63,3 +63,10 @@ flowchart LR
 | [OIDCLoginAttempt](../entities/OIDCLoginAttempt.md) | 66 | `Base` | — |
 | [OwnershipTransfer](../entities/OwnershipTransfer.md) | 77 | `Base` | — |
 | [CommandAudit](../entities/CommandAudit.md) | 86 | `Base` | — |
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `retain_command_audit` | `(session, _context, _instances)` | `@event.listens_for(Session, 'before_flush')` | — |
+| `reject_command_audit_rewrites` | `(state)` | `@event.listens_for(Session, 'do_orm_execute')` | — |

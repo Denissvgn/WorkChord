@@ -1,6 +1,6 @@
 # ImportTeamModalProps
 
-**Location:** `frontend/src/components/team/ImportTeamModal.tsx:12`
+**Location:** `frontend/src/components/team/ImportTeamModal.tsx:13`
 **Kind:** Class
 **Bases:** —
 **Module:** [ImportTeamModal](../modules/ImportTeamModal.md)
@@ -14,7 +14,6 @@ _Auto-generated from `ImportTeamModalProps` in `frontend/src/components/team/Imp
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `iterationId` | `number` | Yes | — | — |
-| `expectedRevision` | `number` | No | — | — |
 | `onClose` | `() => void` | Yes | — | — |
 | `onSuccess` | `() => void` | No | — | — |
 | `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | No | — | — |
@@ -39,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [ImportTeamModal](../modules/ImportTeamModal.md) | 0 | `expectedRevision`, `iterationId`, `onClose`, `onStateChange`, `onSuccess` |
+| [ImportTeamModal](../modules/ImportTeamModal.md) | 0 | `iterationId`, `onClose`, `onStateChange`, `onSuccess` |
 
 ### References
 

@@ -9,6 +9,7 @@ import { AppTopNav } from './AppTopNav';
 import { AppSidebar } from './AppSidebar';
 import { DocumentMetadata } from './DocumentMetadata';
 import { CommandMenu } from './CommandMenu';
+import { WorkRefreshStatus } from '../feedback/WorkRefreshStatus';
 
 // Full-height routes where the main area must not scroll itself
 // (the inner component controls overflow).
@@ -53,6 +54,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                         className={`main${scrollLock ? ' scroll-lock' : ''}`}
                         tabIndex={-1}
                     >
+                        <WorkRefreshStatus />
                         <RouteErrorBoundary
                             resetKey={`${location.pathname}${location.search}`}
                             title={t('routeError.title')}

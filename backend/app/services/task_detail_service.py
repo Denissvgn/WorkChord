@@ -1,6 +1,6 @@
 """Small UI reads, independent of the complete authoritative execution graph."""
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, literal, or_, select
 from sqlalchemy.orm import selectinload, raiseload
 
 from app.authority import require_project
@@ -12,6 +12,25 @@ from app.schemas.task import TaskAgentReadiness
 class TaskDetailService:
     def __init__(self, db):
         self.db = db
+
+    async def _policy_flags(self, task_id):
+        """Observe only bounded parent identities and policy flags, without hydrating execution relationships."""
+        from app.authority import internal_authority
+        from app.query_limits import MAX_ITERATION_TREE_TASKS
+        table = Task.__table__
+        ancestry = select(table.c.id, table.c.parent_id, table.c.project_id, table.c.is_deferred,
+            table.c.is_optional, literal(0).label('depth')).where(table.c.id == task_id).cte(recursive=True)
+        ancestry = ancestry.union_all(select(table.c.id, table.c.parent_id, table.c.project_id,
+            table.c.is_deferred, table.c.is_optional, ancestry.c.depth + 1)
+            .join(ancestry, table.c.id == ancestry.c.parent_id).where(ancestry.c.depth < MAX_ITERATION_TREE_TASKS - 1))
+        with internal_authority(self.db):
+            rows = (await self.db.execute(select(ancestry))).all()
+        for scope in {row.project_id for row in rows}:
+            require_project(self.db, scope)
+        if not rows or not any(row.parent_id is None for row in rows):
+            raise ValueError('Task policy ancestry is unavailable or exceeds the supported bound')
+        return {'effective_is_deferred': any(row.is_deferred for row in rows),
+                'effective_is_optional': any(row.is_optional for row in rows)}
 
     @staticmethod
     def references():
@@ -93,6 +112,8 @@ class TaskDetailService:
             statement = statement.where(Task.iteration_id.is_(None))
         page = await self.page(statement, limit=limit, after_id=after_id)
         for item in page.items:
+            if (await self._policy_flags(item.id))['effective_is_deferred']:
+                continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(
                 blocker.code in {"dependencies_incomplete", "dependency_incomplete"}
@@ -111,7 +132,7 @@ class TaskDetailService:
             return None
         require_project(self.db, task.project_id)
         await TaskService(self.db).load_owner_names([task])
-        response = TaskService(self.db).task_to_response(task)
+        response = TaskService(self.db).task_to_response(task, effective_flags=await self._policy_flags(task.id))
         # A detail projection is never eligible as input to dispatch or scheduling.
         response.children = []
         response.dependencies = []
@@ -131,4 +152,8 @@ class TaskDetailService:
             ancestors.append(TaskReference.model_validate(row))
             parent_id = row.parent_id
         response.is_composite = response.is_composite or bool(children.items)
+        observed_version = await self.db.scalar(select(Task.version).where(Task.id == task.id))
+        if observed_version != task.version:
+            from app.commands import PlanningConflict
+            raise PlanningConflict('task_context_changed', 'This task changed during the initial read. Reload before opening a draft.')
         return TaskDetailResponse(task=response, ancestors=list(reversed(ancestors)), ancestors_complete=parent_id is None, children=children, dependencies=dependencies)

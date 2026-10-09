@@ -4,6 +4,9 @@ import { createTestQueryClient, renderWithProviders } from '../../test/renderWit
 import type { TeamMember } from '../../types/team';
 import { ImportTeamModal } from './ImportTeamModal';
 
+const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
+vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
+
 const teamServiceMock = vi.hoisted(() => ({
     importFromText: vi.fn(),
 }));
@@ -57,6 +60,7 @@ class ControlledFileReader {
 describe('ImportTeamModal', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        planningMock.readInitial.mockResolvedValue({ resource: { id: 9 }, resource_id: 9, expected_revisions: { 9: 4, 10: 8 }, complete: true });
         ControlledFileReader.instances = [];
         teamServiceMock.importFromText.mockResolvedValue({
             imported_count: 1,
@@ -72,7 +76,7 @@ describe('ImportTeamModal', () => {
         const { user } = renderWithProviders(
             <ImportTeamModal iterationId={9} onClose={vi.fn()} />,
         );
-        const importButton = screen.getByRole('button', { name: 'Import' });
+        const importButton = screen.getByRole('button', { name: 'Review import' });
         const textInput = screen.getByRole('textbox', { name: 'Team members to import' });
 
         await user.click(importButton);
@@ -130,9 +134,11 @@ describe('ImportTeamModal', () => {
             expect(onStateChange).toHaveBeenLastCalledWith({ dirty: true, pending: false });
         });
 
+        await user.click(screen.getByRole('button', { name: 'Review import' }));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Import' })).toBeEnabled());
         await user.click(screen.getByRole('button', { name: 'Import' }));
         await waitFor(() => {
-            expect(teamServiceMock.importFromText).toHaveBeenCalledWith(9, validText);
+            expect(teamServiceMock.importFromText).toHaveBeenCalledWith(9, validText, { 9: 4, 10: 8 });
             expect(onStateChange).toHaveBeenLastCalledWith({ dirty: true, pending: true });
         });
 

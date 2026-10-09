@@ -167,7 +167,7 @@ flowchart LR
 | main | asyncio.run | 2441 | `asyncio.run(init_db(...))` |
 | main | init_db | 2441 | `init_db(data not statically known)` |
 | init_db | assert_database_current | 71 | `assert_database_current(data not statically known)` |
-| assert_database_current | inspect_database | 377 | `inspect_database(data not statically known)` |
+| assert_database_current | inspect_database | 384 | `inspect_database(data not statically known)` |
 
 ### Boundary effects
 

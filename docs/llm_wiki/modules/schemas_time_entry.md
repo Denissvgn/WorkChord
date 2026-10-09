@@ -26,15 +26,20 @@ flowchart LR
     n1["backend/app/schemas/time_entry.py"]
     n2["backend/app/services/time_entry_service.py"]
     n3["backend/tests/test_time_entries.py"]
+    n4["backend/tests/test_time_reports.py"]
     n0 --> n1
     n0 --> n2
     n2 --> n1
     n3 --> n1
     n3 --> n2
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
     click n0 "../modules/time_entries.md"
     click n1 "../modules/schemas_time_entry.md"
     click n2 "../modules/time_entry_service.md"
     click n3 "../modules/test_time_entries.md"
+    click n4 "../modules/test_time_reports.md"
 ```
 
 ### Internal neighbors
@@ -44,6 +49,7 @@ flowchart LR
 | Inbound | [time_entries](../modules/time_entries.md) |
 | Inbound | [time_entry_service](../modules/time_entry_service.md) |
 | Inbound | [test_time_entries](../modules/test_time_entries.md) |
+| Inbound | [test_time_reports](../modules/test_time_reports.md) |
 
 ### External packages
 

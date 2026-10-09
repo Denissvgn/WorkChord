@@ -20,9 +20,10 @@ Shared person capacity, calendar arithmetic and private availability boundaries.
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
+| `app.schemas.calendar` | `CalendarCreate` |
 | `app.schemas.team` | `VacationCreate`, `VacationUpdate`, `TeamMemberUpdate` |
-| `app.services.calendar_service` | `CalendarService` |
-| `app.services.capacity_service` | `CapacityService` |
+| `app.services.calendar_service` | `CalendarService`, `CalendarService` |
+| `app.services.capacity_service` | `CapacityService`, `day_hours` |
 | `app.services.scheduler_service` | `MemberSchedule`, `SchedulerService`, `SchedulerService`, `SchedulerService`, `SchedulerService` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.team_service` | `TeamService` |
@@ -41,6 +42,7 @@ Shared person capacity, calendar arithmetic and private availability boundaries.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_profile_capacity.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_profile_capacity.md"
 ```
@@ -51,7 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (16) |
+| Inbound | `backend` (1) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -59,13 +62,14 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 2 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `test_partial_absence_update_cannot_clear_required_dates` | `()` | — | — |
+| `test_created_short_days_apply_once_to_fractional_shared_capacity` | *(async)* `(db_session)` | — | — |
 | `db_session` | *(async)* `(request, sqlite_engine)` | `@pytest_asyncio.fixture(params=[pytest.param('sqlite', marks=pytest.mark.sqlite), pytest.param('postgresql', marks=[pytest.mark.postgresql, pytest.mark.allow_network])])` | — |
 | `allocation` | *(async)* `(db, *, hours = 6, profile = None)` | — | — |
 | `test_capacity_counts_union_of_absences_and_actual_calendar_hours` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |

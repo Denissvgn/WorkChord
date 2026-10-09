@@ -1,6 +1,6 @@
 # DateRange
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:56`
+**Location:** `frontend/src/pages/RoadmapPage.tsx:58`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)

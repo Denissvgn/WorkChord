@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 |--------|---------|
 | `../../services/exportService` | `exportService` |
 | `../../services/iterationService` | `iterationService` |
+| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
 | `../../store/iterationStore` | `useIterationStore` |
 | `../../types/iteration` | `Iteration` |
 | `../../utils/apiError` | `getApiErrorMessage` |
@@ -19,6 +20,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 | `../common/Button` | `Button` |
 | `../common/ConfirmDialog` | `ConfirmDialog` |
 | `../feedback/toast` | `useToast` |
+| `./IterationImportDialog` | `IterationImportDialog` |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
 | `lucide-react` | `Calendar`, `Trash2`, `ArrowRight`, `Download`, `Upload`, `FolderOpen` |
 | `react` | `useState`, `useRef` |
@@ -36,60 +38,21 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/ConfirmDialog.tsx"]
-    n2["frontend/src/components/feedback/toast.ts"]
-    n3["frontend/src/components/iteration/IterationList.tsx"]
-    n4["frontend/src/pages/IterationsPage.tsx"]
-    n5["frontend/src/services/exportService.ts"]
-    n6["frontend/src/services/iterationService.ts"]
-    n7["frontend/src/store/iterationStore.ts"]
-    n8["frontend/src/types/iteration.ts"]
-    n9["frontend/src/utils/apiError.ts"]
-    n10["frontend/src/utils/formatDate.ts"]
+    n0["frontend"]
+    n1["frontend/src/components/iteration/IterationList.tsx"]
+    n0 --> n1
     n1 --> n0
-    n3 --> n0
-    n3 --> n1
-    n3 --> n2
-    n3 --> n5
-    n3 --> n6
-    n3 --> n7
-    n3 --> n8
-    n3 --> n9
-    n3 --> n10
-    n4 --> n2
-    n4 --> n3
-    n4 --> n5
-    n4 --> n8
-    n4 --> n9
-    n6 --> n8
-    click n0 "../modules/Button.md"
-    click n1 "../modules/ConfirmDialog.md"
-    click n2 "../modules/toast.md"
-    click n3 "../modules/IterationList.md"
-    click n4 "../modules/IterationsPage.md"
-    click n5 "../modules/exportService.md"
-    click n6 "../modules/iterationService.md"
-    click n7 "../modules/iterationStore.md"
-    click n8 "../modules/types_iteration.md"
-    click n9 "../modules/apiError.md"
-    click n10 "../modules/formatDate.md"
+    click n1 "../modules/IterationList.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [IterationsPage](../modules/IterationsPage.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [ConfirmDialog](../modules/ConfirmDialog.md) |
-| Outbound | [toast](../modules/toast.md) |
-| Outbound | [exportService](../modules/exportService.md) |
-| Outbound | [iterationService](../modules/iterationService.md) |
-| Outbound | [iterationStore](../modules/iterationStore.md) |
-| Outbound | [types_iteration](../modules/types_iteration.md) |
-| Outbound | [apiError](../modules/apiError.md) |
-| Outbound | [formatDate](../modules/formatDate.md) |
+| Inbound | `frontend` (1) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -97,11 +60,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationListProps](../entities/IterationListProps.md) | Class | 16 | — | — |
+| [IterationListProps](../entities/IterationListProps.md) | Class | 18 | — | — |
 
 ## Functions
 

@@ -370,5 +370,54 @@ class AndroidArtifacts(unittest.TestCase):
                 self.assertEqual(receipt['status'], 'failed')
 
 
+class ReleaseQualificationContracts(unittest.TestCase):
+    def test_qualification_flags_are_explicit_and_paired(self):
+        for arguments in (['--release-qualification'], ['--qualification-inputs', '/tmp/input.json']):
+            with patch.object(sys, 'argv', ['android', *arguments]), self.assertRaises(SystemExit) as error:
+                android.main()
+            self.assertEqual(error.exception.code, 2)
+
+    def test_required_case_parser_rejects_skips_failures_and_missing_cases(self):
+        from android_qualification import executed_case
+        name, method = 'com.workchord.android.LiveCompanionTest', 'requiredScenario'
+        def result(end):
+            return f'INSTRUMENTATION_STATUS: class={name}\nINSTRUMENTATION_STATUS: test={method}\nINSTRUMENTATION_STATUS_CODE: 1\nINSTRUMENTATION_STATUS: class={name}\nINSTRUMENTATION_STATUS: test={method}\nINSTRUMENTATION_STATUS_CODE: {end}\nINSTRUMENTATION_CODE: -1\n'
+        self.assertEqual(executed_case(result(0), name, method), {'classname': name, 'name': method})
+        for stream in [result(-1), result(-2), result(-3), result(-4), result(0).replace(method, 'other'), 'INSTRUMENTATION_CODE: -1\n', result(0).replace('INSTRUMENTATION_CODE: -1', 'INSTRUMENTATION_CODE: 0')]:
+            with self.subTest(stream=stream), self.assertRaises(ValueError):
+                executed_case(stream, name, method)
+
+    def test_release_manifest_forbids_cleartext_backup_and_debug(self):
+        from android_qualification import manifest_flags
+        secure = '\n'.join(f'android:{name}(0x123)=(type 0x12)0x0' for name in ('allowBackup','usesCleartextTraffic','debuggable'))
+        self.assertFalse(any(manifest_flags(secure).values()))
+        for name in ('allowBackup','usesCleartextTraffic','debuggable'):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                manifest_flags(secure.replace(f'android:{name}(0x123)=(type 0x12)0x0', f'android:{name}(0x123)=(type 0x12)0xffffffff'))
+        with self.assertRaises(ValueError): manifest_flags('')
+
+    def test_inventory_contains_every_declared_live_and_storage_scenario(self):
+        from android_qualification import required_cases
+        cases = required_cases(REPO/'android-companion')
+        self.assertEqual(len(cases), len(set(cases)))
+        names = {method for _,method in cases}
+        self.assertTrue({'browserApprovalCanonicalEvidenceConflictAndReadRecovery',
+            'reopenedProcessRestoresAuthorizedDraftAndRevocationClearsPrivateView',
+            'networkInterruptionLocksCurrentWorkAndRecoversLocalInputs',
+            'actualWebEditorAndNativeDraftProduceRecoverableConflict',
+            'exactReleaseConfigurationRejectsCleartextAndNetworkLogging'}.issubset(names))
+
+    def test_unowned_or_production_inputs_cannot_reach_device_operations(self):
+        from android_qualification import load_inputs
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'input.json'
+            for data in [{}, {'schema_version':1,'owner_nonce':'a'*32,'device_serial':'physical-device'},
+                         {'schema_version':1,'owner_nonce':'a'*32,'device_serial':'emulator-5554','signing_mode':'production'}]:
+                path.write_text(json.dumps(data))
+                with patch.dict(os.environ, {'WORKCHORD_ANDROID_QUALIFICATION_OWNER':'a'*32}), self.assertRaises(ValueError), patch.object(subprocess,'check_output') as device:
+                    load_inputs(path,'b'*64,'c'*40)
+                device.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()

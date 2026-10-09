@@ -80,13 +80,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | retry_personal_notification | domain_result | 85 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | retry_personal_notification | DiscussionService(…).retry | 85 | `DiscussionService(db).retry(delivery_id)` |
 | retry_personal_notification | DiscussionService | 85 | `DiscussionService(db)` |
 
@@ -98,11 +98,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
 | unresolved_call | `retry_personal_notification` | `DiscussionService(db).retry` | 85 |
 
 ## Behavior

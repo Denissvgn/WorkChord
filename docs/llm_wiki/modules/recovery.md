@@ -30,8 +30,10 @@ The task deletion hook writes the highest observed task version to an independen
 flowchart LR
     n0["backend"]
     n1["backend/app/models/recovery.py"]
+    n2["scripts"]
     n0 --> n1
     n1 --> n0
+    n2 --> n1
     click n1 "../modules/recovery.md"
 ```
 
@@ -41,7 +43,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (17) |
+| Inbound | `scripts` (1) |
 | Outbound | `backend` (3) |
 
 ### External packages
@@ -50,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

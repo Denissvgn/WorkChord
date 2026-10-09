@@ -25,6 +25,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }
     const [start, setStart] = useState(startDate ?? localDate());
     const [end, setEnd] = useState(endDate ?? startDate ?? localDate());
     const [calendar, setCalendar] = useState('');
+    const [calendarVersion, setCalendarVersion] = useState<number | null>(null);
     const [absenceStart, setAbsenceStart] = useState('');
     const [absenceEnd, setAbsenceEnd] = useState('');
     const [editing, setEditing] = useState<Absence | null>(null);
@@ -38,7 +39,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }
     const calendars = useQuery({ queryKey: ['calendars'], enabled: expanded && manage, queryFn: calendarService.getAll });
     const refresh = async () => { await client.invalidateQueries({ queryKey: ['profile-capacity'] }); await availability.refetch(); await client.invalidateQueries({ queryKey: ['gantt'] }); };
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
-    const selectCalendar = useMutation({ mutationFn: async () => api.put(`/team-member-profiles/${profileId}/availability`, { calendar_id: Number(calendar), expected_version: availability.data!.version }), onSuccess: refresh });
+    const selectCalendar = useMutation({ mutationFn: async () => api.put(`/team-member-profiles/${profileId}/availability`, { calendar_id: Number(calendar), expected_version: calendarVersion }), onSuccess: async () => { setCalendar(''); setCalendarVersion(null); await refresh(); }, onError: async error => { if ((error as { response?: { status?: number } }).response?.status === 409) await availability.refetch(); } });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const absence = useMutation({ mutationFn: async (removed?: Absence) => {
         const current = removed ?? editing;
@@ -46,6 +47,9 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }
         return current ? api.put(`/team-member-profiles/${profileId}/absences/${current.id}`, { ...body, expected_version: current.version, deleted: Boolean(removed) })
             : api.post(`/team-member-profiles/${profileId}/absences`, body);
     }, onSuccess: async () => { setEditing(null); setAbsenceStart(''); setAbsenceEnd(''); await refresh(); } });
+
+    const pending = selectCalendar.isPending || absence.isPending;
+    const calendarChanged = calendarVersion !== null && availability.data?.version !== calendarVersion;
 
     return <details className="space-y-3 rounded-md border border-border p-3" onToggle={event => setExpanded(event.currentTarget.open)}>
         <summary className="cursor-pointer font-medium text-content-primary">{t(manage ? 'teamwork.myAvailability' : 'teamwork.personCapacity')}</summary>
@@ -72,14 +76,15 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }
             {availability.data && <>
                 {(availability.data.calendar_selection_required || availability.data.allocation_calendar_conflicts.length > 0) && <p className="text-sm text-feedback-warning-foreground">{t('teamwork.chooseCalendar')}</p>}
                 <label className="field-lbl" htmlFor={`${id}-calendar`}>{t('teamwork.personCalendar')}</label>
-                <select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} onChange={event => setCalendar(event.target.value)}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</select>
-                <Button type="button" size="sm" variant="secondary" disabled={!calendar || selectCalendar.isPending} onClick={() => selectCalendar.mutate()}>{t('teamwork.saveCalendar')}</Button>
+                <select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} disabled={pending} onChange={event => { if (calendarVersion === null) setCalendarVersion(availability.data!.version); setCalendar(event.target.value); }}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</select>
+                <Button type="button" size="sm" variant="secondary" disabled={!calendar || calendarVersion === null || calendarChanged || pending} onClick={() => selectCalendar.mutate()}>{t('teamwork.saveCalendar')}</Button>
+                {calendarChanged && <div role="status" className="space-y-2 text-sm text-feedback-warning-foreground"><p>{t('taskEditor.conflictTitle')}</p><p>{calendars.data?.find(item => item.id === availability.data?.calendar_id)?.name ?? t('teamwork.chooseCalendar')}</p><Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => setCalendarVersion(availability.data!.version)}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button></div>}
                 <h4 className="pt-3 font-medium">{t('teamwork.absences')}</h4>
                 <ul className="space-y-2">{availability.data.absences.map(item => <li key={item.id} className="flex flex-wrap items-center gap-2 text-sm"><span>{item.start_date} – {item.end_date}</span>
-                    <Button type="button" size="sm" variant="ghost" disabled={absence.isPending} onClick={() => { setEditing(item); setAbsenceStart(item.start_date); setAbsenceEnd(item.end_date); }}>{t('teamwork.edit')}</Button>
-                    <Button type="button" size="sm" variant="ghost" disabled={absence.isPending} onClick={() => absence.mutate(item)}>{t('teamwork.remove')}</Button></li>)}</ul>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2"><label className="text-sm" htmlFor={`${id}-absence-start`}>{t('teamwork.absenceFrom')}<input id={`${id}-absence-start`} type="date" className="input w-full" value={absenceStart} onChange={event => setAbsenceStart(event.target.value)} /></label><label className="text-sm" htmlFor={`${id}-absence-end`}>{t('teamwork.absenceTo')}<input id={`${id}-absence-end`} type="date" className="input w-full" value={absenceEnd} onChange={event => setAbsenceEnd(event.target.value)} /></label></div>
-                <Button type="button" size="sm" disabled={!absenceStart || !absenceEnd || absenceEnd < absenceStart || absence.isPending} onClick={() => absence.mutate(undefined)}>{t(editing ? 'teamwork.updateAbsence' : 'teamwork.addAbsence')}</Button>
+                    <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => { setEditing(item); setAbsenceStart(item.start_date); setAbsenceEnd(item.end_date); }}>{t('teamwork.edit')}</Button>
+                    <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => absence.mutate(item)}>{t('teamwork.remove')}</Button></li>)}</ul>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2"><label className="text-sm" htmlFor={`${id}-absence-start`}>{t('teamwork.absenceFrom')}<input id={`${id}-absence-start`} type="date" className="input w-full" value={absenceStart} disabled={pending} onChange={event => setAbsenceStart(event.target.value)} /></label><label className="text-sm" htmlFor={`${id}-absence-end`}>{t('teamwork.absenceTo')}<input id={`${id}-absence-end`} type="date" className="input w-full" value={absenceEnd} disabled={pending} onChange={event => setAbsenceEnd(event.target.value)} /></label></div>
+                <Button type="button" size="sm" disabled={!absenceStart || !absenceEnd || absenceEnd < absenceStart || pending} onClick={() => absence.mutate(undefined)}>{t(editing ? 'teamwork.updateAbsence' : 'teamwork.addAbsence')}</Button>
             </>}
             {(absence.isError || selectCalendar.isError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(absence.error ?? selectCalendar.error, t('teamwork.saveFailed'))}</p>}
         </>}

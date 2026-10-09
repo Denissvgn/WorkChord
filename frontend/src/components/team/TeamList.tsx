@@ -1,3 +1,4 @@
+import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +30,7 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: teamService.delete,
+        mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => teamService.delete(id, revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
         },
@@ -37,6 +38,15 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
             toast.error(getApiErrorMessage(error, t('teamCapacity.deleteFailed')));
         },
     });
+
+    const confirmMemberDelete = async (member: TeamMember) => {
+        try {
+            const observed = await planningInputService.readInitial<TeamMember>('member', member.id);
+            requestConfirmation({ title: t('actions.delete'), description: observed.resource.name,
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteMutation.mutateAsync({ id: member.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { toast.error(getApiErrorMessage(cause, t('teamCapacity.deleteFailed'))); }
+    };
 
     // Find the current member from fresh data for the vacation manager
     const managingVacationsFor = managingVacationsForId
@@ -53,14 +63,7 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
                     key={member.id}
                     member={member}
                     onEdit={onEdit}
-                    onDelete={() => requestConfirmation({
-                        title: t('actions.delete'),
-                        description: t('teamCapacity.deleteAssignmentConfirm'),
-                        confirmLabel: t('actions.delete'),
-                        cancelLabel: t('actions.cancel'),
-                        closeLabel: t('actions.close'),
-                        onConfirm: () => deleteMutation.mutateAsync(member.id),
-                    })}
+                    onDelete={() => void confirmMemberDelete(member)}
                     onManageVacations={() => setManagingVacationsForId(member.id)}
                 />
             ))}

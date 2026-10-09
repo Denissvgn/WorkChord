@@ -15,7 +15,7 @@ Preserve legacy absence identities and report conflicting person calendars.
 | `app.models.iteration` | `Iteration` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
 | `app.services.upgrade_service` | `alembic_config` |
-| `datetime` | `date` |
+| `datetime` | `UTC`, `date`, `datetime` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `MetaData`, `Table`, `create_engine`, `select` |
 | `sqlalchemy.engine` | `make_url` |

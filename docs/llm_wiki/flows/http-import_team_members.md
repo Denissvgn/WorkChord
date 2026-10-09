@@ -39,7 +39,7 @@ flowchart LR
     s6["6. len"]
     s7["7. HTTPException"]
     s8["8. str"]
-    s1 -. "service.import_members(iteration_id, data.text, expected_revisions=data.expected_revisions)" .-> s2
+    s1 -. "service.import_members(iteration_id, data.text, expected_revisions=...)" .-> s2
     s1 -. "service.get_by_id(member.id)" .-> s3
     s1 -. "full_members.append(full_member)" .-> s4
     s1 -->|"TeamImportResponse(imported_count=len(...), members=full_members)"| s5
@@ -71,7 +71,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_team_members | service.import_members | 370 | `service.import_members(iteration_id, data.text, expected_revisions=data.expected_revisions)` |
+| import_team_members | service.import_members | 370 | `service.import_members(iteration_id, data.text, expected_revisions=...)` |
 | import_team_members | service.get_by_id | 374 | `service.get_by_id(member.id)` |
 | import_team_members | full_members.append | 375 | `full_members.append(full_member)` |
 | import_team_members | TeamImportResponse | 377 | `TeamImportResponse(imported_count=len(...), members=full_members)` |

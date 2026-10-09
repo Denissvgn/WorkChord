@@ -1,3 +1,4 @@
+import { revisionHeaders, type ObservedRevisions } from './planningInputService';
 import api from './api';
 import type {
     Iteration,
@@ -42,13 +43,13 @@ export const iterationService = {
         return response.data;
     },
 
-    update: async (id: number, data: IterationUpdate) => {
-        const response = await api.put<Iteration>(`/iterations/${id}`, data);
+    update: async (id: number, data: IterationUpdate, revisions: ObservedRevisions) => {
+        const response = await api.put<Iteration>(`/iterations/${id}`, data, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 
-    delete: async (id: number) => {
-        const response = await api.delete<{ success: boolean; message: string }>(`/iterations/${id}`);
+    delete: async (id: number, revisions: ObservedRevisions) => {
+        const response = await api.delete<{ success: boolean; message: string }>(`/iterations/${id}`, { headers: revisionHeaders(revisions) });
         return response.data;
     },
 

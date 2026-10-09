@@ -104,6 +104,7 @@ export const TaskList = ({
     const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set());
     const [showMergeModal, setShowMergeModal] = useState(false);
     const [mergeParentTitle, setMergeParentTitle] = useState('');
+    const [mergeRevision, setMergeRevision] = useState<number | undefined>(undefined);
     const mergeTitleRef = useRef<HTMLInputElement>(null);
     const mergeTitleId = useId();
     const [selectedBulkTaskIds, setSelectedBulkTaskIds] = useState<Set<number>>(new Set());
@@ -177,8 +178,8 @@ export const TaskList = ({
     });
 
     const mergeMutation = useMutation({
-        mutationFn: (data: { task_ids: number[]; parent_title: string }) =>
-            taskService.mergeTasks(iterationId, { ...data, expected_revision: iterationRevision }),
+        mutationFn: (data: { task_ids: number[]; parent_title: string; expected_revision: number }) =>
+            taskService.mergeTasks(iterationId, data),
         onSuccess: (parent, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
@@ -253,10 +254,11 @@ export const TaskList = ({
 
     // Handle merge confirmation
     const handleMergeConfirm = () => {
-        if (selectedTaskIds.size >= 2 && mergeParentTitle.trim()) {
+        if (selectedTaskIds.size >= 2 && mergeParentTitle.trim() && mergeRevision !== undefined) {
             mergeMutation.mutate({
                 task_ids: Array.from(selectedTaskIds),
-                parent_title: mergeParentTitle.trim()
+                parent_title: mergeParentTitle.trim(),
+                expected_revision: mergeRevision
             });
         }
     };
@@ -443,6 +445,7 @@ export const TaskList = ({
                             size="sm"
                             onClick={() => {
                                 mergeMutation.reset();
+                                setMergeRevision(iterationRevision);
                                 setShowMergeModal(true);
                             }}
                         >
@@ -674,6 +677,9 @@ export const TaskList = ({
             >
                 {showMergeModal && (
                     <>
+                        {mergeMutation.isError && <Button type="button" variant="secondary" disabled={mergeMutation.isPending} onClick={() => {
+                            void refetchTasks().then(result => setMergeRevision(result.data?.[0]?.iteration_revision));
+                        }}>{t('planningInput.reviewAgain')}</Button>}
                         <p className="mb-4 text-content-secondary">
                             {t('taskList.selectedTasks', { count: selectedTaskIds.size })}
                         </p>
@@ -718,7 +724,7 @@ export const TaskList = ({
                             <Button
                                 variant="primary"
                                 onClick={handleMergeConfirm}
-                                disabled={!mergeParentTitle.trim() || mergeMutation.isPending}
+                                disabled={mergeRevision === undefined || !mergeParentTitle.trim() || mergeMutation.isPending}
                                 isLoading={mergeMutation.isPending}
                             >
                                 {t('taskList.mergeTasks')}

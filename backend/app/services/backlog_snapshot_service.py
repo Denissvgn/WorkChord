@@ -34,6 +34,7 @@ class BacklogSnapshotService:
         now = utc_now()
         payload = {"schema_version": 1, "scope": "project_backlog", "project_id": project_id,
                    "tasks": [serializer._task_to_export(task) for task in roots]}
+        payload["profile_lifetimes"] = await serializer.profile_lifetimes(payload)
         encoded = serializer._encode(payload)
         snapshot = ApplicationSnapshot(project_id=project_id, iteration_id=None, schema_version=3, input_revision=0,
             filename=f"snapshot_{now.strftime('%Y%m%d_%H%M%S_%f')}_{reason}.json", payload=payload,
@@ -70,6 +71,7 @@ class BacklogSnapshotService:
         if {task.id: task.version for task in current.values()} != expected_versions:
             raise AuthorityError("backlog_version_conflict", "The backlog changed. Reload all current task versions before restoring.", 409)
         await service._require_unclaimed_structure(current)
+        await SnapshotService(self.db)._preflight_profile_lifetimes(payload)
         await self.capture(project_id, "before_restore")
         rows, pending = [], [(row, None) for row in payload["tasks"]]
         while pending:

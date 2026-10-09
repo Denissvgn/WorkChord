@@ -4,6 +4,9 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import type { TeamMember, TeamMemberCreate } from '../../types/team';
 import { TeamForm } from './TeamForm';
 
+const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
+vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
+
 const teamServiceMock = vi.hoisted(() => ({
     getProfiles: vi.fn(),
     create: vi.fn(),
@@ -40,6 +43,7 @@ const deferred = <T,>() => {
 describe('TeamForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        planningMock.readInitial.mockResolvedValue({ resource: memberFixture(), resource_id: 9, expected_revisions: { 9: 4, 10: 8 }, complete: true });
         teamServiceMock.getProfiles.mockResolvedValue([]);
         teamServiceMock.create.mockResolvedValue(memberFixture());
         teamServiceMock.update.mockResolvedValue(memberFixture());
@@ -59,9 +63,9 @@ describe('TeamForm', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent(
             'Existing profiles could not be loaded. Retry, or enter person details manually below.',
         );
-        expect(screen.getByRole('combobox', { name: 'Existing profile' })).toBeDisabled();
+        expect(await screen.findByRole('combobox', { name: 'Existing profile' })).toBeDisabled();
 
-        await user.type(screen.getByRole('textbox', { name: 'Person' }), 'Grace Hopper');
+        await user.type(await screen.findByRole('textbox', { name: 'Person' }), 'Grace Hopper');
         await user.click(screen.getByRole('button', { name: 'Add to Iteration' }));
 
         await waitFor(() => {
@@ -73,7 +77,7 @@ describe('TeamForm', () => {
                 availability_percent: 100,
                 professionalism_coefficient: 1,
                 operational_utilization: 20,
-            } satisfies TeamMemberCreate);
+            } satisfies TeamMemberCreate, { 9: 4, 10: 8 });
         });
         expect(onSuccess).toHaveBeenCalledOnce();
     });

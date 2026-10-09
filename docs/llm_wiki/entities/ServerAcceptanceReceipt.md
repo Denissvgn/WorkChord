@@ -48,12 +48,13 @@ _Auto-generated from `ServerAcceptanceReceipt` in `backend/app/autonomy/server_a
 flowchart LR
     n0["ServerAcceptanceReceipt (backend/app/autonomy/server_acceptance.py)"]
     n1["StrictContractModel (backend/app/autonomy/canonical.py)"]
-    n2["run_server_acceptance (backend/app/autonomy/server_acceptance.py)"]
-    n3["ServerAcceptanceReceipt.canonical_receipt (backend/app/autonomy/server_acceptance.py)"]
-    n4["verify_receipt_current_build (backend/app/autonomy/server_acceptance.py)"]
-    n5["verify_receipt_trusted_signer (backend/app/autonomy/server_acceptance.py)"]
-    n6["backend/app/cli/server_acceptance.py"]
-    n7["_receipt (backend/tests/autonomy/test_server_acceptance.py)"]
+    n2["_pin (backend/app/autonomy/acceptance_artifacts.py)"]
+    n3["run_server_acceptance (backend/app/autonomy/server_acceptance.py)"]
+    n4["ServerAcceptanceReceipt.canonical_receipt (backend/app/autonomy/server_acceptance.py)"]
+    n5["verify_receipt_current_build (backend/app/autonomy/server_acceptance.py)"]
+    n6["verify_receipt_trusted_signer (backend/app/autonomy/server_acceptance.py)"]
+    n7["backend/app/cli/server_acceptance.py"]
+    n8["_receipt (backend/tests/autonomy/test_server_acceptance.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,14 +62,16 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/autonomy_server_acceptance.md"
     click n1 "../modules/autonomy_canonical.md"
-    click n2 "../modules/autonomy_server_acceptance.md"
+    click n2 "../modules/acceptance_artifacts.md"
     click n3 "../modules/autonomy_server_acceptance.md"
     click n4 "../modules/autonomy_server_acceptance.md"
     click n5 "../modules/autonomy_server_acceptance.md"
-    click n6 "../modules/cli_server_acceptance.md"
-    click n7 "../modules/test_server_acceptance.md"
+    click n6 "../modules/autonomy_server_acceptance.md"
+    click n7 "../modules/cli_server_acceptance.md"
+    click n8 "../modules/test_server_acceptance.md"
 ```
 
 ### Summary
@@ -87,6 +90,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `_pin` | type_reference | [acceptance_artifacts](../modules/acceptance_artifacts.md) | — |
 | `run_server_acceptance` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 1 |
 | `run_server_acceptance` | type_reference | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | — |
 | `ServerAcceptanceReceipt.canonical_receipt` | type_reference | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | — |

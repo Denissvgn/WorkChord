@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/services/iterationService.ts`._
 |--------|---------|
 | `../types/iteration` | `Iteration`, `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationSummary`, `IterationUpdate` |
 | `./api` | `api` |
+| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
 
 ## Module Signals
 
@@ -39,6 +40,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (17) |
-| Outbound | `frontend` (2) |
+| Outbound | `frontend` (3) |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

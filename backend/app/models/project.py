@@ -103,6 +103,7 @@ class Initiative(Base):
 class Project(Base):
     """Outcome-oriented planning container above tasks and iterations."""
     __tablename__ = "projects"
+    __table_args__ = {"sqlite_autoincrement": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)

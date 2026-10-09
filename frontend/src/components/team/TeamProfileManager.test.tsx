@@ -17,6 +17,8 @@ const teamServiceMock = vi.hoisted(() => ({
     updateProfileSkill: vi.fn(),
     deleteProfileSkill: vi.fn(),
 }));
+const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
+vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
 
 vi.mock('../../services/teamService', () => ({
     teamService: teamServiceMock,
@@ -44,6 +46,9 @@ const profileFixture = (
 describe('TeamProfileManager profile parity', () => {
     beforeEach(() => {
         teamServiceMock.getProfiles.mockResolvedValue([]);
+        planningMock.readInitial.mockImplementation(async (_kind: string, id: number) => ({ resource_id: id,
+            resource: (await teamServiceMock.getProfiles()).find((profile: TeamMemberProfile) => profile.id === id) ?? profileFixture({ id }),
+            expected_revisions: { 1: 7, 2: 3 }, complete: true }));
         teamServiceMock.createProfile.mockImplementation(
             async (data: TeamMemberProfileCreate) => profileFixture({
                 id: 101,
@@ -121,6 +126,7 @@ describe('TeamProfileManager profile parity', () => {
             assignment_modes: ['execution', 'verification'],
         });
         expect(payload).not.toHaveProperty('seed_key');
+        expect(teamServiceMock.updateProfile.mock.calls[0][2]).toEqual({ 1: 7, 2: 3 });
     });
 
     it('does not label an automation-enabled human profile with no modes as dispatch eligible', async () => {
@@ -164,5 +170,32 @@ describe('TeamProfileManager profile parity', () => {
         await user.click(screen.getByRole('button', { name: 'Create' }));
 
         expect(await screen.findByRole('alert')).toHaveTextContent('Profile save failed.');
+    });
+});
+
+
+describe('profile conflict observation', () => {
+    it('keeps the typed value and original complete map until explicit reapply', async () => {
+        const profile = profileFixture();
+        teamServiceMock.getProfiles.mockResolvedValue([profile]);
+        planningMock.readInitial.mockResolvedValue({ resource: profile, expected_revisions: { 1: 7, 2: 3 }, complete: true });
+        teamServiceMock.updateProfile.mockRejectedValue({ response: { status: 409, data: { detail: 'Scope changed' } } });
+        const { user } = renderWithProviders(<TeamProfileManager />);
+        await screen.findByTestId('profile-card');
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+        const input = screen.getByRole('textbox', { name: 'Display name' });
+        await user.clear(input); await user.type(input, 'Retained draft');
+        const reads = planningMock.readInitial.mock.calls.length;
+        planningMock.readInitial.mockResolvedValue({ resource: { ...profile, display_name: 'Peer update' }, expected_revisions: { 1: 8, 2: 4, 3: 1 }, complete: true });
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await screen.findByRole('alert');
+        expect(input).toHaveValue('Retained draft');
+        expect(planningMock.readInitial.mock.calls.length).toBe(reads);
+        expect(teamServiceMock.updateProfile.mock.lastCall?.[2]).toEqual({ 1: 7, 2: 3 });
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await waitFor(() => expect(planningMock.readInitial.mock.calls.length).toBe(reads + 1));
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(teamServiceMock.updateProfile.mock.lastCall?.[2]).toEqual({ 1: 8, 2: 4, 3: 1 }));
+        expect(input).toHaveValue('Retained draft');
     });
 });

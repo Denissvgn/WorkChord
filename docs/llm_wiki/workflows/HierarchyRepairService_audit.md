@@ -10,6 +10,7 @@
 2. `services_work_metrics.scoped_metric_tasks`
 3. `task_status_service.TaskStatusService.derive_parent_status`
 4. `services_work_metrics.task_signals`
+5. `services_work_metrics.effective_work_flags`
 
 ## Touches
 

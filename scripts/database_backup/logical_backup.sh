@@ -19,7 +19,7 @@ mkdir -p "${backup_root}"
 umask 077
 
 timestamp=$(date -u +%Y%m%dT%H%M%SZ)
-temporary=$(mktemp "${backup_root}/.workchord-${timestamp}-XXXXXX.dump")
+temporary=$(mktemp "${backup_root}/.workchord-${timestamp}-XXXXXX")
 final="${backup_root}/workchord-${timestamp}.dump"
 manifest="${final}.manifest.json"
 trap 'rm -f "${temporary}"' EXIT

@@ -79,16 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delivery_metrics | domain_result | 49 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| delivery_metrics | DeliveryMetricsService(…).report | 49 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days)` |
-| delivery_metrics | DeliveryMetricsService | 49 | `DeliveryMetricsService(db)` |
+| delivery_metrics | domain_result | 71 | `domain_result(...)` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| delivery_metrics | DeliveryMetricsService(…).report | 71 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days)` |
+| delivery_metrics | DeliveryMetricsService | 71 | `DeliveryMetricsService(db)` |
 
 ### Boundary effects
 
@@ -98,12 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `delivery_metrics` | `DeliveryMetricsService(db).report` | 49 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| unresolved_call | `delivery_metrics` | `DeliveryMetricsService(db).report` | 71 |
 
 ## Behavior
 

@@ -79,16 +79,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 175 | `domain_result(...)` |
-| domain_result | HTTPException | 29 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 29 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 31 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 31 | `str(exc)` |
-| domain_result | HTTPException | 33 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 33 | `str(exc)` |
-| domain_result | HTTPException | 35 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService(…).conversion | 175 | `TaskBriefService(db).conversion(task_id, data)` |
-| convert_task_brief | TaskBriefService | 175 | `TaskBriefService(db)` |
+| convert_task_brief | domain_result | 197 | `domain_result(...)` |
+| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 53 | `str(exc)` |
+| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| convert_task_brief | TaskBriefService(…).conversion | 197 | `TaskBriefService(db).conversion(task_id, data)` |
+| convert_task_brief | TaskBriefService | 197 | `TaskBriefService(db)` |
 
 ### Boundary effects
 
@@ -98,12 +98,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 29 |
-| unresolved_call | `domain_result` | `exc.detail` | 29 |
-| external_call | `domain_result` | `HTTPException` | 31 |
-| external_call | `domain_result` | `HTTPException` | 33 |
-| external_call | `domain_result` | `HTTPException` | 35 |
-| unresolved_call | `convert_task_brief` | `TaskBriefService(db).conversion` | 175 |
+| external_call | `domain_result` | `HTTPException` | 51 |
+| unresolved_call | `domain_result` | `exc.detail` | 51 |
+| external_call | `domain_result` | `HTTPException` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| unresolved_call | `convert_task_brief` | `TaskBriefService(db).conversion` | 197 |
 
 ## Behavior
 

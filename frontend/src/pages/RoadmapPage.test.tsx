@@ -206,6 +206,7 @@ describe('RoadmapPage', () => {
         });
 
         expect(await screen.findByRole('button', { name: /^Launch,/ })).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Load more' }));
         expect(await screen.findByText(content => (
             content.startsWith('1 milestone markers and all project date ranges remain visible.')
         ))).toBeVisible();
@@ -228,6 +229,7 @@ describe('RoadmapPage', () => {
             initialEntries: ['/roadmap'],
         });
 
+        await user.click(await screen.findByRole('button', { name: 'Load more' }));
         expect(await screen.findByText(content => (
             content.startsWith('1 milestone markers and all project date ranges remain visible.')
         ))).toBeVisible();

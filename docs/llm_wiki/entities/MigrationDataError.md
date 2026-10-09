@@ -1,6 +1,6 @@
 # MigrationDataError
 
-**Location:** `backend/app/database_migration/source.py:48`
+**Location:** `backend/app/database_migration/source.py:49`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [source](../modules/source.md)
@@ -92,7 +92,7 @@ flowchart LR
 | `_validate_orphans` | call | [source](../modules/source.md) | 1 |
 | `_validate_task_graphs` | call | [source](../modules/source.md) | 2 |
 | `_validate_values` | call | [source](../modules/source.md) | 6 |
-| `preflight_source` | call | [source](../modules/source.md) | 7 |
+| `preflight_source` | call | [source](../modules/source.md) | 12 |
 | `validate_writer_drain_evidence` | call | [source](../modules/source.md) | 17 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

@@ -20,8 +20,8 @@ _Auto-generated from `frontend/src/components/iteration/IterationForm.test.tsx`.
 
 | Signal | Values |
 |--------|--------|
-| Constants | `iterationServiceMock`, `projectServiceMock`, `iterationStoreMock` |
-| Module calls | `iterationServiceMock = hoisted`, `projectServiceMock = hoisted`, `iterationStoreMock = hoisted`, `mock`, `mock`, `mock`, `describe` |
+| Constants | `planningMock`, `iterationServiceMock`, `projectServiceMock`, `iterationStoreMock` |
+| Module calls | `planningMock = hoisted`, `mock`, `iterationServiceMock = hoisted`, `projectServiceMock = hoisted`, `iterationStoreMock = hoisted`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 

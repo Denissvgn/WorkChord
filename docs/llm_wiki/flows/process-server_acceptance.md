@@ -2,17 +2,18 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [cli_server_acceptance](../modules/cli_server_acceptance.md)
-**Modules touched:** [autonomy_canonical](../modules/autonomy_canonical.md), [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md), [build_identity](../modules/build_identity.md), and 2 more
+**Modules touched:** [acceptance_artifacts](../modules/acceptance_artifacts.md), [autonomy_canonical](../modules/autonomy_canonical.md), [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md), and 3 more
 
 **Complete modules touched:**
 
+- [acceptance_artifacts](../modules/acceptance_artifacts.md)
 - [autonomy_canonical](../modules/autonomy_canonical.md)
 - [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)
 - [build_identity](../modules/build_identity.md)
 - [cli_server_acceptance](../modules/cli_server_acceptance.md)
 - [loader](../modules/loader.md)
 
-**Related modules:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md), [build_identity](../modules/build_identity.md)
+**Related modules:** [acceptance_artifacts](../modules/acceptance_artifacts.md), [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md), [build_identity](../modules/build_identity.md)
 
 ## Call sequence
 
@@ -57,7 +58,7 @@ sequenceDiagram
     p1-->>p4: os.getenv
 ```
 
-> Call sequence diagram shows 30 of 343 interactions; 313 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 439 interactions; 409 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -87,18 +88,18 @@ flowchart LR
     s2 -. "parser.add_argument('--signer-url', default=os.getenv(...))" .-> s10
     s2 -. "os.getenv('AUTONOMY_SIGNER_URL', 'http://openbao:8200')" .-> s11
     s2 -. "parser.add_argument('--signer-token-file', type=Path, default=Path(...))" .-> s12
-    b0["filesystem_read args.trusted_signer_public_key_file.read_text"]
-    s1 -. "filesystem_read args.trusted_signer_public_key_file.read_text" .-> b0
-    b1["filesystem_read args.verify_receipt.read_text"]
-    s1 -. "filesystem_read args.verify_receipt.read_text" .-> b1
-    b2["output print"]
-    s1 -. "output print" .-> b2
-    b3["output print"]
-    s1 -. "output print" .-> b3
-    b4["environment_read os.getenv"]
-    s2 -. "environment_read os.getenv" .-> b4
-    b5["environment_read os.getenv"]
-    s2 -. "environment_read os.getenv" .-> b5
+    b0["output print"]
+    s1 -. "output print" .-> b0
+    b1["output print"]
+    s1 -. "output print" .-> b1
+    b2["filesystem_read args.trusted_signer_public_key_file.read_text"]
+    s1 -. "filesystem_read args.trusted_signer_public_key_file.read_text" .-> b2
+    b3["filesystem_read args.verify_receipt.read_text"]
+    s1 -. "filesystem_read args.verify_receipt.read_text" .-> b3
+    b4["output print"]
+    s1 -. "output print" .-> b4
+    b5["output print"]
+    s1 -. "output print" .-> b5
     b6["environment_read os.getenv"]
     s2 -. "environment_read os.getenv" .-> b6
     b7["environment_read os.getenv"]
@@ -120,8 +121,8 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `main` | `argv: list[str] \| None` | `ServerAcceptanceError` | - | `2`, `0`, `2`, `2`, `2`, `0` |
-| `parse_args` | `argv: list[str] \| None` | `Path`, `Path`, `Path`, `Path` | - | `parser.parse_args(...)` |
+| `main` | `argv: list[str] \| None` | `ServerAcceptanceError` | - | `2`, `0`, `2`, `0`, `2`, `2`, `2`, `0` |
+| `parse_args` | `argv: list[str] \| None` | `Path`, `Path`, `Path`, `Path`, `Path` | - | `parser.parse_args(...)` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `os.getenv` | - | - | - | - |
@@ -137,7 +138,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | parse_args | 170 | `parse_args(argv)` |
+| main | parse_args | 173 | `parse_args(argv)` |
 | parse_args | argparse.ArgumentParser | 24 | `argparse.ArgumentParser(description='Verify one exact self-hosted WorkChord checkout against its container-backed PostgreSQL, signer, locked evidence, and CAS services. A pass is never production autonomy evidence.')` |
 | parse_args | parser.add_argument | 31 | `parser.add_argument('--deployment-environment', default=os.getenv(...))` |
 | parse_args | os.getenv | 33 | `os.getenv('DEPLOYMENT_ENVIRONMENT', 'development')` |
@@ -153,14 +154,14 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.trusted_signer_public_key_file.read_text` | `main` | 174 |
-| filesystem_read | `args.verify_receipt.read_text` | `main` | 177 |
-| output | `print` | `main` | 185 |
-| output | `print` | `main` | 196 |
+| output | `print` | `main` | 180 |
+| output | `print` | `main` | 182 |
+| filesystem_read | `args.trusted_signer_public_key_file.read_text` | `main` | 187 |
+| filesystem_read | `args.verify_receipt.read_text` | `main` | 190 |
+| output | `print` | `main` | 198 |
+| output | `print` | `main` | 209 |
 | environment_read | `os.getenv` | `parse_args` | 33 |
 | environment_read | `os.getenv` | `parse_args` | 37 |
-| environment_read | `os.getenv` | `parse_args` | 41 |
-| environment_read | `os.getenv` | `parse_args` | 45 |
 
 ### Static analysis gaps
 
@@ -170,7 +171,9 @@ flowchart LR
 | unresolved_call | `parse_args` | `parser.add_argument` | 31 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 35 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 39 |
+| external_call | `parse_args` | `os.getenv` | 41 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 43 |
+| external_call | `parse_args` | `os.getenv` | 45 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 47 |
 | step_limit | `main` | `first 12 steps` | 0 |
 

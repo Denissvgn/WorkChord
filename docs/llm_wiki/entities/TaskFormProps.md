@@ -1,6 +1,6 @@
 # TaskFormProps
 
-**Location:** `frontend/src/components/tasks/TaskForm.tsx:53`
+**Location:** `frontend/src/components/tasks/TaskForm.tsx:56`
 **Kind:** Class
 **Bases:** —
 **Module:** [TaskForm](../modules/TaskForm.md)

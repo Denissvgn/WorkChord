@@ -6,6 +6,8 @@
 
 Durable ownership, normalized effort and explicit task-domain commands.
 
+Execution actions use complete scoped ancestry and the shared inherited work policy. Manual start and resolution reject direct or ancestor deferral with the existing typed blocker, and authoritative commands recheck under the current scope locks. Structural ancestry failures become typed conflicts without exposing unrelated scope details.
+
 Shared domain policy projects allowed actions and typed blockers across REST and MCP. Explicit human manual execution records actual events without manufacturing a schedule or estimate. Cancellation verifies current claim/run/assignment ownership before invalidating it; reopen clears current acceptance and progress. Commit/uncommit preserve task identity and durable ownership.
 
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
@@ -27,6 +29,7 @@ Progress availability follows open-leaf execution permission and excludes direct
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.task_domain` | `TaskActionsResponse`, `TaskActionRequest` |
 | `app.services.task_brief_service` | `clear_acceptance` |
+| `app.services.work_metrics` | `effective_work_flags` |
 | `app.utils.time` | `utc_now` |
 | `decimal` | `Decimal`, `ROUND_HALF_UP` |
 | `sqlalchemy` | `or_`, `select` |
@@ -49,8 +52,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -58,13 +61,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 155 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 158 | — | — |
 
 ## Functions
 

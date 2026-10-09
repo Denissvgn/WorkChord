@@ -25,13 +25,15 @@ Owned cross-dialect service measurements, separate from HTTP and certification.
 | `app.services.task_service` | `TaskService` |
 | `argparse` | `argparse` |
 | `asyncio` | `asyncio` |
+| `contextvars` | `ContextVar` |
 | `datetime` | `date` |
 | `json` | `json` |
 | `os` | `os` |
 | `pathlib` | `Path` |
 | `scripts.load.common` | `atomic_write_json` |
 | `scripts.load.local_baseline` | `summarize` |
-| `sqlalchemy` | `create_engine`, `text`, `select`, `func` |
+| `scripts.load.source_binding` | `source_binding`, `verify_binding` |
+| `sqlalchemy` | `event`, `inspect`, `text`, `select`, `func` |
 | `sqlalchemy.ext.asyncio` | `create_async_engine`, `async_sessionmaker` |
 | `tests.support.database` | `assert_safe_test_database_url` |
 | `tests.support.delivery` | `seed_delivery_scenario` |
@@ -57,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Outbound | `backend` (13) |
-| Outbound | `scripts` (2) |
+| Outbound | `scripts` (3) |
 
 ### External packages
 
@@ -65,11 +67,12 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 2 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `validate_declaration` | `(declaration)` | — | — |
 | `run` | *(async)* `(url, declaration)` | — | — |
 | `main` | `()` | — | — |

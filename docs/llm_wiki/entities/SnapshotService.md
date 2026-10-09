@@ -22,6 +22,10 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
+| `_profile_references` | `(payload)` | `@staticmethod` | Collect every profile reference from the complete saved planning graph. |
+| `profile_lifetimes` | *(async)* `(payload)` | — | Capture only the stable person lifetimes referenced by this saved graph. |
+| `_preflight_profile_lifetimes` | *(async)* `(payload)` | — | — |
+| `_preflight_allocation_membership` | *(async)* `(iteration_id, payload, current)` | — | Inventory complete allocation references before changing recovery state. |
 | `_get_snapshot_dir` | `(iteration_id: int) -> Path` | — | Get the snapshot directory for an iteration. |
 | `_validate_reason` | `(reason: str) -> str` | — | Return a filename-safe snapshot reason or reject the caller value. |
 | `_snapshot_path` | `(iteration_id: int, filename: str, *, reject_symlink: bool = True) -> Path` | — | Resolve a generated basename beneath the iteration snapshot directory. |
@@ -44,18 +48,18 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 ```mermaid
 flowchart LR
     n0["SnapshotService (backend/app/services/snapshot_service.py)"]
-    n1["wrapped (backend/app/commands.py)"]
+    n1["planning_input_reservation (backend/app/commands.py)"]
     n2["import_legacy_snapshots (backend/app/routers/snapshots.py)"]
     n3["list_snapshots (backend/app/routers/snapshots.py)"]
     n4["read_snapshot (backend/app/routers/snapshots.py)"]
     n5["restore_snapshot (backend/app/routers/snapshots.py)"]
     n6["BacklogSnapshotService.capture (backend/app/services/backlog_snapshot_service.py)"]
-    n7["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
-    n8["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
-    n9["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
-    n10["PlanShareService.create (backend/app/services/plan_share_service.py)"]
-    n11["TaskBriefService._locked (backend/app/services/task_brief_service.py)"]
-    n12["reserve_task_context_revision (backend/app/services/task_context_revision_service.py)"]
+    n7["BacklogSnapshotService.restore (backend/app/services/backlog_snapshot_service.py)"]
+    n8["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
+    n9["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
+    n10["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
+    n11["PlanShareService.create (backend/app/services/plan_share_service.py)"]
+    n12["TaskBriefService._locked (backend/app/services/task_brief_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -75,35 +79,35 @@ flowchart LR
     click n4 "../modules/snapshots.md"
     click n5 "../modules/snapshots.md"
     click n6 "../modules/backlog_snapshot_service.md"
-    click n7 "../modules/capacity_service.md"
-    click n8 "../modules/hierarchy_repair_service.md"
-    click n9 "../modules/iteration_service.md"
-    click n10 "../modules/plan_share_service.md"
-    click n11 "../modules/task_brief_service.md"
-    click n12 "../modules/task_context_revision_service.md"
+    click n7 "../modules/backlog_snapshot_service.md"
+    click n8 "../modules/capacity_service.md"
+    click n9 "../modules/hierarchy_repair_service.md"
+    click n10 "../modules/iteration_service.md"
+    click n11 "../modules/plan_share_service.md"
+    click n12 "../modules/task_brief_service.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [snapshot_service](../modules/snapshot_service.md) | 16 | — |
+| [snapshot_service](../modules/snapshot_service.md) | 20 | — |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `wrapped` | call | [commands](../modules/commands.md) | 1 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 1 |
 | `import_legacy_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `list_snapshots` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `read_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `restore_snapshot` | call | [snapshots](../modules/snapshots.md) | 1 |
 | `BacklogSnapshotService.capture` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
+| `BacklogSnapshotService.restore` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `HierarchyRepairService.repair` | call | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) | 1 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
 | `TaskBriefService._locked` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
-| `reserve_task_context_revision` | call | [task_context_revision_service](../modules/task_context_revision_service.md) | 1 |
 
-> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.
+> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.

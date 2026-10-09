@@ -1,6 +1,6 @@
 # RoadmapFilterDescriptor
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:72`
+**Location:** `frontend/src/pages/RoadmapPage.tsx:74`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)

@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [serve_disposable_api](../modules/serve_disposable_api.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 13 more
 
 **Complete modules touched:**
 
@@ -16,6 +16,7 @@
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_identity](../modules/models_identity.md)
+- [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [serve_disposable_api](../modules/serve_disposable_api.md)
 - [support_database](../modules/support_database.md)
@@ -23,14 +24,16 @@
 - [template_service](../modules/template_service.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), and 3 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [config](../modules/config.md), [delivery](../modules/delivery.md), and 5 more
 
 **Complete related modules:**
 
 - [app_database](../modules/app_database.md)
 - [app_main](../modules/app_main.md)
+- [config](../modules/config.md)
 - [delivery](../modules/delivery.md)
 - [models_identity](../modules/models_identity.md)
+- [models_iteration](../modules/models_iteration.md)
 - [models_task](../modules/models_task.md)
 - [support_database](../modules/support_database.md)
 - [upgrade_service](../modules/upgrade_service.md)
@@ -97,7 +100,7 @@ sequenceDiagram
     p22->>p24: DatabaseConfigurationError
 ```
 
-> Call sequence diagram shows 30 of 275 interactions; 245 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 399 interactions; 369 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
@@ -197,11 +200,11 @@ flowchart LR
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.environ[...]` | `main` | 14 |
-| environment_read | `os.environ.get` | `main` | 45 |
-| environment_read | `os.environ.get` | `main` | 79 |
-| process | `subprocess.Popen` | `main` | 83 |
-| environment_read | `os.environ.get` | `main` | 85 |
-| environment_read | `os.environ.get` | `main` | 90 |
+| environment_read | `os.environ.get` | `main` | 69 |
+| environment_read | `os.environ.get` | `main` | 121 |
+| process | `subprocess.Popen` | `main` | 125 |
+| environment_read | `os.environ.get` | `main` | 127 |
+| environment_read | `os.environ.get` | `main` | 132 |
 | environment_read | `os.environ.get` | `_deployment_environment` | 32 |
 
 ### Static analysis gaps

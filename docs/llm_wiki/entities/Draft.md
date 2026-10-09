@@ -1,6 +1,6 @@
 # Draft
 
-**Location:** `frontend/src/components/tasks/TimeEntriesPanel.tsx:20`
+**Location:** `frontend/src/components/tasks/TimeEntriesPanel.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TimeEntriesPanel](../modules/TimeEntriesPanel.md)

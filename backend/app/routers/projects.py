@@ -505,7 +505,7 @@ async def delete_project(
     if result == "has_tasks":
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=await _localized_detail(service, "Project has linked tasks. Use detach_tasks=true to delete and detach tasks."),
+            detail={"code": "project_has_tasks", "message": await _localized_detail(service, "Project has linked tasks. Use detach_tasks=true to delete and detach tasks.")},
         )
 
     ui_language = await resolve_runtime_ui_language(service.db)

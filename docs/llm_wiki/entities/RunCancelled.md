@@ -9,7 +9,6 @@
 
 A cancellation signal was observed. The runner persists cancellation and performs bounded cleanup instead of claiming a completed run.
 
-
 ## Attributes
 
 *No annotated attributes found.*

@@ -31,7 +31,7 @@ import type { AssigneeRecommendation } from '../types/team';
 
 export const taskService = {
     ownerOptions: async (projectId?: number) => (await api.get<{ items: { id: number; name: string }[]; has_more: boolean }>("/tasks/owner-options", { params: { project_id: projectId } })).data,
-    getDetail: async (taskId: number, params: { limit?: number; children_after_id?: number; dependencies_after_id?: number } = {}) => (await api.get<TaskDetail>(`/tasks/${taskId}/detail`, { params })).data,
+    getDetail: async (taskId: number, params: { limit?: number; children_after_id?: number; dependencies_after_id?: number } = {}, signal?: AbortSignal) => (await api.get<TaskDetail>(`/tasks/${taskId}/detail`, { params, signal })).data,
     lookup: async (params: { project_id?: number; iteration_id?: number; q?: string; backlog_only?: boolean; after_id?: number; limit?: number; task_status?: string; parent_id?: number; roots_only?: boolean }, signal?: AbortSignal) => {
         const page = (await api.get<TaskReferencePage>('/tasks/lookup', { params, signal })).data;
         if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean'
@@ -82,13 +82,13 @@ export const taskService = {
         return response.data;
     },
 
-    addDependency: async (taskId: number, dependsOnId: number) => {
-        const response = await api.post(`/tasks/${taskId}/dependencies`, { depends_on_id: dependsOnId });
+    addDependency: async (taskId: number, dependsOnId: number, expectedVersion: number) => {
+        const response = await api.post(`/tasks/${taskId}/dependencies`, { depends_on_id: dependsOnId, expected_version: expectedVersion });
         return response.data;
     },
 
-    removeDependency: async (taskId: number, dependsOnId: number) => {
-        const response = await api.delete(`/tasks/${taskId}/dependencies/${dependsOnId}`);
+    removeDependency: async (taskId: number, dependsOnId: number, expectedVersion: number) => {
+        const response = await api.delete(`/tasks/${taskId}/dependencies/${dependsOnId}`, { params: { expected_version: expectedVersion } });
         return response.data;
     },
 

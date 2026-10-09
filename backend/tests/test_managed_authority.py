@@ -59,6 +59,190 @@ def client(token=None, **headers):
         cookies={"workchord_session": token} if token else {}, headers=headers)
 
 
+async def test_workspace_owner_deletes_empty_project_with_retained_audit(managed_store):
+    from app.models.identity import CommandAudit
+    from app.models.project import Project
+
+    factory, _, tokens, principal_ids = managed_store
+    async with factory() as db:
+        db.add(WorkspaceMembership(principal_id=principal_ids[0], role="owner"))
+        await db.commit()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),
+        base_url="https://test", cookies={"workchord_session": tokens[0]},
+        headers={"X-CSRF-Token": "csrf-0", "Origin": "https://test"}) as owner:
+        created = await owner.post("/api/projects", json={"name": "Empty project"})
+        assert created.status_code == 201, created.text
+        project_id = created.json()["id"]
+        deleted = await owner.delete(f"/api/projects/{project_id}", headers={"X-Correlation-ID": "empty-project-deletion"})
+        assert deleted.status_code == 200, deleted.text
+    async with factory() as db:
+        assert await db.get(Project, project_id) is None
+        audits = (await db.scalars(select(CommandAudit).where(
+            CommandAudit.action.like("projects:%"), CommandAudit.correlation_id == "empty-project-deletion"))).all()
+        assert audits
+        assert all(row.principal_id == principal_ids[0] and row.project_id is None for row in audits)
+        assert any(row.details.get("entity_id") == project_id for row in audits)
+        assert all(row.details.get("original_project_id") == project_id for row in audits)
+
+
+async def create_empty_project_as_owner(managed_store):
+    factory, _, tokens, principal_ids = managed_store
+    async with factory() as db:
+        db.add(WorkspaceMembership(principal_id=principal_ids[0], role="owner"))
+        await db.commit()
+    async with client(tokens[0], **{"X-CSRF-Token": "csrf-0", "Origin": "https://test"}) as owner:
+        result = await owner.post("/api/projects", json={"name": "Disposable project"})
+        assert result.status_code == 201, result.text
+        return result.json()["id"]
+
+
+@pytest.mark.parametrize("credential", ["owner", "operator"])
+async def test_project_deletion_has_one_attributable_audit_and_outbox_outcome(managed_store, credential):
+    from app.models.identity import CommandAudit
+    from app.models.outbound_webhook import OutboundWebhookEvent
+    from app.models.project import Project
+
+    project_id = await create_empty_project_as_owner(managed_store)
+    factory, _, tokens, principal_ids = managed_store
+    headers = {"X-Correlation-ID": "project-removal", "X-Command-Reason": "Retire empty scope"}
+    if credential == "owner":
+        headers.update({"X-CSRF-Token": "csrf-0", "Origin": "https://test"})
+        connection = client(tokens[0], **headers)
+    else:
+        headers["X-Admin-API-Key"] = "managed-operator-fixture"
+        connection = client(**headers)
+    async with connection as authorized:
+        removed = await authorized.delete(f"/api/projects/{project_id}")
+        assert removed.status_code == 200, removed.text
+        assert (await authorized.delete(f"/api/projects/{project_id}")).status_code == 404
+    async with factory() as db:
+        assert await db.get(Project, project_id) is None
+        rows = (await db.scalars(select(CommandAudit).where(CommandAudit.correlation_id == "project-removal"))).all()
+        project_audits = [row for row in rows if row.action == "projects:delete"]
+        assert len(project_audits) == 1
+        deleted = project_audits[0]
+        assert deleted.details["original_project_id"] == project_id
+        assert deleted.project_id is None and deleted.reason == "Retire empty scope" and deleted.source == "rest"
+        assert deleted.principal_id is not None
+        if credential == "owner":
+            assert deleted.principal_id == principal_ids[0]
+        assert all(row.project_id is None and row.details["original_project_id"] == project_id for row in rows)
+        assert await db.scalar(select(func.count()).select_from(OutboundWebhookEvent).where(
+            OutboundWebhookEvent.event_type == "project.deleted", OutboundWebhookEvent.entity_id == project_id)) == 1
+
+
+@pytest.mark.parametrize("role", ["viewer", "editor", "executor", "reviewer"])
+async def test_scoped_nonmanager_deletion_is_denied_without_domain_changes(managed_store, role):
+    from app.models.identity import CommandAudit
+    from app.models.outbound_webhook import OutboundWebhookEvent
+    from app.models.project import Project
+
+    project_id = await create_empty_project_as_owner(managed_store)
+    factory, _, tokens, principal_ids = managed_store
+    async with factory() as db:
+        db.add(ProjectMembership(principal_id=principal_ids[1], project_id=project_id, role=role))
+        await db.commit()
+        audit_count = await db.scalar(select(func.count()).select_from(CommandAudit))
+        event_count = await db.scalar(select(func.count()).select_from(OutboundWebhookEvent))
+    async with client(tokens[1], **{"X-CSRF-Token": "csrf-1", "Origin": "https://test"}) as scoped:
+        response = await scoped.delete(f"/api/projects/{project_id}")
+        assert response.status_code == 403, response.text
+    async with factory() as db:
+        assert await db.get(Project, project_id) is not None
+        assert await db.scalar(select(func.count()).select_from(CommandAudit)) == audit_count
+        assert await db.scalar(select(func.count()).select_from(OutboundWebhookEvent)) == event_count
+
+
+@pytest.mark.parametrize("failure_point", ["before_delete", "outbox", "after_outbox", "audit"])
+async def test_project_delete_failures_roll_back_domain_audit_and_outbox(managed_store, monkeypatch, failure_point):
+    from sqlalchemy import event
+    from sqlalchemy.ext.asyncio import AsyncSession
+    from app.models.identity import CommandAudit
+    from app.models.outbound_webhook import OutboundWebhookEvent
+    from app.models.project import Project
+    from app.services import project_service
+
+    project_id = await create_empty_project_as_owner(managed_store)
+    factory, _, tokens, _ = managed_store
+    async with factory() as db:
+        audit_count = await db.scalar(select(func.count()).select_from(CommandAudit))
+        event_count = await db.scalar(select(func.count()).select_from(OutboundWebhookEvent))
+
+    async def fail(*_args, **_kwargs):
+        raise RuntimeError("Injected project deletion failure")
+
+    hook_class = hook_name = hook = None
+    if failure_point == "before_delete":
+        original = AsyncSession.delete
+        async def delete(db, obj):
+            if isinstance(obj, Project):
+                await fail()
+            return await original(db, obj)
+        monkeypatch.setattr(AsyncSession, "delete", delete)
+    elif failure_point == "outbox":
+        monkeypatch.setattr(project_service, "emit_outbound_webhook_event", fail)
+    else:
+        hook_class, hook_name = (OutboundWebhookEvent, "after_insert") if failure_point == "after_outbox" else (CommandAudit, "before_insert")
+        def hook(_mapper, _connection, obj):
+            if isinstance(obj, OutboundWebhookEvent) and obj.event_type == "project.deleted" or isinstance(obj, CommandAudit) and obj.correlation_id == "failed-project-removal":
+                raise RuntimeError("Injected project deletion failure")
+        event.listen(hook_class, hook_name, hook)
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app, raise_app_exceptions=False),
+            base_url="https://test", cookies={"workchord_session": tokens[0]}, headers={
+                "X-CSRF-Token": "csrf-0", "Origin": "https://test", "X-Correlation-ID": "failed-project-removal"}) as owner:
+            response = await owner.delete(f"/api/projects/{project_id}")
+            assert response.status_code == 500
+    finally:
+        if hook is not None:
+            event.remove(hook_class, hook_name, hook)
+    async with factory() as db:
+        assert await db.get(Project, project_id) is not None
+        assert await db.scalar(select(func.count()).select_from(CommandAudit)) == audit_count
+        assert await db.scalar(select(func.count()).select_from(OutboundWebhookEvent)) == event_count
+
+
+async def test_command_audit_details_cannot_be_rewritten(managed_store):
+    from app.models.identity import CommandAudit
+    from app.models.project import Project
+
+    project_id = await create_empty_project_as_owner(managed_store)
+    factory, _, tokens, _ = managed_store
+    async with client(tokens[0], **{"X-CSRF-Token": "csrf-0", "Origin": "https://test", "X-Correlation-ID": "immutable-removal"}) as owner:
+        assert (await owner.delete(f"/api/projects/{project_id}")).status_code == 200
+    async with factory() as db:
+        row = await db.scalar(select(CommandAudit).where(CommandAudit.correlation_id == "immutable-removal", CommandAudit.action == "projects:delete"))
+        row.details = {"original_project_id": 999}
+        with pytest.raises(ValueError, match="append-only"):
+            await db.commit()
+        await db.rollback()
+        with pytest.raises(ValueError, match="append-only"):
+            await db.execute(update(CommandAudit).values(details={}))
+    async with factory() as db:
+        row = await db.scalar(select(CommandAudit).where(CommandAudit.correlation_id == "immutable-removal", CommandAudit.action == "projects:delete"))
+        assert row.details["original_project_id"] == project_id and await db.get(Project, project_id) is None
+
+
+@pytest.mark.parametrize("state", ["queued", "accepted"])
+async def test_project_deletion_refuses_live_assignment_scope_without_partial_detach(managed_store, state):
+    from app.models.agent import AgentTaskAssignment
+    from app.models.project import Project
+
+    factory, scenario, tokens, principal_ids = managed_store
+    async with factory() as db:
+        db.add(WorkspaceMembership(principal_id=principal_ids[0], role="owner"))
+        db.add(AgentTaskAssignment(task_id=scenario.tasks["planned"], actor_id=scenario.actors[0],
+            purpose="execution", state=state, task_version=1))
+        await db.commit()
+    async with client(tokens[0], **{"X-CSRF-Token": "csrf-0", "Origin": "https://test"}) as owner:
+        response = await owner.delete(f"/api/projects/{scenario.projects[0]}?detach_tasks=true")
+        assert response.status_code == 409, response.text
+        assert response.json()["detail"]["code"] == "project_execution_in_use"
+    async with factory() as db:
+        assert await db.get(Project, scenario.projects[0]) is not None
+        assert (await db.get(Task, scenario.tasks["planned"])).project_id == scenario.projects[0]
+
+
 async def test_managed_mode_rejects_missing_forged_and_conflicting_identity(managed_store):
     _, scenario, tokens, _ = managed_store
     async with client() as anonymous:

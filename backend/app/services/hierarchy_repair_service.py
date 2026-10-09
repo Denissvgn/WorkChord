@@ -8,7 +8,7 @@ from app.models.task import Task
 from app.services.task_service import TaskService
 from app.services.task_status_service import TaskStatusService
 from app.services.snapshot_service import SnapshotService
-from app.services.work_metrics import scoped_metric_tasks, task_signals
+from app.services.work_metrics import effective_work_flags, scoped_metric_tasks, task_signals
 
 
 class HierarchyRepairService:
@@ -44,7 +44,7 @@ class HierarchyRepairService:
                 target = TaskStatusService.derive_parent_status([child.status for child in descendants]) if descendants else "planned"
                 priority = min(child.priority for child in descendants) if descendants else task.priority
                 if task.status != target:
-                    if target == "closed" and any(not task_signals(child)["is_accepted"] for child in descendants):
+                    if target == "closed" and any(not task_signals(child, effective_flags=effective_work_flags(child, by_id=by_id))["is_accepted"] for child in descendants):
                         issues.append("Closed roll-up has unknown acceptance provenance; do not promote automatically")
                     else:
                         proposed["status"] = target

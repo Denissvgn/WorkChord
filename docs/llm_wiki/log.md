@@ -1541,3 +1541,692 @@ Authorized ID-only preflight keeps oversized read rejection independent of relat
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5e66c5e075e4611dd687dcfdd5367a409c181632c43d6c687985389f2778fb55`
+- Pages created: 3
+- Pages updated: 36
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2888
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:46dd3251ada872eec60a446d279e0a177ab72bfd6b8eb3ef7ffeead3808593aa`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2926
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:eba2ce7d0dccac5b6fc8c637b5888ac953977d21007087aa7e9b228f55035e82`
+- Pages created: 6
+- Pages updated: 30
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 2895
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f2f2b9e4f0999ef6e2cdd298008b3c9d603beb47e16187d74ab245df517d2bcc`
+- Pages created: 2
+- Pages updated: 41
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2892
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9335a35d5c760ae90043b4f6b3edc8da0050cb7ab992184218f512704da2d7be`
+- Pages created: 0
+- Pages updated: 19
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2917
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a5d9e7b7588154884865d821f489e5f6ad1d1a457bcdcec3ba6f67cf572a4e6e`
+- Pages created: 1
+- Pages updated: 42
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2894
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d4b419ad53164016791ddd43942ab0c2a9e97dc4837b536a5ecbe1def3f9c58f`
+- Pages created: 0
+- Pages updated: 14
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2922
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f5b7893e6afeefc4055d51b3c6f5d974dce8d5d355fb53e50fe27fbce03f67a0`
+- Pages created: 1
+- Pages updated: 34
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2903
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:80ebe51501503af0ed40505b5992b8714caba42bb3f12ef2296f13f17d5e650d`
+- Pages created: 1
+- Pages updated: 24
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2913
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:cf5aa9a36d378e63f2e308a0455098926c4fe5bc5ab7a250ee630e9f98bace02`
+- Pages created: 0
+- Pages updated: 10
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2928
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d47607e66995b225d3e7eb496ae72b1ca9abf2c03fc8fc02474aa5e78c4e9b24`
+- Pages created: 3
+- Pages updated: 7
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2931
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7202cbbf6a5c2124f8c6e26cf522f6449c88731af5dd7b74a568d9d013b940c7`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2940
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:328ee18098d295aac9629780008da3093152951cfffe4f52d920806a971ca53a`
+- Pages created: 10
+- Pages updated: 94
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 2845
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Complete initial planning-input observations now share scope resolution and authorization with atomic writes, including explicit empty scopes and profile-local availability boundaries.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3411d65d368670a8fc1b4468c8a903459e9a0d7560402baf7d1f1ff46ad570a9`
+- Pages created: 4
+- Pages updated: 12
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2940
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Self-hosted acceptance now retains bounded public artifacts and supports independent offline archive verification, preserving exact signed identities and failure/non-production boundaries.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7ac058e28219c34a8b7f0feca258a331dde16d5875f6c7c395b6f88397efdc94`
+- Pages created: 1
+- Pages updated: 25
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2930
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Assigned normal execution now uses the declared project working day for scheduled start decisions, consistent with human work and schedule signals.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:79becd9cd36d448344a0320b214bb0a86f1c0789ef1b0516d044173c23eae926`
+- Pages created: 3
+- Pages updated: 38
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2918
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Task editor openings now bind coherent current reads to isolated drafts, while bounded detail and project response projections preserve inherited parent policy without authorizing execution from UI windows.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9a9a3a898c29ce32826b6a47f944221f5edd419332ef36dc2df96ee721f9ed31`
+- Pages created: 0
+- Pages updated: 11
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2948
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+Pending editor writes now retain isolated intent and suppress obsolete navigation callbacks; unverified task and comment outcomes require current readback and explicit comparison before resumption.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ad647d54ea0d84ff8ede93e938810fc904286798b51cb34a64290a98421e33e1`
+- Pages created: 4
+- Pages updated: 26
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2933
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+
+Live work and report consumers now use bounded retained windows with explicit head discovery and honest freshness/completeness feedback, while protected failures remove cached server data.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:595fcd3d9ce80efcdfd96077bb9e8cc7b53e982a1891ce15d155b098cf2e69b7`
+- Pages created: 3
+- Pages updated: 31
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2932
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+
+Calendar and profile editors retain complete initial shared-input observations with their drafts and deletion confirmations.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c2668ddb256363be747932afb5d2fb5284c2038c3d118b3f77eb3908f5a9a57a`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2961
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:87833a8dbd5be25088a772bdbb2d54f2e1a3818bfbc95a95bdff09de8ca96478`
+- Pages created: 1
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2960
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Compose web and worker services forward strict mutation policy with compatibility defaults and explicit recreation for activation or rollback.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1ff36f7a2746b7aa435e664cbe061db918c4aa1e58058c8285b21d02305b5580`
+- Pages created: 14
+- Pages updated: 142
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2824
+- Pages deprecated: 1
+- Semantic fields preserved: 10
+- Moved entities: none
+- Flow pages initialized: 2 (http=2)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+Project, iteration, capacity, vacation and import workflows now retain complete initial or preview observations with explicit conflict recovery and bounded nested writes.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:8a24cd24347061e0515632372d45ad21bd991786220ef998fe4d56f64f27fe10`
+- Pages created: 1
+- Pages updated: 21
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2956
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Task and protocol callers now preserve original task and aggregate observations; role guidance reflects explicit comparison and companion structural actions remain unavailable.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:06cfacb27e93faebbe51f4f253953e253f8277ccd42bd5fb0bfeb72c8c8184b8`
+- Pages created: 3
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2979
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 1 (process=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Self-hosted acceptance now supports owned isolated namespaces and runtime paths with native image validation and bounded cleanup.
+
+## 2026-10-08
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:dc0adb039ede0f22ccbbfdac7e11f94467cd3dcdfb1baea852d13e0852bd309b`
+- Pages created: 3
+- Pages updated: 67
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 2919
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: none
+
+Strict caller qualification now preserves merge and restore observations, supports managed operator confirmation, distinguishes omitted imports, and confirms native cleanup without weakening failures.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d05c9f4ea38df13f8d3ca6310fd6efcada32e429d63de3718cdc2a42564e6d8f`
+- Pages created: 1
+- Pages updated: 10
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2977
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+Local service measurements now retain raw SQL observations and independently bind executing source; empty-fixture and frozen sample coverage checks prevent incomplete runs from passing.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ce70c07c8b91b158d490db3ff7924b4ec01862b2a6561a86837d63e0a2ea41f1`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2986
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Canonical SQL metrics now join one grouped structural-parent relation, removing repeated child scans while retaining full hierarchy and authorization validation.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7d0696cedc0af8233ab0166f8a47c3a677cf46e67dddab63c8b06194d2655a1d`
+- Pages created: 1
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2973
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Integrated local performance qualification now records exact declared clients, bounded HTTP polling, contention/readback recovery and native source/toolchain identities while keeping HTTP and service datasets distinct.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3faea8a9479ea79da2b5f3d0a4f2066299b1aadad3773e53c234fb7e2e6000a0`
+- Pages created: 0
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2974
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+Database transfer now preserves deleted-row allocation high-water marks through sequence repair and final reconciliation; installed-wheel coverage includes private corrections and deleted task recording identities.
+
+Public recovery guidance now explains strict observed contexts, retained allocation and recorded-time scope, inherited scheduling policy, working timezones and bounded foreground refresh. Android artifact guidance preserves the distinction between disposable identity and approved distribution.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1661e1aa0bf0bf60812c0500dd5cd1b760ac3b360424c12daf342ab7c3b04387`
+- Pages created: 4
+- Pages updated: 8
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2982
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 6
+
+Android tooling now provides an opt-in owned emulator release-behavior qualification contract with artifact/signing identity, strict trusted HTTPS and complete scenario/skip gates; compiled and installed execution requires a licensed toolchain and remains a separate evidence boundary.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1ddeaed39e6416a6886777a0c7e2e4739501118235d0e13d30c070b37269bff7`
+- Pages created: 1
+- Pages updated: 11
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2982
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Managed web/time qualification now reconciles strict workflows, private correction intent, disabled/account privacy and full restored fixture state. Human work queues exclude inherited deferred work without dropping cursor progress or hydrating execution graphs.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e874f2b108b18db03f9261b26f2128ae27488f92485a21509f1a8abe28c0bc47`
+- Pages created: 15
+- Pages updated: 55
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2942
+- Pages deprecated: 0
+- Semantic fields preserved: 14
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3d98f2b3516e844b781322a924823ae063b5e634611e2e673c424aa56f6f744f`
+- Pages created: 0
+- Pages updated: 15
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2990
+- Pages deprecated: 0
+- Semantic fields preserved: 14
+- Moved entities: none
+
+Allocation lifetime recovery, calendar-based capacity and inherited scheduling policy now share explicit identity and inclusion boundaries. Project date signals use the working timezone; editors preserve pending intent and emulator cleanup respects observed resource ownership.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:2fe261bfa77032e658f45a5d062dacb87e8bb418c57ef4be2d7070fc6f4d9348`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 3006
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.
+
+Calendar reload and import completion now respect intervening operations and resource changes. Capacity projections avoid task relationship hydration while preserving complete inherited work policy and shared booking constraints.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:5603ddebff367e57c7a42048bc7dc1ee58c2d3103caa7dcd3f78226ac33c3e74`
+- Pages created: 2
+- Pages updated: 33
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2978
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.
+
+Person identity recovery now verifies complete saved owner and allocation provenance before writes. Profile IDs do not reuse retained identities; scoped backlog recovery uses internal lifetime projections while preserving private profile access and current owner eligibility.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:494ee96e90287a4236bc677f48970b4c4ec0aa3ec33a047af192b1eea3105acf`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3010
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

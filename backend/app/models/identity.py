@@ -2,8 +2,8 @@
 
 from datetime import datetime
 
-from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, event
+from sqlalchemy.orm import Mapped, Session, mapped_column
 
 from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
@@ -94,3 +94,16 @@ class CommandAudit(Base):
     reason: Mapped[str | None] = mapped_column(Text)
     details: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now, index=True)
+
+
+@event.listens_for(Session, "before_flush")
+def retain_command_audit(session, _context, _instances):
+    for obj in list(session.dirty) + list(session.deleted):
+        if isinstance(obj, CommandAudit) and (obj in session.deleted or session.is_modified(obj)):
+            raise ValueError("Command audit attribution and details are append-only")
+
+
+@event.listens_for(Session, "do_orm_execute")
+def reject_command_audit_rewrites(state):
+    if getattr(getattr(state.statement, "table", None), "name", None) == "command_audit" and (state.is_update or state.is_delete):
+        raise ValueError("Command audit attribution and details are append-only")

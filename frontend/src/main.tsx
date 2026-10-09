@@ -9,9 +9,7 @@ import './styles/planning-masters.css'
 import './i18n/i18n'
 import { SystemLanguageProvider } from './i18n/SystemLanguageProvider'
 import { ToastProvider } from './components/feedback/ToastProvider'
-import { installPlanningNavigationInvalidation } from './features/planningMasters/planningNavigationInvalidation'
 import { IdentityProvider } from './features/identity/IdentityProvider'
-import { installWorkFreshness } from './features/workQueryFreshness'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,9 +20,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
-installPlanningNavigationInvalidation(queryClient)
-installWorkFreshness(queryClient)
 
 const router = createBrowserRouter([{ path: '*', element: (
   <ToastProvider>

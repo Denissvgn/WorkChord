@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationForm.tsx`._
 | Source | Symbols |
 |--------|---------|
 | `../../services/iterationService` | `iterationService` |
+| `../../services/planningInputService` | `ObservedRevisions` |
 | `../../services/projectService` | `projectService` |
 | `../../store/iterationStore` | `useIterationStore` |
 | `../../types/iteration` | `Iteration`, `IterationCreate`, `IterationSeriesCreate`, `IterationUpdate` |
@@ -19,9 +20,11 @@ _Auto-generated from `frontend/src/components/iteration/IterationForm.tsx`._
 | `../common/Button` | `Button` |
 | `../common/CollapsibleSection` | `CollapsibleSection` |
 | `../common/Input` | `Input` |
+| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` |
+| `../tasks/useDraftDismissal` | `useActiveMount` |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
 | `lucide-react` | `CalendarRange`, `ListChecks`, `Repeat`, `Save` |
-| `react` | `useEffect`, `useMemo`, `useState` |
+| `react` | `ReactNode`, `useEffect`, `useMemo`, `useState` |
 | `react-i18next` | `useTranslation` |
 
 ## Module Signals
@@ -50,7 +53,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (9) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -58,18 +61,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationFormProps](../entities/IterationFormProps.md) | Class | 20 | — | — |
-| [EditorMode](../entities/EditorMode.md) | Type alias | 32 | — | — |
-| [StopMode](../entities/StopMode.md) | Type alias | 33 | — | — |
-| [SingleDraft](../entities/SingleDraft.md) | Type alias | 35 | — | — |
-| [SeriesDraft](../entities/SeriesDraft.md) | Type alias | 43 | — | — |
-| [EditorBaseline](../entities/EditorBaseline.md) | Type alias | 54 | — | — |
+| [IterationFormProps](../entities/IterationFormProps.md) | Class | 24 | — | — |
+| [EditorMode](../entities/EditorMode.md) | Type alias | 36 | — | — |
+| [StopMode](../entities/StopMode.md) | Type alias | 37 | — | — |
+| [SingleDraft](../entities/SingleDraft.md) | Type alias | 39 | — | — |
+| [SeriesDraft](../entities/SeriesDraft.md) | Type alias | 47 | — | — |
+| [EditorBaseline](../entities/EditorBaseline.md) | Type alias | 58 | — | — |
 
 ## Functions
 

@@ -9,13 +9,22 @@ import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ci_runtime import RunReceipt
+from ci_runtime import RunReceipt, stop_process_group
 
 
 class CommandLifecycle(unittest.TestCase):
+    def test_darwin_permission_probe_requires_confirmed_group_absence(self):
+        process = Mock(pid=177)
+        process.poll.return_value = 0
+        with patch('ci_runtime.sys.platform', 'darwin'), patch('ci_runtime.os.killpg', side_effect=PermissionError()), patch('ci_runtime.subprocess.run', return_value=Mock(stdout='', returncode=0)):
+            self.assertTrue(stop_process_group(process))
+        with patch('ci_runtime.sys.platform', 'darwin'), patch('ci_runtime.os.killpg', side_effect=PermissionError()), patch('ci_runtime.subprocess.run', return_value=Mock(stdout='177 S\n', returncode=0)):
+            with self.assertRaises(PermissionError):
+                stop_process_group(process)
+
     def test_running_receipt_exists_before_command_and_success_is_finalized(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / 'results'
@@ -88,7 +97,7 @@ class CommandLifecycle(unittest.TestCase):
 import os,sys
 from pathlib import Path
 sys.path.insert(0,sys.argv[1])
-from ci_runtime import RunReceipt
+from ci_runtime import RunReceipt, stop_process_group
 with RunReceipt(Path(sys.argv[2])/'results',checks=['fixture'],timeout_seconds=20,cleanup_grace=0.2) as run:
     run.run('active',[sys.executable,'-c','import time,sys; open(sys.argv[1],"w").write("ready"); time.sleep(60)',str(Path(sys.argv[2])/'ready')],cwd=sys.argv[2],env=os.environ.copy(),timeout=15)
 raise SystemExit(run.exit_code)
@@ -128,7 +137,7 @@ raise SystemExit(run.exit_code)
 import os,sys
 from pathlib import Path
 sys.path.insert(0,sys.argv[1])
-from ci_runtime import RunReceipt
+from ci_runtime import RunReceipt, stop_process_group
 with RunReceipt(Path(sys.argv[2]),checks=['fixture'],timeout_seconds=60) as run:
     run.run('active',[sys.executable,'-c','import time; time.sleep(60)'],cwd=sys.argv[2],env=os.environ.copy(),timeout=55)
 """

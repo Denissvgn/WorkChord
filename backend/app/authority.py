@@ -281,6 +281,8 @@ def _object_project(session, obj):
         return session.info["command_triage_projects"][entity_id]
     targets = {"task": "tasks", "project": "projects", "iteration": "iterations", "release": "releases"}
     if entity_type in targets and entity_id is not None:
+        if entity_type == "project":
+            return entity_id
         target = Base.metadata.tables[targets[entity_type]]
         column = target.c.id if entity_type == "project" else target.c.project_id
         value = session.connection().execute(select(column).where(target.c.id == entity_id)).scalar_one_or_none()
@@ -336,6 +338,8 @@ def authorize_domain_writes(session, _flush_context, _instances):
             owned_personal = True
         project_id = _object_project(session, obj)
         action = "edit"
+        if table == "projects" and obj in session.deleted and not authority.allows(project_id, "manage"):
+            raise AuthorityError()
         if table == "execution_usage_records":
             approved = (obj.run_identity, obj.report_id, obj.sequence, obj.digest)
             if obj not in session.new or approved not in session.info.get("usage_report_authorizations", set()):
@@ -389,7 +393,8 @@ def authorize_domain_writes(session, _flush_context, _instances):
         if id(obj) not in seen:
             seen.add(id(obj))
             fields = [attr.key for attr in inspect(obj).mapper.column_attrs if inspect(obj).attrs[attr.key].history.has_changes()]
-            pending.append((obj, table, project_id, action, fields))
+            audit_action = "delete" if table == "projects" and obj in session.deleted else action
+            pending.append((obj, table, project_id, audit_action, fields))
 
 
 @event.listens_for(Session, "after_flush_postexec")
@@ -398,8 +403,19 @@ def append_command_audit(session, _flush_context):
     if authority is None:
         return
     from app.models.identity import CommandAudit
-    for obj, table, project_id, action, fields in session.info.pop("authority_audit_pending", []):
-        session.add(CommandAudit(principal_id=authority.principal_id, project_id=project_id,
+    from app.models.project import Project
+    pending = session.info.pop("authority_audit_pending", [])
+    scopes = sorted({row[2] for row in pending if row[2] is not None})
+    live_scopes = set()
+    for offset in range(0, len(scopes), 500):
+        live_scopes.update(session.connection().execute(select(Project.id).where(Project.id.in_(scopes[offset:offset + 500]))).scalars())
+    for obj, table, project_id, action, fields in pending:
+        details = {"entity_id": getattr(obj, "id", None), "changed_fields": fields,
+                   "review_override": authority.review_override}
+        live_project_id = project_id
+        if project_id is not None and project_id not in live_scopes:
+            live_project_id = None
+            details["original_project_id"] = project_id
+        session.add(CommandAudit(principal_id=authority.principal_id, project_id=live_project_id,
             action=f"{table}:{action}", source=authority.source, correlation_id=authority.correlation_id,
-            reason=authority.reason, details={"entity_id": getattr(obj, "id", None), "changed_fields": fields,
-                                            "review_override": authority.review_override}))
+            reason=authority.reason, details=details))

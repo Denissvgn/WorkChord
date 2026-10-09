@@ -24,11 +24,18 @@ if [ -n "$worktree_status" ]; then
     exit 1
 fi
 
-runtime_dir="$repository_root/.runtime/autonomy"
+project_name="${WORKCHORD_COMPOSE_PROJECT:-workchord-server}"
+runtime_dir="${WORKCHORD_ACCEPTANCE_RUNTIME_DIR:-$repository_root/.runtime/autonomy}"
+isolated=false
+if [ "$project_name" != "workchord-server" ] || [ "$runtime_dir" != "$repository_root/.runtime/autonomy" ]; then
+    isolated=true
+    python3 "$script_dir/isolated_rehearsal.py" verify --runtime-root "$runtime_dir" --project "$project_name"
+fi
 report_dir="$runtime_dir/reports"
 env_file="$runtime_dir/server.env"
 mkdir -p "$report_dir"
-chmod 700 "$repository_root/.runtime" "$runtime_dir" "$report_dir"
+chmod 700 "$runtime_dir" "$report_dir"
+if [ "$isolated" = "false" ]; then chmod 700 "$repository_root/.runtime"; fi
 
 if [ -f "$report_dir/latest.json" ]; then
     previous_stem="$report_dir/previous-$(date -u +%Y%m%dT%H%M%SZ)-$$"
@@ -43,7 +50,7 @@ fi
 
 server_database_volume_exists=false
 if docker volume inspect \
-    workchord-server_workchord_postgresql18_data >/dev/null 2>&1; then
+    "${project_name}_workchord_postgresql18_data" >/dev/null 2>&1; then
     server_database_volume_exists=true
 fi
 
@@ -142,6 +149,8 @@ POSTGRES_BACKUP_URL="postgresql://workchord_backup:${WORKCHORD_BACKUP_PASSWORD}@
 umask 077
 temporary_env="$env_file.tmp"
 {
+    printf 'WORKCHORD_IMAGE_PREFIX=%s\n' "${WORKCHORD_IMAGE_PREFIX:-workchord}"
+    printf 'STRICT_MUTATION_VERSIONS=%s\n' "${STRICT_MUTATION_VERSIONS:-false}"
     printf 'WORKCHORD_SOURCE_REVISION=%s\n' "$WORKCHORD_SOURCE_REVISION"
     printf 'WORKCHORD_ACCEPTANCE_REPORT_DIR=%s\n' "$WORKCHORD_ACCEPTANCE_REPORT_DIR"
     printf 'WORKCHORD_HTTP_BIND=%s\n' "$WORKCHORD_HTTP_BIND"
@@ -172,8 +181,14 @@ mv "$temporary_env" "$env_file"
 chmod 600 "$env_file"
 
 compose() {
+    if [ "$isolated" = "true" ]; then
+        python3 "$script_dir/isolated_rehearsal.py" verify --runtime-root "$runtime_dir" --project "$project_name"
+    fi
+    if [ "$isolated" = "true" ] && [ -f "$runtime_dir/ownership.compose.json" ]; then
+        set -- -f "$runtime_dir/ownership.compose.json" "$@"
+    fi
     docker compose \
-        --project-name workchord-server \
+        --project-name "$project_name" \
         --env-file "$env_file" \
         -f docker-compose.yml \
         -f docker-compose.server.yml \
@@ -181,9 +196,19 @@ compose() {
         "$@"
 }
 
+if [ "$isolated" = "true" ]; then
+    compose --profile '*' config --format json >"$runtime_dir/resolved.compose.json"
+    python3 "$script_dir/isolated_rehearsal.py" override --runtime-root "$runtime_dir" <"$runtime_dir/resolved.compose.json"
+    rm "$runtime_dir/resolved.compose.json"
+fi
 compose config --quiet
+if [ "$isolated" = "true" ]; then compose pull postgres; fi
 compose pull openbao minio minio-bootstrap valkey
 compose build backend frontend
+if [ "$isolated" = "true" ]; then
+    compose config --images >"$runtime_dir/images.txt"
+    python3 "$script_dir/isolated_rehearsal.py" images --runtime-root "$runtime_dir" <"$runtime_dir/images.txt"
+fi
 compose up --detach --wait --wait-timeout 180 postgres openbao minio valkey
 compose stop frontend delivery-worker backend
 compose run --rm --no-deps database-bootstrap

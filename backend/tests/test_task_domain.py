@@ -21,6 +21,55 @@ from app.services.work_metrics import aggregate_metrics
 from tests.test_delivery_scenarios import delivery_store
 
 
+@pytest.mark.parametrize("boundary", ["actions", "commands"])
+async def test_deferred_ancestor_prevents_manual_start_over_http(delivery_store, boundary):
+    import httpx
+    from app.main import app
+    from app.services.work_metrics import task_signals
+
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        tasks = TaskService(db)
+        await tasks.update(scenario.tasks["parent"], TaskUpdate(is_deferred=True, expected_version=1))
+        child = await tasks.get_by_id(scenario.tasks["nested"])
+        assert task_signals(child)["effective_is_deferred"]
+        task_id, version = child.id, child.version
+
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        if boundary == "actions":
+            response = await client.get(f"/api/tasks/{task_id}/actions")
+            assert response.status_code == 200, response.text
+            start = next(action for action in response.json()["actions"] if action["action"] == "start_manual")
+            assert not start["allowed"], response.text
+            assert "task_deferred" in {blocker["code"] for blocker in start["blockers"]}
+        else:
+            response = await client.post(f"/api/tasks/{task_id}/commands", json={
+                "action": "start_manual", "expected_version": version, "reason": "Deferred subtree"})
+            assert response.status_code == 409, response.text
+            assert response.json()["detail"]["code"] == "task_deferred"
+    async with factory() as db:
+        child = await db.get(Task, task_id)
+        assert child.status == "planned" and child.version == version
+
+
+async def test_legacy_status_route_cannot_start_deferred_work(delivery_store):
+    import httpx
+    from app.main import app
+
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        task = await TaskService(db).update(scenario.tasks["planned"], TaskUpdate(is_deferred=True, expected_version=1))
+        task_id, version = task.id, task.version
+        actions = await TaskDomainService(db).allowed_actions(task_id)
+        assert not next(action for action in actions.actions if action.action == "start_manual").allowed
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.put(f"/api/tasks/{task_id}/status", json={"status": "active", "expected_version": version})
+        assert response.status_code in {400, 409}, response.text
+    async with factory() as db:
+        task = await db.get(Task, task_id)
+        assert task.status == "planned" and task.version == version
+
+
 async def human_context(db, project_id):
     worker = Principal(kind="human", display_name="Engineer")
     reviewer = Principal(kind="human", display_name="Reviewer")
@@ -360,3 +409,24 @@ async def test_current_review_does_not_depend_on_first_history_page(delivery_sto
         assert current.status_code == 200, current.text
         assert current.json()["task_version"] == 99
         assert current.json()["review"]["reason"] == "Current inspection"
+
+
+async def test_human_queue_excludes_inherited_deferred_work_across_pagination(delivery_store):
+    from app.services.task_detail_service import TaskDetailService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        authority, _ = await human_context(db, scenario.projects[0])
+        for name in ('planned', 'nested'):
+            (await db.get(Task, scenario.tasks[name])).owner_profile_id = scenario.profile
+        parent = await db.get(Task, scenario.tasks['parent'])
+        parent.is_deferred = True
+        await db.commit()
+        db.info['authority'] = Authority(authority.principal_id, 'human', profile_id=scenario.profile,
+            projects={scenario.projects[0]: 'manager'})
+        work = await TaskDetailService(db).my_work(limit=1)
+        values = [task for queue in work['queues'].values() for task in queue]
+        while work['has_more']:
+            work = await TaskDetailService(db).my_work(limit=1, after_id=work['next_after_id'])
+            values.extend(task for queue in work['queues'].values() for task in queue)
+        assert scenario.tasks['nested'] not in {task['id'] for task in values}
+        assert scenario.tasks['planned'] in {task['id'] for task in values}

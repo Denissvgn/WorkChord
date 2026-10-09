@@ -90,8 +90,13 @@ class TaskStatusService:
                 raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
             if authority.source == "rest":
                 raise AuthorityError("agent_protocol_required", "Use the assigned-work command with its current execution fence.")
-        await self.task_service._lock_task_scope(task_id)
-        task = await self.task_service.get_by_id(task_id)
+        from app.commands import PlanningConflict
+        from app.services.task_hierarchy_service import TaskTreeIntegrityError
+        try:
+            await self.task_service._lock_task_scope(task_id)
+            task = await self.task_service.get_by_id(task_id)
+        except TaskTreeIntegrityError as exc:
+            raise PlanningConflict("task_ancestry_invalid", "Reload or repair this task's ancestry before executing work.") from exc
         if task is None:
             return None, [], False
         if task.canceled_at or task.blocked_reason:
@@ -105,6 +110,9 @@ class TaskStatusService:
         new_status_value = (
             new_status.value if hasattr(new_status, "value") else str(new_status)
         )
+        from app.services.work_metrics import effective_work_flags
+        if new_status_value in {"active", "resolved"} and not review_rework and effective_work_flags(task)["effective_is_deferred"]:
+            raise PlanningConflict("task_deferred", "Remove deferral before executing work.")
         from app.authority import require_project
         require_project(self.db, task.project_id, "review" if new_status_value == "closed" or review_rework else "execute")
         if review_rework:

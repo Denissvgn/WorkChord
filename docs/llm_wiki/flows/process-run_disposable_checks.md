@@ -27,13 +27,6 @@ sequenceDiagram
     participant p15 as bind_source
     participant p16 as run.check_budget
     participant p17 as subprocess.check_output(…).strip
-    participant p18 as subprocess.check_output
-    participant p19 as digest
-    participant p20 as run.checkpoint
-    participant p21 as run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
-    participant p22 as tempfile.TemporaryDirectory
-    participant p23 as run.cleanups.append
-    participant p24 as run.validators.append (scripts/ci/run_disposable_checks.py:main)
     p0->>p1: parse_args
     p1-->>p2: argparse.ArgumentParser
     p1-->>p3: parser.add_argument
@@ -44,7 +37,14 @@ sequenceDiagram
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
     p1-->>p6: parser.parse_args
+    p1-->>p7: parser.error
+    p1-->>p7: parser.error
+    p1-->>p7: parser.error
     p1-->>p7: parser.error
     p1-->>p8: set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
     p1-->>p9: set (scripts/ci/run_disposable_checks.py:parse_args)
@@ -57,16 +57,9 @@ sequenceDiagram
     p0->>p15: bind_source
     p15-->>p16: run.check_budget
     p15-->>p17: subprocess.check_output(…).strip
-    p15-->>p18: subprocess.check_output
-    p15-->>p19: digest
-    p15-->>p20: run.checkpoint
-    p15-->>p21: run.validators.append (scripts/ci/run_disposable_checks.py:bind_source)
-    p0-->>p22: tempfile.TemporaryDirectory
-    p0-->>p23: run.cleanups.append
-    p0-->>p24: run.validators.append (scripts/ci/run_disposable_checks.py:main)
 ```
 
-> Call sequence diagram shows 30 of 94 interactions; 64 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 105 interactions; 75 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -84,7 +77,7 @@ flowchart LR
     s9["9. parser.add_argument"]
     s10["10. parser.add_argument"]
     s11["11. parser.add_argument"]
-    s12["12. parser.parse_args"]
+    s12["12. parser.add_argument"]
     s1 -->|"parse_args(data not statically known)"| s2
     s2 -. "argparse.ArgumentParser(description=__doc__)" .-> s3
     s2 -. "parser.add_argument('--output', type=Path)" .-> s4
@@ -94,8 +87,8 @@ flowchart LR
     s2 -. "mode.add_argument('--backend-only', action='store_true')" .-> s8
     s2 -. "parser.add_argument('--full-backend', action='store_true')" .-> s9
     s2 -. "parser.add_argument('--managed-browser', action='store_true')" .-> s10
-    s2 -. "parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800, help='Work budget; leave time outside this for cleanup and uploads')" .-> s11
-    s2 -. "parser.parse_args(data not statically known)" .-> s12
+    s2 -. "parser.add_argument('--planning-browser', action='store_true')" .-> s11
+    s2 -. "parser.add_argument('--performance-browser', action='store_true')" .-> s12
     b0["mutation run.cleanups.append"]
     s1 -. "mutation run.cleanups.append" .-> b0
     b1["mutation run.validators.append"]
@@ -110,6 +103,8 @@ flowchart LR
     s1 -. "filesystem_write shutil.copyfile" .-> b5
     b6["mutation app_env.update"]
     s1 -. "mutation app_env.update" .-> b6
+    b7["mutation app_env.update"]
+    s1 -. "mutation app_env.update" .-> b7
     click s1 "../modules/run_disposable_checks.md"
     click s2 "../modules/run_disposable_checks.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
@@ -120,13 +115,14 @@ flowchart LR
     class b4 boundary
     class b5 boundary
     class b6 boundary
+    class b7 boundary
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `main` | - | `source_digest`, `PLAYWRIGHT_VERSION`, `ROOT`, `sys`, `sys`, `ROOT`, `ROOT`, `sys` | `run.data[...]`, `run.data[...]`, `env[...]` | `run.exit_code` |
+| `main` | - | `source_digest`, `PLAYWRIGHT_VERSION`, `ROOT`, `sys`, `sys`, `ROOT`, `ROOT`, `sys` | `run.data[...]`, `run.data[...]`, `env[...]`, `app_env[...]` | `run.exit_code` |
 | `parse_args` | - | `Path`, `positive_seconds` | - | `(...)` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
@@ -137,13 +133,13 @@ flowchart LR
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
-| `parser.parse_args` | - | - | - | - |
+| `parser.add_argument` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | parse_args | 139 | `parse_args(data not statically known)` |
+| main | parse_args | 149 | `parse_args(data not statically known)` |
 | parse_args | argparse.ArgumentParser | 114 | `argparse.ArgumentParser(description=__doc__)` |
 | parse_args | parser.add_argument | 115 | `parser.add_argument('--output', type=Path)` |
 | parse_args | parser.add_mutually_exclusive_group | 116 | `parser.add_mutually_exclusive_group(data not statically known)` |
@@ -152,20 +148,21 @@ flowchart LR
 | parse_args | mode.add_argument | 119 | `mode.add_argument('--backend-only', action='store_true')` |
 | parse_args | parser.add_argument | 120 | `parser.add_argument('--full-backend', action='store_true')` |
 | parse_args | parser.add_argument | 121 | `parser.add_argument('--managed-browser', action='store_true')` |
-| parse_args | parser.add_argument | 122 | `parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800, help='Work budget; leave time outside this for cleanup and uploads')` |
-| parse_args | parser.parse_args | 124 | `parser.parse_args(data not statically known)` |
+| parse_args | parser.add_argument | 122 | `parser.add_argument('--planning-browser', action='store_true')` |
+| parse_args | parser.add_argument | 123 | `parser.add_argument('--performance-browser', action='store_true')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `run.cleanups.append` | `main` | 150 |
-| mutation | `run.validators.append` | `main` | 151 |
-| mutation | `run.validators.append` | `main` | 178 |
-| filesystem_write | `shutil.copytree` | `main` | 181 |
-| filesystem_write | `shutil.copyfile` | `main` | 197 |
-| filesystem_write | `shutil.copyfile` | `main` | 199 |
-| mutation | `app_env.update` | `main` | 205 |
+| mutation | `run.cleanups.append` | `main` | 160 |
+| mutation | `run.validators.append` | `main` | 161 |
+| mutation | `run.validators.append` | `main` | 188 |
+| filesystem_write | `shutil.copytree` | `main` | 191 |
+| filesystem_write | `shutil.copyfile` | `main` | 207 |
+| filesystem_write | `shutil.copyfile` | `main` | 209 |
+| mutation | `app_env.update` | `main` | 215 |
+| mutation | `app_env.update` | `main` | 218 |
 
 ### Static analysis gaps
 
@@ -180,7 +177,7 @@ flowchart LR
 | unresolved_call | `parse_args` | `parser.add_argument` | 120 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 121 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 122 |
-| unresolved_call | `parse_args` | `parser.parse_args` | 124 |
+| unresolved_call | `parse_args` | `parser.add_argument` | 123 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -99,3 +99,5 @@ flowchart LR
 | `_seed_race_workspace` | call | [test_postgresql_concurrency](../modules/test_postgresql_concurrency.md) | 1 |
 | `test_agent_routing_observability` | import | [test_agent_routing_observability](../modules/test_agent_routing_observability.md) | — |
 | `test_agent_routing_rollout` | import | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | — |
+
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

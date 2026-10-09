@@ -1,6 +1,6 @@
 # ProjectService
 
-**Location:** `backend/app/services/project_service.py:53`
+**Location:** `backend/app/services/project_service.py:54`
 **Kind:** Class
 **Bases:** —
 **Module:** [project_service](../modules/project_service.md)
@@ -58,19 +58,19 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `list_iterations` | *(async)* `(project_id: int) -> Optional[Sequence[Iteration]]` | — | List iterations scoped to a project in newest-first order. |
 | `get_latest_project_update` | *(async)* `(project_id: int) -> Optional[ProjectUpdateEntry]` | — | Get the newest project update for summary display. |
 | `count_linked_tasks` | *(async)* `(project_id: int) -> int` | — | Count all tasks linked to a project. |
-| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@atomic_command` | Delete a project, optionally detaching linked tasks first. |
+| `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@schedule_input_command('project')` | Delete a project, optionally detaching linked tasks first. |
 | `get_tasks` | *(async)* `(project_id: int) -> Optional[Sequence[Task]]` | — | Get linked root tasks for a project with response relationships loaded. |
 | `_get_all_linked_tasks` | *(async)* `(project_id: int) -> Sequence[Task]` | — | Get every task linked to a project for aggregate calculations. |
 | `_calculate_task_date_range` | `(tasks: Sequence[Task]) -> tuple[Optional[date], Optional[date]]` | — | Calculate min scheduled start and max scheduled end date. |
 | `_calculate_completion_percent` | `(total_tasks: int, completed_tasks: int) -> float` | — | Calculate completion percentage for linked tasks. |
-| `_calculate_schedule_progress` | `(project: Project, task_start_date: Optional[date]) -> Optional[float]` | — | Calculate elapsed schedule percentage against the project target. |
-| `_calculate_target_date_risk` | `(project: Project, total_tasks: int, completed_tasks: int, completion_percent: float, blocked_tasks: int, overdue_tasks: int, remaining_effort_days: float, task_start_date: Optional[date], task_end_date: Optional[date]) -> tuple[ProjectTargetDateRisk, Optional[str], int, Optional[int]]` | — | Calculate target-date risk and supporting date deltas. |
+| `_calculate_schedule_progress` | `(project: Project, task_start_date: Optional[date], *, now = None) -> Optional[float]` | — | Calculate elapsed schedule percentage against the project target. |
+| `_calculate_target_date_risk` | `(project: Project, total_tasks: int, completed_tasks: int, completion_percent: float, blocked_tasks: int, overdue_tasks: int, remaining_effort_days: float, task_start_date: Optional[date], task_end_date: Optional[date], *, now = None) -> tuple[ProjectTargetDateRisk, Optional[str], int, Optional[int]]` | — | Calculate target-date risk and supporting date deltas. |
 | `_calculate_update_freshness` | `(project: Project, days_since_latest_update: Optional[int]) -> ProjectUpdateFreshness` | — | Classify whether a project needs a fresher stakeholder update. |
 | `_empty_task_status_counts` | `() -> dict[str, int]` | — | Return a fresh task status counter. |
 | `_build_milestone_task_group` | `(milestone: Optional[ProjectMilestone], tasks: Sequence[Task], done_statuses: set[str], remaining_statuses: set[str]) -> ProjectMilestoneTaskGroup` | — | Build task aggregate metrics for one milestone bucket. |
 | `_calculate_milestone_groups` | *(async)* `(project_id: int, tasks: Sequence[Task], done_statuses: set[str], remaining_statuses: set[str]) -> list[ProjectMilestoneTaskGroup]` | — | Group linked project tasks by milestone, with unassigned work last. |
-| `_project_task_aggregates` | *(async)* `(project: Project) -> dict[str, object]` | — | Compute canonical authorized leaf metrics in a bounded result aggregate. |
-| `_aggregated_milestone_groups` | *(async)* `(project_id: int) -> list[ProjectMilestoneTaskGroup]` | — | Use the same canonical leaf denominators for each milestone. |
+| `_project_task_aggregates` | *(async)* `(project: Project, *, now = None) -> dict[str, object]` | — | Compute canonical authorized leaf metrics in a bounded result aggregate. |
+| `_aggregated_milestone_groups` | *(async)* `(project_id: int, *, now = None) -> list[ProjectMilestoneTaskGroup]` | — | Use the same canonical leaf denominators for each milestone. |
 | `get_summary` | *(async)* `(project_id: int) -> Optional[ProjectSummary]` | — | Calculate project task summary metrics. |
 
 ## Relationships
@@ -141,4 +141,4 @@ flowchart LR
 | `create_project_update` | type_reference | [projects](../modules/projects.md) | — |
 | `delete_initiative` | type_reference | [projects](../modules/projects.md) | — |
 
-> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.
+> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.

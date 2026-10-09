@@ -3,6 +3,62 @@
     "api_version": "1.7.0",
     "components": {
       "schemas": {
+        "Body_import_iteration_api_iterations__iteration_id__import_post": {
+          "properties": {
+            "file": {
+              "contentMediaType": "application/octet-stream",
+              "title": "File",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ],
+          "title": "Body_import_iteration_api_iterations__iteration_id__import_post",
+          "type": "object"
+        },
+        "Body_import_new_iteration_api_iterations_import_post": {
+          "properties": {
+            "file": {
+              "contentMediaType": "application/octet-stream",
+              "title": "File",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ],
+          "title": "Body_import_new_iteration_api_iterations_import_post",
+          "type": "object"
+        },
+        "Body_preview_iteration_import_api_iterations__iteration_id__import_context_post": {
+          "properties": {
+            "file": {
+              "contentMediaType": "application/octet-stream",
+              "title": "File",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ],
+          "title": "Body_preview_iteration_import_api_iterations__iteration_id__import_context_post",
+          "type": "object"
+        },
+        "Body_preview_iteration_import_api_iterations_import_context_post": {
+          "properties": {
+            "file": {
+              "contentMediaType": "application/octet-stream",
+              "title": "File",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ],
+          "title": "Body_preview_iteration_import_api_iterations_import_context_post",
+          "type": "object"
+        },
         "BriefConvert": {
           "additionalProperties": false,
           "properties": {
@@ -727,6 +783,66 @@
           "title": "IterationResponse",
           "type": "object"
         },
+        "MemberPlanningIntent": {
+          "properties": {
+            "csv_text": {
+              "anyOf": [
+                {
+                  "maxLength": 2097152,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Csv Text"
+            },
+            "email": {
+              "anyOf": [
+                {
+                  "maxLength": 255,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Email"
+            },
+            "name": {
+              "default": "",
+              "maxLength": 255,
+              "title": "Name",
+              "type": "string"
+            },
+            "profile_id": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profile Id"
+            },
+            "text": {
+              "anyOf": [
+                {
+                  "maxLength": 2097152,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Text"
+            }
+          },
+          "title": "MemberPlanningIntent",
+          "type": "object"
+        },
         "MessageResponse": {
           "description": "Simple message response.",
           "properties": {
@@ -901,6 +1017,55 @@
             "expires_at"
           ],
           "title": "NativeTokenResponse",
+          "type": "object"
+        },
+        "PlanningInputContext": {
+          "properties": {
+            "complete": {
+              "const": true,
+              "default": true,
+              "title": "Complete",
+              "type": "boolean"
+            },
+            "expected_revisions": {
+              "additionalProperties": {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              "maxProperties": 500,
+              "title": "Expected Revisions",
+              "type": "object"
+            },
+            "kind": {
+              "enum": [
+                "calendar",
+                "project",
+                "iteration",
+                "profile",
+                "member",
+                "vacation"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "resource": {
+              "additionalProperties": true,
+              "title": "Resource",
+              "type": "object"
+            },
+            "resource_id": {
+              "exclusiveMinimum": 0.0,
+              "title": "Resource Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "resource_id",
+            "resource",
+            "expected_revisions"
+          ],
+          "title": "PlanningInputContext",
           "type": "object"
         },
         "ProgressWrite": {
@@ -5536,6 +5701,138 @@
           ]
         }
       },
+      "/api/iterations/import": {
+        "post": {
+          "description": "Import a new iteration from JSON export file.",
+          "operationId": "import_new_iteration_api_iterations_import_post",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_import_new_iteration_api_iterations_import_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Import New Iteration",
+          "tags": [
+            "Export"
+          ]
+        }
+      },
+      "/api/iterations/import-context": {
+        "post": {
+          "description": "Observe all existing scopes before opening a JSON import confirmation.",
+          "operationId": "preview_iteration_import_api_iterations_import_context_post",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_preview_iteration_import_api_iterations_import_context_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Preview Iteration Import",
+          "tags": [
+            "Export"
+          ]
+        }
+      },
       "/api/iterations/page": {
         "get": {
           "operationId": "get_iteration_page_api_iterations_page_get",
@@ -5606,6 +5903,147 @@
           "summary": "Get Iteration Page",
           "tags": [
             "Iterations"
+          ]
+        }
+      },
+      "/api/iterations/{iteration_id}/import": {
+        "post": {
+          "description": "Import tasks and team members into an iteration from JSON file.",
+          "operationId": "import_iteration_api_iterations__iteration_id__import_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "iteration_id",
+              "required": true,
+              "schema": {
+                "title": "Iteration Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_import_iteration_api_iterations__iteration_id__import_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Import Iteration",
+          "tags": [
+            "Export"
+          ]
+        }
+      },
+      "/api/iterations/{iteration_id}/import-context": {
+        "post": {
+          "description": "Observe all existing scopes before opening a JSON import confirmation.",
+          "operationId": "preview_iteration_import_api_iterations__iteration_id__import_context_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "iteration_id",
+              "required": true,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_preview_iteration_import_api_iterations__iteration_id__import_context_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Preview Iteration Import",
+          "tags": [
+            "Export"
           ]
         }
       },
@@ -6265,6 +6703,137 @@
             }
           },
           "summary": "Human My Work",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/planning-inputs/member/{resource_id}/context": {
+        "post": {
+          "operationId": "member_planning_context_api_tasks_planning_inputs_member__resource_id__context_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "resource_id",
+              "required": true,
+              "schema": {
+                "title": "Resource Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "creating_member",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Creating Member",
+                "type": "boolean"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberPlanningIntent"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PlanningInputContext"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Member Planning Context",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/planning-inputs/{kind}/{resource_id}/context": {
+        "get": {
+          "operationId": "planning_input_context_api_tasks_planning_inputs__kind___resource_id__context_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "kind",
+              "required": true,
+              "schema": {
+                "enum": [
+                  "calendar",
+                  "project",
+                  "iteration",
+                  "profile",
+                  "member",
+                  "vacation"
+                ],
+                "title": "Kind",
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "resource_id",
+              "required": true,
+              "schema": {
+                "title": "Resource Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "creating_member",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Creating Member",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PlanningInputContext"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Planning Input Context",
           "tags": [
             "Task domain"
           ]
@@ -7939,6 +8508,7 @@
     },
     "schema_capabilities": {
       "canonical_work_metrics": true,
+      "planning_input_context": true,
       "task_aggregate_revision": true,
       "task_allowed_actions": true,
       "task_structured_acceptance_criteria": true,

@@ -35,15 +35,24 @@ flowchart LR
     n2["create_calendar (backend/app/routers/calendars.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["CalendarService.create (backend/app/services/calendar_service.py)"]
+    n5["test_empty_scope_remains_valid_for_unused_input_in_strict_mode (backend/tests/test_planning_input_context.py)"]
+    n6["test_supplied_empty_scope_detects_new_allocation_in_compatibility_mode (backend/tests/test_planning_input_context.py)"]
+    n7["test_created_short_days_apply_once_to_fractional_shared_capacity (backend/tests/test_profile_capacity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_calendar.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/calendars.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/calendar_service.md"
+    click n5 "../modules/test_planning_input_context.md"
+    click n6 "../modules/test_planning_input_context.md"
+    click n7 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -65,3 +74,6 @@ flowchart LR
 | `create_calendar` | type_reference | [calendars](../modules/calendars.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `CalendarService.create` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
+| `test_empty_scope_remains_valid_for_unused_input_in_strict_mode` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 1 |
+| `test_supplied_empty_scope_detects_new_allocation_in_compatibility_mode` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 1 |
+| `test_created_short_days_apply_once_to_fractional_shared_capacity` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |

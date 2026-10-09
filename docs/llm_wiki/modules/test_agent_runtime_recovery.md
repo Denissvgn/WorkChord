@@ -12,12 +12,14 @@ Separate-process protocol simulation; no provider or pilot acceptance implied.
 
 | Source | Symbols |
 |--------|---------|
+| `app` | `mcp_agent_tools` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentActor`, `AgentTaskAssignment`, `AgentRun` |
 | `app.models.task` | `Task` |
-| `app.schemas.task` | `TaskCreate` |
+| `app.schemas.task` | `TaskCreate`, `TaskUpdate` |
 | `app.schemas.task_brief` | `BriefCriterion`, `BriefWrite`, `TaskBrief` |
 | `app.services.agent_service` | `hash_api_key` |
+| `app.services.agent_work_service` | `AgentConflictError` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_service` | `TaskService` |
 | `app.utils.time` | `utc_now` |
@@ -36,79 +38,29 @@ Separate-process protocol simulation; no provider or pilot acceptance implied.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/main.py"]
-    n1["backend/app/models/agent.py"]
-    n2["backend/app/models/task.py"]
-    n3["backend/app/schemas/task.py"]
-    n4["backend/app/schemas/task_brief.py"]
-    n5["backend/app/services/agent_service.py"]
-    n6["backend/app/services/task_brief_service.py"]
-    n7["backend/app/services/task_service.py"]
-    n8["backend/app/utils/time.py"]
-    n9["backend/tests/test_agent_runtime_recovery.py"]
-    n10["backend/tests/test_delivery_scenarios.py"]
-    n1 --> n2
-    n1 --> n8
-    n2 --> n1
-    n2 --> n8
-    n3 --> n4
-    n5 --> n1
-    n5 --> n2
-    n5 --> n3
-    n5 --> n7
-    n5 --> n8
-    n6 --> n2
-    n6 --> n4
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n7
-    n9 --> n8
-    n9 --> n10
-    n10 --> n0
-    n10 --> n2
-    n10 --> n5
-    n10 --> n7
-    click n0 "../modules/app_main.md"
-    click n1 "../modules/models_agent.md"
-    click n2 "../modules/models_task.md"
-    click n3 "../modules/schemas_task.md"
-    click n4 "../modules/schemas_task_brief.md"
-    click n5 "../modules/agent_service.md"
-    click n6 "../modules/task_brief_service.md"
-    click n7 "../modules/task_service.md"
-    click n8 "../modules/time.md"
-    click n9 "../modules/test_agent_runtime_recovery.md"
-    click n10 "../modules/test_delivery_scenarios.md"
+    n0["backend"]
+    n1["backend/tests/test_agent_runtime_recovery.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/test_agent_runtime_recovery.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [app_main](../modules/app_main.md) |
-| Outbound | [models_agent](../modules/models_agent.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [schemas_task](../modules/schemas_task.md) |
-| Outbound | [schemas_task_brief](../modules/schemas_task_brief.md) |
-| Outbound | [agent_service](../modules/agent_service.md) |
-| Outbound | [task_brief_service](../modules/task_brief_service.md) |
-| Outbound | [task_service](../modules/task_service.md) |
-| Outbound | [time](../modules/time.md) |
-| Outbound | [test_delivery_scenarios](../modules/test_delivery_scenarios.md) |
+| Inbound | `backend` (1) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 3 | 1 |
+
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -118,6 +70,9 @@ flowchart LR
 | `fence` | `(receipt)` | — | — |
 | `seed_work` | *(async)* `(factory, scenario)` | — | — |
 | `begin_next` | *(async)* `(factory, key, logical_key)` | — | — |
+| `nest_assigned_work` | *(async)* `(factory, scenario, task_id)` | — | — |
+| `test_ancestor_deferral_blocks_assigned_begin_over_rest_and_mcp` | *(async)* `(delivery_store)` | — | — |
+| `test_ancestor_edit_invalidates_live_worker_renew_submit_and_begin_replay` | *(async)* `(delivery_store)` | — | — |
 | `review_assignment` | *(async)* `(factory, task_id, actor_id)` | — | — |
 | `supervised_refresh` | *(async)* `(factory, scenario, task_id)` | — | A worker pauses; an explicit PM replaces provisional lineage in off mode. |
 | `test_process_restart_ambiguous_replay_and_independent_rework` | *(async)* `(delivery_store)` | — | — |

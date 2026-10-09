@@ -18,10 +18,12 @@ sequenceDiagram
     participant p6 as html.escape
     participant p7 as urlencode
     participant p8 as person.title
-    participant p9 as HTMLResponse
-    participant p10 as secrets.token_urlsafe
-    participant p11 as time.time
-    participant p12 as RedirectResponse
+    participant p9 as os.environ.get
+    participant p10 as HTMLResponse
+    participant p11 as set
+    participant p12 as secrets.token_urlsafe
+    participant p13 as time.time
+    participant p14 as RedirectResponse
     p0-->>p1: dict
     p0-->>p2: params.get
     p0-->>p2: params.get
@@ -32,11 +34,14 @@ sequenceDiagram
     p0-->>p6: html.escape
     p0-->>p7: urlencode
     p0-->>p8: person.title
-    p0-->>p9: HTMLResponse
+    p0-->>p9: os.environ.get
+    p0-->>p10: HTMLResponse
+    p0-->>p9: os.environ.get
+    p0-->>p11: set
     p0-->>p3: HTTPException
-    p0-->>p10: secrets.token_urlsafe
-    p0-->>p11: time.time
-    p0-->>p12: RedirectResponse
+    p0-->>p12: secrets.token_urlsafe
+    p0-->>p13: time.time
+    p0-->>p14: RedirectResponse
     p0-->>p7: urlencode
 ```
 
@@ -56,7 +61,7 @@ flowchart LR
     s9["9. html.escape"]
     s10["10. urlencode"]
     s11["11. person.title"]
-    s12["12. HTMLResponse"]
+    s12["12. os.environ.get"]
     s1 -. "dict(request.query_params)" .-> s2
     s1 -. "params.get('redirect_uri')" .-> s3
     s1 -. "params.get('client_id')" .-> s4
@@ -67,12 +72,18 @@ flowchart LR
     s1 -. "html.escape(urlencode(...))" .-> s9
     s1 -. "urlencode({...})" .-> s10
     s1 -. "person.title(data not statically known)" .-> s11
-    s1 -. "HTMLResponse(...)" .-> s12
+    s1 -. "os.environ.get('WORKCHORD_FIXTURE_PLANNING')" .-> s12
     b0["mutation params.pop"]
     s1 -. "mutation params.pop" .-> b0
+    b1["environment_read os.environ.get"]
+    s1 -. "environment_read os.environ.get" .-> b1
+    b2["environment_read os.environ.get"]
+    s1 -. "environment_read os.environ.get" .-> b2
     click s1 "../modules/serve_disposable_oidc.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
+    class b1 boundary
+    class b2 boundary
 ```
 
 ### Step data
@@ -90,7 +101,7 @@ flowchart LR
 | `html.escape` | - | - | - | - |
 | `urlencode` | - | - | - | - |
 | `person.title` | - | - | - | - |
-| `HTMLResponse` | - | - | - | - |
+| `os.environ.get` | - | - | - | - |
 
 ### Call data
 
@@ -106,13 +117,15 @@ flowchart LR
 | authorize | html.escape | 53 | `html.escape(urlencode(...))` |
 | authorize | urlencode | 53 | `urlencode({...})` |
 | authorize | person.title | 53 | `person.title(data not statically known)` |
-| authorize | HTMLResponse | 54 | `HTMLResponse(...)` |
+| authorize | os.environ.get | 53 | `os.environ.get('WORKCHORD_FIXTURE_PLANNING')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | mutation | `params.pop` | `authorize` | 51 |
+| environment_read | `os.environ.get` | `authorize` | 53 |
+| environment_read | `os.environ.get` | `authorize` | 55 |
 
 ### Static analysis gaps
 
@@ -120,11 +133,6 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `authorize` | `params.get` | 49 |
 | external_call | `authorize` | `HTTPException` | 50 |
-| unresolved_call | `authorize` | `''.join` | 53 |
-| external_call | `authorize` | `html.escape` | 53 |
-| external_call | `authorize` | `urlencode` | 53 |
-| unresolved_call | `authorize` | `person.title` | 53 |
-| external_call | `authorize` | `HTMLResponse` | 54 |
 | step_limit | `authorize` | `first 12 steps` | 0 |
 
 ## Behavior

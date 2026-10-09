@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/team/TeamList.tsx`._
 
 | Source | Symbols |
 |--------|---------|
+| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
 | `../../services/teamService` | `teamService` |
 | `../../types/team` | `MemberCapacity`, `MemberWorkload`, `TeamMember` |
 | `../../utils/apiError` | `getApiErrorMessage` |
@@ -41,11 +42,12 @@ flowchart LR
     n4["frontend/src/components/team/TeamList.tsx"]
     n5["frontend/src/components/team/VacationManager.tsx"]
     n6["frontend/src/pages/TeamPage.tsx"]
-    n7["frontend/src/services/teamService.ts"]
-    n8["frontend/src/types/team.ts"]
-    n9["frontend/src/utils/apiError.ts"]
+    n7["frontend/src/services/planningInputService.ts"]
+    n8["frontend/src/services/teamService.ts"]
+    n9["frontend/src/types/team.ts"]
+    n10["frontend/src/utils/apiError.ts"]
     n2 --> n0
-    n2 --> n9
+    n2 --> n10
     n4 --> n0
     n4 --> n1
     n4 --> n2
@@ -54,16 +56,19 @@ flowchart LR
     n4 --> n7
     n4 --> n8
     n4 --> n9
+    n4 --> n10
     n5 --> n0
     n5 --> n1
     n5 --> n7
     n5 --> n8
     n5 --> n9
+    n5 --> n10
     n6 --> n2
     n6 --> n4
-    n6 --> n7
     n6 --> n8
-    n7 --> n8
+    n6 --> n9
+    n8 --> n7
+    n8 --> n9
     click n0 "../modules/Button.md"
     click n1 "../modules/useConfirmDialog.md"
     click n2 "../modules/QueryState.md"
@@ -71,9 +76,10 @@ flowchart LR
     click n4 "../modules/TeamList.md"
     click n5 "../modules/VacationManager.md"
     click n6 "../modules/TeamPage.md"
-    click n7 "../modules/teamService.md"
-    click n8 "../modules/types_team.md"
-    click n9 "../modules/apiError.md"
+    click n7 "../modules/planningInputService.md"
+    click n8 "../modules/teamService.md"
+    click n9 "../modules/types_team.md"
+    click n10 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -86,6 +92,7 @@ flowchart LR
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [toast](../modules/toast.md) |
 | Outbound | [VacationManager](../modules/VacationManager.md) |
+| Outbound | [planningInputService](../modules/planningInputService.md) |
 | Outbound | [teamService](../modules/teamService.md) |
 | Outbound | [types_team](../modules/types_team.md) |
 | Outbound | [apiError](../modules/apiError.md) |
@@ -100,7 +107,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamListProps](../entities/TeamListProps.md) | Class | 14 | — | — |
+| [TeamListProps](../entities/TeamListProps.md) | Class | 15 | — | — |
 
 ## Functions
 

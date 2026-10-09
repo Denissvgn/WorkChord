@@ -16,7 +16,7 @@ Operator-scoped, bounded hierarchy diagnosis and version-checked deterministic r
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.task_status_service` | `TaskStatusService` |
-| `app.services.work_metrics` | `scoped_metric_tasks`, `task_signals` |
+| `app.services.work_metrics` | `effective_work_flags`, `scoped_metric_tasks`, `task_signals` |
 | `sqlalchemy` | `select` |
 
 ## Local dependency map

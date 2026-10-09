@@ -470,6 +470,6 @@ export interface TaskActions {
     claim_generation: number; running_run_ids: number[]; live_assignment_ids: number[];
 }
 export interface TaskCommand {
-    action: string; expected_version: number; reason: string; iteration_id?: number;
+    action: string; expected_version: number; reason: string; iteration_id?: number; expected_revisions?: Record<number, number>;
     expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[];
 }

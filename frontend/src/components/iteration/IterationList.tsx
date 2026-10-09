@@ -4,6 +4,8 @@ import { Calendar, Trash2, ArrowRight, Download, Upload, FolderOpen } from 'luci
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { iterationService } from '../../services/iterationService';
+import { IterationImportDialog } from './IterationImportDialog';
+import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import { exportService } from '../../services/exportService';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
@@ -22,8 +24,10 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const { t } = useTranslation();
     const toast = useToast();
+    const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions } | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [importingId, setImportingId] = useState<number | null>(null);
+    const [importFile, setImportFile] = useState<File | null>(null);
     const importFileInputRef = useRef<HTMLInputElement>(null);
     const { data: iterations, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['iterations'],
@@ -31,8 +35,8 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: iterationService.delete,
-        onSuccess: (_data, deletedId) => {
+        mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => iterationService.delete(id, revisions),
+        onSuccess: (_data, { id: deletedId }) => {
             // Invalidate task cache for the deleted iteration
             queryClient.invalidateQueries({ queryKey: ['tasks', deletedId] });
             queryClient.invalidateQueries({ queryKey: ['team', deletedId] });
@@ -75,22 +79,14 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
         importFileInputRef.current?.click();
     };
 
-    const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0] && importingId) {
-            try {
-                await exportService.importIntoIteration(importingId, e.target.files[0]);
-                queryClient.invalidateQueries({ queryKey: ['iterations'] });
-                queryClient.invalidateQueries({ queryKey: ['tasks', importingId] });
-                queryClient.invalidateQueries({ queryKey: ['team', importingId] });
-                queryClient.invalidateQueries({ queryKey: ['gantt', importingId] });
-                toast.success(t('feedback.iterationImportSuccess'));
-            } catch (error: unknown) {
-                toast.error(getApiErrorMessage(error, t('feedback.iterationImportFailed')));
-            }
-            // Reset input and state
-            e.target.value = '';
-            setImportingId(null);
-        }
+    const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setImportFile(event.target.files?.[0] ?? null); event.currentTarget.value = '';
+    };
+    const openDelete = async (id: number) => {
+        try {
+            const observed = await planningInputService.readInitial<Iteration>('iteration', id);
+            setDeleteContext({ id, revisions: observed.expected_revisions }); setDeletingId(id);
+        } catch (cause) { toast.error(getApiErrorMessage(cause, t('feedback.iterationDeleteFailed'))); }
     };
 
     if (isLoading) return <div>{t('common.loading')}</div>;
@@ -103,6 +99,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {importFile && <IterationImportDialog file={importFile} iterationId={importingId ?? undefined} onClose={() => { setImportFile(null); setImportingId(null); }} />}
             {/* Hidden file input for import */}
             <input
                 type="file"
@@ -189,7 +186,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => setDeletingId(iteration.id)}
+                            onClick={() => void openDelete(iteration.id)}
                             aria-label={t('actions.delete')}
                                 className="text-feedback-danger-foreground hover:bg-feedback-danger-muted"
                         >
@@ -208,13 +205,13 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
             <ConfirmDialog
                 open={deletingId !== null}
                 title={t('iterations.deleteTitle')}
-                description={t('iterations.deleteBody')}
+                description={<>{t('iterations.deleteBody')}{deleteMutation.isError && <p role="alert">{getApiErrorMessage(deleteMutation.error, t('feedback.iterationDeleteFailed'))}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => { if (deletingId) void openDelete(deletingId); }}>{t('planningInput.reviewAgain')}</Button></p>}</>}
                 confirmLabel={t('actions.delete')}
                 cancelLabel={t('actions.cancel')}
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
                 onCancel={() => setDeletingId(null)}
-                onConfirm={() => { if (deletingId !== null) deleteMutation.mutate(deletingId); }}
+                onConfirm={() => { if (deleteContext) deleteMutation.mutate(deleteContext); }}
             />
         </div>
     );

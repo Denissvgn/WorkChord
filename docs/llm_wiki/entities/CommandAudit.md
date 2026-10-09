@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `CommandAudit` in `backend/app/models/identity.py`._
+Append-only command attribution with principal, source, correlation and reason. When a project has been deleted, the live foreign key is null and immutable details retain its original project identifier; related outbox audit records preserve the same scope without requiring a live project row.
 
 ## Attributes
 
@@ -42,6 +42,10 @@ flowchart LR
     n7["recover_principal (backend/app/routers/identity.py)"]
     n8["workspace_member (backend/app/routers/identity.py)"]
     n9["IdentityService.transfer_guest (backend/app/services/identity_service.py)"]
+    n10["backend/tests/database_migration/test_project_identity_scope.py"]
+    n11["backend/tests/migrations/test_allocation_identity.py"]
+    n12["backend/tests/migrations/test_profile_identity.py"]
+    n13["backend/tests/migrations/test_project_identity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -51,6 +55,10 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/authority.md"
@@ -61,6 +69,10 @@ flowchart LR
     click n7 "../modules/routers_identity.md"
     click n8 "../modules/routers_identity.md"
     click n9 "../modules/identity_service.md"
+    click n10 "../modules/test_project_identity_scope.md"
+    click n11 "../modules/test_allocation_identity.md"
+    click n12 "../modules/test_profile_identity.md"
+    click n13 "../modules/test_project_identity.md"
 ```
 
 ### Summary
@@ -87,3 +99,9 @@ flowchart LR
 | `recover_principal` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `workspace_member` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `IdentityService.transfer_guest` | call | [identity_service](../modules/identity_service.md) | 1 |
+| `test_project_identity_scope` | import | [test_project_identity_scope](../modules/test_project_identity_scope.md) | — |
+| `test_allocation_identity` | import | [test_allocation_identity](../modules/test_allocation_identity.md) | — |
+| `test_profile_identity` | import | [test_profile_identity](../modules/test_profile_identity.md) | — |
+| `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
+
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

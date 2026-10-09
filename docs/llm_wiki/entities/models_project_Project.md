@@ -7,7 +7,7 @@
 
 ## Description
 
-Outcome-oriented planning container above tasks and iterations.
+Outcome-oriented planning container above tasks and iterations. SQLite allocates project identifiers without reusing deleted identities; the forward upgrade preserves dependent records and raises the allocation floor above retained historical scope identifiers.
 
 ## Attributes
 
@@ -49,18 +49,18 @@ Outcome-oriented planning container above tasks and iterations.
 flowchart LR
     n0["Project (backend/app/models/project.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/commands.py"]
-    n3["backend/app/models/__init__.py"]
-    n4["backend/app/models/iteration.py"]
-    n5["backend/app/models/release.py"]
-    n6["backend/app/models/request_source.py"]
-    n7["backend/app/models/task.py"]
-    n8["backend/app/models/team_member.py"]
-    n9["backend/app/models/triage.py"]
-    n10["backend/app/routers/identity.py"]
-    n11["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
-    n12["backend/app/services/delivery_metrics_service.py"]
-    n13["backend/app/services/execution_usage_service.py"]
+    n2["backend/app/authority.py"]
+    n3["backend/app/commands.py"]
+    n4["backend/app/models/__init__.py"]
+    n5["backend/app/models/iteration.py"]
+    n6["backend/app/models/release.py"]
+    n7["backend/app/models/request_source.py"]
+    n8["backend/app/models/task.py"]
+    n9["backend/app/models/team_member.py"]
+    n10["backend/app/models/triage.py"]
+    n11["backend/app/routers/identity.py"]
+    n12["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
+    n13["backend/app/services/delivery_metrics_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -76,18 +76,18 @@ flowchart LR
     n13 --> n0
     click n0 "../modules/models_project.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/commands.md"
-    click n3 "../modules/models___init__.md"
-    click n4 "../modules/models_iteration.md"
-    click n5 "../modules/models_release.md"
-    click n6 "../modules/models_request_source.md"
-    click n7 "../modules/models_task.md"
-    click n8 "../modules/team_member.md"
-    click n9 "../modules/models_triage.md"
-    click n10 "../modules/routers_identity.md"
-    click n11 "../modules/agent_work_service.md"
-    click n12 "../modules/delivery_metrics_service.md"
-    click n13 "../modules/execution_usage_service.md"
+    click n2 "../modules/authority.md"
+    click n3 "../modules/commands.md"
+    click n4 "../modules/models___init__.md"
+    click n5 "../modules/models_iteration.md"
+    click n6 "../modules/models_release.md"
+    click n7 "../modules/models_request_source.md"
+    click n8 "../modules/models_task.md"
+    click n9 "../modules/team_member.md"
+    click n10 "../modules/models_triage.md"
+    click n11 "../modules/routers_identity.md"
+    click n12 "../modules/agent_work_service.md"
+    click n13 "../modules/delivery_metrics_service.md"
 ```
 
 ### Summary
@@ -106,6 +106,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `authority` | import | [authority](../modules/authority.md) | — |
 | `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
@@ -117,6 +118,5 @@ flowchart LR
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
-| `execution_usage_service` | import | [execution_usage_service](../modules/execution_usage_service.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

@@ -38,6 +38,7 @@ flowchart LR
     n6["backend/app/schemas/__init__.py"]
     n7["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
     n8["IterationService.create (backend/app/services/iteration_service.py)"]
+    n9["test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope (backend/tests/test_time_reports.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -46,6 +47,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/schemas_iteration.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
@@ -54,6 +56,7 @@ flowchart LR
     click n6 "../modules/schemas___init__.md"
     click n7 "../modules/agent_planning_service.md"
     click n8 "../modules/iteration_service.md"
+    click n9 "../modules/test_time_reports.md"
 ```
 
 ### Summary
@@ -79,3 +82,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `IterationService.create` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
+| `test_retained_titles_notes_and_corrections_never_attach_to_replacement_scope` | call | [test_time_reports](../modules/test_time_reports.md) | 2 |

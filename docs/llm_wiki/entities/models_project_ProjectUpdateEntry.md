@@ -1,6 +1,6 @@
 # ProjectUpdateEntry
 
-**Location:** `backend/app/models/project.py:190`
+**Location:** `backend/app/models/project.py:191`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_project](../modules/models_project.md)

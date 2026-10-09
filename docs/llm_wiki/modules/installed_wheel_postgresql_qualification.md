@@ -14,6 +14,8 @@ source tree cannot accidentally satisfy the wheel boundary.
 
 Child environments explicitly select managed authentication. The source includes a human principal, workspace membership, project viewer membership and an opaque authenticated session that cross the SQLite/PostgreSQL transfer boundary. Maintenance probes require authenticated reads, preserve anonymous denial and write rejection, and compare all application rows before and after the probes.
 
+Installed-artifact qualification transfers retained private minute records, append-only corrections, deleted task version fences and unavailable project/task identities through the complete catalog. It checks that new project and task IDs exceed retained allocations in addition to the existing locale, privilege, maintenance and package-resource boundaries.
+
 ## Imports
 
 | Source | Symbols |
@@ -36,7 +38,9 @@ Child environments explicitly select managed authentication. The source includes
 | `app.models.identity` | `Principal`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
+| `app.models.recovery` | `TaskDeletionFence` |
 | `app.models.task` | `Task` |
+| `app.models.time_entry` | `TimeEntry`, `TimeEntryRevision` |
 | `app.models.user_session` | `UserSession` |
 | `app.services.upgrade_service` | `bootstrap_database_schema`, `bootstrap_database_schema`, `database_configuration`, `head_revision` |
 | `argparse` | `argparse` |
@@ -72,7 +76,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (17) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -80,7 +84,7 @@ flowchart LR
 |---|---:|---:|
 | python | 5 | 5 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -14,6 +14,7 @@ from app.main import app
 from app.models.agent import AgentActor, AgentTaskAssignment, AgentRun
 from app.models.task import Task
 from app.schemas.task import TaskCreate
+from app.schemas.task import TaskUpdate
 from app.schemas.task_brief import BriefCriterion, BriefWrite, TaskBrief
 from app.services.task_brief_service import TaskBriefService
 from app.services.task_service import TaskService
@@ -80,6 +81,74 @@ async def begin_next(factory, key, logical_key):
     begun = await peer(factory, key, "begin", body=body, idempotency_key=logical_key)
     assert begun["ok"], begun
     return begun, body
+
+
+async def nest_assigned_work(factory, scenario, task_id):
+    async with factory() as db:
+        parent = await TaskService(db).create(scenario.iterations[0], TaskCreate(
+            title="Assigned work group", project_id=scenario.projects[0]))
+        task = await db.get(Task, task_id)
+        task.parent_id = parent.id
+        await db.commit()
+        return parent.id
+
+
+async def test_ancestor_deferral_blocks_assigned_begin_over_rest_and_mcp(delivery_store):
+    from app import mcp_agent_tools
+    from app.services.agent_work_service import AgentConflictError
+
+    factory, scenario, _ = delivery_store
+    task_id, assignment_id = await seed_work(factory, scenario)
+    parent_id = await nest_assigned_work(factory, scenario, task_id)
+    async with factory() as db:
+        parent = await TaskService(db).get_by_id(parent_id)
+        await TaskService(db).update(parent_id, TaskUpdate(is_deferred=True, expected_version=parent.version))
+        actor = await db.get(AgentActor, scenario.actors[0])
+        body = dict(assignment_id=assignment_id, queue_revision=actor.queue_revision, lease_seconds=60)
+        leaf = await TaskService(db).get_by_id(task_id)
+        before = (leaf.status, leaf.version, leaf.claim_id, leaf.claim_generation)
+    decision = await peer(factory, scenario.actor_keys[0], "work")
+    assert decision["ok"] and decision["response"]["state"] == "wait", decision
+    blocked = decision["response"]["blocked_assigned"]
+    assert any("task_deferred" in item["blocker_codes"] for item in blocked)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post("/api/agent/me/work/begin", headers={
+            "X-Agent-API-Key": scenario.actor_keys[0], "Idempotency-Key": "deferred-rest-begin"}, json=body)
+        assert response.status_code == 409, response.text
+    async with factory() as db:
+        actor = await db.get(AgentActor, scenario.actors[0])
+        with pytest.raises(AgentConflictError):
+            await mcp_agent_tools.begin_my_work(db, actor, body, idempotency_key="deferred-mcp-begin")
+    async with factory() as db:
+        leaf = await db.get(Task, task_id)
+        assert (leaf.status, leaf.version, leaf.claim_id, leaf.claim_generation) == before
+
+
+async def test_ancestor_edit_invalidates_live_worker_renew_submit_and_begin_replay(delivery_store):
+    factory, scenario, _ = delivery_store
+    task_id, _ = await seed_work(factory, scenario)
+    parent_id = await nest_assigned_work(factory, scenario, task_id)
+    begun, begin_body = await begin_next(factory, scenario.actor_keys[0], "begin-before-ancestor-edit")
+    receipt = begun["response"]
+    async with factory() as db:
+        parent = await TaskService(db).get_by_id(parent_id)
+        assert parent.children
+        await TaskService(db).update(parent_id, TaskUpdate(is_deferred=True, expected_version=parent.version))
+        leaf = await TaskService(db).get_by_id(task_id)
+        assert leaf.version > receipt["task"]["version"]
+        claim = (leaf.claim_id, leaf.claim_generation, leaf.claimed_by)
+    renewal = await peer(factory, scenario.actor_keys[0], "renew", body=fence(receipt), idempotency_key="renew-after-ancestor-edit")
+    assert not renewal["ok"] and renewal["error_type"] == "AgentConflictError", renewal
+    submission = dict(**fence(receipt), summary="Stale scope result", evidence={"inspection": "old context"},
+        criterion_progress=[dict(criterion_id="result", criterion_revision=1, state="completed", evidence="Old scope")])
+    submitted = await peer(factory, scenario.actor_keys[0], "submit", body=submission, idempotency_key="submit-after-ancestor-edit")
+    assert not submitted["ok"] and submitted["error_type"] == "AgentConflictError", submitted
+    replayed = await peer(factory, scenario.actor_keys[0], "begin", body=begin_body, idempotency_key="begin-before-ancestor-edit")
+    assert not replayed["ok"] and replayed["error_type"] == "AgentConflictError", replayed
+    async with factory() as db:
+        leaf = await db.get(Task, task_id)
+        assert (leaf.claim_id, leaf.claim_generation, leaf.claimed_by) == claim
+        assert leaf.status == "active"
 
 
 async def review_assignment(factory, task_id, actor_id):

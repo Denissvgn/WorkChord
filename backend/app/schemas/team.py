@@ -104,7 +104,7 @@ class TeamMemberUpdate(PlanningInputRevisions):
     operational_utilization: Optional[float] = Field(default=None, ge=0, le=100)
 
 
-class TeamMemberProfileSkillCreate(BaseModel):
+class TeamMemberProfileSkillCreate(PlanningInputRevisions):
     """Schema for creating a profile skill or weakness."""
     skill_key: str = Field(..., min_length=1, max_length=120)
     skill_name: str = Field(..., min_length=1, max_length=255)

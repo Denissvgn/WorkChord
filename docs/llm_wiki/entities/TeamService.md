@@ -29,13 +29,13 @@ Service for team member operations.
 | `create_profile` | *(async)* `(data: TeamMemberProfileCreate, *, commit: bool = True) -> TeamMemberProfile` | — | Create a profile, optionally leaving commit ownership to the caller. |
 | `update_profile` | *(async)* `(profile_id: int, data: TeamMemberProfileUpdate, *, commit: bool = True) -> TeamMemberProfile \| None` | `@schedule_input_command('profile')` | Update profile metadata, optionally deferring the commit. |
 | `delete_profile` | *(async)* `(profile_id: int) -> bool` | `@schedule_input_command('profile')` | Delete a reusable profile and detach linked team members. |
-| `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | — | Add a skill or weakness to a profile. |
+| `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Add a skill or weakness to a profile. |
 | `update_profile_skill` | *(async)* `(profile_id: int, skill_id: int, data: TeamMemberProfileSkillUpdate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Update a profile skill or weakness. |
 | `delete_profile_skill` | *(async)* `(profile_id: int, skill_id: int) -> bool` | `@schedule_input_command('profile')` | Delete one profile skill or weakness. |
 | `get_by_iteration` | *(async)* `(iteration_id: int) -> Sequence[TeamMember]` | — | Get all team members for an iteration. |
 | `get_all_unique_members` | *(async)* `() -> list[dict]` | — | Get unique members by name across all iterations (for reuse). |
 | `list_member_options` | *(async)* `() -> list[TeamMemberOptionResponse]` | — | List all team members with enough context for owner selectors. |
-| `get_by_id` | *(async)* `(member_id: int) -> TeamMember \| None` | — | Get team member by ID. |
+| `get_by_id` | *(async)* `(member_id: int, *, load_tasks: bool = True) -> TeamMember \| None` | — | Get team member by ID. |
 | `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
 | `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
 | `detach_absence_adapters` | *(async)* `(member, next_profile_id)` | — | Allocation identity changes must not expose another person's absence adapters. |
@@ -43,7 +43,7 @@ Service for team member operations.
 | `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
 | `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
 | `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
-| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@atomic_command` | Import vacation ranges for iteration team members from CSV text. |
+| `import_vacations` | *(async)* `(iteration_id: int, csv_text: str) -> VacationImportResponse` | `@schedule_input_command('member')` | Import vacation ranges for iteration team members from CSV text. |
 | `calculate_capacity` | *(async)* `(member_id: int) -> MemberCapacity \| None` | — | Calculate capacity for a team member. |
 | `get_workload` | *(async)* `(member_id: int) -> MemberWorkload \| None` | — | Get workload information for a team member. |
 | `import_members` | *(async)* `(iteration_id: int, text: str, *, expected_revisions: dict[int, int] \| None = None) -> list[TeamMember]` | `@schedule_input_command('member')` | Import multiple team members from text format. |
@@ -116,4 +116,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.

@@ -1,4 +1,8 @@
-import { useEffect, useId, useState } from 'react';
+import { useActiveMount } from '../tasks/useDraftDismissal';
+import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
+import type { MemberPlanningIntent, ObservedRevisions } from '../../services/planningInputService';
+import type { ReactNode } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Save } from 'lucide-react';
@@ -69,16 +73,17 @@ const formsMatch = (left: TeamMemberCreate, right: TeamMemberCreate) => (
     && Object.is(left.operational_utilization, right.operational_utilization)
 );
 
-export const TeamForm = ({
+const TeamFormEditor = ({
     iterationId,
     initialData,
     initialProfile,
     onSuccess,
     onCancel,
-    onStateChange,
-}: TeamFormProps) => {
+    onStateChange, revisions, contextControls, onIntentChange,
+}: TeamFormProps & { revisions: ObservedRevisions; contextControls: ReactNode; onIntentChange: (intent: MemberPlanningIntent) => void }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
+    const isActive = useActiveMount();
     const profileSelectId = useId();
     const profileHelpId = useId();
     const [error, setError] = useState<string | null>(null);
@@ -95,20 +100,16 @@ export const TeamForm = ({
     });
     const profiles = profilesQuery.data ?? [];
     const isLoadingProfiles = profilesQuery.isLoading;
-    const initialDataProfile = initialData?.profile ?? null;
-    const selectedProfile = profiles.find(profile => profile.id === formData.profile_id)
-        ?? (initialProfile?.id === formData.profile_id ? initialProfile : null)
-        ?? (initialDataProfile?.id === formData.profile_id ? initialDataProfile : null);
     const hasLinkedProfile = formData.profile_id !== null && formData.profile_id !== undefined;
 
     const createMutation = useMutation({
-        mutationFn: (data: TeamMemberCreate) => teamService.create(iterationId, data),
+        mutationFn: (data: TeamMemberCreate) => teamService.create(iterationId, data, revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
-            onSuccess();
+            if (isActive()) onSuccess();
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('teamCapacity.failedCreateMember')));
@@ -116,18 +117,19 @@ export const TeamForm = ({
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data: TeamMemberCreate) => teamService.update(initialData!.id, data),
+        mutationFn: (data: TeamMemberCreate) => teamService.update(initialData!.id, data, revisions),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
-            onSuccess();
+            if (isActive()) onSuccess();
         },
         onError: (err: unknown) => {
             setError(getApiErrorMessage(err, t('teamCapacity.failedUpdateMember')));
         }
     });
 
+    useEffect(() => { onIntentChange({ profile_id: formData.profile_id, name: formData.name, email: formData.email }); }, [formData.profile_id, formData.name, formData.email, onIntentChange]);
     const isPending = createMutation.isPending || updateMutation.isPending;
     const isDirty = !formsMatch(formData, baselineFormData);
 
@@ -139,14 +141,7 @@ export const TeamForm = ({
         e.preventDefault();
         if (isPending) return;
         setError(null);
-        const payload = selectedProfile
-            ? {
-                ...formData,
-                name: selectedProfile.display_name,
-                email: selectedProfile.email || '',
-                profile_id: selectedProfile.id,
-            }
-            : { ...formData };
+        const payload = { ...formData };
         if (initialData) {
             updateMutation.mutate(payload);
         } else {
@@ -195,6 +190,7 @@ export const TeamForm = ({
             )}
 
             <form onSubmit={handleSubmit} aria-busy={isPending} className="space-y-6">
+                {contextControls && <fieldset disabled={isPending} className="m-0 min-w-0 border-0 p-0">{contextControls}</fieldset>}
                 <fieldset disabled={isPending} className="min-w-0 space-y-6 border-0 p-0">
                     {error && (
                         <div
@@ -320,4 +316,13 @@ export const TeamForm = ({
             </form>
         </div>
     );
+};
+
+export const TeamForm = (props: TeamFormProps) => {
+    const intent = useRef<MemberPlanningIntent>({ profile_id: props.initialData?.profile_id ?? props.initialProfile?.id });
+    return <PlanningInputBoundary<TeamMember> key={`${props.iterationId}:${props.initialData?.id ?? 'new'}`} onCancel={props.onCancel} kind="member"
+        resourceId={props.initialData?.id ?? props.iterationId} creatingMember={!props.initialData} getIntent={() => intent.current}>
+        {(observed, controls) => <TeamFormEditor {...props} initialData={props.initialData ? observed.resource : undefined}
+            revisions={observed.expected_revisions} contextControls={controls} onIntentChange={value => { intent.current = value; }} />}
+    </PlanningInputBoundary>;
 };

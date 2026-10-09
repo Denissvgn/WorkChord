@@ -6,22 +6,25 @@
 
 Presents authenticated human work, independent review and personal inbox queues across authorized projects. It retains task return context and uses the shared guarded editor. Availability, notification state and delivery failures have explicit controls; unlinked profiles, missing membership and unavailable tasks are surfaced rather than inferred.
 
+Only the selected work/review/inbox consumers remain enabled. Paged queues use retained windows and independent head discovery; latest-window navigation preserves task selection. Closing an editor refreshes only the relevant enabled queue.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `../components/common/Button` | `Button` |
+| `../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
 | `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` |
+| `../components/tasks/GuardedTaskModal` | `CurrentTaskModal` |
 | `../components/tasks/PersonCapacity` | `PersonCapacity` |
 | `../components/ui` | `PageLayout`, `PageHeader` |
 | `../features/identity/identityContext` | `useIdentity` |
+| `../features/useLiveWindow` | `useLiveWindow` |
 | `../services/api` | `api` |
 | `../services/discussionService` | `discussionService` |
-| `../services/taskService` | `taskService` |
 | `../types/task` | `TaskReference`, `TaskReferencePage` |
 | `../utils/apiError` | `getApiErrorMessage` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery` |
+| `@tanstack/react-query` | `useMutation` |
 | `react-i18next` | `useTranslation` |
 | `react-router-dom` | `useSearchParams` |
 
@@ -37,67 +40,21 @@ Presents authenticated human work, independent review and personal inbox queues 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/feedback/QueryState.tsx"]
-    n2["frontend/src/components/tasks/GuardedTaskModal.tsx"]
-    n3["frontend/src/components/tasks/PersonCapacity.tsx"]
-    n4["frontend/src/components/ui/index.ts"]
-    n5["frontend/src/features/identity/identityContext.ts"]
-    n6["frontend/src/pages/MyWorkPage.tsx"]
-    n7["frontend/src/services/api.ts"]
-    n8["frontend/src/services/discussionService.ts"]
-    n9["frontend/src/services/taskService.ts"]
-    n10["frontend/src/types/task.ts"]
-    n11["frontend/src/utils/apiError.ts"]
+    n0["frontend"]
+    n1["frontend/src/pages/MyWorkPage.tsx"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n11
-    n3 --> n0
-    n3 --> n1
-    n3 --> n7
-    n3 --> n11
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
-    n6 --> n4
-    n6 --> n5
-    n6 --> n7
-    n6 --> n8
-    n6 --> n9
-    n6 --> n10
-    n6 --> n11
-    n8 --> n7
-    n9 --> n7
-    n9 --> n10
-    click n0 "../modules/Button.md"
-    click n1 "../modules/QueryState.md"
-    click n2 "../modules/GuardedTaskModal.md"
-    click n3 "../modules/PersonCapacity.md"
-    click n4 "../modules/index.md"
-    click n5 "../modules/identityContext.md"
-    click n6 "../modules/MyWorkPage.md"
-    click n7 "../modules/api.md"
-    click n8 "../modules/discussionService.md"
-    click n9 "../modules/taskService.md"
-    click n10 "../modules/types_task.md"
-    click n11 "../modules/apiError.md"
+    click n1 "../modules/MyWorkPage.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
-| Outbound | [PersonCapacity](../modules/PersonCapacity.md) |
-| Outbound | [index](../modules/index.md) |
-| Outbound | [identityContext](../modules/identityContext.md) |
-| Outbound | [api](../modules/api.md) |
-| Outbound | [discussionService](../modules/discussionService.md) |
-| Outbound | [taskService](../modules/taskService.md) |
-| Outbound | [types_task](../modules/types_task.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (1) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -105,9 +62,11 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkPage](../entities/WorkPage.md) | Class | 18 | — | — |
-| [Queue](../entities/Queue.md) | Type alias | 17 | — | — |
+| [WorkPage](../entities/WorkPage.md) | Class | 19 | — | — |
+| [Queue](../entities/Queue.md) | Type alias | 18 | — | — |

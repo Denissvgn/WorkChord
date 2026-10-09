@@ -312,9 +312,16 @@ class AgentService:
         active_capability_slugs = await self._active_capability_slugs()
 
         ready: list[Task] = []
+        scope_trees = {}
         required_tags = set(tags or [])
         required_capabilities = set(capabilities or [])
         for task in candidates:
+            scope = (task.iteration_id, task.project_id if task.iteration_id is None else None)
+            if scope not in scope_trees:
+                _, scope_trees[scope] = await self.task_service._load_iteration_tree(scope[0], project_id=scope[1])
+            task = scope_trees[scope].get(task.id)
+            if task is None:
+                continue
             task_tags = self._parse_tags(task.tags)
             if required_tags and not required_tags.issubset(task_tags):
                 continue

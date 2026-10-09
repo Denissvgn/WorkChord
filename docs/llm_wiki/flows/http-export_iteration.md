@@ -29,22 +29,24 @@ sequenceDiagram
     participant p6 as TeamService
     participant p7 as team_service.get_by_iteration
     participant p8 as aggregate_metrics
-    participant p9 as db.info.get
-    participant p10 as _scope_conditions(…).get
-    participant p11 as _scope_conditions
-    participant p12 as tuple
-    participant p13 as authority.allows
-    participant p14 as iterations.c.project_id.in_
-    participant p15 as or_ (backend/app/authority.py:_scope_conditions)
-    participant p16 as iterations.c.project_id.is_
-    participant p17 as select(…).where (backend/app/authority.py:_scope_conditions, 1)
-    participant p18 as select (backend/app/authority.py:_scope_conditions)
-    participant p19 as and_ (backend/app/authority.py:_scope_conditions)
-    participant p20 as task.c.iteration_id.in_
-    participant p21 as task.c.iteration_id.is_
-    participant p22 as task.c.project_id.in_
-    participant p23 as task.c.project_id.is_
-    participant p24 as select(…).where (backend/app/authority.py:_scope_conditions, 3)
+    participant p9 as utc_now
+    participant p10 as datetime.now
+    participant p11 as db.info.get
+    participant p12 as _scope_conditions(…).get
+    participant p13 as _scope_conditions
+    participant p14 as tuple
+    participant p15 as authority.allows
+    participant p16 as iterations.c.project_id.in_
+    participant p17 as or_ (backend/app/authority.py:_scope_conditions)
+    participant p18 as iterations.c.project_id.is_
+    participant p19 as select(…).where (backend/app/authority.py:_scope_conditions, 1)
+    participant p20 as select (backend/app/authority.py:_scope_conditions)
+    participant p21 as and_ (backend/app/authority.py:_scope_conditions)
+    participant p22 as task.c.iteration_id.in_
+    participant p23 as task.c.iteration_id.is_
+    participant p24 as task.c.project_id.in_
+    participant p25 as task.c.project_id.is_
+    participant p26 as select(…).where (backend/app/authority.py:_scope_conditions, 3)
     p0->>p1: IterationService
     p0-->>p2: iteration_service.get_by_id
     p0-->>p3: HTTPException
@@ -53,31 +55,31 @@ sequenceDiagram
     p0->>p6: TeamService
     p0-->>p7: team_service.get_by_iteration
     p0->>p8: aggregate_metrics
-    p8-->>p9: db.info.get
-    p8-->>p10: _scope_conditions(…).get
-    p8->>p11: _scope_conditions
-    p11-->>p12: tuple
-    p11-->>p13: authority.allows
-    p11-->>p14: iterations.c.project_id.in_
-    p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p16: iterations.c.project_id.is_
-    p11-->>p17: select(…).where (backend/app/authority.py:_scope_conditions, 1)
-    p11-->>p18: select (backend/app/authority.py:_scope_conditions)
-    p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p20: task.c.iteration_id.in_
-    p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p21: task.c.iteration_id.is_
-    p11-->>p22: task.c.project_id.in_
-    p11-->>p15: or_ (backend/app/authority.py:_scope_conditions)
-    p11-->>p22: task.c.project_id.in_
-    p11-->>p23: task.c.project_id.is_
-    p11-->>p24: select(…).where (backend/app/authority.py:_scope_conditions, 3)
-    p11-->>p18: select (backend/app/authority.py:_scope_conditions)
-    p11-->>p19: and_ (backend/app/authority.py:_scope_conditions)
+    p8->>p9: utc_now
+    p9-->>p10: datetime.now
+    p8-->>p11: db.info.get
+    p8-->>p12: _scope_conditions(…).get
+    p8->>p13: _scope_conditions
+    p13-->>p14: tuple
+    p13-->>p15: authority.allows
+    p13-->>p16: iterations.c.project_id.in_
+    p13-->>p17: or_ (backend/app/authority.py:_scope_conditions)
+    p13-->>p18: iterations.c.project_id.is_
+    p13-->>p19: select(…).where (backend/app/authority.py:_scope_conditions, 1)
+    p13-->>p20: select (backend/app/authority.py:_scope_conditions)
+    p13-->>p21: and_ (backend/app/authority.py:_scope_conditions)
+    p13-->>p17: or_ (backend/app/authority.py:_scope_conditions)
+    p13-->>p22: task.c.iteration_id.in_
+    p13-->>p21: and_ (backend/app/authority.py:_scope_conditions)
+    p13-->>p23: task.c.iteration_id.is_
+    p13-->>p24: task.c.project_id.in_
+    p13-->>p17: or_ (backend/app/authority.py:_scope_conditions)
+    p13-->>p24: task.c.project_id.in_
+    p13-->>p25: task.c.project_id.is_
+    p13-->>p26: select(…).where (backend/app/authority.py:_scope_conditions, 3)
 ```
 
-> Call sequence diagram shows 30 of 283 interactions; 253 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 287 interactions; 257 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -93,9 +95,9 @@ flowchart LR
     s7["7. TeamService"]
     s8["8. team_service.get_by_iteration"]
     s9["9. aggregate_metrics"]
-    s10["10. db.info.get"]
-    s11["11. _scope_conditions(…).get"]
-    s12["12. _scope_conditions"]
+    s10["10. utc_now"]
+    s11["11. datetime.now"]
+    s12["12. db.info.get"]
     s1 -->|"IterationService(db)"| s2
     s1 -. "iteration_service.get_by_id(iteration_id)" .-> s3
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s4
@@ -104,9 +106,9 @@ flowchart LR
     s1 -->|"TeamService(db)"| s7
     s1 -. "team_service.get_by_iteration(iteration_id)" .-> s8
     s1 -->|"aggregate_metrics(db, iteration_id=iteration_id)"| s9
-    s9 -. "db.info.get('authority')" .-> s10
-    s9 -. "_scope_conditions(…).get(Task)" .-> s11
-    s9 -->|"_scope_conditions(authority)"| s12
+    s9 -->|"utc_now(data not statically known)"| s10
+    s10 -. "datetime.now(UTC)" .-> s11
+    s9 -. "db.info.get('authority')" .-> s12
     b0["mutation columns.insert"]
     s9 -. "mutation columns.insert" .-> b0
     b1["mutation values.pop"]
@@ -122,7 +124,7 @@ flowchart LR
     click s5 "../modules/task_service.md"
     click s7 "../modules/team_service.md"
     click s9 "../modules/services_work_metrics.md"
-    click s12 "../modules/authority.md"
+    click s10 "../modules/time.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
@@ -143,10 +145,10 @@ flowchart LR
 | `task_service.get_by_iteration` | - | - | - | - |
 | `TeamService` | - | - | - | - |
 | `team_service.get_by_iteration` | - | - | - | - |
-| `aggregate_metrics` | `db`, `project_id`, `iteration_id`, `project_ids`, `group_by`, `task_ids`, `zone_map` | - | `values[...]`, `values[...]`, `values[...]`, `values[...]`, `values[...]` | `...` |
+| `aggregate_metrics` | `db`, `project_id`, `iteration_id`, `project_ids`, `group_by`, `task_ids`, `zone_map`, `now` | - | `values[...]`, `values[...]`, `values[...]`, `values[...]`, `values[...]` | `...` |
+| `utc_now` | - | `UTC` | - | `datetime.now(...)` |
+| `datetime.now` | - | - | - | - |
 | `db.info.get` | - | - | - | - |
-| `_scope_conditions(…).get` | - | - | - | - |
-| `_scope_conditions` | `authority` | - | `conditions[...]` | `conditions` |
 
 ### Call data
 
@@ -160,19 +162,19 @@ flowchart LR
 | export_iteration | TeamService | 97 | `TeamService(db)` |
 | export_iteration | team_service.get_by_iteration | 98 | `team_service.get_by_iteration(iteration_id)` |
 | export_iteration | aggregate_metrics | 130 | `aggregate_metrics(db, iteration_id=iteration_id)` |
-| aggregate_metrics | db.info.get | 130 | `db.info.get('authority')` |
-| aggregate_metrics | _scope_conditions(…).get | 131 | `_scope_conditions(authority).get(Task)` |
-| aggregate_metrics | _scope_conditions | 131 | `_scope_conditions(authority)` |
+| aggregate_metrics | utc_now | 160 | `utc_now(data not statically known)` |
+| utc_now | datetime.now | 13 | `datetime.now(UTC)` |
+| aggregate_metrics | db.info.get | 162 | `db.info.get('authority')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `columns.insert` | `aggregate_metrics` | 205 |
-| mutation | `values.pop` | `aggregate_metrics` | 219 |
-| mutation | `values.pop` | `aggregate_metrics` | 222 |
-| mutation | `values.pop` | `aggregate_metrics` | 224 |
-| mutation | `results.append` | `aggregate_metrics` | 229 |
+| mutation | `columns.insert` | `aggregate_metrics` | 237 |
+| mutation | `values.pop` | `aggregate_metrics` | 251 |
+| mutation | `values.pop` | `aggregate_metrics` | 254 |
+| mutation | `values.pop` | `aggregate_metrics` | 256 |
+| mutation | `results.append` | `aggregate_metrics` | 261 |
 
 ### Static analysis gaps
 
@@ -182,8 +184,8 @@ flowchart LR
 | external_call | `export_iteration` | `HTTPException` | 86 |
 | unresolved_call | `export_iteration` | `task_service.get_by_iteration` | 92 |
 | unresolved_call | `export_iteration` | `team_service.get_by_iteration` | 98 |
-| unresolved_call | `aggregate_metrics` | `db.info.get` | 130 |
-| unresolved_call | `aggregate_metrics` | `_scope_conditions(authority).get` | 131 |
+| external_call | `utc_now` | `datetime.now` | 13 |
+| unresolved_call | `aggregate_metrics` | `db.info.get` | 162 |
 | step_limit | `export_iteration` | `first 12 steps` | 0 |
 
 ## Behavior

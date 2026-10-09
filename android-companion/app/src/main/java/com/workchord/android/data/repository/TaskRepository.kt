@@ -254,7 +254,11 @@ class TaskRepositoryImpl(private val api: WorkChordApi, private val tokenManager
     override suspend fun getTaskActions(taskId: Int): Result<TaskActions> = request(taskId) { api.getTaskActions(taskId) }
     override suspend fun getReviews(taskId: Int): Result<List<TaskReview>> = request(taskId) { api.getReviews(taskId) }
     override suspend fun getCurrentReview(taskId: Int): Result<CurrentTaskReview> = request(taskId) { api.getCurrentReview(taskId) }
-    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest) = mutate(taskId, request.expectedVersion) { api.executeTaskCommand(taskId, request) }
+    override suspend fun executeCommand(taskId: Int, request: TaskCommandRequest): Result<Task> {
+        if (request.action !in com.workchord.android.data.models.companionTaskCommands) return Result.failure(ApiProblem(422,
+            ProblemDetail("unsupported_companion_action", "Use the planning application for structural task changes.")))
+        return mutate(taskId, request.expectedVersion) { api.executeTaskCommand(taskId, request) }
+    }
     override suspend fun recordProgress(taskId: Int, request: ProgressRequest) = mutate(taskId, request.expectedVersion) { api.recordProgress(taskId, request) }
     override suspend fun reviewTask(taskId: Int, request: ReviewRequest) = mutate(taskId, request.expectedVersion) { api.reviewTask(taskId, request) }
     override suspend fun updateTask(taskId: Int, request: TaskUpdateRequest): Result<Task> {
@@ -267,7 +271,7 @@ class TaskRepositoryImpl(private val api: WorkChordApi, private val tokenManager
         val current = synchronized(lock) { syncScope(); tasks.value.firstOrNull { it.id == taskId } }
         if (newStatus == TaskStatus.UNKNOWN || current?.status == TaskStatus.UNKNOWN) return Result.failure(ApiProblem(422,
             ProblemDetail("unsupported_task_status", "This lifecycle state is unsupported. Refresh before taking action.")))
-        val version = (expectedVersion ?: current?.authoritativeVersion)?.takeIf { it > 0 } ?: return Result.failure(ApiProblem(428,
+        val version = expectedVersion?.takeIf { it > 0 } ?: return Result.failure(ApiProblem(428,
             ProblemDetail("task_version_required", "Reload authoritative task state before changing it.")))
         val response = request(taskId) { api.changeTaskStatus(taskId, TaskStatusChangeRequest(newStatus.value, reason, version)) }
         val task = response.getOrNull()?.task ?: return Result.failure(response.exceptionOrNull() ?: IllegalStateException("Incomplete write response"))

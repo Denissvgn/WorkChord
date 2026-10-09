@@ -4,7 +4,9 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
+Calendar operations freeze controls while pending, bind delayed completion to the active resource and draft generation, and recheck resource identity after asynchronous CSV reads.
+
+Calendar reads and writes retain resource and draft generation boundaries. Pending reads freeze editable controls; every write invalidates older CSV reads, and explicit reload only applies to the observed resource/generation.
 
 ## Imports
 
@@ -16,14 +18,18 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 | `../components/common/useConfirmDialog` | `useConfirmDialog` |
 | `../components/feedback/QueryState` | `QueryErrorState` |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
+| `../components/team/VacationCsvImport` | `VacationCsvImport` |
 | `../components/ui` | `OverflowMenu` |
+| `../features/usePlanningObservation` | `usePlanningObservation` |
 | `../i18n/dateLocale` | `dateFnsLocale` |
 | `../services/calendarService` | `calendarService` |
 | `../services/iterationService` | `iterationService` |
+| `../services/planningInputService` | `planningInputService` |
 | `../services/teamService` | `teamService` |
 | `../store/iterationStore` | `useIterationStore` |
 | `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` |
 | `../types/team` | `TeamMember`, `Vacation` |
+| `../utils/apiError` | `getApiErrorMessage` |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
 | `date-fns` | `eachDayOfInterval`, `format`, `parseISO`, `Locale` |
 | `lucide-react` | `CalendarDays`, `CalendarRange`, `Download`, `Grid`, `List`, `Plane`, `Plus`, `Save`, `Trash2`, `Upload`, `X` |
@@ -44,6 +50,7 @@ _Auto-generated from `frontend/src/pages/CalendarPage.tsx`._
 flowchart LR
     n0["frontend"]
     n1["frontend/src/pages/CalendarPage.tsx"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/CalendarPage.md"
 ```
@@ -54,7 +61,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (14) |
+| Inbound | `frontend` (1) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -62,13 +70,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Class | 35 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Class | 42 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Class | 1087 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Class | 1150 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Class | 39 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Class | 46 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Class | 1127 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Class | 1190 | — | — |

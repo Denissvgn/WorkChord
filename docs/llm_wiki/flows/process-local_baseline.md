@@ -2,9 +2,9 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [local_baseline](../modules/local_baseline.md)
-**Modules touched:** [load_common](../modules/load_common.md), [local_baseline](../modules/local_baseline.md), [result](../modules/result.md), [run](../modules/run.md)
+**Modules touched:** [load_common](../modules/load_common.md), [local_baseline](../modules/local_baseline.md), [result](../modules/result.md), [run](../modules/run.md), [source_binding](../modules/source_binding.md)
 
-**Related modules:** [load_common](../modules/load_common.md), [result](../modules/result.md), [run](../modules/run.md)
+**Related modules:** [load_common](../modules/load_common.md), [result](../modules/result.md), [run](../modules/run.md), [source_binding](../modules/source_binding.md)
 
 ## Call sequence
 
@@ -17,17 +17,20 @@ sequenceDiagram
     participant p3 as parser.parse_args
     participant p4 as args.output.exists
     participant p5 as parser.error
-    participant p6 as json.loads (scripts/load/local_baseline.py:main)
-    participant p7 as args.declaration.read_text
-    participant p8 as args.observations.read_text
-    participant p9 as asyncio.run
-    participant p10 as measure
-    participant p11 as authorized_base_url
-    participant p12 as urlsplit (scripts/load/common.py:authorized_base_url)
-    participant p13 as QualificationInputError
-    participant p14 as os.getenv
-    participant p15 as len (scripts/load/common.py:authorized_base_url)
-    participant p16 as change_id.strip
+    participant p6 as source_binding
+    participant p7 as Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    participant p8 as Path (scripts/load/source_binding.py:source_binding)
+    participant p9 as sorted (scripts/load/source_binding.py:source_binding)
+    participant p10 as root.glob
+    participant p11 as str (scripts/load/source_binding.py:source_binding)
+    participant p12 as path.relative_to
+    participant p13 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
+    participant p14 as hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    participant p15 as path.read_bytes
+    participant p16 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
+    participant p17 as json.dumps(…).encode (scripts/load/source_binding.py:source_binding)
+    participant p18 as json.dumps (scripts/load/source_binding.py:source_binding)
+    participant p19 as platform.platform (scripts/load/source_binding.py:source_binding)
     p0-->>p1: argparse.ArgumentParser
     p0-->>p2: parser.add_argument
     p0-->>p2: parser.add_argument
@@ -41,26 +44,26 @@ sequenceDiagram
     p0-->>p3: parser.parse_args
     p0-->>p4: args.output.exists
     p0-->>p5: parser.error
-    p0-->>p6: json.loads (scripts/load/local_baseline.py:main)
-    p0-->>p7: args.declaration.read_text
-    p0-->>p6: json.loads (scripts/load/local_baseline.py:main)
-    p0-->>p8: args.observations.read_text
-    p0-->>p5: parser.error
-    p0-->>p9: asyncio.run
-    p0->>p10: measure
-    p10->>p11: authorized_base_url
-    p11-->>p12: urlsplit (scripts/load/common.py:authorized_base_url)
-    p11->>p13: QualificationInputError
-    p11->>p13: QualificationInputError
-    p11->>p13: QualificationInputError
-    p11->>p13: QualificationInputError
-    p11-->>p14: os.getenv
-    p11-->>p15: len (scripts/load/common.py:authorized_base_url)
-    p11-->>p16: change_id.strip
-    p11->>p13: QualificationInputError
+    p0->>p6: source_binding
+    p6-->>p7: Path(…).resolve (scripts/load/source_binding.py:source_binding)
+    p6-->>p8: Path (scripts/load/source_binding.py:source_binding)
+    p6-->>p9: sorted (scripts/load/source_binding.py:source_binding)
+    p6-->>p10: root.glob
+    p6-->>p10: root.glob
+    p6-->>p10: root.glob
+    p6-->>p11: str (scripts/load/source_binding.py:source_binding)
+    p6-->>p12: path.relative_to
+    p6-->>p13: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
+    p6-->>p14: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    p6-->>p15: path.read_bytes
+    p6-->>p16: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
+    p6-->>p14: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    p6-->>p17: json.dumps(…).encode (scripts/load/source_binding.py:source_binding)
+    p6-->>p18: json.dumps (scripts/load/source_binding.py:source_binding)
+    p6-->>p19: platform.platform (scripts/load/source_binding.py:source_binding)
 ```
 
-> Call sequence diagram shows 30 of 173 interactions; 143 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 230 interactions; 200 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -107,7 +110,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `main` | - | `Path`, `Path`, `Path`, `Path`, `QualificationInputError` | `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `...` |
+| `main` | - | `Path`, `Path`, `Path`, `Path`, `QualificationInputError` | `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `...` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
@@ -124,41 +127,41 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 121 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 122 | `parser.add_argument('--observations', type=Path)` |
-| main | parser.add_argument | 123 | `parser.add_argument('--base-url')` |
-| main | parser.add_argument | 124 | `parser.add_argument('--nonce')` |
-| main | parser.add_argument | 125 | `parser.add_argument('--session-state', type=Path)` |
-| main | parser.add_argument | 126 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
-| main | parser.add_argument | 127 | `parser.add_argument('--declaration', type=Path, required=True)` |
-| main | parser.add_argument | 128 | `parser.add_argument('--source-revision')` |
-| main | parser.add_argument | 129 | `parser.add_argument('--source-sha256')` |
-| main | parser.add_argument | 130 | `parser.add_argument('--output', type=Path, required=True)` |
-| main | parser.parse_args | 131 | `parser.parse_args(data not statically known)` |
+| main | argparse.ArgumentParser | 172 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 173 | `parser.add_argument('--observations', type=Path)` |
+| main | parser.add_argument | 174 | `parser.add_argument('--base-url')` |
+| main | parser.add_argument | 175 | `parser.add_argument('--nonce')` |
+| main | parser.add_argument | 176 | `parser.add_argument('--session-state', type=Path)` |
+| main | parser.add_argument | 177 | `parser.add_argument('--agent-key-env', default='WORKCHORD_BENCHMARK_AGENT_KEY')` |
+| main | parser.add_argument | 178 | `parser.add_argument('--declaration', type=Path, required=True)` |
+| main | parser.add_argument | 179 | `parser.add_argument('--source-revision')` |
+| main | parser.add_argument | 180 | `parser.add_argument('--source-sha256')` |
+| main | parser.add_argument | 181 | `parser.add_argument('--output', type=Path, required=True)` |
+| main | parser.parse_args | 182 | `parser.parse_args(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| filesystem_read | `args.declaration.read_text` | `main` | 134 |
-| filesystem_read | `args.observations.read_text` | `main` | 136 |
-| output | `print` | `main` | 148 |
+| filesystem_read | `args.declaration.read_text` | `main` | 186 |
+| filesystem_read | `args.observations.read_text` | `main` | 188 |
+| output | `print` | `main` | 206 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 121 |
-| unresolved_call | `main` | `parser.add_argument` | 122 |
-| unresolved_call | `main` | `parser.add_argument` | 123 |
-| unresolved_call | `main` | `parser.add_argument` | 124 |
-| unresolved_call | `main` | `parser.add_argument` | 125 |
-| unresolved_call | `main` | `parser.add_argument` | 126 |
-| unresolved_call | `main` | `parser.add_argument` | 127 |
-| unresolved_call | `main` | `parser.add_argument` | 128 |
-| unresolved_call | `main` | `parser.add_argument` | 129 |
-| unresolved_call | `main` | `parser.add_argument` | 130 |
-| unresolved_call | `main` | `parser.parse_args` | 131 |
+| external_call | `main` | `argparse.ArgumentParser` | 172 |
+| unresolved_call | `main` | `parser.add_argument` | 173 |
+| unresolved_call | `main` | `parser.add_argument` | 174 |
+| unresolved_call | `main` | `parser.add_argument` | 175 |
+| unresolved_call | `main` | `parser.add_argument` | 176 |
+| unresolved_call | `main` | `parser.add_argument` | 177 |
+| unresolved_call | `main` | `parser.add_argument` | 178 |
+| unresolved_call | `main` | `parser.add_argument` | 179 |
+| unresolved_call | `main` | `parser.add_argument` | 180 |
+| unresolved_call | `main` | `parser.add_argument` | 181 |
+| unresolved_call | `main` | `parser.parse_args` | 182 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

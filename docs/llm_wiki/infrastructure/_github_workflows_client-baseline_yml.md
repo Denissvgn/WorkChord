@@ -13,6 +13,7 @@
 | Job | Display Name | Runs On | Needs | Steps |
 |---|---|---|---|---:|
 | `delivery` | `Browser (${{ matrix.access }})` | `ubuntu-24.04` | — | 7 |
+| `android-release-qualification` | — | `[self-hosted, ARM64, workchord-android-disposable]` | — | 4 |
 | `android` | `Android unit results and debug APK` | `ubuntu-24.04` | — | 6 |
 
 ### delivery
@@ -24,6 +25,13 @@
 - Install backend and browser dependencies - runs `python -m venv "$RUNNER_TEMP/workchord-python" "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/build-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --require-hashes -r backend/test-requirements.lock "$RUNNER_TEMP/workchord-python/bin/pip" install --no-build-isolation --no-deps -e ./backend sudo python3 scripts/ci/apt_runtime.py npx --yes playwright@1.59.1 install-deps chromium`
 - Run the pinned native runtimes - runs `"$RUNNER_TEMP/workchord-python/bin/python" scripts/ci/run_disposable_checks.py --browser-only --timeout-seconds 600 ${{ matrix.browser_args }} --output /tmp/workchord-client-results`
 - client-baseline-${{ matrix.access }}-${{ github.sha }} - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
+
+### android-release-qualification
+
+- Reserve cleanup and artifact time - runs `python3 - <<'PYTHON' import os, time with open(os.environ['GITHUB_ENV'], 'a') as output: output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={time.time() + 32 * 60}\n") PYTHON`
+- actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
+- Qualify the explicitly owned release artifact - runs `python3 scripts/ci/run_android_checks.py --release-qualification \ --qualification-inputs "$QUALIFICATION_INPUTS" --timeout-seconds 1800 \ --output "$RUNNER_TEMP/workchord-android-release-$GITHUB_RUN_ID"`
+- android-release-qualification-${{ github.sha }} - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
 
 ### android
 

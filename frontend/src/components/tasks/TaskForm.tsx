@@ -1,3 +1,5 @@
+import { usePlanningObservation } from '../../features/usePlanningObservation';
+import type { Iteration } from '../../types/iteration';
 import { DeliveryDependencies } from './DeliveryDependencies';
 import { PersonCapacity } from './PersonCapacity';
 import { TaskDiscussion } from './TaskDiscussion';
@@ -48,7 +50,8 @@ import {
 import type { TaskUpdate } from '../../types/task';
 import { formatDate } from '../../utils/formatDate';
 import { useIdentity } from '../../features/identity/identityContext';
-import { readTaskDraft, writeTaskDraft, removeTaskDraft } from './taskDraftStorage';
+import { readTaskDraft, writeTaskDraft, removeTaskDraft, readPendingTaskWrite } from './taskDraftStorage';
+import { useActiveMount } from './useDraftDismissal';
 
 interface TaskFormProps {
     iterationId: number | null;
@@ -86,6 +89,9 @@ export const TaskForm = ({
     const { t } = useTranslation();
     const formId = useId();
     const identity = useIdentity();
+    const isActive = useActiveMount();
+    const creationContext = usePlanningObservation<Iteration>();
+    const readCreationContext = creationContext.read;
     const [currentTask, setCurrentTask] = useState(initialData);
     const iterationId = currentTask ? currentTask.iteration_id : requestedIterationId;
     const sessionUnavailable = identity?.identity?.mode === "managed" && !identity.identity.authenticated;
@@ -116,6 +122,8 @@ export const TaskForm = ({
         parentMilestoneId,
     }), [initialData, parentId, parentPriority, parentProjectId, parentMilestoneId]);
     const [recoveredDraft] = useState(() => readTaskDraft(draftKey, initialValues));
+    const [pendingWrite, setPendingWrite] = useState(() => readPendingTaskWrite(draftKey));
+    const [writeComparison, setWriteComparison] = useState<{ items: { id: number; title: string; version?: number; kind?: 'task' | 'triage' }[]; has_more: boolean } | null>(null);
     const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft ?? initialValues);
     const [baseline, setBaseline] = useState<TaskEditorValues>(() => initialValues);
     const isDirty = JSON.stringify(formData) !== JSON.stringify(baseline);
@@ -125,13 +133,37 @@ export const TaskForm = ({
         return () => onDiscardReady?.(null);
     }, [onDiscardReady, clearDraft]);
     useEffect(() => {
-        if (isDirty) writeTaskDraft(draftKey, formData);
+        if (isDirty || pendingWrite) writeTaskDraft(draftKey, formData, pendingWrite);
         else removeTaskDraft(draftKey);
-    }, [draftKey, formData, isDirty]);
+    }, [draftKey, formData, isDirty, pendingWrite]);
 
     useEffect(() => {
-        onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty);
-    }, [isDirty, workDirty, discussionDirty, timeDirty, onDirtyChange]);
+        onDirtyChange?.(isDirty || workDirty || discussionDirty || timeDirty || Boolean(pendingWrite));
+    }, [isDirty, workDirty, discussionDirty, timeDirty, pendingWrite, onDirtyChange]);
+
+    const checkpointWrite = (kind: 'task' | 'triage') => {
+        const operation = { id: crypto.randomUUID(), kind }; setPendingWrite(operation); setWriteComparison(null);
+        writeTaskDraft(draftKey, formData, operation);
+    };
+    const definiteRejection = (cause: unknown) => {
+        const status = (cause as { response?: { status?: number } }).response?.status;
+        if (isActive() && status && status >= 400 && status < 500) setPendingWrite(null);
+    };
+
+    useEffect(() => {
+        if (currentTask || iterationId === null || mode !== 'direct') return;
+        void readCreationContext('iteration', iterationId).then(observed => {
+            const revision = observed?.expected_revisions[iterationId];
+            if (revision === undefined) return;
+            setFormData(values => !recoveredDraft && values.expected_revision === null ? { ...values, expected_revision: revision } : values);
+            setBaseline(values => ({ ...values, expected_revision: revision }));
+        });
+    }, [currentTask, iterationId, mode, readCreationContext, recoveredDraft]);
+    const compareCreationContext = async () => {
+        if (iterationId === null) return;
+        const observed = await readCreationContext('iteration', iterationId, true);
+        if (observed) setFormData(values => ({ ...values, expected_revision: observed.expected_revisions[iterationId] }));
+    };
 
     // Fetch team for assignee dropdown
     const { data: teamMembers, error: teamError, refetch: refetchTeam } = useQuery({
@@ -192,37 +224,49 @@ export const TaskForm = ({
     };
 
     const createMutation = useMutation({
-        mutationFn: (data: TaskCreate) => taskService.create(iterationId, { ...data, expected_revision: iteration?.revision }),
+        mutationFn: (data: TaskCreate) => taskService.create(iterationId, data),
+        onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
-            clearDraft();
             invalidateTaskProjectQueries();
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             setError(getApiErrorMessage(err, t('surfaces.taskForm.createFailed')));
         },
     });
 
     const createTriageMutation = useMutation({
         mutationFn: (data: TriageItemCreate) => triageService.create(data),
+        onMutate: () => checkpointWrite('triage'),
         onSuccess: () => {
-            clearDraft();
             queryClient.invalidateQueries({ queryKey: ['triage'] });
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             setError(getApiErrorMessage(err, t('surfaces.taskForm.createTriageFailed')));
         },
     });
 
     const updateMutation = useMutation({
         mutationFn: (data: TaskUpdate) => taskService.update(currentTask!.id, data),
+        onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
-            clearDraft();
             invalidateTaskProjectQueries();
+            if (!isActive()) return;
+            setPendingWrite(null); setBaseline(formData);
+            clearDraft();
             onSuccess();
         },
         onError: (err: unknown) => {
+            definiteRejection(err);
             const mapped = mapTaskEditorServerError(err, t('taskEditor.updateFailed'));
             if (mapped.kind === 'version-conflict') {
                 setConflict(mapped.currentTask);
@@ -251,6 +295,7 @@ export const TaskForm = ({
             setCurrentTask(latest);
             setFormData(latestValues);
             setBaseline(latestValues);
+            setPendingWrite(null);
             setConflict(null);
             setError(null);
             setStatusMessage(t('taskEditor.reloaded'));
@@ -272,9 +317,48 @@ export const TaskForm = ({
                 brief: values.brief ? { ...values.brief, acceptance_criteria: values.brief.acceptance_criteria.map(criterion => ({ ...criterion,
                     revision: latest.brief?.acceptance_criteria.find(current => current.id === criterion.id)?.revision ?? 1 })) } : null }));
             setConflict(null);
+            setPendingWrite(null);
             setStatusMessage(t('taskEditor.reapplyReady'));
         } catch (cause) { setError(getApiErrorMessage(cause, t('taskEditor.reloadFailed'))); }
         finally { setIsRefreshing(false); }
+    };
+
+    const comparePendingWrite = async () => {
+        if (isSubmitting) return;
+        setIsRefreshing(true);
+        try {
+            if (currentTask) {
+                const observed = await taskService.getById(currentTask.id);
+                if (!isActive()) return;
+                setConflictTask(observed);
+                setWriteComparison({ items: [observed], has_more: false });
+            } else if (pendingWrite?.kind === 'triage') {
+                const items = await triageService.getAll({ q: formData.title, source: 'task_form', limit: 50 });
+                if (isActive()) setWriteComparison({ items: items.map(item => ({ ...item, kind: 'triage' })), has_more: items.length === 50 });
+            } else if (pendingWrite?.kind === 'unknown') {
+                const [tasks, triage] = await Promise.all([
+                    taskService.lookup({ q: formData.title, limit: 50 }),
+                    triageService.getAll({ q: formData.title, source: 'task_form', limit: 50 }),
+                ]);
+                if (isActive()) setWriteComparison({ items: [...tasks.items.map(item => ({ ...item, kind: 'task' as const })), ...triage.map(item => ({ ...item, kind: 'triage' as const }))], has_more: tasks.has_more || triage.length === 50 });
+            } else {
+                const observed = await taskService.lookup({ project_id: effectiveProjectId ?? undefined,
+                    q: formData.title, limit: 50 });
+                if (isActive()) setWriteComparison(observed);
+            }
+        } catch (cause) { if (isActive()) setError(getApiErrorMessage(cause, t('taskEditor.reloadFailed'))); }
+        finally { if (isActive()) setIsRefreshing(false); }
+    };
+
+    const resumeComparedWrite = () => {
+        if (!writeComparison) return;
+        if (currentTask && conflictTask) {
+            setCurrentTask(conflictTask); setBaseline(buildTaskEditorDefaults({ task: conflictTask }));
+            setFormData(values => ({ ...values, expected_version: conflictTask.version,
+                brief: values.brief ? { ...values.brief, acceptance_criteria: values.brief.acceptance_criteria.map(criterion => ({ ...criterion,
+                    revision: conflictTask.brief?.acceptance_criteria.find(current => current.id === criterion.id)?.revision ?? 1 })) } : null }));
+        }
+        setPendingWrite(null); setWriteComparison(null); setConflict(null); setError(null);
     };
 
     const buildAISuggestPayload = (): TaskAISuggestRequest => ({
@@ -385,6 +469,7 @@ export const TaskForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (pendingWrite || isSubmitting || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null)) return;
         if (isSubmitting || workDirty || discussionDirty || timeDirty) return;
         setError(null);
         setConflict(null);
@@ -435,6 +520,7 @@ export const TaskForm = ({
     };
 
     const handleSendToTriage = () => {
+        if (pendingWrite || isSubmitting || sessionUnavailable || workDirty || discussionDirty || timeDirty) return;
         const title = formData.title.trim();
         if (!title) {
             setError(t('taskEditor.validation.titleRequired'));
@@ -464,6 +550,11 @@ export const TaskForm = ({
 
     return (
         <form onSubmit={handleSubmit} className="task-form space-y-6">
+            {!currentTask && iterationId !== null && <div className="space-y-2">
+                {creationContext.loading && <p role="status">{t('common.loading')}</p>}
+                {Boolean(creationContext.error) && <QueryErrorState error={creationContext.error} onRetry={() => void compareCreationContext()} />}
+                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
+            </div>}
             {sessionUnavailable && <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                 <p>{t('identity.expired')}</p>
                 <a className="inline-flex min-h-11 items-center font-semibold underline" href={`/api/auth/login?return_to=${encodeURIComponent(window.location.pathname + window.location.search)}`}>{t('identity.signIn')}</a>
@@ -486,6 +577,16 @@ export const TaskForm = ({
                     {error}
                 </div>
             )}
+            {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
+                <p>{t('teamwork.uncertainTask')}</p>
+                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>
+                {writeComparison && <>
+                    <p>{t('teamwork.boundedComparison')}</p>
+                    <ul>{writeComparison.items.map(item => <li key={`${item.kind ?? 'task'}:${item.id}`}>{item.kind === 'triage' ? t('surfaces.taskForm.sendToTriage') : t('surfaces.taskForm.taskTitle')} · #{item.id} · {item.title} {item.version !== undefined ? ` · v${item.version}` : ''}</li>)}</ul>
+                    {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
+                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
+                </>}
+            </div>}
             {conflict && (
                 <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                     <div className="font-semibold">{t('taskEditor.conflictTitle')}</div>
@@ -548,7 +649,7 @@ export const TaskForm = ({
                 currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
             )}
 
-            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting} className="contents">
+            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting || Boolean(pendingWrite)} className="contents">
             {/* === ESSENTIAL SECTION (always visible) === */}
 
             {/* Title - required */}
@@ -1039,7 +1140,7 @@ export const TaskForm = ({
                         className="w-full sm:w-auto"
                         onClick={handleSendToTriage}
                         isLoading={createTriageMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(pendingWrite)}
                     >
                         <Inbox className="w-4 h-4 mr-2" />
                         {t('surfaces.taskForm.sendToTriage')}
@@ -1060,7 +1161,7 @@ export const TaskForm = ({
                         type="submit"
                         className="w-full sm:w-auto"
                         isLoading={createMutation.isPending || updateMutation.isPending}
-                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || Boolean(conflict)}
+                        disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null) || Boolean(conflict) || Boolean(pendingWrite)}
                     >
                         <Save className="w-4 h-4 mr-2" />
                         {mode === 'sandbox'

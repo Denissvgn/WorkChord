@@ -1,5 +1,5 @@
 x-server-backend: &server-backend
-  image: workchord-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+  image: ${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
   build:
     context: .
     dockerfile: Dockerfile.backend
@@ -7,7 +7,7 @@ x-server-backend: &server-backend
       WORKCHORD_SOURCE_REVISION: ${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
 
 x-server-frontend: &server-frontend
-  image: workchord-frontend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
+  image: ${WORKCHORD_IMAGE_PREFIX:-workchord}-frontend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}
   build:
     context: .
     dockerfile: Dockerfile.frontend

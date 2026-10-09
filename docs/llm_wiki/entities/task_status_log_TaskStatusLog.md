@@ -41,7 +41,8 @@ flowchart LR
     n4["TaskDomainService.command (backend/app/services/task_domain_service.py)"]
     n5["TaskStatusService._apply_transition (backend/app/services/task_status_service.py)"]
     n6["backend/app/services/task_timeline_service.py"]
-    n7["test_mixed_timeline_sources_have_stable_ties_and_actor_provenance (backend/tests/test_task_pagination.py)"]
+    n7["backend/tests/test_effective_deferral.py"]
+    n8["test_mixed_timeline_sources_have_stable_ties_and_actor_provenance (backend/tests/test_task_pagination.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,6 +50,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/task_status_log.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -56,7 +58,8 @@ flowchart LR
     click n4 "../modules/task_domain_service.md"
     click n5 "../modules/task_status_service.md"
     click n6 "../modules/task_timeline_service.md"
-    click n7 "../modules/test_task_pagination.md"
+    click n7 "../modules/test_effective_deferral.md"
+    click n8 "../modules/test_task_pagination.md"
 ```
 
 ### Summary
@@ -80,4 +83,5 @@ flowchart LR
 | `TaskDomainService.command` | call | [task_domain_service](../modules/task_domain_service.md) | 1 |
 | `TaskStatusService._apply_transition` | call | [task_status_service](../modules/task_status_service.md) | 1 |
 | `task_timeline_service` | import | [task_timeline_service](../modules/task_timeline_service.md) | — |
+| `test_effective_deferral` | import | [test_effective_deferral](../modules/test_effective_deferral.md) | — |
 | `test_mixed_timeline_sources_have_stable_ties_and_actor_provenance` | call | [test_task_pagination](../modules/test_task_pagination.md) | 1 |

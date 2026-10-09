@@ -27,6 +27,7 @@ Service for automatic task scheduling.
 | `_build_task_context` | `(task: Task, task_can_fit_before_vacation: dict[int, bool]) -> dict` | — | Build task context dictionary for YAML pass filters and sorting. |
 | `_build_assignee_dependency_graph` | `(tasks: list[Task]) -> tuple[dict[int, set[int]], set[int]]` | — | Build cross-assignee dependency graph. |
 | `_topological_sort_assignees` | `(assignee_deps: dict[int, set[int]]) -> list[set[int]]` | — | Group dependent assignees into levels for sequential processing. |
+| `_effective_flags` | `(task)` | — | — |
 | `_schedule_leaf_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], earliest_start: Optional[date] = None)` | — | Schedule a leaf task (no children). |
 | `_schedule_composite_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], parent_earliest_start: Optional[date] = None)` | — | Schedule a composite task (with children). |
 | `_get_earliest_start` | `(task: Task, iteration_start: date, task_map: dict[int, Task]) -> date` | — | Get earliest possible start date based on dependencies. |
@@ -47,8 +48,8 @@ flowchart LR
     n6["get_scheduler_service (backend/app/routers/tasks.py)"]
     n7["AgentPlanningService.__init__ (backend/app/services/agent_planning_service.py)"]
     n8["IncrementalScheduler.__init__ (backend/app/services/scheduler_service.py)"]
-    n9["test_overallocated_person_can_preview_but_cannot_commit (backend/tests/test_profile_capacity.py)"]
-    n10["test_overflow_forecast_cannot_commit_outside_allocation_dates (backend/tests/test_profile_capacity.py)"]
+    n9["test_incremental_schedule_excludes_inherited_deferred_work (backend/tests/test_planning_read_models.py)"]
+    n10["test_schedule_preview_does_not_allocate_inherited_deferred_leaf (backend/tests/test_planning_read_models.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -68,15 +69,15 @@ flowchart LR
     click n6 "../modules/tasks.md"
     click n7 "../modules/agent_planning_service.md"
     click n8 "../modules/scheduler_service.md"
-    click n9 "../modules/test_profile_capacity.md"
-    click n10 "../modules/test_profile_capacity.md"
+    click n9 "../modules/test_planning_read_models.md"
+    click n10 "../modules/test_planning_read_models.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 15 | — |
+| [scheduler_service](../modules/scheduler_service.md) | 16 | — |
 
 ### References
 
@@ -92,7 +93,7 @@ flowchart LR
 | `get_scheduler_service` | type_reference | [tasks](../modules/tasks.md) | — |
 | `AgentPlanningService.__init__` | call | [agent_planning_service](../modules/agent_planning_service.md) | 1 |
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
-| `test_overallocated_person_can_preview_but_cannot_commit` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 2 |
-| `test_overflow_forecast_cannot_commit_outside_allocation_dates` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 2 |
+| `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
+| `test_schedule_preview_does_not_allocate_inherited_deferred_leaf` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

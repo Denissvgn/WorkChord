@@ -6,6 +6,8 @@
 
 Calendar service with business logic.
 
+Creation persists submitted shortened working days along with the declared zone, nominal hours, holidays and weekends. Existing capacity arithmetic applies the one-hour reduction once on working days; holidays, weekends and canonical person absences retain precedence.
+
 Nominal-workday edits use the same task-unit refresh helper as iteration calendar reassignment, within the existing planning-input transaction.
 
 ## Imports
@@ -42,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (9) |
 | Outbound | `backend` (4) |
 
 ### External packages
@@ -51,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

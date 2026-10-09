@@ -34,8 +34,10 @@ flowchart LR
     n4["backend/app/routers/task_domain.py"]
     n5["backend/app/services/identity_service.py"]
     n6["backend/app/services/task_domain_service.py"]
-    n7["human_context (backend/tests/test_task_domain.py)"]
-    n8["scripts/ci/serve_disposable_api.py"]
+    n7["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
+    n8["test_structural_commands_replays_and_rollback_keep_identity_and_versions (backend/tests/test_strict_caller_matrix.py)"]
+    n9["human_context (backend/tests/test_task_domain.py)"]
+    n10["scripts/ci/serve_disposable_api.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -44,6 +46,8 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -51,8 +55,10 @@ flowchart LR
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/identity_service.md"
     click n6 "../modules/task_domain_service.md"
-    click n7 "../modules/test_task_domain.md"
-    click n8 "../modules/serve_disposable_api.md"
+    click n7 "../modules/test_allocation_recovery.md"
+    click n8 "../modules/test_strict_caller_matrix.md"
+    click n9 "../modules/test_task_domain.md"
+    click n10 "../modules/serve_disposable_api.md"
 ```
 
 ### Summary
@@ -76,5 +82,7 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
+| `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
+| `test_structural_commands_replays_and_rollback_keep_identity_and_versions` | call | [test_strict_caller_matrix](../modules/test_strict_caller_matrix.md) | 1 |
 | `human_context` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `serve_disposable_api` | import | [serve_disposable_api](../modules/serve_disposable_api.md) | — |

@@ -64,7 +64,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `_require_no_cross_subtree_dependencies` | *(async)* `(subtree_ids: set[int]) -> None` | — | Reject moves that would leave dependency edges crossing work scopes. |
 | `_resolve_project_for_move` | *(async)* `(task: Task, target_iteration_id: int, target_parent: Optional[Task]) -> Optional[int]` | — | Resolve the project assignment for a task subtree move. |
 | `move_task` | *(async)* `(task_id: int, target_iteration_id: int, parent_id: Optional[int] = None, actor_type: str = 'user', actor_id: Optional[int] = None, expected_version: Optional[int] = None, expected_revisions: dict[int, int] \| None = None) -> Optional[Task]` | `@atomic_command` | Move a task subtree to an iteration, applying scoped project inheritance. |
-| `task_to_response` | `(task: Task, iteration_end_date: Optional[date] = None) -> TaskResponse` | — | Convert Task model to TaskResponse schema. |
+| `task_to_response` | `(task: Task, iteration_end_date: Optional[date] = None, *, effective_flags = None) -> TaskResponse` | — | Convert Task model to TaskResponse schema. |
 | `_get_next_root_sort_order` | *(async)* `(iteration_id: int) -> int` | — | Return the next root-level sort order for an iteration. |
 | `_get_next_child_sort_order` | *(async)* `(parent_id: int) -> int` | — | Return the next child sort order under a parent task. |
 | `import_service` | `()` | `@property` | Return the focused text import collaborator behind this facade. |
@@ -86,7 +86,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 ```mermaid
 flowchart LR
     n0["TaskService (backend/app/services/task_service.py)"]
-    n1["wrapped (backend/app/commands.py)"]
+    n1["planning_input_reservation (backend/app/commands.py)"]
     n2["_stage_context_command_audit_event (backend/app/mcp_agent_tools.py)"]
     n3["_stage_triage_command_audit_event (backend/app/mcp_agent_tools.py)"]
     n4["apply_task_command (backend/app/mcp_agent_tools.py)"]
@@ -135,7 +135,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `wrapped` | call | [commands](../modules/commands.md) | 1 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 1 |
 | `_stage_context_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `_stage_triage_command_audit_event` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `apply_task_command` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
@@ -148,4 +148,4 @@ flowchart LR
 | `_import_task_record` | type_reference | [export](../modules/export.md) | — |
 | `_process_import` | call | [export](../modules/export.md) | 1 |
 
-> References: showing 12 of 136 logical references; 124 omitted by the 12-row generated summary limit.
+> References: showing 12 of 149 logical references; 137 omitted by the 12-row generated summary limit.

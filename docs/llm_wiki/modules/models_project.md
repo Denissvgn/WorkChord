@@ -45,7 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (30) |
+| Inbound | `backend` (40) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -55,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -66,5 +66,5 @@ flowchart LR
 | [ProjectMilestoneStatus](../entities/models_project_ProjectMilestoneStatus.md) | Enum | 40 | `str`, `Enum` | Explicit lifecycle status for a project milestone. |
 | [Initiative](../entities/models_project_Initiative.md) | Class | 48 | `Base` | Strategic goal that groups related projects on the roadmap. |
 | [Project](../entities/models_project_Project.md) | Class | 103 | `Base` | Outcome-oriented planning container above tasks and iterations. |
-| [ProjectUpdateEntry](../entities/models_project_ProjectUpdateEntry.md) | Class | 190 | `Base` | Append-only structured status update for a project. |
-| [ProjectMilestone](../entities/models_project_ProjectMilestone.md) | Class | 247 | `Base` | Manually ordered milestone for a single project roadmap. |
+| [ProjectUpdateEntry](../entities/models_project_ProjectUpdateEntry.md) | Class | 191 | `Base` | Append-only structured status update for a project. |
+| [ProjectMilestone](../entities/models_project_ProjectMilestone.md) | Class | 248 | `Base` | Manually ordered milestone for a single project roadmap. |

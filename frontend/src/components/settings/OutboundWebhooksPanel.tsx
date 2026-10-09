@@ -216,6 +216,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - the form is frozen and retains its draft on failure.
     const createMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: outboundWebhookService.createTarget,
         onSuccess: () => {
             invalidateWebhookQueries();
@@ -233,6 +234,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - the form is frozen and retains its draft on failure.
     const updateMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: ({ targetId, data }: { targetId: number; data: OutboundWebhookTargetUpdate }) => (
             outboundWebhookService.updateTarget(targetId, data)
         ),
@@ -252,6 +254,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const toggleMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: ({ targetId, enabled }: { targetId: number; enabled: boolean }) => (
             outboundWebhookService.updateTarget(targetId, { enabled })
         ),
@@ -273,6 +276,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const deleteMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: outboundWebhookService.deleteTarget,
         onSuccess: (_response, targetId) => {
             invalidateWebhookQueries();
@@ -292,6 +296,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - row controls are locked and the active target is identified inline.
     const testMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: outboundWebhookService.testTarget,
         onSuccess: (response) => {
             invalidateWebhookQueries();
@@ -312,6 +317,7 @@ export const OutboundWebhooksPanel = () => {
 
     // feedback-policy: mutation pending,toast - retry controls lock and the active delivery is identified inline.
     const retryMutation = useMutation({
+        meta: { workQueryRoots: [] },
         mutationFn: outboundWebhookService.retryDelivery,
         onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: ['outbound-webhook-deliveries'] });

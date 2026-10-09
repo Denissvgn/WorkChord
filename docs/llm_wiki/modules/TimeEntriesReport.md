@@ -12,7 +12,9 @@ Project reports expose work-date filters, own versus authorized manager totals, 
 
 | Source | Symbols |
 |--------|---------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
 | `../../features/timeEntries/useTimeEntries` | `useTimeEntries` |
+| `../../features/useLiveWindow` | `useLiveWindow` |
 | `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied` |
 | `../../utils/apiError` | `getApiErrorMessage` |
 | `../common/Button` | `Button` |
@@ -20,7 +22,7 @@ Project reports expose work-date filters, own versus authorized manager totals, 
 | `../common/Input` | `Input` |
 | `../feedback/QueryState` | `QueryErrorState` |
 | `../tasks/TimeEntriesPanel` | `TimeEntriesPanel` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation` |
+| `@tanstack/react-query` | `useMutation` |
 | `date-fns` | `format`, `startOfMonth` |
 | `react` | `useState` |
 | `react-i18next` | `useTranslation` |
@@ -36,74 +38,29 @@ Project reports expose work-date filters, own versus authorized manager totals, 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/CollapsibleSection.tsx"]
-    n2["frontend/src/components/common/Input.tsx"]
-    n3["frontend/src/components/feedback/QueryState.tsx"]
-    n4["frontend/src/components/projects/TimeEntriesReport.test.tsx"]
-    n5["frontend/src/components/projects/TimeEntriesReport.tsx"]
-    n6["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
-    n7["frontend/src/features/timeEntries/useTimeEntries.ts"]
-    n8["frontend/src/pages/ProjectDetailPage.tsx"]
-    n9["frontend/src/services/timeEntryService.ts"]
-    n10["frontend/src/utils/apiError.ts"]
-    n3 --> n0
-    n3 --> n10
-    n4 --> n5
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n3
-    n5 --> n6
-    n5 --> n7
-    n5 --> n9
-    n5 --> n10
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
-    n6 --> n7
-    n6 --> n9
-    n6 --> n10
-    n7 --> n9
-    n8 --> n0
-    n8 --> n2
-    n8 --> n3
-    n8 --> n5
-    n8 --> n10
-    click n0 "../modules/Button.md"
-    click n1 "../modules/CollapsibleSection.md"
-    click n2 "../modules/Input.md"
-    click n3 "../modules/QueryState.md"
-    click n4 "../modules/TimeEntriesReport.test.md"
-    click n5 "../modules/TimeEntriesReport.md"
-    click n6 "../modules/TimeEntriesPanel.md"
-    click n7 "../modules/useTimeEntries.md"
-    click n8 "../modules/ProjectDetailPage.md"
-    click n9 "../modules/timeEntryService.md"
-    click n10 "../modules/apiError.md"
+    n0["frontend"]
+    n1["frontend/src/components/projects/TimeEntriesReport.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/TimeEntriesReport.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [TimeEntriesReport.test](../modules/TimeEntriesReport.test.md) |
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [CollapsibleSection](../modules/CollapsibleSection.md) |
-| Outbound | [Input](../modules/Input.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
-| Outbound | [useTimeEntries](../modules/useTimeEntries.md) |
-| Outbound | [timeEntryService](../modules/timeEntryService.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (2) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | typescript | 4 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

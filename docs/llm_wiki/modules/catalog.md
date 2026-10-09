@@ -48,6 +48,8 @@ flowchart LR
     n7 --> n2
     n7 --> n3
     n8 --> n2
+    n8 --> n3
+    n8 --> n4
     n9 --> n2
     click n0 "../modules/app_database.md"
     click n1 "../modules/database_migration_canonical.md"

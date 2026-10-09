@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2 } from 'lucide-react';
@@ -8,6 +8,8 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { usePlanningObservation } from '../../features/usePlanningObservation';
+import { planningInputService } from '../../services/planningInputService';
 import type {
     TeamMemberAssignmentMode,
     TeamMemberProfile,
@@ -83,6 +85,8 @@ export const TeamProfileManager = ({
     const [editingSkillId, setEditingSkillId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+    const profileContext = usePlanningObservation<TeamMemberProfile>();
+    const skillContext = usePlanningObservation<TeamMemberProfile>();
 
     const {
         data: profiles = [],
@@ -102,6 +106,11 @@ export const TeamProfileManager = ({
         () => new Set(assignedProfileIds),
         [assignedProfileIds],
     );
+    const readSkillContext = skillContext.read;
+    useEffect(() => {
+        const id = selectedProfile?.id;
+        if (id) queueMicrotask(() => { void readSkillContext('profile', id); });
+    }, [selectedProfile?.id, readSkillContext]);
 
     const invalidate = () => {
         queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
@@ -121,7 +130,7 @@ export const TeamProfileManager = ({
     });
 
     const updateProfileMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data),
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, profileContext.observation!.expected_revisions),
         onSuccess: profile => {
             invalidate();
             setSelectedProfileId(profile.id);
@@ -132,7 +141,7 @@ export const TeamProfileManager = ({
     });
 
     const deleteProfileMutation = useMutation({
-        mutationFn: teamService.deleteProfile,
+        mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => teamService.deleteProfile(id, revisions),
         onSuccess: () => {
             invalidate();
             setSelectedProfileId(null);
@@ -141,9 +150,10 @@ export const TeamProfileManager = ({
     });
 
     const createSkillMutation = useMutation({
-        mutationFn: ({ profileId, data }: { profileId: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(profileId, data),
-        onSuccess: () => {
+        mutationFn: ({ profileId, data }: { profileId: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(profileId, data, skillContext.observation!.expected_revisions),
+        onSuccess: (_data, variables) => {
             invalidate();
+            void skillContext.read('profile', variables.profileId);
             setSkillForm(emptySkillForm);
             setEditingSkillId(null);
         },
@@ -151,9 +161,10 @@ export const TeamProfileManager = ({
     });
 
     const updateSkillMutation = useMutation({
-        mutationFn: ({ profileId, skillId, data }: { profileId: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(profileId, skillId, data),
-        onSuccess: () => {
+        mutationFn: ({ profileId, skillId, data }: { profileId: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(profileId, skillId, data, skillContext.observation!.expected_revisions),
+        onSuccess: (_data, variables) => {
             invalidate();
+            void skillContext.read('profile', variables.profileId);
             setSkillForm(emptySkillForm);
             setEditingSkillId(null);
         },
@@ -161,8 +172,8 @@ export const TeamProfileManager = ({
     });
 
     const deleteSkillMutation = useMutation({
-        mutationFn: ({ profileId, skillId }: { profileId: number; skillId: number }) => teamService.deleteProfileSkill(profileId, skillId),
-        onSuccess: invalidate,
+        mutationFn: ({ profileId, skillId, revisions }: { profileId: number; skillId: number; revisions: Record<number, number> }) => teamService.deleteProfileSkill(profileId, skillId, revisions),
+        onSuccess: (_data, variables) => { invalidate(); void skillContext.read('profile', variables.profileId); },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedDeleteSkill'))),
     });
 
@@ -179,6 +190,7 @@ export const TeamProfileManager = ({
             notes: optionalText(profileForm.notes),
         };
         if (editingProfileId !== null) {
+            if (!profileContext.observation || profileContext.loading) return;
             const updateData: TeamMemberProfileUpdate = {
                 display_name: data.display_name,
                 email: data.email,
@@ -195,7 +207,10 @@ export const TeamProfileManager = ({
         }
     };
 
-    const editProfile = (profile: TeamMemberProfile) => {
+    const editProfile = async (selected: TeamMemberProfile) => {
+        const observed = await profileContext.read('profile', selected.id);
+        if (!observed) return;
+        const profile = observed.resource;
         setEditingProfileId(profile.id);
         setSelectedProfileId(profile.id);
         setProfileForm({
@@ -228,6 +243,7 @@ export const TeamProfileManager = ({
     const submitSkill = (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedProfile) return;
+        if (!skillContext.observation || skillContext.loading) return;
         setError(null);
         const skillName = skillForm.skill_name.trim();
         const data = {
@@ -245,7 +261,11 @@ export const TeamProfileManager = ({
         }
     };
 
-    const editSkill = (skill: TeamMemberProfileSkill) => {
+    const editSkill = async (selected: TeamMemberProfileSkill) => {
+        if (!selectedProfile) return;
+        const observed = await skillContext.read('profile', selectedProfile.id);
+        const skill = observed?.resource.skills.find(item => item.id === selected.id);
+        if (!skill) return;
         setEditingSkillId(skill.id);
         setSkillForm({
             skill_key: skill.skill_key,
@@ -257,6 +277,26 @@ export const TeamProfileManager = ({
             keywords_json: skill.keywords_json || [],
             notes: skill.notes || '',
         });
+    };
+
+    const confirmProfileDelete = async (profile: TeamMemberProfile) => {
+        try {
+            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profile.id);
+            requestConfirmation({ title: t('actions.delete'), description: t('teamProfiles.deleteProfileConfirm', { name: observed.resource.display_name }),
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteProfileMutation.mutateAsync({ id: profile.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { setError(getApiErrorMessage(cause, t('teamProfiles.failedDeleteProfile'))); }
+    };
+
+    const confirmSkillDelete = async (profile: TeamMemberProfile, skill: TeamMemberProfileSkill) => {
+        try {
+            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profile.id);
+            const current = observed.resource.skills.find(row => row.id === skill.id);
+            if (!current) return;
+            requestConfirmation({ title: t('actions.delete'), description: current.skill_name,
+                confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
+                onConfirm: () => deleteSkillMutation.mutateAsync({ profileId: profile.id, skillId: skill.id, revisions: observed.expected_revisions }) });
+        } catch (cause) { setError(getApiErrorMessage(cause, t('teamProfiles.failedDeleteSkill'))); }
     };
 
     return (
@@ -280,12 +320,18 @@ export const TeamProfileManager = ({
                     {t('teamProfiles.dispatchEligibilityNotice')}
                 </p>
 
+                {(profileContext.loading || skillContext.loading) && <p role="status">{t('common.loading')}</p>}
+                {(Boolean(profileContext.error) || Boolean(skillContext.error)) && <QueryErrorState error={profileContext.error ?? skillContext.error}
+                    onRetry={() => { if (editingProfileId) void editProfile(selectedProfile!); else if (selectedProfile) void skillContext.read('profile', selectedProfile.id); }} />}
                 {error && (
                     <div
                         className="mb-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground"
                         role="alert"
                     >
                         {error}
+                        {selectedProfile && <Button type="button" size="sm" variant="secondary" onClick={() => {
+                            void (editingProfileId ? profileContext : skillContext).read('profile', editingProfileId ?? selectedProfile.id, true);
+                        }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>}
                     </div>
                 )}
 
@@ -300,6 +346,7 @@ export const TeamProfileManager = ({
                             >
                                 <button
                                     type="button"
+                                    disabled={selectedProfile?.id !== profile.id && (Boolean(editingSkillId) || Boolean(skillForm.skill_name || skillForm.notes || skillForm.skill_key))}
                                     onClick={() => setSelectedProfileId(profile.id)}
                                     className="w-full text-left"
                                 >
@@ -471,7 +518,7 @@ export const TeamProfileManager = ({
                                 {t('actions.cancel')}
                             </Button>
                         )}
-                        <Button type="submit" isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
+                        <Button type="submit" disabled={Boolean(editingProfileId) && (!profileContext.observation || profileContext.loading)} isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
                             <Plus className="mr-2 h-4 w-4" />
                             {editingProfileId ? t('teamProfiles.save') : t('teamProfiles.create')}
                         </Button>
@@ -490,14 +537,7 @@ export const TeamProfileManager = ({
                                     variant="ghost"
                                     className="text-feedback-danger-foreground"
                                     aria-label={t('actions.delete')}
-                                    onClick={() => requestConfirmation({
-                                        title: t('actions.delete'),
-                                        description: t('teamProfiles.deleteProfileConfirm', { name: selectedProfile.display_name }),
-                                        confirmLabel: t('actions.delete'),
-                                        cancelLabel: t('actions.cancel'),
-                                        closeLabel: t('actions.close'),
-                                        onConfirm: () => deleteProfileMutation.mutateAsync(selectedProfile.id),
-                                    })}
+                                    onClick={() => void confirmProfileDelete(selectedProfile)}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -549,6 +589,7 @@ export const TeamProfileManager = ({
                                 <Button
                                     type="submit"
                                     size="sm"
+                                    disabled={!skillContext.observation || skillContext.loading}
                                     isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}
                                 >
                                     {editingSkillId ? t('teamProfiles.saveSkill') : t('teamProfiles.addSkill')}
@@ -587,14 +628,7 @@ export const TeamProfileManager = ({
                                             variant="ghost"
                                             className="text-feedback-danger-foreground"
                                             aria-label={t('actions.delete')}
-                                            onClick={() => requestConfirmation({
-                                                title: t('actions.delete'),
-                                                description: skill.skill_name,
-                                                confirmLabel: t('actions.delete'),
-                                                cancelLabel: t('actions.cancel'),
-                                                closeLabel: t('actions.close'),
-                                                onConfirm: () => deleteSkillMutation.mutateAsync({ profileId: selectedProfile.id, skillId: skill.id }),
-                                            })}
+                                            onClick={() => void confirmSkillDelete(selectedProfile, skill)}
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </Button>

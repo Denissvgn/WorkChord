@@ -349,9 +349,9 @@ def _insert_team_members(connection: Connection, count: int) -> None:
     connection.execute(
         text(
             "INSERT INTO team_members "
-            "(id, name, position, availability_percent, "
+            "(id, allocation_token, name, position, availability_percent, "
             "professionalism_coefficient, operational_utilization, iteration_id) "
-            "SELECT value, 'Qualification member ' || value, 'Engineer', "
+            "SELECT value, '00000000-0000-4000-8000-' || lpad(value::text,12,'0'), 'Qualification member ' || value, 'Engineer', "
             "90.0, 1.0, 20.0, 1 + ((value - 1) / 2) "
             "FROM generate_series(1::integer, CAST(:count AS integer)) value"
         ),

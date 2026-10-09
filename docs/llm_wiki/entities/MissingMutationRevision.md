@@ -31,16 +31,22 @@ flowchart LR
     n3["backend/app/mcp_server.py"]
     n4["require_mutation_revision (backend/app/mutation_versions.py)"]
     n5["backend/tests/test_mutation_versions.py"]
+    n6["backend/tests/test_shared_member_revisions.py"]
+    n7["backend/tests/test_strict_caller_matrix.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/mutation_versions.md"
     click n2 "../modules/app_main.md"
     click n3 "../modules/mcp_server.md"
     click n4 "../modules/mutation_versions.md"
     click n5 "../modules/test_mutation_versions.md"
+    click n6 "../modules/test_shared_member_revisions.md"
+    click n7 "../modules/test_strict_caller_matrix.md"
 ```
 
 ### Summary
@@ -63,3 +69,5 @@ flowchart LR
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `require_mutation_revision` | call | [mutation_versions](../modules/mutation_versions.md) | 1 |
 | `test_mutation_versions` | import | [test_mutation_versions](../modules/test_mutation_versions.md) | — |
+| `test_shared_member_revisions` | import | [test_shared_member_revisions](../modules/test_shared_member_revisions.md) | — |
+| `test_strict_caller_matrix` | import | [test_strict_caller_matrix](../modules/test_strict_caller_matrix.md) | — |

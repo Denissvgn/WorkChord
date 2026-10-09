@@ -241,7 +241,7 @@ The application REST API exposes the planning operations below, but a normal age
 
 - Use `/api/triage` plus item duplicate-suggestion, classify, recommendation, draft, update, accept, decline, snooze, mark-duplicate, and convert routes for full intake control.
 - Use `/api/iterations/{iteration_id}/tasks`, `/api/tasks/{task_id}`, dependency, reorder, move, bulk, timeline, and status routes for authorized planning operations.
-- Supply `expected_version` for task updates and status changes whenever supported.
+- Supply the original observed `expected_version` for task updates, dependency changes, and status changes. Missing revisions are rejected when strict mutation policy is enabled.
 
 ### Schedule, verification, and reporting
 
@@ -339,7 +339,7 @@ If any required feature is absent, return to supervised v0 for that workflow.
 
 ## Supply Concurrency and Audit Fields
 
-For task mutations, use the latest returned `version` as `expected_version`. Claims, renewals, releases, schedule/status changes, and other task mutations can change it; never reuse an earlier cached version.
+Capture the authoritative task `version` when opening the command or draft and retain it as `expected_version` with that payload. Capture every affected iteration revision from the initial planning context or import preview for structural and shared-input changes. Do not fetch replacement revisions just before apply. On missing or stale revisions, compare current state explicitly and rebuild or reapply the intended command; never retry silently. A successful receipt can form the base of a subsequent command.
 
 For retryable mutations, derive one stable idempotency key from the logical operation, target, and workflow/run identity. Reuse it only for the identical request. Use a new key after changing the request or re-evaluating a conflict.
 

@@ -8,6 +8,12 @@ Scheduled restoration appends a per-task restoration event after rebuilding the 
 
 Stores bounded recovery points within the owning planning transaction. Iteration restoration preserves current shared person availability and delivery prerequisites, while legacy unlinked allocation absences retain local recovery. Incoming delivery references block destructive restoration. Restored task versions exceed retained fences and history; current evidence and acceptance are invalidated.
 
+Restoration reconciles the exact saved allocation membership. Safe allocations created after capture detach from the iteration while retaining their identifiers, profiles and global/history references. Complete registered and physical reference ownership is checked before recovery mutation; external task, live assignment, run or evaluating-package references block incompatible restoration. Current shared profiles, availability and canonical absences are preserved.
+
+Allocation recovery validates stable lifetime provenance before any writes, preserves global owner references, and recreates deleted allocations with their saved lifetime. Snapshots lacking lifetime provenance remain immutable and require explicit reconciliation before restore.
+
+Saved planning graphs include complete person lifetime provenance for allocation profiles and all recursive task owners. Preflight validates these references before any recovery mutation, using internal ID/token projections without serializing private profile data; current owner eligibility remains required.
+
 ## Imports
 
 | Source | Symbols |
@@ -44,7 +50,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (15) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -53,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

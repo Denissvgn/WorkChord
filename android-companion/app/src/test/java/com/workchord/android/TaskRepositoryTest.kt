@@ -84,6 +84,17 @@ class TaskRepositoryTest {
     }
 
     @Test
+    fun structuralCommandsAreUnavailableAndStatusWritesRequireCallerVersion() = runTest(testDispatcher) {
+        for (action in listOf("commit", "uncommit", "unknown_action")) {
+            val result = repository.executeCommand(1, com.workchord.android.data.models.TaskCommandRequest(action, 1, "Requested action"))
+            assertEquals("unsupported_companion_action", (result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        }
+        val status = repository.updateTaskStatus(1, TaskStatus.ACTIVE, "Start", null)
+        assertEquals("task_version_required", (status.exceptionOrNull() as com.workchord.android.data.models.ApiProblem).problem.code)
+        assertEquals(0, mockWebServer.requestCount)
+    }
+
+    @Test
     fun unsupportedStatusOrMissingVersionCannotIssueAMutation() = runTest(testDispatcher) {
         mockWebServer.enqueue(MockResponse().setBody("""[
             {"id":99,"title":"Future work","status":"future_status","version":7},
@@ -421,7 +432,7 @@ class TaskRepositoryTest {
     }
 
     @Test
-    fun testUpdateTaskStatusUsesCachedVersionWhenExpectedVersionIsNull() = runTest(testDispatcher) {
+    fun testUpdateTaskStatusRejectsMissingObservedVersionWithPopulatedCache() = runTest(testDispatcher) {
         // Pre-populate cache with version = 4
         val initialJson = """
             [
@@ -434,8 +445,10 @@ class TaskRepositoryTest {
             ]
         """.trimIndent()
         mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(initialJson))
-        repository.fetchTasks(iterationId = 1)
+        assertTrue(repository.fetchTasks(iterationId = 1).isSuccess)
         mockWebServer.takeRequest()
+        val cachedBefore = repository.cachedTasks.first()
+        val changesBefore = repository.workChanges.first()
 
         val responseJson = """
             {
@@ -450,17 +463,56 @@ class TaskRepositoryTest {
         """.trimIndent()
         mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(responseJson))
 
-        val result = repository.updateTaskStatus(
-            taskId = 10,
-            newStatus = TaskStatus.ACTIVE,
-            reason = "Started",
-            expectedVersion = null // Should use cached version (4)
-        )
+        for (version in listOf(null, 0, -1)) {
+            val result = repository.updateTaskStatus(
+                taskId = 10,
+                newStatus = TaskStatus.ACTIVE,
+                reason = "Started",
+                expectedVersion = version
+            )
 
-        assertTrue(result.isSuccess)
-        val recordedRequest = mockWebServer.takeRequest()
-        val body = recordedRequest.body.readUtf8()
-        assertTrue(body.contains("\"expected_version\":4"))
+            assertTrue(result.isFailure)
+            val problem = result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem
+            assertEquals(428, problem.statusCode)
+            assertEquals("task_version_required", problem.problem.code)
+        }
+        assertEquals(1, mockWebServer.requestCount)
+        assertNull(mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS))
+        assertEquals(cachedBefore, repository.cachedTasks.first())
+        assertEquals(changesBefore, repository.workChanges.first())
+    }
+
+    @Test
+    fun testUpdateTaskStatusKeepsCallerVersionAfterCacheAdvances() = runTest(testDispatcher) {
+        for (version in listOf(4, 5)) {
+            mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(
+                """[{"id":10,"title":"Task 10","status":"planned","version":$version}]"""
+            ))
+            assertTrue(repository.fetchTasks(iterationId = 1).isSuccess)
+            mockWebServer.takeRequest()
+        }
+        val cachedBefore = repository.cachedTasks.first()
+        val changesBefore = repository.workChanges.first()
+        mockWebServer.enqueue(MockResponse().setResponseCode(409).setBody(
+            """{"detail":{"code":"task_version_conflict","expected_version":4,
+                "current_task":{"id":10,"title":"Task 10","status":"planned","version":5}}}"""
+        ))
+
+        val result = repository.updateTaskStatus(10, TaskStatus.ACTIVE, "Started", 4)
+
+        assertTrue(result.isFailure)
+        val problem = result.exceptionOrNull() as com.workchord.android.data.models.ApiProblem
+        assertEquals(409, problem.statusCode)
+        assertEquals("task_version_conflict", problem.problem.code)
+        val recordedRequest = mockWebServer.takeRequest(1, TimeUnit.SECONDS)
+        assertNotNull(recordedRequest)
+        assertEquals("/api/tasks/10/status", recordedRequest!!.path)
+        assertEquals("PUT", recordedRequest.method)
+        assertTrue(recordedRequest.body.readUtf8().contains("\"expected_version\":4"))
+        assertEquals(3, mockWebServer.requestCount)
+        assertNull(mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS))
+        assertEquals(cachedBefore, repository.cachedTasks.first())
+        assertEquals(changesBefore, repository.workChanges.first())
     }
 
     @Test
@@ -560,7 +612,7 @@ class TaskRepositoryTest {
             }
         """.trimIndent()
         mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(updatedJson))
-        repository.updateTaskStatus(5, TaskStatus.ACTIVE, "Start")
+        repository.updateTaskStatus(5, TaskStatus.ACTIVE, "Start", observedFirst?.authoritativeVersion)
 
         val observedSecond = repository.observeTask(5).first()
         assertEquals(TaskStatus.ACTIVE, observedSecond?.status)

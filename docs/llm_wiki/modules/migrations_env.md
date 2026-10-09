@@ -15,6 +15,7 @@ Alembic environment configuration.
 | `app.config` | `get_settings` |
 | `app.database` | `Base` |
 | `app.database_config` | `alembic_safe_url`, `parse_database_configuration` |
+| `app.database_migration.project_identity` | `inspect_project_identity` |
 | `logging.config` | `fileConfig` |
 | `sqlalchemy` | `engine_from_config`, `pool` |
 
@@ -26,20 +27,23 @@ flowchart LR
     n0["backend/app/config.py"]
     n1["backend/app/database.py"]
     n2["backend/app/database_config.py"]
-    n3["backend/app/migrations/env.py"]
-    n4["backend/app/models/__init__.py"]
+    n3["backend/app/database_migration/project_identity.py"]
+    n4["backend/app/migrations/env.py"]
+    n5["backend/app/models/__init__.py"]
     n0 --> n2
     n1 --> n0
     n1 --> n2
-    n3 --> n0
-    n3 --> n1
-    n3 --> n2
-    n3 --> n4
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    n4 --> n5
     click n0 "../modules/config.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/database_config.md"
-    click n3 "../modules/migrations_env.md"
-    click n4 "../modules/models___init__.md"
+    click n3 "../modules/project_identity.md"
+    click n4 "../modules/migrations_env.md"
+    click n5 "../modules/models___init__.md"
 ```
 
 ### Internal neighbors
@@ -49,6 +53,7 @@ flowchart LR
 | Outbound | [config](../modules/config.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [database_config](../modules/database_config.md) |
+| Outbound | [project_identity](../modules/project_identity.md) |
 | Outbound | [models___init__](../modules/models___init__.md) |
 
 ### External packages
@@ -61,5 +66,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `migrate_connection` | `(connection)` | — | Own SQLite's transactional rebuild without cascading dependent references. |
 | `run_migrations_offline` | `() -> None` | — | Run migrations in offline mode. |
 | `run_migrations_online` | `() -> None` | — | Run migrations in online mode. |

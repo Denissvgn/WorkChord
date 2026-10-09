@@ -1,4 +1,4 @@
-import { dispatchInbox } from './browser_worker.mjs';
+import { dispatchInbox, backupBrowserDatabase } from './browser_worker.mjs';
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -86,6 +86,9 @@ try {
   await page.getByText('Disposable injected save failure', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   await page.unroute(`**/api/tasks/${nested.id}`);
+  await page.getByRole('button', { name: 'Reload current server work', exact: true }).click();
+  await page.getByRole('button', { name: 'I compared current work; resume this draft', exact: true }).click();
+  assert.match(await description.inputValue(), /Browser draft/);
   check('Dirty Cancel/Escape and failed save preserve description');
 
   const changed = await context.request.put(`/api/tasks/${nested.id}`, { headers, data: { title: 'Nested leaf', description: 'Other writer changed the work', expected_version: nested.version } });
@@ -257,11 +260,162 @@ try {
     return response.json();
   };
   const handoff = await createOwned('Prepare a human team handoff');
-  await createOwned('Согласовать критерии готовности и порядок совместной проверки результата между участниками команды', handoff.id);
+  const nestedHandoff = await createOwned('Согласовать критерии готовности и порядок совместной проверки результата между участниками команды', handoff.id);
   await createOwned('Confirm the deployment checklist and coordinate the next review');
   await page.goto('/my-work?queue=queued');
   await page.getByRole('heading', { name: 'My Work', exact: true }).waitFor();
   await page.getByRole('button', { name: /Согласовать критерии/ }).waitFor();
+  const peerContext = await browser.newContext({ baseURL, locale: 'en-US' });
+  const peerPage = await peerContext.newPage();
+  peerPage.on('pageerror', error => errors.push(error.message));
+  await peerPage.goto('/my-work');
+  await peerPage.getByRole('link', { name: 'Sign in', exact: true }).click();
+  await peerPage.getByRole('link', { name: 'Continue as Alice' }).click();
+  await peerPage.getByText('Alice', { exact: true }).first().waitFor();
+  const peerIdentity = await (await peerContext.request.get('/api/auth/me')).json();
+  const peerHeaders = { 'X-CSRF-Token': peerIdentity.csrf_token, Origin: baseURL };
+  const unassigned = await peerContext.request.post(`/api/projects/${projects[0].id}/backlog`, { headers: peerHeaders,
+    data: { title: 'Externally assigned foreground work', project_id: projects[0].id, owner_profile_id: null } });
+  assert.equal(unassigned.status(), 201, await unassigned.text());
+  const observed = await unassigned.json();
+  const assigned = await peerContext.request.put(`/api/tasks/${observed.id}`, { headers: peerHeaders,
+    data: { owner_profile_id: me.profile.id, expected_version: observed.version } });
+  assert.equal(assigned.status(), 200, await assigned.text());
+  const assignedTask = await assigned.json();
+  await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ timeout: 45000 });
+  const started = await peerContext.request.post(`/api/tasks/${observed.id}/commands`, { headers: peerHeaders,
+    data: { action: 'start_manual', expected_version: assignedTask.version, reason: 'Synthetic peer start' } });
+  assert.equal(started.status(), 200, await started.text());
+  await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
+  await page.goto(`/my-work?queue=active&task=${observed.id}`);
+  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
+    headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
+  assert.equal(peerComment.status(), 201, await peerComment.text());
+  await page.getByText('Peer comment arrives in foreground', { exact: true }).waitFor({ timeout: 45000 });
+  if (process.env.TIME_ENTRIES_ENABLED === 'true') {
+    await page.getByRole('button', { name: 'Time entries', exact: true }).click();
+    const entry = await peerContext.request.post('/api/time-entries', { headers: peerHeaders,
+      data: { project_id: projects[0].id, task_id: observed.id, request_id: crypto.randomUUID(),
+        work_date: '2026-10-08', timezone: 'UTC', minutes: 15, note: 'Foreground recorded work' } });
+    assert.equal(entry.status(), 201, await entry.text());
+    const recorded = await entry.json();
+    await page.getByText('Foreground recorded work', { exact: true }).waitFor({ timeout: 45000 });
+    const entryRow = page.locator('li').filter({ hasText: 'Foreground recorded work' });
+    await entryRow.getByRole('button', { name: 'Correct entry', exact: true }).click();
+    await page.getByLabel('Minutes', { exact: true }).fill('25');
+    await page.getByLabel('Private note (optional)', { exact: true }).fill('Retained private correction draft');
+    await page.getByLabel('Reason for correction or void', { exact: true }).fill('Compared retained author intent');
+    const taskWrites = []; const observe = request => { if (request.method() === 'PUT' && new URL(request.url()).pathname === `/api/tasks/${observed.id}`) taskWrites.push(request.url()); };
+    page.on('request', observe); await page.getByLabel('Minutes', { exact: true }).press('Enter');
+    await new Promise(resolve => setTimeout(resolve, 100)); assert.deepEqual(taskWrites, []); page.off('request', observe);
+    const correction = await peerContext.request.put(`/api/time-entries/${recorded.id}`, { headers: peerHeaders,
+      data: { expected_version: recorded.version, work_date: '2026-10-08', timezone: 'UTC', minutes: 20,
+        note: 'Foreground corrected work', reason: 'Synthetic peer correction' } });
+    assert.equal(correction.status(), 200, await correction.text());
+    const conflict = page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname === `/api/time-entries/${recorded.id}`);
+    await page.getByRole('button', { name: 'Save correction', exact: true }).click();
+    const stale = await conflict; assert.equal(stale.status(), 409);
+    assert.equal(stale.request().postDataJSON().expected_version, 1);
+    assert.equal(await page.getByLabel('Minutes', { exact: true }).inputValue(), '25');
+    assert.equal(await page.getByLabel('Private note (optional)', { exact: true }).inputValue(), 'Retained private correction draft');
+    const reloaded = page.waitForResponse(response => response.request().method() === 'GET' && new URL(response.url()).pathname === `/api/time-entries/${recorded.id}`);
+    await page.getByRole('button', { name: 'Reload current entry', exact: true }).click();
+    assert.equal((await reloaded).status(), 200);
+    assert.equal(await page.getByLabel('Minutes', { exact: true }).inputValue(), '25');
+    await page.getByRole('button', { name: 'Keep draft with current version', exact: true }).click();
+    const applied = page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname === `/api/time-entries/${recorded.id}`);
+    await page.getByRole('button', { name: 'Save correction', exact: true }).click();
+    const savedEntry = await applied; assert.equal(savedEntry.status(), 200, await savedEntry.text());
+    const saved = await savedEntry.json(); assert.equal(saved.minutes, 25); assert.equal(saved.version, 3);
+    const readback = await peerContext.request.get(`/api/time-entries?project_id=${projects[0].id}&task_id=${observed.id}`);
+    assert.equal((await readback.json()).items[0].note, 'Retained private correction draft');
+    await page.getByText('Retained private correction draft', { exact: true }).first().waitFor();
+    await page.locator('li').filter({ hasText: 'Retained private correction draft' }).getByRole('button', { name: 'Correct entry', exact: true }).click();
+    await page.getByLabel('Reason for correction or void', { exact: true }).fill('Synthetic duplicate record');
+    const voided = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname === `/api/time-entries/${recorded.id}/void`);
+    await page.getByRole('button', { name: 'Void entry', exact: true }).click();
+    assert.equal((await voided).status(), 200);
+    const history = await peerContext.request.get(`/api/time-entries/${recorded.id}/history`);
+    const revisions = (await history.json()).items; assert.deepEqual(revisions.map(row => row.version), [1, 2, 3, 4]);
+    assert.equal(revisions.at(-1).voided, true);
+    await page.getByLabel('Work date', { exact: true }).fill('2026-10-08');
+    await page.getByLabel('Timezone', { exact: true }).fill('Europe/Madrid');
+    await page.getByLabel('Minutes', { exact: true }).fill('35');
+    await page.getByLabel('Private note (optional)', { exact: true }).fill('UI owned recorded work');
+    const createdByUI = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname === '/api/time-entries');
+    await page.getByRole('button', { name: 'Record time', exact: true }).click();
+    const createdResponse = await createdByUI; assert.equal(createdResponse.status(), 201, await createdResponse.text());
+    const uiRecord = await createdResponse.json(); assert.equal(uiRecord.minutes, 35);
+    const range = `project_id=${projects[0].id}&start=2026-10-01&end=2026-10-31`;
+    const totals = await peerContext.request.get(`/api/time-entries/report?${range}&scope=project`);
+    assert.equal(totals.status(), 200); const report = await totals.json();
+    assert.equal(report.totals.recorded_minutes, 35); assert.equal(report.totals.tasks_with_records, 1);
+    assert.ok(!JSON.stringify(report).includes('Retained private correction draft') && !JSON.stringify(report).includes('UI owned recorded work'));
+    const exported = await peerContext.request.get(`/api/time-entries/export?${range}&scope=mine&kind=entries`);
+    assert.equal(exported.status(), 200); assert.ok((await exported.text()).includes('Retained private correction draft'));
+    await writeFile(join(artifacts, 'time-workflow-receipt.json'), JSON.stringify({ status: 'passed', privateRecord: recorded.id, activePrivateRecord: uiRecord.id,
+      correctedVersion: 3, voidedVersion: 4, historyVersions: revisions.map(row => row.version), staleDraftRetained: true,
+      explicitReapply: true, managerTotalsExcludeVoids: true, privateNotesAbsentFromTotals: true, exportVerified: true,
+      keyboardDidNotSubmitTask: true, synthetic: true }, null, 2));
+    check('Time create, stale correction with retained intent, explicit reapply, void, history, totals and private export reconcile');
+
+  }
+  if (process.env.WORKCHORD_FIXTURE_WORKFLOWS === 'true') {
+    const now = await (await context.request.get('/api/auth/me')).json();
+    const currentChild = (await (await context.request.get(`/api/tasks/${nestedHandoff.id}/detail`)).json()).task;
+    const urgent = await context.request.put(`/api/tasks/${currentChild.id}`, { headers: { 'X-CSRF-Token': now.csrf_token, Origin: baseURL },
+      data: { expected_version: currentChild.version, priority: 1 } });
+    assert.equal(urgent.status(), 200, await urgent.text());
+    const currentParent = (await (await context.request.get(`/api/tasks/${handoff.id}/detail`)).json()).task;
+    const deferred = await context.request.put(`/api/tasks/${handoff.id}`, { headers: { 'X-CSRF-Token': now.csrf_token, Origin: baseURL },
+      data: { expected_version: currentParent.version, is_deferred: true } });
+    assert.equal(deferred.status(), 200, await deferred.text());
+    const child = (await (await context.request.get(`/api/tasks/${nestedHandoff.id}/detail`)).json()).task;
+    assert.equal(child.effective_is_deferred, true);
+    const childActions = await (await context.request.get(`/api/tasks/${child.id}/actions`)).json();
+    assert.equal(childActions.actions.find(action => action.action === 'start_manual').allowed, false);
+    const work = await (await context.request.get('/api/tasks/my-work')).json();
+    assert.ok(!Object.values(work.queues).flat().some(task => task.id === child.id));
+    const featureHeaders = { 'X-Fixture-Key': process.env.WORKCHORD_FIXTURE_NONCE, 'X-CSRF-Token': now.csrf_token, Origin: baseURL };
+    const feature = async enabled => {
+      const response = await context.request.post('/api/tasks/1/_fixture/time-feature', { headers: featureHeaders, data: { enabled } });
+      assert.equal(response.status(), 200, await response.text());
+    };
+    await feature(false);
+    try {
+      const disabled = await context.request.get('/api/time-entries'); assert.ok([403,404].includes(disabled.status()));
+      const capability = await (await context.request.get('/api/time-entries/capabilities')).json(); assert.equal(capability.enabled, false);
+    } finally { await feature(true); }
+    const retained = await context.request.get('/api/time-entries'); assert.equal(retained.status(), 200);
+    assert.ok((await retained.json()).items.some(row => row.note === 'UI owned recorded work'));
+    const lookup = await (await context.request.get(`/api/tasks/lookup?project_id=${projects[0].id}&limit=100`)).json();
+    assert.equal(lookup.has_more, false);
+    const details = [];
+    for (const ref of lookup.items) {
+      const value = await (await context.request.get(`/api/tasks/${ref.id}/detail`)).json();
+      const actions = await (await context.request.get(`/api/tasks/${ref.id}/actions`)).json();
+      assert.equal(actions.version, value.task.version); details.push(value.task);
+    }
+    const leaves = details.filter(task => !task.is_composite && !task.canceled_at && !task.effective_is_deferred);
+    const summary = await (await context.request.get(`/api/projects/${projects[0].id}/summary`)).json();
+    const portfolio = await (await context.request.get('/api/projects/portfolio-summaries/page?limit=100')).json();
+    const matching = portfolio.items.find(row => row.project_id === projects[0].id);
+    const iterationSummary = await (await context.request.get(`/api/iterations/${iteration.id}/summary`)).json();
+    assert.equal(summary.total_tasks, leaves.length); assert.equal(summary.total_tasks, matching.total_tasks);
+    assert.equal(summary.implemented_tasks, leaves.filter(task => ['resolved','closed'].includes(task.status)).length);
+    assert.equal(summary.total_tasks, iterationSummary.total_tasks + leaves.filter(task => task.iteration_id === null).length);
+    const capacity = await context.request.get(`/api/team-member-profiles/${me.profile.id}/capacity?start=2026-01-01&end=2026-01-31`);
+    assert.equal(capacity.status(), 200);
+    await writeFile(join(artifacts, 'managed-workflow-receipt.json'), JSON.stringify({ status: 'passed', strictMutationVersions: true,
+      projectTotal: summary.total_tasks, iterationTotal: iterationSummary.total_tasks, backlogLeaves: leaves.filter(task => task.iteration_id === null).length,
+      portfolioMatches: true, allowedActionsMatchObservedVersions: true, sharedCapacityRead: true,
+      disabledFeatureRetainsLedger: true, inheritedDeferralExcludesQueueAndExecution: true, nestedBacklogIdentityRetained: child.id, synthetic: true }, null, 2));
+    check('Strict contexts, independent project/iteration/backlog/portfolio metrics, action versions, shared capacity and disabled-feature retention reconcile');
+  }
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await peerContext.close();
+  check('Two managed sessions discover assignment, queue movement, comments and optional time corrections without focus changes');
   const themeContrast = [];
   for (const theme of ['light', 'dark', 'blue', 'green']) {
     await page.evaluate(async chosen => { const module = await import('/src/store/themeStore.ts'); module.useThemeStore.getState().setTheme(chosen); }, theme);
@@ -332,9 +486,22 @@ try {
   const otherProjects = await (await context.request.get('/api/projects')).json();
   assert.deepEqual(otherProjects.map(project => project.name), ['Harbor']);
   assert.equal((await context.request.get(`/api/tasks/${nested.id}`)).status(), 404);
+  if (process.env.TIME_ENTRIES_ENABLED === 'true') {
+    const mine = await context.request.get('/api/time-entries'); assert.equal(mine.status(), 200);
+    assert.deepEqual((await mine.json()).items, []);
+    const timeProof = JSON.parse(await (await import('node:fs/promises')).readFile(join(artifacts, 'time-workflow-receipt.json'), 'utf8'));
+    const denied = await context.request.get(`/api/time-entries/${timeProof.activePrivateRecord}/history`);
+    assert.ok([403,404].includes(denied.status())); assert.ok(!(await denied.text()).includes('UI owned recorded work'));
+    const restore = await backupBrowserDatabase();
+    await writeFile(join(artifacts, 'time-database-restore.json'), restore);
+    check('Account/project switch hides private records and an independent full SQLite restore preserves every row and allocation state');
+  }
   assert.equal(await page.evaluate(() => Object.keys(sessionStorage).some(key => key.startsWith('workchord-draft:') && sessionStorage.getItem(key)?.includes('Recover this draft'))), false);
   assert.deepEqual(errors, []);
   check('Sign-out/account switch clears private work and rejects the previous project');
+  await writeFile(join(artifacts, 'accessibility-localization.json'), JSON.stringify({ status: 'passed', locales: ['en','ru'],
+    widths: [1440,390], keyboardDetailAndTimeControls: true, themeContrastFile: 'teamwork-theme-contrast.json', noHorizontalOverflow: true,
+    pageErrors: errors, synthetic: true }, null, 2));
   await writeFile(join(artifacts, 'managed-browser.json'), JSON.stringify({ status: 'passed', browser: browser.version(), node: process.version, steps, pageErrors: errors, issuer: 'disposable-synthetic-oidc', realProviderPilot: false }, null, 2));
 } catch (error) {
   await page.screenshot({ path: join(artifacts, 'managed-browser-failure.png'), fullPage: true }).catch(() => {});

@@ -30,25 +30,31 @@ flowchart LR
     n1["backend/app/database_migration/manifest.py"]
     n2["backend/app/database_migration/source.py"]
     n3["backend/app/services/upgrade_service.py"]
-    n4["backend/tests/database_migration/test_source_preflight.py"]
+    n4["backend/tests/database_migration/test_project_identity_scope.py"]
+    n5["backend/tests/database_migration/test_source_preflight.py"]
     n2 --> n0
     n2 --> n1
     n2 --> n3
-    n4 --> n0
-    n4 --> n1
     n4 --> n2
     n4 --> n3
+    n4 --> n5
+    n5 --> n0
+    n5 --> n1
+    n5 --> n2
+    n5 --> n3
     click n0 "../modules/catalog.md"
     click n1 "../modules/database_migration_manifest.md"
     click n2 "../modules/source.md"
     click n3 "../modules/upgrade_service.md"
-    click n4 "../modules/test_source_preflight.md"
+    click n4 "../modules/test_project_identity_scope.md"
+    click n5 "../modules/test_source_preflight.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [test_project_identity_scope](../modules/test_project_identity_scope.md) |
 | Outbound | [catalog](../modules/catalog.md) |
 | Outbound | [database_migration_manifest](../modules/database_migration_manifest.md) |
 | Outbound | [source](../modules/source.md) |

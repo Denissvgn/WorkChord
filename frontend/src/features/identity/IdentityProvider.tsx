@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LogIn, LogOut, ShieldCheck, User } from 'lucide-react';
@@ -10,7 +10,7 @@ import { clearAdminApiKey } from '../../utils/adminAccess';
 import { clearAgentApiKey } from '../../utils/agentAccess';
 import { ADMIN_API_KEY_CHANGED_EVENT } from '../../utils/adminAccess';
 import { AGENT_API_KEY_CHANGED_EVENT } from '../../utils/agentAccess';
-import { installWorkFreshness } from '../workQueryFreshness';
+import { createWorkspaceQueryClient, installWorkspaceQueryPolicy } from '../workspaceQueryPolicy';
 import { setSessionIntegrity, IDENTITY_EXPIRED_EVENT } from '../../services/api';
 import { identityService } from './identityService';
 import { teamService } from '../../services/teamService';
@@ -54,7 +54,7 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
         : verified.resolved, [expiredSession, lastAuthenticated, verified.resolved]);
     const scope = identity?.principal ? String(identity.principal.id) : identity?.mode === 'trusted_local' ? 'local' : null;
     const accessKey = JSON.stringify([scope, identity?.workspace_role, identity?.projects, identity?.profile?.id, credentialEpoch]);
-    const workClient = useMemo(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 15000, refetchOnWindowFocus: true, meta: { workspaceAccess: accessKey } } } }), [accessKey]);
+    const workClient = useMemo(() => createWorkspaceQueryClient(accessKey), [accessKey]);
     useEffect(() => {
         const current = verified.resolved;
         if (current && !current.authenticated && current.mode === 'managed' && current.authentication_error !== 'session_expired') {
@@ -62,8 +62,7 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
         }
     }, [verified.resolved]);
     useEffect(() => {
-        const stop = installWorkFreshness(workClient);
-        return () => { stop(); workClient.clear(); };
+        return installWorkspaceQueryPolicy(workClient);
     }, [workClient]);
     useEffect(() => {
         const changed = () => setCredentialEpoch(value => value + 1);

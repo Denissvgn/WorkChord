@@ -1,6 +1,6 @@
 # TeamFormProps
 
-**Location:** `frontend/src/components/team/TeamForm.tsx:13`
+**Location:** `frontend/src/components/team/TeamForm.tsx:17`
 **Kind:** Class
 **Bases:** —
 **Module:** [TeamForm](../modules/TeamForm.md)

@@ -95,4 +95,4 @@ flowchart LR
 | `_required` | call | [cli_server_acceptance](../modules/cli_server_acceptance.md) | 1 |
 | `main` | call | [cli_server_acceptance](../modules/cli_server_acceptance.md) | 2 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

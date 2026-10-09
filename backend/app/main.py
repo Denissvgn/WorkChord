@@ -53,6 +53,14 @@ app = FastAPI(
 )
 
 
+from app.services.planning_input_context import PlanningInputUnavailable
+
+
+@app.exception_handler(PlanningInputUnavailable)
+async def planning_input_unavailable_handler(request: Request, exc: PlanningInputUnavailable):
+    return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+
 @app.exception_handler(PlanningConflict)
 async def planning_conflict(request: Request, exc: PlanningConflict):
     return JSONResponse(status_code=409, content={"detail": exc.detail()})

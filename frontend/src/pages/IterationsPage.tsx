@@ -2,37 +2,25 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IterationList } from '../components/iteration/IterationList';
 import { IterationForm } from '../components/iteration/IterationForm';
-import { exportService } from '../services/exportService';
-import { useQueryClient } from '@tanstack/react-query';
+import { IterationImportDialog } from '../components/iteration/IterationImportDialog';
 import type { Iteration } from '../types/iteration';
 import { PageHeader, PageLayout } from '../components/ui';
-import { useToast } from '../components/feedback/toast';
-import { getApiErrorMessage } from '../utils/apiError';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 
 const IterationsPage = () => {
     const [isCreating, setIsCreating] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const queryClient = useQueryClient();
     const { t } = useTranslation();
-    const toast = useToast();
     const [editingIteration, setEditingIteration] = useState<Iteration | null>(null);
 
-    const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            try {
-                await exportService.importIteration(e.target.files[0]);
-                queryClient.invalidateQueries({ queryKey: ['iterations'] });
-                toast.success(t('iterations.importSuccess'));
-            } catch (error: unknown) {
-                toast.error(getApiErrorMessage(error, t('iterations.importFailed')));
-            }
-            e.target.value = '';
-        }
+    const [importFile, setImportFile] = useState<File | null>(null);
+    const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setImportFile(event.target.files?.[0] ?? null); event.currentTarget.value = '';
     };
 
     return (
         <PageLayout>
+            {importFile && <IterationImportDialog file={importFile} onClose={() => setImportFile(null)} />}
             <PageHeader
                 title={t('iterations.title')}
                 subtitle={t('iterations.description')}

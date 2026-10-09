@@ -87,3 +87,5 @@ row absent, then run the full validation above.
   scheduled drill passes. It never becomes a paper exception.
 - Restore drills delete only the explicitly authorized isolated target through
   platform lifecycle tooling after evidence retention is complete.
+
+After an isolated restore, reconcile the complete application catalog and sequence states, including private time records, append-only corrections, deleted task version fences and unavailable recording scopes. Confirm that generated task/project IDs exceed retained allocation high-water marks. Preserve the backup checksum, source image/schema and actual destination-encryption evidence; an operator confirmation flag alone does not establish encryption.

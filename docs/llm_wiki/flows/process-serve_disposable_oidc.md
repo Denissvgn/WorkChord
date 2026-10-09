@@ -43,8 +43,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| __main__ | uvicorn.run | 90 | `uvicorn.run(app, host=os.environ.get(...), port=8002, access_log=False)` |
-| __main__ | os.environ.get | 90 | `os.environ.get('WORKCHORD_FIXTURE_BIND', '127.0.0.1')` |
+| __main__ | uvicorn.run | 91 | `uvicorn.run(app, host=os.environ.get(...), port=8002, access_log=False)` |
+| __main__ | os.environ.get | 91 | `os.environ.get('WORKCHORD_FIXTURE_BIND', '127.0.0.1')` |
 
 ### Boundary effects
 
@@ -54,8 +54,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `__main__` | `uvicorn.run` | 90 |
-| external_call | `__main__` | `os.environ.get` | 90 |
+| external_call | `__main__` | `uvicorn.run` | 91 |
+| external_call | `__main__` | `os.environ.get` | 91 |
 
 ## Behavior
 

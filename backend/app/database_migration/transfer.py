@@ -209,6 +209,14 @@ def _load_source_manifest(path: Path, snapshot_path: Path) -> dict[str, Any]:
         raise MigrationDataError(
             "snapshot_checksum_mismatch", "SQLite snapshot does not match its source manifest"
         )
+    _source_sequence_floors(snapshot_path)
+    from app.database_migration.project_identity import ProjectIdentityError, sqlite_project_allocation_floor
+    try:
+        floor = sqlite_project_allocation_floor(snapshot_path)
+    except ProjectIdentityError as exc:
+        raise MigrationDataError(exc.code, str(exc)) from None
+    if "project_allocation_floor" in manifest and (type(manifest["project_allocation_floor"]) is not int or manifest["project_allocation_floor"] != floor):
+        raise MigrationDataError("project_allocation_identity_mismatch", "Source allocation floor does not match the independently checked snapshot")
     expected_catalog = [
         {
             "table": entry.table_name,
@@ -551,7 +559,26 @@ def _restore_staged_references(
     return updated
 
 
-def _repair_sequences(connection: Connection) -> dict[str, Any]:
+def _source_sequence_floors(snapshot_path: Path) -> dict[str, int]:
+    """Retain verified SQLite allocations even when the allocated row was deleted."""
+    names = tuple(transfer_tables())
+    with read_only_sqlite(snapshot_path) as source:
+        if source.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='sqlite_sequence'").fetchone() is None:
+            return {}
+        placeholders = ','.join('?' for _ in names)
+        rows = source.execute(f'SELECT name,seq FROM sqlite_sequence WHERE name IN ({placeholders}) LIMIT ?',
+                              (*names, len(names) + 1)).fetchall()
+    floors = {}
+    for name, value in rows:
+        if name in floors or type(value) is not int or not 0 <= value < 2 ** 63:
+            raise MigrationDataError('allocation_identity_invalid', 'SQLite sequence allocations are ambiguous or malformed')
+        floors[name] = value
+    if len(rows) > len(names):
+        raise MigrationDataError('allocation_identity_invalid', 'SQLite sequence allocation inventory exceeds the catalog')
+    return floors
+
+
+def _repair_sequences(connection: Connection, *, project_floor=0, allocation_floors=None) -> dict[str, Any]:
     results: dict[str, Any] = {}
     for table_name in transfer_order():
         table = transfer_tables()[table_name]
@@ -568,6 +595,13 @@ def _repair_sequences(connection: Connection) -> dict[str, Any]:
         if not sequence:
             continue
         maximum = connection.execute(select(func.max(column))).scalar_one()
+        quoted_sequence = ".".join(connection.dialect.identifier_preparer.quote(part.strip('"')) for part in sequence.split("."))
+        allocated, called = connection.execute(text(f"SELECT last_value,is_called FROM {quoted_sequence}")).one()
+        maximum = max(int(maximum or 0), (allocation_floors or {}).get(table_name, 0),
+                      int(allocated) - (0 if called else 1)) or None
+        if table_name == "projects":
+            from app.database_migration.project_identity import project_allocation_floor
+            maximum = max(int(maximum or 0), project_allocation_floor(connection), project_floor) or None
         if maximum is None:
             connection.execute(
                 text("SELECT setval(CAST(:sequence AS regclass), 1, false)"),
@@ -647,6 +681,8 @@ def load_snapshot(
             "invalid_chunk_size", f"Chunk size must be between 1 and {MAXIMUM_CHUNK_SIZE}"
         )
     manifest = _load_source_manifest(source_manifest_path, snapshot_path)
+    from app.database_migration.project_identity import sqlite_project_allocation_floor
+    project_floor = sqlite_project_allocation_floor(snapshot_path)
     run_id = str(manifest["migration_run_id"])
     engine, configuration = _target_engine()
     target = _authorize_target(configuration, authorized_target)
@@ -767,7 +803,7 @@ def load_snapshot(
                             )
 
                 with connection.begin():
-                    sequence_results = _repair_sequences(connection)
+                    sequence_results = _repair_sequences(connection, project_floor=project_floor, allocation_floors=_source_sequence_floors(snapshot_path))
                 for table_name in transfer_order():
                     with connection.begin():
                         connection.exec_driver_sql(f'ANALYZE "{table_name}"')
@@ -1007,7 +1043,7 @@ def _repair_report(
     return str(report["document_sha256"]), transformations
 
 
-def _sequence_facts(connection: Connection) -> dict[str, Any]:
+def _sequence_facts(connection: Connection, *, project_floor=0, allocation_floors=None) -> dict[str, Any]:
     results: dict[str, Any] = {}
     preparer = connection.dialect.identifier_preparer
     for table_name in transfer_order():
@@ -1034,6 +1070,10 @@ def _sequence_facts(connection: Connection) -> dict[str, Any]:
             text(f"SELECT last_value, is_called FROM {qualified}")
         ).one()
         maximum = connection.execute(select(func.max(column))).scalar_one()
+        maximum = max(int(maximum or 0), (allocation_floors or {}).get(table_name, 0)) or None
+        if table_name == "projects":
+            from app.database_migration.project_identity import project_allocation_floor
+            maximum = max(int(maximum or 0), project_allocation_floor(connection), project_floor) or None
         next_value = int(state[0]) + (1 if state[1] else 0)
         safe = maximum is None or next_value > int(maximum)
         results[table_name] = {
@@ -1258,6 +1298,8 @@ def reconcile_snapshot(
     if phase not in {"raw", "final"}:
         raise MigrationDataError("invalid_reconciliation_phase", "Phase must be raw or final")
     manifest = _load_source_manifest(source_manifest_path, snapshot_path)
+    from app.database_migration.project_identity import sqlite_project_allocation_floor
+    project_floor = sqlite_project_allocation_floor(snapshot_path)
     run_id = str(manifest["migration_run_id"])
     engine, configuration = _target_engine()
     _authorize_target(configuration, authorized_target)
@@ -1337,7 +1379,7 @@ def reconcile_snapshot(
                 target,
                 encryption_key=encryption_key or os.environ.get("SETTINGS_ENCRYPTION_KEY"),
             )
-            sequences = _sequence_facts(target)
+            sequences = _sequence_facts(target, project_floor=project_floor, allocation_floors=_source_sequence_floors(snapshot_path))
             statistics = _statistics_facts(target)
 
         payload = {

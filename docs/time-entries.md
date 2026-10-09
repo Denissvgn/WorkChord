@@ -1,6 +1,23 @@
 # Recorded time
 
-Time entry is optional. Set `TIME_ENTRIES_ENABLED=true`, apply the database upgrade with `./scripts/upgrade_database.sh`, and restart the backend. Human sign-in is required; trusted-local guest identity and agent credentials cannot author personal work records. Disabling the setting hides the feature and blocks its API without deleting records. Re-enable it to access retained records.
+Time entry is optional and requires `TIME_ENTRIES_ENABLED=true` in the backend process. Human sign-in is required; trusted-local guest identity and agent credentials cannot author personal work records. Disabling the setting hides the feature and blocks its API without deleting records. Re-enable it to access retained records.
+
+For [native local setup](local-development.md), set the flag in `backend/.env`,
+initialize the database with `./scripts/upgrade_database.sh`, and restart the backend.
+
+For Compose, pass the flag into the backend service through an environment
+override; setting it only in the Compose `.env` file does not forward it:
+
+```yaml
+services:
+  backend:
+    environment:
+      TIME_ENTRIES_ENABLED: ${TIME_ENTRIES_ENABLED:-false}
+```
+
+Set the flag to `true` in your deployment's Compose environment file. Include
+the override alongside the same Compose files and environment file used for
+that deployment, then recreate the backend. Keep managed human sign-in configured.
 
 Record whole minutes, an explicit local work date, and an IANA timezone such as `Europe/Madrid` or `UTC`. Dates describe the author's selected work date; server creation and correction timestamps are UTC instants. A record contains 1–1,440 minutes, and an author's active records for one work date cannot exceed 1,440 minutes across projects.
 
@@ -25,3 +42,5 @@ Reports default to **My recorded time**. Project managers can select **Project t
 Use **Export my entries** for your personal records, including void markers and observed versions, or **Export totals** for the selected report scope. `GET /api/time-entries/export` provides CSV with at most 5,000 rows; larger exports fail explicitly. CSV exports preserve minute units and empty unknown values, and neutralize spreadsheet-formula prefixes in text. Personal exports never include another author's records, even for a project manager. CSV exports are reconciliation views, not a substitute for a full database backup or complete correction history.
 
 See [identity and recovery](identity-and-recovery.md), [task semantics](task-domain.md), and [database backup and restore](runbooks/postgresql-backup-restore.md).
+
+Task snapshots and full database recovery have different scopes. A task restore retains current shared availability and the current recorded-time ledger. A complete database restore retains ledger IDs, authors, original project/task recording scope, append-only corrections and sequence allocation state. Supported SQLite-to-PostgreSQL transfer also preserves allocation high-water marks, so deleted identities are not assigned to unrelated new work. Ambiguous legacy identity or unknown version history requires explicit operator reconciliation with the matching backup.

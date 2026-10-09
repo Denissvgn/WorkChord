@@ -46,15 +46,18 @@ _Auto-generated from `BlockedServerAcceptance` in `backend/app/autonomy/server_a
 flowchart LR
     n0["BlockedServerAcceptance (backend/app/autonomy/server_acceptance.py)"]
     n1["StrictContractModel (backend/app/autonomy/canonical.py)"]
-    n2["BlockedServerAcceptance.canonical_blocked_result (backend/app/autonomy/server_acceptance.py)"]
-    n3["build_blocked_result (backend/app/autonomy/server_acceptance.py)"]
+    n2["backend/app/autonomy/acceptance_artifacts.py"]
+    n3["BlockedServerAcceptance.canonical_blocked_result (backend/app/autonomy/server_acceptance.py)"]
+    n4["build_blocked_result (backend/app/autonomy/server_acceptance.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/autonomy_server_acceptance.md"
     click n1 "../modules/autonomy_canonical.md"
-    click n2 "../modules/autonomy_server_acceptance.md"
+    click n2 "../modules/acceptance_artifacts.md"
     click n3 "../modules/autonomy_server_acceptance.md"
+    click n4 "../modules/autonomy_server_acceptance.md"
 ```
 
 ### Summary
@@ -73,6 +76,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `acceptance_artifacts` | import | [acceptance_artifacts](../modules/acceptance_artifacts.md) | — |
 | `BlockedServerAcceptance.canonical_blocked_result` | type_reference | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | — |
 | `build_blocked_result` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 1 |
 | `build_blocked_result` | type_reference | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | — |

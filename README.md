@@ -1,80 +1,64 @@
 # WorkChord
 
-WorkChord is a self-hosted workspace for planning and delivering team work.
-Organize projects and task trees, assign owners, plan capacity, and follow work
-through execution and review. Gantt, board, and roadmap views share the same
-tasks. Agent assistance is optional through REST and authenticated MCP APIs.
+[![CI (main)](https://github.com/Denissvgn/WorkChord/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Denissvgn/WorkChord/actions/workflows/ci.yml)
+[![Release status: unreleased](https://img.shields.io/badge/release-unreleased-yellow)](https://github.com/Denissvgn/WorkChord/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Built with FastAPI, SQLAlchemy, React, and Vite. The web interface supports
-English and Russian. PostgreSQL is the deployment database; SQLite is supported
-for local development.
+[![Python 3.11–3.13](https://img.shields.io/badge/Python-3.11%E2%80%933.13-3776AB?logo=python&logoColor=white)](backend/pyproject.toml)
+[![Node.js 22.23.1](https://img.shields.io/badge/Node.js-22.23.1-5FA04E?logo=nodedotjs&logoColor=white)](.github/workflows/ci.yml)
+[![FastAPI 0.139.0](https://img.shields.io/badge/FastAPI-0.139.0-009688?logo=fastapi&logoColor=white)](backend/requirements.lock)
+[![SQLAlchemy 2.0.51](https://img.shields.io/badge/SQLAlchemy-2.0.51-D71F00?logo=sqlalchemy&logoColor=white)](backend/requirements.lock)
+[![PostgreSQL 18](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white)](docker-compose.yml)
+[![React 19.2.3](https://img.shields.io/badge/React-19.2.3-149ECA?logo=react&logoColor=white)](frontend/package-lock.json)
+[![Vite 7.3.6](https://img.shields.io/badge/Vite-7.3.6-646CFF?logo=vite&logoColor=white)](frontend/package-lock.json)
 
-## Requirements
+CI tracks `main`; versions reflect supported runtimes and locked dependencies.
 
-- Python 3.11, 3.12, or 3.13
-- Node.js 22 and npm
-- Docker with Compose v2, if you prefer containers
+WorkChord is a self-hosted workspace for human-led teams to capture, plan,
+deliver, and review project work. External agents can participate through
+authenticated REST and MCP APIs, using their own execution runtimes.
 
-## Local setup
+- **Teamwork:** project backlogs, task trees, ownership, discussion, and review with evidence.
+- **Planning:** calendars, shared capacity, dependencies, and List, Board, Gantt, and roadmap views.
+- **Recorded time:** optional private entries and scoped totals for project managers.
 
-Create the project environment and install the locked build and application
-dependencies:
+The web interface supports English and Russian. An [Android companion](android-companion/)
+provides mobile task access.
 
-```bash
-python3.12 -m venv .venv
-.venv/bin/pip install --require-hashes -r backend/build-requirements.lock
-.venv/bin/pip install --require-hashes -r backend/requirements.lock
-.venv/bin/pip install --no-build-isolation --no-deps -e ./backend
-npm ci --prefix frontend
-cp .env.example .env
-```
+## Get started
 
-Generate strong local secrets and copy the values you need into `.env`:
-
-```bash
-.venv/bin/python scripts/api_keys/generate_workchord_keys.py
-```
-
-Prepare the database, then start the backend and frontend in separate
-terminals:
-
-```bash
-./scripts/upgrade_database.sh
-(cd backend && ../.venv/bin/uvicorn app.main:app --reload --port 8001)
-npm --prefix frontend run dev
-```
-
-Open `http://localhost:5173`. The API health endpoint is
-`http://localhost:8001/health`, and interactive API documentation is available
-at `http://localhost:8001/docs`.
-
-The MCP command is installed with the backend package:
-
-```bash
-.venv/bin/workchord-mcp --help
-```
-
-## Container setup
+For a local PostgreSQL workspace, use Docker with Compose v2:
 
 ```bash
 cp .env.example .env
-# Configure secrets and sign-in settings in .env before starting.
+```
+
+Configure sign-in and application secrets in `.env` using the
+[identity setup guide](docs/identity-and-recovery.md). Managed sign-in is the
+default; an isolated workspace can explicitly select `trusted_local` mode.
+
+```bash
 docker compose up --build --detach
 ```
 
-Managed sign-in is the default. Follow the [identity setup guide](docs/identity-and-recovery.md)
-to configure your provider and establish the first owner. For an isolated local
-workspace, that guide also describes the explicit trusted-local mode.
+Open [localhost](http://localhost) (port 80 by default), then follow the identity
+guide to establish the first owner.
+
+For native Python/Node.js setup and local API documentation, follow
+[local development](docs/local-development.md), which uses SQLite by default.
+For a shared server, follow the deployment guides below.
 
 ## Documentation
 
-- **Using WorkChord:** [human teamwork quickstart](docs/human-teamwork.md) · [task and metric semantics](docs/task-domain.md) · [delivery analytics](docs/delivery-analytics.md) · [optional time entry](docs/time-entries.md)
-- **Accounts and recovery:** [sign-in, permissions, sessions, and snapshots](docs/identity-and-recovery.md)
-- **Configuration:** [environment settings](.env.example)
-- **Self-hosting:** [server setup](docs/runbooks/self-hosted-server-acceptance.md) · [deployment topology](docs/runbooks/postgresql-deployment.md)
-- **Database operations:** [operator guide and runbook index](docs/runbooks/postgresql-operations.md) · [backup and restore](docs/runbooks/postgresql-backup-restore.md) · [troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
-- **Agent integrations:** [external runtime and role references](docs/external-agent-runtime.md) · [team setup](docs/agent-team-setup.md) · [usage and pricing](docs/execution-usage.md)
-- **API reference:** interactive documentation at `/docs` on your backend instance
+| Topic | Guides |
+| --- | --- |
+| Working together | [Quickstart](docs/human-teamwork.md) · [Task semantics](docs/task-domain.md) · [Delivery analytics](docs/delivery-analytics.md) |
+| Accounts and mobile access | [Sign-in, permissions, Android connection, and recovery](docs/identity-and-recovery.md) |
+| Recorded time | [Enable time entry, privacy, reports, and exports](docs/time-entries.md) |
+| External agents | [Runtime integration](docs/external-agent-runtime.md) · [Team setup](docs/agent-team-setup.md) · [Usage and pricing](docs/execution-usage.md) |
+| Self-hosting | [Server setup](docs/runbooks/self-hosted-server-acceptance.md) · [PostgreSQL deployment](docs/runbooks/postgresql-deployment.md) |
+| Operations | [Operator guide](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md) |
+| Configuration | [Environment settings](.env.example) |
 
 ## License
 

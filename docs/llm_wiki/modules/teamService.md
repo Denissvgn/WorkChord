@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/services/teamService.ts`._
 |--------|---------|
 | `../types/team` | `MemberCapacity`, `MemberWorkload`, `TeamMember`, `TeamMemberCreate`, `TeamMemberOption`, `TeamMemberProfile`, `TeamMemberProfileCreate`, `TeamMemberProfileSkill`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `Vacation`, `VacationCreate`, `VacationImportResponse` |
 | `./api` | `api` |
+| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
 
 ## Module Signals
 
@@ -38,7 +39,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (17) |
-| Outbound | `frontend` (2) |
+| Inbound | `frontend` (18) |
+| Outbound | `frontend` (3) |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

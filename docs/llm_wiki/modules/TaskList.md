@@ -4,7 +4,7 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/components/tasks/TaskList.tsx`._
+Merge drafts capture the aggregate revision when their confirmation editor opens. Live list updates do not replace it at submission; conflicts retain title/selection and expose explicit current-input review.
 
 ## Imports
 
@@ -80,8 +80,8 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskListProps](../entities/TaskListProps.md) | Class | 70 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 734 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 786 | `TaskItemProps` | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Class | 740 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 792 | `TaskItemProps` | — |
 | [SortKey](../entities/SortKey.md) | Type alias | 48 | — | — |
 | [TaskMode](../entities/TaskMode.md) | Type alias | 49 | — | — |
 | [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | — | — |

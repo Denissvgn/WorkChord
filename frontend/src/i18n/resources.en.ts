@@ -1,8 +1,11 @@
+import { planningInputEnglish } from './planningInputMessages';
 import { paginationEN } from './pagination';
 import { timeEntriesEN } from './timeEntries';
 import { teamworkEnglish } from './teamwork.en';
 export const englishResources = {
         translation: {
+            planningInput: planningInputEnglish,
+
             teamwork: teamworkEnglish,
             pagination: paginationEN,
             timeEntries: timeEntriesEN,

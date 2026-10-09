@@ -119,6 +119,10 @@ def parse_args():
     mode.add_argument('--backend-only', action='store_true')
     parser.add_argument('--full-backend', action='store_true')
     parser.add_argument('--managed-browser', action='store_true')
+    parser.add_argument('--planning-browser', action='store_true')
+    parser.add_argument('--performance-browser', action='store_true')
+    parser.add_argument('--workflow-browser', action='store_true')
+    parser.add_argument('--time-entries', action='store_true')
     parser.add_argument('--timeout-seconds', type=positive_seconds, default=1800,
                         help='Work budget; leave time outside this for cleanup and uploads')
     args = parser.parse_args()
@@ -128,6 +132,12 @@ def parse_args():
         selected = ['browser']
     else:
         selected = ['sqlite', 'postgresql'] + ([] if args.backend_only else ['frontend', 'browser'])
+    if args.performance_browser and (not args.managed_browser or args.planning_browser):
+        parser.error('--performance-browser requires managed access and its own fixture')
+    if args.workflow_browser and (not args.managed_browser or not args.time_entries or args.planning_browser or args.performance_browser):
+        parser.error('--workflow-browser requires managed access, enabled time entries and its own fixture')
+    if args.planning_browser and not args.managed_browser:
+        parser.error('--planning-browser requires --managed-browser')
     if args.managed_browser and 'browser' not in selected:
         parser.error('--managed-browser requires browser checks')
     if args.full_backend and not set(selected).intersection({'sqlite', 'postgresql'}):
@@ -193,14 +203,22 @@ def main():
                 browser_dir.mkdir()
                 run.run('browser-install', ['npm', 'install', '--ignore-scripts', '--no-audit', '--no-fund', f'playwright@{PLAYWRIGHT_VERSION}'], cwd=browser_dir, env=env, timeout=180)
                 run.run('browser-runtime', ['npx', '--no-install', 'playwright', 'install', 'chromium'], cwd=browser_dir, env=env, timeout=180)
-                browser_file = 'browser_managed_work.mjs' if args.managed_browser else 'browser_write_readback.mjs'
+                browser_file = 'browser_performance.mjs' if args.performance_browser else 'browser_planning_inputs.mjs' if args.planning_browser else 'browser_managed_work.mjs' if args.managed_browser else 'browser_write_readback.mjs'
                 shutil.copyfile(ROOT / 'scripts/ci' / browser_file, browser_dir / browser_file)
                 if args.managed_browser:
                     shutil.copyfile(ROOT / 'scripts/ci/browser_worker.mjs', browser_dir / 'browser_worker.mjs')
                 app_env = {**env, 'DATABASE_URL': f"sqlite+aiosqlite:///{scratch / 'workchord_test_browser.db'}",
                     'VITE_API_URL': 'http://127.0.0.1:8001', 'BROWSER_BASE_URL': 'http://localhost:4173',
                     'BROWSER_ARTIFACTS_DIR': str(run.output), 'WORKCHORD_FIXTURE_ISSUER': 'http://localhost:8002',
-                    'WORKCHORD_FIXTURE_NONCE': uuid4().hex, 'WORKCHORD_BROWSER_PYTHON': sys.executable}
+                    'WORKCHORD_FIXTURE_NONCE': uuid4().hex, 'WORKCHORD_BROWSER_PYTHON': sys.executable, 'WORKCHORD_BROWSER_SOURCE_ROOT': str(ROOT)}
+                if args.performance_browser:
+                    app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_PERFORMANCE='true',
+                        WORKCHORD_BENCHMARK_AGENT_KEY='delivery-scenario-worker-key')
+                if args.workflow_browser:
+                    app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_WORKFLOWS='true')
+                if args.planning_browser:
+                    app_env.update(STRICT_MUTATION_VERSIONS='true', WORKCHORD_FIXTURE_PLANNING='true')
+                app_env['TIME_ENTRIES_ENABLED'] = 'true' if args.time_entries else 'false'
                 if args.managed_browser:
                     app_env.update(WORKCHORD_AUTH_MODE='managed', OIDC_ISSUER_URL='http://localhost:8002',
                         OIDC_CLIENT_ID='browser-client', OIDC_CLIENT_SECRET='disposable-browser-secret',
@@ -208,7 +226,7 @@ def main():
                         CORS_ORIGINS='["http://localhost:4173"]', SESSION_COOKIE_SECURE='false')
                 run.start('api', [sys.executable, str(ROOT / 'scripts/ci/serve_disposable_api.py')], cwd=scratch, env=app_env)
                 run.start('frontend', [str(frontend / 'node_modules/.bin/vite'), '--host', '127.0.0.1', '--port', '4173', '--strictPort'], cwd=frontend, env=app_env)
-                run.run('browser', ['node', browser_file], cwd=browser_dir, env=app_env, timeout=300)
+                run.run('browser', ['node', browser_file], cwd=browser_dir, env=app_env, timeout=450)
     return run.exit_code
 
 

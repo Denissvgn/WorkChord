@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [upgrade](../modules/upgrade.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 11 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
 
 **Complete modules touched:**
 
@@ -16,6 +16,7 @@
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_identity](../modules/models_identity.md)
+- [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [template_service](../modules/template_service.md)
@@ -87,7 +88,7 @@ sequenceDiagram
     p23->>p25: alembic_config
 ```
 
-> Call sequence diagram shows 30 of 178 interactions; 148 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 302 interactions; 272 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 

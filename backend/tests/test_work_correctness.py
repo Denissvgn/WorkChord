@@ -25,6 +25,61 @@ from app.services.work_metrics import aggregate_metrics, leaf_metrics, working_t
 from tests.test_delivery_scenarios import delivery_store
 
 
+async def test_snapshot_restores_exact_allocation_membership(delivery_store):
+    from app.models.team_member import TeamMember, TeamMemberProfile
+    from app.schemas.team import TeamMemberCreate
+    from app.services.team_service import TeamService
+
+    factory, scenario, _ = delivery_store
+    iteration_id = scenario.iterations[0]
+    async with factory() as db:
+        saved_ids = set((await db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == iteration_id))).all())
+        snapshot = await SnapshotService(db).create_snapshot(iteration_id, "before_allocation")
+        profile = TeamMemberProfile(display_name="Later owner", profile_kind="human")
+        db.add(profile)
+        await db.commit()
+        profile_id = profile.id
+        added = await TeamService(db).create(iteration_id, TeamMemberCreate(
+            name="Later allocation", position="Engineer", profile_id=profile_id))
+        added_id = added.id
+        await SnapshotService(db).restore(iteration_id, snapshot)
+    async with factory() as db:
+        restored_ids = set((await db.scalars(select(TeamMember.id).where(TeamMember.iteration_id == iteration_id))).all())
+        assert restored_ids == saved_ids
+        added = await db.get(TeamMember, added_id)
+        assert added is not None and added.iteration_id is None
+        assert await db.get(TeamMemberProfile, profile_id) is not None
+
+
+async def test_project_creation_round_trip_preserves_working_timezone(delivery_store):
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post("/api/projects", json={"name": "Tokyo planning", "timezone": "Asia/Tokyo"})
+        assert response.status_code == 201, response.text
+        response = await client.get(f"/api/projects/{response.json()['id']}")
+        assert response.status_code == 200, response.text
+        assert response.json()["timezone"] == "Asia/Tokyo"
+
+
+async def test_calendar_creation_round_trip_preserves_short_day_capacity(delivery_store):
+    from datetime import date
+    from app.models.calendar import Calendar
+    from app.services.capacity_service import day_hours
+
+    factory, _, _ = delivery_store
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post("/api/calendars", json={"name": "Reduced day", "year": 2026,
+            "nominal_day_hours": 8, "short_days": ["2026-12-24"]})
+        assert response.status_code == 201, response.text
+        calendar_id = response.json()["id"]
+        response = await client.get(f"/api/calendars/{calendar_id}")
+        assert response.status_code == 200, response.text
+        assert response.json()["short_days"] == ["2026-12-24"]
+    async with factory() as db:
+        calendar = await db.get(Calendar, calendar_id)
+        assert day_hours(calendar, date(2026, 12, 24)) == 7
+        assert day_hours(calendar, date(2026, 12, 23)) == 8
+
+
 async def test_merge_failure_preserves_every_task_and_recovery_point(delivery_store, monkeypatch):
     factory, scenario, snapshots = delivery_store
     async with factory() as db:

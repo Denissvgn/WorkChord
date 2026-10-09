@@ -1,6 +1,6 @@
 # Vacation
 
-**Location:** `backend/app/models/team_member.py:164`
+**Location:** `backend/app/models/team_member.py:170`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)
@@ -31,17 +31,17 @@ Vacation period for a team member.
 flowchart LR
     n0["Vacation (backend/app/models/team_member.py)"]
     n1["Base (backend/app/database.py)"]
-    n2["backend/app/commands.py"]
-    n3["backend/app/models/__init__.py"]
-    n4["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
-    n5["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
-    n6["backend/app/services/capacity_service.py"]
+    n2["backend/app/models/__init__.py"]
+    n3["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
+    n4["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
+    n5["backend/app/services/capacity_service.py"]
+    n6["backend/app/services/planning_input_context.py"]
     n7["backend/app/services/scheduler_service.py"]
     n8["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
     n9["TeamService.add_vacation (backend/app/services/team_service.py)"]
     n10["TeamService.import_vacations (backend/app/services/team_service.py)"]
     n11["TeamService.update_vacation (backend/app/services/team_service.py)"]
-    n12["test_capacity_counts_union_of_absences_and_actual_calendar_hours (backend/tests/test_profile_capacity.py)"]
+    n12["test_context_covers_each_shared_resource_and_new_member_target (backend/tests/test_planning_input_context.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -56,17 +56,17 @@ flowchart LR
     n12 --> n0
     click n0 "../modules/team_member.md"
     click n1 "../modules/app_database.md"
-    click n2 "../modules/commands.md"
-    click n3 "../modules/models___init__.md"
+    click n2 "../modules/models___init__.md"
+    click n3 "../modules/agent_planning_service.md"
     click n4 "../modules/agent_planning_service.md"
-    click n5 "../modules/agent_planning_service.md"
-    click n6 "../modules/capacity_service.md"
+    click n5 "../modules/capacity_service.md"
+    click n6 "../modules/planning_input_context.md"
     click n7 "../modules/scheduler_service.md"
     click n8 "../modules/snapshot_service.md"
     click n9 "../modules/team_service.md"
     click n10 "../modules/team_service.md"
     click n11 "../modules/team_service.md"
-    click n12 "../modules/test_profile_capacity.md"
+    click n12 "../modules/test_planning_input_context.md"
 ```
 
 ### Summary
@@ -85,17 +85,17 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `AgentPlanningService.create_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `capacity_service` | import | [capacity_service](../modules/capacity_service.md) | — |
+| `planning_input_context` | import | [planning_input_context](../modules/planning_input_context.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
 | `TeamService.add_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 | `TeamService.add_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.import_vacations` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
-| `test_capacity_counts_union_of_absences_and_actual_calendar_hours` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 2 |
+| `test_context_covers_each_shared_resource_and_new_member_target` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 1 |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

@@ -4,28 +4,30 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/pages/RoadmapPage.tsx`._
+Milestone continuation is explicit and uses the bounded live window. Reaching the end of a retired window does not establish complete portfolio milestone data; existing date-range and loaded-marker recovery remain visible.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `../components/common/Button` | `Button` |
+| `../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
 | `../components/feedback/QueryState` | `QueryErrorState`, `QueryStaleState` |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
 | `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` |
 | `../components/ui` | `FormGrid`, `InlineEmptyState`, `InlineField`, `SlideOverDrawer` |
+| `../features/useLiveWindow` | `useLiveWindow` |
 | `../i18n/dateLocale` | `dateFnsLocale` |
 | `../i18n/i18n` | `i18n` |
 | `../services/projectService` | `projectService` |
 | `../types/project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus` |
 | `../utils/formatDate` | `formatDate` |
 | `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useQuery` |
+| `@tanstack/react-query` | `useQuery` |
 | `clsx` | `clsx` |
 | `date-fns` | `addDays`, `compareAsc`, `differenceInCalendarDays`, `eachMonthOfInterval`, `format`, `parseISO`, `startOfMonth` |
 | `lucide-react` | `FolderOpen`, `ListFilter`, `Map`, `RotateCcw`, `X` |
-| `react` | `useEffect`, `useId`, `useMemo`, `useState` |
+| `react` | `useId`, `useMemo`, `useState` |
 | `react-i18next` | `useTranslation` |
 | `react-router-dom` | `Link` |
 
@@ -56,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -64,15 +66,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RoadmapMarker](../entities/RoadmapMarker.md) | Type alias | 41 | — | — |
-| [RoadmapRow](../entities/RoadmapRow.md) | Type alias | 46 | — | — |
-| [DateRange](../entities/DateRange.md) | Type alias | 56 | — | — |
-| [InitiativeGroupInfo](../entities/InitiativeGroupInfo.md) | Type alias | 61 | — | — |
-| [RoadmapGroup](../entities/RoadmapGroup.md) | Type alias | 66 | — | — |
-| [RoadmapFilterDescriptor](../entities/RoadmapFilterDescriptor.md) | Type alias | 72 | — | — |
+| [RoadmapMarker](../entities/RoadmapMarker.md) | Type alias | 43 | — | — |
+| [RoadmapRow](../entities/RoadmapRow.md) | Type alias | 48 | — | — |
+| [DateRange](../entities/DateRange.md) | Type alias | 58 | — | — |
+| [InitiativeGroupInfo](../entities/InitiativeGroupInfo.md) | Type alias | 63 | — | — |
+| [RoadmapGroup](../entities/RoadmapGroup.md) | Type alias | 68 | — | — |
+| [RoadmapFilterDescriptor](../entities/RoadmapFilterDescriptor.md) | Type alias | 74 | — | — |

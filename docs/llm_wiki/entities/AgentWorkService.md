@@ -76,6 +76,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_idempotent_replay` | *(async)* `(actor: AgentActor, operation: str, target_type: str, target_id: int, idempotency_key: Optional[str], request_payload: dict[str, Any]) -> Optional[dict[str, Any]]` | — | — |
 | `_live_fence_receipt` | `(response: AgentWorkBeginResponse) -> dict[str, Any]` | `@staticmethod` | Store an exact live response without retaining the plaintext claim secret. |
 | `_replay_live_fence_receipt` | *(async)* `(actor: AgentActor, payload: dict[str, Any]) -> AgentWorkBeginResponse` | — | Replay a fence receipt only while its original authority is still exact. |
+| `_require_current_execution_policy` | `(task)` | `@staticmethod` | — |
 | `_record_idempotency` | *(async)* `(actor: AgentActor, operation: str, target_type: str, target_id: int, idempotency_key: Optional[str], request_payload: dict[str, Any], response_payload: dict[str, Any]) -> None` | — | — |
 | `_request_hash` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | — |
 | `_snapshot_revision` | `(kind: str, records: list[dict[str, Any]], *, queue_revision: Optional[int]) -> str` | `@staticmethod` | — |
@@ -141,7 +142,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 74 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 75 | — |
 
 ### References
 

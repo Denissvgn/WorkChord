@@ -1,6 +1,6 @@
 # IncrementalScheduler
 
-**Location:** `backend/app/services/scheduler_service.py:1292`
+**Location:** `backend/app/services/scheduler_service.py:1298`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -35,10 +35,23 @@ Performance: O(A) instead of O(N), typically 10x faster for single-task changes.
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["IncrementalScheduler (backend/app/services/scheduler_service.py)"]
+    n1["test_incremental_schedule_excludes_inherited_deferred_work (backend/tests/test_planning_read_models.py)"]
+    n1 --> n0
+    click n0 "../modules/scheduler_service.md"
+    click n1 "../modules/test_planning_read_models.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [scheduler_service](../modules/scheduler_service.md) | 7 | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |

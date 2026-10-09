@@ -1,6 +1,6 @@
 # TeamMemberProfile
 
-**Location:** `backend/app/models/team_member.py:68`
+**Location:** `backend/app/models/team_member.py:71`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [team_member](../modules/team_member.md)
@@ -14,6 +14,7 @@ Reusable person profile for durable capability and preference metadata.
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
+| `profile_token` | `Mapped[str]` | `mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))` | — |
 | `seed_key` | `Mapped[Optional[str]]` | `mapped_column(String(120), nullable=True, unique=True, index=True)` | — |
 | `display_name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `email` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
@@ -109,4 +110,4 @@ flowchart LR
 | `AgentRoutingService._profile_revision` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.

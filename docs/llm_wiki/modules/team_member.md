@@ -6,6 +6,10 @@
 
 Team member model.
 
+Allocation numeric IDs do not reuse deleted identities. Each allocation also carries a unique opaque lifetime token retained through person edits and recovery; person profile identity remains a separate durable association.
+
+Person profiles carry stable unique lifetime tokens as well as nonreusing numeric IDs. Allocation lifetime and person lifetime remain separate; metadata edits retain both identities.
+
 ## Imports
 
 | Source | Symbols |
@@ -20,6 +24,7 @@ Team member model.
 | `sqlalchemy` | `Boolean`, `CheckConstraint`, `Date`, `Float`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Any`, `Optional` |
+| `uuid` | `uuid4` |
 
 ## Local dependency map
 
@@ -39,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (38) |
+| Inbound | `backend` (46) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -48,13 +53,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TeamMember](../entities/team_member_TeamMember.md) | 18 | `Base` | Team member model with availability and capacity settings. |
-| [TeamMemberProfile](../entities/team_member_TeamMemberProfile.md) | 68 | `Base` | Reusable person profile for durable capability and preference metadata. |
-| [TeamMemberProfileSkill](../entities/team_member_TeamMemberProfileSkill.md) | 122 | `Base` | Structured skill or weakness attached to a reusable team-member profile. |
-| [Vacation](../entities/team_member_Vacation.md) | 164 | `Base` | Vacation period for a team member. |
+| [TeamMember](../entities/team_member_TeamMember.md) | 19 | `Base` | Team member model with availability and capacity settings. |
+| [TeamMemberProfile](../entities/team_member_TeamMemberProfile.md) | 71 | `Base` | Reusable person profile for durable capability and preference metadata. |
+| [TeamMemberProfileSkill](../entities/team_member_TeamMemberProfileSkill.md) | 128 | `Base` | Structured skill or weakness attached to a reusable team-member profile. |
+| [Vacation](../entities/team_member_Vacation.md) | 170 | `Base` | Vacation period for a team member. |
