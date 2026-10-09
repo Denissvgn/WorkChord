@@ -28,7 +28,7 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService` |
 | `app.services.identity_service` | `IdentityService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `import_legacy_brief`, `render_brief` |
-| `app.services.task_detail_service` | `TaskDetailService` |
+| `app.services.task_detail_service` | `TaskDetailService`, `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `normalize_effort` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
@@ -92,3 +92,4 @@ flowchart LR
 | `test_managed_assigned_submission_and_independent_rework` | *(async)* `(delivery_store)` | — | — |
 | `test_progress_availability_matches_open_leaf_execution_permission` | *(async)* `(delivery_store)` | — | — |
 | `test_current_review_does_not_depend_on_first_history_page` | *(async)* `(delivery_store)` | — | — |
+| `test_human_queue_excludes_inherited_deferred_work_across_pagination` | *(async)* `(delivery_store)` | — | — |

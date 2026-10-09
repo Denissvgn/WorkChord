@@ -88,38 +88,38 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| read_fault | request.headers.get | 84 | `request.headers.get('X-Fixture-Key')` |
-| read_fault | HTTPException | 85 | `HTTPException(403)` |
-| read_fault | request.json | 86 | `request.json(data not statically known)` |
-| read_fault | isinstance | 87 | `isinstance(body, dict)` |
-| read_fault | HTTPException | 88 | `HTTPException(422)` |
-| read_fault | body.get | 89 | `body.get('status')` |
-| read_fault | body.get | 90 | `body.get('task_id')` |
-| read_fault | HTTPException | 91 | `HTTPException(422)` |
-| read_fault | type | 92 | `type(task_id)` |
-| read_fault | HTTPException | 93 | `HTTPException(422)` |
-| read_fault | faults.clear | 94 | `faults.clear(data not statically known)` |
+| read_fault | request.headers.get | 96 | `request.headers.get('X-Fixture-Key')` |
+| read_fault | HTTPException | 97 | `HTTPException(403)` |
+| read_fault | request.json | 98 | `request.json(data not statically known)` |
+| read_fault | isinstance | 99 | `isinstance(body, dict)` |
+| read_fault | HTTPException | 100 | `HTTPException(422)` |
+| read_fault | body.get | 101 | `body.get('status')` |
+| read_fault | body.get | 102 | `body.get('task_id')` |
+| read_fault | HTTPException | 103 | `HTTPException(422)` |
+| read_fault | type | 104 | `type(task_id)` |
+| read_fault | HTTPException | 105 | `HTTPException(422)` |
+| read_fault | faults.clear | 106 | `faults.clear(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `faults.clear` | `read_fault` | 94 |
+| mutation | `faults.clear` | `read_fault` | 106 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `read_fault` | `request.headers.get` | 84 |
-| unresolved_call | `read_fault` | `HTTPException` | 85 |
-| unresolved_call | `read_fault` | `request.json` | 86 |
-| external_call | `read_fault` | `isinstance` | 87 |
-| unresolved_call | `read_fault` | `HTTPException` | 88 |
-| unresolved_call | `read_fault` | `body.get` | 89 |
-| unresolved_call | `read_fault` | `body.get` | 90 |
-| unresolved_call | `read_fault` | `HTTPException` | 91 |
-| external_call | `read_fault` | `type` | 92 |
-| unresolved_call | `read_fault` | `HTTPException` | 93 |
+| unresolved_call | `read_fault` | `request.headers.get` | 96 |
+| unresolved_call | `read_fault` | `HTTPException` | 97 |
+| unresolved_call | `read_fault` | `request.json` | 98 |
+| external_call | `read_fault` | `isinstance` | 99 |
+| unresolved_call | `read_fault` | `HTTPException` | 100 |
+| unresolved_call | `read_fault` | `body.get` | 101 |
+| unresolved_call | `read_fault` | `body.get` | 102 |
+| unresolved_call | `read_fault` | `HTTPException` | 103 |
+| external_call | `read_fault` | `type` | 104 |
+| unresolved_call | `read_fault` | `HTTPException` | 105 |
 | step_limit | `read_fault` | `first 12 steps` | 0 |
 
 ## Behavior

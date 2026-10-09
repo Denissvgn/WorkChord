@@ -93,4 +93,4 @@ flowchart LR
 | `test_lookup_matches_id_case_and_literal_wildcards_without_private_counts` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_my_work_filters_before_pagination_and_preserves_scope` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

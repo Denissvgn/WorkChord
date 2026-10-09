@@ -10,6 +10,8 @@ Provides bounded task references, title/ID lookup and human ownership queues wit
 
 UI detail computes inherited flags through a bounded parent-policy projection, authorizing every parent scope before serialization. It does not hydrate execution children/dependencies. Displayed ancestors remain separately bounded; unavailable roots fail closed, and a changed task version during the read requires reloading initial context.
 
+Human ownership queues apply complete inherited deferral policy to every bounded candidate and exclude deferred descendants from ordinary work queues. Pagination retains the underlying candidate cursor and has-more indication even when eligibility filtering empties a page, so later eligible work remains discoverable without an unbounded fill scan. Policy ancestry and authorization failures remain explicit.
+
 ## Imports
 
 | Source | Symbols |

@@ -2114,3 +2114,25 @@ Public recovery guidance now explains strict observed contexts, retained allocat
 - Unsupported infrastructure YAML: 6
 
 Android tooling now provides an opt-in owned emulator release-behavior qualification contract with artifact/signing identity, strict trusted HTTPS and complete scenario/skip gates; compiled and installed execution requires a licensed toolchain and remains a separate evidence boundary.
+
+## 2026-10-09
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:1ddeaed39e6416a6886777a0c7e2e4739501118235d0e13d30c070b37269bff7`
+- Pages created: 1
+- Pages updated: 11
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2982
+- Pages deprecated: 0
+- Semantic fields preserved: 3
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+Managed web/time qualification now reconciles strict workflows, private correction intent, disabled/account privacy and full restored fixture state. Human work queues exclude inherited deferred work without dropping cursor progress or hydrating execution graphs.

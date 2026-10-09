@@ -33,7 +33,7 @@ flowchart TD
 | [commands](modules/commands.md) | 80 | 12 |
 | [Button](modules/Button.md) | 77 | 0 |
 | [time](modules/time.md) | 74 | 0 |
-| [config](modules/config.md) | 67 | 1 |
+| [config](modules/config.md) | 68 | 1 |
 | [QueryState](modules/QueryState.md) | 65 | 2 |
 | [types_task](modules/types_task.md) | 65 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 61 | 1 |
@@ -744,7 +744,7 @@ flowchart TD
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
 | [run_disposable_checks](modules/run_disposable_checks.md) | 0 | 0 |
-| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 8 |
+| [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 9 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
 | [test_apt_runtime](modules/test_apt_runtime.md) | 0 | 0 |
 | [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |

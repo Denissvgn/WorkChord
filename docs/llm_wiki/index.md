@@ -10,7 +10,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Modules | 735 | [Open section](#modules) |
 | Workflows | 184 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 549 | [Open section](#entry-point-flows) |
+| Entry-point flows | 550 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -2786,6 +2786,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-task_reviews](flows/http-task_reviews.md) - entry: `task_reviews`
 - [http-test_email_settings](flows/http-test_email_settings.md) - entry: `test_email_settings`
 - [http-test_outbound_webhook_target](flows/http-test_outbound_webhook_target.md) - entry: `test_outbound_webhook_target`
+- [http-time_feature](flows/http-time_feature.md) - entry: `time_feature`
 - [http-token](flows/http-token.md) - entry: `token`
 - [http-transfer_guest](flows/http-transfer_guest.md) - entry: `transfer_guest`
 - [http-unmerge_task](flows/http-unmerge_task.md) - entry: `unmerge_task`

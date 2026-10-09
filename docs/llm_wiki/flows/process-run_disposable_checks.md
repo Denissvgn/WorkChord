@@ -27,8 +27,6 @@ sequenceDiagram
     participant p15 as bind_source
     participant p16 as run.check_budget
     participant p17 as subprocess.check_output(…).strip
-    participant p18 as subprocess.check_output
-    participant p19 as digest
     p0->>p1: parse_args
     p1-->>p2: argparse.ArgumentParser
     p1-->>p3: parser.add_argument
@@ -42,7 +40,9 @@ sequenceDiagram
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
     p1-->>p3: parser.add_argument
+    p1-->>p3: parser.add_argument
     p1-->>p6: parser.parse_args
+    p1-->>p7: parser.error
     p1-->>p7: parser.error
     p1-->>p7: parser.error
     p1-->>p7: parser.error
@@ -57,11 +57,9 @@ sequenceDiagram
     p0->>p15: bind_source
     p15-->>p16: run.check_budget
     p15-->>p17: subprocess.check_output(…).strip
-    p15-->>p18: subprocess.check_output
-    p15-->>p19: digest
 ```
 
-> Call sequence diagram shows 30 of 102 interactions; 72 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 105 interactions; 75 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
 
 ## Data flow
 
@@ -141,7 +139,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | parse_args | 146 | `parse_args(data not statically known)` |
+| main | parse_args | 149 | `parse_args(data not statically known)` |
 | parse_args | argparse.ArgumentParser | 114 | `argparse.ArgumentParser(description=__doc__)` |
 | parse_args | parser.add_argument | 115 | `parser.add_argument('--output', type=Path)` |
 | parse_args | parser.add_mutually_exclusive_group | 116 | `parser.add_mutually_exclusive_group(data not statically known)` |
@@ -157,14 +155,14 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `run.cleanups.append` | `main` | 157 |
-| mutation | `run.validators.append` | `main` | 158 |
-| mutation | `run.validators.append` | `main` | 185 |
-| filesystem_write | `shutil.copytree` | `main` | 188 |
-| filesystem_write | `shutil.copyfile` | `main` | 204 |
-| filesystem_write | `shutil.copyfile` | `main` | 206 |
-| mutation | `app_env.update` | `main` | 212 |
+| mutation | `run.cleanups.append` | `main` | 160 |
+| mutation | `run.validators.append` | `main` | 161 |
+| mutation | `run.validators.append` | `main` | 188 |
+| filesystem_write | `shutil.copytree` | `main` | 191 |
+| filesystem_write | `shutil.copyfile` | `main` | 207 |
+| filesystem_write | `shutil.copyfile` | `main` | 209 |
 | mutation | `app_env.update` | `main` | 215 |
+| mutation | `app_env.update` | `main` | 218 |
 
 ### Static analysis gaps
 

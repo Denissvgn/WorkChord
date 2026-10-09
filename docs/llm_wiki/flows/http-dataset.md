@@ -41,8 +41,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| dataset | request.headers.get | 78 | `request.headers.get('X-Fixture-Key')` |
-| dataset | HTTPException | 79 | `HTTPException(404)` |
+| dataset | request.headers.get | 90 | `request.headers.get('X-Fixture-Key')` |
+| dataset | HTTPException | 91 | `HTTPException(404)` |
 
 ### Boundary effects
 
@@ -52,8 +52,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `dataset` | `request.headers.get` | 78 |
-| unresolved_call | `dataset` | `HTTPException` | 79 |
+| unresolved_call | `dataset` | `request.headers.get` | 90 |
+| unresolved_call | `dataset` | `HTTPException` | 91 |
 
 ## Behavior
 

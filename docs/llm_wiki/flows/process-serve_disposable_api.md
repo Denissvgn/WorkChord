@@ -24,12 +24,13 @@
 - [template_service](../modules/template_service.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [delivery](../modules/delivery.md), [models_identity](../modules/models_identity.md), and 4 more
+**Related modules:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [config](../modules/config.md), [delivery](../modules/delivery.md), and 5 more
 
 **Complete related modules:**
 
 - [app_database](../modules/app_database.md)
 - [app_main](../modules/app_main.md)
+- [config](../modules/config.md)
 - [delivery](../modules/delivery.md)
 - [models_identity](../modules/models_identity.md)
 - [models_iteration](../modules/models_iteration.md)
@@ -200,10 +201,10 @@ flowchart LR
 |---|---|---|---:|
 | environment_read | `os.environ[...]` | `main` | 14 |
 | environment_read | `os.environ.get` | `main` | 69 |
-| environment_read | `os.environ.get` | `main` | 109 |
-| process | `subprocess.Popen` | `main` | 113 |
-| environment_read | `os.environ.get` | `main` | 115 |
-| environment_read | `os.environ.get` | `main` | 120 |
+| environment_read | `os.environ.get` | `main` | 121 |
+| process | `subprocess.Popen` | `main` | 125 |
+| environment_read | `os.environ.get` | `main` | 127 |
+| environment_read | `os.environ.get` | `main` | 132 |
 | environment_read | `os.environ.get` | `_deployment_environment` | 32 |
 
 ### Static analysis gaps

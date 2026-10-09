@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:a7cdba40caf682b5f9c3f3d4cce1dfa79246fb0fa30adc5632800ff93fbb2d8c",
-    "knowledge_index_hash": "sha256:25d7488d6c5a1fab039d5302476695757444fdfd2677a18f70edb1bfb344fae2",
-    "surface_index_hash": "sha256:73f7a42f6515de13278d0ab4a4e74375a8ac580dcb9163e730594c16b2e1d6ab"
+    "evaluated_envelope_hash": "sha256:f5b7a97b01958b6bc5e01b7c380a4cabbb2df4a11bcd53f82344d741fecc8893",
+    "knowledge_index_hash": "sha256:d96f49c8b54a5404d72b25c1c6e0d684997877a34dfcfcad5e34a704932e97c2",
+    "surface_index_hash": "sha256:1c626ffa057c6919148f73620e15ce52bc6796d3a6b44db85abc726160792a9d"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -8370,7 +8370,7 @@
         "concept_observation_hash": "sha256:ff75ca56f6700bc6d65c99450fb8ff3f2a61bb64605854cbc4f0f3baa8747317",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:389c1ee5ef3e76acf9d11aefc299995bd25fd7efc6fe60c05073bdbd8ffe5cd0",
+        "source_content_hash": "sha256:e4537bfc73ae7844a7450a2bc844278bba76ba6c442acfdba8dc850fc8c820d0",
         "source_path": "backend/app/services/task_detail_service.py"
       },
       "state": "known"
@@ -19910,7 +19910,7 @@
         "concept_observation_hash": "sha256:2ae4d5f7679dde08254e372521140866c5e0795ae8a9e28aa2560d547cd80d7a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:1becb02b6bc30def86adb4f0c2b81a769d23b5ce91ed1ac121782586327b7d0c",
+        "source_content_hash": "sha256:98fb689890f36ba2d01026a450d0724d9d65d17ff799c38bc86c8164a7bcded0",
         "source_path": "scripts/ci/run_disposable_checks.py"
       },
       "state": "known"
@@ -20437,10 +20437,10 @@
     },
     "modules/serve_disposable_api.md": {
       "basis": {
-        "concept_observation_hash": "sha256:88638d23716d6fb265c9f9f1b3bb39b48b5cdbf9dd69cd5e5258e6533333ae88",
+        "concept_observation_hash": "sha256:92d1e6637728ad987597953df70284e9188f4bb66b461f40830196e1613e67f9",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:bc9e291bcec69ef9efc62c3c3b6cc92140bc079069cd4677b3f15daff6b5cf3e",
+        "source_content_hash": "sha256:2f1e80eb5ff16a7d107f2bfa7af5c909cab9f53c56b8668764db5ac25ae11ac0",
         "source_path": "scripts/ci/serve_disposable_api.py"
       },
       "state": "known"
@@ -20860,7 +20860,7 @@
         "concept_observation_hash": "sha256:bad19b4c018cddf92c3b35aac5f8fd1b7d6fe5865ed9c1fe9dd170dfbbec8b2e",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:389c1ee5ef3e76acf9d11aefc299995bd25fd7efc6fe60c05073bdbd8ffe5cd0",
+        "source_content_hash": "sha256:e4537bfc73ae7844a7450a2bc844278bba76ba6c442acfdba8dc850fc8c820d0",
         "source_path": "backend/app/services/task_detail_service.py"
       },
       "state": "known"
@@ -21867,10 +21867,10 @@
     },
     "modules/test_task_domain.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4bb3b97197e61402f427004c2ecddd901d124b2c11532f1456cd32ea3d85adfe",
+        "concept_observation_hash": "sha256:ab033a0b4db21290c04deaa0a5b80cac333f7c1500c75ee10614c60733300264",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:37e5fd02628ee1d0848c56d055aebe2d80f8b32b57e8349cbbb61c08f15c15e2",
+        "source_content_hash": "sha256:2da23afba923d82cca150177001eac875c874951f37a1afee1c56edd973a8279",
         "source_path": "backend/tests/test_task_domain.py"
       },
       "state": "known"
@@ -22790,13 +22790,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:ef3ec4b0a0bf51b3fbd447ebb36e9ed4da099ab133ff794870a4ba24fb91f731",
-      "lifecycle_hash": "sha256:3f0442b538c98c40257c5f527c8797133b7d7363d2e60764d3419a51fc940d21",
-      "markdown_snapshot_hash": "sha256:95963f1a9c3fcd28564f3c96b9efb260f6202a34e3f32052855249925d039a2e",
-      "observation_inputs_hash": "sha256:712ab2bdd6cf8472981018280429858c5828031c7b9a13fa49e08dade1eeb062",
+      "inventory_hash": "sha256:f6adfd8794169b66b01a43c45700496e116012024a1724e01a489930ec0ba667",
+      "lifecycle_hash": "sha256:3784e1256c40bc12a24a314e50c04cc6080b14909a51c88a3e4dea50143d4df7",
+      "markdown_snapshot_hash": "sha256:769118d65fdf1d2ff1f8a3c1a042c6c424b9efbee096214c23690e784bdaa60e",
+      "observation_inputs_hash": "sha256:8dee9eb6258c762b17fc895e83337be58ebcec1826595664e9f2a6f03d70d3fd",
       "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:1661e1aa0bf0bf60812c0500dd5cd1b760ac3b360424c12daf342ab7c3b04387"
+      "source_snapshot_hash": "sha256:1ddeaed39e6416a6886777a0c7e2e4739501118235d0e13d30c070b37269bff7"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -58943,10 +58943,10 @@
           "functions": {}
         }
       },
-      "hash": "sha256:389c1ee5ef3e76acf9d11aefc299995bd25fd7efc6fe60c05073bdbd8ffe5cd0",
+      "hash": "sha256:e4537bfc73ae7844a7450a2bc844278bba76ba6c442acfdba8dc850fc8c820d0",
       "language": "python",
       "module_page": "task_detail_service",
-      "semantic_hash": "sha256:51fb3ff36b441f6221b1561d35516a6d794b50c055251f4fa1863e07547f9370"
+      "semantic_hash": "sha256:7c6008a6922d66dbab69492369bff659073ff92cf06a14c1c7a12c5e7f1ea5ee"
     },
     "backend/app/services/task_domain_service.py": {
       "entities": [
@@ -63112,6 +63112,7 @@
             "test_current_review_does_not_depend_on_first_history_page": "—",
             "test_deferred_ancestor_prevents_manual_start_over_http": "—",
             "test_estimates_preserve_unknown_zero_and_nominal_day": "—",
+            "test_human_queue_excludes_inherited_deferred_work_across_pagination": "—",
             "test_legacy_brief_conversion_is_stable_and_does_not_accept_checkmarks": "—",
             "test_legacy_status_route_cannot_start_deferred_work": "—",
             "test_managed_assigned_submission_and_independent_rework": "—",
@@ -63123,10 +63124,10 @@
           }
         }
       },
-      "hash": "sha256:37e5fd02628ee1d0848c56d055aebe2d80f8b32b57e8349cbbb61c08f15c15e2",
+      "hash": "sha256:2da23afba923d82cca150177001eac875c874951f37a1afee1c56edd973a8279",
       "language": "python",
       "module_page": "test_task_domain",
-      "semantic_hash": "sha256:8e0bb248141c78c430fb15ac965099d1a2203dfb5d090269a5715ff474eacd42"
+      "semantic_hash": "sha256:2db9d8d2cbd6aed4e209342d9d23f6e74ef4c4ceddf7274eba71eb9794767271"
     },
     "backend/tests/test_task_domain_integrity.py": {
       "entities": [],
@@ -82165,10 +82166,10 @@
           }
         }
       },
-      "hash": "sha256:1becb02b6bc30def86adb4f0c2b81a769d23b5ce91ed1ac121782586327b7d0c",
+      "hash": "sha256:98fb689890f36ba2d01026a450d0724d9d65d17ff799c38bc86c8164a7bcded0",
       "language": "python",
       "module_page": "run_disposable_checks",
-      "semantic_hash": "sha256:fa771877779d556cde18964bfbaeaa89aba17c1c112986ccd3c3d45fcbe5fac6"
+      "semantic_hash": "sha256:84576a98056234f393eb8591b615e45ed7a429097e210c23d324b9f0a246324d"
     },
     "scripts/ci/serve_disposable_api.py": {
       "entities": [],
@@ -82184,10 +82185,10 @@
           }
         }
       },
-      "hash": "sha256:bc9e291bcec69ef9efc62c3c3b6cc92140bc079069cd4677b3f15daff6b5cf3e",
+      "hash": "sha256:2f1e80eb5ff16a7d107f2bfa7af5c909cab9f53c56b8668764db5ac25ae11ac0",
       "language": "python",
       "module_page": "serve_disposable_api",
-      "semantic_hash": "sha256:f089ad821cf90d116a18ca766f5f8eb8b97cc9c5e6007da396fa5a6b451dd126"
+      "semantic_hash": "sha256:2a74ce23d2f8ac33f41bea7573ba3b11984012a27b7b2cc3a87db32cae174578"
     },
     "scripts/ci/serve_disposable_oidc.py": {
       "entities": [],

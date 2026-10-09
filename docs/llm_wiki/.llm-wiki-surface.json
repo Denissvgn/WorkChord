@@ -19,7 +19,7 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1522,
-      "flows": 549,
+      "flows": 550,
       "guides": 0,
       "index": 1,
       "infrastructure": 11,
@@ -29,7 +29,7 @@
       "workflows": 184
     },
     "dependency_architecture": 2,
-    "total": 3005
+    "total": 3006
   },
   "dependency_pages": {
     "count": 2,
@@ -5364,13 +5364,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 78,
+              "line": 90,
               "step": "dataset",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 91,
               "step": "dataset",
               "target": "HTTPException"
             }
@@ -16658,7 +16658,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 94,
+              "line": 106,
               "step": "read_fault",
               "step_index": 1,
               "target": "faults.clear"
@@ -16667,61 +16667,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 96,
               "step": "read_fault",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 85,
+              "line": 97,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 86,
+              "line": 98,
               "step": "read_fault",
               "target": "request.json"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 99,
               "step": "read_fault",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 100,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 89,
+              "line": 101,
               "step": "read_fault",
               "target": "body.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 90,
+              "line": 102,
               "step": "read_fault",
               "target": "body.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 91,
+              "line": 103,
               "step": "read_fault",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 92,
+              "line": 104,
               "step": "read_fault",
               "target": "type"
             },
             {
               "kind": "unresolved_call",
-              "line": 93,
+              "line": 105,
               "step": "read_fault",
               "target": "HTTPException"
             },
@@ -20519,6 +20519,94 @@
         }
       },
       "id": "http-test_outbound_webhook_target",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "time_feature",
+        "source_path": "scripts/ci/serve_disposable_api.py",
+        "symbol": "time_feature"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 78,
+              "step": "time_feature",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_write",
+              "line": 84,
+              "step": "time_feature",
+              "step_index": 1,
+              "target": "os.environ[...]"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 79,
+              "step": "time_feature",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 80,
+              "step": "time_feature",
+              "target": "request.json"
+            },
+            {
+              "kind": "external_call",
+              "line": 81,
+              "step": "time_feature",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 81,
+              "step": "time_feature",
+              "target": "type"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 81,
+              "step": "time_feature",
+              "target": "body.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 82,
+              "step": "time_feature",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 85,
+              "step": "time_feature",
+              "target": "get_settings.cache_clear"
+            }
+          ],
+          "generated": true,
+          "step_count": 10,
+          "transfer_count": 9,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/serve_disposable_api.py"
+          ],
+          "step_count": 10,
+          "truncated": false
+        }
+      },
+      "id": "http-time_feature",
       "language": "python"
     },
     {
@@ -38591,7 +38679,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 157,
+              "line": 160,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -38599,7 +38687,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 158,
+              "line": 161,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38607,7 +38695,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 185,
+              "line": 188,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -38615,7 +38703,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 188,
+              "line": 191,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
@@ -38623,7 +38711,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 204,
+              "line": 207,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38631,7 +38719,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 206,
+              "line": 209,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -38639,7 +38727,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 212,
+              "line": 215,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38647,7 +38735,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 215,
+              "line": 218,
               "step": "main",
               "step_index": 1,
               "target": "app_env.update"
@@ -38730,7 +38818,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 103,
+          "step_count": 106,
           "truncated": false
         }
       },
@@ -39104,7 +39192,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 109,
+              "line": 121,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39112,7 +39200,7 @@
             {
               "confidence": "unknown",
               "kind": "process",
-              "line": 113,
+              "line": 125,
               "step": "main",
               "step_index": 1,
               "target": "subprocess.Popen"
@@ -39120,7 +39208,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 115,
+              "line": 127,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -39128,7 +39216,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 120,
+              "line": 132,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -41848,6 +41936,7 @@
         "flows/http-task_reviews.md",
         "flows/http-test_email_settings.md",
         "flows/http-test_outbound_webhook_target.md",
+        "flows/http-time_feature.md",
         "flows/http-token.md",
         "flows/http-transfer_guest.md",
         "flows/http-unmerge_task.md",
@@ -72225,6 +72314,7 @@
       "outgoing_internal_links": [
         "modules/app_database.md",
         "modules/app_main.md",
+        "modules/config.md",
         "modules/delivery.md",
         "modules/models_identity.md",
         "modules/models_iteration.md",
@@ -84176,6 +84266,18 @@
       "title": "test_outbound_webhook_target"
     },
     {
+      "canonical_path": "flows/http-time_feature.md",
+      "id": "http-time_feature",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-time_feature",
+      "outgoing_internal_links": [
+        "modules/serve_disposable_api.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/serve_disposable_api.py",
+      "title": "time_feature"
+    },
+    {
       "canonical_path": "flows/http-token.md",
       "id": "http-token",
       "kind": "flows",
@@ -90258,5 +90360,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a7c42c681203154d2baa635a74713a9ec2d5b0bf593b68c13141b8cd5e62fab5"
+  "source_hash": "sha256:a6d432a2d644c4bcd2da4935d76756054786aef48bfd443415a11bc50ae74abb"
 }
