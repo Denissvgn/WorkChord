@@ -60,6 +60,12 @@ For a shared server, follow the deployment guides below.
 | Operations | [Operator guide](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md) |
 | Configuration | [Environment settings](.env.example) |
 
+## Support WorkChord
+
+If WorkChord helps your team, consider [sponsoring its development](https://github.com/sponsors/Denissvgn).
+Sponsorship helps sustain maintenance and improvements to self-hosting, team planning,
+and collaboration between people and external agents.
+
 ## License
 
 [MIT](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) for bundled components.
