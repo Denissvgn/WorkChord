@@ -2352,3 +2352,19 @@ Team setup now consumes the bundle service’s integrity-validated release catal
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-10
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:0e4b3bb2f0c8e9ec673238d23ee3c82d9a1191a52f0e3934a4e7321f87ca9743`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3013
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
