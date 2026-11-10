@@ -83,6 +83,8 @@ WORKFLOW_VOCABULARY_END = (
 )
 WORKFLOW_VOCABULARY_REFERENCE = "references/workflow-and-names.md"
 WORKFLOW_VOCABULARY_LANGUAGES = ("en", "ru")
+ROLE_FEATURES_BEGIN = "<!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->"
+ROLE_FEATURES_END = "<!-- END GENERATED: WORKCHORD-ROLE-FEATURES -->"
 
 
 def _contract_parameters(
@@ -1388,6 +1390,31 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def render_role_features_markdown(role_name: str) -> str:
+    """Render one role's required live features from its package metadata."""
+    features = sorted(ROLE_METADATA[role_name]["required_features"])
+    return "\n".join(
+        (
+            ROLE_FEATURES_BEGIN,
+            "Assigned mode (`assigned-work v1`) requires every one of these live "
+            "features; this list is generated from the role package metadata:",
+            "",
+            *(f"- `{feature}`" for feature in features),
+            ROLE_FEATURES_END,
+        )
+    )
+
+
+def _role_features_block(text: str, *, context: str) -> str:
+    return _generated_block(
+        text,
+        begin=ROLE_FEATURES_BEGIN,
+        end=ROLE_FEATURES_END,
+        label="role-features",
+        context=context,
+    )
+
+
 def _workflow_vocabulary_block(text: str, *, context: str) -> str:
     return _generated_block(
         text,
@@ -1477,6 +1504,21 @@ def sync_generated_skill_sources(
             path.write_text(rendered, encoding="utf-8")
             updated.append(path)
     for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / "SKILL.md"
+        context = f"{role_name}/SKILL.md"
+        try:
+            current = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read role-features target {path}") from exc
+        rendered = current.replace(
+            _role_features_block(current, context=context),
+            render_role_features_markdown(role_name),
+            1,
+        )
+        if rendered != current:
+            path.write_text(rendered, encoding="utf-8")
+            updated.append(path)
+    for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
         rendered = render_openai_adapter(role_dir)
@@ -1525,6 +1567,15 @@ def validate_generated_skill_sources(
             raise SkillPackError(
                 f"Shared workflow vocabulary drift in {context}; run sync-generated"
             )
+    for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / "SKILL.md"
+        context = f"{role_name}/SKILL.md"
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read role-features target {path}") from exc
+        if _role_features_block(text, context=context) != render_role_features_markdown(role_name):
+            raise SkillPackError(f"Role feature list drift in {context}; run sync-generated")
     for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
