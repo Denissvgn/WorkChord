@@ -64,9 +64,9 @@ sequenceDiagram
     p0-->>p20: shutil.copytree(..., frontend, ignore=shutil.ignore_patterns(...))
 ```
 
-> Call sequence diagram shows 30 of 105 interactions; 75 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 107 interactions; 77 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 15 of 38 (23 omitted); unresolved 9 of 61 (52 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 15 of 39 (24 omitted); unresolved 9 of 62 (53 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -93,13 +93,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 7; effect analysis evaluated: 6, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
 
-Collector observations for 7 source steps with known totals: observed: 52, emitted: 42, omitted: 10. Unavailable totals are excluded.
+Collector observations for 7 source steps with known totals: observed: 54, emitted: 42, omitted: 12. Unavailable totals are excluded.
 
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `main` | `available` | `partial` | `available` | `31` | `21` | `10` |
+| `main` | `available` | `partial` | `available` | `33` | `21` | `12` |
 | `parse_args` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -149,8 +149,8 @@ flowchart LR
     s1 -. "filesystem_write shutil.copyfile" .-> b4
     b5["filesystem_write shutil.copyfile"]
     s1 -. "filesystem_write shutil.copyfile" .-> b5
-    b6["mutation app_env.update"]
-    s1 -. "mutation app_env.update" .-> b6
+    b6["filesystem_write shutil.copyfile"]
+    s1 -. "filesystem_write shutil.copyfile" .-> b6
     b7["mutation app_env.update"]
     s1 -. "mutation app_env.update" .-> b7
     click s1 "../modules/run_disposable_checks.md"
@@ -207,9 +207,9 @@ flowchart LR
 | mutation | `run.validators.append` | `main` | 161 |
 | mutation | `run.validators.append` | `main` | 188 |
 | filesystem_write | `shutil.copytree` | `main` | 191 |
-| filesystem_write | `shutil.copyfile` | `main` | 207 |
-| filesystem_write | `shutil.copyfile` | `main` | 209 |
-| mutation | `app_env.update` | `main` | 215 |
+| filesystem_write | `shutil.copyfile` | `main` | 195 |
+| filesystem_write | `shutil.copyfile` | `main` | 210 |
+| filesystem_write | `shutil.copyfile` | `main` | 212 |
 | mutation | `app_env.update` | `main` | 218 |
 
 ### Static analysis gaps

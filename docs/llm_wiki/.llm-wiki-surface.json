@@ -41594,7 +41594,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 207,
+              "line": 195,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -41602,18 +41602,18 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 209,
+              "line": 210,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
             },
             {
               "confidence": "unknown",
-              "kind": "mutation",
-              "line": 215,
+              "kind": "filesystem_write",
+              "line": 212,
               "step": "main",
               "step_index": 1,
-              "target": "app_env.update"
+              "target": "shutil.copyfile"
             },
             {
               "confidence": "unknown",
@@ -41701,7 +41701,7 @@
           "modules_touched": [
             "scripts/ci/run_disposable_checks.py"
           ],
-          "step_count": 106,
+          "step_count": 108,
           "truncated": false
         }
       },
@@ -95354,5 +95354,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a19a7fd430e24192d6d08492febdb0794465edb89a12d1c75d8547befd78965c"
+  "source_hash": "sha256:0c179f013f7aee5732e7e347e1f5a4e9e630043c11ad333a702a4efb4d55f2cf"
 }
